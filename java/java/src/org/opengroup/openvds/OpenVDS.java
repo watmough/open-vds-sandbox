@@ -33,6 +33,8 @@ public class OpenVDS extends VdsHandle{
 
     private static native boolean cpIsCompressionMethodSupported(int compressionMethod);
 
+    private static native long cpOpenVDSFile(String filePath) throws IOException;
+
     private static native long cpCreateAzure(String pConnectionString, String pContainer, String pBlob,
                                              int pParallelismFactor, int pMaxExecutionTime,
                                              VolumeDataLayoutDescriptor ld, VolumeDataAxisDescriptor[] vda,
@@ -84,6 +86,11 @@ public class OpenVDS extends VdsHandle{
     public static OpenVDS open(String url, String connectionString) throws IOException {
         if ("".equals(url)) throw new IllegalArgumentException("url can't be empty");
         return new OpenVDS(cpOpenConnection(url, connectionString), true);
+    }
+
+    public static OpenVDS open(VDSFileOpenOptions o) throws IOException {
+        if (o == null) throw new IllegalArgumentException("open option can't be null");
+        return new OpenVDS(cpOpenVDSFile(o.filePath), true);
     }
     
     private static void validateCreateArguments(VolumeDataLayoutDescriptor ld,
