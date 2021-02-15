@@ -28,6 +28,14 @@ public class VolumeDataAxisDescriptor {
     private float coordinateMin;
     private float coordinateMax;
 
+    public VolumeDataAxisDescriptor(int numSamples, String name, String unit, float coordinateMin, float coordinateMax) {
+        this.numSamples = numSamples;
+        this.name = name;
+        this.unit = unit;
+        this.coordinateMin = coordinateMin;
+        this.coordinateMax = coordinateMax;
+    }
+
     public int getNumSamples() {
         return numSamples;
     }

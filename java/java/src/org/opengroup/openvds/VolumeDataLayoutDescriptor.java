@@ -81,7 +81,7 @@ public class VolumeDataLayoutDescriptor {
             IS_FORCE_FULL_RESOLUTION_DIMENSION = 6,
             FULL_RESOLUTION_DIMENSION = 7;
 
-    private int[] _values;
+    private int[] _values = new int[8];
 
     public VolumeDataLayoutDescriptor(BrickSize brickSize, int negativeMargin,
             int positiveMargin, int brickSize2DMultiplier, LODLevels lodLevels,

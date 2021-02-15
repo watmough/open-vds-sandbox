@@ -29,7 +29,7 @@ import java.util.logging.Logger;
  */
 public abstract class JniPointer {
 
-    static final String JNI_LIB_NAME = "openvds-javacpp";
+    static final String JNI_LIB_NAME = "openvds-javacppd";
 
     private static final Logger LOGGER = Logger.getLogger(JniPointer.class.getName());
     private static final String ERR_LIBRARY = "JNI library load failed";

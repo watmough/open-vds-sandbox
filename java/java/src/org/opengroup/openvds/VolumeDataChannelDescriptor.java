@@ -126,6 +126,40 @@ public class VolumeDataChannelDescriptor {
     private float integerScale;
     private float integerOffset;
 
+    public VolumeDataChannelDescriptor(
+            Format format,
+            Components components,
+            String name,
+            String unit,
+            float valueRangeMin, float valueRangeMax,
+            VolumeDataMapping mapping,
+            int mappedValueCount,
+            boolean isDiscrete,
+            boolean isRenderable,
+            boolean isAllowLossyCompression,
+            boolean isUseZipForLosslessCompression,
+            boolean useNoValue,
+            float noValue,
+            float integerScale,
+            float integerOffset) {
+        this.format = format.code;
+        this.components = components.code;
+        this.name = name;
+        this.unit = unit;
+        this.valueRangeMin = valueRangeMin;
+        this.valueRangeMax = valueRangeMax;
+        this.mapping = mapping.code;
+        this.mappedValueCount = mappedValueCount;
+        this.isDiscrete = isDiscrete;
+        this.isRenderable = isRenderable;
+        this.isAllowLossyCompression = isAllowLossyCompression;
+        this.isUseZipForLosslessCompression = isUseZipForLosslessCompression;
+        this.useNoValue = useNoValue;
+        this.noValue = noValue;
+        this.integerScale = integerScale;
+        this.integerOffset = integerOffset;
+    }
+
     public int getFormat() {
         return format;
     }
