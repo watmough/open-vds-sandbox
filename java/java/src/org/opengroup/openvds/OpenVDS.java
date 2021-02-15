@@ -40,6 +40,9 @@ public class OpenVDS extends VdsHandle{
                                              VolumeDataLayoutDescriptor ld, VolumeDataAxisDescriptor[] vda,
                                              VolumeDataChannelDescriptor[] vdc, MetadataReadAccess md, int compressionMethod, float compressionTolerance) throws IOException;
 
+    private static native long cpCreateVDSFile(String pFilePath,
+                                             VolumeDataLayoutDescriptor ld, VolumeDataAxisDescriptor[] vda,
+                                             VolumeDataChannelDescriptor[] vdc, MetadataReadAccess md) throws IOException;
 
     private static native long cpCreateAws(String bucket, String key, String region, String endpointoverhide, String accessKeyId, String secretKey, String sessionToken, String expiration,
                                            VolumeDataLayoutDescriptor ld, VolumeDataAxisDescriptor[] vda,
@@ -146,6 +149,15 @@ public class OpenVDS extends VdsHandle{
         return new OpenVDS(cpCreateAzure(o.connectionString, o.container, o.blob, 
                                          o.parallelism_factor, o.max_execution_time,
                                          ld, vda, vdc, md, compressionMethod.ordinal(), compressionTolerance), true);
+    }
+
+    public static OpenVDS create(VDSFileOpenOptions o, VolumeDataLayoutDescriptor ld,
+                                 VolumeDataAxisDescriptor[] vda, VolumeDataChannelDescriptor[] vdc,
+                                 MetadataReadAccess md) throws IOException {
+        validateCreateArguments(o, ld, vda, vdc, md);
+
+        return new OpenVDS(cpCreateVDSFile(o.filePath,
+                ld, vda, vdc, md), true);
     }
 
     public static OpenVDS create(AWSOpenOptions o, VolumeDataLayoutDescriptor ld,

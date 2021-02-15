@@ -335,6 +335,21 @@ Java_org_opengroup_openvds_OpenVDS_cpCreateAzure(JNIEnv *env, jclass, jstring jC
   return createVDSOrThrowJavaIOException(env, openOptions, ld, vda, vdc, md, compressionMethod, compressionTolerance);
 }
 
+/*
+ * Class:     org_opengroup_openvds_OpenVDS
+ * Method:    cpCreateVDSFile
+ * Signature: (Ljava/lang/String;Lorg/opengroup/openvds/VolumeDataLayoutDescriptor;[Lorg/opengroup/openvds/VolumeDataAxisDescriptor;[Lorg/opengroup/openvds/VolumeDataChannelDescriptor;Lorg/opengroup/openvds/MetadataReadAccess;)J
+ */
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_cpCreateVDSFile
+        (JNIEnv *env, jclass, jstring jVDSFilePath,
+         jobject ld, jobjectArray vda, jobjectArray vdc, jobject md){
+    OpenVDS::VDSFileOpenOptions openOptions;
+
+    openOptions.fileName = JStringToString(env, jVDSFilePath);
+
+    return createVDSOrThrowJavaIOException(env, openOptions, ld, vda, vdc, md);
+}
+
 jlong JNICALL
 Java_org_opengroup_openvds_OpenVDS_cpCreateAws(JNIEnv *env, jclass,
   jstring jbucket, jstring jkey, jstring jregion, jstring jendpointoverhide, jstring jaccessKeyId, jstring jsecretKey, jstring jsessionToken, jstring jexpiration,

@@ -1,4 +1,162 @@
-package PACKAGE_NAME;
+import org.opengroup.openvds.*;
+
+import java.util.List;
 
 public class CreateVDS {
+/**
+    public static void main(String[] args) {
+        try {
+            process(args);
+        } catch (Throwable t) {
+            System.out.println();
+            t.printStackTrace();
+        }
+    }
+
+    static void process(String[] args) throws Exception {
+        int samplesX = 1000;
+        int samplesY = 1000;
+        int samplesZ = 1000;
+        VolumeDataChannelDescriptor.Format format = VolumeDataChannelDescriptor.Format.FORMAT_R32;
+
+        VolumeDataLayoutDescriptor.BrickSize brickSize = VolumeDataLayoutDescriptor.BrickSize.BRICK_SIZE_64;
+        int negativeMargin = 4;
+        int positiveMargin = 4;
+        int brickSize2DMultiplier = 4;
+        VolumeDataLayoutDescriptor.LODLevels lodLevels = VolumeDataLayoutDescriptor.LODLevels.LOD_LEVELS_NONE;
+        //VolumeDataLayoutDescriptor.Options layoutOptions = VolumeDataLayoutDescriptor.Options.NONE;
+        VolumeDataLayoutDescriptor layoutDescriptor = new VolumeDataLayoutDescriptor(brickSize, negativeMargin, positiveMargin,
+                brickSize2DMultiplier, lodLevels, false,false,0);
+
+        List<VolumeDataAxisDescriptor> axisDescriptors;
+        axisDescriptors.add(new VolumeDataAxisDescriptor(samplesX, "Sample", "ms", 0.0f,
+                4.f));
+        axisDescriptors.add(new VolumeDataAxisDescriptor(samplesY, "Crossline", "",
+                1932.f, 2536.f));
+        axisDescriptors.add(new VolumeDataAxisDescriptor(samplesZ, "Inline", "", 9985.f,
+                10369.f));
+
+        List<VolumeDataChannelDescriptor> channelDescriptors;
+        float rangeMin = -0.1234f;
+        float rangeMax = 0.1234f;
+        float intScale;
+        float intOffset;
+        getScaleOffsetForFormat(rangeMin, rangeMax, true, format, intScale, intOffset);
+        channelDescriptors.add(format, VolumeDataChannelDescriptor.Components.COMPONENTS_1,
+                "Amplitude", "", rangeMin, rangeMax,
+                VolumeDataMapping.DIRECT, 1,
+                VolumeDataChannelDescriptor.Default, 0.f, intScale, intOffset);
+
+        //OpenVDS::InMemoryOpenOptions options;
+        VDSFileOpenOptions options = new VDSFileOpenOptions("/mnt/dataDD/tmp/create.vds");
+        OpenVDS.Error error;
+
+        MetadataContainer metadataContainer;
+        metadataContainer.SetMetadataInt("categoryInt", "Int", 123);
+        metadataContainer.SetMetadataIntVector2("categoryInt", "IntVector2", OpenVDS.IntVector2 (45, 78));
+        metadataContainer.SetMetadataIntVector3("categoryInt", "IntVector3", OpenVDS.IntVector3 (45, 78, 72));
+        metadataContainer.SetMetadataIntVector4("categoryInt", "IntVector4", OpenVDS.IntVector4 (45, 78, 72, 84));
+        metadataContainer.SetMetadataFloat("categoryFloat", "Float", 123.f);
+        metadataContainer.SetMetadataFloatVector2("categoryFloat", "FloatVector2", OpenVDS::FloatVector2 (45.5f, 78.75f));
+        metadataContainer.SetMetadataFloatVector3("categoryFloat", "FloatVector3",
+                OpenVDS::FloatVector3 (45.5f, 78.75f, 72.75f));
+        metadataContainer.SetMetadataFloatVector4("categoryFloat", "FloatVector4",
+                OpenVDS::FloatVector4 (45.5f, 78.75f, 72.75f, 84.1f));
+        metadataContainer.SetMetadataDouble("categoryDouble", "Double", 123.);
+        metadataContainer.SetMetadataDoubleVector2("categoryDouble", "DoubleVector2", OpenVDS::DoubleVector2
+        (45.5, 78.75));
+        metadataContainer.SetMetadataDoubleVector3("categoryDouble", "DoubleVector3",
+                OpenVDS::DoubleVector3 (45.5, 78.75, 72.75));
+        metadataContainer.SetMetadataDoubleVector4("categoryDouble", "DoubleVector4",
+                OpenVDS::DoubleVector4 (45.5, 78.75, 72.75, 84.1));
+        metadataContainer.SetMetadataString("categoryString", "String", std::string ("Test string"));
+//metadataContainer.SetMetadataBLOB("categoryBLOB", "BLOB", data, 4 );
+
+        VdsHandle vds = OpenVDS.create(options, layoutDescriptor, axisDescriptors, channelDescriptors, metadataContainer,
+                error);
+
+        VolumeDataLayout layout = vds.getLayout();
+        //ASSERT_TRUE(layout);
+        VolumeDataAccessManager accessManager = vds.getAccessManager();
+        //ASSERT_TRUE(accessManager);
+
+        int channel = 0;
+        VolumeDataPageAccessor pageAccessor = accessManager.createVolumeDataPageAccessor(layout, DimensionsND.DIMENSIONS_012, channel, 0, 100, VolumeDataAccessManager.AccessMode.CREATE)
+
+        //ASSERT_TRUE(pageAccessor);
+
+        int chunkCount = (int) pageAccessor.getChunkCount();
+
+        //OpenVDS::VolumeDataChannelDescriptor::Format format = layout->GetChannelFormat(channel);
+        for (int i = 0; i < chunkCount; i++) {
+            VolumeDataPage page = pageAccessor.createPage(i);
+            VolumeIndexer3D outputIndexer(page, 0, 0, DimensionsND.DIMENSIONS_012, layout);
+
+            //float valueRangeScale = outputIndexer.valueRangeMax - outputIndexer.valueRangeMin;
+            //QuantizingValueConverterWithNoValue<T, float, useNoValue> converter(outputIndexer3D.valueRangeMin, outputIndexer3D.valueRangeMax, valueRangeScale, outputIndexer3D.valueRangeMin, noValue, noValue);
+
+            int[] numSamples = new int[3];
+            //OpenVDS::IntVector<3> localOutIndex;
+
+            for (int j = 0; j < 3; j++) {
+                numSamples[j] = outputIndexer.getDataBlockNumSamples(j);
+            }
+
+            int[] pitch = new int[VolumeDataLayout.Dimensionality_Max];
+
+            void *buffer = page.getWritableBuffer(pitch);
+            auto output = static_cast < float *>(buffer);
+
+            for (int iDim2 = 0; iDim2 < numSamples[2]; iDim2++)
+                for (int iDim1 = 0; iDim1 < numSamples[1]; iDim1++)
+                    for (int iDim0 = 0; iDim0 < numSamples[0]; iDim0++) {
+                        int[] localOutIndex = new int[]{iDim0, iDim1, iDim2};
+
+                        int[] voxelIndex = outputIndexer.localIndexToVoxelIndex(localOutIndex);
+
+                        int pos[] = new int[]{
+                            voxelIndex[0],
+                                    voxelIndex[1],
+                                    voxelIndex[2]
+                        };
+
+                        float value = pos[0];
+
+                        output[outputIndexer.localIndexToDataIndex(localOutIndex)] = value;
+                    }
+
+            //OpenVDS::CalculateNoise3D(buffer, format, &outputIndexer, frequency, 0.021f, 0.f, true, 345);
+            page.release();
+        }
+
+        pageAccessor.commit();
+        pageAccessor.setMaxPages(0);
+        accessManager.flushUploadQueue();
+        accessManager.destroyVolumeDataPageAccessor(pageAccessor);
+
+        OpenVDS.close(vds);
+    }
+
+    static void getScaleOffsetForFormat(float min, float max, boolean novalue, VolumeDataChannelDescriptor.Format format,
+                                        float scale, float offset) {
+        switch (format) {
+            case VolumeDataChannelDescriptor.Format.FORMAT_U8:
+            scale = 1.f / (255.f - novalue) * (max - min);
+                offset = min;
+                break;
+            case VolumeDataChannelDescriptor.Format.FORMAT_U16:
+            scale = 1.f / (65535.f - novalue) * (max - min);
+                offset = min;
+                break;
+            case VolumeDataChannelDescriptor.Format.FORMAT_R32:
+            case VolumeDataChannelDescriptor.Format.FORMAT_U32:
+            case VolumeDataChannelDescriptor.Format.FORMAT_R64:
+            case VolumeDataChannelDescriptor.Format.FORMAT_U64:
+            case VolumeDataChannelDescriptor.Format.FORMAT_1BIT:
+            case VolumeDataChannelDescriptor.Format.FORMAT_ANY:
+            scale = 1.0f;
+                offset = 0.0f;
+        }
+    }
+*/
 }
