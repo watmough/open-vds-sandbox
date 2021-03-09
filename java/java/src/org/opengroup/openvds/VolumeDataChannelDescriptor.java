@@ -126,6 +126,10 @@ public class VolumeDataChannelDescriptor {
     private float integerScale;
     private float integerOffset;
 
+    private VolumeDataChannelDescriptor(){
+        // Used by c++
+    }
+
     public VolumeDataChannelDescriptor(
             Format format,
             Components components,
