@@ -28,6 +28,11 @@ public class VolumeDataAxisDescriptor {
     private float coordinateMin;
     private float coordinateMax;
 
+    /**
+     * Default constructor Needed by JNI
+     */
+    private VolumeDataAxisDescriptor() { }
+
     public VolumeDataAxisDescriptor(int numSamples, String name, String unit, float coordinateMin, float coordinateMax) {
         this.numSamples = numSamples;
         this.name = name;
