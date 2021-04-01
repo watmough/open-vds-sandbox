@@ -28,6 +28,7 @@ set(JAVA_SOURCE_FILES
   java/src/org/opengroup/openvds/JniPointer.java
   java/src/org/opengroup/openvds/JniPointerWithoutDeletion.java
   java/src/org/opengroup/openvds/MemoryVdsGenerator.java
+  java/src/org/opengroup/openvds/MetadataContainer.java
   java/src/org/opengroup/openvds/MetadataKey.java
   java/src/org/opengroup/openvds/MetadataReadAccess.java
   java/src/org/opengroup/openvds/MetadataType.java
@@ -103,6 +104,7 @@ add_library(openvds-javacpp
   cpp/src/CommonJni.cpp
   cpp/src/JniPointer.cpp
   cpp/src/MemoryVdsGenerator.cpp
+  cpp/src/MetadataContainer.cpp
   cpp/src/MetadataReadAccess.cpp
   cpp/src/OpenVDSJava.cpp
   cpp/src/QuantizingValueConverter_FloatToByte.cpp
