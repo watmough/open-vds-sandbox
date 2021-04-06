@@ -18,8 +18,9 @@
 package org.opengroup.openvds;
 
 import java.io.IOException;
+import java.util.List;
 
-public class OpenVDS extends VdsHandle{
+public class OpenVDS extends VdsHandle {
     private static native long cpOpenAWS(String bucket, String key, String region, String endpointoverhide) throws IOException;
 
     private static native long cpOpenAzure(String pConnectionString, String pContainer, String pBlob,
@@ -34,6 +35,11 @@ public class OpenVDS extends VdsHandle{
     private static native boolean cpIsCompressionMethodSupported(int compressionMethod);
 
     private static native long cpOpenVDSFile(String filePath) throws IOException;
+
+    private static native long cpCreate(OpenOptions options, VolumeDataLayoutDescriptor layoutDescriptor,
+                                        VolumeDataAxisDescriptor[] axisDescriptors,
+                                        VolumeDataChannelDescriptor[] channelDescriptors,
+                                        MetadataContainer mdContainer, VdsError error) throws IOException;
 
     private static native long cpCreateAzure(String pConnectionString, String pContainer, String pBlob,
                                              int pParallelismFactor, int pMaxExecutionTime,
@@ -238,6 +244,15 @@ public class OpenVDS extends VdsHandle{
 
         return new OpenVDS(cpCreateConnection(url, connectionString,
                                          ld, vda, vdc, md, compressionMethod.ordinal(), compressionTolerance), true);
+    }
+
+    public static OpenVDS create(OpenOptions options, VolumeDataLayoutDescriptor layoutDescriptor,
+                                 VolumeDataAxisDescriptor[] axisDescriptors,
+                                 VolumeDataChannelDescriptor[] channelDescriptors,
+                                 MetadataContainer mdContainer, VdsError error) throws IOException {
+        validateCreateArguments(options, layoutDescriptor, axisDescriptors, channelDescriptors, mdContainer);
+
+        return new OpenVDS(cpCreate(options, layoutDescriptor, axisDescriptors, channelDescriptors, mdContainer, error), true);
     }
 
     public static void writeArray(VdsHandle handle, double[] src_data, String channel_name) {
