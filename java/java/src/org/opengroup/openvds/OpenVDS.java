@@ -246,15 +246,6 @@ public class OpenVDS extends VdsHandle {
                                          ld, vda, vdc, md, compressionMethod.ordinal(), compressionTolerance), true);
     }
 
-    public static OpenVDS create(OpenOptions options, VolumeDataLayoutDescriptor layoutDescriptor,
-                                 VolumeDataAxisDescriptor[] axisDescriptors,
-                                 VolumeDataChannelDescriptor[] channelDescriptors,
-                                 MetadataContainer mdContainer, VdsError error) throws IOException {
-        validateCreateArguments(options, layoutDescriptor, axisDescriptors, channelDescriptors, mdContainer);
-
-        return new OpenVDS(cpCreate(options, layoutDescriptor, axisDescriptors, channelDescriptors, mdContainer, error), true);
-    }
-
     public static void writeArray(VdsHandle handle, double[] src_data, String channel_name) {
         cpWriteData_r64(handle, src_data, channel_name);
     }

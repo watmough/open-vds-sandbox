@@ -117,6 +117,16 @@ std::vector<float> JArrayToVector( JNIEnv* env, jfloatArray jArr ) {
     return arr;
 }
 
+std::vector<double> JArrayToVector( JNIEnv* env, jdoubleArray jArr ) {
+    if( !jArr )
+        return std::vector<double>();
+    if( sizeof( jdouble ) != sizeof( double ) )
+        ThrowJavaException( env, "sizeof(jdouble)!=sizeof(double)" );
+    jsize len = env->GetArrayLength( jArr );
+    std::vector<double> arr( len );
+    env->GetDoubleArrayRegion( jArr, 0, len, (jdouble*)arr.data() );
+    return arr;
+}
 
 jstring NewJString( JNIEnv* env, const char* str ) {
     if( !str || !*str )

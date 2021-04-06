@@ -1,9 +1,10 @@
 import org.opengroup.openvds.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CreateVDS {
-/**
+
     public static void main(String[] args) {
         try {
             process(args);
@@ -14,6 +15,7 @@ public class CreateVDS {
     }
 
     static void process(String[] args) throws Exception {
+
         int samplesX = 1000;
         int samplesY = 1000;
         int samplesZ = 1000;
@@ -28,15 +30,13 @@ public class CreateVDS {
         VolumeDataLayoutDescriptor layoutDescriptor = new VolumeDataLayoutDescriptor(brickSize, negativeMargin, positiveMargin,
                 brickSize2DMultiplier, lodLevels, false,false,0);
 
-        List<VolumeDataAxisDescriptor> axisDescriptors;
-        axisDescriptors.add(new VolumeDataAxisDescriptor(samplesX, "Sample", "ms", 0.0f,
-                4.f));
-        axisDescriptors.add(new VolumeDataAxisDescriptor(samplesY, "Crossline", "",
-                1932.f, 2536.f));
-        axisDescriptors.add(new VolumeDataAxisDescriptor(samplesZ, "Inline", "", 9985.f,
-                10369.f));
+        List<VolumeDataAxisDescriptor> axisDescriptors = new ArrayList<>();
+        axisDescriptors.add(new VolumeDataAxisDescriptor(samplesX, "Sample", "ms", 0.0f,4.f));
+        axisDescriptors.add(new VolumeDataAxisDescriptor(samplesY, "Crossline", "",1932.f, 2536.f));
+        axisDescriptors.add(new VolumeDataAxisDescriptor(samplesZ, "Inline", "", 9985.f,10369.f));
 
-        List<VolumeDataChannelDescriptor> channelDescriptors;
+        List<VolumeDataChannelDescriptor> channelDescriptors = new ArrayList<>();
+        /**
         float rangeMin = -0.1234f;
         float rangeMax = 0.1234f;
         float intScale;
@@ -46,40 +46,38 @@ public class CreateVDS {
                 "Amplitude", "", rangeMin, rangeMax,
                 VolumeDataMapping.DIRECT, 1,
                 VolumeDataChannelDescriptor.Default, 0.f, intScale, intOffset);
+         */
 
         //OpenVDS::InMemoryOpenOptions options;
-        VDSFileOpenOptions options = new VDSFileOpenOptions("/mnt/dataDD/tmp/create.vds");
-        OpenVDS.Error error;
+        VDSFileOpenOptions options = new VDSFileOpenOptions("/tmp/create.vds");
+        VdsError error;
 
-        MetadataContainer metadataContainer;
-        metadataContainer.SetMetadataInt("categoryInt", "Int", 123);
-        metadataContainer.SetMetadataIntVector2("categoryInt", "IntVector2", OpenVDS.IntVector2 (45, 78));
-        metadataContainer.SetMetadataIntVector3("categoryInt", "IntVector3", OpenVDS.IntVector3 (45, 78, 72));
-        metadataContainer.SetMetadataIntVector4("categoryInt", "IntVector4", OpenVDS.IntVector4 (45, 78, 72, 84));
-        metadataContainer.SetMetadataFloat("categoryFloat", "Float", 123.f);
-        metadataContainer.SetMetadataFloatVector2("categoryFloat", "FloatVector2", OpenVDS::FloatVector2 (45.5f, 78.75f));
-        metadataContainer.SetMetadataFloatVector3("categoryFloat", "FloatVector3",
-                OpenVDS::FloatVector3 (45.5f, 78.75f, 72.75f));
-        metadataContainer.SetMetadataFloatVector4("categoryFloat", "FloatVector4",
-                OpenVDS::FloatVector4 (45.5f, 78.75f, 72.75f, 84.1f));
-        metadataContainer.SetMetadataDouble("categoryDouble", "Double", 123.);
-        metadataContainer.SetMetadataDoubleVector2("categoryDouble", "DoubleVector2", OpenVDS::DoubleVector2
-        (45.5, 78.75));
-        metadataContainer.SetMetadataDoubleVector3("categoryDouble", "DoubleVector3",
-                OpenVDS::DoubleVector3 (45.5, 78.75, 72.75));
-        metadataContainer.SetMetadataDoubleVector4("categoryDouble", "DoubleVector4",
-                OpenVDS::DoubleVector4 (45.5, 78.75, 72.75, 84.1));
-        metadataContainer.SetMetadataString("categoryString", "String", std::string ("Test string"));
-//metadataContainer.SetMetadataBLOB("categoryBLOB", "BLOB", data, 4 );
+        MetadataContainer metadataContainer = new MetadataContainer();
+        metadataContainer.setMetadataInt("categoryInt", "Int", 123);
+        metadataContainer.setMetadataIntVector2("categoryInt", "IntVector2", new int[] {45, 78});
+        metadataContainer.setMetadataIntVector3("categoryInt", "IntVector3", new int[] {45, 78, 72});
+        metadataContainer.setMetadataIntVector4("categoryInt", "IntVector4", new int[] {45, 78, 72, 84});
+        metadataContainer.setMetadataFloat("categoryFloat", "Float", 123.f);
+        metadataContainer.setMetadataFloatVector2("categoryFloat", "FloatVector2", new float[] {45.5f, 78.75f});
+        metadataContainer.setMetadataFloatVector3("categoryFloat", "FloatVector3", new float[] {45.5f, 78.75f, 72.75f});
+        metadataContainer.setMetadataFloatVector4("categoryFloat", "FloatVector4", new float[] {45.5f, 78.75f, 72.75f, 84.1f});
+        metadataContainer.setMetadataDouble("categoryDouble", "Double", 123.);
+        metadataContainer.setMetadataDoubleVector2("categoryDouble", "DoubleVector2", new double[] {45.5, 78.75});
+        metadataContainer.setMetadataDoubleVector3("categoryDouble", "DoubleVector3", new double[] {45.5, 78.75, 72.75});
+        metadataContainer.setMetadataDoubleVector4("categoryDouble", "DoubleVector4", new double[] {45.5, 78.75, 72.75, 84.1});
+        metadataContainer.setMetadataString("categoryString", "String", "Test string");
+        //metadataContainer.SetMetadataBLOB("categoryBLOB", "BLOB", data, 4 );
 
-        VdsHandle vds = OpenVDS.create(options, layoutDescriptor, axisDescriptors, channelDescriptors, metadataContainer,
-                error);
+        VdsHandle vds = OpenVDS.create(options, layoutDescriptor,
+                axisDescriptors.toArray(new VolumeDataAxisDescriptor[0]),
+                channelDescriptors.toArray(new VolumeDataChannelDescriptor[0]), metadataContainer);
+
 
         VolumeDataLayout layout = vds.getLayout();
         //ASSERT_TRUE(layout);
         VolumeDataAccessManager accessManager = vds.getAccessManager();
         //ASSERT_TRUE(accessManager);
-
+    /**
         int channel = 0;
         VolumeDataPageAccessor pageAccessor = accessManager.createVolumeDataPageAccessor(layout, DimensionsND.DIMENSIONS_012, channel, 0, 100, VolumeDataAccessManager.AccessMode.CREATE)
 
@@ -159,4 +157,5 @@ public class CreateVDS {
         }
     }
 */
+    }
 }

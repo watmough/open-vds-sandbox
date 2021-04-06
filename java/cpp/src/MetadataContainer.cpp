@@ -71,110 +71,219 @@ extern "C" {
         }
         CATCH_EXCEPTIONS_FOR_JAVA;
     }
-//
-///*
-// * Class:     org_opengroup_openvds_MetadataContainer
-// * Method:    cpSetMetadataIntVector2
-// * Signature: (JLjava/lang/String;Ljava/lang/String;[I)V
-// */
-//JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_cpSetMetadataIntVector2
-//        (JNIEnv *, jclass, jlong, jstring, jstring, jintArray);
-//
-///*
-// * Class:     org_opengroup_openvds_MetadataContainer
-// * Method:    cpSetMetadataIntVector3
-// * Signature: (JLjava/lang/String;Ljava/lang/String;[I)V
-// */
-//JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_cpSetMetadataIntVector3
-//        (JNIEnv *, jclass, jlong, jstring, jstring, jintArray);
-//
-///*
-// * Class:     org_opengroup_openvds_MetadataContainer
-// * Method:    cpSetMetadataIntVector4
-// * Signature: (JLjava/lang/String;Ljava/lang/String;[I)V
-// */
-//JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_cpSetMetadataIntVector4
-//        (JNIEnv *, jclass, jlong, jstring, jstring, jintArray);
-//
-///*
-// * Class:     org_opengroup_openvds_MetadataContainer
-// * Method:    cpSetMetadataFloat
-// * Signature: (JLjava/lang/String;Ljava/lang/String;F)V
-// */
-//JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_cpSetMetadataFloat
-//        (JNIEnv *, jclass, jlong, jstring, jstring, jfloat);
-//
-///*
-// * Class:     org_opengroup_openvds_MetadataContainer
-// * Method:    cpSetMetadataFloatVector2
-// * Signature: (JLjava/lang/String;Ljava/lang/String;[F)V
-// */
-//JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_cpSetMetadataFloatVector2
-//        (JNIEnv *, jclass, jlong, jstring, jstring, jfloatArray);
-//
-///*
-// * Class:     org_opengroup_openvds_MetadataContainer
-// * Method:    cpSetMetadataFloatVector3
-// * Signature: (JLjava/lang/String;Ljava/lang/String;[F)V
-// */
-//JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_cpSetMetadataFloatVector3
-//        (JNIEnv *, jclass, jlong, jstring, jstring, jfloatArray);
-//
-///*
-// * Class:     org_opengroup_openvds_MetadataContainer
-// * Method:    cpSetMetadataFloatVector4
-// * Signature: (JLjava/lang/String;Ljava/lang/String;[F)V
-// */
-//JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_cpSetMetadataFloatVector4
-//        (JNIEnv *, jclass, jlong, jstring, jstring, jfloatArray);
-//
-///*
-// * Class:     org_opengroup_openvds_MetadataContainer
-// * Method:    cpSetMetadataDouble
-// * Signature: (JLjava/lang/String;Ljava/lang/String;D)V
-// */
-//JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_cpSetMetadataDouble
-//        (JNIEnv *, jclass, jlong, jstring, jstring, jdouble);
-//
-///*
-// * Class:     org_opengroup_openvds_MetadataContainer
-// * Method:    cpSetMetadataDoubleVector2
-// * Signature: (JLjava/lang/String;Ljava/lang/String;[D)V
-// */
-//JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_cpSetMetadataDoubleVector2
-//        (JNIEnv *, jclass, jlong, jstring, jstring, jdoubleArray);
-//
-///*
-// * Class:     org_opengroup_openvds_MetadataContainer
-// * Method:    cpSetMetadataDoubleVector3
-// * Signature: (JLjava/lang/String;Ljava/lang/String;[D)V
-// */
-//JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_cpSetMetadataDoubleVector3
-//        (JNIEnv *, jclass, jlong, jstring, jstring, jdoubleArray);
-//
-///*
-// * Class:     org_opengroup_openvds_MetadataContainer
-// * Method:    cpSetMetadataDoubleVector4
-// * Signature: (JLjava/lang/String;Ljava/lang/String;[D)V
-// */
-//JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_cpSetMetadataDoubleVector4
-//        (JNIEnv *, jclass, jlong, jstring, jstring, jdoubleArray);
-//
-///*
-// * Class:     org_opengroup_openvds_MetadataContainer
-// * Method:    cpSetMetadataString
-// * Signature: (JLjava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
-// */
-//JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_cpSetMetadataString
-//        (JNIEnv *, jclass, jlong, jstring, jstring, jstring);
-//
-///*
-// * Class:     org_opengroup_openvds_MetadataContainer
-// * Method:    cpSetMetadataKeys
-// * Signature: (J[Lorg/opengroup/openvds/MetadataKey;)V
-// */
-//JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_cpSetMetadataKeys
-//        (JNIEnv *, jclass, jlong, jobjectArray);
+
+/*
+ * Class:     org_opengroup_openvds_MetadataContainer
+ * Method:    cpSetMetadataIntVector2
+ * Signature: (JLjava/lang/String;Ljava/lang/String;[I)V
+ */
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_cpSetMetadataIntVector2
+        (JNIEnv * env, jclass, jlong handle, jstring category, jstring name, jintArray vec2i)
+{
+    try {
+        std::vector<int> vec = JArrayToVector(env, vec2i);
+        IntVector2 vdsVec;
+        vdsVec[0] = vec[0];
+        vdsVec[1] = vec[1];
+        GetAccess( handle )->SetMetadataIntVector2( JStringToString( env, category ).c_str(), JStringToString( env, name ).c_str(), vdsVec);
+    }
+    CATCH_EXCEPTIONS_FOR_JAVA;
+}
+
+/*
+ * Class:     org_opengroup_openvds_MetadataContainer
+ * Method:    cpSetMetadataIntVector3
+ * Signature: (JLjava/lang/String;Ljava/lang/String;[I)V
+ */
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_cpSetMetadataIntVector3
+        (JNIEnv * env, jclass, jlong handle, jstring category, jstring name, jintArray vec3i)
+{
+    try {
+        std::vector<int> vec = JArrayToVector(env, vec3i);
+        IntVector3 vdsVec;
+        vdsVec[0] = vec[0];
+        vdsVec[1] = vec[1];
+        vdsVec[2] = vec[2];
+        GetAccess( handle )->SetMetadataIntVector3( JStringToString( env, category ).c_str(), JStringToString( env, name ).c_str(), vdsVec);
+    }
+    CATCH_EXCEPTIONS_FOR_JAVA;
+}
+
+/*
+ * Class:     org_opengroup_openvds_MetadataContainer
+ * Method:    cpSetMetadataIntVector4
+ * Signature: (JLjava/lang/String;Ljava/lang/String;[I)V
+ */
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_cpSetMetadataIntVector4
+        (JNIEnv * env, jclass, jlong handle, jstring category, jstring name, jintArray vec4i)
+{
+    try {
+        std::vector<int> vec = JArrayToVector(env, vec4i);
+        IntVector4 vdsVec;
+        vdsVec[0] = vec[0];
+        vdsVec[1] = vec[1];
+        vdsVec[2] = vec[2];
+        vdsVec[3] = vec[3];
+        GetAccess( handle )->SetMetadataIntVector4( JStringToString( env, category ).c_str(), JStringToString( env, name ).c_str(), vdsVec);
+    }
+    CATCH_EXCEPTIONS_FOR_JAVA;
+}
+
+/*
+ * Class:     org_opengroup_openvds_MetadataContainer
+ * Method:    cpSetMetadataFloat
+ * Signature: (JLjava/lang/String;Ljava/lang/String;F)V
+ */
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_cpSetMetadataFloat
+        (JNIEnv * env, jclass, jlong handle, jstring category, jstring name, jfloat value)
+{
+    try {
+        GetAccess( handle )->SetMetadataFloat( JStringToString( env, category ).c_str(), JStringToString( env, name ).c_str(), value);
+    }
+    CATCH_EXCEPTIONS_FOR_JAVA;
+}
+
+/*
+ * Class:     org_opengroup_openvds_MetadataContainer
+ * Method:    cpSetMetadataFloatVector2
+ * Signature: (JLjava/lang/String;Ljava/lang/String;[F)V
+ */
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_cpSetMetadataFloatVector2
+        (JNIEnv * env, jclass, jlong handle, jstring category, jstring name, jfloatArray vec2f)
+{
+    try {
+        std::vector<float> vec = JArrayToVector(env, vec2f);
+        FloatVector2 vdsVec;
+        vdsVec[0] = vec[0];
+        vdsVec[1] = vec[1];
+        GetAccess( handle )->SetMetadataFloatVector2( JStringToString( env, category ).c_str(), JStringToString( env, name ).c_str(), vdsVec);
+    }
+    CATCH_EXCEPTIONS_FOR_JAVA;
+}
+
+/*
+ * Class:     org_opengroup_openvds_MetadataContainer
+ * Method:    cpSetMetadataFloatVector3
+ * Signature: (JLjava/lang/String;Ljava/lang/String;[F)V
+ */
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_cpSetMetadataFloatVector3
+        (JNIEnv * env, jclass, jlong handle, jstring category, jstring name, jfloatArray vec3f)
+{
+    try {
+        std::vector<float> vec = JArrayToVector(env, vec3f);
+        FloatVector3 vdsVec;
+        vdsVec[0] = vec[0];
+        vdsVec[1] = vec[1];
+        vdsVec[2] = vec[2];
+        GetAccess( handle )->SetMetadataFloatVector3( JStringToString( env, category ).c_str(), JStringToString( env, name ).c_str(), vdsVec);
+    }
+    CATCH_EXCEPTIONS_FOR_JAVA;
+}
+
+/*
+ * Class:     org_opengroup_openvds_MetadataContainer
+ * Method:    cpSetMetadataFloatVector4
+ * Signature: (JLjava/lang/String;Ljava/lang/String;[F)V
+ */
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_cpSetMetadataFloatVector4
+        (JNIEnv * env, jclass, jlong handle, jstring category, jstring name, jfloatArray vec4f)
+{
+    try {
+        std::vector<float> vec = JArrayToVector(env, vec4f);
+        FloatVector4 vdsVec;
+        vdsVec[0] = vec[0];
+        vdsVec[1] = vec[1];
+        vdsVec[2] = vec[2];
+        vdsVec[3] = vec[3];
+        GetAccess( handle )->SetMetadataFloatVector4( JStringToString( env, category ).c_str(), JStringToString( env, name ).c_str(), vdsVec);
+    }
+    CATCH_EXCEPTIONS_FOR_JAVA;
+}
+
+/*
+ * Class:     org_opengroup_openvds_MetadataContainer
+ * Method:    cpSetMetadataDouble
+ * Signature: (JLjava/lang/String;Ljava/lang/String;D)V
+ */
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_cpSetMetadataDouble
+        (JNIEnv * env, jclass, jlong handle, jstring category, jstring name, jdouble value)
+{
+    try {
+        GetAccess( handle )->SetMetadataDouble( JStringToString( env, category ).c_str(), JStringToString( env, name ).c_str(), value);
+    }
+    CATCH_EXCEPTIONS_FOR_JAVA;
+}
+
+/*
+ * Class:     org_opengroup_openvds_MetadataContainer
+ * Method:    cpSetMetadataDoubleVector2
+ * Signature: (JLjava/lang/String;Ljava/lang/String;[D)V
+ */
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_cpSetMetadataDoubleVector2
+        (JNIEnv * env, jclass, jlong handle, jstring category, jstring name, jdoubleArray vec2d)
+{
+    try {
+        std::vector<double> vec = JArrayToVector(env, vec2d);
+        DoubleVector2 vdsVec;
+        vdsVec[0] = vec[0];
+        vdsVec[1] = vec[1];
+        GetAccess( handle )->SetMetadataDoubleVector2( JStringToString( env, category ).c_str(), JStringToString( env, name ).c_str(), vdsVec);
+    }
+    CATCH_EXCEPTIONS_FOR_JAVA;
+}
+
+/*
+ * Class:     org_opengroup_openvds_MetadataContainer
+ * Method:    cpSetMetadataDoubleVector3
+ * Signature: (JLjava/lang/String;Ljava/lang/String;[D)V
+ */
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_cpSetMetadataDoubleVector3
+        (JNIEnv * env, jclass, jlong handle, jstring category, jstring name, jdoubleArray vec3d)
+{
+    try {
+        std::vector<double> vec = JArrayToVector(env, vec3d);
+        DoubleVector3 vdsVec;
+        vdsVec[0] = vec[0];
+        vdsVec[1] = vec[1];
+        vdsVec[2] = vec[2];
+        GetAccess( handle )->SetMetadataDoubleVector3( JStringToString( env, category ).c_str(), JStringToString( env, name ).c_str(), vdsVec);
+    }
+    CATCH_EXCEPTIONS_FOR_JAVA;
+}
+
+/*
+ * Class:     org_opengroup_openvds_MetadataContainer
+ * Method:    cpSetMetadataDoubleVector4
+ * Signature: (JLjava/lang/String;Ljava/lang/String;[D)V
+ */
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_cpSetMetadataDoubleVector4
+        (JNIEnv * env, jclass, jlong handle, jstring category, jstring name, jdoubleArray vec4d)
+{
+    try {
+        std::vector<double> vec = JArrayToVector(env, vec4d);
+        DoubleVector4 vdsVec;
+        vdsVec[0] = vec[0];
+        vdsVec[1] = vec[1];
+        vdsVec[2] = vec[2];
+        vdsVec[3] = vec[3];
+        GetAccess( handle )->SetMetadataDoubleVector4( JStringToString( env, category ).c_str(), JStringToString( env, name ).c_str(), vdsVec);
+    }
+    CATCH_EXCEPTIONS_FOR_JAVA;
+}
+
+/*
+ * Class:     org_opengroup_openvds_MetadataContainer
+ * Method:    cpSetMetadataString
+ * Signature: (JLjava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+ */
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_cpSetMetadataString
+        (JNIEnv * env, jclass, jlong handle, jstring category, jstring name, jstring value)
+{
+    try {
+        GetAccess( handle )->SetMetadataString(JStringToString( env, category ).c_str(), JStringToString( env, name ).c_str(), JStringToString(env, value).c_str());
+    }
+    CATCH_EXCEPTIONS_FOR_JAVA;
+}
 
 #ifdef __cplusplus
 }

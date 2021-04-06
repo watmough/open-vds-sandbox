@@ -52,12 +52,17 @@ public class MetadataContainer extends MetadataReadAccess {
 
     private static native void cpSetMetadataString(long handle, String category, String name, String value);
 
-    private static native void cpSetMetadataKeys(long handle, MetadataKey[] keys);
-
+    /**
+     * Constructor around existing JNI object
+     * @param handle jni pointer to existing container
+     */
     public MetadataContainer(long handle) {
         super(handle);
     }
 
+    /**
+     * Creates new MetadataContainer
+     */
     public MetadataContainer() {
         super(cpCreateMetadataContainerHandle());
         setOwnHandle(true);
@@ -85,6 +90,7 @@ public class MetadataContainer extends MetadataReadAccess {
      * @param value
      */
     public void setMetadataIntVector2(String category, String name, int[] value) {
+        checkArrayArgument(value, 2);
         cpSetMetadataIntVector2(_handle, category, name, value);
     }
 
@@ -94,6 +100,7 @@ public class MetadataContainer extends MetadataReadAccess {
      * @param value
      */
     public void setMetadataIntVector3(String category, String name, int[] value) {
+        checkArrayArgument(value, 3);
         cpSetMetadataIntVector3(_handle, category, name, value);
     }
 
@@ -103,6 +110,7 @@ public class MetadataContainer extends MetadataReadAccess {
      * @param value
      */
     public void setMetadataIntVector4(String category, String name, int[] value) {
+        checkArrayArgument(value, 4);
         cpSetMetadataIntVector4(_handle, category, name, value);
     }
 
@@ -121,6 +129,7 @@ public class MetadataContainer extends MetadataReadAccess {
      * @param value
      */
     public void setMetadataFloatVector2(String category, String name, float[] value) {
+        checkArrayArgument(value, 2);
         cpSetMetadataFloatVector2(_handle, category, name, value);
     }
 
@@ -130,6 +139,7 @@ public class MetadataContainer extends MetadataReadAccess {
      * @param value
      */
     public void setMetadataFloatVector3(String category, String name, float[] value) {
+        checkArrayArgument(value, 3);
         cpSetMetadataFloatVector3(_handle, category, name, value);
     }
 
@@ -139,6 +149,7 @@ public class MetadataContainer extends MetadataReadAccess {
      * @param value
      */
     public void setMetadataFloatVector4(String category, String name, float[] value) {
+        checkArrayArgument(value, 4);
         cpSetMetadataFloatVector4(_handle, category, name, value);
     }
 
@@ -157,6 +168,7 @@ public class MetadataContainer extends MetadataReadAccess {
      * @param value
      */
     public void setMetadataDoubleVector2(String category, String name, double[] value) {
+        checkArrayArgument(value, 2);
         cpSetMetadataDoubleVector2(_handle, category, name, value);
     }
 
@@ -166,6 +178,7 @@ public class MetadataContainer extends MetadataReadAccess {
      * @param value
      */
     public void setMetadataDoubleVector3(String category, String name, double[] value) {
+        checkArrayArgument(value, 3);
         cpSetMetadataDoubleVector3(_handle, category, name, value);
     }
 
@@ -175,6 +188,7 @@ public class MetadataContainer extends MetadataReadAccess {
      * @param value
      */
     public void setMetadataDoubleVector4(String category, String name, double[] value) {
+        checkArrayArgument(value, 4);
         cpSetMetadataDoubleVector4(_handle, category, name, value);
     }
 
@@ -184,15 +198,28 @@ public class MetadataContainer extends MetadataReadAccess {
      * @param value
      */
     public void setMetadataString(String category, String name, String value) {
+        if (value == null) {
+            throw new IllegalArgumentException("Null String Metadata.");
+        }
         cpSetMetadataString(_handle, category, name, value);
     }
 
-    /**
-     * Sets an array of metadata keys
-     * @param keys
-     */
-    public void setMetadataKeys(MetadataKey[] keys) {
-        cpSetMetadataKeys(_handle, keys);
+
+    private void checkArrayArgument(int[] array, int expectedSize) {
+        if (array == null || array.length != expectedSize) {
+            throw new IllegalArgumentException("Wrong IntVector parameter size, expected " + expectedSize + " got " + (array == null ? "null" : array.length));
+        }
     }
 
+    private void checkArrayArgument(float[] array, int expectedSize) {
+        if (array == null || array.length != expectedSize) {
+            throw new IllegalArgumentException("Wrong FloatVector parameter size, expected 2, got " + (array == null ? "null" : array.length));
+        }
+    }
+
+    private void checkArrayArgument(double[] array, int expectedSize) {
+        if (array == null || array.length != expectedSize) {
+            throw new IllegalArgumentException("Wrong DoubleVector parameter size, expected 2, got " + (array == null ? "null" : array.length));
+        }
+    }
 }
