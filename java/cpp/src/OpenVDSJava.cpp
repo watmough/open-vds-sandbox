@@ -16,6 +16,7 @@
  */
 
 #include <org_opengroup_openvds_OpenVDS.h>
+#include <OpenVDS/MetadataContainer.h>
 #include <OpenVDS/OpenVDS.h>
 #include <OpenVDS/VolumeDataLayoutDescriptor.h>
 #include <OpenVDS/VolumeDataChannelDescriptor.h>
@@ -175,6 +176,22 @@ getMetadata(JNIEnv *env, jobject md)
     jclass obj_class = env->GetObjectClass(md);
     jlong handle = env->CallLongMethod(md, env->GetMethodID(obj_class, "handle", "()J"));
     return reinterpret_cast<OpenVDS::MetadataReadAccess*>(CheckHandle(handle));
+}
+
+static OpenVDS::MetadataContainer*
+getMetadataContainer(JNIEnv *env, jobject mdc)
+{
+    jclass obj_class = env->GetObjectClass(mdc);
+    jlong handle = env->CallLongMethod(mdc, env->GetMethodID(obj_class, "handle", "()J"));
+    return reinterpret_cast<OpenVDS::MetadataContainer*>(CheckHandle(handle));
+}
+
+static OpenVDS::Error*
+getError(JNIEnv *env, jobject err)
+{
+    jclass obj_class = env->GetObjectClass(err);
+    jlong handle = env->CallLongMethod(err, env->GetMethodID(obj_class, "handle", "()J"));
+    return reinterpret_cast<OpenVDS::Error*>(CheckHandle(handle));
 }
 
 static std::vector<OpenVDS::VolumeDataAxisDescriptor>
@@ -419,3 +436,4 @@ Java_org_opengroup_openvds_OpenVDS_cpCreateConnection(JNIEnv* env, jclass,
 
   return (jlong)pVds;
 }
+

@@ -41,6 +41,7 @@ std::vector<char> JArrayToVector( JNIEnv* env, jbyteArray jArr, int start, int l
 std::vector<short> JArrayToVector( JNIEnv* env, jshortArray jArr );
 std::vector<int> JArrayToVector( JNIEnv* env, jintArray jArr );
 std::vector<float> JArrayToVector( JNIEnv* env, jfloatArray jArr );
+std::vector<double> JArrayToVector( JNIEnv* env, jdoubleArray jArr );
 
 jbyteArray NewJByteArray( JNIEnv* env, const std::string& str );
 jstring NewJString( JNIEnv* env, const char* str );
