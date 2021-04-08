@@ -36,17 +36,28 @@ public class CreateVDS {
         axisDescriptors.add(new VolumeDataAxisDescriptor(samplesZ, "Inline", "", 9985.f,10369.f));
 
         List<VolumeDataChannelDescriptor> channelDescriptors = new ArrayList<>();
-        /**
+
         float rangeMin = -0.1234f;
         float rangeMax = 0.1234f;
-        float intScale;
-        float intOffset;
-        getScaleOffsetForFormat(rangeMin, rangeMax, true, format, intScale, intOffset);
-        channelDescriptors.add(format, VolumeDataChannelDescriptor.Components.COMPONENTS_1,
-                "Amplitude", "", rangeMin, rangeMax,
-                VolumeDataMapping.DIRECT, 1,
-                VolumeDataChannelDescriptor.Default, 0.f, intScale, intOffset);
-         */
+        float[] scaleOffset = getScaleOffsetForFormat(rangeMin, rangeMax, true, format);
+
+        VolumeDataChannelDescriptor channelDescriptor = new VolumeDataChannelDescriptor(format, VolumeDataChannelDescriptor.Components.COMPONENTS_1,
+                "Amplitude",
+                "",
+                rangeMin, // range min
+                rangeMax, // range max
+                VolumeDataMapping.DIRECT, // mapping
+                1, // mapped value count
+                false, // is discrete
+                true, // is renderable
+                false, // allow lossy compression
+                false, // use zip for lossless compresion
+                true,  // use no value
+                -999.25f, // no value
+                scaleOffset[0], // integer scale
+                scaleOffset[1]); // integer offset
+        channelDescriptors.add(channelDescriptor);
+
 
         //OpenVDS::InMemoryOpenOptions options;
         VDSFileOpenOptions options = new VDSFileOpenOptions("/tmp/create.vds");
@@ -77,20 +88,29 @@ public class CreateVDS {
         //ASSERT_TRUE(layout);
         VolumeDataAccessManager accessManager = vds.getAccessManager();
         //ASSERT_TRUE(accessManager);
-    /**
+
         int channel = 0;
-        VolumeDataPageAccessor pageAccessor = accessManager.createVolumeDataPageAccessor(layout, DimensionsND.DIMENSIONS_012, channel, 0, 100, VolumeDataAccessManager.AccessMode.CREATE)
+
+        VolumeDataPageAccessor pageAccessor = accessManager.createVolumeDataPageAccessor(
+                layout, // layout
+                DimensionsND.DIMENSIONS_012.ordinal(), // dimension ND
+                0, // lod
+                channel, // channel
+                100, // max pages
+                VolumeDataAccessManager.AccessMode.Create.getCode()); // access mode
 
         //ASSERT_TRUE(pageAccessor);
 
         int chunkCount = (int) pageAccessor.getChunkCount();
 
         //OpenVDS::VolumeDataChannelDescriptor::Format format = layout->GetChannelFormat(channel);
+
         for (int i = 0; i < chunkCount; i++) {
             VolumeDataPage page = pageAccessor.createPage(i);
-            VolumeIndexer3D outputIndexer(page, 0, 0, DimensionsND.DIMENSIONS_012, layout);
+            VolumeDataLayoutDescriptor.BrickSize brickSize1 = pageAccessor.getLayout().getLayoutDescriptor().getBrickSize();
 
-            //float valueRangeScale = outputIndexer.valueRangeMax - outputIndexer.valueRangeMin;
+            VolumeIndexer3D outputIndexer = new VolumeIndexer3D(page, 0, 0, DimensionsND.DIMENSIONS_012.ordinal(), layout);
+            float valueRangeScale = outputIndexer.getValueRangeMax() - outputIndexer.getValueRangeMin();
             //QuantizingValueConverterWithNoValue<T, float, useNoValue> converter(outputIndexer3D.valueRangeMin, outputIndexer3D.valueRangeMax, valueRangeScale, outputIndexer3D.valueRangeMin, noValue, noValue);
 
             int[] numSamples = new int[3];
@@ -101,10 +121,19 @@ public class CreateVDS {
             }
 
             int[] pitch = new int[VolumeDataLayout.Dimensionality_Max];
+            float[] buffer = page.readFloatBuffer(pitch);
 
-            void *buffer = page.getWritableBuffer(pitch);
-            auto output = static_cast < float *>(buffer);
+            int[] chunkMin = new int[VolumeDataLayout.Dimensionality_Max];
+            int[] chunkMax = new int[VolumeDataLayout.Dimensionality_Max];
 
+            pageAccessor.getChunkMinMax(i, chunkMin, chunkMax);
+
+            float[] floatBuffer = page.readFloatBuffer(pitch);
+
+            //void* buffer = page.getWritableBuffer(pitch);
+            //auto output = static_cast < float *>(buffer);
+
+            /**
             for (int iDim2 = 0; iDim2 < numSamples[2]; iDim2++)
                 for (int iDim1 = 0; iDim1 < numSamples[1]; iDim1++)
                     for (int iDim0 = 0; iDim0 < numSamples[0]; iDim0++) {
@@ -113,7 +142,7 @@ public class CreateVDS {
                         int[] voxelIndex = outputIndexer.localIndexToVoxelIndex(localOutIndex);
 
                         int pos[] = new int[]{
-                            voxelIndex[0],
+                                    voxelIndex[0],
                                     voxelIndex[1],
                                     voxelIndex[2]
                         };
@@ -122,40 +151,70 @@ public class CreateVDS {
 
                         output[outputIndexer.localIndexToDataIndex(localOutIndex)] = value;
                     }
+           */
+
+            //page.writeFloatBuffer(buffer, pitch);
 
             //OpenVDS::CalculateNoise3D(buffer, format, &outputIndexer, frequency, 0.021f, 0.f, true, 345);
             page.release();
         }
 
+        /**
         pageAccessor.commit();
         pageAccessor.setMaxPages(0);
         accessManager.flushUploadQueue();
         accessManager.destroyVolumeDataPageAccessor(pageAccessor);
 
+
         OpenVDS.close(vds);
+         */
     }
 
-    static void getScaleOffsetForFormat(float min, float max, boolean novalue, VolumeDataChannelDescriptor.Format format,
-                                        float scale, float offset) {
+//    static float[] getScaleOffsetForFormat(float min, float max, boolean novalue, VolumeDataChannelDescriptor.Format format) {
+//        float res[] = new float[] {1f, 0f};
+//        switch (format) {
+//            case VolumeDataChannelDescriptor.Format.FORMAT_U8:
+//                res[0] = 1.f / (255.f - novalue) * (max - min);
+//                res[1] = min;
+//                break;
+//            case VolumeDataChannelDescriptor.Format.FORMAT_U16:
+//                res[0] = 1.f / (65535.f - novalue) * (max - min);
+//                res[1] = min;
+//                break;
+//            case VolumeDataChannelDescriptor.Format.FORMAT_R32:
+//            case VolumeDataChannelDescriptor.Format.FORMAT_U32:
+//            case VolumeDataChannelDescriptor.Format.FORMAT_R64:
+//            case VolumeDataChannelDescriptor.Format.FORMAT_U64:
+//            case VolumeDataChannelDescriptor.Format.FORMAT_1BIT:
+//            case VolumeDataChannelDescriptor.Format.FORMAT_ANY:
+//                res[0] = 1.0f;
+//                res[1] = 0.0f;
+//        }
+//        return res;
+//    }
+
+    static float[] getScaleOffsetForFormat(float min, float max, boolean useNoValue, VolumeDataChannelDescriptor.Format format) {
+        float res[] = new float[] {1f, 0f};
+        float noValueCmp = useNoValue ? 1f : 0f;
         switch (format) {
-            case VolumeDataChannelDescriptor.Format.FORMAT_U8:
-            scale = 1.f / (255.f - novalue) * (max - min);
-                offset = min;
+            case FORMAT_U8:
+                res[0] = 1.f / (255.f - noValueCmp) * (max - min);
+                res[1] = min;
                 break;
-            case VolumeDataChannelDescriptor.Format.FORMAT_U16:
-            scale = 1.f / (65535.f - novalue) * (max - min);
-                offset = min;
+            case FORMAT_U16:
+                res[0] = 1.f / (65535.f - noValueCmp) * (max - min);
+                res[1] = min;
                 break;
-            case VolumeDataChannelDescriptor.Format.FORMAT_R32:
-            case VolumeDataChannelDescriptor.Format.FORMAT_U32:
-            case VolumeDataChannelDescriptor.Format.FORMAT_R64:
-            case VolumeDataChannelDescriptor.Format.FORMAT_U64:
-            case VolumeDataChannelDescriptor.Format.FORMAT_1BIT:
-            case VolumeDataChannelDescriptor.Format.FORMAT_ANY:
-            scale = 1.0f;
-                offset = 0.0f;
+            case FORMAT_R32:
+            case FORMAT_U32:
+            case FORMAT_R64:
+            case FORMAT_U64:
+            case FORMAT_1BIT:
+            case FORMAT_ANY:
+                res[0] = 1.0f;
+                res[1] = 0.0f;
         }
+        return res;
     }
-*/
-    }
+
 }

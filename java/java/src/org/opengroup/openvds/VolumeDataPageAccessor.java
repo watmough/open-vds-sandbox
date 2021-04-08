@@ -18,16 +18,41 @@
 package org.opengroup.openvds;
 
 public class VolumeDataPageAccessor extends JniPointerWithoutDeletion {
-    
+
     private static native long cpGetLayout( long handle );
+    private static native long cpGetChunkCount( long handle );
+    private static native void cpGetChunkMinMax( long handle, int chunk, int[] chunkMin, int[] chunkMax);
+    private static native long cpCreatePage( long handle, long chunkIndex);
+
 
     VolumeDataPageAccessor(long handle) {
         super(handle);
     }
 
-  VolumeDataLayout getLayout() {
-      return new VolumeDataLayout( cpGetLayout(_handle) );
-  }
+    public VolumeDataLayout getLayout() {
+        return new VolumeDataLayout( cpGetLayout(_handle) );
+    }
+
+    public long getChunkCount() {
+        return cpGetChunkCount(_handle);
+    }
+
+    public void getChunkMinMax(int chunk, int[] chunkMin, int[] chunkMax) {
+        if (chunk < 0 || chunk >= getChunkCount()) {
+            throw new IllegalArgumentException("VolumeDataPageAccessor::getChunkMinMax : wrong chunk index");
+        }
+        if (chunkMin == null || chunkMin.length != VolumeDataLayout.Dimensionality_Max) {
+            throw new IllegalArgumentException("VolumeDataPageAccessor::getChunkMinMax : wrong chunkMin array, expected non null or size 6");
+        }
+        if (chunkMax == null || chunkMax.length != VolumeDataLayout.Dimensionality_Max) {
+            throw new IllegalArgumentException("VolumeDataPageAccessor::getChunkMinMax : wrong chunkMax array, expected non null or size 6");
+        }
+        cpGetChunkMinMax(_handle, chunk, chunkMin, chunkMax);
+    }
+
+    public VolumeDataPage createPage(long chunkIndex) {
+        return new VolumeDataPage(cpCreatePage(_handle, chunkIndex));
+    }
 
   /*
   virtual int   GetLOD() const = 0;

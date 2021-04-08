@@ -19,15 +19,28 @@ package org.opengroup.openvds;
 
 public class VolumeDataPage extends JniPointer {
 
-    private static native void cpDeleteHandle(long handle);
+    private static native void cpRelease(long handle);
+
+    private static native float[] cpGetFloatBuffer(long handle, int[] pitch);
 
     public VolumeDataPage(long handle) {
         super(handle, true);
     }
 
+    public void release() {
+        cpRelease(_handle);
+    }
+
     // Called by JniPointer.release()
     @Override
     protected synchronized void deleteHandle() {
-        cpDeleteHandle(_handle);
+        cpRelease(_handle);
+    }
+
+    public float[] readFloatBuffer(int[] pitch) {
+        if (pitch == null || pitch.length != VolumeDataLayout.Dimensionality_Max) {
+            throw new IllegalArgumentException("Wrong pitch array parameter size, expected " + VolumeDataLayout.Dimensionality_Max + ", got " + (pitch == null ? "null" : pitch.length));
+        }
+        return cpGetFloatBuffer(_handle, pitch);
     }
 }
