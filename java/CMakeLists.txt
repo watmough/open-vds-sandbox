@@ -50,6 +50,8 @@ set(JAVA_SOURCE_FILES
   java/src/org/opengroup/openvds/VolumeDataMapping.java
   java/src/org/opengroup/openvds/VolumeDataPage.java
   java/src/org/opengroup/openvds/VolumeDataPageAccessor.java
+  java/src/org/opengroup/openvds/VolumeIndexerBase.java
+  java/src/org/opengroup/openvds/VolumeIndexer3D.java
 
   java/demo/AWSSliceDumpDemo.java
   java/demo/OpenVdsDemo.java
@@ -117,6 +119,8 @@ add_library(openvds-javacpp
   cpp/src/VolumeDataLayout.cpp
   cpp/src/VolumeDataPage.cpp
   cpp/src/VolumeDataPageAccessor.cpp
+  cpp/src/VolumeIndexerBase.cpp
+  cpp/src/VolumeIndexer3D.cpp
   cpp/src/WriteVolumeData.cpp
   )
 

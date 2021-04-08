@@ -18,6 +18,8 @@
 package org.opengroup.openvds;
 
 import java.nio.*;
+import java.util.Arrays;
+import java.util.Optional;
 
 import static org.opengroup.openvds.VolumeDataChannelDescriptor.Format.*;
 
@@ -25,6 +27,32 @@ import static org.opengroup.openvds.VolumeDataChannelDescriptor.Format.*;
  * JNI wrapper for OpenVDS::VolumeDataAccessManager class.
  */
 public class VolumeDataAccessManager extends JniPointerWithoutDeletion {
+
+    public enum AccessMode {
+        ReadOnly(0),
+        ReadWrite(1),
+        Create(2);
+
+        private final int code;
+
+        AccessMode(int code) {
+            this.code = code;
+        }
+
+        public int getCode() {
+            return code;
+        }
+
+        public static AccessMode fromCode(int codeParam) {
+            Optional<AccessMode> first = Arrays
+                    .stream(values())
+                    .filter(e -> e.getCode() == codeParam)
+                    .findFirst();
+            if (!first.isPresent())
+                throw new IllegalArgumentException("invalid code");
+            return first.get();
+        }
+    }
 
     private static native long cpGetVolumeDataLayout(long handle);
 
@@ -132,7 +160,7 @@ public class VolumeDataAccessManager extends JniPointerWithoutDeletion {
      * @return the VolumeDataLayout object associated with the VDS or null if
      * there is no valid VolumeDataLayout.
      */
-    VolumeDataLayout getVolumeDataLayout() {
+    public VolumeDataLayout getVolumeDataLayout() {
         return new VolumeDataLayout(cpGetVolumeDataLayout(_handle));
     }
 
@@ -147,7 +175,7 @@ public class VolumeDataAccessManager extends JniPointerWithoutDeletion {
      * @return The produce status for the specific DimensionsND/LOD/Channel
      * combination.
      */
-    VDSProduceStatus getVDSProduceStatus(DimensionsND dimensionsND, int lod, int channel) {
+    public VDSProduceStatus getVDSProduceStatus(DimensionsND dimensionsND, int lod, int channel) {
         return VDSProduceStatus.values()[cpGetVDSProduceStatus(_handle, dimensionsND.ordinal(), lod, channel)];
     }
 
@@ -167,7 +195,7 @@ public class VolumeDataAccessManager extends JniPointerWithoutDeletion {
      * @return a VolumeDataPageAccessor object for the VDS associated with the
      * given VolumeDataLayout object.
      */
-    VolumeDataPageAccessor createVolumeDataPageAccessor(int dimensionsND, int lod, int channel, int maxPages, int accessMode) {
+    public VolumeDataPageAccessor createVolumeDataPageAccessor(int dimensionsND, int lod, int channel, int maxPages, int accessMode) {
         return new VolumeDataPageAccessor(cpCreateVolumeDataPageAccessor(_handle, dimensionsND, lod, channel, maxPages, accessMode));
     }
 
@@ -190,7 +218,7 @@ public class VolumeDataAccessManager extends JniPointerWithoutDeletion {
      * @return a VolumeDataPageAccessor object for the VDS associated with the
      * given VolumeDataLayout object.
      */
-    VolumeDataPageAccessor createVolumeDataPageAccessor(int dimensionsND, int lod, int channel, int maxPages, int accessMode, int chunkMetadataPageSize) {
+    public VolumeDataPageAccessor createVolumeDataPageAccessor(int dimensionsND, int lod, int channel, int maxPages, int accessMode, int chunkMetadataPageSize) {
         return new VolumeDataPageAccessor(cpCreateVolumeDataPageAccessor(_handle, dimensionsND, lod, channel, maxPages, accessMode, chunkMetadataPageSize));
     }
 
@@ -200,7 +228,7 @@ public class VolumeDataAccessManager extends JniPointerWithoutDeletion {
      * @param volumeDataPageAccessor the VolumeDataPageAccessor object to
      * destroy.
      */
-    void destroyVolumeDataPageAccessor(VolumeDataPageAccessor volumeDataPageAccessor) {
+    public void destroyVolumeDataPageAccessor(VolumeDataPageAccessor volumeDataPageAccessor) {
         cpDestroyVolumeDataPageAccessor(_handle, volumeDataPageAccessor.handle());
     }
 
@@ -209,7 +237,7 @@ public class VolumeDataAccessManager extends JniPointerWithoutDeletion {
      *
      * @param accessor the VolumeDataAccessor object to destroy.
      */
-    void destroyVolumeDataAccessor(VolumeDataAccessor accessor) {
+    public void destroyVolumeDataAccessor(VolumeDataAccessor accessor) {
         cpDestroyVolumeDataAccessor(_handle, accessor.handle());
     }
 
@@ -219,7 +247,7 @@ public class VolumeDataAccessManager extends JniPointerWithoutDeletion {
      * @param accessor the VolumeDataAccessor object to clone.
      * @return a clone of supplied VolumeDataAccessor object
      */
-    VolumeDataAccessor cloneVolumeDataAccessor(VolumeDataAccessor accessor) {
+    public VolumeDataAccessor cloneVolumeDataAccessor(VolumeDataAccessor accessor) {
         return new VolumeDataAccessor(cpCloneVolumeDataAccessor(_handle, accessor.handle()), true);
     }
 
