@@ -112,6 +112,25 @@ extern "C" {
 
     /*
     * Class:     org_opengroup_openvds_VolumeDataPageAccessor
+    * Method:    cpGetChunkMinMaxExcludingMargin
+    * Signature: (JI[I[I)V
+    */
+    JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_cpGetChunkMinMaxExcludingMargin
+            (JNIEnv * env, jclass, jlong handle, jint chunk, jintArray chunkMin, jintArray chunkMax)
+    {
+        try {
+            int cMin[OpenVDS::Dimensionality_Max];
+            int cMax[OpenVDS::Dimensionality_Max];
+            GetPageAccessor( handle )->GetChunkMinMaxExcludingMargin(chunk, cMin, cMax);
+            env->SetIntArrayRegion(chunkMin, 0, OpenVDS::Dimensionality_Max, cMin);
+            env->SetIntArrayRegion(chunkMax, 0, OpenVDS::Dimensionality_Max, cMax);
+        }
+        CATCH_EXCEPTIONS_FOR_JAVA;
+    }
+
+
+    /*
+    * Class:     org_opengroup_openvds_VolumeDataPageAccessor
     * Method:    cpCommit
     * Signature: (J)V
     */

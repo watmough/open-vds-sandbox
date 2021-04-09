@@ -17,7 +17,7 @@ public class PageAccessorTest {
 
     @BeforeClass
     public void init() {
-        vds = new MemoryVdsGenerator(16, 16, 16, VolumeDataChannelDescriptor.Format.FORMAT_R32);
+        vds = new MemoryVdsGenerator(100, 100, 100, VolumeDataChannelDescriptor.Format.FORMAT_R32);
         url = "inmemory://create_test";
         VolumeDataLayout volumeDataLayout = vds.getLayout();
 
@@ -32,7 +32,8 @@ public class PageAccessorTest {
             }
         }
 
-        vda = new VolumeDataAxisDescriptor[] {volumeDataLayout.getAxisDescriptor(0),
+        vda = new VolumeDataAxisDescriptor[] {
+                volumeDataLayout.getAxisDescriptor(0),
                 volumeDataLayout.getAxisDescriptor(1),
                 volumeDataLayout.getAxisDescriptor(2)};
         vdc = new VolumeDataChannelDescriptor[] {volumeDataLayout.getChannelDescriptor(0)};
@@ -92,7 +93,7 @@ public class PageAccessorTest {
     @Test
     public void testCreatePageAccessor() {
         try {
-            VDSFileOpenOptions options = new VDSFileOpenOptions("/tmp/testPageAccessor.vds");
+            VDSFileOpenOptions options = new VDSFileOpenOptions("/tmp/testPageAccessorFloat100_100_100.vds");
             VdsHandle vdsPageAccessor = OpenVDS.create(options, ld,
                     vda,
                     vdc, metadataContainer);
@@ -110,28 +111,45 @@ public class PageAccessorTest {
                     VolumeDataAccessManager.AccessMode.Create.getCode()); // access mode
 
             int chunkCount = (int) pageAccessor.getChunkCount();
-
+            System.out.println("Nombre de chunks : " + chunkCount);
             for (int i = 0; i < chunkCount; i++) {
                 VolumeDataPage page = pageAccessor.createPage(i);
+                System.out.println("Page created : " + i);
                 VolumeIndexer3D outputIndexer = new  VolumeIndexer3D(page, 0, 0, DimensionsND.DIMENSIONS_012.ordinal(), layout);
+                System.out.println("\tOutput indexer created : " + i);
 
                 int[] numSamples = new int[3];
-
                 for (int j = 0; j < 3; j++) {
                     numSamples[j] = outputIndexer.getDataBlockNumSamples(j);
                 }
+                System.out.println("\tChunk dim (" + i + ") : I " + numSamples[0] + " - X " + numSamples[1] + " - Z " + numSamples[2]);
 
                 int[] pitch = new int[VolumeDataLayout.Dimensionality_Max];
                 int[] chunkMin = new int[VolumeDataLayout.Dimensionality_Max];
                 int[] chunkMax = new int[VolumeDataLayout.Dimensionality_Max];
 
-                pageAccessor.getChunkMinMax(i, chunkMin, chunkMax);
+                page.getMinMax(chunkMin, chunkMax);
+                int chunkSizeI = chunkMax[2] - chunkMin[2];
+                int chunkSizeX = chunkMax[1] - chunkMin[1];
+                int chunkSizeZ = chunkMax[0] - chunkMin[0];
+                int nbElem = chunkSizeI * chunkSizeX * chunkSizeZ;
+                float[] buffer = new float[nbElem];
+                System.out.println("\tGot min max : " + i);
+                System.out.println("\tChunk coords (" + i + ") : I " + chunkMin[2] + "/" + chunkMax[2] + " - X " + chunkMin[1] + "/" + chunkMax[1] + " - Z " + chunkMin[0] + "/" + chunkMax[0]);
 
-                float[] floatBuffer = page.readFloatBuffer(pitch);
+                //float[] buffer = page.readFloatBuffer(pitch);
+                //double[] buffer = page.readDoubleBuffer(pitch);
+                //byte[] buffer = page.readByteBuffer(pitch);
 
-                for (int iDim2 = 0; iDim2 < numSamples[2]; iDim2++)
-                    for (int iDim1 = 0; iDim1 < numSamples[1]; iDim1++)
-                        for (int iDim0 = 0; iDim0 < numSamples[0]; iDim0++) {
+                for (int idx = 0 ; idx < buffer.length ; ++idx) {
+                    buffer[idx] = (float) (idx % 256);
+                }
+
+                int smp = 0;
+                for (int iDim2 = 0; iDim2 < chunkSizeI; iDim2++) {
+                    System.out.print(".");
+                    for (int iDim1 = 0; iDim1 < chunkSizeX; iDim1++) {
+                        for (int iDim0 = 0; iDim0 < chunkSizeZ; iDim0++) {
                             int[] localOutIndex = new int[]{iDim0, iDim1, iDim2};
 
                             int[] voxelIndex = outputIndexer.localIndexToVoxelIndex(localOutIndex);
@@ -143,12 +161,25 @@ public class PageAccessorTest {
                             };
 
                             float value = pos[0];
-                            int dataIndex = outputIndexer.localIndexToDataIndex(localOutIndex);
-                            floatBuffer[dataIndex] = value;
+                            //double value = pos[0];
+                            //byte value = (byte) (pos[0] % Byte.MAX_VALUE);
+                            int dataIndex = outputIndexer.localIndexToDataIndex(pos);
+                            if (dataIndex < buffer.length) {
+                                buffer[dataIndex] = value;
+                                ++smp;
+                            }
                         }
-                page.writeFloatBuffer(floatBuffer, pitch);
+                    }
+                }
+                System.out.println("");
+                System.out.println("\t" + smp + " samples will be written");
+                System.out.println("\tWill write buffer " + i);
+                page.writeFloatBuffer(buffer);
+                System.out.println("\tDone write buffer " + i);
+                //page.writeDoubleBuffer(buffer);
+                //page.writeByteBuffer(buffer);
                 page.release();
-                System.out.println("Create float buffer succes");
+                System.out.println("Page writed : " + i);
             }
 
             pageAccessor.commit();
