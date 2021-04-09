@@ -26,19 +26,21 @@ import java.util.Optional;
 public class VolumeDataLayoutDescriptor {
 
     public enum BrickSize {
-        BRICK_SIZE_32(5),
-        BRICK_SIZE_64(6),
-        BRICK_SIZE_128(7),
-        BRICK_SIZE_256(8),
-        BRICK_SIZE_512(9),
-        BRICK_SIZE_1024(10),
-        BRICK_SIZE_2048(11),
-        BRICK_SIZE_4096(12);
+        BRICK_SIZE_32(5, 32),
+        BRICK_SIZE_64(6, 64),
+        BRICK_SIZE_128(7, 128),
+        BRICK_SIZE_256(8, 256),
+        BRICK_SIZE_512(9, 512),
+        BRICK_SIZE_1024(10, 1024),
+        BRICK_SIZE_2048(11, 2048),
+        BRICK_SIZE_4096(12, 4096);
 
         private final int code;
+        private final int dimension;
 
-        BrickSize(int code) {
+        BrickSize(int code, int dim) {
             this.code = code;
+            this.dimension  = dim;
         }
 
         public static BrickSize fromCode(int code) {
@@ -53,6 +55,10 @@ public class VolumeDataLayoutDescriptor {
 
         public int getCode() {
             return code;
+        }
+
+        public int getDimension() {
+            return dimension;
         }
     }
 

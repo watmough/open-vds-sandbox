@@ -121,12 +121,17 @@ public class CreateVDS {
             }
 
             int[] pitch = new int[VolumeDataLayout.Dimensionality_Max];
-            float[] buffer = page.readFloatBuffer(pitch);
+            //float[] buffer = page.readFloatBuffer(pitch);
 
             int[] chunkMin = new int[VolumeDataLayout.Dimensionality_Max];
             int[] chunkMax = new int[VolumeDataLayout.Dimensionality_Max];
 
             pageAccessor.getChunkMinMax(i, chunkMin, chunkMax);
+            int chunkSizeI = chunkMax[2] - chunkMin[2];
+            int chunkSizeX = chunkMax[1] - chunkMin[1];
+            int chunkSizeZ = chunkMax[0] - chunkMin[0];
+            int nbElem = chunkSizeI * chunkSizeX * chunkSizeZ;
+            float[] buffer = new float[nbElem];
 
             float[] output = page.readFloatBuffer(pitch);
 
@@ -152,7 +157,7 @@ public class CreateVDS {
                     }
 
 
-            page.writeFloatBuffer(buffer, pitch);
+            page.writeFloatBuffer(buffer);
 
             //OpenVDS::CalculateNoise3D(buffer, format, &outputIndexer, frequency, 0.021f, 0.f, true, 345);
             page.release();

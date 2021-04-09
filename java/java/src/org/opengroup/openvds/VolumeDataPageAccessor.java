@@ -22,6 +22,7 @@ public class VolumeDataPageAccessor extends JniPointerWithoutDeletion {
     private static native long cpGetLayout( long handle );
     private static native long cpGetChunkCount( long handle );
     private static native void cpGetChunkMinMax( long handle, int chunk, int[] chunkMin, int[] chunkMax);
+    private static native void cpGetChunkMinMaxExcludingMargin( long handle, int chunk, int[] chunkMin, int[] chunkMax);
     private static native long cpCreatePage( long handle, long chunkIndex);
     private static native long cpReadPage( long handle, long chunkIndex);
     private static native void cpCommit(long handle);
@@ -55,16 +56,22 @@ public class VolumeDataPageAccessor extends JniPointerWithoutDeletion {
      * @throws IllegalArgumentException if chunk min and max array don't have the correct size, or if chunk index is incorrect
      */
     public void getChunkMinMax(int chunk, int[] chunkMin, int[] chunkMax) {
-        if (chunk < 0 || chunk >= getChunkCount()) {
-            throw new IllegalArgumentException("VolumeDataPageAccessor::getChunkMinMax : wrong chunk index");
-        }
-        if (chunkMin == null || chunkMin.length != VolumeDataLayout.Dimensionality_Max) {
-            throw new IllegalArgumentException("VolumeDataPageAccessor::getChunkMinMax : wrong chunkMin array, expected non null or size 6");
-        }
-        if (chunkMax == null || chunkMax.length != VolumeDataLayout.Dimensionality_Max) {
-            throw new IllegalArgumentException("VolumeDataPageAccessor::getChunkMinMax : wrong chunkMax array, expected non null or size 6");
-        }
+        checkChunkAndArraySize(chunk, chunkMin, chunkMax);
         cpGetChunkMinMax(_handle, chunk, chunkMin, chunkMax);
+    }
+
+
+
+    /**
+     * Get chunk dimension (without margin)
+     * @param chunk chunk index
+     * @param chunkMin array that will receive min values
+     * @param chunkMax array that will receive max values
+     * @throws IllegalArgumentException if chunk min and max array don't have the correct size, or if chunk index is incorrect
+     */
+    public void getChunkMinMaxExcludingMargin(int chunk, int[] chunkMin, int[] chunkMax) {
+        checkChunkAndArraySize(chunk, chunkMin, chunkMax);
+        cpGetChunkMinMaxExcludingMargin(_handle, chunk, chunkMin, chunkMax);
     }
 
     /**
@@ -108,6 +115,17 @@ public class VolumeDataPageAccessor extends JniPointerWithoutDeletion {
         cpSetMaxPage(_handle, maxPages);
     }
 
+    private void checkChunkAndArraySize(int chunk, int[] chunkMin, int[] chunkMax) {
+        if (chunk < 0 || chunk >= getChunkCount()) {
+            throw new IllegalArgumentException("VolumeDataPageAccessor::getChunkMinMax : wrong chunk index");
+        }
+        if (chunkMin == null || chunkMin.length != VolumeDataLayout.Dimensionality_Max) {
+            throw new IllegalArgumentException("VolumeDataPageAccessor::getChunkMinMax : wrong chunkMin array, expected non null or size 6");
+        }
+        if (chunkMax == null || chunkMax.length != VolumeDataLayout.Dimensionality_Max) {
+            throw new IllegalArgumentException("VolumeDataPageAccessor::getChunkMinMax : wrong chunkMax array, expected non null or size 6");
+        }
+    }
   /*
   virtual int   GetLOD() const = 0;
   virtual int   GetChannelIndex() const = 0;

@@ -23,9 +23,19 @@ public class VolumeDataPage extends JniPointer {
 
     private static native  void cpGetMinMax(long handle, int[] min, int[] max);
 
+    private static native  void cpGetMinMaxExcludingMargin(long handle, int[] min, int[] max);
+
+    private static native byte[] cpGetByteBuffer(long handle, int[] pitch);
+
+    private static native void cpSetByteBuffer(long handle, byte[] buffer);
+
     private static native float[] cpGetFloatBuffer(long handle, int[] pitch);
 
-    private static native float[] cpSetFloatBuffer(long handle, float[] buffer,int[] pitch);
+    private static native void cpSetFloatBuffer(long handle, float[] buffer);
+
+    private static native double[] cpGetDoubleBuffer(long handle, int[] pitch);
+
+    private static native void cpSetDoubleBuffer(long handle, double[] buffer);
 
     public VolumeDataPage(long handle) {
         super(handle, true);
@@ -45,7 +55,7 @@ public class VolumeDataPage extends JniPointer {
     // Called by JniPointer.release()
     @Override
     protected synchronized void deleteHandle() {
-        cpRelease(_handle);
+        //cpRelease(_handle);
     }
 
     /**
@@ -54,13 +64,39 @@ public class VolumeDataPage extends JniPointer {
      * @param max arrays that will receive max values
      */
     public void getMinMax(int[] min, int[] max) {
-        if (min == null || min.length != VolumeDataLayout.Dimensionality_Max) {
-            throw new IllegalArgumentException("Wrong min array parameter size, expected " + VolumeDataLayout.Dimensionality_Max + ", got " + (min == null ? "null" : min.length));
-        }
-        if (max == null || max.length != VolumeDataLayout.Dimensionality_Max) {
-            throw new IllegalArgumentException("Wrong max array parameter size, expected " + VolumeDataLayout.Dimensionality_Max + ", got " + (max == null ? "null" : max.length));
-        }
+        checkDimParamArray(min, "Wrong min array parameter size, expected ");
+        checkDimParamArray(max, "Wrong max array parameter size, expected ");
         cpGetMinMax(_handle, min, max);
+    }
+
+    /**
+     * Get min max extent, and set results in array parameters
+     * @param min arrays that will receive min values
+     * @param max arrays that will receive max values
+     */
+    public void getMinMaxExcludingMargin(int[] min, int[] max) {
+        checkDimParamArray(min, "Wrong min array parameter size, expected ");
+        checkDimParamArray(max, "Wrong max array parameter size, expected ");
+        cpGetMinMaxExcludingMargin(_handle, min, max);
+    }
+
+    /**
+     * Read byte array of page
+     * @param pitch will receive pitch values for this page
+     * @return the float array of page data
+     */
+    public byte[] readByteBuffer(int[] pitch) {
+        checkDimParamArray(pitch, "Wrong pitch array parameter size, expected ");
+        return cpGetByteBuffer(_handle, pitch);
+    }
+
+    /**
+     * Set byte array int page
+     * @param buffer values to set. Size must match page sample size
+     */
+    public void writeByteBuffer(byte[] buffer) {
+        checkBufferSize(buffer);
+        cpSetByteBuffer(_handle, buffer);
     }
 
     /**
@@ -69,28 +105,70 @@ public class VolumeDataPage extends JniPointer {
      * @return the float array of page data
      */
     public float[] readFloatBuffer(int[] pitch) {
-        if (pitch == null || pitch.length != VolumeDataLayout.Dimensionality_Max) {
-            throw new IllegalArgumentException("Wrong pitch array parameter size, expected " + VolumeDataLayout.Dimensionality_Max + ", got " + (pitch == null ? "null" : pitch.length));
-        }
+        checkDimParamArray(pitch, "Wrong pitch array parameter size, expected ");
         return cpGetFloatBuffer(_handle, pitch);
     }
 
     /**
      * Set float array int page
-     * @param pitch pitch values
+     * @param buffer values to set. Size must match page sample size
      */
-    public void writeFloatBuffer(float[] buffer, int[] pitch) {
-        if (pitch == null || pitch.length != VolumeDataLayout.Dimensionality_Max) {
-            throw new IllegalArgumentException("Wrong pitch array parameter size, expected " + VolumeDataLayout.Dimensionality_Max + ", got " + (pitch == null ? "null" : pitch.length));
-        }
+    public void writeFloatBuffer(float[] buffer) {
+        checkBufferSize(buffer);
+        cpSetFloatBuffer(_handle, buffer);
+    }
+
+    /**
+     * Read double array of page
+     * @param pitch will receive pitch values for this page
+     * @return the double array of page data
+     */
+    public double[] readDoubleBuffer(int[] pitch) {
+        checkDimParamArray(pitch, "Wrong pitch array parameter size, expected ");
+        return cpGetDoubleBuffer(_handle, pitch);
+    }
+
+    /**
+     * Set double array int page
+     * @param buffer values to set. Size must match page sample size
+     */
+    public void writeDoubleBuffer(double[] buffer) {
+        checkBufferSize(buffer);
+        cpSetDoubleBuffer(_handle, buffer);
+    }
+
+    private int getElementCount() {
         int[] chunkMin = new int[VolumeDataLayout.Dimensionality_Max];
         int[] chunkMax = new int[VolumeDataLayout.Dimensionality_Max];
         getMinMax(chunkMin, chunkMax);
-        int elementCount = getElementCount(chunkMin, chunkMax);
+        return getElementCount(chunkMin, chunkMax);
+    }
+
+    private void checkBufferSize(byte[] buffer) {
+        int elementCount = getElementCount();
         if (buffer == null || buffer.length != elementCount) {
             throw new IllegalArgumentException("Wrong buffer size, expected " + elementCount + ", got " + (buffer == null ? "null" : buffer.length));
         }
-        cpSetFloatBuffer(_handle, buffer, pitch);
+    }
+
+    private void checkBufferSize(float[] buffer) {
+        int elementCount = getElementCount();
+        if (buffer == null || buffer.length != elementCount) {
+            throw new IllegalArgumentException("Wrong buffer size, expected " + elementCount + ", got " + (buffer == null ? "null" : buffer.length));
+        }
+    }
+
+    private void checkBufferSize(double[] buffer) {
+        int elementCount = getElementCount();
+        if (buffer == null || buffer.length != elementCount) {
+            throw new IllegalArgumentException("Wrong buffer size, expected " + elementCount + ", got " + (buffer == null ? "null" : buffer.length));
+        }
+    }
+
+    private void checkDimParamArray(int[] pitch, String s) {
+        if (pitch == null || pitch.length != VolumeDataLayout.Dimensionality_Max) {
+            throw new IllegalArgumentException(s + VolumeDataLayout.Dimensionality_Max + ", got " + (pitch == null ? "null" : pitch.length));
+        }
     }
 
     private int getElementCount(int[] min, int[] max) {

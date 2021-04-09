@@ -100,9 +100,9 @@ getScaleOffsetForFormat(float min, float max, bool novalue, OpenVDS::VolumeDataC
 
 int
 main(int argc, char *argv[]) {
-    int32_t samplesX = 1000;
-    int32_t samplesY = 1000;
-    int32_t samplesZ = 1000;
+    int32_t samplesX = 100;
+    int32_t samplesY = 100;
+    int32_t samplesZ = 50;
     OpenVDS::VolumeDataChannelDescriptor::Format format = OpenVDS::VolumeDataChannelDescriptor::Format_R32;
 
     auto brickSize = OpenVDS::VolumeDataLayoutDescriptor::BrickSize_64;
@@ -134,7 +134,7 @@ main(int argc, char *argv[]) {
                                     OpenVDS::VolumeDataChannelDescriptor::Default, 0.f, intScale, intOffset);
 
     //OpenVDS::InMemoryOpenOptions options;
-    OpenVDS::VDSFileOpenOptions options("/mnt/dataDD/tmp/create.vds");
+    OpenVDS::VDSFileOpenOptions options("/tmp/createCPP.vds");
     OpenVDS::Error error;
 
     OpenVDS::MetadataContainer metadataContainer;
@@ -170,7 +170,7 @@ main(int argc, char *argv[]) {
     //ASSERT_TRUE(pageAccessor);
 
     int32_t chunkCount = int32_t(pageAccessor->GetChunkCount());
-
+    std::cout << "Chunk Count = " << chunkCount << "\n";
     //OpenVDS::VolumeDataChannelDescriptor::Format format = layout->GetChannelFormat(channel);
     for (int i = 0; i < chunkCount; i++)
     {
@@ -187,6 +187,8 @@ main(int argc, char *argv[]) {
         {
             numSamples[j] = outputIndexer.GetDataBlockNumSamples(j);
         }
+
+        std::cout << "\tChunk dim = " << numSamples[0] << " " << numSamples[1] << " " << numSamples[2] << "\n";
 
         int pitch[OpenVDS::Dimensionality_Max];
         void *buffer = page->GetWritableBuffer(pitch);
