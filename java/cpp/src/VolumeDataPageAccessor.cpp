@@ -78,6 +78,22 @@ extern "C" {
 
     /*
     * Class:     org_opengroup_openvds_VolumeDataPageAccessor
+    * Method:    cpReadPage
+    * Signature: (JJ)J
+    */
+    JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_cpReadPage
+            (JNIEnv * env, jclass, jlong handle, jlong pageIndex)
+    {
+        try {
+            OpenVDS::VolumeDataPage* volumePage = GetPageAccessor( handle )->ReadPage(pageIndex);
+            return (jlong) volumePage;
+        }
+        CATCH_EXCEPTIONS_FOR_JAVA;
+        return -1;
+    }
+
+    /*
+    * Class:     org_opengroup_openvds_VolumeDataPageAccessor
     * Method:    cpGetChunkMinMax
     * Signature: (JI[I[I)V
     */
@@ -93,6 +109,35 @@ extern "C" {
         }
         CATCH_EXCEPTIONS_FOR_JAVA;
     }
+
+    /*
+    * Class:     org_opengroup_openvds_VolumeDataPageAccessor
+    * Method:    cpCommit
+    * Signature: (J)V
+    */
+    JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_cpCommit
+            (JNIEnv * env, jclass, jlong handle)
+    {
+        try {
+            GetPageAccessor( handle )->Commit();
+        }
+        CATCH_EXCEPTIONS_FOR_JAVA;
+    }
+
+    /*
+     * Class:     org_opengroup_openvds_VolumeDataPageAccessor
+     * Method:    cpSetMaxPage
+     * Signature: (JI)V
+     */
+    JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_cpSetMaxPage
+            (JNIEnv * env, jclass, jlong handle, jint maxPages)
+    {
+        try {
+            GetPageAccessor( handle )->SetMaxPages(maxPages);
+        }
+        CATCH_EXCEPTIONS_FOR_JAVA;
+    }
+
 #ifdef __cplusplus
 }
 #endif

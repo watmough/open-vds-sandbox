@@ -43,6 +43,24 @@ extern "C" {
 
     /*
     * Class:     org_opengroup_openvds_VolumeDataPage
+    * Method:    cpGetMinMax
+    * Signature: (J[I[I)V
+    */
+    JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataPage_cpGetMinMax
+            (JNIEnv * env, jclass, jlong handle, jintArray minArr, jintArray maxArr)
+    {
+        try {
+            int cMin[OpenVDS::Dimensionality_Max];
+            int cMax[OpenVDS::Dimensionality_Max];
+            GetVolumePage(handle)->GetMinMax(cMin, cMax);
+            env->SetIntArrayRegion(minArr, 0, OpenVDS::Dimensionality_Max, cMin);
+            env->SetIntArrayRegion(maxArr, 0, OpenVDS::Dimensionality_Max, cMax);
+        }
+        CATCH_EXCEPTIONS_FOR_JAVA;
+    }
+
+    /*
+    * Class:     org_opengroup_openvds_VolumeDataPage
     * Method:    cpGetWritableFloatBuffer
     * Signature: (J[I)[F
     */
@@ -65,6 +83,30 @@ extern "C" {
 
             int nbElem = chunk_size_i * chunk_size_x * chunk_size_z;
             return NewJFloatArray(env, readData, nbElem);
+        }
+        CATCH_EXCEPTIONS_FOR_JAVA;
+        return NULL;
+    }
+
+    /*
+    * Class:     org_opengroup_openvds_VolumeDataPage
+    * Method:    cpSetFloatBuffer
+    * Signature: (J[F[I)[F
+    */
+    JNIEXPORT jfloatArray JNICALL Java_org_opengroup_openvds_VolumeDataPage_cpSetFloatBuffer
+            (JNIEnv * env, jclass, jlong handle, jfloatArray values, jintArray pitchArr)
+    {
+        try {
+            OpenVDS::VolumeDataPage * page = GetVolumePage(handle);
+            int pitch[OpenVDS::Dimensionality_Max];
+            float* pageBuffer = reinterpret_cast<float*>(page->GetWritableBuffer(pitch));
+            int valueSize = env->GetArrayLength(values);
+            jfloat *src = env->GetFloatArrayElements(values, 0);
+            for (int i = 0 ; i < valueSize ; ++i) {
+                pageBuffer[i] = static_cast<float>(src[i]);
+            }
+            // needed or not?
+            env->ReleaseFloatArrayElements(values, src, 0);
         }
         CATCH_EXCEPTIONS_FOR_JAVA;
         return NULL;

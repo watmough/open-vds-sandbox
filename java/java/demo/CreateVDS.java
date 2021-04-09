@@ -128,12 +128,11 @@ public class CreateVDS {
 
             pageAccessor.getChunkMinMax(i, chunkMin, chunkMax);
 
-            float[] floatBuffer = page.readFloatBuffer(pitch);
+            float[] output = page.readFloatBuffer(pitch);
 
             //void* buffer = page.getWritableBuffer(pitch);
             //auto output = static_cast < float *>(buffer);
 
-            /**
             for (int iDim2 = 0; iDim2 < numSamples[2]; iDim2++)
                 for (int iDim1 = 0; iDim1 < numSamples[1]; iDim1++)
                     for (int iDim0 = 0; iDim0 < numSamples[0]; iDim0++) {
@@ -151,23 +150,21 @@ public class CreateVDS {
 
                         output[outputIndexer.localIndexToDataIndex(localOutIndex)] = value;
                     }
-           */
 
-            //page.writeFloatBuffer(buffer, pitch);
+
+            page.writeFloatBuffer(buffer, pitch);
 
             //OpenVDS::CalculateNoise3D(buffer, format, &outputIndexer, frequency, 0.021f, 0.f, true, 345);
             page.release();
         }
 
-        /**
+
         pageAccessor.commit();
         pageAccessor.setMaxPages(0);
         accessManager.flushUploadQueue();
         accessManager.destroyVolumeDataPageAccessor(pageAccessor);
 
-
-        OpenVDS.close(vds);
-         */
+        vds.close(); // equivalent to OpenVDS.close(vds); ?
     }
 
 //    static float[] getScaleOffsetForFormat(float min, float max, boolean novalue, VolumeDataChannelDescriptor.Format format) {
