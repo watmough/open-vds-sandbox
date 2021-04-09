@@ -51,7 +51,11 @@ set(JAVA_SOURCE_FILES
   java/src/org/opengroup/openvds/VolumeDataPage.java
   java/src/org/opengroup/openvds/VolumeDataPageAccessor.java
   java/src/org/opengroup/openvds/VolumeIndexerBase.java
+  java/src/org/opengroup/openvds/VolumeIndexer2D.java
   java/src/org/opengroup/openvds/VolumeIndexer3D.java
+  java/src/org/opengroup/openvds/VolumeIndexer4D.java
+  java/src/org/opengroup/openvds/VolumeIndexer5D.java
+  java/src/org/opengroup/openvds/VolumeIndexer6D.java
 
   java/demo/AWSSliceDumpDemo.java
   java/demo/OpenVdsDemo.java
@@ -120,7 +124,11 @@ add_library(openvds-javacpp
   cpp/src/VolumeDataPage.cpp
   cpp/src/VolumeDataPageAccessor.cpp
   cpp/src/VolumeIndexerBase.cpp
+  cpp/src/VolumeIndexer2D.cpp
   cpp/src/VolumeIndexer3D.cpp
+  cpp/src/VolumeIndexer4D.cpp
+  cpp/src/VolumeIndexer5D.cpp
+  cpp/src/VolumeIndexer6D.cpp
   cpp/src/WriteVolumeData.cpp
   )
 

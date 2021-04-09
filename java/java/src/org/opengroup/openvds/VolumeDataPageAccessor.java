@@ -23,20 +23,37 @@ public class VolumeDataPageAccessor extends JniPointerWithoutDeletion {
     private static native long cpGetChunkCount( long handle );
     private static native void cpGetChunkMinMax( long handle, int chunk, int[] chunkMin, int[] chunkMax);
     private static native long cpCreatePage( long handle, long chunkIndex);
+    private static native long cpReadPage( long handle, long chunkIndex);
+    private static native void cpCommit(long handle);
+    private static native void cpSetMaxPage(long handle, int maxPage);
 
 
     VolumeDataPageAccessor(long handle) {
         super(handle);
     }
 
+    /**
+     * Get volume layout
+     * @return
+     */
     public VolumeDataLayout getLayout() {
         return new VolumeDataLayout( cpGetLayout(_handle) );
     }
 
+    /**
+     * @return the chunk count
+     */
     public long getChunkCount() {
         return cpGetChunkCount(_handle);
     }
 
+    /**
+     * Get chunk dimension
+     * @param chunk chunk index
+     * @param chunkMin array that will receive min values
+     * @param chunkMax array that will receive max values
+     * @throws IllegalArgumentException if chunk min and max array don't have the correct size, or if chunk index is incorrect
+     */
     public void getChunkMinMax(int chunk, int[] chunkMin, int[] chunkMax) {
         if (chunk < 0 || chunk >= getChunkCount()) {
             throw new IllegalArgumentException("VolumeDataPageAccessor::getChunkMinMax : wrong chunk index");
@@ -50,8 +67,45 @@ public class VolumeDataPageAccessor extends JniPointerWithoutDeletion {
         cpGetChunkMinMax(_handle, chunk, chunkMin, chunkMax);
     }
 
+    /**
+     * Create page for given chunk index
+     * @param chunkIndex
+     * @return A VolumeDataPage
+     * @throws IllegalArgumentException if chunkIndex is incorrect
+     */
     public VolumeDataPage createPage(long chunkIndex) {
+        if (chunkIndex < 0 || chunkIndex >= getChunkCount()) {
+            throw new IllegalArgumentException("VolumeDataPageAccessor::createPage : wrong chunk index");
+        }
         return new VolumeDataPage(cpCreatePage(_handle, chunkIndex));
+    }
+
+    /**
+     * Reads page for given chunk index
+     * @param chunkIndex
+     * @return A VolumeDataPage
+     * @throws IllegalArgumentException if chunkIndex is incorrect
+     */
+    public VolumeDataPage readPage(long chunkIndex) {
+        if (chunkIndex < 0 || chunkIndex >= getChunkCount()) {
+            throw new IllegalArgumentException("VolumeDataPageAccessor::readPage : wrong chunk index");
+        }
+        return new VolumeDataPage(cpReadPage(_handle, chunkIndex));
+    }
+
+    /**
+     * Commit modification
+     */
+    public void commit() {
+        cpCommit(_handle);
+    }
+
+    /**
+     * Set maximum number of pages
+     * @param maxPages page count
+     */
+    public void setMaxPages(int maxPages) {
+        cpSetMaxPage(_handle, maxPages);
     }
 
   /*

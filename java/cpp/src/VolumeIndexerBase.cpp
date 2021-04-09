@@ -155,6 +155,141 @@ extern "C" {
         return -1;
     }
 
+
+    /*
+    * Class:     org_opengroup_openvds_VolumeIndexerBase
+    * Method:    cpLocalIndexToVoxelIndex
+    * Signature: (JI[I)[I
+    */
+    JNIEXPORT jintArray JNICALL Java_org_opengroup_openvds_VolumeIndexerBase_cpLocalIndexToVoxelIndex
+            (JNIEnv * env, jclass, jlong handle, jint volumeDimension, jintArray localIndex)
+    {
+        try {
+            std::vector<int> vecLI = JArrayToVector(env, localIndex);
+            std::vector<int> vecRes(volumeDimension, 0);
+            int arrayRes[volumeDimension];
+            switch (volumeDimension) {
+                case 2: {
+                    IntVector2 vec2;
+                    for (int i = 0; i < volumeDimension; ++i) {
+                        vec2[i] = vecLI[i];
+                    }
+                    IntVector2 res2 = GetVolumeIndexer2D(handle)->LocalIndexToVoxelIndex(vec2);
+                    for (int i = 0; i < volumeDimension; ++i) {
+                        vecRes[i] = res2[i];
+                    }
+                    break;
+                }
+                case 3: {
+                    IntVector3 vec3;
+                    for (int i = 0; i < volumeDimension; ++i) {
+                        vec3[i] = vecLI[i];
+                    }
+                    IntVector3 res3 = GetVolumeIndexer3D(handle)->LocalIndexToVoxelIndex(vec3);
+                    for (int i = 0; i < volumeDimension; ++i) {
+                        vecRes[i] = res3[i];
+                    }
+                    break;
+                }
+                case 4:{
+                    IntVector4 vec4;
+                    for (int i = 0; i < volumeDimension; ++i) {
+                        vec4[i] = vecLI[i];
+                    }
+                    IntVector4 res4 = GetVolumeIndexer4D(handle)->LocalIndexToVoxelIndex(vec4);
+                    for (int i = 0; i < volumeDimension; ++i) {
+                        vecRes[i] = res4[i];
+                    }
+                    break;
+                }
+                case 5: {
+                    IntVector<5> vec5;
+                    for (int i = 0; i < volumeDimension; ++i) {
+                        vec5[i] = vecLI[i];
+                    }
+                    IntVector<5> res5 = GetVolumeIndexer5D(handle)->LocalIndexToVoxelIndex(vec5);
+                    for (int i = 0; i < volumeDimension; ++i) {
+                        vecRes[i] = res5[i];
+                    }
+                    break;
+                }
+                case 6: {
+                    IntVector<6> vec6;
+                    for (int i = 0; i < volumeDimension; ++i) {
+                        vec6[i] = vecLI[i];
+                    }
+                    IntVector<6> res6 = GetVolumeIndexer6D(handle)->LocalIndexToVoxelIndex(vec6);
+                    for (int i = 0; i < volumeDimension; ++i) {
+                        vecRes[i] = res6[i];
+                    }
+                    break;
+                }
+            }
+            for (int i = 0; i < volumeDimension; ++i) {
+                arrayRes[i] = vecRes[i];
+            }
+            return NewJIntArray(env, arrayRes, volumeDimension);
+        }
+        CATCH_EXCEPTIONS_FOR_JAVA;
+        return NULL;
+    }
+
+    /*
+     * Class:     org_opengroup_openvds_VolumeIndexerBase
+     * Method:    cpLocalIndexToDataIndex
+     * Signature: (JI[I)I
+     */
+    JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeIndexerBase_cpLocalIndexToDataIndex
+            (JNIEnv * env, jclass, jlong handle, jint volumeDimension, jintArray localIndex)
+    {
+        try {
+            switch (volumeDimension) {
+                case 2: {
+                    std::vector<int> vecLI = JArrayToVector(env, localIndex);
+                    IntVector2 vec2;
+                    for (int i = 0; i < volumeDimension; ++i) {
+                        vec2[i] = vecLI[i];
+                    }
+                    return GetVolumeIndexer2D(handle)->LocalIndexToDataIndex(vec2);
+                }
+                case 3: {
+                    std::vector<int> vecLI = JArrayToVector(env, localIndex);
+                    IntVector3 vec3;
+                    for (int i = 0; i < volumeDimension; ++i) {
+                        vec3[i] = vecLI[i];
+                    }
+                    return GetVolumeIndexer3D(handle)->LocalIndexToDataIndex(vec3);
+                }
+                case 4: {
+                    std::vector<int> vecLI = JArrayToVector(env, localIndex);
+                    IntVector4 vec4;
+                    for (int i = 0; i < volumeDimension; ++i) {
+                        vec4[i] = vecLI[i];
+                    }
+                    return GetVolumeIndexer4D(handle)->LocalIndexToDataIndex(vec4);
+                }
+                case 5: {
+                    std::vector<int> vecLI = JArrayToVector(env, localIndex);
+                    IntVector<5> vec5;
+                    for (int i = 0; i < volumeDimension; ++i) {
+                        vec5[i] = vecLI[i];
+                    }
+                    return GetVolumeIndexer5D(handle)->LocalIndexToDataIndex(vec5);
+                }
+                case 6: {
+                    std::vector<int> vecLI = JArrayToVector(env, localIndex);
+                    IntVector<6> vec6;
+                    for (int i = 0; i < volumeDimension; ++i) {
+                        vec6[i] = vecLI[i];
+                    }
+                    return GetVolumeIndexer6D(handle)->LocalIndexToDataIndex(vec6);
+                }
+            }
+        }
+        CATCH_EXCEPTIONS_FOR_JAVA;
+        return -1;
+    }
+
 #ifdef __cplusplus
 }
 #endif

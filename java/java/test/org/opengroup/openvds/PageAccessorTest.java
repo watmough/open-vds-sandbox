@@ -17,7 +17,7 @@ public class PageAccessorTest {
 
     @BeforeClass
     public void init() {
-        vds = new MemoryVdsGenerator(16, 16, 16, VolumeDataChannelDescriptor.Format.FORMAT_U8);
+        vds = new MemoryVdsGenerator(16, 16, 16, VolumeDataChannelDescriptor.Format.FORMAT_R32);
         url = "inmemory://create_test";
         VolumeDataLayout volumeDataLayout = vds.getLayout();
 
@@ -61,14 +61,14 @@ public class PageAccessorTest {
     public void testVolumeIndexerCreationDeletion() {
         try {
             VDSFileOpenOptions options = new VDSFileOpenOptions("/tmp/testVolumeIndexer.vds");
-            VdsHandle vds = OpenVDS.create(options, ld,
+            VdsHandle vdsTest = OpenVDS.create(options, ld,
                     vda,
                     vdc, metadataContainer);
-            VolumeDataAccessManager accessManager = vds.getAccessManager();
+            VolumeDataAccessManager accessManager = vdsTest.getAccessManager();
             //ASSERT_TRUE(accessManager);
 
             int channel = 0;
-            VolumeDataLayout layout = vds.getLayout();
+            VolumeDataLayout layout = vdsTest.getLayout();
             VolumeDataPageAccessor pageAccessor = accessManager.createVolumeDataPageAccessor(
                     layout, // layout
                     DimensionsND.DIMENSIONS_012.ordinal(), // dimension ND
@@ -79,8 +79,9 @@ public class PageAccessorTest {
 
             VolumeDataPage page = pageAccessor.createPage(0);
             VolumeIndexer3D outputIndexer = new  VolumeIndexer3D(page, 0, 0, DimensionsND.DIMENSIONS_012.ordinal(), layout);
-
             outputIndexer.finalize();
+
+            vdsTest.close();
         }
         catch (java.io.IOException e) {
             System.out.println(e.getMessage());
@@ -92,14 +93,14 @@ public class PageAccessorTest {
     public void testCreatePageAccessor() {
         try {
             VDSFileOpenOptions options = new VDSFileOpenOptions("/tmp/testPageAccessor.vds");
-            VdsHandle vds = OpenVDS.create(options, ld,
+            VdsHandle vdsPageAccessor = OpenVDS.create(options, ld,
                     vda,
                     vdc, metadataContainer);
-            VolumeDataAccessManager accessManager = vds.getAccessManager();
+            VolumeDataAccessManager accessManager = vdsPageAccessor.getAccessManager();
             //ASSERT_TRUE(accessManager);
 
             int channel = 0;
-            VolumeDataLayout layout = vds.getLayout();
+            VolumeDataLayout layout = vdsPageAccessor.getLayout();
             VolumeDataPageAccessor pageAccessor = accessManager.createVolumeDataPageAccessor(
                     layout, // layout
                     DimensionsND.DIMENSIONS_012.ordinal(), // dimension ND
@@ -128,8 +129,34 @@ public class PageAccessorTest {
 
                 float[] floatBuffer = page.readFloatBuffer(pitch);
 
+                for (int iDim2 = 0; iDim2 < numSamples[2]; iDim2++)
+                    for (int iDim1 = 0; iDim1 < numSamples[1]; iDim1++)
+                        for (int iDim0 = 0; iDim0 < numSamples[0]; iDim0++) {
+                            int[] localOutIndex = new int[]{iDim0, iDim1, iDim2};
+
+                            int[] voxelIndex = outputIndexer.localIndexToVoxelIndex(localOutIndex);
+
+                            int pos[] = new int[]{
+                                    voxelIndex[0],
+                                    voxelIndex[1],
+                                    voxelIndex[2]
+                            };
+
+                            float value = pos[0];
+                            int dataIndex = outputIndexer.localIndexToDataIndex(localOutIndex);
+                            floatBuffer[dataIndex] = value;
+                        }
+                page.writeFloatBuffer(floatBuffer, pitch);
+                page.release();
                 System.out.println("Create float buffer succes");
             }
+
+            pageAccessor.commit();
+            pageAccessor.setMaxPages(0);
+            accessManager.flushUploadQueue();
+            accessManager.destroyVolumeDataPageAccessor(pageAccessor);
+
+            vdsPageAccessor.close();
         }
         catch (java.io.IOException e) {
             System.out.println(e.getMessage());
