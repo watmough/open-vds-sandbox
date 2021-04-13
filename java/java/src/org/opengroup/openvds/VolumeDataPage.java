@@ -45,10 +45,7 @@ public class VolumeDataPage extends JniPointer {
         super(handle, ownHandle);
     }
 
-    /**
-     * Release page
-     */
-    public void release() {
+    public void pageRelease() {
         cpRelease(_handle);
     }
 

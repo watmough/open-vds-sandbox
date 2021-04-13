@@ -100,9 +100,9 @@ getScaleOffsetForFormat(float min, float max, bool novalue, OpenVDS::VolumeDataC
 
 int
 main(int argc, char *argv[]) {
-    int32_t samplesX = 100;
-    int32_t samplesY = 100;
-    int32_t samplesZ = 50;
+    int32_t samplesX = 500;
+    int32_t samplesY = 500;
+    int32_t samplesZ = 250;
     OpenVDS::VolumeDataChannelDescriptor::Format format = OpenVDS::VolumeDataChannelDescriptor::Format_R32;
 
     auto brickSize = OpenVDS::VolumeDataLayoutDescriptor::BrickSize_64;
