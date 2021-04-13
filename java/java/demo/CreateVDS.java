@@ -18,9 +18,9 @@ public class CreateVDS {
 
     static void process(String[] args) throws Exception {
 
-        int samplesX = 200; // time
-        int samplesY = 300; // XL
-        int samplesZ = 400; // IL
+        int samplesX = 400; // time
+        int samplesY = 600; // XL
+        int samplesZ = 600; // IL
         VolumeDataChannelDescriptor.Format format = VolumeDataChannelDescriptor.Format.FORMAT_R32;
 
         VolumeDataLayoutDescriptor.BrickSize brickSize = VolumeDataLayoutDescriptor.BrickSize.BRICK_SIZE_64;
