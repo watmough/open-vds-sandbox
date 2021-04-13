@@ -18,6 +18,7 @@
 #include <org_opengroup_openvds_VolumeDataPage.h>
 #include <CommonJni.h>
 #include <OpenVDS/VolumeDataAccess.h>
+#include <iostream>
 
 #ifdef __cplusplus
 extern "C" {
@@ -115,12 +116,11 @@ extern "C" {
         try {
             OpenVDS::VolumeDataPage * page = GetVolumePage(handle);
             int pitch[OpenVDS::Dimensionality_Max];
+            std::cout << "\tGet writable buffer in JNI SetByteBuffer" << std::endl;
             unsigned char* pageBuffer = reinterpret_cast<unsigned char*>(page->GetWritableBuffer(pitch));
             int valueSize = env->GetArrayLength(values);
             jbyte *src = env->GetByteArrayElements(values, 0);
-            for (int i = 0 ; i < valueSize ; ++i) {
-                pageBuffer[i] = static_cast<unsigned char>(src[i]);
-            }
+            std::memcpy(pageBuffer, src, valueSize * sizeof (char));
             // needed or not?
             env->ReleaseByteArrayElements(values, src, 0);
         }
@@ -145,7 +145,7 @@ extern "C" {
             int chunk_size_x = cMax[1] - cMin[1];
             int chunk_size_z = cMax[0] - cMin[0];
 
-            float* readData = reinterpret_cast<float*>(GetVolumePage(handle)->GetWritableBuffer(pitch));
+            float* readData = static_cast<float*>(GetVolumePage(handle)->GetWritableBuffer(pitch));
             env->SetIntArrayRegion(pitchParam, 0, OpenVDS::Dimensionality_Max, pitch);
 
             int nbElem = chunk_size_i * chunk_size_x * chunk_size_z;
@@ -169,9 +169,7 @@ extern "C" {
             float* pageBuffer = reinterpret_cast<float*>(page->GetWritableBuffer(pitch));
             int valueSize = env->GetArrayLength(values);
             jfloat *src = env->GetFloatArrayElements(values, 0);
-            for (int i = 0 ; i < valueSize ; ++i) {
-                pageBuffer[i] = static_cast<float>(src[i]);
-            }
+            std::memcpy(pageBuffer, src, valueSize * sizeof (float));
             // needed or not?
             env->ReleaseFloatArrayElements(values, src, 0);
         }
@@ -220,9 +218,7 @@ extern "C" {
             double* pageBuffer = reinterpret_cast<double*>(page->GetWritableBuffer(pitch));
             int valueSize = env->GetArrayLength(values);
             jdouble *src = env->GetDoubleArrayElements(values, 0);
-            for (int i = 0 ; i < valueSize ; ++i) {
-                pageBuffer[i] = static_cast<double>(src[i]);
-            }
+            std::memcpy(pageBuffer, src, valueSize * sizeof (double));
             // needed or not?
             env->ReleaseDoubleArrayElements(values, src, 0);
         }

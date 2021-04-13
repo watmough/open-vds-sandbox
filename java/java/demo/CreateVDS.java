@@ -1,7 +1,9 @@
 import org.opengroup.openvds.*;
+import sun.awt.X11.XSystemTrayPeer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class CreateVDS {
 
@@ -16,9 +18,9 @@ public class CreateVDS {
 
     static void process(String[] args) throws Exception {
 
-        int samplesX = 1000;
-        int samplesY = 1000;
-        int samplesZ = 1000;
+        int samplesX = 200; // time
+        int samplesY = 300; // XL
+        int samplesZ = 400; // IL
         VolumeDataChannelDescriptor.Format format = VolumeDataChannelDescriptor.Format.FORMAT_R32;
 
         VolumeDataLayoutDescriptor.BrickSize brickSize = VolumeDataLayoutDescriptor.BrickSize.BRICK_SIZE_64;
@@ -32,8 +34,8 @@ public class CreateVDS {
 
         List<VolumeDataAxisDescriptor> axisDescriptors = new ArrayList<>();
         axisDescriptors.add(new VolumeDataAxisDescriptor(samplesX, "Sample", "ms", 0.0f,4.f));
-        axisDescriptors.add(new VolumeDataAxisDescriptor(samplesY, "Crossline", "",1932.f, 2536.f));
-        axisDescriptors.add(new VolumeDataAxisDescriptor(samplesZ, "Inline", "", 9985.f,10369.f));
+        axisDescriptors.add(new VolumeDataAxisDescriptor(samplesY, "Crossline", "",0f, 0f + samplesY - 1f));
+        axisDescriptors.add(new VolumeDataAxisDescriptor(samplesZ, "Inline", "", 0f, 0f + samplesZ - 1f));
 
         List<VolumeDataChannelDescriptor> channelDescriptors = new ArrayList<>();
 
@@ -60,7 +62,7 @@ public class CreateVDS {
 
 
         //OpenVDS::InMemoryOpenOptions options;
-        VDSFileOpenOptions options = new VDSFileOpenOptions("/tmp/create.vds");
+        VDSFileOpenOptions options = new VDSFileOpenOptions("/tmp/createMain.vds");
         VdsError error;
 
         MetadataContainer metadataContainer = new MetadataContainer();
@@ -96,17 +98,19 @@ public class CreateVDS {
                 DimensionsND.DIMENSIONS_012.ordinal(), // dimension ND
                 0, // lod
                 channel, // channel
-                100, // max pages
+                1000, // max pages
                 VolumeDataAccessManager.AccessMode.Create.getCode()); // access mode
 
         //ASSERT_TRUE(pageAccessor);
 
         int chunkCount = (int) pageAccessor.getChunkCount();
-
+        System.out.println("Nombre de chunks " + chunkCount);
         //OpenVDS::VolumeDataChannelDescriptor::Format format = layout->GetChannelFormat(channel);
 
+        Random r = new Random();
         for (int i = 0; i < chunkCount; i++) {
             VolumeDataPage page = pageAccessor.createPage(i);
+            System.out.print("Page " + i + " created ");
             VolumeDataLayoutDescriptor.BrickSize brickSize1 = pageAccessor.getLayout().getLayoutDescriptor().getBrickSize();
 
             VolumeIndexer3D outputIndexer = new VolumeIndexer3D(page, 0, 0, DimensionsND.DIMENSIONS_012.ordinal(), layout);
@@ -126,15 +130,21 @@ public class CreateVDS {
             int[] chunkMin = new int[VolumeDataLayout.Dimensionality_Max];
             int[] chunkMax = new int[VolumeDataLayout.Dimensionality_Max];
 
-            pageAccessor.getChunkMinMax(i, chunkMin, chunkMax);
+            page.getMinMax(chunkMin, chunkMax);
+            System.out.println("Coords page : " + chunkMin[2] + "/" + chunkMax[2] + " " + chunkMin[1] + "/" + chunkMax[1] + " " + chunkMin[0] + "/" + chunkMax[0]);
             int chunkSizeI = chunkMax[2] - chunkMin[2];
             int chunkSizeX = chunkMax[1] - chunkMin[1];
             int chunkSizeZ = chunkMax[0] - chunkMin[0];
             int nbElem = chunkSizeI * chunkSizeX * chunkSizeZ;
-            float[] buffer = new float[nbElem];
+            float[] bufferOut = new float[nbElem];
 
             float[] output = page.readFloatBuffer(pitch);
+            //float[] output = new float[0];
 
+            for (int o = 0 ; o < bufferOut.length ; ++o) {
+                float randomValue = 0.2468f * (float)r.nextDouble();
+                bufferOut[o] = -0.1234f + randomValue;
+            }
             //void* buffer = page.getWritableBuffer(pitch);
             //auto output = static_cast < float *>(buffer);
 
@@ -145,7 +155,7 @@ public class CreateVDS {
 
                         int[] voxelIndex = outputIndexer.localIndexToVoxelIndex(localOutIndex);
 
-                        int pos[] = new int[]{
+                        int pos[] = new int[] {
                                     voxelIndex[0],
                                     voxelIndex[1],
                                     voxelIndex[2]
@@ -153,23 +163,27 @@ public class CreateVDS {
 
                         float value = pos[0];
 
-                        output[outputIndexer.localIndexToDataIndex(localOutIndex)] = value;
+                        int i1 = outputIndexer.localIndexToDataIndex(localOutIndex);
+                        if (i1 >= 0 && i1 < output.length)
+                            output[i1] = value;
                     }
 
-
-            page.writeFloatBuffer(buffer);
+            //System.out.println("Write buffer in page " + i);
+            page.writeFloatBuffer(bufferOut);
 
             //OpenVDS::CalculateNoise3D(buffer, format, &outputIndexer, frequency, 0.021f, 0.f, true, 345);
-            page.release();
+            page.pageRelease();
         }
 
-
+        System.out.println("Everything created");
         pageAccessor.commit();
-        pageAccessor.setMaxPages(0);
+        System.out.println("Commit done");
+        //pageAccessor.setMaxPages(0);
         accessManager.flushUploadQueue();
         accessManager.destroyVolumeDataPageAccessor(pageAccessor);
 
         vds.close(); // equivalent to OpenVDS.close(vds); ?
+        System.out.println("VDS closed");
     }
 
 //    static float[] getScaleOffsetForFormat(float min, float max, boolean novalue, VolumeDataChannelDescriptor.Format format) {
