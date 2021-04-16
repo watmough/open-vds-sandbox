@@ -22,6 +22,10 @@ public abstract class VolumeIndexerBase extends JniPointer {
     private static native int cpVoxelIndexToDataIndex(long handle, int volumeDimension, int[] voxelIndex);
     private static native int cpLocalChunkIndexToDataIndex(long handle, int volumeDimension, int[] localChunkIndex);
 
+    private static native boolean cpVoxelIndexInProcessArea(long handle, int volumeDimension, int[] voxelIndex);
+    private static native boolean cpLocalIndexInProcessArea(long handle, int volumeDimension, int[] voxelIndex);
+    private static native boolean cpLocalChunkIndexInProcessArea(long handle, int volumeDimension, int[] voxelIndex);
+
     private final int dimensionVolume;
 
     public VolumeIndexerBase(long handle, int dimension, boolean ownHandle) {
@@ -152,6 +156,35 @@ public abstract class VolumeIndexerBase extends JniPointer {
         return cpLocalChunkIndexToDataIndex(_handle, dimensionVolume, localChunkIndex);
     }
 
+    /**
+     * Checks if a voxel index is within the chunk this indexer was created with
+     * @param voxelIndex the voxel index to check
+     * @return true if the index is within this chunk, false otherwise
+     */
+    public boolean voxelIndexInProcessArea(int[] voxelIndex) {
+        checkLocalIndexArgument(voxelIndex);
+        return cpVoxelIndexInProcessArea(_handle, dimensionVolume, voxelIndex);
+    }
+
+    /**
+     * Checks if a local index is within the chunk this indexer was created with
+     * @param localIndex the local index to check
+     * @return true if the index is within this chunk, false otherwise
+     */
+    public boolean localIndexInProcessArea(int[] localIndex) {
+        checkLocalIndexArgument(localIndex);
+        return cpLocalIndexInProcessArea(_handle, dimensionVolume, localIndex);
+    }
+
+    /**
+     * Checks if a local chunk index is within the chunk this indexer was created with
+     * @param localChunkIndex the local chunk index to check
+     * @return true if the index is within this chunk, false otherwise
+     */
+    public boolean localChunkIndexInProcessArea(int[] localChunkIndex) {
+        checkLocalIndexArgument(localChunkIndex);
+        return cpLocalChunkIndexInProcessArea(_handle, dimensionVolume, localChunkIndex);
+    }
 
     private void checkLocalIndexArgument(int[] localIndex) {
         if (localIndex == null || localIndex.length != dimensionVolume) {

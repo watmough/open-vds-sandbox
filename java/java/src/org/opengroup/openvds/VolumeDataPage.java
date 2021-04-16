@@ -90,9 +90,11 @@ public class VolumeDataPage extends JniPointer {
     /**
      * Set byte array int page
      * @param buffer values to set. Size must match page sample size
+     * @param pitch chunk pitch (got by a read)
+     * @param dimensionality volume dimensionality
      */
-    public void writeByteBuffer(byte[] buffer) {
-        checkBufferSize(buffer);
+    public void writeByteBuffer(byte[] buffer, int[] pitch, int dimensionality) {
+        checkBufferSize(buffer, pitch, dimensionality);
         cpSetByteBuffer(_handle, buffer);
     }
 
@@ -109,9 +111,11 @@ public class VolumeDataPage extends JniPointer {
     /**
      * Set float array int page
      * @param buffer values to set. Size must match page sample size
+     * @param pitch chunk pitch (got by a read)
+     * @param dimensionality volume dimensionality
      */
-    public void writeFloatBuffer(float[] buffer) {
-        checkBufferSize(buffer);
+    public void writeFloatBuffer(float[] buffer, int[] pitch, int dimensionality) {
+        checkBufferSize(buffer, pitch, dimensionality);
         cpSetFloatBuffer(_handle, buffer);
     }
 
@@ -128,9 +132,11 @@ public class VolumeDataPage extends JniPointer {
     /**
      * Set double array int page
      * @param buffer values to set. Size must match page sample size
+     * @param pitch chunk pitch (got by a read)
+     * @param dimensionality volume dimensionality
      */
-    public void writeDoubleBuffer(double[] buffer) {
-        checkBufferSize(buffer);
+    public void writeDoubleBuffer(double[] buffer, int[] pitch, int dimensionality) {
+        checkBufferSize(buffer, pitch, dimensionality);
         cpSetDoubleBuffer(_handle, buffer);
     }
 
@@ -141,24 +147,33 @@ public class VolumeDataPage extends JniPointer {
         return getElementCount(chunkMin, chunkMax);
     }
 
-    private void checkBufferSize(byte[] buffer) {
-        int elementCount = getElementCount();
-        if (buffer == null || buffer.length != elementCount) {
-            throw new IllegalArgumentException("Wrong buffer size, expected " + elementCount + ", got " + (buffer == null ? "null" : buffer.length));
+    private void checkBufferSize(byte[] buffer, int[] pitch, int dim) {
+        int[] chunkMin = new int[VolumeDataLayout.Dimensionality_Max];
+        int[] chunkMax = new int[VolumeDataLayout.Dimensionality_Max];
+        getMinMax(chunkMin, chunkMax);
+        int nbElem = (chunkMax[dim - 1] - chunkMin[dim - 1]) * pitch[dim - 1];
+        if (buffer == null || buffer.length != nbElem) {
+            throw new IllegalArgumentException("Wrong buffer size, expected " + nbElem + "(dim2 * pitch[2]), got " + (buffer == null ? "null" : buffer.length));
         }
     }
 
-    private void checkBufferSize(float[] buffer) {
-        int elementCount = getElementCount();
-        if (buffer == null || buffer.length != elementCount) {
-            throw new IllegalArgumentException("Wrong buffer size, expected " + elementCount + ", got " + (buffer == null ? "null" : buffer.length));
+    private void checkBufferSize(float[] buffer, int[] pitch, int dim) {
+        int[] chunkMin = new int[VolumeDataLayout.Dimensionality_Max];
+        int[] chunkMax = new int[VolumeDataLayout.Dimensionality_Max];
+        getMinMax(chunkMin, chunkMax);
+        int nbElem = (chunkMax[dim - 1] - chunkMin[dim - 1]) * pitch[dim - 1];
+        if (buffer == null || buffer.length != nbElem) {
+            throw new IllegalArgumentException("Wrong buffer size, expected " + nbElem + "(dim2 * pitch[2]), got " + (buffer == null ? "null" : buffer.length));
         }
     }
 
-    private void checkBufferSize(double[] buffer) {
-        int elementCount = getElementCount();
-        if (buffer == null || buffer.length != elementCount) {
-            throw new IllegalArgumentException("Wrong buffer size, expected " + elementCount + ", got " + (buffer == null ? "null" : buffer.length));
+    private void checkBufferSize(double[] buffer, int[] pitch, int dim) {
+        int[] chunkMin = new int[VolumeDataLayout.Dimensionality_Max];
+        int[] chunkMax = new int[VolumeDataLayout.Dimensionality_Max];
+        getMinMax(chunkMin, chunkMax);
+        int nbElem = (chunkMax[dim - 1] - chunkMin[dim - 1]) * pitch[dim - 1];
+        if (buffer == null || buffer.length != nbElem) {
+            throw new IllegalArgumentException("Wrong buffer size, expected " + nbElem + "(dim2 * pitch[2]), got " + (buffer == null ? "null" : buffer.length));
         }
     }
 

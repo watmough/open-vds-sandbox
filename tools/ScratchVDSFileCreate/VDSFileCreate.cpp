@@ -100,8 +100,8 @@ getScaleOffsetForFormat(float min, float max, bool novalue, OpenVDS::VolumeDataC
 
 int
 main(int argc, char *argv[]) {
-    int32_t samplesX = 600;
-    int32_t samplesY = 600;
+    int32_t samplesX = 200;
+    int32_t samplesY = 300;
     int32_t samplesZ = 300;
     OpenVDS::VolumeDataChannelDescriptor::Format format = OpenVDS::VolumeDataChannelDescriptor::Format_R32;
 
@@ -115,16 +115,13 @@ main(int argc, char *argv[]) {
                                                          brickSize2DMultiplier, lodLevels, layoutOptions);
 
     std::vector<OpenVDS::VolumeDataAxisDescriptor> axisDescriptors;
-    axisDescriptors.emplace_back(samplesX, "Sample", "ms", 0.0f,
-                                 4.f);
-    axisDescriptors.emplace_back(samplesY, "Crossline", "",
-                                 1932.f, 2536.f);
-    axisDescriptors.emplace_back(samplesZ, "Inline", "", 9985.f,
-                                 10369.f);
+    axisDescriptors.emplace_back(samplesX, "Sample", "ms", 0.0f,4.f);
+    axisDescriptors.emplace_back(samplesY, "Crossline", "",1932.f, 1932.f + samplesY - 1.f);
+    axisDescriptors.emplace_back(samplesZ, "Inline", "", 9985.f, 9985.f + samplesZ - 1.f);
 
     std::vector<OpenVDS::VolumeDataChannelDescriptor> channelDescriptors;
-    float rangeMin = -0.1234f;
-    float rangeMax = 0.1234f;
+    float rangeMin = -1.f;
+    float rangeMax = 1.f;
     float intScale;
     float intOffset;
     getScaleOffsetForFormat(rangeMin, rangeMax, true, format, intScale, intOffset);
@@ -134,7 +131,7 @@ main(int argc, char *argv[]) {
                                     OpenVDS::VolumeDataChannelDescriptor::Default, 0.f, intScale, intOffset);
 
     //OpenVDS::InMemoryOpenOptions options;
-    OpenVDS::VDSFileOpenOptions options("/tmp/createCPP.vds");
+    OpenVDS::VDSFileOpenOptions options("/tmp/createCPP_bis.vds");
     OpenVDS::Error error;
 
     OpenVDS::MetadataContainer metadataContainer;
@@ -155,7 +152,6 @@ main(int argc, char *argv[]) {
     metadataContainer.SetMetadataDoubleVector4("categoryDouble", "DoubleVector4",
                                                OpenVDS::DoubleVector4(45.5, 78.75, 72.75, 84.1));
     metadataContainer.SetMetadataString("categoryString", "String", std::string("Test string"));
-//metadataContainer.SetMetadataBLOB("categoryBLOB", "BLOB", data, 4 );
 
     auto vds = OpenVDS::Create(options, layoutDescriptor, axisDescriptors, channelDescriptors, metadataContainer,
                                      error);
@@ -170,51 +166,34 @@ main(int argc, char *argv[]) {
     //ASSERT_TRUE(pageAccessor);
 
     int32_t chunkCount = int32_t(pageAccessor->GetChunkCount());
-    std::cout << "Chunk Count = " << chunkCount << "\n";
     //OpenVDS::VolumeDataChannelDescriptor::Format format = layout->GetChannelFormat(channel);
     for (int i = 0; i < chunkCount; i++)
     {
         OpenVDS::VolumeDataPage *page =  pageAccessor->CreatePage(i);
         OpenVDS::VolumeIndexer3D outputIndexer(page, 0, 0, OpenVDS::Dimensions_012, layout);
-
-        //float valueRangeScale = outputIndexer.valueRangeMax - outputIndexer.valueRangeMin;
-        //QuantizingValueConverterWithNoValue<T, float, useNoValue> converter(outputIndexer3D.valueRangeMin, outputIndexer3D.valueRangeMax, valueRangeScale, outputIndexer3D.valueRangeMin, noValue, noValue);
-
         OpenVDS::IntVector<3> numSamples;
-        //OpenVDS::IntVector<3> localOutIndex;
 
         for (int j=0; j<3; j++)
         {
             numSamples[j] = outputIndexer.GetDataBlockNumSamples(j);
         }
 
-        std::cout << "\tChunk " << i << " dim = " << numSamples[0] << " " << numSamples[1] << " " << numSamples[2] << "\n";
-
         int pitch[OpenVDS::Dimensionality_Max];
         void *buffer = page->GetWritableBuffer(pitch);
-
         auto output = static_cast<float *>(buffer);
 
         for (int iDim2 = 0; iDim2 < numSamples[2]; iDim2++)
                 for (int iDim1 = 0; iDim1 < numSamples[1]; iDim1++)
                     for (int iDim0 = 0; iDim0 < numSamples[0]; iDim0++)
                     {
-                        OpenVDS::IntVector<3>
-                                localOutIndex(iDim0, iDim1, iDim2);
+                        OpenVDS::IntVector<3> localOutIndex(iDim0, iDim1, iDim2);
 
-                        OpenVDS::IntVector<3>
-                                voxelIndex = outputIndexer.LocalIndexToVoxelIndex(localOutIndex);
-
-                        int pos[3] = { voxelIndex[0],
-                                           voxelIndex[1],
-                                           voxelIndex[2]};
-
-                        float value = pos[0];
-
-                        output[outputIndexer.LocalIndexToDataIndex(localOutIndex)] = value;
+                        float value = (float) ((iDim0 + iDim1 + iDim2)%numSamples[0]) / numSamples[0];
+                        value = rangeMin + 2.f * value;
+                        int dataPos = outputIndexer.LocalIndexToDataIndex(localOutIndex);
+                        output[dataPos] = value;
                     }
 
-        //OpenVDS::CalculateNoise3D(buffer, format, &outputIndexer, frequency, 0.021f, 0.f, true, 345);
         page->Release();
     }
 

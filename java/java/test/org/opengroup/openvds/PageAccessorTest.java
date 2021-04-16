@@ -61,6 +61,8 @@ public class PageAccessorTest {
     @Test
     public void testVolumeIndexerCreationDeletion() {
         try {
+            // TODO : create fils in tmp dir
+            System.getProperty("java.io.tmpdir");
             VDSFileOpenOptions options = new VDSFileOpenOptions("/tmp/testVolumeIndexer.vds");
             VdsHandle vdsTest = OpenVDS.create(options, ld,
                     vda,
@@ -154,7 +156,7 @@ public class PageAccessorTest {
 
                             int[] voxelIndex = outputIndexer.localIndexToVoxelIndex(localOutIndex);
 
-                            int pos[] = new int[]{
+                            int pos[] = new int[] {
                                     voxelIndex[0],
                                     voxelIndex[1],
                                     voxelIndex[2]
@@ -174,7 +176,7 @@ public class PageAccessorTest {
                 System.out.println("");
                 System.out.println("\t" + smp + " samples will be written");
                 System.out.println("\tWill write buffer " + i);
-                page.writeFloatBuffer(buffer);
+                page.writeFloatBuffer(buffer, pitch, layout.getDimensionality());
                 System.out.println("\tDone write buffer " + i);
                 //page.writeDoubleBuffer(buffer);
                 //page.writeByteBuffer(buffer);
