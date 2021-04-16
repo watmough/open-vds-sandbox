@@ -218,6 +218,8 @@ public class MetaDataContainerTest {
 
             metaData.setMetadataString("categoryString", "String", mdString);
 
+            // TODO : create fils in tmp dir
+            System.getProperty("java.io.tmpdir");
             VDSFileOpenOptions options = new VDSFileOpenOptions("/tmp/testCreate.vds");
             VdsError vdsError = new VdsError();
             OpenVDS createdVDS = OpenVDS.create(options, ld, vda, vdc, metaData);
