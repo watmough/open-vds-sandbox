@@ -21,37 +21,11 @@
 #include <OpenVDS/OpenVDS.h>
 
 #include <IO/IOManager.h>
+#include <IO/IOManagerRequestImpl.h>
 #include <VDS/ThreadPool.h>
 
 #include <atomic>
-
-class FacadeRequest : public OpenVDS::Request
-{
-public:
-  FacadeRequest(const std::string &objectName, const OpenVDS::Error &error)
-    : Request(objectName)
-    , m_done(false)
-    , m_error(error)
-  {
-
-  }
-  bool WaitForFinish(OpenVDS::Error &error) override
-  {
-    while(!m_done)
-      ;
-    error = m_error;
-    return m_error.code == 0;
-  }
-
-  void Cancel() override
-  {
-    m_done = true;
-  }
-
-  std::atomic_bool m_done;
-private:
-  OpenVDS::Error m_error;
-};
+#include <map>
 
 struct Object
 {
@@ -85,98 +59,174 @@ public:
 
   IOManager *backend;
 };
+
+class IOManagerFacadeUtil
+{
+public:
+  IOManagerFacadeUtil(OpenVDS::IOManager *backend, std::map<std::string, Object> &data, std::mutex &mutex)
+    : backend(backend)
+    , threadPool(1)
+    , m_data(data)
+    , m_mutex(mutex)
+  {}
+
+  std::shared_ptr<OpenVDS::Request> ReadObjectInfo(const std::string &objectName, std::shared_ptr<OpenVDS::TransferDownloadHandler> handler)
+  {
+    {
+      std::unique_lock<std::mutex> lock(m_mutex);
+      auto object_it = m_data.find(objectName);
+      if (object_it != m_data.end())
+      {
+        auto request = std::make_shared<OpenVDS::RequestImpl>(objectName);
+        std::weak_ptr<OpenVDS::RequestImpl> weak_request(request);
+        threadPool.Enqueue([handler, objectName, weak_request, this]
+        {
+          auto objReq = weak_request.lock();
+          if (!objReq)
+            return;
+          OpenVDS::RequestStateHandler requestStateHandler(*objReq);
+          if (requestStateHandler.isCancelledRequested())
+          {
+            return;
+          }
+          std::unique_lock<std::mutex> lock(m_mutex);
+          auto object_it = m_data.find(objectName);
+          if (object_it == m_data.end())
+          {
+            objReq->m_error.code = -1;
+            objReq->m_error.string = "Internal state error, object has been removed from IOFacade";
+          }
+          else
+          {
+            auto& object = (*object_it).second;
+            objReq->m_error = object.error;
+            handler->HandleObjectSize(int64_t(object.data.size()));
+
+            for (auto& meta : object.metaHeader)
+            {
+              handler->HandleMetadata(meta.first, meta.second);
+            }
+          }
+          handler->Completed(*objReq, objReq->m_error);
+        });
+        return request;
+      }
+    }
+    return backend->ReadObjectInfo(objectName, handler);
+  }
+
+  std::shared_ptr<OpenVDS::Request> ReadObject(const std::string& objectName, std::shared_ptr<OpenVDS::TransferDownloadHandler> handler, const OpenVDS::IORange& range = OpenVDS::IORange())
+  {
+    {
+      std::unique_lock<std::mutex> lock(m_mutex);
+      auto object_it = m_data.find(objectName);
+      if (object_it != m_data.end())
+      {
+        auto request = std::make_shared<OpenVDS::RequestImpl>(objectName);
+        std::weak_ptr<OpenVDS::RequestImpl> weak_request(request);
+        threadPool.Enqueue([handler, objectName, weak_request, this]
+        {
+          auto objReq = weak_request.lock();
+          if (!objReq)
+            return;
+          OpenVDS::RequestStateHandler requestStateHandler(*objReq);
+          if (requestStateHandler.isCancelledRequested())
+          {
+            return;
+          }
+          std::unique_lock<std::mutex> lock(m_mutex);
+          auto object_it = m_data.find(objectName);
+          if (object_it == m_data.end())
+          {
+            objReq->m_error.code = -1;
+            objReq->m_error.string = "Internal state error, object has been removed from IOFacade";
+          }
+          else
+          {
+            auto& object = (*object_it).second;
+            objReq->m_error = object.error;
+            handler->HandleObjectSize(int64_t(object.data.size()));
+
+            for (auto& meta : object.metaHeader)
+            {
+              handler->HandleMetadata(meta.first, meta.second);
+            }
+            std::vector<uint8_t> data = object.data;
+            handler->HandleData(std::move(data));
+          }
+          handler->Completed(*objReq, objReq->m_error);
+        });
+        return request;
+      }
+    }
+    return backend->ReadObject(objectName, handler, range);
+  }
+
+  std::shared_ptr<OpenVDS::Request> WriteObject(const std::string &objectName, const std::string& contentDispostionFilename, const std::string& contentType, const std::vector<std::pair<std::string, std::string>>& metadataHeader, std::shared_ptr<std::vector<uint8_t>> data, std::function<void(const OpenVDS::Request & request, const OpenVDS::Error & error)> completedCallback = nullptr)
+  {
+    {
+      std::unique_lock<std::mutex> lock(m_mutex);
+      auto object_it = m_data.find(objectName);
+      if (object_it != m_data.end())
+      {
+        auto request = std::make_shared<OpenVDS::RequestImpl>(objectName);
+        std::weak_ptr<OpenVDS::RequestImpl> weak_request(request);
+        threadPool.Enqueue([completedCallback, objectName, data, metadataHeader, weak_request, this]
+        {
+          auto objReq = weak_request.lock();
+          if (!objReq)
+            return;
+          OpenVDS::RequestStateHandler requestStateHandler(*objReq);
+          if (requestStateHandler.isCancelledRequested())
+          {
+            return;
+          }
+          std::unique_lock<std::mutex> lock(m_mutex);
+          auto object_it = m_data.find(objectName);
+          if (object_it == m_data.end())
+          {
+            objReq->m_error.code = -1;
+            objReq->m_error.string = "Internal state error, object has been removed from IOFacade";
+          }
+          else
+          {
+            auto& object = (*object_it).second;
+            object.data = *data;
+            object.metaHeader = metadataHeader;
+            objReq->m_error = object.error;
+          }
+
+          if (completedCallback)
+          {
+            completedCallback(*objReq, objReq->m_error);
+          }
+        });
+        return request;
+      }
+    }
+    return backend->WriteObject(objectName, contentDispostionFilename, contentType, metadataHeader, data, completedCallback);
+  }
+
+  OpenVDS::IOManager *backend;
+  ThreadPool threadPool;
+  std::map<std::string, Object> &m_data;
+  std::mutex &m_mutex;
+};
+
 class IOManagerFacade : public OpenVDS::IOManager
 {
 public:
   IOManagerFacade(OpenVDS::IOManager *backend)
     : IOManager(backend->connectionType())
-    , backend(backend)
-    , threadPool(1)
+    , facade(backend, m_data, m_mutex)
   {}
+  std::shared_ptr<OpenVDS::Request> ReadObjectInfo(const std::string& objectName, std::shared_ptr<OpenVDS::TransferDownloadHandler> handler) override { return facade.ReadObjectInfo(objectName, handler); }
+  std::shared_ptr<OpenVDS::Request> ReadObject(const std::string& objectName, std::shared_ptr<OpenVDS::TransferDownloadHandler> handler, const OpenVDS::IORange& range = OpenVDS::IORange()) override { return facade.ReadObject(objectName, handler, range); }
+  std::shared_ptr<OpenVDS::Request> WriteObject(const std::string& objectName, const std::string& contentDispostionFilename, const std::string& contentType, const std::vector<std::pair<std::string, std::string>>& metadataHeader, std::shared_ptr<std::vector<uint8_t>> data, std::function<void(const OpenVDS::Request& request, const OpenVDS::Error& error)> completedCallback = nullptr) override { return facade.WriteObject(objectName, contentDispostionFilename, contentType, metadataHeader, data, completedCallback); }
 
-  std::shared_ptr<OpenVDS::Request> ReadObjectInfo(const std::string &objectName, std::shared_ptr<OpenVDS::TransferDownloadHandler> handler) override
-  {
-    auto object_it = m_data.find(objectName);
-    OpenVDS::Error error;
-    if (object_it != m_data.end())
-    {
-      auto &object = (*object_it).second;
-      error = object.error;
-      handler->HandleObjectSize(int64_t(object.data.size()));
-
-      for (auto& meta : object.metaHeader)
-      {
-        handler->HandleMetadata(meta.first, meta.second);
-      }
-      auto request = std::make_shared<FacadeRequest>(objectName, error);
-      threadPool.Enqueue([handler, error, request]
-        {
-          handler->Completed(*request, error);
-          request->m_done = true;
-        });
-      return request;
-    }
-
-    return backend->ReadObjectInfo(objectName, handler);
-  }
-
-  std::shared_ptr<OpenVDS::Request> ReadObject(const std::string &objectName, std::shared_ptr<OpenVDS::TransferDownloadHandler> handler, const OpenVDS::IORange& range = OpenVDS::IORange()) override
-  {
-    auto object_it = m_data.find(objectName);
-    OpenVDS::Error error;
-    if (object_it != m_data.end())
-    {
-      auto &object = (*object_it).second;
-      error = object.error;
-      handler->HandleObjectSize(int64_t(object.data.size()));
-      for (auto& meta : object.metaHeader)
-      {
-        handler->HandleMetadata(meta.first, meta.second);
-      }
-      std::vector<uint8_t> data = object.data;
-      handler->HandleData(std::move(data));
-      auto request = std::make_shared<FacadeRequest>(objectName, error);
-      threadPool.Enqueue([handler, error, request]
-        {
-          handler->Completed(*request, error);
-          request->m_done = true;
-        });
-      return request;
-    }
-
-    return backend->ReadObject(objectName, handler, range);
-  }
-
-  std::shared_ptr<OpenVDS::Request> WriteObject(const std::string &objectName, const std::string& contentDispostionFilename, const std::string& contentType, const std::vector<std::pair<std::string, std::string>>& metadataHeader, std::shared_ptr<std::vector<uint8_t>> data, std::function<void(const OpenVDS::Request & request, const OpenVDS::Error & error)> completedCallback = nullptr) override
-  {
-    auto object_it = m_data.find(objectName);
-    OpenVDS::Error error;
-    if (object_it != m_data.end())
-    {
-      auto &object = (*object_it).second;
-      error = object.error;
-      auto request = std::make_shared<FacadeRequest>(objectName, error);
-      if (completedCallback)
-      {
-        threadPool.Enqueue([completedCallback, error, request]
-          {
-            completedCallback(*request, error); 
-            request->m_done = true;
-          });
-      }
-      else
-      {
-        request->m_done = true;
-      }
-      return request;
-    }
-
-    return backend->WriteObject(objectName, contentDispostionFilename, contentType, metadataHeader, data, completedCallback);
-  }
-
-  IOManager *backend;
-  ThreadPool threadPool;
-  std::unordered_map<std::string, Object> m_data;
+  std::map<std::string, Object> m_data;
+  std::mutex m_mutex;
+  IOManagerFacadeUtil facade;
 };
 
 #endif

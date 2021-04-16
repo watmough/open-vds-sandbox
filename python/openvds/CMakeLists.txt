@@ -29,6 +29,8 @@ pybind11_add_module(core MODULE
     PyVolumeSampler.h
     PyGlobalState.cpp
     PyGlobalState.h
+    PyExceptions.cpp
+    PyExceptions.h
 )
 
 if (MSVC AND (CMAKE_CXX_COMPILER_ID STREQUAL "Clang"))

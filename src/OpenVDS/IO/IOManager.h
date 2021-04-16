@@ -40,8 +40,8 @@ namespace OpenVDS
   class Request
   {
   public:
-    Request(const std::string &objectName);
-    virtual ~Request();
+    OPENVDS_EXPORT Request(const std::string &objectName);
+    OPENVDS_EXPORT virtual ~Request();
     virtual bool WaitForFinish(Error &error) = 0;
     virtual void Cancel() = 0;
     const std::string &GetObjectName() const { return m_objectName; }
@@ -65,8 +65,8 @@ namespace OpenVDS
       ReadWrite
     };
 
-    IOManager(OpenOptions::ConnectionType connectionType);
-    virtual ~IOManager();
+    OPENVDS_EXPORT IOManager(OpenOptions::ConnectionType connectionType);
+    OPENVDS_EXPORT virtual ~IOManager();
     virtual std::shared_ptr<Request> ReadObjectInfo(const std::string &objectName, std::shared_ptr<TransferDownloadHandler> handler) = 0;
     virtual std::shared_ptr<Request> ReadObject(const std::string &objectName, std::shared_ptr<TransferDownloadHandler> handler, const IORange &range = IORange()) = 0;
     virtual std::shared_ptr<Request> WriteObject(const std::string &objectName, const std::string &contentDispostionFilename, const std::string &contentType, const std::vector<std::pair<std::string, std::string>> &metadataHeader, std::shared_ptr<std::vector<uint8_t>> data, std::function<void(const Request &request, const Error &error)> completedCallback = nullptr) = 0;

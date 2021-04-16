@@ -33,6 +33,7 @@
 #include "PyVolumeDataLayoutDescriptor.h"
 #include "PyVolumeSampler.h"
 #include "PyGlobalState.h"
+#include "PyExceptions.h"
 
 
 PYBIND11_MODULE(core, m) {
@@ -50,4 +51,5 @@ PYBIND11_MODULE(core, m) {
   PyVolumeDataLayoutDescriptor::initModule(m);
   PyVolumeSampler::initModule(m);
   PyGlobalState::initModule(m);
+  PyExceptions::initModule(m);
 }

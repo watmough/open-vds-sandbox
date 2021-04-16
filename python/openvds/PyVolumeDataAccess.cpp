@@ -337,5 +337,5 @@ PyVolumeDataAccess::initModule(py::module& m)
   RegisterVolumeDataReadWriteAccessor<native::IntVector4, uint64_t>      (m, "VolumeData4DReadWriteAccessorU64");
   RegisterVolumeDataReadWriteAccessor<native::IntVector4, float>         (m, "VolumeData4DReadWriteAccessorR32");
   RegisterVolumeDataReadWriteAccessor<native::IntVector4, double>        (m, "VolumeData4DReadWriteAccessorR64");
-}
 
+}

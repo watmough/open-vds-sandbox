@@ -1,0 +1,19 @@
+{
+      "type": "default",
+      "project": "C:/Users/jorge/AppData/Local/Programs/Python/Python38/python.exe",
+      "name": "pytests",
+      "env": {
+        "PYTHONPATH": "C:/Projects/open-vds/out/build/x64-Debug/python/openvds/Debug/openvds/..;C:/Projects/open-vds/tests/python;C:/Projects/open-vds/out/build/x64-Debug/tests/python;C:/Projects/open-vds/out/build/x64-Debug/tests/python/binding/openvds_test/Debug/openvds_test/.."
+      },
+      "currentDir": "C:/Projects/open-vds/tests/python/pytests",
+      "nativeDebug": true,
+      "args": [
+        "-m pytest",
+        "-k test_read_empty_chunk"
+      ]
+}
+
+To get the pytest PYTHONPATH variable go to the build directory in a command line and write:
+ctest -R .*pytest.* -V
+
+It will show the complete command for running the pytests. Remember to adjust python executable and paths.

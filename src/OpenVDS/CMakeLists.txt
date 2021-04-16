@@ -54,6 +54,7 @@ set (PRIVATE_HEADER_FILES
   IO/IOManagerGoogle.h
   IO/IOManagerHttp.h
   IO/IOManagerRequestImpl.h
+  IO/IOManagerTransformer.h
   VDS/VDS.h
   VDS/VolumeDataPartition.h
   VDS/VolumeDataChannelMapping.h

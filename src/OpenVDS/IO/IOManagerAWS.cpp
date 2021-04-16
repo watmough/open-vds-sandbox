@@ -273,7 +273,7 @@ namespace OpenVDS
   static void upload_callback(const Aws::S3::S3Client* client, const Aws::S3::Model::PutObjectRequest&putRequest, const Aws::S3::Model::PutObjectOutcome &outcome, std::weak_ptr<UploadRequestAWS> weak_upload)
   {
     auto objReq =  weak_upload.lock();
-    if (!objReq || objReq->m_cancelled)
+    if (!objReq)
       return;
 
     RequestStateHandler requestStateHandler(*objReq);

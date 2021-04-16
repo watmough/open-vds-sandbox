@@ -25,6 +25,7 @@
 #include <map>
 #include <set>
 #include <limits>
+#include <functional>
 
 #include <OpenVDS/VolumeDataAccess.h>
 
@@ -39,11 +40,14 @@
 #include "VDS/WaveletTypes.h"
 
 #include "IO/IOManager.h"
+#include "IO/IOManagerTransformer.h"
 
 #include <fmt/format.h>
 
 namespace OpenVDS
 {
+
+static std::function<IOManager* (IOManager*)> iomanagerTransformer;
 
 OpenOptions::~OpenOptions()
 {
@@ -563,6 +567,9 @@ VDS *Open(const OpenOptions &options, Error &error)
     if (error.code)
       return nullptr;
 
+    if (iomanagerTransformer)
+      ioManager.reset(iomanagerTransformer(ioManager.release()));
+
     volumeDataStore.reset(new VolumeDataStoreIOManager(*ret, ioManager.release()));
   }
   else
@@ -837,4 +844,9 @@ GlobalState *GetGlobalState()
   return &globalState;
 }
 
+
+void SetIoManagerTransformer(std::function<IOManager* (IOManager*)> transformer)
+{
+  iomanagerTransformer = transformer;
+}
 }

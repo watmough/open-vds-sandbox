@@ -936,7 +936,11 @@ bool ParseVolumeDataLayout(const std::vector<uint8_t> &json, VolumeDataLayoutDes
   }
 
   if (root.empty())
-    return true;
+  {
+    error.code = -1;
+    error.string = "VolumeDataLayout root object is empty";
+    return false;
+  }
 
   try
   {
