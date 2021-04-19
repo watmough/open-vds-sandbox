@@ -1,12 +1,17 @@
 package org.opengroup.openvds;
 
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
+import java.io.File;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
 
 public class MetaDataContainerTest {
+
+    private static String TEMP_FILE_NAME = "vdsTestMetadata.vds";
 
     public String url;
     public VolumeDataLayoutDescriptor ld;
@@ -39,6 +44,16 @@ public class MetaDataContainerTest {
 
         md = volumeDataLayout;
         ld = volumeDataLayout.getLayoutDescriptor();
+    }
+
+    @AfterClass
+    public void cleanTempFile() {
+        String tempDir = System.getProperty("java.io.tmpdir");
+        String tempFilePath = tempDir + File.separator + TEMP_FILE_NAME;
+        File fileTemp = new File(tempFilePath);
+        if (fileTemp.exists()) {
+            fileTemp.delete();
+        }
     }
 
     @Test
@@ -218,9 +233,11 @@ public class MetaDataContainerTest {
 
             metaData.setMetadataString("categoryString", "String", mdString);
 
-            // TODO : create fils in tmp dir
-            System.getProperty("java.io.tmpdir");
-            VDSFileOpenOptions options = new VDSFileOpenOptions("/tmp/testCreate.vds");
+            // create file in tmp dir
+            String tempDir = System.getProperty("java.io.tmpdir");
+            String tempFilePath = tempDir + File.separator + TEMP_FILE_NAME;
+
+            VDSFileOpenOptions options = new VDSFileOpenOptions(tempFilePath);
             VdsError vdsError = new VdsError();
             OpenVDS createdVDS = OpenVDS.create(options, ld, vda, vdc, metaData);
 
