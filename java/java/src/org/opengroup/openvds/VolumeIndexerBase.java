@@ -9,14 +9,14 @@ public abstract class VolumeIndexerBase extends JniPointer {
     private static native int cpGetDataBlockNumSamples(long handle, int volumeDimension, int dim);
     private static native int cpGetLocalChunkNumSamples(long handle, int volumeDimension, int dim);
 
-    private static native int[] cpLocalIndexToVoxelIndex(long handle, int volumeDimension, int[] localIndex);
-    private static native int[] cpLocalIndexToLocalChunkIndex(long handle, int volumeDimension, int[] localIndex);
+    private static native void cpLocalIndexToVoxelIndex(long handle, int volumeDimension, int[] localIndex, int[] voxelIndexRes);
+    private static native void cpLocalIndexToLocalChunkIndex(long handle, int volumeDimension, int[] localIndex,  int[] localChunkIndexRes);
 
-    private static native int[] cpVoxelIndexToLocalIndex(long handle, int volumeDimension, int[] voxelIndex);
-    private static native int[] cpVoxelIndexToLocalChunkIndex(long handle, int volumeDimension, int[] voxelIndex);
+    private static native void cpVoxelIndexToLocalIndex(long handle, int volumeDimension, int[] voxelIndex, int[] localIndexRes);
+    private static native void cpVoxelIndexToLocalChunkIndex(long handle, int volumeDimension, int[] voxelIndex, int[] localChunkIndexRes);
 
-    private static native int[] cpLocalChunkIndexToLocalIndex(long handle, int volumeDimension, int[] voxelIndex);
-    private static native int[] cpLocalChunkIndexToVoxelIndex(long handle, int volumeDimension, int[] voxelIndex);
+    private static native void cpLocalChunkIndexToLocalIndex(long handle, int volumeDimension, int[] localChunkIndex, int[] localIndexRes);
+    private static native void cpLocalChunkIndexToVoxelIndex(long handle, int volumeDimension, int[] localChunkIndex, int[] voxelIndexRes);
 
     private static native int cpLocalIndexToDataIndex(long handle, int volumeDimension, int[] localIndex);
     private static native int cpVoxelIndexToDataIndex(long handle, int volumeDimension, int[] voxelIndex);
@@ -73,7 +73,9 @@ public abstract class VolumeIndexerBase extends JniPointer {
      */
     public int[] localIndexToVoxelIndex(int[] localIndex) {
         checkLocalIndexArgument(localIndex);
-        return cpLocalIndexToVoxelIndex(_handle, dimensionVolume, localIndex);
+        int[] res = new int[localIndex.length];
+        cpLocalIndexToVoxelIndex(_handle, dimensionVolume, localIndex, res);
+        return res;
     }
 
     /**
@@ -83,7 +85,9 @@ public abstract class VolumeIndexerBase extends JniPointer {
      */
     public int[] localIndexToLocalChunkIndex(int[] localIndex) {
         checkLocalIndexArgument(localIndex);
-        return cpLocalIndexToLocalChunkIndex(_handle, dimensionVolume, localIndex);
+        int[] res = new int[localIndex.length];
+        cpLocalIndexToLocalChunkIndex(_handle, dimensionVolume, localIndex, res);
+        return res;
     }
 
     /**
@@ -93,7 +97,9 @@ public abstract class VolumeIndexerBase extends JniPointer {
      */
     public int[] voxelIndexToLocalIndex(int[] voxelIndex) {
         checkLocalIndexArgument(voxelIndex);
-        return cpVoxelIndexToLocalIndex(_handle, dimensionVolume, voxelIndex);
+        int[] res = new int[voxelIndex.length];
+        cpVoxelIndexToLocalIndex(_handle, dimensionVolume, voxelIndex, res);
+        return res;
     }
 
     /**
@@ -103,7 +109,9 @@ public abstract class VolumeIndexerBase extends JniPointer {
      */
     public int[] voxelIndexToLocalChunkIndex(int[] voxelIndex) {
         checkLocalIndexArgument(voxelIndex);
-        return cpVoxelIndexToLocalChunkIndex(_handle, dimensionVolume, voxelIndex);
+        int[] res = new int[voxelIndex.length];
+        cpVoxelIndexToLocalChunkIndex(_handle, dimensionVolume, voxelIndex, res);
+        return res;
     }
 
     /**
@@ -113,7 +121,9 @@ public abstract class VolumeIndexerBase extends JniPointer {
      */
     public int[] localChunkIndexToLocalIndex(int[] localChunkIndex) {
         checkLocalIndexArgument(localChunkIndex);
-        return cpLocalChunkIndexToLocalIndex(_handle, dimensionVolume, localChunkIndex);
+        int[] res = new int[localChunkIndex.length];
+        cpLocalChunkIndexToLocalIndex(_handle, dimensionVolume, localChunkIndex, res);
+        return res;
     }
 
     /**
@@ -123,7 +133,9 @@ public abstract class VolumeIndexerBase extends JniPointer {
      */
     public int[] localChunkIndexToVoxelIndex(int[] localChunkIndex) {
         checkLocalIndexArgument(localChunkIndex);
-        return cpLocalChunkIndexToVoxelIndex(_handle, dimensionVolume, localChunkIndex);
+        int[] res = new int[localChunkIndex.length];
+        cpLocalChunkIndexToVoxelIndex(_handle, dimensionVolume, localChunkIndex, res);
+        return res;
     }
 
     /**

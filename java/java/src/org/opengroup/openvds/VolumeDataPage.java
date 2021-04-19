@@ -52,7 +52,7 @@ public class VolumeDataPage extends JniPointer {
     // Called by JniPointer.release()
     @Override
     protected synchronized void deleteHandle() {
-        //cpRelease(_handle);
+       // nothing to do. Release page is done by its own method and must be called by the main code, not the finalizer
     }
 
     /**
