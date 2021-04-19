@@ -16,7 +16,7 @@ public class CreateVDS {
             Duration elapsed = Duration.between(start, end);
             long hrs = elapsed.toHours();
             long min = elapsed.toMinutes() - (hrs * 60);
-            long s = (elapsed.toMillis() - (elapsed.toMinutes() * 1000)) / 1000;
+            long s = (elapsed.toMillis() - (elapsed.toMinutes() * 60 * 1000)) / 1000;
             System.out.println("Write VDS TIME : " + hrs + " hrs " + min + " min " + s + "s (" + elapsed.toMillis() + " ms)");
         }
         catch (Throwable t) {
@@ -27,10 +27,20 @@ public class CreateVDS {
 
     static void process(String[] args) throws Exception {
 
-        int samplesX = 500; // time
-        int samplesY = 1000; // XL
-        int samplesZ = 1000; // IL
+        int samplesX = 250; // time
+        int samplesY = 400; // XL
+        int samplesZ = 400; // IL
         VolumeDataChannelDescriptor.Format format = VolumeDataChannelDescriptor.Format.FORMAT_R32;
+
+        double sizeX = samplesX;
+        double sizeY = samplesX;
+        double sizeZ = samplesX;
+
+        double distMax = distance3D(0, 0, 0, sizeX, sizeY, sizeZ);
+        double cycles = Math.PI * 2 * 6;
+        double midX = samplesX /2f;
+        double midY = samplesY /2f;
+        double midZ = samplesY /2f;
 
         VolumeDataLayoutDescriptor.BrickSize brickSize = VolumeDataLayoutDescriptor.BrickSize.BRICK_SIZE_128;
         int negativeMargin = 4;
@@ -71,7 +81,7 @@ public class CreateVDS {
 
 
         //OpenVDS::InMemoryOpenOptions options;
-        VDSFileOpenOptions options = new VDSFileOpenOptions("/tmp/createJava_1000_1000_500_B128.vds");
+        VDSFileOpenOptions options = new VDSFileOpenOptions("/media/hdd/VDS/VDS_Dome_2000_2000_1000.vds");
         VdsError error;
 
         MetadataContainer metadataContainer = new MetadataContainer();
@@ -116,7 +126,14 @@ public class CreateVDS {
         int chunkCount = (int) pageAccessor.getChunkCount();
         System.out.println("Chunk count :  " + chunkCount);
 
+        long timeRead = 0L;
+        long timeWrite = 0L;
+        long timeVolIndex = 0L;
+
         for (int i = 0; i < chunkCount; i++) {
+
+            long time_1 = System.currentTimeMillis();
+
             VolumeDataPage page = pageAccessor.createPage(i);
             System.out.print("Page " + (i+1) + " / " + chunkCount);
 
@@ -149,31 +166,49 @@ public class CreateVDS {
 
             int dimPitch = pitch[dimensionality - 1] * (chunkMax[dimensionality - 1] - chunkMin[dimensionality - 1]);
 
+            long time_2 = System.currentTimeMillis();
+
             int[] numSamples = numSamplesChunk;
+            int[] localChunkIndex = new int[3];
+            int[] voxelPos = new int[3];
             for (int iDim2 = 0; iDim2 < numSamples[2]; iDim2++)
                 for (int iDim1 = 0; iDim1 < numSamples[1]; iDim1++)
                     for (int iDim0 = 0; iDim0 < numSamples[0]; iDim0++) {
-                        int[] localChunkIndex = new int[]{iDim0, iDim1, iDim2};
-                        int[] localIndex = outputIndexer.localChunkIndexToLocalIndex(localChunkIndex);
-                        int[] voxelIndex = outputIndexer.localIndexToVoxelIndex(localIndex);
+                        localChunkIndex[0] = iDim0;
+                        localChunkIndex[1] = iDim1;
+                        localChunkIndex[2] = iDim2;
+                        int[] voxelIndex = outputIndexer.localIndexToVoxelIndex(localChunkIndex);
 
-                        int pos[] = new int[] {
-                                    voxelIndex[0],
-                                    voxelIndex[1],
-                                    voxelIndex[2]
-                        };
+                        for (int vp = 0 ; vp < 3 ; ++vp) {
+                            voxelPos[vp] = voxelIndex[vp];
+                        }
 
-                        float value = (float)((iDim0 + iDim1 + iDim2)%numSamples[0]) / numSamples[0];
-                        value = rangeMin + 2 * value;
+                        float value = 0f;
+                        double dist = 0;
+                        if (voxelPos[0] >= midX) {
+                            dist = distance2D(midY, midZ, voxelPos[1], voxelPos[2]);
+                        }
+                        else {
+                            dist = distance3D(midX, midY, midZ, voxelPos[0], voxelPos[1], voxelPos[2]);
+                        }
+                        value = (float)Math.sin((dist * cycles) / distMax);
 
                         int iPos = outputIndexer.localIndexToDataIndex(localChunkIndex);
                         output[iPos] = value;
                     }
 
             // write buffer then release page
+            long time_3 = System.currentTimeMillis();
             page.writeFloatBuffer(output, pitch, dimensionality);
             page.pageRelease();
+            long time_4 = System.currentTimeMillis();
+
+            timeRead += (time_2 - time_1);
+            timeVolIndex += (time_3 - time_2);
+            timeWrite += (time_4 - time_3);
         }
+
+        displayStatistics(timeRead, timeVolIndex, timeWrite);
 
         pageAccessor.commit();
         pageAccessor.setMaxPages(0);
@@ -182,6 +217,30 @@ public class CreateVDS {
 
         vds.close(); // equivalent to OpenVDS.close(vds); ?
         System.out.println("VDS closed");
+    }
+
+    private static void displayStatistics(long timeRead, long timeVolIndex, long timeWrite) {
+        long totalTime = timeRead + timeVolIndex + timeWrite;
+        float pctRead = (timeRead * 100f) /  (float)totalTime;
+        float pctVolIndex = (timeVolIndex * 100f) /  (float)totalTime;
+        float pctWrite = (timeWrite * 100f) /  (float)totalTime;
+
+        System.out.println("Read took " + timeRead + "ms : " + pctRead + "%");
+        System.out.println("Write took " + timeWrite + "ms : " + pctWrite + "%");
+        System.out.println("Index compute took " + timeVolIndex + "ms : " + pctVolIndex + "%");
+    }
+
+    private static double distance2D(double x1, double y1, double x2, double y2) {
+        double diffX = x2 - x1;
+        double diffY = y2 - y1;
+        return Math.sqrt((diffX * diffX) + (diffY * diffY));
+    }
+
+    private static double distance3D(double x1, double y1, double z1, double x2, double y2, double z2) {
+        double diffX = x2 - x1;
+        double diffY = y2 - y1;
+        double diffZ = z2 - z1;
+        return Math.sqrt((diffX * diffX) + (diffY * diffY) + (diffZ * diffZ));
     }
 
     static float[] getScaleOffsetForFormat(float min, float max, boolean useNoValue, VolumeDataChannelDescriptor.Format format) {

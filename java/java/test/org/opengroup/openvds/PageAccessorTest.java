@@ -8,7 +8,6 @@ import org.testng.annotations.Test;
 
 import java.io.File;
 
-import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
 
 public class PageAccessorTest {
@@ -26,7 +25,7 @@ public class PageAccessorTest {
 
     @BeforeClass
     public void init() {
-        vds = new MemoryVdsGenerator(300, 300, 100, VolumeDataChannelDescriptor.Format.FORMAT_R32);
+        vds = new MemoryVdsGenerator(200, 300, 300, VolumeDataChannelDescriptor.Format.FORMAT_R32);
         url = "inmemory://create_test";
         VolumeDataLayout volumeDataLayout = vds.getLayout();
 
@@ -76,7 +75,7 @@ public class PageAccessorTest {
             fileVolIndex.delete();
         }
 
-        String fileCopyPath = tempDir + File.separator + TEMP_FILE_NAME_VOL_INDEX;
+        String fileCopyPath = tempDir + File.separator + TEMP_FILE_NAME_COPY;
         File fileCopy = new File(fileCopyPath);
         if (fileCopy.exists()) {
             fileCopy.delete();
@@ -153,7 +152,8 @@ public class PageAccessorTest {
 
             // copy file
             int[] pitch = new int[VolumeDataLayout.Dimensionality_Max];
-            for (long chunk = 0 ; chunk < pageAccessorInput.getChunkCount() ; ++chunk) {
+            long chunkCount = pageAccessorInput.getChunkCount();
+            for (long chunk = 0 ; chunk < chunkCount ; ++chunk) {
                 VolumeDataPage inputPage = pageAccessorInput.readPage(chunk);
                 VolumeDataPage page = pageAccessor.createPage(chunk);
                 float[] data = inputPage.readFloatBuffer(pitch);
@@ -212,7 +212,8 @@ public class PageAccessorTest {
             // compares block data
             int[] pitchInput = new int[VolumeDataLayout.Dimensionality_Max];
             int[] pitchOutput = new int[VolumeDataLayout.Dimensionality_Max];
-            for (long chunk = 0 ; chunk < pageAccessorInput.getChunkCount() ; ++chunk) {
+            long chunkCount = pageAccessorInput.getChunkCount();
+            for (long chunk = 0 ; chunk < chunkCount ; ++chunk) {
                 VolumeDataPage inputPage = pageAccessorInput.readPage(chunk);
                 VolumeDataPage page = pageAccessor.readPage(chunk);
                 float[] dataIn = inputPage.readFloatBuffer(pitchInput);
