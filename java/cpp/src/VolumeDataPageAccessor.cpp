@@ -44,6 +44,53 @@ extern "C" {
         return 0;
     }
 
+    /*
+    * Class:     org_opengroup_openvds_VolumeDataPageAccessor
+    * Method:    cpGetLOD
+    * Signature: (J)I
+    */
+    JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_cpGetLOD
+            (JNIEnv * env, jclass, jlong handle)
+    {
+        try {
+            return GetPageAccessor( handle )->GetLOD();
+        }
+        CATCH_EXCEPTIONS_FOR_JAVA;
+        return -1;
+    }
+
+    /*
+     * Class:     org_opengroup_openvds_VolumeDataPageAccessor
+     * Method:    cpGetChannelIndex
+     * Signature: (J)I
+     */
+    JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_cpGetChannelIndex
+            (JNIEnv * env, jclass, jlong handle)
+    {
+        try {
+            return GetPageAccessor( handle )->GetChannelIndex();
+        }
+        CATCH_EXCEPTIONS_FOR_JAVA;
+        return -1;
+    }
+
+    /*
+     * Class:     org_opengroup_openvds_VolumeDataPageAccessor
+     * Method:    cpGetNumSamples
+     * Signature: (J)[I
+     */
+    JNIEXPORT jintArray JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_cpGetNumSamples
+            (JNIEnv * env, jclass, jlong handle)
+    {
+        try {
+            int dims[OpenVDS::Dimensionality_Max];
+            GetPageAccessor( handle )->GetNumSamples(dims);
+            return NewJIntArray(env, dims, OpenVDS::Dimensionality_Max);
+        }
+        CATCH_EXCEPTIONS_FOR_JAVA;
+        return NULL;
+    }
+
 
     /*
      * Class:     org_opengroup_openvds_VolumeDataPageAccessor

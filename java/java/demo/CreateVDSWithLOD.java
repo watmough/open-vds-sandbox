@@ -3,9 +3,12 @@ import org.opengroup.openvds.*;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.DoubleSummaryStatistics;
 import java.util.List;
+import java.util.stream.DoubleStream;
+import java.util.stream.IntStream;
 
-public class CreateVDS {
+public class CreateVDSWithLOD {
 
     public static void main(String[] args) {
         try {
@@ -27,26 +30,26 @@ public class CreateVDS {
 
     static void process(String[] args) throws Exception {
 
-        int samplesX = 500; // time
-        int samplesY = 800; // XL
-        int samplesZ = 800; // IL
+        int samplesX = 1000; // time
+        int samplesY = 2000; // XL
+        int samplesZ = 2000; // IL
         VolumeDataChannelDescriptor.Format format = VolumeDataChannelDescriptor.Format.FORMAT_R32;
 
         double sizeX = samplesX;
-        double sizeY = samplesX;
-        double sizeZ = samplesX;
+        double sizeY = samplesY;
+        double sizeZ = samplesZ;
 
         double distMax = distance3D(0, 0, 0, sizeX, sizeY, sizeZ);
-        double cycles = Math.PI * 2 * 6;
+        double cycles = Math.PI * 2 * 20;
         double midX = samplesX / 2f;
         double midY = samplesY / 2f;
-        double midZ = samplesY / 2f;
+        double midZ = samplesZ / 2f;
 
-        VolumeDataLayoutDescriptor.BrickSize brickSize = VolumeDataLayoutDescriptor.BrickSize.BRICK_SIZE_64;
+        VolumeDataLayoutDescriptor.BrickSize brickSize = VolumeDataLayoutDescriptor.BrickSize.BRICK_SIZE_128;
         int negativeMargin = 4;
         int positiveMargin = 4;
         int brickSize2DMultiplier = 4;
-        VolumeDataLayoutDescriptor.LODLevels lodLevels = VolumeDataLayoutDescriptor.LODLevels.LOD_LEVELS_NONE;
+        VolumeDataLayoutDescriptor.LODLevels lodLevels = VolumeDataLayoutDescriptor.LODLevels.LOD_LEVELS_3;
         //VolumeDataLayoutDescriptor.Options layoutOptions = VolumeDataLayoutDescriptor.Options.NONE;
         VolumeDataLayoutDescriptor layoutDescriptor = new VolumeDataLayoutDescriptor(brickSize, negativeMargin, positiveMargin,
                 brickSize2DMultiplier, lodLevels, false,false,0);
@@ -81,7 +84,7 @@ public class CreateVDS {
 
 
         //OpenVDS::InMemoryOpenOptions options;
-        VDSFileOpenOptions options = new VDSFileOpenOptions("/tmp/testCreate.vds");
+        VDSFileOpenOptions options = new VDSFileOpenOptions("/media/hdd/VDS/VDS_LOD_Dome_2000_2000_1000.vds");
         VdsError error;
 
         MetadataContainer metadataContainer = new MetadataContainer();
@@ -112,108 +115,122 @@ public class CreateVDS {
 
         int channel = 0;
 
-        VolumeDataPageAccessor pageAccessor = accessManager.createVolumeDataPageAccessor(
-                layout, // layout
-                DimensionsND.DIMENSIONS_012.ordinal(), // dimension ND
-                0, // lod
-                channel, // channel
-                1000, // max pages
-                VolumeDataAccessManager.AccessMode.Create.getCode()); // access mode
-
-        //ASSERT_TRUE(pageAccessor);
         int dimensionality = layout.getDimensionality();
-
-        int chunkCount = (int) pageAccessor.getChunkCount();
-        System.out.println("Chunk count :  " + chunkCount);
-
         long timeRead = 0L;
         long timeWrite = 0L;
         long timeVolIndex = 0L;
 
-        for (int i = 0; i < chunkCount; i++) {
+        int lodCount = lodLevels.ordinal();
 
-            long time_1 = System.currentTimeMillis();
+        int[] localIndex = new int[3];
+        int[] voxelPos = new int[3];
 
-            VolumeDataPage page = pageAccessor.createPage(i);
-            System.out.print("Page " + (i+1) + " / " + chunkCount);
+        for (int lod = 0 ; lod <= lodCount ; ++lod) {
+            VolumeDataPageAccessor pageAccessor = accessManager.createVolumeDataPageAccessor(
+                    layout, // layout
+                    DimensionsND.DIMENSIONS_012.ordinal(), // dimension ND
+                    lod, // lod
+                    channel, // channel
+                    1000, // max pages
+                    VolumeDataAccessManager.AccessMode.Create.getCode()); // access mode
 
-            VolumeIndexer3D outputIndexer = new VolumeIndexer3D(page, 0, 0, DimensionsND.DIMENSIONS_012.ordinal(), layout);
-            float valueRangeScale = outputIndexer.getValueRangeMax() - outputIndexer.getValueRangeMin();
 
-            int[] numSamplesChunk = new int[3];
-            int[] numSamplesDB = new int[3];
+            //ASSERT_TRUE(pageAccessor);
+            int paLOD = pageAccessor.getLOD();
+            int paCI = pageAccessor.getChannelIndex();
+            int[] paNumSamples = pageAccessor.getNumSamples();
 
-            for (int j = 0; j < 3; j++) {
-                numSamplesChunk[j] = outputIndexer.getLocalChunkNumSamples(j);
-                numSamplesDB[j] = outputIndexer.getDataBlockNumSamples(j);
+            int chunkCount = (int) pageAccessor.getChunkCount();
+            System.out.println("LOD : " + lod + " Chunk count :  " + chunkCount);
+
+            for (int i = 0; i < chunkCount; i++) {
+
+                long time_1 = System.currentTimeMillis();
+
+                VolumeDataPage page = pageAccessor.createPage(i);
+                System.out.print("LOD : " + lod + " / Page " + (i + 1) + " / " + chunkCount);
+
+                VolumeIndexer3D outputIndexer = new VolumeIndexer3D(page, 0, lod, DimensionsND.DIMENSIONS_012.ordinal(), layout);
+                float valueRangeScale = outputIndexer.getValueRangeMax() - outputIndexer.getValueRangeMin();
+
+                int[] numSamplesChunk = new int[3];
+                int[] numSamplesDB = new int[3];
+
+                for (int j = 0; j < 3; j++) {
+                    numSamplesChunk[j] = outputIndexer.getLocalChunkNumSamples(j);
+                    numSamplesDB[j] = outputIndexer.getDataBlockNumSamples(j);
+                }
+                System.out.print("\tDimensions Chunk    :  [" + numSamplesChunk[0] + ", " + numSamplesChunk[1] + ", " + numSamplesChunk[2] + "]");
+                System.out.print("\tDimensions DataBlok :  [" + numSamplesDB[0] + ", " + numSamplesDB[1] + ", " + numSamplesDB[2] + "]");
+
+                int[] pitch = new int[VolumeDataLayout.Dimensionality_Max];
+                int[] chunkMin = new int[VolumeDataLayout.Dimensionality_Max];
+                int[] chunkMax = new int[VolumeDataLayout.Dimensionality_Max];
+
+                page.getMinMax(chunkMin, chunkMax);
+
+                System.out.print("\tCoords page : " + chunkMin[0] + "/" + chunkMax[0] + " " + chunkMin[1] + "/" + chunkMax[1] + " " + chunkMin[2] + "/" + chunkMax[2]);
+                int chunkSizeY = chunkMax[2] - chunkMin[2];
+                int chunkSizeX = chunkMax[1] - chunkMin[1];
+                int chunkSizeZ = chunkMax[0] - chunkMin[0];
+
+                float[] output = page.readFloatBuffer(pitch);
+                DoubleStream ds = IntStream.range(0, output.length).mapToDouble(oi -> output[oi]);
+                DoubleSummaryStatistics stats = ds.summaryStatistics();
+                System.out.print( " Page Buffer Size : " + output.length + " / [" + stats.getMin() + "," + stats.getMax() + "]");
+                // dimension of buffer
+                System.out.println(" Pitch : [" + pitch[0] + ", " + pitch[1] + ", " + pitch[2] + "]");
+
+                int dimPitch = pitch[dimensionality - 1] * (chunkMax[dimensionality - 1] - chunkMin[dimensionality - 1]);
+
+                long time_2 = System.currentTimeMillis();
+
+                int[] numSamples = numSamplesChunk;
+
+                for (int iDim2 = 0; iDim2 < numSamples[2]; iDim2++)
+                    for (int iDim1 = 0; iDim1 < numSamples[1]; iDim1++)
+                        for (int iDim0 = 0; iDim0 < numSamples[0]; iDim0++) {
+                            localIndex[0] = iDim0;
+                            localIndex[1] = iDim1;
+                            localIndex[2] = iDim2;
+                            int[] voxelIndex = outputIndexer.localIndexToVoxelIndex(localIndex);
+                            for (int vp = 0; vp < 3; ++vp) {
+                                voxelPos[vp] = voxelIndex[vp];
+                            }
+
+                            float value = 0f;
+                            double dist = 0;
+                            if (voxelPos[0] >= midX) {
+                                dist = distance2D(midY, midZ, voxelPos[1], voxelPos[2]);
+                            } else {
+                                dist = distance3D(midX, midY, midZ, voxelPos[0], voxelPos[1], voxelPos[2]);
+                            }
+                            value = (float) Math.sin((dist * cycles) / distMax);
+
+                            int iPos = outputIndexer.localIndexToDataIndex(localIndex);
+                            output[iPos] = value;
+                        }
+
+                // write buffer then release page
+                long time_3 = System.currentTimeMillis();
+                page.writeFloatBuffer(output, pitch);
+                page.pageRelease();
+                long time_4 = System.currentTimeMillis();
+
+                timeRead += (time_2 - time_1);
+                timeVolIndex += (time_3 - time_2);
+                timeWrite += (time_4 - time_3);
             }
-            System.out.print(" Dimensions :  [" + numSamplesChunk[0] + ", " + numSamplesChunk[1] + ", " + numSamplesChunk[2] + "]");
 
-            int[] pitch = new int[VolumeDataLayout.Dimensionality_Max];
-            int[] chunkMin = new int[VolumeDataLayout.Dimensionality_Max];
-            int[] chunkMax = new int[VolumeDataLayout.Dimensionality_Max];
-
-            page.getMinMax(chunkMin, chunkMax);
-
-            System.out.print(" Coords page : " + chunkMin[0] + "/" + chunkMax[0] + " " + chunkMin[1] + "/" + chunkMax[1] + " " + chunkMin[2] + "/" + chunkMax[2]);
-            int chunkSizeY = chunkMax[2] - chunkMin[2];
-            int chunkSizeX = chunkMax[1] - chunkMin[1];
-            int chunkSizeZ = chunkMax[0] - chunkMin[0];
-
-            float[] output = page.readFloatBuffer(pitch);
-            // dimension of buffer
-            System.out.println(" Pitch : [" + pitch[0] + ", " + pitch[1] + ", " + pitch[2] + "]");
-
-            int dimPitch = pitch[dimensionality - 1] * (chunkMax[dimensionality - 1] - chunkMin[dimensionality - 1]);
-
-            long time_2 = System.currentTimeMillis();
-
-            int[] numSamples = numSamplesChunk;
-            int[] localChunkIndex = new int[3];
-            int[] voxelPos = new int[3];
-            for (int iDim2 = 0; iDim2 < numSamples[2]; iDim2++)
-                for (int iDim1 = 0; iDim1 < numSamples[1]; iDim1++)
-                    for (int iDim0 = 0; iDim0 < numSamples[0]; iDim0++) {
-                        localChunkIndex[0] = iDim0;
-                        localChunkIndex[1] = iDim1;
-                        localChunkIndex[2] = iDim2;
-                        int[] voxelIndex = outputIndexer.localIndexToVoxelIndex(localChunkIndex);
-
-                        for (int vp = 0 ; vp < 3 ; ++vp) {
-                            voxelPos[vp] = voxelIndex[vp];
-                        }
-
-                        float value = 0f;
-                        double dist = 0;
-                        if (voxelPos[0] >= midX) {
-                            dist = distance2D(midY, midZ, voxelPos[1], voxelPos[2]);
-                        }
-                        else {
-                            dist = distance3D(midX, midY, midZ, voxelPos[0], voxelPos[1], voxelPos[2]);
-                        }
-                        value = (float)Math.sin((dist * cycles) / distMax);
-
-                        int iPos = outputIndexer.localIndexToDataIndex(localChunkIndex);
-                        output[iPos] = value;
-                    }
-
-            // write buffer then release page
-            long time_3 = System.currentTimeMillis();
-            page.writeFloatBuffer(output, pitch);
-            page.pageRelease();
-            long time_4 = System.currentTimeMillis();
-
-            timeRead += (time_2 - time_1);
-            timeVolIndex += (time_3 - time_2);
-            timeWrite += (time_4 - time_3);
+            pageAccessor.commit();
+            pageAccessor.setMaxPages(0);
+            accessManager.flushUploadQueue();
+            accessManager.destroyVolumeDataPageAccessor(pageAccessor);
         }
 
         displayStatistics(timeRead, timeVolIndex, timeWrite);
 
-        pageAccessor.commit();
-        pageAccessor.setMaxPages(0);
-        accessManager.flushUploadQueue();
-        accessManager.destroyVolumeDataPageAccessor(pageAccessor);
+
 
         vds.close(); // equivalent to OpenVDS.close(vds); ?
         System.out.println("VDS closed");

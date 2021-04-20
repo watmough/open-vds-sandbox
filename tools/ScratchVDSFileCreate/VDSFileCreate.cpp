@@ -65,7 +65,13 @@ int64_t GetTotalSystemMemory()
 #else
 
 #include <unistd.h>
+#include <cmath>
 
+
+void createNoLODVDS(int32_t samplesX, int32_t samplesY, int32_t samplesZ);
+void createLODVDS(int32_t samplesX, int32_t samplesY, int32_t samplesZ, OpenVDS::VolumeDataLayoutDescriptor::LODLevels);
+double distance2D(double x1, double y1, double x2, double y2);
+double distance3D(double x1, double y1, double x2, double y2, double x3, double y3);
 
 int64_t GetTotalSystemMemory() {
     long pages = sysconf(_SC_PHYS_PAGES);
@@ -100,9 +106,17 @@ getScaleOffsetForFormat(float min, float max, bool novalue, OpenVDS::VolumeDataC
 
 int
 main(int argc, char *argv[]) {
-    int32_t samplesX = 200;
-    int32_t samplesY = 300;
-    int32_t samplesZ = 300;
+    int32_t samplesX = 250;
+    int32_t samplesY = 400;
+    int32_t samplesZ = 400;
+
+    //createNoLODVDS(samplesX, samplesY, samplesZ);
+    createLODVDS(samplesX, samplesY, samplesZ, OpenVDS::VolumeDataLayoutDescriptor::LODLevels_2);
+
+    return EXIT_SUCCESS;
+}
+
+void createNoLODVDS(int32_t samplesX, int32_t samplesY, int32_t samplesZ) {
     OpenVDS::VolumeDataChannelDescriptor::Format format = OpenVDS::VolumeDataChannelDescriptor::Format_R32;
 
     auto brickSize = OpenVDS::VolumeDataLayoutDescriptor::BrickSize_64;
@@ -128,7 +142,7 @@ main(int argc, char *argv[]) {
     channelDescriptors.emplace_back(format, OpenVDS::VolumeDataChannelDescriptor::Components_1,
                                     AMPLITUDE_ATTRIBUTE_NAME, "", rangeMin, rangeMax,
                                     OpenVDS::VolumeDataMapping::Direct, 1,
-                                    OpenVDS::VolumeDataChannelDescriptor::Default, 0.f, intScale, intOffset);
+                                    OpenVDS::VolumeDataChannelDescriptor::Default, -999.25f, intScale, intOffset);
 
     //OpenVDS::InMemoryOpenOptions options;
     OpenVDS::VDSFileOpenOptions options("/tmp/createCPP_bis.vds");
@@ -162,7 +176,7 @@ main(int argc, char *argv[]) {
     //ASSERT_TRUE(accessManager);
 
     int32_t channel = 0;
-    OpenVDS::VolumeDataPageAccessor *pageAccessor = accessManager->CreateVolumeDataPageAccessor(layout, OpenVDS::Dimensions_012, channel, 0, 1000, OpenVDS::VolumeDataAccessManager::AccessMode_Create);
+    OpenVDS::VolumeDataPageAccessor *pageAccessor = accessManager->CreateVolumeDataPageAccessor(layout, OpenVDS::Dimensions_012, 0, channel, 100, OpenVDS::VolumeDataAccessManager::AccessMode_Create);
     //ASSERT_TRUE(pageAccessor);
 
     int32_t chunkCount = int32_t(pageAccessor->GetChunkCount());
@@ -203,6 +217,144 @@ main(int argc, char *argv[]) {
     accessManager->DestroyVolumeDataPageAccessor(pageAccessor);
 
     OpenVDS::Close(vds);
+}
 
-    return EXIT_SUCCESS;
+void createLODVDS(int32_t samplesX, int32_t samplesY, int32_t samplesZ, OpenVDS::VolumeDataLayoutDescriptor::LODLevels lodLevel) {
+
+    double distMax = distance3D(0, 0, 0, samplesX, samplesY, samplesZ);
+    double cycles = M_PI * 2 * 6;
+    double midX = samplesX / 2.f;
+    double midY = samplesY / 2.f;
+    double midZ = samplesZ / 2.f;
+
+    OpenVDS::VolumeDataChannelDescriptor::Format format = OpenVDS::VolumeDataChannelDescriptor::Format_R32;
+
+    auto brickSize = OpenVDS::VolumeDataLayoutDescriptor::BrickSize_64;
+    int negativeMargin = 4;
+    int positiveMargin = 4;
+    int brickSize2DMultiplier = 4;
+    auto lodLevels = lodLevel;
+    int lodLevelCount = lodLevel;
+    auto layoutOptions = OpenVDS::VolumeDataLayoutDescriptor::Options_None;
+    OpenVDS::VolumeDataLayoutDescriptor layoutDescriptor(brickSize, negativeMargin, positiveMargin,
+                                                         brickSize2DMultiplier, lodLevels, layoutOptions);
+
+    std::vector<OpenVDS::VolumeDataAxisDescriptor> axisDescriptors;
+    axisDescriptors.emplace_back(samplesX, "Sample", "s", 0.0f,4.f);
+    axisDescriptors.emplace_back(samplesY, "Crossline", "",1932.f, 1932.f + samplesY - 1.f);
+    axisDescriptors.emplace_back(samplesZ, "Inline", "", 9985.f, 9985.f + samplesZ - 1.f);
+
+    std::vector<OpenVDS::VolumeDataChannelDescriptor> channelDescriptors;
+    float rangeMin = -1.f;
+    float rangeMax = 1.f;
+    float intScale;
+    float intOffset;
+    getScaleOffsetForFormat(rangeMin, rangeMax, true, format, intScale, intOffset);
+    channelDescriptors.emplace_back(format, OpenVDS::VolumeDataChannelDescriptor::Components_1,
+                                    AMPLITUDE_ATTRIBUTE_NAME, "", rangeMin, rangeMax,
+                                    OpenVDS::VolumeDataMapping::Direct, 1,
+                                    OpenVDS::VolumeDataChannelDescriptor::Default, -999.25f, intScale, intOffset);
+
+    //OpenVDS::InMemoryOpenOptions options;
+    OpenVDS::VDSFileOpenOptions options("/tmp/createCPP_LOD.vds");
+    OpenVDS::Error error;
+
+    OpenVDS::MetadataContainer metadataContainer;
+    metadataContainer.SetMetadataInt("categoryInt", "Int", 123);
+    metadataContainer.SetMetadataIntVector2("categoryInt", "IntVector2", OpenVDS::IntVector2(45, 78));
+    metadataContainer.SetMetadataIntVector3("categoryInt", "IntVector3", OpenVDS::IntVector3(45, 78, 72));
+    metadataContainer.SetMetadataIntVector4("categoryInt", "IntVector4", OpenVDS::IntVector4(45, 78, 72, 84));
+    metadataContainer.SetMetadataFloat("categoryFloat", "Float", 123.f);
+    metadataContainer.SetMetadataFloatVector2("categoryFloat", "FloatVector2", OpenVDS::FloatVector2(45.5f, 78.75f));
+    metadataContainer.SetMetadataFloatVector3("categoryFloat", "FloatVector3",
+                                              OpenVDS::FloatVector3(45.5f, 78.75f, 72.75f));
+    metadataContainer.SetMetadataFloatVector4("categoryFloat", "FloatVector4",
+                                              OpenVDS::FloatVector4(45.5f, 78.75f, 72.75f, 84.1f));
+    metadataContainer.SetMetadataDouble("categoryDouble", "Double", 123.);
+    metadataContainer.SetMetadataDoubleVector2("categoryDouble", "DoubleVector2", OpenVDS::DoubleVector2(45.5, 78.75));
+    metadataContainer.SetMetadataDoubleVector3("categoryDouble", "DoubleVector3",
+                                               OpenVDS::DoubleVector3(45.5, 78.75, 72.75));
+    metadataContainer.SetMetadataDoubleVector4("categoryDouble", "DoubleVector4",
+                                               OpenVDS::DoubleVector4(45.5, 78.75, 72.75, 84.1));
+    metadataContainer.SetMetadataString("categoryString", "String", std::string("Test string"));
+
+    auto vds = OpenVDS::Create(options, layoutDescriptor, axisDescriptors, channelDescriptors, metadataContainer,
+                               error);
+
+    OpenVDS::VolumeDataLayout *layout = OpenVDS::GetLayout(vds);
+    //ASSERT_TRUE(layout);
+    OpenVDS::VolumeDataAccessManager *accessManager = OpenVDS::GetAccessManager(vds);
+    //ASSERT_TRUE(accessManager);
+
+    for (int lod = 0 ; lod <= lodLevelCount ; lod ++) {
+        int32_t channel = 0;
+        OpenVDS::VolumeDataPageAccessor *pageAccessor = accessManager->CreateVolumeDataPageAccessor(layout, OpenVDS::Dimensions_012, lod, channel, 100,
+                                                                                                    OpenVDS::VolumeDataAccessManager::AccessMode_Create);
+        //ASSERT_TRUE(pageAccessor);
+
+        int32_t chunkCount = int32_t(pageAccessor->GetChunkCount());
+        //OpenVDS::VolumeDataChannelDescriptor::Format format = layout->GetChannelFormat(channel);
+        int posMax = -1;
+        for (int i = 0; i < chunkCount; i++) {
+            OpenVDS::VolumeDataPage *page = pageAccessor->CreatePage(i);
+            OpenVDS::VolumeIndexer3D outputIndexer(page, 0, lod, OpenVDS::Dimensions_012, layout);
+            OpenVDS::IntVector<3> numSamples;
+
+            for (int j = 0; j < 3; j++) {
+                numSamples[j] = outputIndexer.GetDataBlockNumSamples(j);
+            }
+
+            int pitch[OpenVDS::VolumeDataLayout::Dimensionality_Max];
+            int chunkMin[OpenVDS::VolumeDataLayout::Dimensionality_Max];
+            int chunkMax[OpenVDS::VolumeDataLayout::Dimensionality_Max];
+
+            page->GetMinMax(chunkMin, chunkMax);
+
+            void *buffer = page->GetWritableBuffer(pitch);
+            auto output = static_cast<float *>(buffer);
+
+            for (int iDim2 = 0; iDim2 < numSamples[2]; iDim2++)
+                for (int iDim1 = 0; iDim1 < numSamples[1]; iDim1++)
+                    for (int iDim0 = 0; iDim0 < numSamples[0]; iDim0++) {
+                        OpenVDS::IntVector<3> localIndex(iDim0, iDim1, iDim2);
+                        OpenVDS::IntVector<3> voxelPos = outputIndexer.LocalIndexToVoxelIndex(localIndex);
+
+                        float value = 0.f;
+                        double dist = 0.;
+                        if (voxelPos[0] >= midX) {
+                            dist = distance2D(midY, midZ, voxelPos[1], voxelPos[2]);
+                        } else {
+                            dist = distance3D(midX, midY, midZ, voxelPos[0], voxelPos[1], voxelPos[2]);
+                        }
+                        value = (float) sin((dist * cycles) / distMax);
+
+                        int dataPos = outputIndexer.LocalIndexToDataIndex(localIndex);
+                        posMax = dataPos > posMax ? dataPos : posMax;
+                        output[dataPos] = value;
+                    }
+
+            page->Release();
+        }
+        std::cout << "For LOD " << lod << " position Max is " << posMax << std::endl;
+
+        pageAccessor->Commit();
+        pageAccessor->SetMaxPages(0);
+        accessManager->FlushUploadQueue();
+        accessManager->DestroyVolumeDataPageAccessor(pageAccessor);
+    }
+
+    OpenVDS::Close(vds);
+}
+
+double distance2D(double x1, double y1, double x2, double y2) {
+    double diffX = x2 - x1;
+    double diffY = y2 - y1;
+    return sqrt((diffX * diffX) + (diffY * diffY));
+}
+
+double distance3D(double x1, double y1, double z1, double x2, double y2, double z2) {
+    double diffX = x2 - x1;
+    double diffY = y2 - y1;
+    double diffZ = z2 - z1;
+    return sqrt((diffX * diffX) + (diffY * diffY) + (diffZ * diffZ));
 }

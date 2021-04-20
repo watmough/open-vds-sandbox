@@ -20,6 +20,9 @@ package org.opengroup.openvds;
 public class VolumeDataPageAccessor extends JniPointerWithoutDeletion {
 
     private static native long cpGetLayout( long handle );
+    private static native int cpGetLOD( long handle );
+    private static native int cpGetChannelIndex(long handle);
+    private static native int[] cpGetNumSamples(long handle);
     private static native long cpGetChunkCount( long handle );
     private static native void cpGetChunkMinMax( long handle, int chunk, int[] chunkMin, int[] chunkMax);
     private static native void cpGetChunkMinMaxExcludingMargin( long handle, int chunk, int[] chunkMin, int[] chunkMax);
@@ -27,7 +30,6 @@ public class VolumeDataPageAccessor extends JniPointerWithoutDeletion {
     private static native long cpReadPage( long handle, long chunkIndex);
     private static native void cpCommit(long handle);
     private static native void cpSetMaxPage(long handle, int maxPage);
-
 
     VolumeDataPageAccessor(long handle) {
         super(handle);
@@ -40,6 +42,29 @@ public class VolumeDataPageAccessor extends JniPointerWithoutDeletion {
     public VolumeDataLayout getLayout() {
         return new VolumeDataLayout( cpGetLayout(_handle) );
     }
+
+    /**
+     * @return the LOD value for this page accessor
+     */
+    public int getLOD() {
+        return cpGetLOD(_handle);
+    }
+
+    /**
+     * @return the channel index for this page accessor
+     */
+    public int getChannelIndex() {
+        return cpGetChannelIndex(_handle);
+    }
+
+    /**
+     * Get the num samples for this page accessor on each dimension
+     * @return an array of size Dimensionality_Max (or null if error)
+     */
+    public int[] getNumSamples() {
+        return cpGetNumSamples(_handle);
+    }
+
 
     /**
      * @return the chunk count
@@ -84,7 +109,7 @@ public class VolumeDataPageAccessor extends JniPointerWithoutDeletion {
         if (chunkIndex < 0 || chunkIndex >= getChunkCount()) {
             throw new IllegalArgumentException("VolumeDataPageAccessor::createPage : wrong chunk index");
         }
-        return new VolumeDataPage(cpCreatePage(_handle, chunkIndex));
+        return new VolumeDataPage(cpCreatePage(_handle, chunkIndex), getLayout().getDimensionality(), getLOD());
     }
 
     /**
@@ -97,7 +122,7 @@ public class VolumeDataPageAccessor extends JniPointerWithoutDeletion {
         if (chunkIndex < 0 || chunkIndex >= getChunkCount()) {
             throw new IllegalArgumentException("VolumeDataPageAccessor::readPage : wrong chunk index");
         }
-        return new VolumeDataPage(cpReadPage(_handle, chunkIndex));
+        return new VolumeDataPage(cpReadPage(_handle, chunkIndex), getLayout().getDimensionality(), getLOD());
     }
 
     /**
