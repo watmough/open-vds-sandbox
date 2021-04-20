@@ -148,7 +148,6 @@ public class PageAccessorTest {
                     channel, // channel
                     20, // max pages
                     VolumeDataAccessManager.AccessMode.ReadOnly.getCode()); // access mode
-            int dimensionality = layout.getDimensionality();
 
             // copy file
             int[] pitch = new int[VolumeDataLayout.Dimensionality_Max];
@@ -157,7 +156,7 @@ public class PageAccessorTest {
                 VolumeDataPage inputPage = pageAccessorInput.readPage(chunk);
                 VolumeDataPage page = pageAccessor.createPage(chunk);
                 float[] data = inputPage.readFloatBuffer(pitch);
-                page.writeFloatBuffer(data, pitch, dimensionality);
+                page.writeFloatBuffer(data, pitch);
 
                 inputPage.pageRelease();
                 page.pageRelease();

@@ -25,24 +25,31 @@ public class VolumeDataPage extends JniPointer {
 
     private static native  void cpGetMinMaxExcludingMargin(long handle, int[] min, int[] max);
 
-    private static native byte[] cpGetByteBuffer(long handle, int[] pitch);
+    private static native byte[] cpGetByteBuffer(long handle, int[] pitch, int lod);
 
     private static native void cpSetByteBuffer(long handle, byte[] buffer);
 
-    private static native float[] cpGetFloatBuffer(long handle, int[] pitch);
+    private static native float[] cpGetFloatBuffer(long handle, int[] pitch, int lod);
 
     private static native void cpSetFloatBuffer(long handle, float[] buffer);
 
-    private static native double[] cpGetDoubleBuffer(long handle, int[] pitch);
+    private static native double[] cpGetDoubleBuffer(long handle, int[] pitch, int lod);
 
     private static native void cpSetDoubleBuffer(long handle, double[] buffer);
 
-    public VolumeDataPage(long handle) {
+    private final int dimensionality;
+    private final int lod;
+
+    public VolumeDataPage(long handle, int dimensionality, int lod) {
         super(handle, true);
+        this.dimensionality = dimensionality;
+        this.lod = lod;
     }
 
-    public VolumeDataPage(long handle, boolean ownHandle) {
+    public VolumeDataPage(long handle, int dimensionality, int lod, boolean ownHandle) {
         super(handle, ownHandle);
+        this.dimensionality = dimensionality;
+        this.lod = lod;
     }
 
     public void pageRelease() {
@@ -84,17 +91,16 @@ public class VolumeDataPage extends JniPointer {
      */
     public byte[] readByteBuffer(int[] pitch) {
         checkDimParamArray(pitch, "Wrong pitch array parameter size, expected ");
-        return cpGetByteBuffer(_handle, pitch);
+        return cpGetByteBuffer(_handle, pitch, lod);
     }
 
     /**
      * Set byte array int page
      * @param buffer values to set. Size must match page sample size
      * @param pitch chunk pitch (got by a read)
-     * @param dimensionality volume dimensionality
      */
-    public void writeByteBuffer(byte[] buffer, int[] pitch, int dimensionality) {
-        checkBufferSize(buffer, pitch, dimensionality);
+    public void writeByteBuffer(byte[] buffer, int[] pitch) {
+        //checkBufferSize(buffer, pitch, dimensionality, lod);
         cpSetByteBuffer(_handle, buffer);
     }
 
@@ -105,17 +111,16 @@ public class VolumeDataPage extends JniPointer {
      */
     public float[] readFloatBuffer(int[] pitch) {
         checkDimParamArray(pitch, "Wrong pitch array parameter size, expected ");
-        return cpGetFloatBuffer(_handle, pitch);
+        return cpGetFloatBuffer(_handle, pitch, lod);
     }
 
     /**
      * Set float array int page
      * @param buffer values to set. Size must match page sample size
      * @param pitch chunk pitch (got by a read)
-     * @param dimensionality volume dimensionality
      */
-    public void writeFloatBuffer(float[] buffer, int[] pitch, int dimensionality) {
-        checkBufferSize(buffer, pitch, dimensionality);
+    public void writeFloatBuffer(float[] buffer, int[] pitch) {
+        //checkBufferSize(buffer, pitch, dimensionality, lod);
         cpSetFloatBuffer(_handle, buffer);
     }
 
@@ -126,17 +131,16 @@ public class VolumeDataPage extends JniPointer {
      */
     public double[] readDoubleBuffer(int[] pitch) {
         checkDimParamArray(pitch, "Wrong pitch array parameter size, expected ");
-        return cpGetDoubleBuffer(_handle, pitch);
+        return cpGetDoubleBuffer(_handle, pitch, lod);
     }
 
     /**
      * Set double array int page
      * @param buffer values to set. Size must match page sample size
      * @param pitch chunk pitch (got by a read)
-     * @param dimensionality volume dimensionality
      */
-    public void writeDoubleBuffer(double[] buffer, int[] pitch, int dimensionality) {
-        checkBufferSize(buffer, pitch, dimensionality);
+    public void writeDoubleBuffer(double[] buffer, int[] pitch) {
+        //checkBufferSize(buffer, pitch, dimensionality, lod);
         cpSetDoubleBuffer(_handle, buffer);
     }
 
@@ -147,33 +151,36 @@ public class VolumeDataPage extends JniPointer {
         return getElementCount(chunkMin, chunkMax);
     }
 
-    private void checkBufferSize(byte[] buffer, int[] pitch, int dim) {
-        int[] chunkMin = new int[VolumeDataLayout.Dimensionality_Max];
-        int[] chunkMax = new int[VolumeDataLayout.Dimensionality_Max];
-        getMinMax(chunkMin, chunkMax);
-        int nbElem = (chunkMax[dim - 1] - chunkMin[dim - 1]) * pitch[dim - 1];
-        if (buffer == null || buffer.length != nbElem) {
-            throw new IllegalArgumentException("Wrong buffer size, expected " + nbElem + "(dim2 * pitch[2]), got " + (buffer == null ? "null" : buffer.length));
+    private void checkBufferSize(byte[] buffer, int[] pitch, int dim, int lod) {
+        if (buffer == null) {
+            throw new IllegalArgumentException("Wrong buffer size, got NULL");
         }
+        checkBufferSize(buffer.length, pitch, dimensionality, lod);
     }
 
-    private void checkBufferSize(float[] buffer, int[] pitch, int dim) {
-        int[] chunkMin = new int[VolumeDataLayout.Dimensionality_Max];
-        int[] chunkMax = new int[VolumeDataLayout.Dimensionality_Max];
-        getMinMax(chunkMin, chunkMax);
-        int nbElem = (chunkMax[dim - 1] - chunkMin[dim - 1]) * pitch[dim - 1];
-        if (buffer == null || buffer.length != nbElem) {
-            throw new IllegalArgumentException("Wrong buffer size, expected " + nbElem + "(dim2 * pitch[2]), got " + (buffer == null ? "null" : buffer.length));
+    private void checkBufferSize(float[] buffer, int[] pitch, int dim, int lod) {
+        if (buffer == null) {
+            throw new IllegalArgumentException("Wrong buffer size, got NULL");
         }
+        checkBufferSize(buffer.length, pitch, dimensionality, lod);
     }
 
-    private void checkBufferSize(double[] buffer, int[] pitch, int dim) {
+    private void checkBufferSize(double[] buffer, int[] pitch, int dim, int lod) {
+        if (buffer == null) {
+            throw new IllegalArgumentException("Wrong buffer size, got NULL");
+        }
+        checkBufferSize(buffer.length, pitch, dimensionality, lod);
+    }
+
+    private void checkBufferSize(int sizeInputBuffer, int[] pitch, int dim, int lod) {
         int[] chunkMin = new int[VolumeDataLayout.Dimensionality_Max];
         int[] chunkMax = new int[VolumeDataLayout.Dimensionality_Max];
+        int div = (int)Math.pow(2, lod);
         getMinMax(chunkMin, chunkMax);
         int nbElem = (chunkMax[dim - 1] - chunkMin[dim - 1]) * pitch[dim - 1];
-        if (buffer == null || buffer.length != nbElem) {
-            throw new IllegalArgumentException("Wrong buffer size, expected " + nbElem + "(dim2 * pitch[2]), got " + (buffer == null ? "null" : buffer.length));
+        nbElem /= div;
+        if (sizeInputBuffer != nbElem) {
+            throw new IllegalArgumentException("Wrong buffer size, expected " + nbElem + "(dim2 * pitch[2]), got " + sizeInputBuffer);
         }
     }
 
