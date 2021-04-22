@@ -21,9 +21,11 @@ public class VolumeDataPage extends JniPointer {
 
     private static native void cpRelease(long handle);
 
-    private static native  void cpGetMinMax(long handle, int[] min, int[] max);
+    private static native void cpGetMinMax(long handle, int[] min, int[] max);
 
-    private static native  void cpGetMinMaxExcludingMargin(long handle, int[] min, int[] max);
+    private static native void cpGetMinMaxExcludingMargin(long handle, int[] min, int[] max);
+
+    private static native int cpGetAllocatedSize(long handle);
 
     private static native byte[] cpGetByteBuffer(long handle, int[] pitch, int lod);
 
@@ -59,7 +61,8 @@ public class VolumeDataPage extends JniPointer {
     // Called by JniPointer.release()
     @Override
     protected synchronized void deleteHandle() {
-       // nothing to do. Release page is done by its own method and must be called by the main code, not the finalizer
+        // nothing to do. Release page is done by its own method and must be called by the main code, not the finalizer
+        // volume page release is handled by the page accessor and manager
     }
 
     /**
@@ -85,6 +88,13 @@ public class VolumeDataPage extends JniPointer {
     }
 
     /**
+     * @return the buffer size of this page
+     */
+    public int getAllocatedBufferSize() {
+        return cpGetAllocatedSize(_handle);
+    }
+
+    /**
      * Read byte array of page
      * @param pitch will receive pitch values for this page
      * @return the float array of page data
@@ -100,7 +110,7 @@ public class VolumeDataPage extends JniPointer {
      * @param pitch chunk pitch (got by a read)
      */
     public void writeByteBuffer(byte[] buffer, int[] pitch) {
-        //checkBufferSize(buffer, pitch, dimensionality, lod);
+        checkBufferSize(buffer, pitch, dimensionality, lod);
         cpSetByteBuffer(_handle, buffer);
     }
 
@@ -120,7 +130,7 @@ public class VolumeDataPage extends JniPointer {
      * @param pitch chunk pitch (got by a read)
      */
     public void writeFloatBuffer(float[] buffer, int[] pitch) {
-        //checkBufferSize(buffer, pitch, dimensionality, lod);
+        checkBufferSize(buffer, pitch, dimensionality, lod);
         cpSetFloatBuffer(_handle, buffer);
     }
 
@@ -140,7 +150,7 @@ public class VolumeDataPage extends JniPointer {
      * @param pitch chunk pitch (got by a read)
      */
     public void writeDoubleBuffer(double[] buffer, int[] pitch) {
-        //checkBufferSize(buffer, pitch, dimensionality, lod);
+        checkBufferSize(buffer, pitch, dimensionality, lod);
         cpSetDoubleBuffer(_handle, buffer);
     }
 
@@ -173,14 +183,9 @@ public class VolumeDataPage extends JniPointer {
     }
 
     private void checkBufferSize(int sizeInputBuffer, int[] pitch, int dim, int lod) {
-        int[] chunkMin = new int[VolumeDataLayout.Dimensionality_Max];
-        int[] chunkMax = new int[VolumeDataLayout.Dimensionality_Max];
-        int div = (int)Math.pow(2, lod);
-        getMinMax(chunkMin, chunkMax);
-        int nbElem = (chunkMax[dim - 1] - chunkMin[dim - 1]) * pitch[dim - 1];
-        nbElem /= div;
-        if (sizeInputBuffer != nbElem) {
-            throw new IllegalArgumentException("Wrong buffer size, expected " + nbElem + "(dim2 * pitch[2]), got " + sizeInputBuffer);
+        int pageBufferSize = getAllocatedBufferSize();
+        if (sizeInputBuffer != pageBufferSize) {
+            throw new IllegalArgumentException("Wrong buffer size, expected " + pageBufferSize + ", got " + sizeInputBuffer);
         }
     }
 

@@ -27,6 +27,10 @@ using namespace OpenVDS;
 extern "C" {
 #endif
 
+    inline VolumeIndexer2D * GetVolumeIndexer2D( jlong handle ) {
+        return (VolumeIndexer2D*)CheckHandle( handle );
+    }
+
     inline OpenVDS::VolumeDataLayout *GetLayout(jlong handle) {
         return (OpenVDS::VolumeDataLayout *) CheckHandle(handle);
     }
@@ -51,6 +55,190 @@ extern "C" {
         }
         CATCH_EXCEPTIONS_FOR_JAVA;
         return 0;
+    }
+
+
+    /*
+    * Class:     org_opengroup_openvds_VolumeIndexer2D
+    * Method:    cpLocalIndexToVoxelIndex
+    * Signature: (JI[III)V
+    */
+    JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeIndexer2D_cpLocalIndexToVoxelIndex
+            (JNIEnv * env, jclass, jlong handle, jintArray resOutIndex, jint i, jint j)
+    {
+        try {
+            IntVector2 res2 = GetVolumeIndexer2D(handle)->LocalIndexToVoxelIndex(IntVector2(i, j));
+            env->SetIntArrayRegion(resOutIndex, 0, 2, res2.data);
+        }
+        CATCH_EXCEPTIONS_FOR_JAVA;
+    }
+
+    /*
+    * Class:     org_opengroup_openvds_VolumeIndexer2D
+    * Method:    cpLocalIndexToLocalChunkIndex
+    * Signature: (J[III)V
+    */
+    JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeIndexer2D_cpLocalIndexToLocalChunkIndex
+            (JNIEnv * env, jclass, jlong handle, jintArray resOutIndex, jint i, jint j)
+    {
+        try {
+            IntVector2 res2 = GetVolumeIndexer2D(handle)->LocalIndexToLocalChunkIndex(IntVector2(i, j));
+            env->SetIntArrayRegion(resOutIndex, 0, 2, res2.data);
+        }
+        CATCH_EXCEPTIONS_FOR_JAVA;
+    }
+
+
+    /*
+     * Class:     org_opengroup_openvds_VolumeIndexer2D
+     * Method:    cpVoxelIndexToLocalIndex
+     * Signature: (J[III)V
+     */
+    JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeIndexer2D_cpVoxelIndexToLocalIndex
+            (JNIEnv * env, jclass, jlong handle, jintArray resOutIndex, jint i, jint j)
+    {
+        try {
+            IntVector2 res2 = GetVolumeIndexer2D(handle)->VoxelIndexToLocalIndex(IntVector2(i, j));
+            env->SetIntArrayRegion(resOutIndex, 0, 2, res2.data);
+        }
+        CATCH_EXCEPTIONS_FOR_JAVA;
+    }
+
+    /*
+    * Class:     org_opengroup_openvds_VolumeIndexer2D
+    * Method:    cpVoxelIndexToLocalChunkIndex
+    * Signature: (J[III)V
+    */
+    JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeIndexer2D_cpVoxelIndexToLocalChunkIndex
+            (JNIEnv * env, jclass, jlong handle, jintArray resOutIndex, jint i, jint j)
+    {
+        try {
+            IntVector2 res2 = GetVolumeIndexer2D(handle)->VoxelIndexToLocalChunkIndex(IntVector2(i, j));
+            env->SetIntArrayRegion(resOutIndex, 0, 2, res2.data);
+        }
+        CATCH_EXCEPTIONS_FOR_JAVA;
+    }
+
+
+    /*
+     * Class:     org_opengroup_openvds_VolumeIndexer2D
+     * Method:    cpLocalChunkIndexToLocalIndex
+     * Signature: (J[III)V
+     */
+    JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeIndexer2D_cpLocalChunkIndexToLocalIndex
+            (JNIEnv * env, jclass, jlong handle, jintArray resOutIndex, jint i, jint j)
+    {
+        try {
+            IntVector2 res2 = GetVolumeIndexer2D(handle)->LocalChunkIndexToLocalIndex(IntVector2(i, j));
+            env->SetIntArrayRegion(resOutIndex, 0, 2, res2.data);
+        }
+        CATCH_EXCEPTIONS_FOR_JAVA;
+    }
+
+    /*
+    * Class:     org_opengroup_openvds_VolumeIndexer2D
+    * Method:    cpLocalChunkIndexToVoxelIndex
+    * Signature: (J[III)V
+    */
+    JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeIndexer2D_cpLocalChunkIndexToVoxelIndex
+            (JNIEnv * env, jclass, jlong handle, jintArray resOutIndex, jint i, jint j)
+    {
+        try {
+            IntVector2 res2 = GetVolumeIndexer2D(handle)->LocalChunkIndexToVoxelIndex(IntVector2(i, j));
+            env->SetIntArrayRegion(resOutIndex, 0, 2, res2.data);
+        }
+        CATCH_EXCEPTIONS_FOR_JAVA;
+    }
+
+
+    /*
+     * Class:     org_opengroup_openvds_VolumeIndexer2D
+     * Method:    cpLocalIndexToDataIndex
+     * Signature: (JII)I
+     */
+    JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeIndexer2D_cpLocalIndexToDataIndex
+            (JNIEnv * env, jclass, jlong handle, jint i, jint j)
+    {
+        try {
+            return GetVolumeIndexer2D(handle)->LocalIndexToDataIndex(IntVector2(i, j));
+        }
+        CATCH_EXCEPTIONS_FOR_JAVA;
+        return -1;
+    }
+
+    /*
+    * Class:     org_opengroup_openvds_VolumeIndexer2D
+    * Method:    cpVoxelIndexToDataIndex
+    * Signature: (JII)I
+    */
+    JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeIndexer2D_cpVoxelIndexToDataIndex
+            (JNIEnv * env, jclass, jlong handle, jint i, jint j)
+    {
+        try {
+            return GetVolumeIndexer2D(handle)->VoxelIndexToDataIndex(IntVector2(i, j));
+        }
+        CATCH_EXCEPTIONS_FOR_JAVA;
+        return -1;
+    }
+
+    /*
+    * Class:     org_opengroup_openvds_VolumeIndexer2D
+    * Method:    cpLocalChunkIndexToDataIndex
+    * Signature: (JII)I
+    */
+    JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeIndexer2D_cpLocalChunkIndexToDataIndex
+            (JNIEnv * env, jclass, jlong handle, jint i, jint j)
+    {
+        try {
+            return GetVolumeIndexer2D(handle)->LocalChunkIndexToDataIndex(IntVector2(i, j));
+        }
+        CATCH_EXCEPTIONS_FOR_JAVA;
+        return -1;
+    }
+
+    /*
+    * Class:     org_opengroup_openvds_VolumeIndexer2D
+    * Method:    cpVoxelIndexInProcessArea
+    * Signature: (JII)Z
+    */
+    JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeIndexer2D_cpVoxelIndexInProcessArea
+            (JNIEnv * env, jclass, jlong handle, jint i, jint j)
+    {
+        try {
+            return GetVolumeIndexer2D(handle)->VoxelIndexInProcessArea(IntVector2(i, j));
+        }
+        CATCH_EXCEPTIONS_FOR_JAVA;
+        return -1;
+    }
+
+    /*
+    * Class:     org_opengroup_openvds_VolumeIndexer2D
+    * Method:    cpLocalIndexInProcessArea
+    * Signature: (JII)Z
+    */
+    JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeIndexer2D_cpLocalIndexInProcessArea
+            (JNIEnv * env, jclass, jlong handle, jint i, jint j)
+    {
+        try {
+            return GetVolumeIndexer2D(handle)->LocalIndexInProcessArea(IntVector2(i, j));
+        }
+        CATCH_EXCEPTIONS_FOR_JAVA;
+        return -1;
+    }
+
+    /*
+    * Class:     org_opengroup_openvds_VolumeIndexer2D
+    * Method:    cpLocalChunkIndexInProcessArea
+    * Signature: (JII)Z
+    */
+    JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeIndexer2D_cpLocalChunkIndexInProcessArea
+            (JNIEnv * env, jclass, jlong handle, jint i, jint j)
+    {
+        try {
+            return GetVolumeIndexer2D(handle)->LocalChunkIndexInProcessArea(IntVector2(i, j));
+        }
+        CATCH_EXCEPTIONS_FOR_JAVA;
+        return -1;
     }
 
 #ifdef __cplusplus

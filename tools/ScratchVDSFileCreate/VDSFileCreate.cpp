@@ -66,6 +66,7 @@ int64_t GetTotalSystemMemory()
 
 #include <unistd.h>
 #include <cmath>
+#include <chrono>
 
 
 void createNoLODVDS(int32_t samplesX, int32_t samplesY, int32_t samplesZ);
@@ -106,13 +107,21 @@ getScaleOffsetForFormat(float min, float max, bool novalue, OpenVDS::VolumeDataC
 
 int
 main(int argc, char *argv[]) {
-    int32_t samplesX = 250;
-    int32_t samplesY = 400;
-    int32_t samplesZ = 400;
+    int32_t samplesX = 500;
+    int32_t samplesY = 800;
+    int32_t samplesZ = 800;
 
-    //createNoLODVDS(samplesX, samplesY, samplesZ);
-    createLODVDS(samplesX, samplesY, samplesZ, OpenVDS::VolumeDataLayoutDescriptor::LODLevels_2);
+    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 
+    createNoLODVDS(samplesX, samplesY, samplesZ);
+    //createLODVDS(samplesX, samplesY, samplesZ, OpenVDS::VolumeDataLayoutDescriptor::LODLevels_2);
+
+    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+    long elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
+    long hrs = elapsed / (60 * 60 * 1000);
+    long min = (elapsed - (hrs * 60 * 60 * 1000)) / (60 * 1000);
+    long s = (elapsed - (hrs * 60 * 1000) - (min * 60 * 1000)) / 1000;
+    std::cout << "Write VDS TIME [CPP native] : " <<  hrs << " hrs " << min << " min " << s << "s (" << elapsed << " ms)" << std::endl;
     return EXIT_SUCCESS;
 }
 
@@ -201,8 +210,8 @@ void createNoLODVDS(int32_t samplesX, int32_t samplesY, int32_t samplesZ) {
                     for (int iDim0 = 0; iDim0 < numSamples[0]; iDim0++)
                     {
                         OpenVDS::IntVector<3> localOutIndex(iDim0, iDim1, iDim2);
-
-                        float value = (float) ((iDim0 + iDim1 + iDim2)%numSamples[0]) / numSamples[0];
+                        OpenVDS::IntVector<3> vox = outputIndexer.LocalIndexToVoxelIndex(localOutIndex);
+                        float value = (float) ((vox[0] + vox[1] + vox[2])) / numSamples[0];
                         value = rangeMin + 2.f * value;
                         int dataPos = outputIndexer.LocalIndexToDataIndex(localOutIndex);
                         output[dataPos] = value;

@@ -90,6 +90,21 @@ extern "C" {
 
     /*
     * Class:     org_opengroup_openvds_VolumeDataPage
+    * Method:    cpGetAllocatedSize
+    * Signature: (J)I
+    */
+    JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataPage_cpGetAllocatedSize
+            (JNIEnv * env, jclass, jlong handle)
+    {
+        try {
+            return GetBufferAllocatedSize(GetVolumePage(handle));
+        }
+        CATCH_EXCEPTIONS_FOR_JAVA;
+        return -1;
+    }
+
+    /*
+    * Class:     org_opengroup_openvds_VolumeDataPage
     * Method:    cpGetByteBuffer
     * Signature: (J[I)[B
     */
