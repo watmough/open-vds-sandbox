@@ -30,7 +30,7 @@ public class CreateVDSWithLOD {
 
     static void process(String[] args) throws Exception {
 
-        int samplesX = 1000; // time
+        int samplesX = 1500; // time
         int samplesY = 2000; // XL
         int samplesZ = 2000; // IL
         VolumeDataChannelDescriptor.Format format = VolumeDataChannelDescriptor.Format.FORMAT_R32;
@@ -45,7 +45,7 @@ public class CreateVDSWithLOD {
         double midY = samplesY / 2f;
         double midZ = samplesZ / 2f;
 
-        VolumeDataLayoutDescriptor.BrickSize brickSize = VolumeDataLayoutDescriptor.BrickSize.BRICK_SIZE_128;
+        VolumeDataLayoutDescriptor.BrickSize brickSize = VolumeDataLayoutDescriptor.BrickSize.BRICK_SIZE_256;
         int negativeMargin = 4;
         int positiveMargin = 4;
         int brickSize2DMultiplier = 4;
@@ -84,7 +84,7 @@ public class CreateVDSWithLOD {
 
 
         //OpenVDS::InMemoryOpenOptions options;
-        VDSFileOpenOptions options = new VDSFileOpenOptions("/media/hdd/VDS/VDS_LOD_Dome_2000_2000_1000.vds");
+        VDSFileOpenOptions options = new VDSFileOpenOptions("/media/hdd/VDS/VDS_LOD_Dome_2000_2000_1500_B256.vds");
         VdsError error;
 
         MetadataContainer metadataContainer = new MetadataContainer();
@@ -131,7 +131,7 @@ public class CreateVDSWithLOD {
                     DimensionsND.DIMENSIONS_012.ordinal(), // dimension ND
                     lod, // lod
                     channel, // channel
-                    1000, // max pages
+                    100, // max pages
                     VolumeDataAccessManager.AccessMode.Create.getCode()); // access mode
 
 
