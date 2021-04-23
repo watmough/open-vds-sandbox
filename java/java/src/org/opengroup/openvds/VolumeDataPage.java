@@ -27,6 +27,8 @@ public class VolumeDataPage extends JniPointer {
 
     private static native int cpGetAllocatedSize(long handle);
 
+    private static native void cpGetPitch(long handle, int[] pitch);
+
     private static native byte[] cpGetByteBuffer(long handle, int[] pitch, int lod);
 
     private static native void cpSetByteBuffer(long handle, byte[] buffer);
@@ -92,6 +94,14 @@ public class VolumeDataPage extends JniPointer {
      */
     public int getAllocatedBufferSize() {
         return cpGetAllocatedSize(_handle);
+    }
+
+    /**
+     * Read the pitch of this volume page and puts it in pitch array parameter
+     */
+    public void getPitch(int pitch[]) {
+        checkDimParamArray(pitch, "Wrong pitch array parameter size, expected ");
+        cpGetPitch(_handle, pitch);
     }
 
     /**

@@ -104,6 +104,23 @@ extern "C" {
     }
 
     /*
+     * Class:     org_opengroup_openvds_VolumeDataPage
+     * Method:    cpGetPitch
+     * Signature: (J[I)[I
+     */
+    JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataPage_cpGetPitch
+            (JNIEnv * env, jclass, jlong handle, jintArray pitchArray)
+    {
+        try {
+            int pitch[OpenVDS::Dimensionality_Max];
+            OpenVDS::VolumeDataPage* page = GetVolumePage(handle);
+            page->GetBuffer(pitch);
+            env->SetIntArrayRegion(pitchArray, 0, OpenVDS::Dimensionality_Max, pitch);
+        }
+        CATCH_EXCEPTIONS_FOR_JAVA;
+    }
+
+    /*
     * Class:     org_opengroup_openvds_VolumeDataPage
     * Method:    cpGetByteBuffer
     * Signature: (J[I)[B

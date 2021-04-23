@@ -1,5 +1,7 @@
 import org.opengroup.openvds.*;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -9,15 +11,21 @@ public class CreateVDS {
 
     public static void main(String[] args) {
         try {
-            Instant start = Instant.now();
-            process(args);
-            Instant end = Instant.now();
+            if (!checkParams(args)) {
+                System.out.println("Bad params, usage  : <CreateVDS> /path/to/file");
+                System.out.println("path must be a valid non existing file path");
+            }
+            else {
+                Instant start = Instant.now();
+                process(args[0]);
+                Instant end = Instant.now();
 
-            Duration elapsed = Duration.between(start, end);
-            long hrs = elapsed.toHours();
-            long min = elapsed.toMinutes() - (hrs * 60);
-            long s = (elapsed.toMillis() - (elapsed.toMinutes() * 60 * 1000)) / 1000;
-            System.out.println("Write VDS TIME : " + hrs + " hrs " + min + " min " + s + "s (" + elapsed.toMillis() + " ms)");
+                Duration elapsed = Duration.between(start, end);
+                long hrs = elapsed.toHours();
+                long min = elapsed.toMinutes() - (hrs * 60);
+                long s = (elapsed.toMillis() - (elapsed.toMinutes() * 60 * 1000)) / 1000;
+                System.out.println("Write VDS TIME : " + hrs + " hrs " + min + " min " + s + "s (" + elapsed.toMillis() + " ms)");
+            }
         }
         catch (Throwable t) {
             System.out.println();
@@ -25,7 +33,31 @@ public class CreateVDS {
         }
     }
 
-    static void process(String[] args) throws Exception {
+    private static boolean checkParams(String[] args) {
+        if (args == null || args.length != 1) {
+            return false;
+        }
+        String path = args[0];
+        File file = new File(path);
+        try {
+            file.getCanonicalPath();
+        }
+        catch (IOException e) {
+            System.err.println("VDS File path is invalid !");
+            return false;
+        }
+        if (!path.endsWith(".vds")) {
+            System.err.println("VDS File path must have vds extension !");
+            return false;
+        }
+        if (file.exists()) {
+            System.err.println("VDS File already exists !");
+            return false;
+        }
+        return true;
+    }
+
+    static void process(String vdsPath) throws Exception {
 
         int samplesX = 500; // time
         int samplesY = 800; // XL
@@ -81,7 +113,7 @@ public class CreateVDS {
 
 
         //OpenVDS::InMemoryOpenOptions options;
-        VDSFileOpenOptions options = new VDSFileOpenOptions("/tmp/testCreate.vds");
+        VDSFileOpenOptions options = new VDSFileOpenOptions(vdsPath);
         VdsError error;
 
         MetadataContainer metadataContainer = new MetadataContainer();
@@ -121,7 +153,6 @@ public class CreateVDS {
                 VolumeDataAccessManager.AccessMode.Create.getCode()); // access mode
 
         //ASSERT_TRUE(pageAccessor);
-        int dimensionality = layout.getDimensionality();
 
         int chunkCount = (int) pageAccessor.getChunkCount();
         System.out.println("Chunk count :  " + chunkCount);
@@ -130,47 +161,30 @@ public class CreateVDS {
         long timeWrite = 0L;
         long timeVolIndex = 0L;
 
+        int[] pitch = new int[VolumeDataLayout.Dimensionality_Max];
+        int[] numSamplesChunk = new int[3];
+        int[] localChunkIndex = new int[3];
+        int[] voxelPos = new int[3];
+
         for (int i = 0; i < chunkCount; i++) {
 
             long time_1 = System.currentTimeMillis();
 
             VolumeDataPage page = pageAccessor.createPage(i);
-            System.out.print("Page " + (i+1) + " / " + chunkCount);
+            System.out.println("Page " + (i+1) + " / " + chunkCount);
 
             VolumeIndexer3D outputIndexer = new VolumeIndexer3D(page, 0, 0, DimensionsND.DIMENSIONS_012.ordinal(), layout);
-            float valueRangeScale = outputIndexer.getValueRangeMax() - outputIndexer.getValueRangeMin();
-
-            int[] numSamplesChunk = new int[3];
-            int[] numSamplesDB = new int[3];
 
             for (int j = 0; j < 3; j++) {
                 numSamplesChunk[j] = outputIndexer.getLocalChunkNumSamples(j);
-                numSamplesDB[j] = outputIndexer.getDataBlockNumSamples(j);
             }
-            System.out.print(" Dimensions :  [" + numSamplesChunk[0] + ", " + numSamplesChunk[1] + ", " + numSamplesChunk[2] + "]");
 
-            int[] pitch = new int[VolumeDataLayout.Dimensionality_Max];
-            int[] chunkMin = new int[VolumeDataLayout.Dimensionality_Max];
-            int[] chunkMax = new int[VolumeDataLayout.Dimensionality_Max];
-
-            page.getMinMax(chunkMin, chunkMax);
-
-            System.out.print(" Coords page : " + chunkMin[0] + "/" + chunkMax[0] + " " + chunkMin[1] + "/" + chunkMax[1] + " " + chunkMin[2] + "/" + chunkMax[2]);
-            int chunkSizeY = chunkMax[2] - chunkMin[2];
-            int chunkSizeX = chunkMax[1] - chunkMin[1];
-            int chunkSizeZ = chunkMax[0] - chunkMin[0];
-
-            float[] output = page.readFloatBuffer(pitch);
-            // dimension of buffer
-            System.out.println(" Pitch : [" + pitch[0] + ", " + pitch[1] + ", " + pitch[2] + "]");
-
-            int dimPitch = pitch[dimensionality - 1] * (chunkMax[dimensionality - 1] - chunkMin[dimensionality - 1]);
+            page.getPitch(pitch);
+            float[] output = new float[page.getAllocatedBufferSize()];
 
             long time_2 = System.currentTimeMillis();
 
             int[] numSamples = numSamplesChunk;
-            int[] localChunkIndex = new int[3];
-            int[] voxelPos = new int[3];
             for (int iDim2 = 0; iDim2 < numSamples[2]; iDim2++)
                 for (int iDim1 = 0; iDim1 < numSamples[1]; iDim1++)
                     for (int iDim0 = 0; iDim0 < numSamples[0]; iDim0++) {

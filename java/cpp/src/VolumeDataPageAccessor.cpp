@@ -175,6 +175,25 @@ extern "C" {
         CATCH_EXCEPTIONS_FOR_JAVA;
     }
 
+    /*
+    * Class:     org_opengroup_openvds_VolumeDataPageAccessor
+    * Method:    cpGetChunkIndex
+    * Signature: (J[I)J
+    */
+    JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_cpGetChunkIndex
+            (JNIEnv * env, jclass, jlong handle, jintArray positionArr)
+    {
+        try {
+            jint * position = env->GetIntArrayElements(positionArr, 0);
+            //const int (&positionParam)[OpenVDS::Dimensionality_Max] = reinterpret_cast<const int(&)[OpenVDS::Dimensionality_Max]>(position);
+            int positionParam[OpenVDS::Dimensionality_Max];
+            for (int i = 0 ; i < OpenVDS::Dimensionality_Max ; ++i) positionParam[i] = position[i];
+            env->ReleaseIntArrayElements(positionArr, position, 0);
+            return GetPageAccessor( handle )->GetChunkIndex(positionParam);
+        }
+        CATCH_EXCEPTIONS_FOR_JAVA;
+        return -1;
+    }
 
     /*
     * Class:     org_opengroup_openvds_VolumeDataPageAccessor

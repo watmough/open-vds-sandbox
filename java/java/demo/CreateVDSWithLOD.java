@@ -1,5 +1,7 @@
 import org.opengroup.openvds.*;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -10,17 +12,25 @@ import java.util.stream.IntStream;
 
 public class CreateVDSWithLOD {
 
+    // usage : CreateVDSWithLOD n /path/to/file
+    // where n is the LOD level wanted
     public static void main(String[] args) {
         try {
-            Instant start = Instant.now();
-            process(args);
-            Instant end = Instant.now();
+            if (!checkParams(args)) {
+                System.out.println("Bad params, usage  : <CreateVDSWithLOD> n /path/to/file");
+                System.out.println("where n is the LOD level wanted (0 <= lod <= 12), path must be a valid non existing file path");
+            }
+            else {
+                Instant start = Instant.now();
+                process(Integer.parseInt(args[0]), args[1]);
+                Instant end = Instant.now();
 
-            Duration elapsed = Duration.between(start, end);
-            long hrs = elapsed.toHours();
-            long min = elapsed.toMinutes() - (hrs * 60);
-            long s = (elapsed.toMillis() - (elapsed.toMinutes() * 60 * 1000)) / 1000;
-            System.out.println("Write VDS TIME : " + hrs + " hrs " + min + " min " + s + "s (" + elapsed.toMillis() + " ms)");
+                Duration elapsed = Duration.between(start, end);
+                long hrs = elapsed.toHours();
+                long min = elapsed.toMinutes() - (hrs * 60);
+                long s = (elapsed.toMillis() - (elapsed.toMinutes() * 60 * 1000)) / 1000;
+                System.out.println("Write VDS TIME : " + hrs + " hrs " + min + " min " + s + "s (" + elapsed.toMillis() + " ms)");
+            }
         }
         catch (Throwable t) {
             System.out.println();
@@ -28,7 +38,40 @@ public class CreateVDSWithLOD {
         }
     }
 
-    static void process(String[] args) throws Exception {
+    private static boolean checkParams(String[] args) {
+        if (args == null || args.length != 2) {
+            return false;
+        }
+        try {
+            Integer lod = Integer.parseInt(args[0]);
+            if (lod < 0 || lod > 12) {
+                return false;
+            }
+        }
+        catch (NumberFormatException nfe) {
+            return false;
+        }
+        String path = args[1];
+        File file = new File(path);
+        try {
+            file.getCanonicalPath();
+        }
+        catch (IOException e) {
+            System.err.println("VDS File path is invalid !");
+            return false;
+        }
+        if (!path.endsWith(".vds")) {
+            System.err.println("VDS File path must have vds extension !");
+            return false;
+        }
+        if (file.exists()) {
+            System.err.println("VDS File already exists !");
+            return false;
+        }
+        return true;
+    }
+
+    static void process(int lodParam, String vdsFilePath) throws Exception {
 
         int samplesX = 1500; // time
         int samplesY = 2000; // XL
@@ -49,7 +92,9 @@ public class CreateVDSWithLOD {
         int negativeMargin = 4;
         int positiveMargin = 4;
         int brickSize2DMultiplier = 4;
-        VolumeDataLayoutDescriptor.LODLevels lodLevels = VolumeDataLayoutDescriptor.LODLevels.LOD_LEVELS_3;
+
+        VolumeDataLayoutDescriptor.LODLevels lodLevels = VolumeDataLayoutDescriptor.LODLevels.values()[lodParam];
+
         //VolumeDataLayoutDescriptor.Options layoutOptions = VolumeDataLayoutDescriptor.Options.NONE;
         VolumeDataLayoutDescriptor layoutDescriptor = new VolumeDataLayoutDescriptor(brickSize, negativeMargin, positiveMargin,
                 brickSize2DMultiplier, lodLevels, false,false,0);
@@ -84,7 +129,7 @@ public class CreateVDSWithLOD {
 
 
         //OpenVDS::InMemoryOpenOptions options;
-        VDSFileOpenOptions options = new VDSFileOpenOptions("/media/hdd/VDS/VDS_LOD_Dome_2000_2000_1500_B256.vds");
+        VDSFileOpenOptions options = new VDSFileOpenOptions(vdsFilePath);
         VdsError error;
 
         MetadataContainer metadataContainer = new MetadataContainer();
@@ -125,6 +170,10 @@ public class CreateVDSWithLOD {
         int[] localIndex = new int[3];
         int[] voxelPos = new int[3];
 
+        int[] pitch = new int[VolumeDataLayout.Dimensionality_Max];
+        int[] chunkMin = new int[VolumeDataLayout.Dimensionality_Max];
+        int[] chunkMax = new int[VolumeDataLayout.Dimensionality_Max];
+
         for (int lod = 0 ; lod <= lodCount ; ++lod) {
             VolumeDataPageAccessor pageAccessor = accessManager.createVolumeDataPageAccessor(
                     layout, // layout
@@ -160,12 +209,8 @@ public class CreateVDSWithLOD {
                     numSamplesChunk[j] = outputIndexer.getLocalChunkNumSamples(j);
                     numSamplesDB[j] = outputIndexer.getDataBlockNumSamples(j);
                 }
-                System.out.print("\tDimensions Chunk    :  [" + numSamplesChunk[0] + ", " + numSamplesChunk[1] + ", " + numSamplesChunk[2] + "]");
-                System.out.print("\tDimensions DataBlok :  [" + numSamplesDB[0] + ", " + numSamplesDB[1] + ", " + numSamplesDB[2] + "]");
-
-                int[] pitch = new int[VolumeDataLayout.Dimensionality_Max];
-                int[] chunkMin = new int[VolumeDataLayout.Dimensionality_Max];
-                int[] chunkMax = new int[VolumeDataLayout.Dimensionality_Max];
+                System.out.print("\tDimensions Chunk : [" + numSamplesChunk[0] + ", " + numSamplesChunk[1] + ", " + numSamplesChunk[2] + "]");
+                System.out.print("\tDimensions DataBlock : [" + numSamplesDB[0] + ", " + numSamplesDB[1] + ", " + numSamplesDB[2] + "]");
 
                 page.getMinMax(chunkMin, chunkMax);
 
@@ -174,7 +219,13 @@ public class CreateVDSWithLOD {
                 int chunkSizeX = chunkMax[1] - chunkMin[1];
                 int chunkSizeZ = chunkMax[0] - chunkMin[0];
 
+                // get pitch and allocate buffer size
+                //page.getPitch(pitch);
+                //float[] output = new float[page.getAllocatedBufferSize()];
+
+                // or read buffer of page
                 float[] output = page.readFloatBuffer(pitch);
+
                 DoubleStream ds = IntStream.range(0, output.length).mapToDouble(oi -> output[oi]);
                 DoubleSummaryStatistics stats = ds.summaryStatistics();
                 System.out.print( " Page Buffer Size : " + output.length + " / [" + stats.getMin() + "," + stats.getMax() + "]");
@@ -229,8 +280,6 @@ public class CreateVDSWithLOD {
         }
 
         displayStatistics(timeRead, timeVolIndex, timeWrite);
-
-
 
         vds.close(); // equivalent to OpenVDS.close(vds); ?
         System.out.println("VDS closed");
