@@ -26,6 +26,7 @@ public class VolumeDataPageAccessor extends JniPointerWithoutDeletion {
     private static native long cpGetChunkCount( long handle );
     private static native void cpGetChunkMinMax( long handle, int chunk, int[] chunkMin, int[] chunkMax);
     private static native void cpGetChunkMinMaxExcludingMargin( long handle, int chunk, int[] chunkMin, int[] chunkMax);
+    private static native long cpGetChunkIndex(long handle, int[] position);
     private static native long cpCreatePage( long handle, long chunkIndex);
     private static native long cpReadPage( long handle, long chunkIndex);
     private static native void cpCommit(long handle);
@@ -85,8 +86,6 @@ public class VolumeDataPageAccessor extends JniPointerWithoutDeletion {
         cpGetChunkMinMax(_handle, chunk, chunkMin, chunkMax);
     }
 
-
-
     /**
      * Get chunk dimension (without margin)
      * @param chunk chunk index
@@ -97,6 +96,16 @@ public class VolumeDataPageAccessor extends JniPointerWithoutDeletion {
     public void getChunkMinMaxExcludingMargin(int chunk, int[] chunkMin, int[] chunkMax) {
         checkChunkAndArraySize(chunk, chunkMin, chunkMax);
         cpGetChunkMinMaxExcludingMargin(_handle, chunk, chunkMin, chunkMax);
+    }
+
+    /**
+     * Get index of chunk for a given position
+     * @param position voxel position (array must be VolumeDataLayout.Dimensionality_Max size)
+     * @return chunk position
+     */
+    public long getChunkIndex(int[] position) {
+        checkPosition(position);
+        return cpGetChunkIndex(_handle, position);
     }
 
     /**
@@ -138,6 +147,12 @@ public class VolumeDataPageAccessor extends JniPointerWithoutDeletion {
      */
     public void setMaxPages(int maxPages) {
         cpSetMaxPage(_handle, maxPages);
+    }
+
+    private void checkPosition(int[] position) {
+        if (position == null || position.length != VolumeDataLayout.Dimensionality_Max) {
+            throw new IllegalArgumentException("VolumeDataPageAccessor::getChunkIndex : wrong position vector");
+        }
     }
 
     private void checkChunkAndArraySize(int chunk, int[] chunkMin, int[] chunkMax) {
