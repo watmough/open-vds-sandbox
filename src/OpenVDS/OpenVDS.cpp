@@ -825,6 +825,8 @@ VDSHandle Create(const OpenOptions& options, VolumeDataLayoutDescriptor const& l
 
 void Close(VDS *vds)
 {
+  if (!vds)
+    return;
   vds->accessManager->Invalidate();
   delete vds;
 }

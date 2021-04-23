@@ -26,6 +26,9 @@ PyGlobal::initModule(py::module& m)
   py::class_<VDS, std::unique_ptr<VDS, py::nodelete>>
     VDS_(m, "VDS");
   VDS_.def("__int__", [](VDS* self) { return (int64_t)self; });
+  VDS_.def("__enter__", [](VDS *self) { return self;});
+  VDS_.def("__exit__", [](VDS *self, py::args) { OpenVDS::Close(reinterpret_cast<OpenVDS::VDSHandle>(self)); });
+
   
   py::class_<IOManager, std::unique_ptr<IOManager, py::nodelete>>(m, "IOManager");
 
