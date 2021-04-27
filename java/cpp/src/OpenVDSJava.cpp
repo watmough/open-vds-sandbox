@@ -300,12 +300,19 @@ getDescriptor(JNIEnv *env, jobject obj)
     int brickSize2DMultiplier = env->CallIntMethod(obj, env->GetMethodID(obj_class, "getBrickSizeMultiplier2D", "()I"));
     auto lodLevels = getLODLevels(env, obj);
 
-    int fullResolutionDimension = env->CallBooleanMethod(obj, env->GetMethodID(obj_class, "isForceFullResolutionDimension", "()Z"));
+    bool forceFullResolutionDimension = env->CallBooleanMethod(obj, env->GetMethodID(obj_class, "isForceFullResolutionDimension", "()Z"));
+    int fullResDim =  env->CallIntMethod(obj, env->GetMethodID(obj_class, "getFullResolutionDimension", "()I"));
 
-    int options = (env->CallBooleanMethod(obj, env->GetMethodID(obj_class, "isCreate2DLODs", "()Z")) << 1);
-
+    bool lod2D = env->CallBooleanMethod(obj, env->GetMethodID(obj_class, "isCreate2DLODs", "()Z"));
+    int optionsP = OpenVDS::VolumeDataLayoutDescriptor::Options::Options_None;
+    if (lod2D) {
+        optionsP |= OpenVDS::VolumeDataLayoutDescriptor::Options::Options_Create2DLODs;
+    }
+    if (forceFullResolutionDimension) {
+        optionsP |= OpenVDS::VolumeDataLayoutDescriptor::Options::Options_ForceFullResolutionDimension;
+    }
     return OpenVDS::VolumeDataLayoutDescriptor(brickSize, negativeMargin, positiveMargin, brickSize2DMultiplier,
-                                               lodLevels, (OpenVDS::VolumeDataLayoutDescriptor::Options) options, fullResolutionDimension);
+                                               lodLevels, (OpenVDS::VolumeDataLayoutDescriptor::Options) optionsP, fullResDim);
 }
 
 jboolean JNICALL
