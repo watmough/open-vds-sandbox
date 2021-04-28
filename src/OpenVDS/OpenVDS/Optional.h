@@ -42,7 +42,7 @@ struct optional
 
 #if __cplusplus >=201703L
 
-  optional(const std::optional& opt) : m_Value(opt.has_value() ? opt.value() : value_type()), m_HasValue(opt.has_value())
+  optional(const std::optional<value_type>& opt) : m_Value(opt.has_value() ? opt.value() : value_type()), m_HasValue(opt.has_value())
   {
   }
 
