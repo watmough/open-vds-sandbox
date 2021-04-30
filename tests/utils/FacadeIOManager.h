@@ -198,6 +198,7 @@ public:
 
           if (completedCallback)
           {
+            lock.unlock();
             completedCallback(*objReq, objReq->m_error);
           }
         });
