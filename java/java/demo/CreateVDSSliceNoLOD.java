@@ -65,8 +65,8 @@ public class CreateVDSSliceNoLOD {
     static void process(String vdsFilePath) throws Exception {
 
         int samplesX = 500; // time
-        int samplesY = 400; // XL
-        int samplesZ = 400; // IL
+        int samplesY = 800; // XL
+        int samplesZ = 800; // IL
         VolumeDataChannelDescriptor.Format format = VolumeDataChannelDescriptor.Format.FORMAT_R32;
 
         double sizeX = samplesX;

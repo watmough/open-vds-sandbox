@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 
-public class CreateVDSWithLOD {
+public class CreateVDSSliceLODOnCloud {
 
     // usage : CreateVDSWithLOD n /path/to/file
     // where n is the LOD level wanted
@@ -22,7 +22,7 @@ public class CreateVDSWithLOD {
             }
             else {
                 Instant start = Instant.now();
-                process(Integer.parseInt(args[0]), args[1]);
+                process(Integer.parseInt(args[0]));
                 Instant end = Instant.now();
 
                 Duration elapsed = Duration.between(start, end);
@@ -39,7 +39,7 @@ public class CreateVDSWithLOD {
     }
 
     private static boolean checkParams(String[] args) {
-        if (args == null || args.length != 2) {
+        if (args == null || args.length != 1) {
             return false;
         }
         try {
@@ -51,31 +51,14 @@ public class CreateVDSWithLOD {
         catch (NumberFormatException nfe) {
             return false;
         }
-        String path = args[1];
-        File file = new File(path);
-        try {
-            file.getCanonicalPath();
-        }
-        catch (IOException e) {
-            System.err.println("VDS File path is invalid !");
-            return false;
-        }
-        if (!path.endsWith(".vds")) {
-            System.err.println("VDS File path must have vds extension !");
-            return false;
-        }
-        if (file.exists()) {
-            System.err.println("VDS File already exists !");
-            return false;
-        }
         return true;
     }
 
-    static void process(int lodParam, String vdsFilePath) throws Exception {
+    static void process(int lodParam) throws Exception {
 
-        int samplesX = 3000; // time
-        int samplesY = 5000; // XL
-        int samplesZ = 5000; // IL
+        int samplesX = 800; // time
+        int samplesY = 600; // XL
+        int samplesZ = 600; // IL
         VolumeDataChannelDescriptor.Format format = VolumeDataChannelDescriptor.Format.FORMAT_R32;
 
         double sizeX = samplesX;
@@ -88,19 +71,19 @@ public class CreateVDSWithLOD {
         double midY = samplesY / 2f;
         double midZ = samplesZ / 2f;
 
-        VolumeDataLayoutDescriptor.BrickSize brickSize = VolumeDataLayoutDescriptor.BrickSize.BRICK_SIZE_256;
-        int negativeMargin = 4;
-        int positiveMargin = 4;
-        int brickSize2DMultiplier = 4;
+        VolumeDataLayoutDescriptor.BrickSize brickSize = VolumeDataLayoutDescriptor.BrickSize.BRICK_SIZE_512;
+        int negativeMargin = 0;
+        int positiveMargin = 0;
+        int brickSize2DMultiplier = 2;
 
         VolumeDataLayoutDescriptor.LODLevels lodLevels = VolumeDataLayoutDescriptor.LODLevels.values()[lodParam];
 
         //VolumeDataLayoutDescriptor.Options layoutOptions = VolumeDataLayoutDescriptor.Options.NONE;
         VolumeDataLayoutDescriptor layoutDescriptor = new VolumeDataLayoutDescriptor(brickSize, negativeMargin, positiveMargin,
-                brickSize2DMultiplier, lodLevels, false,false,0);
+                brickSize2DMultiplier, lodLevels, true,false,0);
 
         List<VolumeDataAxisDescriptor> axisDescriptors = new ArrayList<>();
-        axisDescriptors.add(new VolumeDataAxisDescriptor(samplesX, "Sample", "s", 0.0f,6.0f));
+        axisDescriptors.add(new VolumeDataAxisDescriptor(samplesX, "Sample", "s", 0.0f,4.f));
         axisDescriptors.add(new VolumeDataAxisDescriptor(samplesY, "Crossline", "",1000f, 1000f + samplesY - 1f));
         axisDescriptors.add(new VolumeDataAxisDescriptor(samplesZ, "Inline", "", 1500f, 1500f + samplesZ - 1f));
 
@@ -129,14 +112,19 @@ public class CreateVDSWithLOD {
 
 
         //OpenVDS::InMemoryOpenOptions options;
-        VDSFileOpenOptions options = new VDSFileOpenOptions(vdsFilePath);
-        VdsError error;
+        // options AWS
+        String pBucket = "openvds-test-int"; // the bucket of the VDS
+        String pKey = ""; // the key prefix of the VDS ?
+        String pRegion = "eu-west-3"; // the region of the bucket of the VDS
+        String pEndpointOverride = ""; // This parameter allows to override the endpoint url
+        AWSOpenOptions optionsAWS = new AWSOpenOptions(pBucket, pKey, pRegion, pEndpointOverride);
+        optionsAWS.accessKeyId = ""; // ?
+        optionsAWS.sessionToken = ""; // ?
 
         MetadataContainer metadataContainer = new MetadataContainer();
-        metadataContainer.setMetadataString("categoryString", "String", "5K 5K 3K Volume B256 4 LOD");
-        //metadataContainer.SetMetadataBLOB("categoryBLOB", "BLOB", data, 4 );
+        metadataContainer.setMetadataString("Infos", "Creation", "Sliced LOD 800x800x600 Brick 512");
 
-        VdsHandle vds = OpenVDS.create(options, layoutDescriptor,
+        VdsHandle vds = OpenVDS.create(optionsAWS, layoutDescriptor,
                 axisDescriptors.toArray(new VolumeDataAxisDescriptor[0]),
                 channelDescriptors.toArray(new VolumeDataChannelDescriptor[0]), metadataContainer);
 
@@ -155,7 +143,7 @@ public class CreateVDSWithLOD {
 
         int lodCount = lodLevels.ordinal();
 
-        int[] localIndex = new int[3];
+        int[] localIndex = new int[2];
         int[] voxelPos = new int[3];
 
         int[] pitch = new int[VolumeDataLayout.Dimensionality_Max];
@@ -165,10 +153,10 @@ public class CreateVDSWithLOD {
         for (int lod = 0 ; lod <= lodCount ; ++lod) {
             VolumeDataPageAccessor pageAccessor = accessManager.createVolumeDataPageAccessor(
                     layout, // layout
-                    DimensionsND.DIMENSIONS_012.ordinal(), // dimension ND
+                    DimensionsND.DIMENSIONS_01.ordinal(), // dimension ND
                     lod, // lod
                     channel, // channel
-                    100, // max pages
+                    200, // max pages
                     VolumeDataAccessManager.AccessMode.Create.getCode()); // access mode
 
 
@@ -187,7 +175,7 @@ public class CreateVDSWithLOD {
                 VolumeDataPage page = pageAccessor.createPage(i);
                 System.out.print("LOD : " + lod + " / Page " + (i + 1) + " / " + chunkCount);
 
-                VolumeIndexer3D outputIndexer = new VolumeIndexer3D(page, 0, lod, DimensionsND.DIMENSIONS_012.ordinal(), layout);
+                VolumeIndexer2D outputIndexer = new VolumeIndexer2D(page, 0, lod, DimensionsND.DIMENSIONS_01.ordinal(), layout);
                 float valueRangeScale = outputIndexer.getValueRangeMax() - outputIndexer.getValueRangeMin();
 
                 int[] numSamplesChunk = new int[3];
@@ -208,15 +196,15 @@ public class CreateVDSWithLOD {
                 int chunkSizeZ = chunkMax[0] - chunkMin[0];
 
                 // get pitch and allocate buffer size
-                page.getPitch(pitch);
-                float[] output = new float[page.getAllocatedBufferSize()];
+                //page.getPitch(pitch);
+                //float[] output = new float[page.getAllocatedBufferSize()];
 
                 // or read buffer of page
-                //float[] output = page.readFloatBuffer(pitch);
+                float[] output = page.readFloatBuffer(pitch);
 
-                //DoubleStream ds = IntStream.range(0, output.length).mapToDouble(oi -> output[oi]);
-                //DoubleSummaryStatistics stats = ds.summaryStatistics();
-                System.out.print( " Page Buffer Size : " + output.length + " ");/// [" + stats.getMin() + "," + stats.getMax() + "]");
+                DoubleStream ds = IntStream.range(0, output.length).mapToDouble(oi -> output[oi]);
+                DoubleSummaryStatistics stats = ds.summaryStatistics();
+                System.out.print( " Page Buffer Size : " + output.length + " / [" + stats.getMin() + "," + stats.getMax() + "]");
                 // dimension of buffer
                 System.out.println(" Pitch : [" + pitch[0] + ", " + pitch[1] + ", " + pitch[2] + "]");
 
@@ -227,14 +215,13 @@ public class CreateVDSWithLOD {
                 int[] numSamples = numSamplesChunk;
 
                 for (int iDim2 = 0; iDim2 < numSamples[2]; iDim2++) {
-                    localIndex[2] = iDim2;
+                    voxelPos[2] = iDim2;
                     for (int iDim1 = 0; iDim1 < numSamples[1]; iDim1++) {
-                        localIndex[1] = iDim1;
                         for (int iDim0 = 0; iDim0 < numSamples[0]; iDim0++) {
                             localIndex[0] = iDim0;
-
+                            localIndex[1] = iDim1;
                             int[] voxelIndex = outputIndexer.localIndexToVoxelIndex(localIndex);
-                            for (int vp = 0; vp < 3; ++vp) {
+                            for (int vp = 0; vp < 2; ++vp) {
                                 voxelPos[vp] = voxelIndex[vp];
                             }
 
