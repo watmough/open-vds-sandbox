@@ -800,7 +800,7 @@ analyzeSegment(DataProvider &dataProvider, SEGYFileInfo const& fileInfo, SEGYSeg
     if (fileInfo.HasGatherOffset())
     {
       auto
-        thisOffset = SEGY::ReadFieldFromHeader(header, g_traceHeaderFields["Offset"], fileInfo.m_headerEndianness);
+        thisOffset = SEGY::ReadFieldFromHeader(header, g_traceHeaderFields["offset"], fileInfo.m_headerEndianness);
       if (hasPreviousGatherOffset)
       {
         offsetStart = std::min(offsetStart, thisOffset);
@@ -1702,10 +1702,10 @@ main(int argc, char* argv[])
   }
 
   SEGY::HeaderField
-    startTimeHeaderField = g_traceHeaderFields["StartTime"];
+    startTimeHeaderField = g_traceHeaderFields["starttime"];
 
   SEGYBinInfoHeaderFields
-    binInfoHeaderFields(g_traceHeaderFields[primaryKey], g_traceHeaderFields[secondaryKey], g_traceHeaderFields["CoordinateScale"], g_traceHeaderFields["EnsembleXCoordinate"], g_traceHeaderFields["EnsembleYCoordinate"], scale);
+    binInfoHeaderFields(g_traceHeaderFields[primaryKey], g_traceHeaderFields[secondaryKey], g_traceHeaderFields["coordinatescale"], g_traceHeaderFields["ensemblexcoordinate"], g_traceHeaderFields["ensembleycoordinate"], scale);
 
   OpenVDS::Error
     error;
@@ -2005,9 +2005,8 @@ main(int argc, char* argv[])
     return EXIT_FAILURE;
   }
 
-  if (primaryKey == "InlineNumber" || primaryKey == "CrosslineNumber")
+  if (segyType == SEGY::SEGYType::Poststack || segyType == SEGY::SEGYType::Prestack)
   {
-    // only create the lattice metadata if the primary key is Inline or Crossline, otherwise we may not be able to determine the bin grid
     createSurveyCoordinateSystemMetadata(fileInfo, measurementSystem, crsWkt, metadataContainer);
   }
 
@@ -2055,7 +2054,7 @@ main(int argc, char* argv[])
   {
     writeDimensionGroup = OpenVDS::DimensionsND::Dimensions_01;
   }
-  else if(segyType == SEGY::SEGYType::Prestack && primaryKey == "CrosslineNumber")
+  else if(segyType == SEGY::SEGYType::Prestack && primaryKey == "crosslinenumber")
   {
     writeDimensionGroup = OpenVDS::DimensionsND::Dimensions_013;
   }
@@ -2350,7 +2349,7 @@ main(int argc, char* argv[])
           {
             // recalculate tertiaryIndex from header offset value
             const auto
-              thisOffset = SEGY::ReadFieldFromHeader(header, g_traceHeaderFields["Offset"], fileInfo.m_headerEndianness);
+              thisOffset = SEGY::ReadFieldFromHeader(header, g_traceHeaderFields["offset"], fileInfo.m_headerEndianness);
             tertiaryIndex = (thisOffset - offsetStart) / offsetStep;
 
             // sanity check the new index
@@ -2424,7 +2423,7 @@ main(int argc, char* argv[])
             }
 
             const int
-              traceOffset = SEGY::ReadFieldFromHeader(header, g_traceHeaderFields["Offset"], fileInfo.m_headerEndianness);
+              traceOffset = SEGY::ReadFieldFromHeader(header, g_traceHeaderFields["offset"], fileInfo.m_headerEndianness);
             reinterpret_cast<float*>(offsetBuffer)[targetOffset] = static_cast<float>(traceOffset);
           }
         }
