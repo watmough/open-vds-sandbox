@@ -51,12 +51,6 @@ VolumeDataAccessManagerImpl::~VolumeDataAccessManagerImpl()
   {
     fprintf(stderr, "VolumeDataAccessManager destructor: there where upload errors\n");
   }
-  m_requestProcessor.reset();
-  while (auto volumeDataPageAccessor = m_volumeDataPageAccessorList.GetFirstItem())
-  {
-    m_volumeDataPageAccessorList.Remove(volumeDataPageAccessor);
-    delete volumeDataPageAccessor;
-  }
 }
 
 VolumeDataStore * VolumeDataAccessManagerImpl::GetVolumeDataStore()
@@ -117,7 +111,14 @@ VolumeDataAccessManagerImpl::IsValid()
 void                                  
 VolumeDataAccessManagerImpl::Invalidate()
 {
+  std::unique_lock<std::mutex> lock(m_mutex);
   m_invalidated = true;
+  m_requestProcessor.reset();
+  while (auto volumeDataPageAccessor = m_volumeDataPageAccessorList.GetFirstItem())
+  {
+    m_volumeDataPageAccessorList.Remove(volumeDataPageAccessor);
+    delete volumeDataPageAccessor;
+  }
 }
 
 void
@@ -539,6 +540,8 @@ VolumeDataAccessManagerImpl::Cancel(int64_t requestID)
 void    
 VolumeDataAccessManagerImpl::CancelAndWaitForCompletion(int64_t requestID)
 {
+  if (m_invalidated)
+    return;
   ValidateRequest(requestID);
   if(!m_requestProcessor->IsCanceled(requestID))
   {

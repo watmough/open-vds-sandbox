@@ -1740,6 +1740,8 @@ VolumeDataRequestProcessor::VolumeDataRequestProcessor(VolumeDataAccessManagerIm
 
 VolumeDataRequestProcessor::~VolumeDataRequestProcessor()
 {
+  for (auto& job : m_jobs)
+    job->cancelled = true;
   m_pageAccessorNotifier.setExit();
   m_cleanupThread.join();
 }
