@@ -79,7 +79,13 @@ if [[ "$distribution" == "" ]]; then
     distribution="$platform_name"
 fi
 
-[[ -d $openvds_path/binpackage/$name-$openvds_version ]] || mkdir -p $openvds_path/binpackage/$name-$openvds_version
+[[ -d $openvds_path/binpackage ]] && rm -rf $openvds_path/binpackage
+[[ -d $openvds_path/dist ]] && rm -rf $openvds_path/dist
+[[ -d $openvds_path/_skbuild ]] && rm -rf $openvds_path/_skbuild/linux*
+[[ -d $openvds_path/_skbuild ]] && rm -rf $openvds_path/_skbuild/win*
+
+mkdir -p $openvds_path/binpackage/$name-$openvds_version
+mkdir -p $openvds_path/binpackage/python/$distribution/
 
 for python_executable in "${python_executables[@]}"; do
   python_ver=$("$python_executable" -c "import sys;  print('.'.join(map(str, sys.version_info[:2])))")
@@ -116,8 +122,10 @@ for python_executable in "${python_executables[@]}"; do
   cp -r $skbuild_dir/cmake-install/* binpackage/$name-$openvds_version
 done
 
-cp dist/* binpackage/$name-$openvds_version/
-cd binpackage
+cp $openvds_path/dist/* $openvds_path/binpackage/$name-$openvds_version/
+cp $openvds_path/dist/* $openvds_path/binpackage/python/$distribution/
+cd $openvds_path/binpackage
+
 if [[ "$platform_name" == "win" ]]; then
   zip -r $name-$openvds_version-$distribution.zip $name-$openvds_version
 else
