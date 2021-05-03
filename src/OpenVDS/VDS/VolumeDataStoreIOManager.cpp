@@ -193,7 +193,7 @@ VolumeDataStoreIOManager::~VolumeDataStoreIOManager()
       if (downloadRequest.second.m_activeTransfer)
       {
         downloadRequest.second.m_activeTransfer->Cancel();
-        downloadRequest.second.m_activeTransfer->WaitForFinish(error);
+        downloadRequest.second.m_activeTransfer->WaitForFinish();
       }
     }
   }
@@ -201,7 +201,8 @@ VolumeDataStoreIOManager::~VolumeDataStoreIOManager()
   {
     if (uploadRequest.second.request)
     {
-      if (!uploadRequest.second.request->WaitForFinish(error))
+      uploadRequest.second.request->WaitForFinish();
+      if (!uploadRequest.second.request->IsSuccess(error))
       {
         m_vds.accessManager->AddUploadError(error, uploadRequest.second.request->GetObjectName());
       }
