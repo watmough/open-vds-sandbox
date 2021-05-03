@@ -186,12 +186,15 @@ VolumeDataStoreIOManager:: VolumeDataStoreIOManager(VDS &vds, IOManager *ioManag
 VolumeDataStoreIOManager::~VolumeDataStoreIOManager()
 {
   Error error;
-  for (auto& downloadRequest : m_pendingDownloadRequests)
   {
-    if (downloadRequest.second.m_activeTransfer)
+    std::unique_lock<std::mutex> lock(m_mutex);
+    for (auto& downloadRequest : m_pendingDownloadRequests)
     {
-      downloadRequest.second.m_activeTransfer->Cancel();
-      downloadRequest.second.m_activeTransfer->WaitForFinish(error);
+      if (downloadRequest.second.m_activeTransfer)
+      {
+        downloadRequest.second.m_activeTransfer->Cancel();
+        downloadRequest.second.m_activeTransfer->WaitForFinish(error);
+      }
     }
   }
   for (auto& uploadRequest : m_pendingUploadRequests)
