@@ -1733,8 +1733,8 @@ static void CleanupThread(PageAccessorNotifier &pageAccessorNotifier,  std::map<
 
 VolumeDataRequestProcessor::VolumeDataRequestProcessor(VolumeDataAccessManagerImpl& manager)
   : m_manager(manager)
-  , m_threadPool(std::thread::hardware_concurrency())
   , m_pageAccessorNotifier(m_mutex)
+  , m_threadPool(std::thread::hardware_concurrency())
   , m_cleanupThread([this]() { CleanupThread(m_pageAccessorNotifier, m_pageAccessors); } )
 {}
 

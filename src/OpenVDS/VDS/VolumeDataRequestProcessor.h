@@ -145,8 +145,8 @@ private:
   std::map<PageAccessorKey, VolumeDataPageAccessorImpl *> m_pageAccessors;
   std::vector<std::unique_ptr<Job>> m_jobs;
   std::mutex m_mutex;
-  ThreadPool m_threadPool;
   PageAccessorNotifier m_pageAccessorNotifier;
+  ThreadPool m_threadPool;
   std::thread m_cleanupThread;
 };
 
