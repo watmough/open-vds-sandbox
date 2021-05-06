@@ -20,6 +20,7 @@ Welcome to OpenVDS's documentation!
 
   tools/SEGYImport/README.md
   tools/SEGYExport/README.md
+  tools/VDSCopy/README.md
   tools/VDSInfo/README.md
 
 Indices and tables

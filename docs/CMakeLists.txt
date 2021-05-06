@@ -99,6 +99,7 @@ add_custom_command(OUTPUT ${SPHINX_INDEX_FILE}
                    COMMAND ${CMAKE_COMMAND} -E copy_if_different ${RST_CPP_FILES} ${CMAKE_CURRENT_BINARY_DIR}/cppdoc/
                    COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/../tools/SEGYImport/README.md ${CMAKE_CURRENT_BINARY_DIR}/tools/SEGYImport/README.md
                    COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/../tools/SEGYExport/README.md ${CMAKE_CURRENT_BINARY_DIR}/tools/SEGYExport/README.md
+                   COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/../tools/VDSCopy/README.md    ${CMAKE_CURRENT_BINARY_DIR}/tools/VDSCopy/README.md
                    COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/../tools/VDSInfo/README.md    ${CMAKE_CURRENT_BINARY_DIR}/tools/VDSInfo/README.md
                    COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/apidoc.py -f -o cppdoc ${CMAKE_CURRENT_BINARY_DIR}/doxygen/xml/
                    COMMAND ${CMAKE_COMMAND} -E env "PYTHONPATH=$<TARGET_FILE_DIR:core>/.." "PATH=${separator}${CMAKE_CURRENT_BINARY_DIR}"
@@ -111,6 +112,7 @@ add_custom_command(OUTPUT ${SPHINX_INDEX_FILE}
                    ${RST_CPP_FILES}
                    ${CMAKE_CURRENT_SOURCE_DIR}/../tools/SEGYImport/README.md
                    ${CMAKE_CURRENT_SOURCE_DIR}/../tools/SEGYExport/README.md
+                   ${CMAKE_CURRENT_SOURCE_DIR}/../tools/VDSCopy/README.md
                    ${CMAKE_CURRENT_SOURCE_DIR}/../tools/VDSInfo/README.md
                    ${CMAKE_CURRENT_SOURCE_DIR}/apidoc.py
                    Doxygen
