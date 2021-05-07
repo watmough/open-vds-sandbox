@@ -930,6 +930,28 @@ inline VolumeDataAccessManager GetAccessManager(VDSHandle handle)
 }
 
 /// <summary>
+/// Get the primary CompressionMethod for a VDS
+/// </summary>
+/// <param name="handle">
+/// The handle of the VDS
+/// </param>
+/// <returns>
+/// The CompressionMethod used for the VDS
+/// </returns>
+OPENVDS_EXPORT CompressionMethod GetCompressionMethod(VDSHandle handle);
+
+/// <summary>
+/// Get the primary compression tolerance used for a VDS
+/// </summary>
+/// <param name="handle">
+/// The handle of the VDS
+/// </param>
+/// <returns>
+/// The compression tolerance used for the VDS
+/// </returns>
+OPENVDS_EXPORT float GetCompressionTolerance(VDSHandle handle);
+
+/// <summary>
 /// Close a VDS and free up all associated resources
 /// </summary>
 /// <param name="handle">

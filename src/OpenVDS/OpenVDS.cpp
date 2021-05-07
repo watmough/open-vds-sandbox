@@ -830,6 +830,16 @@ VDSHandle Create(const OpenOptions& options, VolumeDataLayoutDescriptor const& l
   }
 }
 
+CompressionMethod GetCompressionMethod(VDSHandle handle)
+{
+  return handle->volumeDataLayout->GetCompressionMethod();
+}
+
+float GetCompressionTolerance(VDSHandle handle)
+{
+  return handle->volumeDataLayout->GetCompressionTolerance();
+}
+
 void Close(VDS *vds)
 {
   if (!vds)
