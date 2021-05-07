@@ -353,6 +353,46 @@ VolumeDataAccessManagerImpl::GetVDSProduceStatus(DimensionsND dimensionsND, int 
   return VDSProduceStatus::Unavailable;
 }
 
+int64_t
+VolumeDataAccessManagerImpl::GetVDSChunkCount(DimensionsND dimensionsND, int LOD, int channel)
+{
+  if(dimensionsND < 0 || dimensionsND > DimensionsND::Dimensions_45)
+  {
+    throw InvalidArgument("Illegal dimensions", "dimensionsND");
+  }
+  if(LOD < 0)
+  {
+    throw InvalidArgument("Illegal LOD level", "LOD");
+  }
+  if(channel < 0)
+  {
+    throw InvalidArgument("Illegal channel index", "channel");
+  }
+
+  VolumeDataLayoutImpl const *
+    volumeDataLayout = PrivateGetLayout();
+
+  VolumeDataLayer const *
+    volumeDataLayer = NULL;
+
+  if(volumeDataLayout && channel <= volumeDataLayout->GetChannelCount())
+  {
+    volumeDataLayer = volumeDataLayout->GetBaseLayer(DimensionGroupUtil::GetDimensionGroupFromDimensionsND(dimensionsND), channel);
+
+    while(volumeDataLayer && volumeDataLayer->GetLOD() < LOD)
+    {
+      volumeDataLayer = volumeDataLayer->GetParentLayer();
+    }
+  }
+
+  if(volumeDataLayer)
+  {
+    return volumeDataLayer->GetTotalChunkCount();
+  }
+  return 0;
+
+}
+
 VolumeDataPageAccessor *
 VolumeDataAccessManagerImpl::CreateVolumeDataPageAccessor(DimensionsND dimensionsND, int LOD, int channel, int maxPages, VolumeDataAccessManager::AccessMode accessMode, int chunkMetadataPageSize)
 {

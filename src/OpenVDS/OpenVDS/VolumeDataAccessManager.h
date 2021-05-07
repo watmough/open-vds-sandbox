@@ -67,6 +67,23 @@ public:
   virtual VDSProduceStatus GetVDSProduceStatus(DimensionsND dimensionsND, int LOD, int channel) = 0;
 
   /// <summary>
+  /// Get the chunk count for the specific DimensionsND/LOD/Channel combination.
+  /// </summary>
+  /// <param name="dimensionsND">
+  /// The dimensions group we're getting the chunk count for.
+  /// </param>
+  /// <param name="LOD">
+  /// The LOD level we're getting the chunk count status for.
+  /// </param>
+  /// <param name="channel">
+  /// The channel index we're getting the chunk count status for.
+  /// </param>
+  /// <returns>
+  /// The chunk count for the specific DimensionsND/LOD/Channel combination.
+  /// </returns>
+  virtual int64_t GetVDSChunkCount(DimensionsND dimensionsND, int LOD, int channel) = 0;
+
+  /// <summary>
   /// Create a VolumeDataPageAccessor object for the VDS.
   /// </summary>
   /// <param name="dimensionsND">
@@ -923,6 +940,26 @@ public:
   VDSProduceStatus GetVDSProduceStatus(DimensionsND dimensionsND, int LOD, int channel) const
   {
     return m_IVolumeDataAccessManager->GetVDSProduceStatus(dimensionsND, LOD, channel);
+  }
+
+  /// <summary>
+  /// Get the chunk count for the specific DimensionsND/LOD/Channel combination.
+  /// </summary>
+  /// <param name="dimensionsND">
+  /// The dimensions group we're getting the chunk count for.
+  /// </param>
+  /// <param name="LOD">
+  /// The LOD level we're getting the chunk count status for.
+  /// </param>
+  /// <param name="channel">
+  /// The channel index we're getting the chunk count status for.
+  /// </param>
+  /// <returns>
+  /// The chunk count for the specific DimensionsND/LOD/Channel combination.
+  /// </returns>
+  int64_t GetVDSChunkCount(DimensionsND dimensionsND, int LOD, int channel) const
+  {
+    return m_IVolumeDataAccessManager->GetVDSChunkCount(dimensionsND, LOD, channel);
   }
 
   /// <summary>
