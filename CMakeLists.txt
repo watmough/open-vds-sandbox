@@ -157,6 +157,7 @@ Fetch3rdParty()
 include(CMake/Build3rdParty.cmake)
 build3rdparty()
 
+set(COMMON_DIR ${CMAKE_CURRENT_SOURCE_DIR}/common)
 
 #this is disabled in Java and Python since they match dlopen with a string
 set(CMAKE_DEBUG_POSTFIX d)

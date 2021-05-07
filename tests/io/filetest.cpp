@@ -22,7 +22,7 @@
 
 #include "IO/File.h"
 
-#include "../utils/ThreadPool.h"
+#include "ThreadPool/ThreadPool.h"
 
 #ifdef _WIN32
 #undef WIN32_LEAN_AND_MEAN // avoid warnings if defined on command line
@@ -181,12 +181,12 @@ TEST(IOTests, FileIO)
 
     for (const auto& offset : offsets)
     {
-      results.push_back(thread_pool.enqueue([&file, &rand_data](const Offset & offset)
+      results.push_back(thread_pool.Enqueue([&file, &rand_data, offset]()
         {
           OpenVDS::Error error;
           file.Write(&rand_data[offset.offset], offset.offset * sizeof(*rand_data.data()), offset.size * sizeof(*rand_data.data()), error);
           return error;
-        }, offset));
+        }));
     }
 
     for (auto& result_future : results)
@@ -203,7 +203,7 @@ TEST(IOTests, FileIO)
 
     for (const auto& offset : offsets)
     {
-      results.push_back(thread_pool.enqueue([&file, &rand_data](const Offset & offset)
+      results.push_back(thread_pool.Enqueue([&file, &rand_data, offset]()
         {
           OpenVDS::Error error;
           std::vector<uint8_t> vec;
@@ -219,7 +219,7 @@ TEST(IOTests, FileIO)
             error.string = "Compared data is not the same.";
           }
           return error;
-        }, offset));
+        }));
     }
 
     for (auto& result_future : results)

@@ -10,7 +10,7 @@ else ()
 endif()
 
 get_target_property(fmt_INCLUDE fmt::fmt INTERFACE_INCLUDE_DIRECTORIES)
-target_include_directories(openvds_python_test PRIVATE ${PROJECT_SOURCE_DIR}/tests ${fmt_INCLUDE})
+target_include_directories(openvds_python_test PRIVATE ${PROJECT_SOURCE_DIR}/tests ${fmt_INCLUDE} ${COMMON_DIR})
 
 if(WIN32)
   # In case we have the Python debug library installed it will try to pragma-link with the non-debug library. 

@@ -28,7 +28,6 @@ set(SOURCE_FILES
   VDS/DimensionGroup.cpp
   VDS/ParseVDSJson.cpp
   VDS/MetadataManager.cpp
-  VDS/Base64.cpp
   VDS/VolumeDataStore.cpp
   VDS/VolumeDataStoreIOManager.cpp
   VDS/VolumeDataStoreVDSFile.cpp
@@ -41,6 +40,7 @@ set(SOURCE_FILES
   VDS/VolumeDataRequestProcessor.cpp
   VDS/VolumeIndexer.cpp
   VDS/Env.cpp
+  ${COMMON_DIR}/Base64/Base64.cpp
   )
 
 set (PRIVATE_HEADER_FILES
@@ -73,7 +73,6 @@ set (PRIVATE_HEADER_FILES
   VDS/ParseVDSJson.h
   VDS/MetadataManager.h
   VDS/IntrusiveList.h
-  VDS/Base64.h
   VDS/VolumeDataStore.h
   VDS/VolumeDataStoreIOManager.h
   VDS/VolumeDataStoreVDSFile.h
@@ -89,10 +88,11 @@ set (PRIVATE_HEADER_FILES
   VDS/FSE/fse.h
   VDS/Rle.h
   VDS/VolumeDataRequestProcessor.h
-  VDS/ThreadPool.h
   VDS/Env.h
   VDS/ConnectionStringParser.h
   VDS/GlobalStateImpl.h
+  ${COMMON_DIR}/Base64/Base64.h
+  ${COMMON_DIR}/ThreadPool/ThreadPool.h
   )
 
 file(GLOB EXPORTED_HEADER_FILES OpenVDS/*.h)
@@ -141,7 +141,7 @@ foreach(DEP ${dependency_targets_3rdparty})
   add_dependencies(openvds_objects ${DEP})
 endforeach()
 
-target_include_directories(openvds_objects PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}")
+target_include_directories(openvds_objects PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}" "${COMMON_DIR}")
 target_include_directories(openvds_objects PRIVATE "VDS")
 target_compile_definitions(openvds_objects PRIVATE openvds_EXPORTS)
 target_compile_definitions(openvds_objects PRIVATE -DHUEBDS_EXPORTS= ) # We're not building HueBulkDataStore as a shared library

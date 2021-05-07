@@ -30,7 +30,7 @@
 #include "VolumeDataRequestProcessor.h"
 
 #include <map>
-#include "Base64.h"
+#include <Base64/Base64.h>
 
 namespace OpenVDS
 {

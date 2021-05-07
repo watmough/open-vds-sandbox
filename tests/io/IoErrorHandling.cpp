@@ -20,7 +20,7 @@
 #include <OpenVDS/VolumeDataAccess.h>
 
 #include <IO/IOManagerInMemory.h>
-#include <VDS/ThreadPool.h>
+#include <ThreadPool/ThreadPool.h>
 
 #include <fmt/format.h>
 #include <gtest/gtest.h>

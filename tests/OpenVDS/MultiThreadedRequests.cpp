@@ -29,7 +29,7 @@
 
 #include <OpenVDS/IO/IOManager.h>
 #include <OpenVDS/IO/IOManagerInMemory.h>
-#include <OpenVDS/VDS/ThreadPool.h>
+#include <ThreadPool/ThreadPool.h>
 
 TEST(Multithreading, requests)
 {

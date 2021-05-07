@@ -4,9 +4,9 @@
 #include <OpenVDS/OpenVDS.h>
 #include <OpenVDS/VolumeDataLayout.h>
 
-#include "Base64.h"
+#include <Base64/Base64.h>
 
-#include "cxxopts.hpp"
+#include <cxxopts/cxxopts.hpp>
 #include <PrintHelpers.h>
 
 namespace OpenVDS
@@ -150,7 +150,7 @@ Json::Value getJsonFromMetadata(const OpenVDS::MetadataKey &key, OpenVDS::Volume
     std::vector<uint8_t> blob;
     layout->GetMetadataBLOB(key.GetCategory(), key.GetName(), blob);
     std::vector<char> base64;
-    OpenVDS::Base64Encode(blob.data(), int64_t(blob.size()), base64);
+    Base64Encode(blob.data(), int64_t(blob.size()), base64);
     std::string strbase64(base64.data(), base64.data() + base64.size());
     value["value"] = strbase64;
   }

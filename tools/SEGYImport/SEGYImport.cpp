@@ -41,7 +41,7 @@
 #include <cassert>
 #include <algorithm>
 
-#include "cxxopts.hpp"
+#include <cxxopts/cxxopts.hpp>
 #include <json/json.h>
 #include <fmt/format.h>
 

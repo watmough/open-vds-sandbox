@@ -3,7 +3,7 @@
 #include <IO/IOManager.h>
 #include <OpenVDS/OpenVDS.h>
 #include <VDS/VolumeDataAccessManagerImpl.h>
-#include <VDS/Base64.h>
+#include <Base64/Base64.h>
 #include <chrono>
 
 class BasicIOTransfer : public OpenVDS::TransferDownloadHandler

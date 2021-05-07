@@ -24,7 +24,7 @@
 #include "DimensionGroup.h"
 #include "VolumeDataPageAccessorImpl.h"
 #include "VolumeDataChunk.h"
-#include "ThreadPool.h"
+#include <ThreadPool/ThreadPool.h>
 
 #include <stdint.h>
 #include <map>
