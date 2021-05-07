@@ -1,6 +1,6 @@
 ## VDSCopy
 
-A tool for extracting copying VDS between locations.
+A tool for copying a VDS between locations.
 
 Usage:
 ```
@@ -29,7 +29,7 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
 Some examples:
 
 ```
-$ VDSCopy.exe s3://openvds-test/volve s3://openvds-test-/volve_backup
+$ VDSCopy.exe s3://openvds-test/volve s3://openvds-test/volve_backup
 ```
 
 This will copy the dataset in the s3 bucket openvds-test named volve to the same bucket with the name volve_backup.

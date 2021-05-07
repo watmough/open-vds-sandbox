@@ -71,7 +71,7 @@ bool flushFutureBufer(std::vector<std::future<CopyError>>& futures, bool jsonOut
 
 int main(int argc, char **argv)
 {
-  cxxopts::Options options("VDSCopy", "VDSCopy - A tool for copying VDS between locations\n\nSee online documentation for connection paramters:\nhttp://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/seismic/open-vds/connection.html\n");
+  cxxopts::Options options("VDSCopy", "VDSCopy - A tool for copying a VDS between locations\n\nSee online documentation for connection paramters:\nhttp://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/seismic/open-vds/connection.html\n");
   options.positional_help("<source_url> <destination_url>");
 
   std::vector<std::string> urlarg;
