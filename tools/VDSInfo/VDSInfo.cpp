@@ -52,6 +52,21 @@ const char ebcdic_to_ascii[256] =
   /* 248*/ '8', '9', 0, 0, 0, 0, 0, 0,
 };
 
+std::string compressionStringForCompressionMethod(OpenVDS::CompressionMethod method)
+{
+  switch (method)
+  {
+  case OpenVDS::CompressionMethod::None: return "None";
+  case OpenVDS::CompressionMethod::Wavelet: return "Wavelet";
+  case OpenVDS::CompressionMethod::RLE: return "RLE";
+  case OpenVDS::CompressionMethod::Zip: return "Zip";
+  case OpenVDS::CompressionMethod::WaveletNormalizeBlock: return "WaveletNormalizeBlock";
+  case OpenVDS::CompressionMethod::WaveletLossless: return "WaveletLossless";
+  case OpenVDS::CompressionMethod::WaveletNormalizeBlockLossless: return "WaveletNormalizeBlockLossless";
+  }
+  return "";
+}
+
 static std::string MetadataTypeToString(OpenVDS::MetadataType type)
 {
   switch (type)
@@ -201,6 +216,7 @@ int main(int argc, char **argv)
   bool axisDescriptors = false;
   bool channelDescriptors = false;
   bool volumeDataLayout = false;
+  bool compressionInfo = false;
   bool metaKeys = false;
   bool metadataFirstBlob = false;
   bool metadataAutoDecodeEBCDIC = false;
@@ -218,6 +234,7 @@ int main(int argc, char **argv)
   options.add_option("", "", "axis", "Print axis descriptors.", cxxopts::value<bool>(axisDescriptors), "");
   options.add_option("", "", "channels", "Print channel descriptors.", cxxopts::value<bool>(channelDescriptors), "");
   options.add_option("", "", "layout", "Print layout.", cxxopts::value<bool>(volumeDataLayout), "");
+  options.add_option("", "", "compression-info", "Print compression-info.", cxxopts::value<bool>(compressionInfo), "");
 
   options.add_option("", "", "metadata-all", "Print all of the metadata", cxxopts::value<bool>(metadataAll), "");
   options.add_option("", "", "metadatakeys", "Print metadata keys.", cxxopts::value<bool>(metaKeys), "");
@@ -272,11 +289,12 @@ int main(int argc, char **argv)
   std::string url;
   if(!urlarg.empty()) url = urlarg[0];
 
-  if (!axisDescriptors && !channelDescriptors && !volumeDataLayout && !metaKeys && metadataPrintName.empty() && metadataPrintCategory.empty() && !metadataAll)
+  if (!axisDescriptors && !channelDescriptors && !volumeDataLayout && !compressionInfo && !metaKeys && metadataPrintName.empty() && metadataPrintCategory.empty() && !metadataAll)
   {
     axisDescriptors = true;
     channelDescriptors = true;
     volumeDataLayout = true;
+    compressionInfo = true;
     metadataAll = true;
   }
 
@@ -315,6 +333,12 @@ int main(int argc, char **argv)
   if (volumeDataLayout)
   {
     layoutJson["layoutDescriptor"] = OpenVDS::SerializeVolumeDataLayoutDescriptor(*layout);
+  }
+  if (compressionInfo)
+  {
+    auto& compressionInfo = layoutJson["compressionInfo"];
+    compressionInfo["compressionMethod"] = compressionStringForCompressionMethod(OpenVDS::GetCompressionMethod(handle));
+    compressionInfo["tolerance"] = OpenVDS::GetCompressionTolerance(handle);
   }
   if (axisDescriptors)
   {

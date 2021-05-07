@@ -14,6 +14,7 @@ VDSInfo [OPTION...] <url>
 | --axis                        | Print axis descriptors.
 | --channels                    | Print channel descriptors.
 | --layout                      | Print layout.
+| --compression-info            | Print compression-info.
 | --metadata-all                | Print all metadata.
 | --metadatakeys                | Print metadata keys.
 | --metadata-name \<string>     | Print metadata matching name.
