@@ -188,7 +188,7 @@ Json::Value TranslateChannelDescriptor(Json::Value const & root, bool isPrimaryC
   channelDescriptorJson["name"] = root[isPrimaryChannel ? "ValueName" : "Name"].asString();
   channelDescriptorJson["unit"] = root[isPrimaryChannel ? "ValueUnit" : "Unit"].asString();
   channelDescriptorJson["valueRange"] = valueRangeJson;
-  channelDescriptorJson["channelMapping"] = isPrimaryChannel ? "Direct" : (root["ChannelMapping"].asUInt64() == 1976800267773298824ULL ? "PerTrace" : "Direct");
+  channelDescriptorJson["channelMapping"] = isPrimaryChannel ? "Direct" : (root["ChannelMapping"].asInt64() == 1976800267773298824LL ? "PerTrace" : "Direct");
   channelDescriptorJson["mappedValues"] = isPrimaryChannel ? 0 : root["MappedValues"].asInt();
   channelDescriptorJson["discrete"] = (root["DiscreteData"].asString() != "FALSE");
   channelDescriptorJson["renderable"] = isPrimaryChannel ? true : (root["Renderable"].asString() != "FALSE");
