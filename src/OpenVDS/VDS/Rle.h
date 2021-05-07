@@ -22,7 +22,6 @@
 
 namespace OpenVDS
 {
-
 struct RLEHeader
 {
   int32_t compressedSize;
@@ -30,6 +29,7 @@ struct RLEHeader
   int32_t rleUnitSize;
 };
 
+int32_t RleCompress(uint8_t *target, int32_t targetSize, uint8_t *source, int32_t sourceSize, int32_t rleUnitSize);
 int32_t RleDecompress(uint8_t *target, int32_t targetSize, uint8_t* source);
 
 }

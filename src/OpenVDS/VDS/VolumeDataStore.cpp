@@ -573,6 +573,23 @@ bool VolumeDataStore::DeserializeVolumeData(const VolumeDataChunk& volumeDataChu
   return ret;
 }
 
+static void SerializeRLEFromBuffer(const DataBlock &dataBlock, const DataBlockDescriptor &dataBlockHeader, void *targetBuffer, uint64_t &targetBufferSize, int32_t sourceSize, void *sourceBuffer) 
+{
+  // Placement new constructs the descriptor in the buffer
+  int32_t nElementSize = GetElementSize(dataBlock);
+
+  // Check for unsupported element sizes for RLE encoding
+  if(nElementSize != 1 && nElementSize != 2 && nElementSize != 4 && nElementSize != 8)
+  {
+    nElementSize /= dataBlock.Components;
+    assert(nElementSize == 1 || nElementSize == 2 || nElementSize == 4 || nElementSize == 8);
+  }
+
+  int32_t nCompressedSize = RleCompress((uint8_t*)targetBuffer, (int32_t)targetBufferSize, (uint8_t *)sourceBuffer, sourceSize, nElementSize);
+
+  targetBufferSize = (int64_t)(sizeof(DataBlockDescriptor) + nCompressedSize);
+}
+
 struct ShrinkToSizeOnExit
 {
   ShrinkToSizeOnExit(std::vector<uint8_t>& to_shrink)
@@ -626,6 +643,7 @@ VolumeDataStore::SerializeVolumeData(const VolumeDataChunk& chunk, const DataBlo
     break;
   }
   case CompressionMethod::Zip:
+  case CompressionMethod::RLE:
   {
     uint32_t tmpbuffersize = GetByteSize(dataBlock);
     std::unique_ptr<uint8_t[]> tmpdata(new uint8_t[tmpbuffersize]);
@@ -635,19 +653,30 @@ VolumeDataStore::SerializeVolumeData(const VolumeDataChunk& chunk, const DataBlo
     {
       destinationBuffer.resize(0);
       auto& layer = *chunk.layer;
-      return GetConstantValueVolumeDataHash(dataBlock, tmpdata.get(), layer.GetValueRange(), layer.GetIntegerScale(), layer.GetIntegerOffset(), layer.IsUseNoValue(), layer.GetNoValue());
+      return GetConstantValueVolumeDataHash(dataBlock, (const uint8_t *) tmpdata.get(), layer.GetValueRange(), layer.GetIntegerScale(), layer.GetIntegerOffset(), layer.IsUseNoValue(), layer.GetNoValue());
     }
     void *targetBuffer = destinationBuffer.data();
     memcpy(targetBuffer, &dataBlockHeader, sizeof(dataBlockHeader));
     targetBuffer = ((uint8_t *)targetBuffer) + sizeof(dataBlockHeader);
-    unsigned long compressedSize = (unsigned long)destinationBuffer.size();
-    int status = compress((uint8_t *)targetBuffer, &compressedSize, tmpdata.get(), tmpbuffersize);
-    destinationBuffer.resize(compressedSize + sizeof(dataBlockHeader));
 
-    if (status != Z_OK)
+    if (compressionMethod == CompressionMethod::Zip)
     {
-      throw std::runtime_error("zlib compression failed");
+      unsigned long compressedSize = (unsigned long)destinationBuffer.size();
+      int status = compress((uint8_t*)targetBuffer, &compressedSize, tmpdata.get(), tmpbuffersize);
+      destinationBuffer.resize(compressedSize + sizeof(dataBlockHeader));
+
+      if (status != Z_OK)
+      {
+        throw std::runtime_error("zlib compression failed");
+      }
     }
+    else
+    {
+      uint64_t compressedSize;
+      SerializeRLEFromBuffer(dataBlock, dataBlockHeader, targetBuffer, compressedSize, tmpbuffersize, tmpdata.get());
+      destinationBuffer.resize(compressedSize);
+    }
+
     break;
   }
   default:
