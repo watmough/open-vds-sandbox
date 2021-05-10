@@ -145,6 +145,8 @@ public class VolumeDataAccessManager extends JniPointerWithoutDeletion {
 
     private static native int cpUploadErrorCount(long handle);
 
+    private static native int cpGetCurrentUploadErrorCode(long handle);
+
     public VolumeDataAccessManager(long handle) {
         super(handle);
     }
@@ -752,5 +754,9 @@ public class VolumeDataAccessManager extends JniPointerWithoutDeletion {
 
     public int uploadErrorCount() {
         return cpUploadErrorCount(_handle);
+    }
+
+    public int getCurrentUploadErrorCode() {
+        return cpGetCurrentUploadErrorCode(_handle);
     }
 }

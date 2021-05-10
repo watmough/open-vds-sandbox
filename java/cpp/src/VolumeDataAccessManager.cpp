@@ -566,6 +566,26 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_cpUplo
     return 0;
 }
 
+/*
+ * Class:     org_opengroup_openvds_VolumeDataAccessManager
+ * Method:    cpGetCurrentUploadErrorCode
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_cpGetCurrentUploadErrorCode
+        (JNIEnv * env, jclass, jlong handle)
+{
+    try {
+        const char *pObjectID = nullptr;
+        const char *pErrorString = nullptr;
+        int32_t errorCode = 0;
+
+        GetManager(handle)->GetCurrentUploadError(&pObjectID, &errorCode, &pErrorString);
+        return errorCode;
+    }
+    CATCH_EXCEPTIONS_FOR_JAVA;
+    return 0;
+}
+
 #ifdef __cplusplus
 }
 #endif
