@@ -107,8 +107,8 @@ VolumeDataLayer::VolumeDataLayerID VolumeDataLayoutImpl::AddDataLayer(VolumeData
 
 VolumeDataLayer* VolumeDataLayoutImpl::GetBaseLayer(DimensionGroup dimensionGroup, int32_t channel) const
 {
-  assert(dimensionGroup >= 0 && dimensionGroup < DimensionGroup_3D_Max);
-  assert(channel >= 0 && channel < GetChannelCount());
+  VerifyDimensionGroup3DMax(dimensionGroup);
+  ValidateChannelIndex(channel);
 
   VolumeDataLayer *volumeDataLayer = m_primaryBaseLayers[dimensionGroup];
 
@@ -121,19 +121,19 @@ VolumeDataLayer* VolumeDataLayoutImpl::GetBaseLayer(DimensionGroup dimensionGrou
 
 FloatRange const& VolumeDataLayoutImpl::GetChannelActualValueRange(int32_t channel) const
 {
-  assert(channel >= 0 && channel < GetChannelCount());
+  ValidateChannelIndex(channel);
   return (channel == m_actualValueRangeChannel) ? m_actualValueRange : m_volumeDataChannelDescriptor[channel].GetValueRange();
 }
 
 VolumeDataMapping VolumeDataLayoutImpl::GetChannelMapping(int32_t channel) const
 {
-  assert(channel >= 0 && channel < GetChannelCount());
+  ValidateChannelIndex(channel);
   return m_volumeDataChannelDescriptor[channel].GetMapping();
 }
 
 int32_t VolumeDataLayoutImpl::GetChannelMappedValueCount(int32_t channel) const
 {
-  assert(channel >= 0 && channel < GetChannelCount());
+  ValidateChannelIndex(channel);
   return m_volumeDataChannelDescriptor[channel].GetMappedValueCount();
 }
 
@@ -158,8 +158,8 @@ VolumeDataLayer *VolumeDataLayoutImpl::GetVolumeDataLayerFromID(VolumeDataLayer:
   
 VolumeDataLayer *VolumeDataLayoutImpl::GetTopLayer(DimensionGroup dimensionGroup, int32_t channel) const
 {
-  assert(dimensionGroup >= 0 && dimensionGroup < DimensionGroup_3D_Max);
-  assert(channel >= 0 && channel < GetChannelCount());
+  VerifyDimensionGroup3DMax(dimensionGroup);
+  ValidateChannelIndex(channel);
 
   VolumeDataLayer *volumeDataLayer = m_primaryTopLayers[dimensionGroup];
 
@@ -212,13 +212,13 @@ int32_t VolumeDataLayoutImpl::GetChannelIndex(const char *channelName) const
   {
     if(strcmp(m_volumeDataChannelDescriptor[channel].GetName(), channelName) == 0) return channel;
   }
-  assert(0 && "Should not call this function unless IsChannelAvailable() is true");
+  throw OpenVDS::InvalidArgument(fmt::format("ChannelName {} is not found. Use IsChannelAvailable() to verify channel existence.", channelName).c_str(), channelName);
   return 0;
 }
 
 VolumeDataChannelDescriptor VolumeDataLayoutImpl::GetChannelDescriptor(int32_t channel) const
 {
-  assert(channel >= 0 && channel < GetChannelCount()); 
+  ValidateChannelIndex(channel); 
 
   const VolumeDataChannelDescriptor &volumeDataChannelDescriptor = m_volumeDataChannelDescriptor[channel];
 
@@ -274,7 +274,7 @@ VolumeDataLayoutDescriptor VolumeDataLayoutImpl::GetLayoutDescriptor() const
   case 2048: brickSize = VolumeDataLayoutDescriptor::BrickSize_2048; break;
   case 4096: brickSize = VolumeDataLayoutDescriptor::BrickSize_4096; break;
 
-  default: assert(0 && "illegal bricksize"); brickSize = VolumeDataLayoutDescriptor::BrickSize();
+  default: throw OpenVDS::InvalidOperation("Illigal Bricksize.");
   }
 
   VolumeDataLayoutDescriptor::LODLevels
@@ -296,7 +296,11 @@ VolumeDataLayoutDescriptor VolumeDataLayoutImpl::GetLayoutDescriptor() const
 
 VolumeDataAxisDescriptor VolumeDataLayoutImpl::GetAxisDescriptor(int32_t dimension) const
 {
-  assert(dimension >= 0 && dimension < m_dimensionality);
+  if (dimension < 0 || dimension >= m_dimensionality)
+  {
+    throw OpenVDS::InvalidArgument(fmt::format("Invalid dimension {} the dimensionality of the Layout is {}", dimension, m_dimensionality).c_str(), "dimension");
+  }
+
   return VolumeDataAxisDescriptor(GetDimensionNumSamples(dimension),
                                   GetDimensionName(dimension),
                                   GetDimensionUnit(dimension),
@@ -306,19 +310,19 @@ VolumeDataAxisDescriptor VolumeDataLayoutImpl::GetAxisDescriptor(int32_t dimensi
 
 int VolumeDataLayoutImpl::GetDimensionNumSamples(int32_t dimension) const
 {
-  assert(dimension >= 0 && dimension < ArraySize(m_dimensionNumSamples));
+  VerifyDimensionMax(dimension);
   return m_dimensionNumSamples[dimension];
 }
 
 const char *VolumeDataLayoutImpl::GetDimensionName(int32_t dimension) const
 {
-  assert(dimension >= 0 && dimension < ArraySize(m_dimensionName));
+  VerifyDimensionMax(dimension);
   return m_dimensionName[dimension];
 }
 
 const char *VolumeDataLayoutImpl::GetDimensionUnit(int32_t dimension) const
 {
-  assert(dimension >= 0 && dimension < ArraySize(m_dimensionUnit));
+  VerifyDimensionMax(dimension);
   return m_dimensionUnit[dimension];
 }
   
@@ -453,4 +457,59 @@ void          VolumeDataLayoutImpl::GetMetadataBLOB(const char* category, const 
 MetadataKeyRange
               VolumeDataLayoutImpl::GetMetadataKeys() const { return m_vds.metadataContainer.GetMetadataKeys(); }
 
+VolumeDataLayoutImpl const* VolumeDataLayoutImpl::ValidateVoxelCoordinates(const int(&minVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], const int(&maxVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max]) const
+{
+  const int dimensionality = GetDimensionality();
+
+  for (int dimension = 0; dimension < dimensionality; dimension++)
+  {
+    if (minVoxelCoordinates[dimension] < 0)
+    {
+      throw InvalidArgument(fmt::format("Illegal volume subset, dimension {} min = {}, max = {}", dimension, minVoxelCoordinates[dimension], maxVoxelCoordinates[dimension]).c_str(), "minVoxelCoordinates");
+    }
+    if (maxVoxelCoordinates[dimension] <= minVoxelCoordinates[dimension])
+    {
+      throw InvalidArgument(fmt::format("Illegal volume subset, dimension {} min = {}, max = {}", dimension, minVoxelCoordinates[dimension], maxVoxelCoordinates[dimension]).c_str(), "maxVoxelCoordinates");
+    }
+  }
+  return this;
+}
+
+VolumeDataLayoutImpl const* VolumeDataLayoutImpl::ValidateChannelIndex(int channel) const
+{
+  if (channel < 0 || channel >= GetChannelCount())
+  {
+    throw OpenVDS::InvalidArgument(fmt::format("Channel {} is not a valid channel index. ChannelCount is {}.", channel, GetChannelCount()).c_str(), "channel");
+  }
+  return this;
+}
+
+VolumeDataLayoutImpl const* VolumeDataLayoutImpl::ValidateTraceDimension(int traceDimension) const
+{
+  if (traceDimension < 0 || traceDimension >= GetDimensionality())
+  {
+    throw InvalidOperation("The trace dimension must be a valid dimension.");
+  }
+
+  return this;
+}
+
+VolumeDataLayoutImpl const* VolumeDataLayoutImpl::VerifyDimensionMax(int32_t dimension) const
+{
+  if (dimension < 0 || dimension >= Dimensionality_Max)
+  {
+    int dimMax = Dimensionality_Max;
+    throw OpenVDS::InvalidArgument(fmt::format("Dimension {} is not a valid dimension. Dimensionality_Max is {}.", dimension, dimMax).c_str(), "dimension");
+  }
+  return this;
+}
+
+VolumeDataLayoutImpl const* VolumeDataLayoutImpl::VerifyDimensionGroup3DMax(DimensionGroup dimensionGroup) const
+{
+  if (dimensionGroup < 0 || dimensionGroup >= DimensionGroup_3D_Max)
+  {
+    throw OpenVDS::InvalidArgument(fmt::format("DimensionGroup {} is not a valid dimension.", dimensionGroup).c_str(), "dimensionGroup");
+  }
+  return this;
+}
 }

@@ -20,6 +20,7 @@
 
 #include <OpenVDS/VolumeDataAxisDescriptor.h>
 #include <OpenVDS/VolumeDataLayout.h>
+#include <OpenVDS/Exceptions.h>
 
 #include "VolumeDataLayer.h"
 #include "VolumeDataHash.h"
@@ -27,6 +28,7 @@
 #include <vector>
 #include <mutex>
 #include <memory>
+#include <fmt/format.h>
 
 namespace OpenVDS
 {
@@ -110,7 +112,7 @@ public:
   VolumeDataLayer *GetBaseLayer(DimensionGroup dimensionGroup, int32_t channel) { return const_cast<VolumeDataLayer *>(const_cast<const VolumeDataLayoutImpl *>(this)->GetBaseLayer(dimensionGroup, channel)); }
 
   int32_t GetBaseBrickSize() const { return m_baseBrickSize; }
-  int32_t GetLayoutDimensionNumSamples(int32_t dimension) const { assert(dimension >= 0 && dimension < Dimensionality_Max); return m_dimensionNumSamples[dimension]; }
+  int32_t GetLayoutDimensionNumSamples(int32_t dimension) const { VerifyDimensionMax(dimension); return m_dimensionNumSamples[dimension]; }
   int32_t GetLayerCount() const { return int32_t(m_volumeDataLayers.size()); }
 
   bool IsReadOnly() const { return m_isReadOnly; }
@@ -135,21 +137,21 @@ public:
   VolumeDataAxisDescriptor GetAxisDescriptor(int32_t dimension) const override;
 
 //  // These convenience functions provide access to the individual elements of the value descriptor
-  VolumeDataChannelDescriptor::Format GetChannelFormat(int32_t channel) const override { assert(channel >= 0 && channel < GetChannelCount()); return m_volumeDataChannelDescriptor[channel].GetFormat(); }
+  VolumeDataChannelDescriptor::Format GetChannelFormat(int32_t channel) const override { ValidateChannelIndex(channel);  return m_volumeDataChannelDescriptor[channel].GetFormat(); }
 
-  VolumeDataChannelDescriptor::Components GetChannelComponents(int32_t channel) const override { assert(channel >= 0 && channel < GetChannelCount()); return m_volumeDataChannelDescriptor[channel].GetComponents(); }
+  VolumeDataChannelDescriptor::Components GetChannelComponents(int32_t channel) const override { ValidateChannelIndex(channel); return m_volumeDataChannelDescriptor[channel].GetComponents(); }
 
-  const char *GetChannelName(int32_t channel) const override { assert(channel >= 0 && channel < GetChannelCount()); return m_volumeDataChannelDescriptor[channel].GetName(); }
+  const char *GetChannelName(int32_t channel) const override { ValidateChannelIndex(channel); return m_volumeDataChannelDescriptor[channel].GetName(); }
 
   float GetChannelValueRangeMin(int32_t channel) const override{ return GetChannelValueRange(channel).Min; }
   float GetChannelValueRangeMax(int32_t channel) const override{ return GetChannelValueRange(channel).Max; }
 
-  const char *GetChannelUnit(int32_t channel) const override { assert(channel >= 0 && channel < GetChannelCount()); return m_volumeDataChannelDescriptor[channel].GetUnit(); }
+  const char *GetChannelUnit(int32_t channel) const override { ValidateChannelIndex(channel); return m_volumeDataChannelDescriptor[channel].GetUnit(); }
 
-  bool IsChannelDiscrete(int32_t channel) const override{ assert(channel >= 0 && channel < GetChannelCount()); return m_volumeDataChannelDescriptor[channel].IsDiscrete(); }
-  bool IsChannelRenderable(int32_t channel) const override { assert(channel >= 0 && channel < GetChannelCount()); return m_volumeDataChannelDescriptor[channel].IsRenderable(); }
-  bool IsChannelAllowingLossyCompression(int32_t channel) const override { assert(channel >= 0 && channel < GetChannelCount()); return m_volumeDataChannelDescriptor[channel].IsAllowLossyCompression(); }
-  bool IsChannelUseZipForLosslessCompression(int32_t channel) const override { assert(channel >= 0 && channel < GetChannelCount()); return m_volumeDataChannelDescriptor[channel].IsUseZipForLosslessCompression(); }
+  bool IsChannelDiscrete(int32_t channel) const override{ ValidateChannelIndex(channel); return m_volumeDataChannelDescriptor[channel].IsDiscrete(); }
+  bool IsChannelRenderable(int32_t channel) const override { ValidateChannelIndex(channel); return m_volumeDataChannelDescriptor[channel].IsRenderable(); }
+  bool IsChannelAllowingLossyCompression(int32_t channel) const override { ValidateChannelIndex(channel); return m_volumeDataChannelDescriptor[channel].IsAllowLossyCompression(); }
+  bool IsChannelUseZipForLosslessCompression(int32_t channel) const override { ValidateChannelIndex(channel); return m_volumeDataChannelDescriptor[channel].IsUseZipForLosslessCompression(); }
 
   VolumeDataMapping GetChannelMapping(int32_t channel) const override;
 
@@ -160,15 +162,15 @@ public:
 
   const char *GetDimensionUnit(int32_t dimension) const override;
 
-  float GetDimensionMin(int32_t dimension) const override { assert(dimension >= 0 && dimension < Dimensionality_Max); return m_dimensionCoordinateMin[dimension]; }
-  float GetDimensionMax(int32_t dimension) const override { assert(dimension >= 0 && dimension < Dimensionality_Max); return m_dimensionCoordinateMax[dimension]; }
+  float GetDimensionMin(int32_t dimension) const override { VerifyDimensionMax(dimension); return m_dimensionCoordinateMin[dimension]; }
+  float GetDimensionMax(int32_t dimension) const override { VerifyDimensionMax(dimension); return m_dimensionCoordinateMax[dimension]; }
 
-  bool  IsChannelUseNoValue(int32_t channel) const override { assert(channel >= 0 && channel < GetChannelCount()); return m_volumeDataChannelDescriptor[channel].IsUseNoValue(); }
+  bool  IsChannelUseNoValue(int32_t channel) const override { ValidateChannelIndex(channel); return m_volumeDataChannelDescriptor[channel].IsUseNoValue(); }
 
-  float GetChannelNoValue(int32_t channel) const override { assert(channel >= 0 && channel < GetChannelCount()); return m_volumeDataChannelDescriptor[channel].GetNoValue(); }
+  float GetChannelNoValue(int32_t channel) const override { ValidateChannelIndex(channel); return m_volumeDataChannelDescriptor[channel].GetNoValue(); }
 
-  float GetChannelIntegerScale(int32_t channel) const  override { assert(channel >= 0 && channel < GetChannelCount()); return m_volumeDataChannelDescriptor[channel].GetIntegerScale(); }
-  float GetChannelIntegerOffset(int32_t channel) const override { assert(channel >= 0 && channel < GetChannelCount()); return m_volumeDataChannelDescriptor[channel].GetIntegerOffset(); }
+  float GetChannelIntegerScale(int32_t channel) const  override { ValidateChannelIndex(channel); return m_volumeDataChannelDescriptor[channel].GetIntegerScale(); }
+  float GetChannelIntegerOffset(int32_t channel) const override { ValidateChannelIndex(channel); return m_volumeDataChannelDescriptor[channel].GetIntegerOffset(); }
 
 // Mutators
   void SetContentsHash(VolumeDataHash const &contentsHash);
@@ -213,6 +215,14 @@ public:
   void          GetMetadataBLOB(const char* category, const char* name, const void **data, size_t *size)  const override;
   MetadataKeyRange
                 GetMetadataKeys() const override;
+
+
+  VolumeDataLayoutImpl const* ValidateVoxelCoordinates(const int(&minVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], const int(&maxVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max]) const;
+  VolumeDataLayoutImpl const* ValidateChannelIndex(int channel) const;
+  VolumeDataLayoutImpl const* ValidateTraceDimension(int traceDimension) const;
+  VolumeDataLayoutImpl const* VerifyDimensionMax(int32_t dimension) const;
+  VolumeDataLayoutImpl const* VerifyDimensionGroup3DMax(DimensionGroup dimensionGroup) const;
+
 };
 }
 #endif //VOLUMEDATALAYOUTIMPL_H

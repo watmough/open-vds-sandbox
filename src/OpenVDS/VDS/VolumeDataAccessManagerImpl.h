@@ -50,12 +50,10 @@ class VolumeDataAccessManagerImpl : public IVolumeDataAccessManager, public IVol
   VolumeDataLayer const *               PrivateGetLayer(DimensionsND dimensionsND, int channel, int LOD);
   void                                  ValidateRequest(int64_t requestID);
   VolumeDataLayer const *               ValidateProduceStatus(VolumeDataLayer const *volumeDataLayer, bool allowLODProduction = false);
-  VolumeDataLayoutImpl const *          ValidateVoxelCoordinates(VolumeDataLayoutImpl const *volumeDataLayout, const int (&minVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], const int (&maxVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max]);
   VolumeDataLayer const *               ValidateVolumeSubset(VolumeDataLayer const *volumeDataLayer, const int (&minVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], const int (&maxVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max]);
   VolumeDataLayoutImpl const *          ValidateChannelIndex(VolumeDataLayoutImpl const *volumeDataLayout, int channel);
   VolumeDataLayer const *               ValidateChunkIndex(VolumeDataLayer const *volumeDataLayer, int64_t chunkIndex);
   VolumeDataLayer const *               ValidateVolumeDataStore(VolumeDataLayer const *volumeDataLayer);
-  VolumeDataLayoutImpl const *          ValidateTraceDimension(VolumeDataLayoutImpl const *volumeDataLayout, int traceDimension);
   VolumeDataLayer const *               ValidateTraceDimension(VolumeDataLayer const *volumeDataLayer, int traceDimension);
 
   VolumeDataAccessManagerImpl(VDS &vds);

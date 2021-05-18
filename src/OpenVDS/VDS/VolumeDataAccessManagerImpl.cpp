@@ -205,25 +205,6 @@ VolumeDataAccessManagerImpl::ValidateProduceStatus(VolumeDataLayer const * volum
   return volumeDataLayer;
 }
 
-VolumeDataLayoutImpl const *
-VolumeDataAccessManagerImpl::ValidateVoxelCoordinates(VolumeDataLayoutImpl const * volumeDataLayout, const int (&minVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], const int (&maxVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max])
-{
-  const int dimensionality = volumeDataLayout->GetDimensionality();
-
-  for (int dimension = 0; dimension < dimensionality; dimension++)
-  {
-    if(minVoxelCoordinates[dimension] < 0)
-    {
-      throw InvalidArgument(fmt::format("Illegal volume subset, dimension {} min = {}, max = {}", dimension, minVoxelCoordinates[dimension], maxVoxelCoordinates[dimension]).c_str(), "minVoxelCoordinates");
-    }
-    if(maxVoxelCoordinates[dimension] <= minVoxelCoordinates[dimension])
-    {
-      throw InvalidArgument(fmt::format("Illegal volume subset, dimension {} min = {}, max = {}", dimension, minVoxelCoordinates[dimension], maxVoxelCoordinates[dimension]).c_str(), "maxVoxelCoordinates");
-    }
-  }
-  return volumeDataLayout;
-}
-
 VolumeDataLayer const *
 VolumeDataAccessManagerImpl::ValidateVolumeSubset(VolumeDataLayer const * volumeDataLayer, const int (&minVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], const int (&maxVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max])
 {
@@ -250,11 +231,7 @@ VolumeDataAccessManagerImpl::ValidateChannelIndex(VolumeDataLayoutImpl const * v
   {
     throw InvalidOperation("The VDS doesn't have a volume data layout, this is usually because the VDS setup is invalid");
   }
-  if(channel > volumeDataLayout->GetChannelCount())
-  {
-    throw InvalidArgument("Specified channel doesn't exist", "channel");
-  }
-  return volumeDataLayout;
+  return volumeDataLayout->ValidateChannelIndex(channel);
 }
 
 VolumeDataLayer const *
@@ -272,17 +249,6 @@ VolumeDataLayer const *
 VolumeDataAccessManagerImpl::ValidateVolumeDataStore(VolumeDataLayer const *volumeDataLayer)
 {
   return volumeDataLayer;
-}
-
-VolumeDataLayoutImpl const *
-VolumeDataAccessManagerImpl::ValidateTraceDimension(VolumeDataLayoutImpl const * volumeDataLayout, int traceDimension)
-{
-  if(traceDimension < 0 || traceDimension >= volumeDataLayout->GetDimensionality())
-  {
-    throw InvalidOperation("The trace dimension must be a valid dimension.");
-  }
-
-  return volumeDataLayout;
 }
 
 VolumeDataLayer const *
@@ -429,7 +395,7 @@ VolumeDataAccessManagerImpl::GetVolumeSubsetBufferSize(const int (&minVoxelCoord
 {
   if (IsValid())
   {
-    return VolumeDataRequestProcessor::StaticGetVolumeSubsetBufferSize(ValidateVoxelCoordinates(ValidateChannelIndex(PrivateGetLayout(), channel), minVoxelCoordinates, maxVoxelCoordinates), minVoxelCoordinates, maxVoxelCoordinates, format, LOD, channel);
+    return VolumeDataRequestProcessor::StaticGetVolumeSubsetBufferSize(ValidateChannelIndex(PrivateGetLayout(), channel)->ValidateVoxelCoordinates(minVoxelCoordinates, maxVoxelCoordinates), minVoxelCoordinates, maxVoxelCoordinates, format, LOD, channel);
   }
   else
   {
@@ -457,7 +423,7 @@ VolumeDataAccessManagerImpl::GetProjectedVolumeSubsetBufferSize(const int (&minV
 {
   if (IsValid())
   {
-    return VolumeDataRequestProcessor::StaticGetProjectedVolumeSubsetBufferSize(ValidateVoxelCoordinates(ValidateChannelIndex(PrivateGetLayout(), channel), minVoxelCoordinates, maxVoxelCoordinates), minVoxelCoordinates, maxVoxelCoordinates, DimensionGroupUtil::GetDimensionGroupFromDimensionsND(projectedDimensions), format, LOD, channel);
+    return VolumeDataRequestProcessor::StaticGetProjectedVolumeSubsetBufferSize(ValidateChannelIndex(PrivateGetLayout(), channel)->ValidateVoxelCoordinates(minVoxelCoordinates, maxVoxelCoordinates), minVoxelCoordinates, maxVoxelCoordinates, DimensionGroupUtil::GetDimensionGroupFromDimensionsND(projectedDimensions), format, LOD, channel);
   }
   else
   {
@@ -513,7 +479,7 @@ VolumeDataAccessManagerImpl::GetVolumeTracesBufferSize(int traceCount, int trace
 {
   if (IsValid())
   {
-    return VolumeDataRequestProcessor::StaticGetVolumeTracesBufferSize(ValidateTraceDimension(ValidateChannelIndex(PrivateGetLayout(), channel), traceDimension), traceCount, traceDimension, LOD, channel);
+    return VolumeDataRequestProcessor::StaticGetVolumeTracesBufferSize(ValidateChannelIndex(PrivateGetLayout(), channel)->ValidateTraceDimension(traceDimension), traceCount, traceDimension, LOD, channel);
   }
   else
   {
