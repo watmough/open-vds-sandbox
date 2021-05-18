@@ -41,19 +41,7 @@
 
 namespace OpenVDS
 {
-Request::Request(const std::string& objectName)
-  : m_objectName(objectName)
-{
-}
-Request::~Request()
-{}
 
-IOManager::IOManager(OpenOptions::ConnectionType connectionType)
-  : m_connectionType(connectionType)
-{
-}
-IOManager::~IOManager()
-{}
 IOManager* IOManager::CreateIOManager(const OpenOptions& options, IOManager::AccessPattern accessPattern, Error &error)
 {
   switch(options.connectionType)

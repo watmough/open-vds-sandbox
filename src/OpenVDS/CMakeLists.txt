@@ -106,6 +106,12 @@ endif()
 set_source_files_properties(VDS/FSE/entropy_common.cpp PROPERTIES COMPILE_FLAGS ${DISABLE_WARNING_FLAG})
 set_source_files_properties(VDS/FSE/fse_decompress.cpp PROPERTIES COMPILE_FLAGS ${DISABLE_WARNING_FLAG})
 
+#to work around Aws::String problem
+#https://github.com/aws/aws-sdk-cpp/blob/266d7682c3d07d41618c41a3521811e1219c1bc7/aws-cpp-sdk-core/include/aws/core/utils/memory/stl/AWSString.h#L21
+if (NOT MSVC)
+  set_source_files_properties(IO/IOManagerAWS.cpp PROPERTIES COMPILE_FLAGS -fvisibility=default)
+endif()
+
 add_library(openvds_objects OBJECT
   ${PRIVATE_HEADER_FILES}
   ${EXPORTED_HEADER_FILES}

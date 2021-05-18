@@ -49,11 +49,6 @@ namespace OpenVDS
 
 static std::function<IOManager* (IOManager*)> iomanagerTransformer;
 
-OpenOptions::~OpenOptions()
-{
-
-}
-
 static bool isProtocol(const StringWrapper &str, const StringWrapper &literal)
 {
   if (str.size < literal.size)

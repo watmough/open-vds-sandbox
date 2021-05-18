@@ -72,7 +72,7 @@ public:
   float               waveletAdaptiveTolerance; ///< Wavelet adaptive tolerance, this setting will be used whenever the WavletAdaptiveMode is set to Tolerance.
   float               waveletAdaptiveRatio;     ///< Wavelet adaptive ratio, this setting will be used whenever the WavletAdaptiveMode is set to Ratio. A compression ratio of 5.0 corresponds to compressed data which is 20% of the original.
 
-  OPENVDS_EXPORT virtual ~OpenOptions();
+  virtual ~OpenOptions() {}
 };
 
 /// <summary>
