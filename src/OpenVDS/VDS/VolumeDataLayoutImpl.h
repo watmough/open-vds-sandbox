@@ -93,7 +93,7 @@ public:
   uint64_t         GetContentsHash() const override { return uint64_t(m_contentsHash); }
   VolumeDataLayer::VolumeDataLayerID AddDataLayer(VolumeDataLayer *layer);
 
-  FloatRange const &GetChannelValueRange(int32_t channel) const { assert(channel >= 0 && channel < GetChannelCount()); return m_volumeDataChannelDescriptor[channel].GetValueRange(); }
+  FloatRange const &GetChannelValueRange(int32_t channel) const { ValidateChannelIndex(channel); return m_volumeDataChannelDescriptor[channel].GetValueRange(); }
 
   FloatRange const &GetChannelActualValueRange(int32_t channel) const;
 
