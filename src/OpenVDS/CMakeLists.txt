@@ -11,6 +11,7 @@ set(SOURCE_FILES
   IO/IOManagerAzurePresigned.cpp
   IO/IOManagerGoogle.cpp
   IO/IOManagerHttp.cpp
+  IO/IOManagerDms.cpp
   BulkDataStore/HueBulkDataStore.cpp
   BulkDataStore/ExtentAllocator.cpp
   BulkDataStore/VDSObjectParser.cpp
@@ -115,7 +116,7 @@ endif()
 add_library(openvds_objects OBJECT
   ${PRIVATE_HEADER_FILES}
   ${EXPORTED_HEADER_FILES}
-  ${SOURCE_FILES} "IO/IOManagerDms.cpp")
+  ${SOURCE_FILES} )
 
 function(compileInTarget to_target source_target)
   get_target_property(src_sources ${source_target} SOURCES)
