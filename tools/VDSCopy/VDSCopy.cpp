@@ -7,6 +7,8 @@
 #include <ThreadPool/ThreadPool.h>
 #include <PrintHelpers.h>
 
+#include <HelpConnection.h>
+
 #include <assert.h>
 
 inline char asciitolower(char in) {
@@ -74,7 +76,7 @@ bool flushFutureBufer(std::vector<std::future<CopyError>>& futures, bool jsonOut
 
 int main(int argc, char **argv)
 {
-  cxxopts::Options options("VDSCopy", "VDSCopy - A tool for copying a VDS between locations\n\nSee online documentation for connection paramters:\nhttp://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/seismic/open-vds/connection.html\n");
+  cxxopts::Options options("VDSCopy", "VDSCopy - A tool for copying a VDS between locations\n\nUse -H or see online documentation for connection string paramters:\nhttp://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/seismic/open-vds/connection.html\n");
   options.positional_help("<source_url> <destination_url>");
 
   std::vector<std::string> urlarg;
@@ -85,6 +87,7 @@ int main(int argc, char **argv)
 
   bool jsonOutput = false;
   bool help = false;
+  bool helpConnection = false;
   bool version = false;
 
   std::string supportedCompressionMethods = "None";
@@ -105,11 +108,12 @@ int main(int argc, char **argv)
 
   options.add_option("", "", "json-output", "Enable json output.", cxxopts::value<bool>(jsonOutput), "");
   options.add_option("", "h", "help", "Print this help information", cxxopts::value<bool>(help), "");
+  options.add_option("", "H", "help-connection", "Print help information about the connection string", cxxopts::value<bool>(helpConnection), "");
   options.add_option("", "", "version", "Print version information.", cxxopts::value<bool>(version), "");
 
   options.parse_positional("urls");
 
-  if(argc == 1)
+  if (argc == 1)
   {
     OpenVDS::printInfo(jsonOutput, "Args", options.help());
     return EXIT_SUCCESS;
@@ -125,9 +129,14 @@ int main(int argc, char **argv)
     return EXIT_FAILURE;
   }
 
-  if(help)
+  if (help)
   {
     OpenVDS::printInfo(jsonOutput, "Args", options.help());
+    return EXIT_SUCCESS;
+  }
+  if (helpConnection)
+  {
+    OpenVDS::printInfo(jsonOutput, "Args", GetConnectionHelpString());
     return EXIT_SUCCESS;
   }
 

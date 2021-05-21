@@ -11,10 +11,13 @@ function(setCompilerFlagsForTools target)
     DESTINATION ${CMAKE_INSTALL_BINDIR}${LIB_TOOLSET_DIR}
     )
 
+  target_link_libraries(${target} PRIVATE tools_shared)
   set_target_properties(${target} PROPERTIES INSTALL_RPATH "$ORIGIN/../lib${LIBSUFFIX}")
   target_compile_definitions(${target} PRIVATE PROJECT_NAME="${CMAKE_PROJECT_NAME}" PROJECT_VERSION="${PROJECT_VERSION}")
   target_include_directories(${target} PRIVATE ${TOOLS_FOLDER}/Shared ${COMMON_DIR})
 endfunction()
+
+add_subdirectory(Shared)
 
 add_subdirectory(SEGYImport)
 add_subdirectory(SEGYExport)

@@ -32,13 +32,14 @@
 #include <chrono>
 
 #include <PrintHelpers.h>
+#include <HelpConnection.h>
 
 int
 main(int argc, char *argv[])
 {
   //auto start_time = std::chrono::high_resolution_clock::now();
 
-  cxxopts::Options options("SEGYExport", "SEGYExport - A tool to export a volume data store (VDS) to a SEG-Y file\n\nSee online documentation for connection paramters:\nhttp://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/seismic/open-vds/connection.html\n");
+  cxxopts::Options options("SEGYExport", "SEGYExport - A tool to export a volume data store (VDS) to a SEG-Y file\n\nUse -H or see online documentation for connection string paramters:\nhttp://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/seismic/open-vds/connection.html\n");
   options.positional_help("<output file>");
 
   std::string url;
@@ -47,6 +48,7 @@ main(int argc, char *argv[])
   std::string fileName;
   bool jsonOutput = false;
   bool help = false;
+  bool helpConnection = false;
   bool version = false;
 
   options.add_option("", "", "url", "Url with vendor specific protocol or VDS file name.", cxxopts::value<std::string>(url), "<string>");
@@ -56,6 +58,7 @@ main(int argc, char *argv[])
 
   options.add_option("", "", "json-output", "Enable json output.", cxxopts::value<bool>(jsonOutput), "");
   options.add_option("", "h", "help", "Print this help information", cxxopts::value<bool>(help), "");
+  options.add_option("", "H", "help-connection", "Print help information about the connection string", cxxopts::value<bool>(helpConnection), "");
   options.add_option("", "", "version", "Print version information.", cxxopts::value<bool>(version), "");
 
   options.add_option("", "", "output", "", cxxopts::value<std::string>(fileName), "");
@@ -81,6 +84,11 @@ main(int argc, char *argv[])
   if (help)
   {
     OpenVDS::printInfo(jsonOutput, "Args", options.help());
+    return EXIT_SUCCESS;
+  }
+  if (helpConnection)
+  {
+    OpenVDS::printInfo(jsonOutput, "Args", GetConnectionHelpString());
     return EXIT_SUCCESS;
   }
 

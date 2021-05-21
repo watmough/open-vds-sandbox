@@ -43,4 +43,6 @@ macro(build3rdparty)
   if (NOT DISABLE_DMS_IOMANAGER)
     BuildDms()
   endif()
+
+  include(${cmakerc_SOURCE_DIR}/CMakeRC.cmake)
 endmacro()

@@ -165,6 +165,9 @@ set(COMMON_DIR ${CMAKE_CURRENT_SOURCE_DIR}/common)
 set(CMAKE_DEBUG_POSTFIX d)
 
 add_subdirectory(src)
+
+add_subdirectory(docs)
+
 add_subdirectory(tools)
 
 if (BUILD_PYTHON)
@@ -175,9 +178,6 @@ if (BUILD_JAVA)
   add_subdirectory(java)
 endif()
 
-if (BUILD_DOCS)
-  add_subdirectory(docs)
-endif()
 
 if (BUILD_TESTS)
   enable_testing()

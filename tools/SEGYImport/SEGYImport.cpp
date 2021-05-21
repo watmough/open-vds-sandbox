@@ -47,6 +47,7 @@
 
 #include "SplitUrl.h"
 #include <PrintHelpers.h>
+#include <HelpConnection.h>
 
 #include <chrono>
 #include <numeric>
@@ -1448,7 +1449,7 @@ main(int argc, char* argv[])
   bool is_tty = isatty(fileno(stdout));
 #endif
   //auto start_time = std::chrono::high_resolution_clock::now();
-  cxxopts::Options options("SEGYImport", "SEGYImport - A tool to scan and import a SEG-Y file to a volume data store (VDS)\n\nSee online documentation for connection paramters:\nhttp://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/seismic/open-vds/connection.html\n");
+  cxxopts::Options options("SEGYImport", "SEGYImport - A tool to scan and import a SEG-Y file to a volume data store (VDS)\n\nUse -H or see online documentation for connection string paramters:\nhttp://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/seismic/open-vds/connection.html\n");
   options.positional_help("<input file>");
 
   std::string headerFormatFileName;
@@ -1481,6 +1482,7 @@ main(int argc, char* argv[])
   bool traceOrderByOffset = true;
   bool jsonOutput = false;
   bool help = false;
+  bool helpConnection = false;
   bool version = false;
 
   std::string supportedCompressionMethods = "None";
@@ -1522,6 +1524,7 @@ main(int argc, char* argv[])
   // TODO add option for turning off traceOrderByOffset
 
   options.add_option("", "h", "help", "Print this help information", cxxopts::value<bool>(help), "");
+  options.add_option("", "H", "help-connection", "Print help information about the connection string", cxxopts::value<bool>(helpConnection), "");
   options.add_option("", "", "version", "Print version information.", cxxopts::value<bool>(version), "");
 
   options.add_option("", "", "input", "", cxxopts::value<std::vector<std::string>>(fileNames), "");
@@ -1549,6 +1552,11 @@ main(int argc, char* argv[])
   if (help)
   {
     OpenVDS::printInfo(jsonOutput, "Args", options.help());
+    return EXIT_SUCCESS;
+  }
+  if (helpConnection)
+  {
+    OpenVDS::printInfo(jsonOutput, "Args", GetConnectionHelpString());
     return EXIT_SUCCESS;
   }
 

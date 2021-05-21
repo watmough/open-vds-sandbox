@@ -8,6 +8,7 @@
 
 #include <cxxopts/cxxopts.hpp>
 #include <PrintHelpers.h>
+#include <HelpConnection.h>
 
 namespace OpenVDS
 {
@@ -205,7 +206,7 @@ static void decodedEbcdic(std::vector<uint8_t> &ebcdic)
 
 int main(int argc, char **argv)
 {
-  cxxopts::Options options("VDSInfo", "VDSInfo - A tool for extracting info from a VDS\n\nSee online documentation for connection paramters:\nhttp://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/seismic/open-vds/connection.html\n");
+  cxxopts::Options options("VDSInfo", "VDSInfo - A tool for extracting info from a VDS\n\nUse -H or see online documentation for connection string paramters:\nhttp://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/seismic/open-vds/connection.html\n");
   options.positional_help("<url>");
 
   std::vector<std::string> urlarg;
@@ -224,6 +225,7 @@ int main(int argc, char **argv)
   int  textDecodeWidth = std::numeric_limits<int>::max();
   bool jsonOutput = false;
   bool help = false;
+  bool helpConnection = false;
   bool version = false;
 
 //connection options
@@ -248,6 +250,7 @@ int main(int argc, char **argv)
 
   options.add_option("", "", "json-output", "Enable json output.", cxxopts::value<bool>(jsonOutput), "");
   options.add_option("", "h", "help", "Print this help information", cxxopts::value<bool>(help), "");
+  options.add_option("", "H", "help-connection", "Print help information about the connection string", cxxopts::value<bool>(helpConnection), "");
   options.add_option("", "", "version", "Print version information.", cxxopts::value<bool>(version), "");
 
   options.parse_positional("urlpos");
@@ -268,9 +271,14 @@ int main(int argc, char **argv)
     return EXIT_FAILURE;
   }
 
-  if(help)
+  if (help)
   {
     OpenVDS::printInfo(jsonOutput, "Args", options.help());
+    return EXIT_SUCCESS;
+  }
+  if (helpConnection)
+  {
+    OpenVDS::printInfo(jsonOutput, "Args", GetConnectionHelpString());
     return EXIT_SUCCESS;
   }
 

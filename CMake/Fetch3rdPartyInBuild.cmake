@@ -86,6 +86,8 @@ function(Fetch3rdParty)
   Fetch3rdParty_File(testng  java         6.14.3 jar https://repo1.maven.org/maven2/org/testng/testng/6.14.3/testng-6.14.3.jar            MD5=9f17a8f9e99165e148c42b21f4b63d7c)
   Fetch3rdParty_File(jcommander java      1.72 jar   https://repo1.maven.org/maven2/com/beust/jcommander/1.72/jcommander-1.72.jar         MD5=9fde6bc0ba1032eceb7267fd1ad1657b)
   Fetch3rdParty_FileTarget(google_nlohmann google/cloud/storage/internal nlohmann_json.hpp 3.4.0  https://raw.githubusercontent.com/nlohmann/json/v3.4.0/single_include/nlohmann/json.hpp MD5=27f3760c1d3a0fff7d8a2407d8db8f9d)
+  Fetch3rdParty_Package(cmakerc           e7ba9e     https://github.com/vector-of-bool/cmrc/archive/e7ba9e9417960b2a5cefc9e79e8af8b06bfde3d1.zip SHA256=75c1263bb37b8bae159bacb4da10fd2eb50b9c04118901218b6a817b9d0fa757)
+
 
 endfunction()
 
