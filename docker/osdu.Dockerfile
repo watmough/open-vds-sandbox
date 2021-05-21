@@ -46,7 +46,8 @@ LABEL maintainer="info@bluware.com" \
 
 ENV DEBIAN_FRONTEND="noninteractive" TZ="Europe/London" \
     AWS_SHARED_CREDENTIALS_FILE="/data/aws.credentials" \
-    GOOGLE_APPLICATION_CREDENTIALS="/data/gcp.json"
+    GOOGLE_APPLICATION_CREDENTIALS="/data/gcp.json" \
+    CURL_CA_BUNDLE="/etc/ssl/certs/ca-certificates.crt"
 
 RUN apt update && \
     apt upgrade -y --no-install-recommends && \

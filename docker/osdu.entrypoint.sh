@@ -19,6 +19,10 @@ VDSInfo|info)
     shift
     exec VDSInfo "$@"
     ;;
+VDSCopy|copy)
+    shift
+    exec VDSCopy "$@"
+    ;;
 esac
 
 echo OpenVDS Import/Export image
