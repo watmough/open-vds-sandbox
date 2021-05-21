@@ -62,7 +62,10 @@ bool flushFutureBufer(std::vector<std::future<CopyError>>& futures, bool jsonOut
     {
       percentage = newPercentage;
       if (!jsonOutput)
+      {
         fmt::print(stdout, "\r {:3}% Done.", percentage);
+        fflush(stdout);
+      }
     }
   }
   futures.clear();
