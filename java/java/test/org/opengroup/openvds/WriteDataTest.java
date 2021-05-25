@@ -72,7 +72,7 @@ public class WriteDataTest {
         java.nio.FloatBuffer outbuf = BufferUtils.createFloatBuffer((int) size / 4);
         DimensionsND dims = DimensionsND.DIMENSIONS_01;
 
-        long t = access.requestVolumeSubset(outbuf, dims, 0, channel, box);
+        long t = access.requestVolumeSubset(outbuf, layout, dims, 0, channel, box);
         access.waitForCompletion(t);
         float[] arr = new float[outbuf.remaining()];
         outbuf.get(arr);
@@ -134,7 +134,7 @@ public class WriteDataTest {
         java.nio.FloatBuffer outbuf = BufferUtils.createFloatBuffer((int) size / 4);
         DimensionsND dims = DimensionsND.DIMENSIONS_012;
 
-        long t = access.requestVolumeSubset(outbuf, dims, 0, channel, box);
+        long t = access.requestVolumeSubset(outbuf, layout, dims, 0, channel, box);
         access.waitForCompletion(t);
         float[] arr = new float[outbuf.remaining()];
         outbuf.get(arr);

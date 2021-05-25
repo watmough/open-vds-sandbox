@@ -344,6 +344,7 @@ public class VolumeDataAccessManager extends JniPointerWithoutDeletion {
                 dimensionsND.ordinal(), lod, channel,
                 box.getMin(), box.getMax(), FORMAT_R64.getCode(), replacementNoValue);
     }
+
     public long requestVolumeSubset(FloatBuffer outBuf,
                                     DimensionsND dimensionsND, int lod, int channel,
                                     NDBox box,
@@ -355,6 +356,7 @@ public class VolumeDataAccessManager extends JniPointerWithoutDeletion {
                 dimensionsND.ordinal(), lod, channel,
                 box.getMin(), box.getMax(), FORMAT_R32.getCode(), replacementNoValue);
     }
+
     public long requestVolumeSubset(ByteBuffer outBuf,
                                     DimensionsND dimensionsND, int lod, int channel,
                                     NDBox box,
@@ -366,6 +368,7 @@ public class VolumeDataAccessManager extends JniPointerWithoutDeletion {
                 dimensionsND.ordinal(), lod, channel,
                 box.getMin(), box.getMax(), FORMAT_U8.getCode(), replacementNoValue);
     }
+
     public long requestVolumeSubset(IntBuffer outBuf,
                                     DimensionsND dimensionsND, int lod, int channel,
                                     NDBox box,
@@ -389,7 +392,7 @@ public class VolumeDataAccessManager extends JniPointerWithoutDeletion {
      * @param channel the channel index the requested data is read from.
      * @return the buffer size needed
      */
-    long getProjectedVolumeSubsetBufferSize(NDBox box, DimensionsND projectedDimensions,
+    public long getProjectedVolumeSubsetBufferSize(NDBox box, DimensionsND projectedDimensions,
                                             VolumeDataChannelDescriptor.Format format, int lod, int channel) {
         return cpGetProjectedVolumeSubsetBufferSize(_handle,
                 box.getMin(), box.getMax(), projectedDimensions.ordinal(), format.getCode(), lod, channel);
@@ -425,10 +428,13 @@ public class VolumeDataAccessManager extends JniPointerWithoutDeletion {
      * @return the requestID which can be used to query the status of the
      * request, cancel the request or wait for the request to complete.
      */
-    long requestProjectedVolumeSubset(FloatBuffer outBuf,
+    public long requestProjectedVolumeSubset(FloatBuffer outBuf,
                                       DimensionsND dimensionsND, int lod, int channel,
                                       NDBox box, float voxelPlane0, float voxelPlane1, float voxelPlane2, float voxelPlane3,
                                       DimensionsND projectedDimensions, InterpolationMethod interpolationMethod) {
+        B.checkDirectBuffer(outBuf);
+        if (B.getCapacityInBytes(outBuf) < getVolumeSubsetBufferSize(box, FORMAT_U32, lod, channel))
+            throwBufferTooSmallException();
         return cpRequestProjectedVolumeSubset(_handle, outBuf, B.getCapacityInBytes(outBuf),
                 dimensionsND.ordinal(), lod, channel,
                 box.getMin(), box.getMax(), voxelPlane0, voxelPlane1, voxelPlane2, voxelPlane3,
@@ -467,10 +473,13 @@ public class VolumeDataAccessManager extends JniPointerWithoutDeletion {
      * @return the requestID which can be used to query the status of the
      * request, cancel the request or wait for the request to complete.
      */
-    long requestProjectedVolumeSubset(FloatBuffer outBuf,
+    public long requestProjectedVolumeSubset(FloatBuffer outBuf,
                                       DimensionsND dimensionsND, int lod, int channel,
                                       NDBox box, float voxelPlane0, float voxelPlane1, float voxelPlane2, float voxelPlane3,
                                       DimensionsND projectedDimensions, InterpolationMethod interpolationMethod, float replacementNoValue) {
+        B.checkDirectBuffer(outBuf);
+        if (B.getCapacityInBytes(outBuf) < getVolumeSubsetBufferSize(box, FORMAT_U32, lod, channel))
+            throwBufferTooSmallException();
         return cpRequestProjectedVolumeSubsetR(_handle, outBuf, B.getCapacityInBytes(outBuf),
                 dimensionsND.ordinal(), lod, channel,
                 box.getMin(), box.getMax(), voxelPlane0, voxelPlane1, voxelPlane2, voxelPlane3,
@@ -509,7 +518,10 @@ public class VolumeDataAccessManager extends JniPointerWithoutDeletion {
             int lod, int channel, FloatBuffer samplePositions, int sampleCount, InterpolationMethod interpolationMethod) {
         B.checkDirectBuffer(outBuf);
         B.checkDirectBuffer(samplePositions);
-        return cpRequestVolumeSamples(_handle, outBuf, B.getCapacityInBytes(outBuf), dimensiongroup.ordinal(), lod, channel,
+        if (B.getCapacityInBytes(outBuf) < getVolumeSamplesBufferSize(volumeDataLayout, sampleCount, channel)) {
+            return throwBufferTooSmallException();
+        }
+        return cpRequestVolumeSamples(_handle, outBuf, B.getCapacityInBytes(outBuf), dimensionGroup.ordinal(), lod, channel,
                 samplePositions, sampleCount, interpolationMethod.ordinal());
     }
 
