@@ -32,13 +32,11 @@ if (NOT DISABLE_AZURE_IOMANAGER)
   set(SOURCES ${SOURCES} ${SRC_LIB_PROVIDERS_AZURE})
 endif()
 
-if (NOT WIN32 OR FORCE_DMS_AWS_WIN)
-  if (NOT DISABLE_AWS_IOMANAGER)
-    add_definitions( -DHAS_AWS_S3_STORAGE_PROVIDER )
-    file(GLOB SRC_LIB_PROVIDERS_AWS   ${dmsCMakeDir}/src/lib/cloud/providers/aws/*.cc)
-    set_source_files_properties(${dmsCMakeDir}/src/lib/cloud/providers/aws/AwsStorage.cc PROPERTIES COMPILE_FLAGS ${DISABLE_WARNING_FLAG})
-    set(SOURCES ${SOURCES} ${SRC_LIB_PROVIDERS_AWS})
-  endif()
+if (NOT DISABLE_AWS_IOMANAGER)
+  add_definitions( -DHAS_AWS_S3_STORAGE_PROVIDER )
+  file(GLOB SRC_LIB_PROVIDERS_AWS   ${dmsCMakeDir}/src/lib/cloud/providers/aws/*.cc)
+  set_source_files_properties(${dmsCMakeDir}/src/lib/cloud/providers/aws/AwsStorage.cc PROPERTIES COMPILE_FLAGS ${DISABLE_WARNING_FLAG})
+  set(SOURCES ${SOURCES} ${SRC_LIB_PROVIDERS_AWS})
 endif()
 
 # set major library versions
