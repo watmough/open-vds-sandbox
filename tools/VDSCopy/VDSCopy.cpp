@@ -17,6 +17,12 @@ inline char asciitolower(char in) {
   return in;
 }
 
+inline void printPercentage(float percentage)
+{
+  fmt::print(stdout, "\r {0:5.2f} % Done.", percentage);
+  fflush(stdout);
+}
+
 inline int32_t GetVoxelFormatByteSize(OpenVDS::VolumeDataChannelDescriptor::Format format)
 {
   int32_t iRetval = -1;
@@ -59,14 +65,14 @@ bool flushFutureBufer(std::vector<std::future<CopyError>>& futures, bool jsonOut
       copyError = error;
       return false;
     }
-    int newPercentage = int(++doneChunks * 100 / totalChunks);
+    int newPercentage = int(++doneChunks * 10000 / totalChunks);
     if (newPercentage != percentage)
     {
       percentage = newPercentage;
       if (!jsonOutput)
       {
-        fmt::print(stdout, "\r {:3}% Done.", percentage);
-        fflush(stdout);
+        float output_percentage = float(percentage) / 100;
+        printPercentage(output_percentage);
       }
     }
   }
@@ -365,7 +371,10 @@ int main(int argc, char **argv)
   }
 
   if (!jsonOutput)
-    fmt::print(stdout, "\r {:3}% Done.\n", 100);
+  {
+    printPercentage(100.0f);
+    fprintf(stdout, "\n");
+  }
 
   OpenVDS::printInfo(jsonOutput, destinationUrl, fmt::format("Successfully copied {} to {}", sourceUrl, destinationUrl));
   return EXIT_SUCCESS;
