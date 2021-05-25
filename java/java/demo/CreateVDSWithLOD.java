@@ -169,7 +169,7 @@ public class CreateVDSWithLOD {
                     lod, // lod
                     channel, // channel
                     100, // max pages
-                    VolumeDataAccessManager.AccessMode.Create.getCode()); // access mode
+                    VolumeDataPageAccessor.AccessMode.Create.getCode()); // access mode
 
 
             //ASSERT_TRUE(pageAccessor);

@@ -35,7 +35,7 @@ public class PageAccessorTest {
         for (VolumeDataLayoutDescriptor.LODLevels l : VolumeDataLayoutDescriptor.LODLevels.values()) {
             for (int channel = 0; channel < nbChannel; channel++) {
                 for (DimensionsND dimGroup : DimensionsND.values()) {
-                    VDSProduceStatus vdsProduceStatus = accessManager.getVDSProduceStatus(volumeDataLayout, dimGroup, l.ordinal(), channel);
+                    VDSProduceStatus vdsProduceStatus = accessManager.getVDSProduceStatus(dimGroup, l.ordinal(), channel);
                 }
             }
         }
@@ -103,7 +103,7 @@ public class PageAccessorTest {
                     0, // lod
                     channel, // channel
                     100, // max pages
-                    VolumeDataAccessManager.AccessMode.Create.getCode()); // access mode
+                    VolumeDataPageAccessor.AccessMode.Create.getCode()); // access mode
 
             VolumeDataPage page = pageAccessor.createPage(0);
             VolumeIndexer3D outputIndexer = new  VolumeIndexer3D(page, 0, 0, DimensionsND.DIMENSIONS_012.ordinal(), layout);
@@ -137,7 +137,7 @@ public class PageAccessorTest {
                     0, // lod
                     channel, // channel
                     20, // max pages
-                    VolumeDataAccessManager.AccessMode.Create.getCode()); // access mode
+                    VolumeDataPageAccessor.AccessMode.Create.getCode()); // access mode
 
             // get input manager
             VolumeDataAccessManager inputAM = vds.getAccessManager();
@@ -147,7 +147,7 @@ public class PageAccessorTest {
                     0, // lod
                     channel, // channel
                     20, // max pages
-                    VolumeDataAccessManager.AccessMode.ReadOnly.getCode()); // access mode
+                    VolumeDataPageAccessor.AccessMode.ReadOnly.getCode()); // access mode
 
             // copy file
             int[] pitch = new int[VolumeDataLayout.Dimensionality_Max];
@@ -196,7 +196,7 @@ public class PageAccessorTest {
                     0, // lod
                     channel, // channel
                     20, // max pages
-                    VolumeDataAccessManager.AccessMode.ReadOnly.getCode()); // access mode
+                    VolumeDataPageAccessor.AccessMode.ReadOnly.getCode()); // access mode
 
             // get input manager
             VolumeDataAccessManager inputAM = vds.getAccessManager();
@@ -206,7 +206,7 @@ public class PageAccessorTest {
                     0, // lod
                     channel, // channel
                     20, // max pages
-                    VolumeDataAccessManager.AccessMode.ReadOnly.getCode()); // access mode
+                    VolumeDataPageAccessor.AccessMode.ReadOnly.getCode()); // access mode
 
             // compares block data
             int[] pitchInput = new int[VolumeDataLayout.Dimensionality_Max];
@@ -257,7 +257,7 @@ public class PageAccessorTest {
                     0, // lod
                     channel, // channel
                     20, // max pages
-                    VolumeDataAccessManager.AccessMode.ReadOnly.getCode()); // access mode
+                    VolumeDataPageAccessor.AccessMode.ReadOnly.getCode()); // access mode
 
             // compares block data
             int[] chunkMin = new int[VolumeDataLayout.Dimensionality_Max];

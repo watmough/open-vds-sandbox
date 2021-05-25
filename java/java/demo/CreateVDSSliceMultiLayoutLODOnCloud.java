@@ -183,7 +183,7 @@ public class CreateVDSSliceMultiLayoutLODOnCloud {
                     lod, // lod
                     channel, // channel
                     200, // max pages
-                    VolumeDataAccessManager.AccessMode.Create.getCode()); // access mode
+                    VolumeDataPageAccessor.AccessMode.Create.getCode()); // access mode
 
 
             //ASSERT_TRUE(pageAccessor);
@@ -306,7 +306,7 @@ public class CreateVDSSliceMultiLayoutLODOnCloud {
                     lod, // lod
                     channel, // channel
                     200, // max pages
-                    VolumeDataAccessManager.AccessMode.Create.getCode()); // access mode
+                    VolumeDataPageAccessor.AccessMode.Create.getCode()); // access mode
 
             //ASSERT_TRUE(pageAccessor);
             int paLOD = pageAccessor.getLOD();

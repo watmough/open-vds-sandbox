@@ -16,11 +16,8 @@
  */
 
 #include <org_opengroup_openvds_VolumeDataAccessManager.h>
-#include <Common.h>
 #include <CommonJni.h>
 #include <OpenVDS/VolumeDataAccessManager.h>
-#include <iostream>
-
 
 using namespace OpenVDS;
 

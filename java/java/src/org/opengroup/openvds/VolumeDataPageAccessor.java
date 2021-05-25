@@ -17,7 +17,36 @@
 
 package org.opengroup.openvds;
 
+import java.util.Arrays;
+import java.util.Optional;
+
 public class VolumeDataPageAccessor extends JniPointerWithoutDeletion {
+
+    public enum AccessMode {
+        ReadOnly(0),
+        ReadWrite(1),
+        Create(2);
+
+        private final int code;
+
+        AccessMode(int code) {
+            this.code = code;
+        }
+
+        public int getCode() {
+            return code;
+        }
+
+        public static AccessMode fromCode(int codeParam) {
+            Optional<AccessMode> first = Arrays
+                    .stream(values())
+                    .filter(e -> e.getCode() == codeParam)
+                    .findFirst();
+            if (!first.isPresent())
+                throw new IllegalArgumentException("invalid code");
+            return first.get();
+        }
+    }
 
     private static native long cpGetLayout( long handle );
     private static native int cpGetLOD( long handle );

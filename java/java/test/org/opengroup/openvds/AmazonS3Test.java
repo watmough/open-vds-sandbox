@@ -73,8 +73,9 @@ public class AmazonS3Test {
                                 final FloatBuffer floatBuffer0 = BufferUtils.createFloatBuffer(nZSamples * nYSamples);
                                 final VolumeDataAccessManager accessManager = openVDS.getAccessManager();
                                 assertTrue(!accessManager.isNull());
-                                final long requestID1 = accessManager.requestVolumeSubset(
-                                        floatBuffer1, DimensionsND.DIMENSIONS_012, 0, 0, box);
+                        VolumeDataLayout volumeDataLayout = accessManager.getVolumeDataLayout();
+                        final long requestID1 = accessManager.requestVolumeSubset(
+                                        floatBuffer1, volumeDataLayout, DimensionsND.DIMENSIONS_012, 0, 0, box);
                                 final long requestID0 = accessManager.requestVolumeSubset(
                                         floatBuffer0, DimensionsND.DIMENSIONS_012, 0, 0, box, layout.getChannelNoValue(0));
 

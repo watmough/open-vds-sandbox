@@ -52,7 +52,7 @@ public class WriteDataDemo {
         NDBox box = new NDBox(0, 0, 0, 0, 0, 0, nz, nx, 0, 0, 0, 0);
 
         int channel = layout.getChannelIndex("chan1");
-        long size = access.getVolumeSubsetBufferSize(layout, box, f, 0, channel);
+        long size = access.getVolumeSubsetBufferSize(box, f, 0, channel);
 
         java.nio.FloatBuffer outbuf = BufferUtils.createFloatBuffer((int) size / 4);
         DimensionsND dims = DimensionsND.DIMENSIONS_01;
@@ -162,7 +162,7 @@ public class WriteDataDemo {
         NDBox box = new NDBox(0, 0, 0, 0, 0, 0, nz, ny, nx, 0, 0, 0);
 
         int channel = layout.getChannelIndex("chan2");
-        long size = access.getVolumeSubsetBufferSize(layout, box, f, 0, channel);
+        long size = access.getVolumeSubsetBufferSize(box, f, 0, channel);
         java.nio.FloatBuffer outbuf = BufferUtils.createFloatBuffer((int) size / 4);
         DimensionsND dims = DimensionsND.DIMENSIONS_012;
 
