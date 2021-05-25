@@ -273,7 +273,9 @@ int main(int argc, char **argv)
   OpenVDS::printInfo(jsonOutput, destinationUrl, fmt::format("Copying {} to {}. Total chunks to copy is {}", sourceUrl, destinationUrl, totalChunks));
   if (!jsonOutput)
     fmt::print(stdout, "\n");
-  ThreadPool threadPool(16);
+  int threadCount = 16;
+  double bufferThreadScale = 8; 
+  ThreadPool threadPool(threadCount);
 
   for (int lod = 0; lod <= layoutDescriptor.GetLODLevels(); lod++)
   {
@@ -301,8 +303,8 @@ int main(int argc, char **argv)
         continue;
 
       std::vector<std::future<CopyError>> futures[2];
-      futures[0].reserve(32);
-      futures[1].reserve(32);
+      futures[0].reserve(size_t(threadCount * bufferThreadScale));
+      futures[1].reserve(size_t(threadCount * bufferThreadScale));
       bool futureBuffer = false;
       CopyError copyError;
       for (int64_t chunk = 0; chunk < sourceAccessors[0]->GetChunkCount(); chunk++)
