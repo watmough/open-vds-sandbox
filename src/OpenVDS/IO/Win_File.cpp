@@ -413,6 +413,8 @@ bool File::Write(const void* pxData, int64_t nOffset, int32_t nLength, Error & e
   OVERLAPPED ol;
   memset(&ol, 0, sizeof(ol));
 
+  ol.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
+
   DWORD
     uWritten,
     uWrittenOverlapped;
@@ -450,6 +452,7 @@ bool File::Write(const void* pxData, int64_t nOffset, int32_t nLength, Error & e
       isOK = isOKGetOverlappedResult;
     }
   }
+  CloseHandle(ol.hEvent);
 
   return isOK == TRUE;
 }
