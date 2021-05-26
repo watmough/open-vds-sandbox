@@ -152,7 +152,11 @@ void VolumeDataAccessorBase::ReadPageAtPosition(IntVector4 index, bool enableWri
        index[2] < 0 || index[2] >= m_numSamples[2] ||
        index[3] < 0 || index[3] >= m_numSamples[3])
     {
-      throw IVolumeDataAccessor::IndexOutOfRangeException();
+      std::string message = fmt::format("IndexOutOfRangeException: Index: [{}, {}, {}, {}] is out of the range: [0, 0, 0, 0] - [{}, {}, {}, {}].",
+        index[0], index[1], index[2], index[3],
+        m_numSamples[0], m_numSamples[1], m_numSamples[2], m_numSamples[3]);
+      IndexOutOfRangeException exception(message.c_str());
+      throw exception;
     }
     else
     {
@@ -173,7 +177,7 @@ void VolumeDataAccessorBase::ReadPageAtPosition(IntVector4 index, bool enableWri
       page->Release();
       m_validRegion = AccessorRegion({0, 0, 0, 0}, {0, 0, 0, 0});
 
-      IVolumeDataAccessor::ReadErrorException
+      ReadErrorException
         exception(error.message, error.errorCode);
 
       throw exception;

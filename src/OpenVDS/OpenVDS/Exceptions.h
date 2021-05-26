@@ -93,10 +93,13 @@ public:
   const char *GetParameterName() const noexcept { return m_parameterName; }
 };
 
-class IndexOutOfRangeException : public Exception
+class IndexOutOfRangeException : public MessageBufferException<512>
 {
+  const char *m_errorMessage;
+
 public:
-  const char *GetErrorMessage() const noexcept override { return "IndexOutOfRange"; }
+  IndexOutOfRangeException(const char* errorMessage) : m_errorMessage(AddToBuffer(errorMessage)) {}
+  const char *GetErrorMessage() const noexcept override { return m_errorMessage; }
 };
 
 struct ReadErrorException : public MessageBufferException<512>

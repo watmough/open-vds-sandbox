@@ -73,9 +73,6 @@ public:
 
   virtual VolumeDataLayout const *
                 GetLayout() = 0;
-
-  using IndexOutOfRangeException = OpenVDS::IndexOutOfRangeException;
-  using ReadErrorException = OpenVDS::ReadErrorException;
 };
 
 template <typename INDEX>
