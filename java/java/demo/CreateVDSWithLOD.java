@@ -73,9 +73,9 @@ public class CreateVDSWithLOD {
 
     static void process(int lodParam, String vdsFilePath) throws Exception {
 
-        int samplesX = 3000; // time
-        int samplesY = 5000; // XL
-        int samplesZ = 5000; // IL
+        int samplesX = 300; // time
+        int samplesY = 500; // XL
+        int samplesZ = 500; // IL
         VolumeDataChannelDescriptor.Format format = VolumeDataChannelDescriptor.Format.FORMAT_R32;
 
         double sizeX = samplesX;
@@ -88,7 +88,7 @@ public class CreateVDSWithLOD {
         double midY = samplesY / 2f;
         double midZ = samplesZ / 2f;
 
-        VolumeDataLayoutDescriptor.BrickSize brickSize = VolumeDataLayoutDescriptor.BrickSize.BRICK_SIZE_256;
+        VolumeDataLayoutDescriptor.BrickSize brickSize = VolumeDataLayoutDescriptor.BrickSize.BRICK_SIZE_64;
         int negativeMargin = 4;
         int positiveMargin = 4;
         int brickSize2DMultiplier = 4;
