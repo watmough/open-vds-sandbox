@@ -24,8 +24,9 @@ RUN pip3 install ninja
 COPY python/requirements-dev-with-docs.txt /tmp/requirements-dev.txt
 RUN pip3 install -r tmp/requirements-dev.txt
 
-COPY docker/build_scripts/generic_linux_build.sh /root/build_and_install_openvds.sh
-RUN cd root && bash /root/build_and_install_openvds.sh ${tag} ${repo} -DBUILD_PYTHON=OFF -DBUILD_JAVA=OFF -DBUILD_DOCS=OFF -DBUILD_TESTS=OFF -DBUILD_EXAMPLES=OFF
+COPY docker/build_scripts/osdu_linux_build.sh /root/build_and_install_openvds.sh
+COPY . /root/open-vds
+RUN cd root && bash /root/build_and_install_openvds.sh open-vds -DBUILD_PYTHON=OFF -DBUILD_JAVA=OFF -DBUILD_DOCS=OFF -DBUILD_TESTS=OFF -DBUILD_EXAMPLES=OFF
 
 
 # Deploy stage
