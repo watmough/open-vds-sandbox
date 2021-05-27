@@ -198,11 +198,11 @@ void createNoLODVDS(const std::string &vdsFileName, int32_t samplesX, int32_t sa
 
     OpenVDS::VolumeDataLayout *layout = OpenVDS::GetLayout(vds);
     //ASSERT_TRUE(layout);
-    OpenVDS::VolumeDataAccessManager *accessManager = OpenVDS::GetAccessManager(vds);
+    OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(vds);
     //ASSERT_TRUE(accessManager);
 
     int32_t channel = 0;
-    OpenVDS::VolumeDataPageAccessor *pageAccessor = accessManager->CreateVolumeDataPageAccessor(layout, OpenVDS::Dimensions_012, 0, channel, 100, OpenVDS::VolumeDataAccessManager::AccessMode_Create);
+    OpenVDS::VolumeDataPageAccessor *pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, 0, channel, 100, OpenVDS::VolumeDataAccessManager::AccessMode_Create);
     //ASSERT_TRUE(pageAccessor);
 
     double distMax = distance3D(0, 0, 0, samplesX, samplesY, samplesZ);
@@ -251,8 +251,8 @@ void createNoLODVDS(const std::string &vdsFileName, int32_t samplesX, int32_t sa
 
     pageAccessor->Commit();
     pageAccessor->SetMaxPages(0);
-    accessManager->FlushUploadQueue();
-    accessManager->DestroyVolumeDataPageAccessor(pageAccessor);
+    accessManager.FlushUploadQueue();
+    accessManager.DestroyVolumeDataPageAccessor(pageAccessor);
 
     OpenVDS::Close(vds);
 }
@@ -321,12 +321,12 @@ void createLODVDS(const std::string &vdsFileName, int32_t samplesX, int32_t samp
 
     OpenVDS::VolumeDataLayout *layout = OpenVDS::GetLayout(vds);
     //ASSERT_TRUE(layout);
-    OpenVDS::VolumeDataAccessManager *accessManager = OpenVDS::GetAccessManager(vds);
+    OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(vds);
     //ASSERT_TRUE(accessManager);
 
     for (int lod = 0 ; lod <= lodLevelCount ; lod ++) {
         int32_t channel = 0;
-        OpenVDS::VolumeDataPageAccessor *pageAccessor = accessManager->CreateVolumeDataPageAccessor(layout, OpenVDS::Dimensions_012, lod, channel, 100,
+        OpenVDS::VolumeDataPageAccessor *pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, lod, channel, 100,
                                                                                                     OpenVDS::VolumeDataAccessManager::AccessMode_Create);
         //ASSERT_TRUE(pageAccessor);
 
@@ -374,8 +374,8 @@ void createLODVDS(const std::string &vdsFileName, int32_t samplesX, int32_t samp
 
         pageAccessor->Commit();
         pageAccessor->SetMaxPages(0);
-        accessManager->FlushUploadQueue();
-        accessManager->DestroyVolumeDataPageAccessor(pageAccessor);
+        accessManager.FlushUploadQueue();
+        accessManager.DestroyVolumeDataPageAccessor(pageAccessor);
     }
 
     OpenVDS::Close(vds);
