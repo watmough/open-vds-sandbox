@@ -77,7 +77,7 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_cpGetV
 * Method:    cpCreateVolumeDataPageAccessor
 * Signature: (JIIIII)J
 */
-JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_cpCreateVolumeDataPageAccessor__JJIIIII
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_cpCreateVolumeDataPageAccessor__JIIIII
         (JNIEnv *env, jclass, jlong managerHandle, jint dimensionsND, jint lod, jint channel,
          jint maxPages, jint accessMode) {
     try {
@@ -94,7 +94,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_cpCre
 * Method:    cpCreateVolumeDataPageAccessor
 * Signature: (JIIIIII)J
 */
-JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_cpCreateVolumeDataPageAccessor__JJIIIIII
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_cpCreateVolumeDataPageAccessor__JIIIIII
         (JNIEnv *env, jclass, jlong managerHandle, jint dimensionsND, jint lod, jint channel,
          jint maxPages, jint accessMode, jint chunkMetadataPageSize) {
     try {
