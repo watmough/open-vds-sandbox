@@ -48,7 +48,7 @@ public class OpenVDS extends VdsHandle {
 
     private static native long cpCreateVDSFile(String pFilePath,
                                              VolumeDataLayoutDescriptor ld, VolumeDataAxisDescriptor[] vda,
-                                             VolumeDataChannelDescriptor[] vdc, MetadataReadAccess md) throws IOException;
+                                             VolumeDataChannelDescriptor[] vdc, MetadataReadAccess md, int compressionMethod, float compressionTolerance) throws IOException;
 
     private static native long cpCreateAws(String bucket, String key, String region, String endpointoverhide, String accessKeyId, String secretKey, String sessionToken, String expiration,
                                            VolumeDataLayoutDescriptor ld, VolumeDataAxisDescriptor[] vda,
@@ -104,17 +104,17 @@ public class OpenVDS extends VdsHandle {
     
     private static void validateCreateArguments(VolumeDataLayoutDescriptor ld,
                                  VolumeDataAxisDescriptor[] vda, VolumeDataChannelDescriptor[] vdc,
-                                 MetadataReadAccess md) throws IOException {
+                                 MetadataReadAccess md) throws IllegalArgumentException {
 
         if (ld == null) {
             throw new IllegalArgumentException("VolumeDataLayoutDescriptor can't be null");
         }
 
-        if (vda == null || java.util.Arrays.stream(vda).allMatch(a -> {return a == null;})) {
+        if (vda == null || java.util.Arrays.stream(vda).allMatch(a -> a == null)) {
             throw new IllegalArgumentException("VolumeDataLayoutDescriptor or its elements can't be null");
         }
 
-        if (vdc == null || java.util.Arrays.stream(vdc).allMatch(a -> {return a == null;})) {
+        if (vdc == null || java.util.Arrays.stream(vdc).allMatch(a -> a == null)) {
             throw new IllegalArgumentException("VolumeDataChannelDescriptor or its elements can't be null");
         }
 
@@ -125,7 +125,7 @@ public class OpenVDS extends VdsHandle {
 
     private static <OpenOpt> void validateCreateArguments(OpenOpt o, VolumeDataLayoutDescriptor ld,
                                  VolumeDataAxisDescriptor[] vda, VolumeDataChannelDescriptor[] vdc,
-                                 MetadataReadAccess md) throws IOException {
+                                 MetadataReadAccess md) throws IllegalArgumentException {
 
         if (o == null) {
             throw new IllegalArgumentException("open option can't be null");
@@ -161,9 +161,14 @@ public class OpenVDS extends VdsHandle {
                                  VolumeDataAxisDescriptor[] vda, VolumeDataChannelDescriptor[] vdc,
                                  MetadataReadAccess md) throws IOException {
         validateCreateArguments(o, ld, vda, vdc, md);
+        return new OpenVDS(cpCreateVDSFile(o.filePath, ld, vda, vdc, md, 0, 0), true);
+    }
 
-        return new OpenVDS(cpCreateVDSFile(o.filePath,
-                ld, vda, vdc, md), true);
+    public static OpenVDS create(VDSFileOpenOptions o, VolumeDataLayoutDescriptor ld,
+                                 VolumeDataAxisDescriptor[] vda, VolumeDataChannelDescriptor[] vdc,
+                                 MetadataReadAccess md, CompressionMethod compressionMethod, float compressionTolerance) throws IOException {
+        validateCreateArguments(o, ld, vda, vdc, md);
+        return new OpenVDS(cpCreateVDSFile(o.filePath, ld, vda, vdc, md, compressionMethod.ordinal(), compressionTolerance), true);
     }
 
     public static OpenVDS create(AWSOpenOptions o, VolumeDataLayoutDescriptor ld,

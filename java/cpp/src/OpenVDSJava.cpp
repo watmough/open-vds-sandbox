@@ -366,7 +366,7 @@ Java_org_opengroup_openvds_OpenVDS_cpCreateAzure(JNIEnv *env, jclass, jstring jC
  */
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_cpCreateVDSFile
         (JNIEnv *env, jclass, jstring jVDSFilePath,
-         jobject ld, jobjectArray vda, jobjectArray vdc, jobject md, jint compressionMethod, jfloat compressionTolerance){
+         jobject ld, jobjectArray vda, jobjectArray vdc, jobject md, jint compressionMethod, jfloat compressionTolerance) {
     OpenVDS::VDSFileOpenOptions openOptions;
 
     openOptions.fileName = JStringToString(env, jVDSFilePath);
