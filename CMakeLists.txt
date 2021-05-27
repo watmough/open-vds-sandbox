@@ -5,7 +5,7 @@ if(CCACHE_PROGRAM)
     set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
 endif()
 
-set(OpenVDSVersion 2.0.999)
+set(OpenVDSVersion 2.1.999)
 
 project(OpenVDS VERSION ${OpenVDSVersion})
 
