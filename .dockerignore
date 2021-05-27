@@ -1,4 +1,6 @@
 3rdparty
+!3rdparty/BuildDms
+!3rdparty/BuildGoogleCloud
 out
 build_*
 _skbuild
