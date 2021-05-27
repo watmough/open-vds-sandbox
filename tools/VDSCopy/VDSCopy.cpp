@@ -82,7 +82,16 @@ bool flushFutureBufer(std::vector<std::future<CopyError>>& futures, bool jsonOut
 
 int main(int argc, char **argv)
 {
-  cxxopts::Options options("VDSCopy", "VDSCopy - A tool for copying a VDS between locations\n\nUse -H or see online documentation for connection string paramters:\nhttp://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/seismic/open-vds/connection.html\n");
+  std::string info = R"help(VDSCopy - A tool for copying a VDS between locations
+
+VDSCopy will create a new dataset in the target location and copy the content of the source.
+This might inflict data recompression and a slight data degradation if a lossy compression method is used.
+
+Use -H or see online documentation for connection string parameters:
+http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/seismic/open-vds/connection.html
+)help";
+
+  cxxopts::Options options("VDSCopy", info);
   options.positional_help("<source_url> <destination_url>");
 
   std::vector<std::string> urlarg;
@@ -268,6 +277,14 @@ int main(int argc, char **argv)
         }
       }
     }
+  }
+
+  auto sourceCompressionMethod = OpenVDS::GetCompressionMethod(sourceHandle.get());
+  auto destinationCompressionMethod = OpenVDS::GetCompressionMethod(destinationHandle.get());
+  if ((sourceCompressionMethod == OpenVDS::CompressionMethod::Wavelet || sourceCompressionMethod == OpenVDS::CompressionMethod::WaveletNormalizeBlock)
+    && (destinationCompressionMethod == OpenVDS::CompressionMethod::Wavelet || destinationCompressionMethod == OpenVDS::CompressionMethod::WaveletNormalizeBlock))
+  {
+    OpenVDS::printInfo(jsonOutput, "Data degradation", "Copying between lossy compressed datasets will lead to a slight data degradation.");
   }
 
   OpenVDS::printInfo(jsonOutput, destinationUrl, fmt::format("Copying {} to {}. Total chunks to copy is {}", sourceUrl, destinationUrl, totalChunks));
