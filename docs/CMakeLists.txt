@@ -92,7 +92,8 @@ if (BUILD_DOCS)
     ${CMAKE_CURRENT_SOURCE_DIR}/cppdoc/cpp-api.rst
     ${CMAKE_CURRENT_SOURCE_DIR}/cppdoc/cpp-important-types-and-functions.rst
     )
-  
+
+  string(TIMESTAMP OPENVDS_CURRENT_YEAR "%Y")
   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/conf.py.in ${CMAKE_CURRENT_BINARY_DIR}/conf.py)
   
   make_directory(${CMAKE_CURRENT_BINARY_DIR}/cppdoc)

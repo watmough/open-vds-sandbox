@@ -18,11 +18,11 @@ from recommonmark.transform import AutoStructify
 # -- Project information -----------------------------------------------------
 
 project = 'OpenVDS'
-copyright = '2019, The Open Group, 2019, Bluware, Inc.'
+copyright = '${OPENVDS_CURRENT_YEAR}, The Open Group, ${OPENVDS_CURRENT_YEAR}, Bluware, Inc.'
 author = 'Bluware'
 
 # The full version, including alpha/beta/rc tags
-release = '0.1'
+release = '${CMAKE_PROJECT_VERSION}'
 
 
 # -- General configuration ---------------------------------------------------
