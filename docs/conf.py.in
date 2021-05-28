@@ -60,6 +60,20 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 #
 html_theme = 'sphinx_rtd_theme'
 
+html_css_files = [
+    'css/custom.css'
+]
+
+html_theme_options = {
+    'logo_only': False,
+    'display_version': True,
+}
+
+html_show_sourcelink = False # If true (and html_copy_source is true as well), links to the reST sources will be added to the sidebar. The default is True.
+html_copy_source = False     # If true, the reST sources are included in the HTML build as _sources/name. The default is True.
+html_show_sphinx = False     # If true, “Created using Sphinx” is shown in the HTML footer. Default is True.
+html_show_copyright = True  # If true, “(C) Copyright …” is shown in the HTML footer. Default is True.
+
 # Add any paths that contain custom static files (such as style sheets) heree
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".

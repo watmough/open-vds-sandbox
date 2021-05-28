@@ -105,6 +105,7 @@ if (BUILD_DOCS)
                      COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/../tools/SEGYExport/README.md ${CMAKE_CURRENT_BINARY_DIR}/tools/SEGYExport/README.md
                      COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/../tools/VDSCopy/README.md    ${CMAKE_CURRENT_BINARY_DIR}/tools/VDSCopy/README.md
                      COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/../tools/VDSInfo/README.md    ${CMAKE_CURRENT_BINARY_DIR}/tools/VDSInfo/README.md
+                     COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/_static/css/custom.css         ${CMAKE_CURRENT_BINARY_DIR}/_static/css/custom.css
                      COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/apidoc.py -f -o cppdoc ${CMAKE_CURRENT_BINARY_DIR}/doxygen/xml/
                      COMMAND ${CMAKE_COMMAND} -E env "PYTHONPATH=$<TARGET_FILE_DIR:core>/.." "PATH=${separator}${CMAKE_CURRENT_BINARY_DIR}"
                        ${Python3_EXECUTABLE} -m sphinx -b html

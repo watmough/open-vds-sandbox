@@ -1,0 +1,31 @@
+:root {
+  --osdu-blue: #00A6DE;
+  --osdu-grey: #6B6B6B;
+  --osdu-white: #FFF;
+}
+
+.wy-side-nav-search {
+  background: var(--osdu-blue);
+}
+
+/* Use a more modern font */
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital@0;1&display=swap');
+
+h1, h2, h3, h4, h5, .caption-text {
+  color: var(--osdu-blue);
+}
+
+h1, h2, h3, h4, h5, body, p {
+  font-family: "Nunito Sans",Sans-serif !important;
+  font-weight: 500 !important;
+}
+
+/* Remove box-shadow on buttons, for a flatter, more modern look. */
+.btn-neutral {
+  box-shadow: none !important;
+}
+
+/* Remove rounded corners on search box */
+.wy-side-nav-search input[type=text] {
+  border-radius: 0px;
+}
