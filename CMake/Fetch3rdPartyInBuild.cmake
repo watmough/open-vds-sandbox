@@ -65,8 +65,8 @@ endmacro()
 
 
 function(Fetch3rdParty)
-  include(CMake/FetchContentLocal.cmake)
   set(FETCHCONTENT_QUIET OFF)
+  include(FetchContent)
 
   Fetch3rdParty_Package(aws-cpp-sdk       1.8.96     https://codeload.github.com/aws/aws-sdk-cpp/tar.gz/1.8.96                            SHA256=b03abd6384c54562b6365bb8579f2d58ff11817ade28e1229d6969f48bbf92fe)
   Fetch3rdParty_Package(gtest             1.10.0     https://github.com/google/googletest/archive/release-1.10.0.tar.gz                   SHA256=9dc9157a9a1551ec7a7e43daea9a694a0bb5fb8bec81235d8a1e6ef64c716dcb)
