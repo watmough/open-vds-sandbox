@@ -185,7 +185,6 @@ extern "C" {
     {
         try {
             jint * position = env->GetIntArrayElements(positionArr, 0);
-            //const int (&positionParam)[OpenVDS::Dimensionality_Max] = reinterpret_cast<const int(&)[OpenVDS::Dimensionality_Max]>(position);
             int positionParam[OpenVDS::Dimensionality_Max];
             for (int i = 0 ; i < OpenVDS::Dimensionality_Max ; ++i) positionParam[i] = position[i];
             env->ReleaseIntArrayElements(positionArr, position, 0);
