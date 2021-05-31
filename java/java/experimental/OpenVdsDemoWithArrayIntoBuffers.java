@@ -83,7 +83,7 @@ public class OpenVdsDemoWithArrayIntoBuffers {
             final FloatBuffer positions = BufferUtils.toBuffer(samples);
             final FloatBuffer sampleBuffer = BufferUtils.createFloatBuffer(output_width * output_height);
 
-            long request = accessManager.requestVolumeSamples(sampleBuffer, layout, DimensionsND.DIMENSIONS_012, 0, 0,
+            long request = accessManager.requestVolumeSamples(sampleBuffer, DimensionsND.DIMENSIONS_012, 0, 0,
                     positions, elemCount, InterpolationMethod.LINEAR);
 
             System.out.println("Wait for request completion...");

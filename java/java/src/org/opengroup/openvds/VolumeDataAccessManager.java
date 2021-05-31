@@ -518,7 +518,7 @@ public class VolumeDataAccessManager extends JniPointerWithoutDeletion {
             int lod, int channel, FloatBuffer samplePositions, int sampleCount, InterpolationMethod interpolationMethod) {
         B.checkDirectBuffer(outBuf);
         B.checkDirectBuffer(samplePositions);
-        if (B.getCapacityInBytes(outBuf) < getVolumeSamplesBufferSize(volumeDataLayout, sampleCount, channel)) {
+        if (B.getCapacityInBytes(outBuf) < getVolumeSamplesBufferSize(sampleCount, channel)) {
             return throwBufferTooSmallException();
         }
         return cpRequestVolumeSamples(_handle, outBuf, B.getCapacityInBytes(outBuf), dimensionGroup.ordinal(), lod, channel,

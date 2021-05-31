@@ -90,13 +90,13 @@ public class MemoryVdsGeneratorTest {
 
         final FloatBuffer floatBuffer1 = B.createFloatBuffer(nZSamples * nYSamples);
         VolumeDataLayout volumeDataLayout = accessManager.getVolumeDataLayout();
-        final long requestSubsetId = accessManager.requestVolumeTraces(floatBuffer1, volumeDataLayout, DimensionsND.DIMENSIONS_012, 0, 0,
+        final long requestSubsetId = accessManager.requestVolumeTraces(floatBuffer1, DimensionsND.DIMENSIONS_012, 0, 0,
                 tracePositions, nYSamples, InterpolationMethod.NEAREST, 0);
         accessManager.waitForCompletion(requestSubsetId);
 
         final FloatBuffer floatBuffer0 = B.createFloatBuffer(nZSamples * nYSamples);
         final long requestID0 = accessManager.requestVolumeSamples(
-                floatBuffer0, volumeDataLayout, DimensionsND.DIMENSIONS_012, 0, 0,
+                floatBuffer0, DimensionsND.DIMENSIONS_012, 0, 0,
                 samplePositions, nZSamples * nYSamples, InterpolationMethod.NEAREST);
         accessManager.waitForCompletion(requestID0);
 
@@ -128,7 +128,7 @@ public class MemoryVdsGeneratorTest {
         final VolumeDataAccessManager accessManager = generator.getAccessManager();
         assertTrue(!accessManager.isNull());
 
-        final long volumeTracesBufferSize = accessManager.getVolumeTracesBufferSize(layout, nYSamples, 0, 0, 0);
+        final long volumeTracesBufferSize = accessManager.getVolumeTracesBufferSize(nYSamples, 0, 0, 0);
         assertEquals(nZSamples * nYSamples * Float.BYTES, volumeTracesBufferSize);
 
         final FloatBuffer tracePositions = B.createFloatBuffer(nYSamples * VolumeDataAccessManager.Dimensionality_Max);
@@ -142,12 +142,12 @@ public class MemoryVdsGeneratorTest {
         }
 
         final FloatBuffer floatBuffer1 = B.createFloatBuffer(nZSamples * nYSamples);
-        final long requestSubsetId = accessManager.requestVolumeTraces(floatBuffer1, layout, DimensionsND.DIMENSIONS_012, 0, 0,
+        final long requestSubsetId = accessManager.requestVolumeTraces(floatBuffer1, DimensionsND.DIMENSIONS_012, 0, 0,
                 tracePositions, nYSamples, InterpolationMethod.NEAREST, 0);
         accessManager.waitForCompletion(requestSubsetId);
 
         final FloatBuffer floatBuffer0 = B.createFloatBuffer(nZSamples * nYSamples);
-        final long requestID0 = accessManager.requestVolumeTraces(floatBuffer0, layout, DimensionsND.DIMENSIONS_012, 0, 0,
+        final long requestID0 = accessManager.requestVolumeTraces(floatBuffer0, DimensionsND.DIMENSIONS_012, 0, 0,
                 tracePositions, nYSamples, InterpolationMethod.NEAREST, 0, layout.getChannelNoValue(0));
         accessManager.waitForCompletion(requestID0);
 
@@ -272,7 +272,7 @@ public class MemoryVdsGeneratorTest {
 
         final FloatBuffer floatBuffer0 = B.createFloatBuffer(nZSamples * nYSamples);
         final long requestID0 = accessManager.requestVolumeSamples(
-                floatBuffer0, layout, DimensionsND.DIMENSIONS_012, 0, 0,
+                floatBuffer0, DimensionsND.DIMENSIONS_012, 0, 0,
                 samplePositions, nZSamples * nYSamples, InterpolationMethod.NEAREST);
         accessManager.waitForCompletion(requestID0);
 
@@ -697,13 +697,13 @@ public class MemoryVdsGeneratorTest {
 
         final FloatBuffer floatBuffer0 = BufferUtils.createFloatBuffer(NB_SAMPLE_REQUESTED);
         final long requestID0 = accessManager.requestVolumeSamples(
-                floatBuffer0, layout, DimensionsND.DIMENSIONS_012, 0, 0,
+                floatBuffer0, DimensionsND.DIMENSIONS_012, 0, 0,
                 samplePositions, NB_SAMPLE_REQUESTED, InterpolationMethod.LINEAR);
         accessManager.waitForCompletion(requestID0);
 
         final FloatBuffer floatBuffer1 = BufferUtils.createFloatBuffer(NB_SAMPLE_REQUESTED);
         final long requestID1 = accessManager.requestVolumeSamples(
-                floatBuffer1, layout, DimensionsND.DIMENSIONS_012, 0, 0,
+                floatBuffer1, DimensionsND.DIMENSIONS_012, 0, 0,
                 samplePositions, NB_SAMPLE_REQUESTED, InterpolationMethod.LINEAR, Float.NaN);
         accessManager.waitForCompletion(requestID1);
 
