@@ -184,6 +184,11 @@ public class CreateVDS {
                 axisDescriptors.toArray(new VolumeDataAxisDescriptor[0]),
                 channelDescriptors.toArray(new VolumeDataChannelDescriptor[0]), metadataContainer);
 
+        // for compression use
+//        float compressionTolerance = 0f; //
+//        VdsHandle vds = OpenVDS.create(options, layoutDescriptor,
+//                axisDescriptors.toArray(new VolumeDataAxisDescriptor[0]),
+//                channelDescriptors.toArray(new VolumeDataChannelDescriptor[0]), metadataContainer, CompressionMethod.ZIP, compressionTolerance);
 
         VolumeDataLayout layout = vds.getLayout();
         VolumeDataAccessManager accessManager = vds.getAccessManager();
@@ -294,11 +299,168 @@ public class CreateVDS {
             accessManager.destroyVolumeDataPageAccessor(pageAccessor);
         }
 
+        // Adds slice data : additional layouts
+//        System.out.println("\nCreate 01 Layout");
+//        create2DLayout(distMax, cycles, midX, midY, midZ, layout, accessManager, channel, lodCount, DimensionsND.DIMENSIONS_01);
+//
+//        System.out.println("\nCreate 02 Layout");
+//        create2DLayout(distMax, cycles, midX, midY, midZ, layout, accessManager, channel, lodCount, DimensionsND.DIMENSIONS_02);
+//
+//        System.out.println("\nCreate 12 Layout");
+//        create2DLayout(distMax, cycles, midX, midY, midZ, layout, accessManager, channel, lodCount, DimensionsND.DIMENSIONS_12);
+
 
         vds.close();
         System.out.println("VDS closed");
     }
 
+
+    private static void create2DLayout(double distMax, double cycles, double midX, double midY, double midZ, VolumeDataLayout layout, VolumeDataAccessManager accessManager,
+                                       int channel, int lodCount, DimensionsND dimLYT) {
+
+        int[] localIndex = new int[3];
+
+        int[] pitch = new int[VolumeDataLayout.Dimensionality_Max];
+        int[] chunkMin = new int[VolumeDataLayout.Dimensionality_Max];
+        int[] chunkMax = new int[VolumeDataLayout.Dimensionality_Max];
+        for (int lod = 0 ; lod <= lodCount ; ++lod) {
+            VolumeDataPageAccessor pageAccessor = accessManager.createVolumeDataPageAccessor(
+                    layout, // layout
+                    dimLYT.ordinal(), // dimension ND
+                    lod, // lod
+                    channel, // channel
+                    200, // max pages
+                    VolumeDataPageAccessor.AccessMode.Create.getCode()); // access mode
+
+            int chunkCount = (int) pageAccessor.getChunkCount();
+            System.out.println("2D Layout LOD : " + lod + " Chunk count :  " + chunkCount);
+
+            for (int i = 0; i < chunkCount; i++) {
+                VolumeDataPage page = pageAccessor.createPage(i);
+                System.out.print("2D Layout LOD : " + lod + " / Page " + (i + 1) + " / " + chunkCount);
+
+                VolumeIndexer2D outputIndexer = new VolumeIndexer2D(page, 0, lod, dimLYT.ordinal(), layout);
+                float valueRangeScale = outputIndexer.getValueRangeMax() - outputIndexer.getValueRangeMin();
+
+                int[] numSamplesChunk = new int[3];
+                int[] numSamplesDB = new int[3];
+
+                for (int j = 0; j < 3 ; j++) {
+                    numSamplesChunk[j] = outputIndexer.getLocalChunkNumSamples(j);
+                    numSamplesDB[j] = outputIndexer.getDataBlockNumSamples(j);
+                }
+                System.out.print("\t2D Layout Dimensions Chunk : [" + numSamplesChunk[0] + ", " + numSamplesChunk[1] + ", " + numSamplesChunk[2] + "]");
+                System.out.print("\t2D Layout Dimensions DataBlock : [" + numSamplesDB[0] + ", " + numSamplesDB[1] + ", " + numSamplesDB[2] + "]");
+
+                page.getMinMax(chunkMin, chunkMax);
+
+                // determine fixed position index and value
+                int fixedCoordIndex = -1;
+                int fixedCoordValue = -1;
+                for (int pos = 0; pos < 3 && fixedCoordIndex == -1 ; ++pos) {
+                    if (Math.abs(chunkMax[pos] - chunkMin[pos]) == 1) {
+                        fixedCoordIndex = pos;
+                        fixedCoordValue = chunkMin[pos];
+                    }
+                }
+
+                System.out.print("\tCoords page : " + chunkMin[0] + "/" + chunkMax[0] + " " + chunkMin[1] + "/" + chunkMax[1] + "/" + chunkMin[2] + "/" + chunkMax[2]);
+                int chunkSizeY = chunkMax[2] - chunkMin[2];
+                int chunkSizeX = chunkMax[1] - chunkMin[1];
+                int chunkSizeZ = chunkMax[0] - chunkMin[0];
+
+                // get pitch and allocate buffer size
+                page.getPitch(pitch);
+                float[] output = new float[page.getAllocatedBufferSize()];
+
+                System.out.print( " Page Buffer Size : " + output.length);// + " / [" + stats.getMin() + "," + stats.getMax() + "]");
+                // dimension of buffer
+                System.out.println(" Pitch : [" + pitch[0] + ", " + pitch[1] + "," + pitch[2] + "]");
+
+                long time_2 = System.currentTimeMillis();
+
+                int[] numSamples = numSamplesChunk;
+
+                for (int iDim2 = 0; iDim2 < numSamples[2]; iDim2++) {
+                    localIndex[2] = iDim2;
+                    for (int iDim1 = 0; iDim1 < numSamples[1]; iDim1++) {
+                        localIndex[1] = iDim1;
+                        for (int iDim0 = 0; iDim0 < numSamples[0]; iDim0++) {
+                            localIndex[0] = iDim0;
+                            int[] local2DIndex = convertTo2DLocalIndex(localIndex, fixedCoordIndex);
+                            int[] voxelIndex = outputIndexer.localChunkIndexToLocalIndex(local2DIndex);
+                            int[] voxelPos = convertTo3DCoord(voxelIndex, fixedCoordIndex, fixedCoordValue);
+
+                            float value = 0f;
+                            double dist = 0;
+                            if (voxelPos[0] >= midX) {
+                                dist = distance2D(midY, midZ, voxelPos[1], voxelPos[2]);
+                            } else {
+                                dist = distance3D(midX, midY, midZ, voxelPos[0], voxelPos[1], voxelPos[2]);
+                            }
+                            value = (float) Math.sin((dist * cycles) / distMax);
+
+                            int iPos = outputIndexer.localIndexToDataIndex(local2DIndex);
+                            output[iPos] = value;
+                        }
+                    }
+                }
+
+                // write buffer then release page
+                page.writeFloatBuffer(output, pitch);
+                page.pageRelease();
+            }
+
+            pageAccessor.commit();
+            accessManager.flushUploadQueue();
+            accessManager.destroyVolumeDataPageAccessor(pageAccessor);
+        }
+    }
+
+
+    /**
+     * Convert 3D index to 2D index
+     */
+    private static int[] convertTo2DLocalIndex(int[] localIndex, int fixedCoordIndex) {
+        int[] local2DIndex = new int[2];
+        if (fixedCoordIndex == 0) {
+            local2DIndex[0] = localIndex[1];
+            local2DIndex[1] = localIndex[2];
+        }
+        else if (fixedCoordIndex == 1) {
+            local2DIndex[0] = localIndex[0];
+            local2DIndex[1] = localIndex[2];
+        }
+        else if (fixedCoordIndex == 2) {
+            local2DIndex[0] = localIndex[0];
+            local2DIndex[1] = localIndex[1];
+        }
+        return local2DIndex;
+    }
+
+    /**
+     * Convert 2D index to 3D index
+     * @param voxelIndex
+     * @param fixedCoordIndex
+     * @param fixedCoordValue
+     */
+    private static int[] convertTo3DCoord(int[] voxelIndex, int fixedCoordIndex, int fixedCoordValue) {
+        int[] voxelPos = new int[3];
+        voxelPos[fixedCoordIndex] = fixedCoordValue;
+        if (fixedCoordIndex == 0) {
+            voxelPos[1] = voxelIndex[0];
+            voxelPos[2] = voxelIndex[1];
+        }
+        else if (fixedCoordIndex == 1) {
+            voxelPos[0] = voxelIndex[0];
+            voxelPos[2] = voxelIndex[1];
+        }
+        else if (fixedCoordIndex == 2) {
+            voxelPos[0] = voxelIndex[0];
+            voxelPos[1] = voxelIndex[1];
+        }
+        return voxelPos;
+    }
 
     private static double distance2D(double x1, double y1, double x2, double y2) {
         double diffX = x2 - x1;
