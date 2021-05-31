@@ -130,19 +130,11 @@ extern "C" {
     {
         try {
             int pitch[OpenVDS::Dimensionality_Max];
-//            int cMin[OpenVDS::Dimensionality_Max];
-//            int cMax[OpenVDS::Dimensionality_Max];
             OpenVDS::VolumeDataPage* page = GetVolumePage(handle);
-//            page->GetMinMax(cMin, cMax);
 
             const char* readData = static_cast<const char*>(page->GetBuffer(pitch));
             env->SetIntArrayRegion(pitchParam, 0, OpenVDS::Dimensionality_Max, pitch);
             int nbElem = GetBufferAllocatedSize(page);
-//            int chunk_size_MaxDim = cMax[maxDim] - cMin[maxDim];
-//            int nbElem = chunk_size_MaxDim * pitch[maxDim];
-//            for (int i = 0 ; i < lod ; ++i) {
-//                nbElem = nbElem / 2;
-//            }
             return NewJByteArray(env, readData, nbElem);
         }
         CATCH_EXCEPTIONS_FOR_JAVA;
@@ -178,19 +170,11 @@ extern "C" {
     {
         try {
             int pitch[OpenVDS::Dimensionality_Max];
-//            int cMin[OpenVDS::Dimensionality_Max];
-//            int cMax[OpenVDS::Dimensionality_Max];
             OpenVDS::VolumeDataPage* page = GetVolumePage(handle);
-//            page->GetMinMax(cMin, cMax);
 
             const float* readData = static_cast<const float*>(page->GetBuffer(pitch));
             env->SetIntArrayRegion(pitchParam, 0, OpenVDS::Dimensionality_Max, pitch);
             int nbElem = GetBufferAllocatedSize(page);
-//            int chunk_size_MaxDim = cMax[maxDim] - cMin[maxDim];
-//            int nbElem = chunk_size_MaxDim * pitch[maxDim];
-//            for (int i = 0 ; i < lod ; ++i) {
-//                nbElem = nbElem / 2;
-//            }
             return NewJFloatArray(env, readData, nbElem);
         }
         CATCH_EXCEPTIONS_FOR_JAVA;
@@ -227,19 +211,11 @@ extern "C" {
     {
         try {
             int pitch[OpenVDS::Dimensionality_Max];
-//            int cMin[OpenVDS::Dimensionality_Max];
-//            int cMax[OpenVDS::Dimensionality_Max];
             OpenVDS::VolumeDataPage* page = GetVolumePage(handle);
-//            page->GetMinMax(cMin, cMax);
 
             const double* readData = static_cast<const double*>(page->GetBuffer(pitch));
             env->SetIntArrayRegion(pitchParam, 0, OpenVDS::Dimensionality_Max, pitch);
             int nbElem = GetBufferAllocatedSize(page);
-//            int chunk_size_MaxDim = cMax[maxDim] - cMin[maxDim];
-//            int nbElem = chunk_size_MaxDim * pitch[maxDim];
-//            for (int i = 0 ; i < lod ; ++i) {
-//                nbElem = nbElem / 2;
-//            }
             return NewJDoubleArray(env, readData, nbElem);
         }
         CATCH_EXCEPTIONS_FOR_JAVA;
