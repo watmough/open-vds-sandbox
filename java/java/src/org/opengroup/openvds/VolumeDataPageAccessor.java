@@ -56,6 +56,8 @@ public class VolumeDataPageAccessor extends JniPointerWithoutDeletion {
     private static native void cpGetChunkMinMax( long handle, int chunk, int[] chunkMin, int[] chunkMax);
     private static native void cpGetChunkMinMaxExcludingMargin( long handle, int chunk, int[] chunkMin, int[] chunkMax);
     private static native long cpGetChunkIndex(long handle, int[] position);
+    private static native long cpGetMappedChunkIndex(long handle, long primaryChannelChunkIndex);
+    private static native long cpGetPrimaryChannelChunkIndex(long handle, long chunkIndex);
     private static native long cpCreatePage( long handle, long chunkIndex);
     private static native long cpReadPage( long handle, long chunkIndex);
     private static native void cpCommit(long handle);
