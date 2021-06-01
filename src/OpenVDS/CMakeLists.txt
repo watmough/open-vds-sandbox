@@ -6,6 +6,7 @@ set(SOURCE_FILES
   IO/IOManager.cpp
   IO/IOManagerAWS.cpp
   IO/IOManagerAzure.cpp
+  IO/IOManagerAzureSdkForCpp.cpp
   IO/IOManagerInMemory.cpp
   IO/IOManagerCurl.cpp
   IO/IOManagerAzurePresigned.cpp
@@ -49,6 +50,7 @@ set (PRIVATE_HEADER_FILES
   IO/IOManager.h
   IO/IOManagerAWS.h
   IO/IOManagerAzure.h
+  IO/IOManagerAzureSdkForCpp.h
   IO/IOManagerInMemory.h
   IO/IOManagerCurl.h
   IO/IOManagerAzurePresigned.h
@@ -184,6 +186,16 @@ else()
   endif()
 endif()
 
+if (DISABLE_AZURESDKFORCPP_IOMANAGER)
+  target_compile_definitions(openvds_objects PRIVATE OPENVDS_NO_AZURE_SDK_FOR_CPP_IOMANAGER)
+  set_source_files_properties(IO/IOManagerAzureSdkForCpp.cpp PROPERTIES HEADER_FILE_ONLY TRUE)
+else()
+  if (UNIX)
+    find_package(CURL REQUIRED)
+    find_package(LibXml2 REQUIRED)
+    target_link_libraries(openvds_objects PRIVATE CURL::libcurl LibXml2::LibXml2)
+  endif()
+endif()
 if (DISABLE_CURL_IOMANAGER)
   set_source_files_properties(IO/IOManagerCurl.cpp PROPERTIES HEADER_FILE_ONLY TRUE)
   set_source_files_properties(IO/IOManagerHttp.cpp PROPERTIES HEADER_FILE_ONLY TRUE)

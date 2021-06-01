@@ -284,6 +284,7 @@ PyGlobal::initModule(py::module& m)
       {
       case OpenOptions::ConnectionType::AWS            : conn = std::string("AWS"            ); break;
       case OpenOptions::ConnectionType::Azure          : conn = std::string("Azure"          ); break;
+      case OpenOptions::ConnectionType::AzureSdkForCpp : conn = std::string("AzureSdkForCpp" ); break;
       case OpenOptions::ConnectionType::AzurePresigned : conn = std::string("AzurePresigned" ); break;
       case OpenOptions::ConnectionType::GoogleStorage  : conn = std::string("GoogleStorage"  ); break;
       case OpenOptions::ConnectionType::Http           : conn = std::string("Http"           ); break;
