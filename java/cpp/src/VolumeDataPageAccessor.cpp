@@ -196,6 +196,36 @@ extern "C" {
 
     /*
     * Class:     org_opengroup_openvds_VolumeDataPageAccessor
+    * Method:    cpGetMappedChunkIndex
+    * Signature: (JJ)J
+    */
+    JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_cpGetMappedChunkIndex
+            (JNIEnv * env, jclass, jlong handle, jlong primaryChannelChunkIndex)
+    {
+        try {
+            return GetPageAccessor( handle )->GetMappedChunkIndex(primaryChannelChunkIndex);
+        }
+        CATCH_EXCEPTIONS_FOR_JAVA;
+        return -1;
+    }
+
+    /*
+     * Class:     org_opengroup_openvds_VolumeDataPageAccessor
+     * Method:    cpGetPrimaryChannelChunkIndex
+     * Signature: (JJ)J
+     */
+    JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_cpGetPrimaryChannelChunkIndex
+            (JNIEnv * env, jclass, jlong handle, jlong chunkIndex)
+    {
+        try {
+            return GetPageAccessor( handle )->GetPrimaryChannelChunkIndex(chunkIndex);
+        }
+        CATCH_EXCEPTIONS_FOR_JAVA;
+        return -1;
+    }
+
+    /*
+    * Class:     org_opengroup_openvds_VolumeDataPageAccessor
     * Method:    cpCommit
     * Signature: (J)V
     */
