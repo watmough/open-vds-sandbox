@@ -51,6 +51,7 @@ struct OpenOptions
   {
     AWS,
     Azure,
+    AzureSdkForCpp,
     AzurePresigned,
     GoogleStorage,
     DMS,

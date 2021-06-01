@@ -32,6 +32,12 @@ if (NOT DISABLE_AZURE_IOMANAGER)
   set(SOURCES ${SOURCES} ${SRC_LIB_PROVIDERS_AZURE})
 endif()
 
+if (NOT DISABLE_AZURESDKFORCPP_IOMANAGER)
+  add_definitions( -DHAS_AZURE_BLOB_STORAGE_PROVIDER_CURL )
+  file(GLOB SRC_LIB_PROVIDERS_AZURE_NEW ${dmsCMakeDir}/src/lib/cloud/providers/azure/curl/*.cc)
+  set(SOURCES ${SOURCES} ${SRC_LIB_PROVIDERS_AZURE_NEW})
+endif()
+
 if (NOT DISABLE_AWS_IOMANAGER)
   add_definitions( -DHAS_AWS_S3_STORAGE_PROVIDER )
   file(GLOB SRC_LIB_PROVIDERS_AWS   ${dmsCMakeDir}/src/lib/cloud/providers/aws/*.cc)
@@ -87,7 +93,6 @@ get_property(runtime_3rdparty_release GLOBAL PROPERTY OPENVDS_RUNTIME_LIBS_RELEA
 get_property(runtime_3rdparty_debug   GLOBAL PROPERTY OPENVDS_RUNTIME_LIBS_DEBUG)
 get_property(include_3rdparty      GLOBAL PROPERTY OPENVDS_INCLUDE_LIBRARIES)
 get_property(dependency_targets_3rdparty      GLOBAL PROPERTY OPENVDS_DEPENDENCY_TARGETS)
-
 
 addSystemHeadersToTarget(sdapi_objects "${include_3rdparty}")
 
