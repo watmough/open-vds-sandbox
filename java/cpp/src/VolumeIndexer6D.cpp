@@ -67,7 +67,7 @@ extern "C" {
     {
         try {
             IntVector<6> res6 = GetVolumeIndexer6D(handle)->LocalIndexToVoxelIndex(IntVector<6>(i, j, k, l, m, n));
-            env->SetIntArrayRegion(resOutIndex, 0, 6, res6.data);
+            env->SetIntArrayRegion(resOutIndex, 0, 6, (jint *)res6.data);
         }
         CATCH_EXCEPTIONS_FOR_JAVA;
     }
@@ -82,7 +82,7 @@ extern "C" {
     {
         try {
             IntVector<6> res6 = GetVolumeIndexer6D(handle)->LocalIndexToLocalChunkIndex(IntVector<6>(i, j, k, l, m, n));
-            env->SetIntArrayRegion(resOutIndex, 0, 6, res6.data);
+            env->SetIntArrayRegion(resOutIndex, 0, 6, (jint*)res6.data);
         }
         CATCH_EXCEPTIONS_FOR_JAVA;
     }
@@ -97,7 +97,7 @@ extern "C" {
     {
         try {
             IntVector<6> res6 = GetVolumeIndexer6D(handle)->VoxelIndexToLocalIndex(IntVector<6>(i, j, k, l, m, n));
-            env->SetIntArrayRegion(resOutIndex, 0, 6, res6.data);
+            env->SetIntArrayRegion(resOutIndex, 0, 6, (jint *)res6.data);
         }
         CATCH_EXCEPTIONS_FOR_JAVA;
     }
@@ -112,7 +112,7 @@ extern "C" {
     {
         try {
             IntVector<6> res6 = GetVolumeIndexer6D(handle)->VoxelIndexToLocalChunkIndex(IntVector<6>(i, j, k, l, m, n));
-            env->SetIntArrayRegion(resOutIndex, 0, 6, res6.data);
+            env->SetIntArrayRegion(resOutIndex, 0, 6, (jint*)res6.data);
         }
         CATCH_EXCEPTIONS_FOR_JAVA;
     }
@@ -127,7 +127,7 @@ extern "C" {
     {
         try {
             IntVector<6> res6 = GetVolumeIndexer6D(handle)->LocalChunkIndexToLocalIndex(IntVector<6>(i, j, k, l, m, n));
-            env->SetIntArrayRegion(resOutIndex, 0, 6, res6.data);
+            env->SetIntArrayRegion(resOutIndex, 0, 6, (jint*)res6.data);
         }
         CATCH_EXCEPTIONS_FOR_JAVA;
     }
@@ -142,7 +142,7 @@ extern "C" {
     {
         try {
             IntVector<6> res6 = GetVolumeIndexer6D(handle)->LocalChunkIndexToVoxelIndex(IntVector<6>(i, j, k, l, m, n));
-            env->SetIntArrayRegion(resOutIndex, 0, 6, res6.data);
+            env->SetIntArrayRegion(resOutIndex, 0, 6, (jint*)res6.data);
         }
         CATCH_EXCEPTIONS_FOR_JAVA;
     }

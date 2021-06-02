@@ -47,39 +47,8 @@
 
 #include <chrono>
 
-#if defined(WIN32)
-#undef WIN32_LEAN_AND_MEAN // avoid warnings if defined on command line
-#define WIN32_LEAN_AND_MEAN 1
-#define NOMINMAX 1
-#include <io.h>
-#include <windows.h>
-
-int64_t GetTotalSystemMemory()
-{
-    MEMORYSTATUSEX status;
-    status.dwLength = sizeof(status);
-    GlobalMemoryStatusEx(&status);
-    return int64_t(status.ullTotalPhys);
-}
-
-#else
-
-#include <unistd.h>
-#include <cmath>
-#include <chrono>
-
-
-void createNoLODVDS(const std::string &vdsFileName, int32_t samplesX, int32_t samplesY, int32_t samplesZ);
-void createLODVDS(const std::string &vdsFileName, int32_t samplesX, int32_t samplesY, int32_t samplesZ, OpenVDS::VolumeDataLayoutDescriptor::LODLevels);
-double distance2D(double x1, double y1, double x2, double y2);
-double distance3D(double x1, double y1, double x2, double y2, double x3, double y3);
-
-int64_t GetTotalSystemMemory() {
-    long pages = sysconf(_SC_PHYS_PAGES);
-    long page_size = sysconf(_SC_PAGE_SIZE);
-    return int64_t(pages) * int64_t(page_size);
-}
-
+#ifdef _MSC_VER
+#define M_PI 3.14159265358979323846
 #endif
 
 static void
@@ -105,43 +74,18 @@ getScaleOffsetForFormat(float min, float max, bool novalue, OpenVDS::VolumeDataC
     }
 }
 
-int
-main(int argc, char *argv[]) {
-    cxxopts::Options options("VDSFileCreate", "Create synthetic vds file");
-    std::string vdsFileName;
-    options.add_option("", "", "vdsfile", "Output VDS file name.", cxxopts::value<std::string>(vdsFileName), "<string>");
-
-    if (argc == 1) {
-        std::cout << options.help();
-        return EXIT_SUCCESS;
-    }
-
-    try {
-        options.parse(argc, argv);
-    }
-    catch(cxxopts::OptionParseException &e) {
-        fmt::print(stderr, "{}", e.what());
-        return EXIT_FAILURE;
-    }
-
-    int32_t samplesX = 500;
-    int32_t samplesY = 800;
-    int32_t samplesZ = 800;
-
-    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-
-    createNoLODVDS(vdsFileName, samplesX, samplesY, samplesZ);
-    //createLODVDS(vdsFileName, samplesX, samplesY, samplesZ, OpenVDS::VolumeDataLayoutDescriptor::LODLevels_3);
-
-    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-    long elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
-    long hrs = elapsed / (60 * 60 * 1000);
-    long min = (elapsed - (hrs * 60 * 60 * 1000)) / (60 * 1000);
-    long s = (elapsed - (hrs * 60 * 1000) - (min * 60 * 1000)) / 1000;
-    std::cout << "Write VDS TIME [CPP native] : " <<  hrs << " hrs " << min << " min " << s << "s (" << elapsed << " ms)" << std::endl;
-    return EXIT_SUCCESS;
+double distance2D(double x1, double y1, double x2, double y2) {
+    double diffX = x2 - x1;
+    double diffY = y2 - y1;
+    return sqrt((diffX * diffX) + (diffY * diffY));
 }
 
+double distance3D(double x1, double y1, double z1, double x2, double y2, double z2) {
+    double diffX = x2 - x1;
+    double diffY = y2 - y1;
+    double diffZ = z2 - z1;
+    return sqrt((diffX * diffX) + (diffY * diffY) + (diffZ * diffZ));
+}
 void createNoLODVDS(const std::string &vdsFileName, int32_t samplesX, int32_t samplesY, int32_t samplesZ) {
     OpenVDS::VolumeDataChannelDescriptor::Format format = OpenVDS::VolumeDataChannelDescriptor::Format_R32;
 
@@ -255,6 +199,43 @@ void createNoLODVDS(const std::string &vdsFileName, int32_t samplesX, int32_t sa
     accessManager.DestroyVolumeDataPageAccessor(pageAccessor);
 
     OpenVDS::Close(vds);
+}
+
+int
+main(int argc, char *argv[]) {
+    cxxopts::Options options("VDSFileCreate", "Create synthetic vds file");
+    std::string vdsFileName;
+    options.add_option("", "", "vdsfile", "Output VDS file name.", cxxopts::value<std::string>(vdsFileName), "<string>");
+
+    if (argc == 1) {
+        std::cout << options.help();
+        return EXIT_SUCCESS;
+    }
+
+    try {
+        options.parse(argc, argv);
+    }
+    catch(cxxopts::OptionParseException &e) {
+        fmt::print(stderr, "{}", e.what());
+        return EXIT_FAILURE;
+    }
+
+    int32_t samplesX = 500;
+    int32_t samplesY = 800;
+    int32_t samplesZ = 800;
+
+    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+
+    createNoLODVDS(vdsFileName, samplesX, samplesY, samplesZ);
+    //createLODVDS(vdsFileName, samplesX, samplesY, samplesZ, OpenVDS::VolumeDataLayoutDescriptor::LODLevels_3);
+
+    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+    long elapsed = (long) std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
+    long hrs = elapsed / (60 * 60 * 1000);
+    long min = (elapsed - (hrs * 60 * 60 * 1000)) / (60 * 1000);
+    long s = (elapsed - (hrs * 60 * 1000) - (min * 60 * 1000)) / 1000;
+    std::cout << "Write VDS TIME [CPP native] : " <<  hrs << " hrs " << min << " min " << s << "s (" << elapsed << " ms)" << std::endl;
+    return EXIT_SUCCESS;
 }
 
 void createLODVDS(const std::string &vdsFileName, int32_t samplesX, int32_t samplesY, int32_t samplesZ, OpenVDS::VolumeDataLayoutDescriptor::LODLevels lodLevel) {
@@ -381,15 +362,3 @@ void createLODVDS(const std::string &vdsFileName, int32_t samplesX, int32_t samp
     OpenVDS::Close(vds);
 }
 
-double distance2D(double x1, double y1, double x2, double y2) {
-    double diffX = x2 - x1;
-    double diffY = y2 - y1;
-    return sqrt((diffX * diffX) + (diffY * diffY));
-}
-
-double distance3D(double x1, double y1, double z1, double x2, double y2, double z2) {
-    double diffX = x2 - x1;
-    double diffY = y2 - y1;
-    double diffZ = z2 - z1;
-    return sqrt((diffX * diffX) + (diffY * diffY) + (diffZ * diffZ));
-}

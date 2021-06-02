@@ -64,8 +64,8 @@ extern "C" {
             int cMin[OpenVDS::Dimensionality_Max];
             int cMax[OpenVDS::Dimensionality_Max];
             GetVolumePage(handle)->GetMinMax(cMin, cMax);
-            env->SetIntArrayRegion(minArr, 0, OpenVDS::Dimensionality_Max, cMin);
-            env->SetIntArrayRegion(maxArr, 0, OpenVDS::Dimensionality_Max, cMax);
+            env->SetIntArrayRegion(minArr, 0, OpenVDS::Dimensionality_Max, (jint*) cMin);
+            env->SetIntArrayRegion(maxArr, 0, OpenVDS::Dimensionality_Max, (jint*) cMax);
         }
         CATCH_EXCEPTIONS_FOR_JAVA;
     }
@@ -82,8 +82,8 @@ extern "C" {
             int cMin[OpenVDS::Dimensionality_Max];
             int cMax[OpenVDS::Dimensionality_Max];
             GetVolumePage(handle)->GetMinMaxExcludingMargin(cMin, cMax);
-            env->SetIntArrayRegion(minArr, 0, OpenVDS::Dimensionality_Max, cMin);
-            env->SetIntArrayRegion(maxArr, 0, OpenVDS::Dimensionality_Max, cMax);
+            env->SetIntArrayRegion(minArr, 0, OpenVDS::Dimensionality_Max, (jint*) cMin);
+            env->SetIntArrayRegion(maxArr, 0, OpenVDS::Dimensionality_Max, (jint*) cMax);
         }
         CATCH_EXCEPTIONS_FOR_JAVA;
     }
@@ -115,7 +115,7 @@ extern "C" {
             int pitch[OpenVDS::Dimensionality_Max];
             OpenVDS::VolumeDataPage* page = GetVolumePage(handle);
             page->GetBuffer(pitch);
-            env->SetIntArrayRegion(pitchArray, 0, OpenVDS::Dimensionality_Max, pitch);
+            env->SetIntArrayRegion(pitchArray, 0, OpenVDS::Dimensionality_Max, (jint *)pitch);
         }
         CATCH_EXCEPTIONS_FOR_JAVA;
     }
@@ -133,7 +133,7 @@ extern "C" {
             OpenVDS::VolumeDataPage* page = GetVolumePage(handle);
 
             const char* readData = static_cast<const char*>(page->GetBuffer(pitch));
-            env->SetIntArrayRegion(pitchParam, 0, OpenVDS::Dimensionality_Max, pitch);
+            env->SetIntArrayRegion(pitchParam, 0, OpenVDS::Dimensionality_Max, (jint *)pitch);
             int nbElem = GetBufferAllocatedSize(page);
             return NewJByteArray(env, readData, nbElem);
         }
@@ -173,7 +173,7 @@ extern "C" {
             OpenVDS::VolumeDataPage* page = GetVolumePage(handle);
 
             const float* readData = static_cast<const float*>(page->GetBuffer(pitch));
-            env->SetIntArrayRegion(pitchParam, 0, OpenVDS::Dimensionality_Max, pitch);
+            env->SetIntArrayRegion(pitchParam, 0, OpenVDS::Dimensionality_Max, (jint *)pitch);
             int nbElem = GetBufferAllocatedSize(page);
             return NewJFloatArray(env, readData, nbElem);
         }
@@ -214,7 +214,7 @@ extern "C" {
             OpenVDS::VolumeDataPage* page = GetVolumePage(handle);
 
             const double* readData = static_cast<const double*>(page->GetBuffer(pitch));
-            env->SetIntArrayRegion(pitchParam, 0, OpenVDS::Dimensionality_Max, pitch);
+            env->SetIntArrayRegion(pitchParam, 0, OpenVDS::Dimensionality_Max, (jint *)pitch);
             int nbElem = GetBufferAllocatedSize(page);
             return NewJDoubleArray(env, readData, nbElem);
         }

@@ -75,7 +75,7 @@ public class AmazonS3Test {
                                 assertTrue(!accessManager.isNull());
                         VolumeDataLayout volumeDataLayout = accessManager.getVolumeDataLayout();
                         final long requestID1 = accessManager.requestVolumeSubset(
-                                        floatBuffer1, volumeDataLayout, DimensionsND.DIMENSIONS_012, 0, 0, box);
+                                        floatBuffer1, DimensionsND.DIMENSIONS_012, 0, 0, box);
                                 final long requestID0 = accessManager.requestVolumeSubset(
                                         floatBuffer0, DimensionsND.DIMENSIONS_012, 0, 0, box, layout.getChannelNoValue(0));
 

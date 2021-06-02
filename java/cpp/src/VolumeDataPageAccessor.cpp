@@ -151,8 +151,8 @@ extern "C" {
             int cMin[OpenVDS::Dimensionality_Max];
             int cMax[OpenVDS::Dimensionality_Max];
             GetPageAccessor( handle )->GetChunkMinMax(chunk, cMin, cMax);
-            env->SetIntArrayRegion(chunkMin, 0, OpenVDS::Dimensionality_Max, cMin);
-            env->SetIntArrayRegion(chunkMax, 0, OpenVDS::Dimensionality_Max, cMax);
+            env->SetIntArrayRegion(chunkMin, 0, OpenVDS::Dimensionality_Max,(jint*) cMin);
+            env->SetIntArrayRegion(chunkMax, 0, OpenVDS::Dimensionality_Max,(jint*) cMax);
         }
         CATCH_EXCEPTIONS_FOR_JAVA;
     }
@@ -169,8 +169,8 @@ extern "C" {
             int cMin[OpenVDS::Dimensionality_Max];
             int cMax[OpenVDS::Dimensionality_Max];
             GetPageAccessor( handle )->GetChunkMinMaxExcludingMargin(chunk, cMin, cMax);
-            env->SetIntArrayRegion(chunkMin, 0, OpenVDS::Dimensionality_Max, cMin);
-            env->SetIntArrayRegion(chunkMax, 0, OpenVDS::Dimensionality_Max, cMax);
+            env->SetIntArrayRegion(chunkMin, 0, OpenVDS::Dimensionality_Max, (jint*) cMin);
+            env->SetIntArrayRegion(chunkMax, 0, OpenVDS::Dimensionality_Max, (jint*) cMax);
         }
         CATCH_EXCEPTIONS_FOR_JAVA;
     }

@@ -68,7 +68,7 @@ extern "C" {
     {
         try {
             IntVector2 res2 = GetVolumeIndexer2D(handle)->LocalIndexToVoxelIndex(IntVector2(i, j));
-            env->SetIntArrayRegion(resOutIndex, 0, 2, res2.data);
+            env->SetIntArrayRegion(resOutIndex, 0, 2, (jint*)res2.data);
         }
         CATCH_EXCEPTIONS_FOR_JAVA;
     }
@@ -83,7 +83,7 @@ extern "C" {
     {
         try {
             IntVector2 res2 = GetVolumeIndexer2D(handle)->LocalIndexToLocalChunkIndex(IntVector2(i, j));
-            env->SetIntArrayRegion(resOutIndex, 0, 2, res2.data);
+            env->SetIntArrayRegion(resOutIndex, 0, 2, (jint*)res2.data);
         }
         CATCH_EXCEPTIONS_FOR_JAVA;
     }
@@ -99,7 +99,7 @@ extern "C" {
     {
         try {
             IntVector2 res2 = GetVolumeIndexer2D(handle)->VoxelIndexToLocalIndex(IntVector2(i, j));
-            env->SetIntArrayRegion(resOutIndex, 0, 2, res2.data);
+            env->SetIntArrayRegion(resOutIndex, 0, 2, (jint*)res2.data);
         }
         CATCH_EXCEPTIONS_FOR_JAVA;
     }
@@ -114,7 +114,7 @@ extern "C" {
     {
         try {
             IntVector2 res2 = GetVolumeIndexer2D(handle)->VoxelIndexToLocalChunkIndex(IntVector2(i, j));
-            env->SetIntArrayRegion(resOutIndex, 0, 2, res2.data);
+            env->SetIntArrayRegion(resOutIndex, 0, 2, (jint*)res2.data);
         }
         CATCH_EXCEPTIONS_FOR_JAVA;
     }
@@ -130,7 +130,7 @@ extern "C" {
     {
         try {
             IntVector2 res2 = GetVolumeIndexer2D(handle)->LocalChunkIndexToLocalIndex(IntVector2(i, j));
-            env->SetIntArrayRegion(resOutIndex, 0, 2, res2.data);
+            env->SetIntArrayRegion(resOutIndex, 0, 2, (jint*)res2.data);
         }
         CATCH_EXCEPTIONS_FOR_JAVA;
     }
@@ -145,7 +145,7 @@ extern "C" {
     {
         try {
             IntVector2 res2 = GetVolumeIndexer2D(handle)->LocalChunkIndexToVoxelIndex(IntVector2(i, j));
-            env->SetIntArrayRegion(resOutIndex, 0, 2, res2.data);
+            env->SetIntArrayRegion(resOutIndex, 0, 2, (jint*)res2.data);
         }
         CATCH_EXCEPTIONS_FOR_JAVA;
     }

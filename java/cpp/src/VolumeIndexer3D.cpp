@@ -67,7 +67,7 @@ extern "C" {
     {
         try {
             IntVector3 res3 = GetVolumeIndexer3D(handle)->LocalIndexToVoxelIndex(IntVector3(i, j, k));
-            env->SetIntArrayRegion(resOutIndex, 0, 3, res3.data);
+            env->SetIntArrayRegion(resOutIndex, 0, 3, (jint*)res3.data);
         }
         CATCH_EXCEPTIONS_FOR_JAVA;
     }
@@ -82,7 +82,7 @@ extern "C" {
     {
         try {
             IntVector3 res3 = GetVolumeIndexer3D(handle)->LocalIndexToLocalChunkIndex(IntVector3(i, j, k));
-            env->SetIntArrayRegion(resOutIndex, 0, 3, res3.data);
+            env->SetIntArrayRegion(resOutIndex, 0, 3, (jint*)res3.data);
         }
         CATCH_EXCEPTIONS_FOR_JAVA;
     }
@@ -97,7 +97,7 @@ extern "C" {
     {
         try {
             IntVector3 res3 = GetVolumeIndexer3D(handle)->VoxelIndexToLocalIndex(IntVector3(i, j, k));
-            env->SetIntArrayRegion(resOutIndex, 0, 3, res3.data);
+            env->SetIntArrayRegion(resOutIndex, 0, 3, (jint*)res3.data);
         }
         CATCH_EXCEPTIONS_FOR_JAVA;
     }
@@ -112,7 +112,7 @@ extern "C" {
     {
         try {
             IntVector3 res3 = GetVolumeIndexer3D(handle)->VoxelIndexToLocalChunkIndex(IntVector3(i, j, k));
-            env->SetIntArrayRegion(resOutIndex, 0, 3, res3.data);
+            env->SetIntArrayRegion(resOutIndex, 0, 3, (jint*)res3.data);
         }
         CATCH_EXCEPTIONS_FOR_JAVA;
     }
@@ -127,7 +127,7 @@ extern "C" {
     {
         try {
             IntVector3 res3 = GetVolumeIndexer3D(handle)->LocalChunkIndexToLocalIndex(IntVector3(i, j, k));
-            env->SetIntArrayRegion(resOutIndex, 0, 3, res3.data);
+            env->SetIntArrayRegion(resOutIndex, 0, 3, (jint*)res3.data);
         }
         CATCH_EXCEPTIONS_FOR_JAVA;
     }
@@ -142,7 +142,7 @@ extern "C" {
     {
         try {
             IntVector3 res3 = GetVolumeIndexer3D(handle)->LocalChunkIndexToVoxelIndex(IntVector3(i, j, k));
-            env->SetIntArrayRegion(resOutIndex, 0, 3, res3.data);
+            env->SetIntArrayRegion(resOutIndex, 0, 3, (jint*)res3.data);
         }
         CATCH_EXCEPTIONS_FOR_JAVA;
     }
