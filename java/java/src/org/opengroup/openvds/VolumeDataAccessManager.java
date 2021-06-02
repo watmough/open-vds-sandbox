@@ -521,7 +521,7 @@ public class VolumeDataAccessManager extends JniPointerWithoutDeletion {
         if (B.getCapacityInBytes(outBuf) < getVolumeSamplesBufferSize(sampleCount, channel)) {
             return throwBufferTooSmallException();
         }
-        return cpRequestVolumeSamples(_handle, outBuf, B.getCapacityInBytes(outBuf), dimensionGroup.ordinal(), lod, channel,
+        return cpRequestVolumeSamples(_handle, outBuf, B.getCapacityInBytes(outBuf), dimensiongroup.ordinal(), lod, channel,
                 samplePositions, sampleCount, interpolationMethod.ordinal());
     }
 
