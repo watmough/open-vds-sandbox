@@ -306,12 +306,12 @@ public class MemoryVdsGeneratorTest {
 
         NDBox wholeCube = new NDBox(0, 0, 0, 0, 0, 0, nZSamples, nYSamples, nXSamples, 0, 0, 0);
 
-        final FloatBuffer floatBuffer1 = B.createFloatBuffer(nZSamples * nYSamples);
+        final FloatBuffer floatBuffer1 = B.createFloatBuffer(nZSamples * nYSamples * nXSamples);
         final long requestSubsetId = accessManager.requestProjectedVolumeSubset(floatBuffer1, DimensionsND.DIMENSIONS_012, 0, 0,
                 wholeCube, 0.5f, 0.1f, 0.9f, 1.f, DimensionsND.DIMENSIONS_01, InterpolationMethod.NEAREST);
         accessManager.waitForCompletion(requestSubsetId);
 
-        final FloatBuffer floatBuffer0 = B.createFloatBuffer(nZSamples * nYSamples);
+        final FloatBuffer floatBuffer0 = B.createFloatBuffer(nZSamples * nYSamples * nXSamples);
         final long requestSubsetId0 = accessManager.requestProjectedVolumeSubset(floatBuffer0, DimensionsND.DIMENSIONS_012, 0, 0,
                 wholeCube, 0.5f, 0.1f, 0.9f, 1.f, DimensionsND.DIMENSIONS_01, InterpolationMethod.NEAREST, layout.getChannelNoValue(0));
         accessManager.waitForCompletion(requestSubsetId0);
@@ -347,13 +347,13 @@ public class MemoryVdsGeneratorTest {
         final long projectedVolumeSubsetBufferSize = accessManager.getProjectedVolumeSubsetBufferSize(wholeCube, DimensionsND.DIMENSIONS_01, FORMAT_R32, 0, 0);
         assertEquals(nZSamples * nYSamples * Float.BYTES, projectedVolumeSubsetBufferSize);
 
-        final FloatBuffer floatBuffer1 = B.createFloatBuffer(nZSamples * nYSamples);
+        final FloatBuffer floatBuffer1 = B.createFloatBuffer(nZSamples * nYSamples * nXSamples);
         final long requestSubsetId = accessManager.requestProjectedVolumeSubset(floatBuffer1, DimensionsND.DIMENSIONS_012, 0, 0,
                 wholeCube, 0.5f, 0.1f, 0.9f, 1.f, DimensionsND.DIMENSIONS_01, InterpolationMethod.NEAREST);
         accessManager.waitForCompletion(requestSubsetId);
 
         NDBox boxSlice = new NDBox(0, 0, 0, 0, 0, 0, nZSamples, nYSamples, 1, 0, 0, 0);
-        final FloatBuffer floatBuffer0 = B.createFloatBuffer(nZSamples * nYSamples);
+        final FloatBuffer floatBuffer0 = B.createFloatBuffer(nZSamples * nYSamples * nXSamples);
         final float channelNoValue = layout.getChannelNoValue(0);
         final long requestID0 = accessManager.requestVolumeSubset(floatBuffer0, DimensionsND.DIMENSIONS_012, 0, 0, boxSlice, channelNoValue);
         accessManager.waitForCompletion(requestID0);
