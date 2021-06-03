@@ -58,6 +58,7 @@ set(JAVA_SOURCE_FILES
   java/src/org/opengroup/openvds/VolumeIndexer6D.java
 
   java/demo/AWSSliceDumpDemo.java
+  java/demo/CreateVDS.java
   java/demo/OpenVdsDemo.java
 
   #java/experimental/OpenVdsDemoWithArrayIntoBuffers.java
@@ -95,6 +96,8 @@ set(JAVA_TEST_SOURCES_FILES
   java/test/org/opengroup/openvds/MemoryVdsGeneratorTest.java
   java/test/org/opengroup/openvds/CreateVDSTest.java
   java/test/org/opengroup/openvds/WriteDataTest.java
+  java/test/org/opengroup/openvds/MetaDataContainerTest.java
+  java/test/org/opengroup/openvds/PageAccessorTest.java
   )
 
 add_jar(openvds-java-test

@@ -115,7 +115,6 @@ public class PageAccessorTest {
             int channel = 0;
             VolumeDataLayout layout = vdsTest.getLayout();
             VolumeDataPageAccessor pageAccessor = accessManager.createVolumeDataPageAccessor(
-                    layout, // layout
                     DimensionsND.DIMENSIONS_012.ordinal(), // dimension ND
                     0, // lod
                     channel, // channel
@@ -149,7 +148,6 @@ public class PageAccessorTest {
             int channel = 0;
             VolumeDataLayout layout = vdsCopy.getLayout();
             VolumeDataPageAccessor pageAccessor = accessManager.createVolumeDataPageAccessor(
-                    layout, // layout
                     DimensionsND.DIMENSIONS_012.ordinal(), // dimension ND
                     0, // lod
                     channel, // channel
@@ -159,7 +157,6 @@ public class PageAccessorTest {
             // get input manager
             VolumeDataAccessManager inputAM = vds.getAccessManager();
             VolumeDataPageAccessor pageAccessorInput = inputAM.createVolumeDataPageAccessor(
-                    layout, // layout
                     DimensionsND.DIMENSIONS_012.ordinal(), // dimension ND
                     0, // lod
                     channel, // channel
@@ -208,7 +205,6 @@ public class PageAccessorTest {
             int channel = 0;
             VolumeDataLayout layout = vdsCopy.getLayout();
             VolumeDataPageAccessor pageAccessor = accessManager.createVolumeDataPageAccessor(
-                    layout, // layout
                     DimensionsND.DIMENSIONS_012.ordinal(), // dimension ND
                     0, // lod
                     channel, // channel
@@ -218,7 +214,6 @@ public class PageAccessorTest {
             // get input manager
             VolumeDataAccessManager inputAM = vds.getAccessManager();
             VolumeDataPageAccessor pageAccessorInput = inputAM.createVolumeDataPageAccessor(
-                    layout, // layout
                     DimensionsND.DIMENSIONS_012.ordinal(), // dimension ND
                     0, // lod
                     channel, // channel
@@ -269,7 +264,6 @@ public class PageAccessorTest {
             int channel = 0;
             VolumeDataLayout layout = vdsCopy.getLayout();
             VolumeDataPageAccessor pageAccessor = accessManager.createVolumeDataPageAccessor(
-                    layout, // layout
                     DimensionsND.DIMENSIONS_012.ordinal(), // dimension ND
                     0, // lod
                     channel, // channel

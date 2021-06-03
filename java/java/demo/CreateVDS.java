@@ -206,7 +206,6 @@ public class CreateVDS {
 
         for (int lod = 0 ; lod <= lodCount ; ++lod) {
             VolumeDataPageAccessor pageAccessor = accessManager.createVolumeDataPageAccessor(
-                    layout, // layout
                     DimensionsND.DIMENSIONS_012.ordinal(), // dimension ND
                     lod, // lod
                     channel, // channel
@@ -325,7 +324,6 @@ public class CreateVDS {
         int[] chunkMax = new int[VolumeDataLayout.Dimensionality_Max];
         for (int lod = 0 ; lod <= lodCount ; ++lod) {
             VolumeDataPageAccessor pageAccessor = accessManager.createVolumeDataPageAccessor(
-                    layout, // layout
                     dimLYT.ordinal(), // dimension ND
                     lod, // lod
                     channel, // channel
