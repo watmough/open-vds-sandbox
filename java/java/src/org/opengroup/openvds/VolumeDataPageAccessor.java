@@ -140,6 +140,28 @@ public class VolumeDataPageAccessor extends JniPointerWithoutDeletion {
     }
 
     /**
+     * Get the chunk index for this VolumeDataPageAccessor corresponding to the given chunk index in the primary channel.
+     * Because some channels can have mappings (e.g. one value per trace), the number of chunks can be less than in the primary
+     * channel and we need to have a mapping to figure out the chunk index in each channel that is produced together.
+     * @param primaryChannelChunkIndex
+     * @return The chunk index for this VolumeDataPageAccessor corresponding to the given chunk index in the primary channel.
+     */
+    public long getMappedChunkIndex(long primaryChannelChunkIndex) {
+        return cpGetMappedChunkIndex(_handle, primaryChannelChunkIndex);
+    }
+
+    /**
+     * Get the primary channel chunk index corresponding to the given chunk index of this VolumeDataPageAccessor.
+     * In order to avoid creating duplicates requests when a channel is mapped, we need to know which primary channel chunk index is representative of
+     * a particular mapped chunk index.
+     * @param chunkIndex
+     * @return The primary channel chunk index corresponding to the given chunk index for this VolumeDataPageAccessor.
+     */
+    public long getPrimaryChannelChunkIndex(long chunkIndex) {
+        return cpGetPrimaryChannelChunkIndex(_handle, chunkIndex);
+    }
+
+    /**
      * Create page for given chunk index
      * @param chunkIndex
      * @return A VolumeDataPage

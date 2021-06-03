@@ -49,7 +49,7 @@ public class OpenVdsDemoWithSubset {
 
         final FloatBuffer data = BufferUtils.createFloatBuffer(nZSamples * nYSamples);
 
-        final long request = accessManager.requestVolumeSubset(data, layout, DimensionsND.DIMENSIONS_012, 0, 0, box);
+        final long request = accessManager.requestVolumeSubset(data, DimensionsND.DIMENSIONS_012, 0, 0, box);
         System.out.println("Wait for request completion...");
         while (!accessManager.waitForCompletion(request, 100)) {
             if (accessManager.isCanceled(request)) throw new RuntimeException("Cancelled job");
