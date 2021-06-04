@@ -1548,9 +1548,12 @@ int64_t VolumeDataRequestProcessor::RequestVolumeTraces(void *buffer, VolumeData
   {
     VolumeDataSamplePos &volumeDataSamplePos = volumeDataSamplePositions->at(tracePos);
 
-    std::copy(&tracePositions[tracePos][0], &tracePositions[tracePos][Dimensionality_Max], volumeDataSamplePos.pos.Data);
-    volumeDataSamplePos.chunkIndex = volumeDataLayer->GetChunkIndexFromNDPos(volumeDataSamplePos.pos);
+    for(int dimension = 0; dimension < Dimensionality_Max; dimension++)
+    {
+      volumeDataSamplePos.pos.Data[dimension] = (dimension != traceDimension) ? tracePositions[tracePos][dimension] : 0;
+    }
     volumeDataSamplePos.originalSample = tracePos;
+    volumeDataSamplePos.chunkIndex = volumeDataLayer->GetChunkIndexFromNDPos(volumeDataSamplePos.pos);
   }
 
   std::sort(volumeDataSamplePositions->begin(), volumeDataSamplePositions->end());
