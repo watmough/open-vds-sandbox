@@ -29,8 +29,8 @@ import static org.testng.Assert.fail;
 
 public class PageAccessorTest {
 
-    private static String TEMP_FILE_NAME_VOL_INDEX = "volIndexer.vds";
-    private static String TEMP_FILE_NAME_COPY = "vdsCopy.vds";
+    private static String TEMP_FILE_NAME_VOL_INDEX = "volIndexer";
+    private static String TEMP_FILE_NAME_COPY = "vdsCopy";
 
     public String url;
     public VolumeDataLayoutDescriptor ld;
@@ -40,9 +40,12 @@ public class PageAccessorTest {
     public MemoryVdsGenerator vds;
     public MetadataContainer metadataContainer;
 
+    private String tempVolIndexerFileName;
+    private String tempVdsCopyFileName;
+
     @BeforeClass
     public void init() {
-        vds = new MemoryVdsGenerator(200, 300, 300, VolumeDataChannelDescriptor.Format.FORMAT_R32);
+        vds = new MemoryVdsGenerator(200, 200, 200, VolumeDataChannelDescriptor.Format.FORMAT_R32);
         url = "inmemory://create_test";
         VolumeDataLayout volumeDataLayout = vds.getLayout();
 
@@ -67,32 +70,22 @@ public class PageAccessorTest {
         ld = volumeDataLayout.getLayoutDescriptor();
 
         metadataContainer = new MetadataContainer();
-        metadataContainer.setMetadataInt("categoryInt", "Int", 123);
-        metadataContainer.setMetadataIntVector2("categoryInt", "IntVector2", new int[] {45, 78});
-        metadataContainer.setMetadataIntVector3("categoryInt", "IntVector3", new int[] {45, 78, 72});
-        metadataContainer.setMetadataIntVector4("categoryInt", "IntVector4", new int[] {45, 78, 72, 84});
-        metadataContainer.setMetadataFloat("categoryFloat", "Float", 123.f);
-        metadataContainer.setMetadataFloatVector2("categoryFloat", "FloatVector2", new float[] {45.5f, 78.75f});
-        metadataContainer.setMetadataFloatVector3("categoryFloat", "FloatVector3", new float[] {45.5f, 78.75f, 72.75f});
-        metadataContainer.setMetadataFloatVector4("categoryFloat", "FloatVector4", new float[] {45.5f, 78.75f, 72.75f, 84.1f});
-        metadataContainer.setMetadataDouble("categoryDouble", "Double", 123.);
-        metadataContainer.setMetadataDoubleVector2("categoryDouble", "DoubleVector2", new double[] {45.5, 78.75});
-        metadataContainer.setMetadataDoubleVector3("categoryDouble", "DoubleVector3", new double[] {45.5, 78.75, 72.75});
-        metadataContainer.setMetadataDoubleVector4("categoryDouble", "DoubleVector4", new double[] {45.5, 78.75, 72.75, 84.1});
-        metadataContainer.setMetadataString("categoryString", "String", "Test string");
-        //metadataContainer.SetMetadataBLOB("categoryBLOB", "BLOB", data, 4 );
+
+        long ms = System.currentTimeMillis();
+        tempVolIndexerFileName = TEMP_FILE_NAME_VOL_INDEX + "_" + ms + ".vds";
+        tempVdsCopyFileName = TEMP_FILE_NAME_COPY + "_" + ms + ".vds";
     }
 
     @AfterClass
     public void cleanFiles() {
         String tempDir = System.getProperty("java.io.tmpdir");
-        String fileVolIndexPath = tempDir + File.separator + TEMP_FILE_NAME_VOL_INDEX;
+        String fileVolIndexPath = tempDir + File.separator + tempVolIndexerFileName;
         File fileVolIndex = new File(fileVolIndexPath);
         if (fileVolIndex.exists()) {
             fileVolIndex.delete();
         }
 
-        String fileCopyPath = tempDir + File.separator + TEMP_FILE_NAME_COPY;
+        String fileCopyPath = tempDir + File.separator + tempVdsCopyFileName;
         File fileCopy = new File(fileCopyPath);
         if (fileCopy.exists()) {
             fileCopy.delete();
@@ -104,7 +97,7 @@ public class PageAccessorTest {
         try {
             // create file in tmp dir
             String tmpDir = System.getProperty("java.io.tmpdir");
-            String volIndexPath = tmpDir + File.separator + TEMP_FILE_NAME_VOL_INDEX;
+            String volIndexPath = tmpDir + File.separator + tempVolIndexerFileName;
             VDSFileOpenOptions options = new VDSFileOpenOptions(volIndexPath);
             VdsHandle vdsTest = OpenVDS.create(options, ld,
                     vda,
@@ -132,26 +125,66 @@ public class PageAccessorTest {
             fail();
         }
     }
-    
+
     @Test
     public void testCopyPageAccessor() {
         try {
             String tmpDir = System.getProperty("java.io.tmpdir");
-            String vdsPath = tmpDir + File.separator + TEMP_FILE_NAME_COPY;
+            String vdsPath = tmpDir + File.separator + tempVdsCopyFileName;
             VDSFileOpenOptions options = new VDSFileOpenOptions(vdsPath);
-            VdsHandle vdsCopy = OpenVDS.create(options, ld,
-                    vda,
-                    vdc, metadataContainer);
+
+            // copy information from input VDS
+            VolumeDataLayoutDescriptor cpLd = new VolumeDataLayoutDescriptor(
+                    ld.getBrickSize(),
+                    ld.getNegativeMargin(),
+                    ld.getPositiveMargin(),
+                    ld.getBrickSizeMultiplier2D(),
+                    ld.getLODLevels(),
+                    ld.isCreate2DLODs(),
+                    ld.isForceFullResolutionDimension(),
+                    ld.getFullResolutionDimension()
+            );
+
+            VolumeDataAxisDescriptor[] cpVda = new VolumeDataAxisDescriptor[3];
+            for (int i = 0 ; i < 3 ; ++i) {
+                cpVda[i] = new VolumeDataAxisDescriptor(vda[i].getNumSamples(),
+                        vda[i].getName(), vda[i].getUnit(),
+                        vda[i].getCoordinateMin(), vda[i].getCoordinateMax());
+            }
+
+            VolumeDataChannelDescriptor[] cpVdc = new VolumeDataChannelDescriptor[1];
+            cpVdc[0] = new VolumeDataChannelDescriptor(
+                    VolumeDataChannelDescriptor.Format.fromCode(vdc[0].getFormat()),
+                    VolumeDataChannelDescriptor.Components.fromCode(vdc[0].getComponents()),
+                    vdc[0].getName(),
+                    vdc[0].getUnit(),
+                    vdc[0].getValueRangeMin(), vdc[0].getValueRangeMax(),
+                    VolumeDataMapping.fromCode(vdc[0].getMapping()),
+                    vdc[0].getMappedValueCount(),
+                    vdc[0].isDiscrete(),
+                    vdc[0].isRenderable(),
+                    vdc[0].isAllowLossyCompression(),
+                    vdc[0].isUseZipForLosslessCompression(),
+                    vdc[0].isUseNoValue(),
+                    vdc[0].getNoValue(),
+                    vdc[0].getIntegerScale(),
+                    vdc[0].getIntegerOffset()
+            );
+            MetadataContainer cpMetadataContainer = new MetadataContainer();
+            VdsHandle vdsCopy = OpenVDS.create(options, cpLd,
+                    cpVda,
+                    cpVdc,
+                    cpMetadataContainer);
+
             VolumeDataAccessManager accessManager = vdsCopy.getAccessManager();
             //ASSERT_TRUE(accessManager);
 
             int channel = 0;
-            VolumeDataLayout layout = vdsCopy.getLayout();
             VolumeDataPageAccessor pageAccessor = accessManager.createVolumeDataPageAccessor(
                     DimensionsND.DIMENSIONS_012.ordinal(), // dimension ND
                     0, // lod
                     channel, // channel
-                    20, // max pages
+                    100, // max pages
                     VolumeDataPageAccessor.AccessMode.Create.getCode()); // access mode
 
             // get input manager
@@ -160,7 +193,7 @@ public class PageAccessorTest {
                     DimensionsND.DIMENSIONS_012.ordinal(), // dimension ND
                     0, // lod
                     channel, // channel
-                    20, // max pages
+                    100, // max pages
                     VolumeDataPageAccessor.AccessMode.ReadOnly.getCode()); // access mode
 
             // copy file
@@ -175,9 +208,7 @@ public class PageAccessorTest {
                 inputPage.pageRelease();
                 page.pageRelease();
             }
-
             pageAccessor.commit();
-            pageAccessor.setMaxPages(0);
             accessManager.flushUploadQueue();
             accessManager.destroyVolumeDataPageAccessor(pageAccessor);
 
@@ -197,7 +228,7 @@ public class PageAccessorTest {
     public void testCopyPageAccessorValidation() {
         try {
             String tmpDir = System.getProperty("java.io.tmpdir");
-            String vdsPath = tmpDir + File.separator + TEMP_FILE_NAME_COPY;
+            String vdsPath = tmpDir + File.separator + tempVdsCopyFileName;
             VDSFileOpenOptions options = new VDSFileOpenOptions(vdsPath);
             VdsHandle vdsCopy = OpenVDS.open(options);
             VolumeDataAccessManager accessManager = vdsCopy.getAccessManager();
@@ -231,11 +262,11 @@ public class PageAccessorTest {
                 float[] dataIn = inputPage.readFloatBuffer(pitchInput);
                 float[] dataOut = page.readFloatBuffer(pitchOutput);
 
-                Assert.assertEquals(pitchInput, pitchOutput);
-                Assert.assertEquals(dataIn, dataOut);
-
                 inputPage.pageRelease();
                 page.pageRelease();
+
+                Assert.assertEquals(pitchInput, pitchOutput);
+                Assert.assertEquals(dataIn, dataOut);
             }
 
             accessManager.destroyVolumeDataPageAccessor(pageAccessor);
@@ -256,7 +287,7 @@ public class PageAccessorTest {
     public void testCopyPageAccessorValidationChunkIndex() {
         try {
             String tmpDir = System.getProperty("java.io.tmpdir");
-            String vdsPath = tmpDir + File.separator + TEMP_FILE_NAME_COPY;
+            String vdsPath = tmpDir + File.separator + tempVdsCopyFileName;
             VDSFileOpenOptions options = new VDSFileOpenOptions(vdsPath);
             VdsHandle vdsCopy = OpenVDS.open(options);
             VolumeDataAccessManager accessManager = vdsCopy.getAccessManager();
@@ -298,8 +329,8 @@ public class PageAccessorTest {
             vdsCopy.close();
         }
         catch (java.io.IOException e) {
-        System.out.println(e.getMessage());
-        fail();
+            System.out.println(e.getMessage());
+            fail();
+        }
     }
-}
 }
