@@ -17,7 +17,7 @@
 
 package org.opengroup.openvds;
 
-public class VolumeDataPage extends JniPointer {
+public class VolumeDataPage extends JniPointerWithoutDeletion {
 
     private static native void cpRelease(long handle);
 
@@ -45,16 +45,16 @@ public class VolumeDataPage extends JniPointer {
     private final int lod;
 
     public VolumeDataPage(long handle, int dimensionality, int lod) {
-        super(handle, true);
+        super(handle);
         this.dimensionality = dimensionality;
         this.lod = lod;
     }
 
-    public VolumeDataPage(long handle, int dimensionality, int lod, boolean ownHandle) {
-        super(handle, ownHandle);
-        this.dimensionality = dimensionality;
-        this.lod = lod;
-    }
+//    public VolumeDataPage(long handle, int dimensionality, int lod, boolean ownHandle) {
+//        super(handle, ownHandle);
+//        this.dimensionality = dimensionality;
+//        this.lod = lod;
+//    }
 
     public void pageRelease() {
         cpRelease(_handle);
