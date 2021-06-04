@@ -214,18 +214,29 @@ VolumeDataPage* VolumeDataPageAccessorImpl::CreatePage(int64_t chunk)
     return nullptr;
   }
 
-  int pitch[Dimensionality_Max] = {};
+  int pitchND[Dimensionality_Max] = {};
 
   for(int chunkDimension = 0; chunkDimension < m_layer->GetChunkDimensionality(); chunkDimension++)
   {
     int dimension = DimensionGroupUtil::GetDimension(m_layer->GetChunkDimensionGroup(), chunkDimension);
 
     assert(dimension >= 0 && dimension < Dimensionality_Max);
-    pitch[dimension] = dataBlock.Pitch[chunkDimension];
+    pitchND[dimension] = dataBlock.Pitch[chunkDimension];
+
+    // Convert pitch to bitpitch for 1-bit data
+    if(m_layer->GetFormat() == VolumeDataChannelDescriptor::Format_1Bit)
+    {
+      assert(chunkDimension > 0 || pitchND[dimension] == 1);
+
+      if(chunkDimension > 0)
+      {
+        pitchND[chunkDimension] *= 8;
+      }
+    }
   }
 
   pageListMutexLock.lock();
-  page->SetBufferData(dataBlock, pitch, std::move(page_data));
+  page->SetBufferData(dataBlock, pitchND, std::move(page_data));
   page->MakeDirty();
 
   m_pageReadCondition.notify_all();
