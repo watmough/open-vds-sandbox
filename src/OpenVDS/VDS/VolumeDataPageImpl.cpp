@@ -104,7 +104,7 @@ VolumeDataPageImpl::VolumeDataPageImpl(VolumeDataPageAccessorImpl* volumeDataPag
 {
   for (int32_t iDimension = 0; iDimension < Dimensionality_Max; iDimension++)
   {
-    m_pitch[iDimension] = 0;
+    m_pitchND[iDimension] = 0;
     m_writtenMin[iDimension] = 0;
     m_writtenMax[iDimension] = 0;
   }
@@ -156,12 +156,12 @@ void VolumeDataPageImpl::MakeDirty()
   m_isDirty = true;
 }
 
-void VolumeDataPageImpl::SetBufferData(const DataBlock &dataBlock, int32_t (&pitch)[Dimensionality_Max], std::vector<uint8_t>&& blob)
+void VolumeDataPageImpl::SetBufferData(const DataBlock &dataBlock, int32_t (&pitchND)[Dimensionality_Max], std::vector<uint8_t>&& blob)
 {
   //assert(m_volumeDataPageAccessor->m_pageListMutex.isLockedByCurrentThread());
   m_dataBlock = dataBlock;
-  static_assert(sizeof(pitch) == sizeof(m_pitch), "Pitch of different size");
-  memcpy(m_pitch, pitch, sizeof(m_pitch));
+  static_assert(sizeof(pitchND) == sizeof(m_pitchND), "Pitch of different size");
+  memcpy(m_pitchND, pitchND, sizeof(m_pitchND));
   m_blob = std::move(blob);
 }
 
@@ -174,13 +174,13 @@ void VolumeDataPageImpl::WriteBack(VolumeDataLayer const* volumeDataLayer, std::
   layout->CompletePendingWriteChunkRequests(16);
 }
 
-void* VolumeDataPageImpl::GetBufferInternal(int(&anPitch)[Dimensionality_Max], bool isReadWrite)
+void* VolumeDataPageImpl::GetBufferInternal(int(&pitchND)[Dimensionality_Max], bool isReadWrite)
 {
   //assert(m_volumeDataPageAccessor->m_pageListMutex.isLockedByCurrentThread());
 
   for(int32_t iDimension = 0; iDimension < Dimensionality_Max; iDimension++)
   {
-    anPitch[iDimension] = m_pitch[iDimension];
+    pitchND[iDimension] = m_pitchND[iDimension];
   }
 
   if(isReadWrite)

@@ -38,7 +38,7 @@ private:
   int64_t m_chunk;
 
   DataBlock m_dataBlock;
-  int32_t m_pitch[Dimensionality_Max];
+  int32_t m_pitchND[Dimensionality_Max];
   std::vector<uint8_t> m_blob;
 
   std::atomic_int m_pins;
