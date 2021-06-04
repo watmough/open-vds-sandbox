@@ -60,6 +60,7 @@ public class VolumeDataPageAccessor extends JniPointerWithoutDeletion {
     private static native long cpGetPrimaryChannelChunkIndex(long handle, long chunkIndex);
     private static native long cpCreatePage( long handle, long chunkIndex);
     private static native long cpReadPage( long handle, long chunkIndex);
+    private static native long cpReadPageAtPosition( long handle, int[] position);
     private static native void cpCommit(long handle);
     private static native void cpSetMaxPage(long handle, int maxPage);
 
@@ -185,6 +186,19 @@ public class VolumeDataPageAccessor extends JniPointerWithoutDeletion {
             throw new IllegalArgumentException("VolumeDataPageAccessor::readPage : wrong chunk index");
         }
         return new VolumeDataPage(cpReadPage(_handle, chunkIndex), getLayout().getDimensionality(), getLOD());
+    }
+
+    /**
+     * Reads page for given position
+     * @param position
+     * @return A VolumeDataPage
+     * @throws IllegalArgumentException if chunkIndex is incorrect
+     */
+    public VolumeDataPage readPageAtPosition(int[] position) {
+        if (position == null || position.length != VolumeDataLayout.Dimensionality_Max) {
+            throw new IllegalArgumentException("VolumeDataPageAccessor::readPageAtPosition : wrong position size (expected 6)");
+        }
+        return new VolumeDataPage(cpReadPageAtPosition(_handle, position), getLayout().getDimensionality(), getLOD());
     }
 
     /**

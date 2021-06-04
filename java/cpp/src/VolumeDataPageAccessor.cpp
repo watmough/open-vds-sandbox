@@ -141,6 +141,26 @@ extern "C" {
 
     /*
     * Class:     org_opengroup_openvds_VolumeDataPageAccessor
+    * Method:    cpReadPageAtPosition
+    * Signature: (J[I)J
+    */
+    JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_cpReadPageAtPosition
+            (JNIEnv * env, jclass, jlong handle, jintArray posArr)
+    {
+        try {
+            jint * position = env->GetIntArrayElements(posArr, 0);
+            int positionParam[OpenVDS::Dimensionality_Max];
+            for (int i = 0 ; i < OpenVDS::Dimensionality_Max ; ++i) positionParam[i] = position[i];
+            OpenVDS::VolumeDataPage* volumePage = GetPageAccessor( handle )->ReadPageAtPosition(positionParam);
+            env->ReleaseIntArrayElements(posArr, position, 0);
+            return (jlong) volumePage;
+        }
+        CATCH_EXCEPTIONS_FOR_JAVA;
+        return -1;
+    }
+
+    /*
+    * Class:     org_opengroup_openvds_VolumeDataPageAccessor
     * Method:    cpGetChunkMinMax
     * Signature: (JI[I[I)V
     */

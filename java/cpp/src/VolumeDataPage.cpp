@@ -132,7 +132,7 @@ extern "C" {
             int pitch[OpenVDS::Dimensionality_Max];
             OpenVDS::VolumeDataPage* page = GetVolumePage(handle);
 
-            const char* readData = static_cast<const char*>(page->GetBuffer(pitch));
+            const char* readData = (const char*)page->GetBuffer(pitch);
             env->SetIntArrayRegion(pitchParam, 0, OpenVDS::Dimensionality_Max, (jint *)pitch);
             int nbElem = GetBufferAllocatedSize(page);
             return NewJByteArray(env, readData, nbElem);
@@ -151,9 +151,9 @@ extern "C" {
         try {
             OpenVDS::VolumeDataPage * page = GetVolumePage(handle);
             int pitch[OpenVDS::Dimensionality_Max];
-            unsigned char* pageBuffer = reinterpret_cast<unsigned char*>(page->GetWritableBuffer(pitch));
+            unsigned char* pageBuffer = (unsigned char*)page->GetWritableBuffer(pitch);
             int valueSize = env->GetArrayLength(values);
-            jbyte *src = env->GetByteArrayElements(values, 0);
+            jbyte *src = env->GetByteArrayElements(values, NULL);
             std::memcpy(pageBuffer, src, valueSize * sizeof (char));
             env->ReleaseByteArrayElements(values, src, 0);
         }
@@ -172,7 +172,7 @@ extern "C" {
             int pitch[OpenVDS::Dimensionality_Max];
             OpenVDS::VolumeDataPage* page = GetVolumePage(handle);
 
-            const float* readData = static_cast<const float*>(page->GetBuffer(pitch));
+            const float* readData = (const float*)(page->GetBuffer(pitch));
             env->SetIntArrayRegion(pitchParam, 0, OpenVDS::Dimensionality_Max, (jint *)pitch);
             int nbElem = GetBufferAllocatedSize(page);
             return NewJFloatArray(env, readData, nbElem);
@@ -192,9 +192,9 @@ extern "C" {
         try {
             OpenVDS::VolumeDataPage * page = GetVolumePage(handle);
             int pitch[OpenVDS::Dimensionality_Max];
-            float* pageBuffer = reinterpret_cast<float*>(page->GetWritableBuffer(pitch));
+            float* pageBuffer = (float*)page->GetWritableBuffer(pitch);
             int valueSize = env->GetArrayLength(values);
-            jfloat *src = env->GetFloatArrayElements(values, 0);
+            jfloat *src = env->GetFloatArrayElements(values, NULL);
             std::memcpy(pageBuffer, src, valueSize * sizeof (float));
             env->ReleaseFloatArrayElements(values, src, 0);
         }
@@ -213,7 +213,7 @@ extern "C" {
             int pitch[OpenVDS::Dimensionality_Max];
             OpenVDS::VolumeDataPage* page = GetVolumePage(handle);
 
-            const double* readData = static_cast<const double*>(page->GetBuffer(pitch));
+            const double* readData = (const double*)page->GetBuffer(pitch);
             env->SetIntArrayRegion(pitchParam, 0, OpenVDS::Dimensionality_Max, (jint *)pitch);
             int nbElem = GetBufferAllocatedSize(page);
             return NewJDoubleArray(env, readData, nbElem);
@@ -233,9 +233,9 @@ extern "C" {
         try {
             OpenVDS::VolumeDataPage * page = GetVolumePage(handle);
             int pitch[OpenVDS::Dimensionality_Max];
-            double* pageBuffer = reinterpret_cast<double*>(page->GetWritableBuffer(pitch));
+            double* pageBuffer = (double*)page->GetWritableBuffer(pitch);
             int valueSize = env->GetArrayLength(values);
-            jdouble *src = env->GetDoubleArrayElements(values, 0);
+            jdouble *src = env->GetDoubleArrayElements(values, NULL);
             std::memcpy(pageBuffer, src, valueSize * sizeof (double));
             env->ReleaseDoubleArrayElements(values, src, 0);
         }
