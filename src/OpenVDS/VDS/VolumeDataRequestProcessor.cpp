@@ -558,6 +558,19 @@ static bool RequestSubsetProcessPage(VolumeDataPageImpl* page, const VolumeDataC
   int32_t copyDimensions = CombineAndReduceDimensions(sourceSize, sourceOffset, targetSize, targetOffset, overlapSize, globalSourceSize, globalSourceOffset, globalTargetSize, globalTargetOffset, globalOverlapSize);
   (void) copyDimensions;
 
+  // Multiply sizes and offsets by number of components since BlockCopy is not component-aware
+  if(chunk.layer->GetComponents() > 1)
+  {
+    for (int32_t dimension = 0; dimension < DataBlock::Dimensionality_Max; dimension++)
+    {
+      sourceSize  [dimension] *= int(chunk.layer->GetComponents());
+      sourceOffset[dimension] *= int(chunk.layer->GetComponents());
+      targetSize  [dimension] *= int(chunk.layer->GetComponents());
+      targetOffset[dimension] *= int(chunk.layer->GetComponents());
+      overlapSize [dimension] *= int(chunk.layer->GetComponents());
+    }
+  }
+
   void *source = page->GetRawBufferInternal();
 
   DispatchBlockCopy(destinationFormat, destBuffer, targetOffset, targetSize,
