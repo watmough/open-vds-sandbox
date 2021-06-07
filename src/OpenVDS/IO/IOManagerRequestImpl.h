@@ -46,7 +46,7 @@ public:
     return error.code == 0;
   }
 
-  void Cancel()
+  void Cancel() override
   {
     m_cancelledRequested = true;
   }
