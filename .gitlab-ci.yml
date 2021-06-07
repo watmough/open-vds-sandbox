@@ -96,7 +96,7 @@ unit-tests:
   tags: ['docker-runner']
   script:
     - cd build
-    - ninja test
+    - ctest -V
   only:
     - merge_requests
 
