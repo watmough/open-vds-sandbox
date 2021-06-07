@@ -128,13 +128,11 @@ inline void fill3DVDSWithBitNoise(OpenVDS::VDS *vds, int32_t channel = 0)
       {
         for(int x = 0; x < size[0]; x++)
         {
-          int32_t byteIndex = z * pitch[2] + y * pitch[1] + (x / 8);
-          int32_t bitIndex = z * size[2] * size[1] * size[0] + y * size[1] * size[0] + x;
-          uint8_t byte = buffer[byteIndex];
-          bool value = dist(gen);
-          if (value)
-            byte |= uint8_t(1) << (bitIndex % 8);
-          buffer[byteIndex] = byte;
+          size_t bitIndex = z * pitch[2] + y * pitch[1] + x;
+          if (dist(gen))
+          {
+            buffer[bitIndex / 8] |= uint8_t(1 << (bitIndex % 8));
+          }
         }
       }
     }

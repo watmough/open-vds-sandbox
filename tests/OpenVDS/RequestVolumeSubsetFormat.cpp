@@ -129,7 +129,7 @@ TEST_F(RequestVolumeSubsetFormat, test1Bit)
   }
 }
 
-TEST(ReqeustVolumeSubsetFormat, source1Bit)
+TEST_F(RequestVolumeSubsetFormat, source1Bit)
 {
   std::unique_ptr<OpenVDS::VDS, decltype(&OpenVDS::Close)> handle(generateSimpleInMemory3DVDS(60,60,60, OpenVDS::VolumeDataChannelDescriptor::Format_1Bit), OpenVDS::Close);
   fill3DVDSWithBitNoise(handle.get());
