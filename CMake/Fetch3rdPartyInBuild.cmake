@@ -63,6 +63,26 @@ macro(Fetch3rdParty_Package name version url url_hash)
   endif()
 endmacro()
 
+macro(Fetch3rdParty_Git name version url tag)
+  if (OPENVDS_3RD_PARTY_DIR)
+    set(Fetch3rdPartyDir "${OPENVDS_3RD_PARTY_DIR}")
+  else()
+    set(Fetch3rdPartyDir "${Fetch3rdPartyDirInternal}/../3rdparty")
+  endif()
+    get_filename_component(thirdParty "${Fetch3rdPartyDir}" ABSOLUTE)
+    set(SRC_DIR ${thirdParty}/${name}-${version})
+    set(${name}_SOURCE_DIR ${SRC_DIR} PARENT_SCOPE)
+    set(${name}_VERSION ${version} PARENT_SCOPE)
+  if (NOT (EXISTS ${SRC_DIR}))
+    FetchContent_Populate(${name}
+      GIT_REPOSITORY ${url}
+      GIT_TAG ${url_hash}
+      SOURCE_DIR ${SRC_DIR}
+      SUBBUILD_DIR ${thirdParty}/CMakeArtifacts/${name}-sub-${version}
+      BINARY_DIR ${thirdParty}/CMakeArtifacts/${name}-${version})
+  endif()
+endmacro()
+
 
 function(Fetch3rdParty)
   include(CMake/FetchContentLocal.cmake)
@@ -82,7 +102,8 @@ function(Fetch3rdParty)
   Fetch3rdParty_Package(absl              20200225.2 https://codeload.github.com/abseil/abseil-cpp/tar.gz/20200225.2                      SHA256=f41868f7a938605c92936230081175d1eae87f6ea2c248f41077c8f88316f111)
   Fetch3rdParty_Package(crc32c            1.1.1      https://codeload.github.com/google/crc32c/tar.gz/1.1.1                               SHA256=a6533f45b1670b5d59b38a514d82b09c6fb70cc1050467220216335e873074e8)
   Fetch3rdParty_Package(google-cloud-cpp  1.14.0     https://codeload.github.com/googleapis/google-cloud-cpp/tar.gz/v1.14.0               SHA256=839b2d4dcb36a671734dac6b30ea8c298bbeaafcf7a45ee4a7d7aa5986b16569)
-  Fetch3rdParty_Package(dms               18a85b75c7 https://community.opengroup.org/osdu/platform/domain-data-mgmt-services/seismic/seismic-dms-suite/seismic-store-cpp-lib/-/archive/18a85b75c7c10ce1bb8788d23c79964e060cee64/seismic-store-cpp-lib-master.tar.gz SHA256=146ed18ee82277355273588b6c4c834605a86a1ec40d48c5c9c11cbd47ec0165)
+  Fetch3rdParty_Package(dms               172dcf6a3  https://community.opengroup.org/osdu/platform/domain-data-mgmt-services/seismic/seismic-dms-suite/seismic-store-cpp-lib/-/archive/172dcf6a3b64a4f288a11c1d0bffb0dce31b29e8/seismic-store-cpp-lib-master.tar.gz SHA256=510481a8e7ed1403290d987d949db0c392d60e9776a6d9f2b8a7e225d071f2e3)
+  #Fetch3rdParty_Git(dms                   git        git@community.opengroup.org:osdu/platform/domain-data-mgmt-services/seismic/seismic-dms-suite/seismic-store-cpp-lib.git master)
   Fetch3rdParty_File(testng  java         6.14.3 jar https://repo1.maven.org/maven2/org/testng/testng/6.14.3/testng-6.14.3.jar            MD5=9f17a8f9e99165e148c42b21f4b63d7c)
   Fetch3rdParty_File(jcommander java      1.72 jar   https://repo1.maven.org/maven2/com/beust/jcommander/1.72/jcommander-1.72.jar         MD5=9fde6bc0ba1032eceb7267fd1ad1657b)
   Fetch3rdParty_FileTarget(google_nlohmann google/cloud/storage/internal nlohmann_json.hpp 3.4.0  https://raw.githubusercontent.com/nlohmann/json/v3.4.0/single_include/nlohmann/json.hpp MD5=27f3760c1d3a0fff7d8a2407d8db8f9d)

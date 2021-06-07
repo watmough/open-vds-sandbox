@@ -35,74 +35,105 @@ namespace OpenVDS
   }
 
   template<typename T>
-  static void run_request(const std::string& requestName, std::weak_ptr <T> request, const IORange &range, std::vector<uint8_t>* data)
+  static void run_request(const std::string& requestName, std::weak_ptr <T> weak_request, const IORange &range, std::vector<uint8_t>* data)
   {
-    auto request_ptr = request.lock();
-    if (!request_ptr)
-      return;
+  }
 
-    RequestStateHandler requestHandler(*request_ptr);
-    
-    if (requestHandler.isCancelledRequested())
-    {
-      return;
-    }
+  void ReadObjectInfoRequestDms::run(const std::string& requestName, std::weak_ptr<ReadObjectInfoRequestDms> weak_request, ThreadPool &threadPool)
+  {
+    m_job = threadPool.Enqueue([requestName, weak_request]() {
+      auto request = weak_request.lock();
+      if (!request)
+        return;
 
-    uint64_t size;
-    std::string created_date;
-    try
-    {
-      size = request_ptr->m_dataset.getBlockSize(requestName);
-      created_date = request_ptr->m_dataset.getCreatedDate();
+      RequestStateHandler requestHandler(*request);
 
-      if (data && size)
+      if (requestHandler.isCancelledRequested())
       {
-        uint64_t offset;
+        return;
+      }
+
+      uint64_t size;
+      std::string created_date;
+      try
+      {
+        size = request->m_dataset.getBlockSize(requestName);
+        created_date = request->m_dataset.getCreatedDate();
+      }
+      catch (const seismicdrive::SDException& ex)
+      {
+        request->m_error.code = -1;
+        request->m_error.string = ex.what();
+      }
+      catch (...)
+      {
+        request->m_error.code = -1;
+        request->m_error.string = "Unknown exception in DMS upload";
+      }
+
+      if (request->m_error.code == 0)
+      {
+        request->m_handler->HandleObjectSize(size);
+        request->m_handler->HandleObjectLastWriteTime(created_date);
+      }
+      request->m_handler->Completed(*request, request->m_error);
+    });
+  }
+  void DownloadRequestDms::run(const std::string& requestName, const IORange& range, std::weak_ptr<DownloadRequestDms> weak_request, ThreadPool &threadPool)
+  {
+    m_job = threadPool.Enqueue([requestName, weak_request, range]() {
+      auto request = weak_request.lock();
+      if (!request)
+        return;
+
+      RequestStateHandler requestHandler(*request);
+
+      if (requestHandler.isCancelledRequested())
+      {
+        return;
+      }
+
+      std::vector<uint8_t> data;
+      try
+      {
         if (range.end)
         {
-          data->resize(range.end - range.start);
-          offset = range.start;
+          data.resize(range.end - range.start);
+          request->m_dataset.readBlock(requestName, (char*)data.data(), range.start, data.size());
         }
         else
         {
-          offset = 0;
-          data->resize(size);
+          //char* read_data = nullptr;
+          //std::size_t read_size = 0;
+          //request->m_dataset.readBlock(requestName, &read_data, read_size);
+          //data.resize(read_size);
+          //memcpy(data.data(), read_data, data.size());
+          //delete[] read_data;
+          size_t read_size = size_t(request->m_dataset.getBlockSize(requestName));
+          if (read_size)
+          {
+            data.resize(read_size);
+            request->m_dataset.readBlock(requestName, (char*)data.data(), read_size);
+          }
         }
-        request_ptr->m_dataset.readBlock(requestName, (char*)data->data(), offset, data->size());
       }
-    }
-    catch (const seismicdrive::SDException& ex)
-    {
-      request_ptr->m_error.code = -1;
-      request_ptr->m_error.string = ex.what();
-    }
-    catch (...)
-    {
-      request_ptr->m_error.code = -1;
-      request_ptr->m_error.string = "Unknown exception in DMS upload";
-    }
+      catch (const seismicdrive::SDException& ex)
+      {
+        request->m_error.code = -1;
+        request->m_error.string = ex.what();
+      }
+      catch (...)
+      {
+        request->m_error.code = -1;
+        request->m_error.string = "Unknown exception in DMS upload";
+      }
 
-    if (request_ptr->m_error.code == 0)
-    {
-      request_ptr->m_handler->HandleObjectSize(size);
-      request_ptr->m_handler->HandleObjectLastWriteTime(created_date);
-      if (data)
-        request_ptr->m_handler->HandleData(std::move(*data));
-    }
-    request_ptr->m_handler->Completed(*request_ptr, request_ptr->m_error);
-  }
-
-  void ReadObjectInfoRequestDms::run(const std::string& requestName, std::weak_ptr<ReadObjectInfoRequestDms> request, ThreadPool &threadPool)
-  {
-    m_job = threadPool.Enqueue([requestName, request]() {
-      run_request<ReadObjectInfoRequestDms>(requestName, request, IORange(), nullptr);
-    });
-  }
-  void DownloadRequestDms::run(const std::string& requestName, const IORange& range, std::weak_ptr<DownloadRequestDms> request, ThreadPool &threadPool)
-  {
-    m_job = threadPool.Enqueue([requestName, request, range]() {
-      std::vector<uint8_t> data;
-      run_request<DownloadRequestDms>(requestName, request, range, &data);
+      if (request->m_error.code == 0)
+      {
+        request->m_handler->HandleObjectSize(data.size());
+        request->m_handler->HandleData(std::move(data));
+      }
+      request->m_handler->Completed(*request, request->m_error);
     });
   }
 
@@ -128,7 +159,8 @@ namespace OpenVDS
 
       try
       {
-        request_ptr->m_dataset.writeBlock(requestName, (const char*)data->data(), data->size(), false);
+        if (data->size())
+          request_ptr->m_dataset.writeBlock(requestName, (const char*)data->data(), data->size(), false);
       }
       catch (const seismicdrive::SDException& ex)
       {

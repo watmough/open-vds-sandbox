@@ -16,7 +16,7 @@
 ****************************************************************************/
 
 #ifndef IOMANAGERTRANSFORMER_H
-#define IOMANAGERTRANSFORMAT_H
+#define IOMANAGERTRANSFORMER_H
 
 #include <OpenVDS/openvds_export.h>
 
