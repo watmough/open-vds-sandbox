@@ -55,7 +55,6 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VdsError_cpDeleteHandle
         (JNIEnv * env, jclass, jlong handle)
 {
     try {
-        delete &GetError( handle )->string;
         delete GetError( handle );
     }
     CATCH_EXCEPTIONS_FOR_JAVA;
