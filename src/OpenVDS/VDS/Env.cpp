@@ -3,21 +3,30 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <string>
+#include <algorithm>
 
 namespace OpenVDS
 {
+
+  inline char asciitolower(char in) {
+  if (in <= 'Z' && in >= 'A')
+    return in - ('Z' - 'z');
+  return in;
+}
+
 bool getBooleanEnvironmentVariable(const char *name)
 {
-  const char *var = getenv(name);
-  if (!var)
+  const char *c_var = getenv(name);
+  if (c_var == nullptr)
     return false;
-  if (strcmp(var, "") == 0)
+  std::string var(c_var);
+  std::transform(var.begin(), var.end(), var.begin(), asciitolower);
+  if (var == "false")
     return false;
-  if (strcmp(var, "false") == 0)
+  if (var == "0")
     return false;
-  if (strcmp(var, "FALSE") == 0)
-    return false;
-  if (strcmp(var, "0") == 0)
+  if (var == "off")
     return false;
   return true;
 }
