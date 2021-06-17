@@ -10,6 +10,9 @@
 #endif
 #include <SDException.h>
 
+#include "IOManagerCurl.h"
+#include "IORefreshToken.h"
+
 namespace OpenVDS
 {
   GetHeadRequestDms::GetHeadRequestDms(seismicdrive::SDGenericDataset &dataset, const std::string& id, const std::shared_ptr<TransferDownloadHandler>& handler)
@@ -178,6 +181,12 @@ namespace OpenVDS
     });
   }
 
+  std::string IOManagerDms::AuthProviderCallback(const void* data)
+  {
+    IOManagerDms* iomanager = static_cast<IOManagerDms*>(const_cast<void*>(data));
+    return iomanager->m_tokenRefresher->newToken();
+  }
+
   IOManagerDms::IOManagerDms(const DMSOpenOptions& openOptions, IOManager::AccessPattern accessPatttern, Error& error)
     : IOManager(openOptions.connectionType)
     , m_opened(false)
@@ -195,9 +204,23 @@ namespace OpenVDS
         m_filename = openOptions.datasetPath.substr(it+1);
       }
     }
+
+
     try {
       m_sdManager.reset(new seismicdrive::SDManager(openOptions.sdAuthorityUrl, openOptions.sdApiKey, openOptions.logLevel));
-      m_sdManager->setAuthProviderFromString(openOptions.sdToken);
+      if (openOptions.authTokenUrl.size() && openOptions.clientId.size() && openOptions.clientSecret.size() && openOptions.refreshToken.size())
+      {
+        m_curlHandler.reset(new CurlHandler(error));
+        if (error.code != 0)
+          return;
+        m_tokenRefresher.reset(new TokenRefresher(openOptions.authTokenUrl, openOptions.clientId, openOptions.clientSecret, openOptions.refreshToken, *m_curlHandler, std::function<void(std::string&& new_token)>()));
+        m_sdManager->setAuthProviderCallback(&AuthProviderCallback, this);
+      }
+      else
+      {
+        m_sdManager->setAuthProviderFromString(openOptions.sdToken);
+      }
+
       m_dataset.reset(new seismicdrive::SDGenericDataset(m_sdManager.get(), openOptions.datasetPath, openOptions.logLevel != 0));
 
       seismicdrive::SDDatasetDisposition disposition = seismicdrive::SDDatasetDisposition::READ_ONLY;

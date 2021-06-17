@@ -44,7 +44,7 @@ set(SOURCE_FILES
   VDS/VolumeIndexer.cpp
   VDS/Env.cpp
   ${COMMON_DIR}/Base64/Base64.cpp
-  )
+   "IO/IORefreshToken.cpp")
 
 set (PRIVATE_HEADER_FILES
   IO/File.h
@@ -98,7 +98,7 @@ set (PRIVATE_HEADER_FILES
   VDS/GlobalStateImpl.h
   ${COMMON_DIR}/Base64/Base64.h
   ${COMMON_DIR}/ThreadPool/ThreadPool.h
-  )
+   "IO/IORefreshToken.h")
 
 file(GLOB EXPORTED_HEADER_FILES OpenVDS/*.h)
 

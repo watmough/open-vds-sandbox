@@ -370,14 +370,22 @@ static std::unique_ptr<OpenOptions> createDMSOpenOptions(const StringWrapper& ur
 
   for (auto& connectionPair : connectionStringMap)
   {
-    if (connectionPair.first == "sdauthorityurl")
+    if (connectionPair.first == "sdauthorityurl" || connectionPair.first == "sd_authority_url")
       openOptions->sdAuthorityUrl = connectionPair.second;
-    if (connectionPair.first == "sdapikey")
+    if (connectionPair.first == "sdapikey" || connectionPair.first == "sd_api_key")
       openOptions->sdApiKey = connectionPair.second;
-    if (connectionPair.first == "sdtoken")
+    if (connectionPair.first == "sdtoken" || connectionPair.first == "sd_token")
       openOptions->sdToken = connectionPair.second;
-    if (connectionPair.first == "loglevel")
+    if (connectionPair.first == "loglevel" || connectionPair.first == "log_level")
       openOptions->logLevel = atoi(connectionPair.second.c_str());
+    if (connectionPair.first == "authtokenurl" || connectionPair.first == "auth_token_url")
+      openOptions->authTokenUrl = connectionPair.second;
+    if (connectionPair.first == "refreshtoken" || connectionPair.first == "refresh_token")
+      openOptions->refreshToken = connectionPair.second;
+    if (connectionPair.first == "clientid" || connectionPair.first == "client_id")
+      openOptions->clientId = connectionPair.second;
+    if (connectionPair.first == "clientsecret" || connectionPair.first == "client_secret")
+      openOptions->clientSecret = connectionPair.second;
   }
 
   return openOptions;
