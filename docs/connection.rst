@@ -62,10 +62,28 @@ The Token is the OAuth2 token.
 
 ``sd`` will accept the following keys
 
-  - sdauthorityurl
-  - sdapikey
-  - sdtoken
-  - loglevel
+  - SdAuthorityUrl
+  - SdApiKey
+  - SdToken
+  - LogLevel
+
+The token `SdToken` is typically a short lived token. The sd IO backend also
+supports using a `RefreshToken` flow. Then its not needed to specify the sdtoken
+but following key/value pairs have to specified:
+
+  - AuthTokenUrl
+  - ClientId
+  - ClientSecret
+  - RefreshToken
+    
+When these paramaters are provided OpenVDS will send a "x-www-form-urlencoded"
+http request to `AuthTokenUrl` with supplied values and also added:
+grant_type=refresh_token&scope=openid email. The used refresh token will be
+updated If the response contains a refresh_token member. It is the access_token
+member of the return that will be used as the sdtoken until it expires.
+
+NOTE: Key values for `sd` can use `snake_case` instead of `CammelCase` to match the
+look and feel of the response from the token provider.
 
 ``azureSAS`` will accept the following keys
 

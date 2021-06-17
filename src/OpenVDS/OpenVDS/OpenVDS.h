@@ -454,14 +454,19 @@ struct GoogleOpenOptions : OpenOptions
 
 struct DMSOpenOptions : OpenOptions
 {
-  DMSOpenOptions() : OpenOptions(DMS) {}
+  DMSOpenOptions() : OpenOptions(DMS), logLevel(0) {}
 
-  DMSOpenOptions(std::string const& sdAuthorityUrl, std::string const& sdApiKey, std::string const &sdToken, std::string const &datasetPath, int logLevel)
+  DMSOpenOptions(std::string const& sdAuthorityUrl, std::string const& sdApiKey, std::string const &sdToken, std::string const &datasetPath, int logLevel, std::string const &authTokenUrl = std::string(), std::string const &refreshToken = std::string(), std::string const &clientId = std::string(), std::string const &clientSecret = std::string())
     : OpenOptions(DMS)
     , sdAuthorityUrl(sdAuthorityUrl)
     , sdApiKey(sdApiKey)
     , sdToken(sdToken)
+    , datasetPath(datasetPath)
     , logLevel(logLevel)
+    , authTokenUrl(authTokenUrl)
+    , refreshToken(refreshToken)
+    , clientId(clientId)
+    , clientSecret(clientSecret)
   {}
 
   std::string sdAuthorityUrl;
@@ -469,6 +474,10 @@ struct DMSOpenOptions : OpenOptions
   std::string sdToken;
   std::string datasetPath;
   int logLevel;
+  std::string authTokenUrl;
+  std::string refreshToken;
+  std::string clientId;
+  std::string clientSecret;
 };
 
 /// <summary>
