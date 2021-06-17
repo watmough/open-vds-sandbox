@@ -27,6 +27,8 @@
 
 #include "WaveletTypes.h"
 
+#include "Env.h"
+
 #include <IO/IOManager.h>
 
 #include <fmt/format.h>
@@ -179,7 +181,7 @@ VolumeDataStoreIOManager:: VolumeDataStoreIOManager(VDS &vds, IOManager *ioManag
   : VolumeDataStore(ioManager->connectionType())
   , m_vds(vds)
   , m_ioManager(ioManager)
-  , m_warnedAboutMissingMetadataTag(false)
+  , m_warnedAboutMissingMetadataTag(getBooleanEnvironmentVariable("OPENVDS_DISABLE_WARNINGS"))
 {
 }
 
@@ -506,8 +508,13 @@ bool VolumeDataStoreIOManager::ReadChunk(const VolumeDataChunk &chunk, int adapt
   {
     if (!m_warnedAboutMissingMetadataTag) // Log once and move along.
     {
-      fmt::print(stderr, "Dataset has missing metadata tags, degraded data verification, reverting to metadata pages");
-      m_warnedAboutMissingMetadataTag = true;
+      lock.lock();
+      if (!m_warnedAboutMissingMetadataTag)
+      {
+        fmt::print(stderr, "Dataset has missing metadata tags, degraded data verification, reverting to metadata pages");
+        m_warnedAboutMissingMetadataTag = true;
+      }
+      lock.unlock();
     }
 
     if (moveData)
