@@ -36,6 +36,7 @@
 #include <aws/core/auth/AWSCredentials.h>
 #include <aws/sts/STSClient.h>
 #include <aws/sts/model/AssumeRoleRequest.h>
+#include <aws/transfer/TransferManager.h>
 #include <mutex>
 #include <functional>
 
@@ -442,6 +443,13 @@ namespace OpenVDS
     {
       m_s3Client.reset(new Aws::S3::S3Client(credentials, clientConfig, Aws::Client::AWSAuthV4Signer::PayloadSigningPolicy::Never, useVirtualAddressing));
     }
+
+    //We do this to use a symbol from the transfermanager so we get the linker chain working on linux
+    Aws::Utils::Threading::DefaultExecutor threadExecutor;
+    Aws::Transfer::TransferManagerConfiguration transferConfig(&threadExecutor);
+    std::shared_ptr<Aws::S3::S3Client> s3ClientSharedPtr(m_s3Client.get(), [](Aws::S3::S3Client*) {});
+    transferConfig.s3Client = s3ClientSharedPtr;
+    auto manager = Aws::Transfer::TransferManager::Create(transferConfig);
   }
 
   IOManagerAWS::~IOManagerAWS()

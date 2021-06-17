@@ -51,6 +51,13 @@ function(add_test_executable name)
   if (OpenMP_CXX_FOUND)
       target_link_libraries(${name} PRIVATE OpenMP::OpenMP_CXX)
   endif()
+  if (DISABLE_AWS_IOMANAGER)
+    target_compile_definitions(${name} PRIVATE OPENVDS_NO_AWS_IOMANAGER)
+  endif()
+  if (DISABLE_AZURESDKFORCPP_IOMANAGER)
+    target_compile_definitions(${name} PRIVATE OPENVDS_NO_AZURE_SDK_FOR_CPP_IOMANAGER)
+  endif()
+  target_sources(${name} PRIVATE "LinuxLinkerChainHack.cpp")
 endfunction()
 
 add_test_executable(io_tests
