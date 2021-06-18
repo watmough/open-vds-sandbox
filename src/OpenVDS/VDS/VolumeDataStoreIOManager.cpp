@@ -511,7 +511,7 @@ bool VolumeDataStoreIOManager::ReadChunk(const VolumeDataChunk &chunk, int adapt
       lock.lock();
       if (!m_warnedAboutMissingMetadataTag)
       {
-        fmt::print(stderr, "Dataset has missing metadata tags, degraded data verification, reverting to metadata pages");
+        fmt::print(stderr, "Dataset has missing metadata tags, degraded data verification, reverting to metadata pages\n");
         m_warnedAboutMissingMetadataTag = true;
       }
       lock.unlock();
