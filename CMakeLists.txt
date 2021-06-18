@@ -47,6 +47,12 @@ else()
   set(LIBSUFFIX "")
 endif()
 
+if (EXISTS /etc/alpine-release) #the Alpine folks desided to patch cmake but forgot to patch the FIND_LIBRARY_USE_LIB64_PATHS
+  if (NOT ${CMAKE_INSTALL_LIBDIR} STREQUAL "lib64")
+    set(LIBSUFFIX "")
+  endif()
+endif()
+
 set(BUILD_PYTHON_DEFAULT ON)
 if (Python_ROOT_DIR)
   set(PYTHON_ROOT_DIR_HINT "HINTS ${Python_ROOT_DIR}")
