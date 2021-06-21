@@ -84,7 +84,7 @@ inline char asciitolower(char in) {
   return in;
 }
 
-DataProvider CreateDataProviderFromFile(const std::string &filename, OpenVDS::Error &error)
+static DataProvider CreateDataProviderFromFile(const std::string &filename, OpenVDS::Error &error)
 {
   std::unique_ptr<OpenVDS::File> file(new OpenVDS::File());
   if (!file->Open(filename, false, false, false, error))
@@ -92,31 +92,23 @@ DataProvider CreateDataProviderFromFile(const std::string &filename, OpenVDS::Er
   return DataProvider(file.release());
 }
 
-DataProvider CreateDataProviderFromOpenOptions(const std::string &url, const std::string &connectionString, const std::string &objectId, OpenVDS::Error &error)
+static DataProvider CreateDataProviderFromOpenOptions(const std::string &url, const std::string &connectionString, OpenVDS::Error &error)
 {
   std::unique_ptr<OpenVDS::IOManager> ioManager(OpenVDS::IOManager::CreateIOManager(url, connectionString, OpenVDS::IOManager::AccessPattern::ReadOnly, error));
   if (error.code)
-    return DataProvider((OpenVDS::IOManager *)nullptr, "", error);
-  return DataProvider(ioManager.release(), objectId, error);
+    return DataProvider("", (OpenVDS::IOManager*)nullptr, error);
+  return DataProvider(url, ioManager.release(), error);
 }
 
-DataProvider CreateDataProvider(const std::string& name, const std::string& connection, OpenVDS::Error& error)
+DataProvider CreateDataProvider(const std::string& url, const std::string& connection, OpenVDS::Error& error)
 {
-  if (OpenVDS::IsSupportedProtocol(name))
+  if (OpenVDS::IsSupportedProtocol(url))
   {
-    std::string dirname;
-    std::string basename;
-    std::string parameters;
-    splitUrl(name, dirname, basename, parameters, error);
-    if (error.code)
-      return DataProvider(nullptr);
-
-    std::string url = dirname + parameters;
-    return CreateDataProviderFromOpenOptions(url, connection, basename, error);
+    return CreateDataProviderFromOpenOptions(url, connection, error);
   }
   else
   {
-    return CreateDataProviderFromFile(name, error);
+    return CreateDataProviderFromFile(url, error);
   }
   return DataProvider(nullptr);
 }

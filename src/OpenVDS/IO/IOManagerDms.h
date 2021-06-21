@@ -77,6 +77,7 @@ namespace OpenVDS
   private:
     std::unique_ptr<seismicdrive::SDManager> m_sdManager;
     std::unique_ptr<seismicdrive::SDGenericDataset> m_dataset;
+    std::string m_filename;
     bool m_opened;
     ThreadPool m_threadPool;
   };
