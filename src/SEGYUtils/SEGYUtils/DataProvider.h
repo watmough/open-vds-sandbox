@@ -72,15 +72,15 @@ struct DataProvider
   {
   }
 
-  DataProvider(OpenVDS::IOManager *ioManager, const std::string &objectName, OpenVDS::Error &error)
+  DataProvider(const std::string &url, OpenVDS::IOManager *ioManager, OpenVDS::Error &error)
     : m_file(nullptr)
     , m_ioManager(ioManager)
-    , m_objectName(objectName)
+    , m_url(url)
   {
     if (m_ioManager)
     {
       auto syncTransfer = std::make_shared<DataTransfer>();
-      auto syncRequest = m_ioManager->ReadObjectInfo(objectName, syncTransfer);
+      auto syncRequest = m_ioManager->ReadObjectInfo("", syncTransfer);
       if (syncRequest->WaitForFinish(error))
       {
         m_size = syncTransfer->size;
@@ -99,7 +99,7 @@ struct DataProvider
     if (m_ioManager)
     {
       auto dataTransfer = std::make_shared<DataTransfer>();
-      auto request = m_ioManager->ReadObject(m_objectName, dataTransfer, { offset, offset + length});
+      auto request = m_ioManager->ReadObject("", dataTransfer, {offset, offset + length});
       if (!request->WaitForFinish(error))
       {
         return false;
@@ -136,17 +136,17 @@ struct DataProvider
 
     error.code = -1;
     error.string = "Invalid dataprovider, no file nor ioManager provided";
-    return 0;
+    return "";
   }
 
   std::string FileOrObjectName() const
   {
-    return m_file ? m_file->FileName() : m_objectName;
+    return m_file ? m_file->FileName() : m_url;
   }
 
   std::unique_ptr<OpenVDS::File> m_file;
   std::unique_ptr<OpenVDS::IOManager> m_ioManager;
-  const std::string m_objectName;
+  const std::string m_url;
   int64_t m_size = 0;
   std::string m_lastWriteTime;
 };
@@ -174,7 +174,7 @@ struct DataView
       {
         int64_t chunk_end = std::min(i + chunk_size, end);
         m_transfers.push_back(std::make_shared<DataTransfer>(i - pos));
-        m_requests.push_back(dataProvider.m_ioManager->ReadObject(dataProvider.m_objectName, m_transfers.back(), { i, chunk_end - 1 }));
+        m_requests.push_back(dataProvider.m_ioManager->ReadObject("", m_transfers.back(), {i, chunk_end - 1}));
       }
     }
     else

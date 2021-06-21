@@ -183,6 +183,18 @@ namespace OpenVDS
     , m_opened(false)
     , m_threadPool(16)
   {
+    if (openOptions.datasetPath.size())
+    {
+      auto it = openOptions.datasetPath.rfind('/');
+      if (it == openOptions.datasetPath.size() - 1)
+      {
+        it = openOptions.datasetPath.rfind('/', 1);
+      }
+      if (it != std::string::npos)
+      {
+        m_filename = openOptions.datasetPath.substr(it+1);
+      }
+    }
     try {
       m_sdManager.reset(new seismicdrive::SDManager(openOptions.sdAuthorityUrl, openOptions.sdApiKey, openOptions.logLevel));
       m_sdManager->setAuthProviderFromString(openOptions.sdToken);
@@ -223,15 +235,17 @@ namespace OpenVDS
 
   std::shared_ptr<Request> IOManagerDms::ReadObjectInfo(const std::string& objectName, std::shared_ptr<TransferDownloadHandler> handler)
   {
-    auto req = std::make_shared<ReadObjectInfoRequestDms>(*m_dataset, objectName, handler);
-    req->run(objectName, req, m_threadPool);
+    std::string toRead = objectName.empty() ? m_filename : objectName;
+    auto req = std::make_shared<ReadObjectInfoRequestDms>(*m_dataset, toRead, handler);
+    req->run(toRead, req, m_threadPool);
     return req;
   }
 
-  std::shared_ptr<Request> IOManagerDms::ReadObject(const std::string& requestName, std::shared_ptr<TransferDownloadHandler> handler, const IORange& range)
+  std::shared_ptr<Request> IOManagerDms::ReadObject(const std::string& objectName, std::shared_ptr<TransferDownloadHandler> handler, const IORange& range)
   {
-    auto req = std::make_shared<DownloadRequestDms>(*m_dataset, requestName, handler);
-    req->run(requestName, range, req, m_threadPool);
+    std::string toRead = objectName.empty() ? m_filename : objectName;
+    auto req = std::make_shared<DownloadRequestDms>(*m_dataset, toRead, handler);
+    req->run(toRead, range, req, m_threadPool);
     return req;
   }
 

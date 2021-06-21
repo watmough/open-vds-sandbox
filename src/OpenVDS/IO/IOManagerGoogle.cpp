@@ -258,7 +258,12 @@ namespace OpenVDS
   {
     //std::string url = fmt::format("{}/storage/v1/b/{}/o/{}?alt=media", GOOGLEAPIS, m_bucket, objectName); //I cant make this scheme work
     if (pathPrefix.size())
-      return fmt::format("{}/{}/{}/{}", googleapi, bucket, pathPrefix, objectName);
+    {
+      if (objectName.size())
+        return fmt::format("{}/{}/{}/{}", googleapi, bucket, pathPrefix, objectName);
+      else
+        return fmt::format("{}/{}/{}", googleapi, bucket, pathPrefix);
+    }
     return fmt::format("{}/{}/{}", googleapi, bucket, objectName);
   }
 

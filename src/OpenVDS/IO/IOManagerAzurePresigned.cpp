@@ -34,8 +34,8 @@ namespace OpenVDS
       return;
     }
 
-    if (m_base.back() != '/')
-      m_base.push_back('/');
+    if (m_base.back() == '/')
+      m_base.pop_back();
 
     if (m_suffix.size())
     {
@@ -44,9 +44,18 @@ namespace OpenVDS
     }
   }
 
+  static std::string getUrl(const std::string& base, const std::string& objectName, const std::string &suffix)
+  {
+    if (objectName.empty())
+    {
+      return base + suffix;
+    }
+    return base + "/" + objectName + suffix;
+  }
+
   std::shared_ptr<Request> IOManagerAzurePresigned::ReadObjectInfo(const std::string& objectName, std::shared_ptr<TransferDownloadHandler> handler)
   {
-    std::string url = m_base + objectName + m_suffix;
+    std::string url = getUrl(m_base, objectName, m_suffix);
     std::shared_ptr<DownloadRequestCurl> request = std::make_shared<DownloadRequestCurl>(objectName, handler);
     std::vector<std::string> headers;
     m_curlHandler.addDownloadRequest(request, url, headers, convertToISO8601, CurlDownloadHandler::HEADER);
@@ -55,7 +64,7 @@ namespace OpenVDS
   }
   std::shared_ptr<Request> IOManagerAzurePresigned::ReadObject(const std::string& objectName, std::shared_ptr<TransferDownloadHandler> handler, const IORange& range)
   {
-    std::string url = m_base + objectName + m_suffix;
+    std::string url = getUrl(m_base, objectName, m_suffix);
     std::shared_ptr<DownloadRequestCurl> request = std::make_shared<DownloadRequestCurl>(objectName, handler);
     std::vector<std::string> headers;
     if (range.start != range.end)
@@ -69,7 +78,7 @@ namespace OpenVDS
   }
   std::shared_ptr<Request> IOManagerAzurePresigned::WriteObject(const std::string& objectName, const std::string& contentDispostionFilename, const std::string& contentType, const std::vector<std::pair<std::string, std::string>>& metadataHeader, std::shared_ptr<std::vector<uint8_t>> data, std::function<void(const Request& request, const Error& error)> completedCallback)
   {
-    std::string url = m_base + objectName + m_suffix;
+    std::string url = getUrl(m_base, objectName, m_suffix);
     std::shared_ptr<UploadRequestCurl> request = std::make_shared<UploadRequestCurl>(objectName, completedCallback);
     std::vector<std::string> headers;
     headers.emplace_back("x-ms-blob-type: BlockBlob");

@@ -43,8 +43,8 @@ namespace OpenVDS
       m_base = url;
     }
 
-    if (m_base.back() != '/')
-      m_base.push_back('/');
+    if (m_base.back() == '/')
+      m_base.pop_back();
 
     if (m_suffix.size())
     {
@@ -53,9 +53,18 @@ namespace OpenVDS
     }
   }
 
+  static std::string getUrl(const std::string& base, const std::string& objectName, const std::string &suffix)
+  {
+    if (objectName.empty())
+    {
+      return base + suffix;
+    }
+    return base + "/" + objectName + suffix;
+  }
+
   std::shared_ptr<Request> IOManagerHttp::ReadObjectInfo(const std::string& objectName, std::shared_ptr<TransferDownloadHandler> handler)
   {
-    std::string url = m_base + objectName + m_suffix;
+    std::string url = getUrl(m_base, objectName, m_suffix);
     std::shared_ptr<DownloadRequestCurl> request = std::make_shared<DownloadRequestCurl>(objectName, handler);
     std::vector<std::string> headers;
     m_curlHandler.addDownloadRequest(request, url, headers, convertToISO8601, CurlDownloadHandler::HEADER);
@@ -64,7 +73,7 @@ namespace OpenVDS
   
   std::shared_ptr<Request> IOManagerHttp::ReadObject(const std::string& objectName, std::shared_ptr<TransferDownloadHandler> handler, const IORange& range)
   {
-    std::string url = m_base + objectName + m_suffix;
+    std::string url = getUrl(m_base, objectName, m_suffix);
     std::shared_ptr<DownloadRequestCurl> request = std::make_shared<DownloadRequestCurl>(objectName, handler);
     std::vector<std::string> headers;
     if (range.start != range.end)
