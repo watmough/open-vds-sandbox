@@ -23,6 +23,7 @@
 
 #ifndef OPENVDS_NO_AWS_IOMANAGER
 #include "IOManagerAWS.h"
+#include "IOManagerAWSCurl.h"
 #endif
 #ifndef OPENVDS_NO_AZURE_IOMANAGER
 #include "IOManagerAzure.h"
@@ -51,10 +52,16 @@ IOManager* IOManager::CreateIOManager(const OpenOptions& options, IOManager::Acc
 {
   switch(options.connectionType)
   {
-#ifndef OPENVDS_NO_AWS_IOMANAGER
   case OpenOptions::AWS:
-    return new IOManagerAWS(static_cast<const AWSOpenOptions &>(options), error);
+#ifndef OPENVDS_NO_AWS_IOMANAGER
+  {
+    bool useAwsCurl = getBooleanEnvironmentVariable("OPENVDS_AWSCURL");
+    if (useAwsCurl)
+      return new IOManagerAWSCurl(static_cast<const AWSOpenOptions&>(options), error);
+    return new IOManagerAWS(static_cast<const AWSOpenOptions&>(options), error);
+  }
 #endif
+  break;
   case OpenOptions::Azure:
   {
 #ifndef OPENVDS_NO_AZURE_SDK_FOR_CPP_IOMANAGER

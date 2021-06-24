@@ -5,6 +5,7 @@ set(SOURCE_FILES
   IO/Win_File.cpp
   IO/IOManager.cpp
   IO/IOManagerAWS.cpp
+  IO/IOManagerAWSCurl.cpp
   IO/IOManagerAzure.cpp
   IO/IOManagerAzureSdkForCpp.cpp
   IO/IOManagerInMemory.cpp
@@ -49,6 +50,7 @@ set (PRIVATE_HEADER_FILES
   IO/File.h
   IO/IOManager.h
   IO/IOManagerAWS.h
+  IO/IOManagerAWSCurl.h
   IO/IOManagerAzure.h
   IO/IOManagerAzureSdkForCpp.h
   IO/IOManagerInMemory.h
@@ -113,6 +115,7 @@ set_source_files_properties(VDS/FSE/fse_decompress.cpp PROPERTIES COMPILE_FLAGS 
 #https://github.com/aws/aws-sdk-cpp/blob/266d7682c3d07d41618c41a3521811e1219c1bc7/aws-cpp-sdk-core/include/aws/core/utils/memory/stl/AWSString.h#L21
 if (NOT MSVC)
   set_source_files_properties(IO/IOManagerAWS.cpp PROPERTIES COMPILE_FLAGS -fvisibility=default)
+  set_source_files_properties(IO/IOManagerAWSCurl.cpp PROPERTIES COMPILE_FLAGS -fvisibility=default)
 endif()
 
 add_library(openvds_objects OBJECT
@@ -169,6 +172,7 @@ endif()
 if (DISABLE_AWS_IOMANAGER)
   target_compile_definitions(openvds_objects PRIVATE OPENVDS_NO_AWS_IOMANAGER)
   set_source_files_properties(IO/IOManagerAWS.cpp PROPERTIES HEADER_FILE_ONLY TRUE)
+  set_source_files_properties(IO/IOManagerAWSCurl.cpp PROPERTIES HEADER_FILE_ONLY TRUE)
 else()
   if (aws-cpp-sdk_EXTERNAL_LIBS)
     target_link_libraries(openvds_objects PRIVATE ${aws-cpp-sdk_EXTERNAL_LIBS})

@@ -104,7 +104,7 @@ static size_t curlReadCallback(char *buffer, size_t size, size_t nitems, void *u
 
 static void curlAddRequests(UVEventLoopData *eventLoopData)
 {
-  int maxConcurrentRequests = 64;
+  int maxConcurrentRequests = 40;
   int to_add = maxConcurrentRequests - int(eventLoopData->processingRequests.size());
   assert(to_add >= 0);
   to_add = std::min(to_add, int(eventLoopData->queuedRequests.size()));
@@ -823,8 +823,10 @@ CurlHandler::CurlHandler(Error& error)
     curl_multi_setopt(m_eventLoopData.curlMulti, CURLMOPT_SOCKETDATA, &m_eventLoopData);
     curl_multi_setopt(m_eventLoopData.curlMulti, CURLMOPT_TIMERFUNCTION, curlTimerCallback);
     curl_multi_setopt(m_eventLoopData.curlMulti, CURLMOPT_TIMERDATA, &m_eventLoopData);
-    curl_multi_setopt(m_eventLoopData.curlMulti, CURLMOPT_PIPELINING, CURLPIPE_HTTP1 | CURLPIPE_MULTIPLEX);
-    curl_multi_setopt(m_eventLoopData.curlMulti, CURLMOPT_MAX_HOST_CONNECTIONS, 128L);
+
+#if LIBCURL_VERSION_MAJOR > 7 || (LIBCURL_VERSION_MAJOR == 7 && LIBCURL_VERSION_MINOR > 29)
+    curl_multi_setopt(m_eventLoopData.curlMulti, CURLMOPT_MAX_HOST_CONNECTIONS, 32);
+#endif
 
     uv_prepare_init(m_eventLoopData.loop, &m_eventLoopData.beforeBlock);
     m_eventLoopData.beforeBlock.data = &m_eventLoopData;

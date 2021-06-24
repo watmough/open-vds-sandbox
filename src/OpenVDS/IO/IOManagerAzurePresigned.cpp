@@ -82,12 +82,6 @@ namespace OpenVDS
     std::shared_ptr<UploadRequestCurl> request = std::make_shared<UploadRequestCurl>(objectName, completedCallback);
     std::vector<std::string> headers;
     headers.emplace_back("x-ms-blob-type: BlockBlob");
-    if (contentDispostionFilename.size())
-      headers.push_back(fmt::format("content-disposition: attachment; filename=\"{}\"", contentDispostionFilename));
-    if (contentType.size())
-      headers.push_back(fmt::format("content-type: {}", contentType));
-    if (data->size())
-      headers.push_back(fmt::format("content-length: {}", data->size()));
     for (auto metaTag : metadataHeader)
     {
       headers.push_back(fmt::format("{}{}: {}", "x-ms-meta-", metaTag.first, metaTag.second));

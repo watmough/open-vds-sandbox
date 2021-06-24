@@ -4,6 +4,8 @@ macro(BuildAWSSDK)
     list(APPEND AWS_LIBS_LIST "bin/aws-cpp-sdk-s3.lib")
     list(APPEND AWS_LIBS_LIST "bin/aws-cpp-sdk-sts.lib")
     list(APPEND AWS_LIBS_LIST "bin/aws-cpp-sdk-transfer.lib")
+    list(APPEND AWS_LIBS_LIST "lib/aws-crt-cpp.lib")
+    list(APPEND AWS_LIBS_LIST "lib/aws-c-common.lib")
 
 
 
@@ -32,6 +34,14 @@ macro(BuildAWSSDK)
     list(APPEND AWS_DLLS_LIST "lib${LIBSUFFIX}/libaws-cpp-sdk-s3.so")
     list(APPEND AWS_DLLS_LIST "lib${LIBSUFFIX}/libaws-cpp-sdk-sts.so")
     list(APPEND AWS_DLLS_LIST "lib${LIBSUFFIX}/libaws-cpp-sdk-transfer.so")
+    list(APPEND AWS_DLLS_LIST "lib${LIBSUFFIX}/libaws-crt-cpp.a")
+    list(APPEND AWS_DLLS_LIST "lib${LIBSUFFIX}/libaws-c-s3.a")
+    list(APPEND AWS_DLLS_LIST "lib${LIBSUFFIX}/libaws-c-auth.a")
+    list(APPEND AWS_DLLS_LIST "lib${LIBSUFFIX}/libaws-c-http.a")
+    list(APPEND AWS_DLLS_LIST "lib${LIBSUFFIX}/libaws-c-compression.a")
+    list(APPEND AWS_DLLS_LIST "lib${LIBSUFFIX}/libaws-c-cal.a")
+    list(APPEND AWS_DLLS_LIST "lib${LIBSUFFIX}/libaws-c-io.a")
+    list(APPEND AWS_DLLS_LIST "lib${LIBSUFFIX}/libaws-c-common.a")
   endif()
 
   BuildExternal(aws-cpp-sdk ${aws-cpp-sdk_VERSION} "" ${aws-cpp-sdk_SOURCE_DIR} "${AWS_LIBS_LIST}" "${AWS_DLLS_LIST}" "" "" "-DBUILD_ONLY=s3$<SEMICOLON>sts$<SEMICOLON>transfer;-DENABLE_TESTING=OFF")
