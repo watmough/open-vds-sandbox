@@ -823,6 +823,8 @@ CurlHandler::CurlHandler(Error& error)
     curl_multi_setopt(m_eventLoopData.curlMulti, CURLMOPT_SOCKETDATA, &m_eventLoopData);
     curl_multi_setopt(m_eventLoopData.curlMulti, CURLMOPT_TIMERFUNCTION, curlTimerCallback);
     curl_multi_setopt(m_eventLoopData.curlMulti, CURLMOPT_TIMERDATA, &m_eventLoopData);
+    curl_multi_setopt(m_eventLoopData.curlMulti, CURLMOPT_PIPELINING, CURLPIPE_HTTP1 | CURLPIPE_MULTIPLEX);
+    curl_multi_setopt(m_eventLoopData.curlMulti, CURLMOPT_MAX_HOST_CONNECTIONS, 128L);
 
     uv_prepare_init(m_eventLoopData.loop, &m_eventLoopData.beforeBlock);
     m_eventLoopData.beforeBlock.data = &m_eventLoopData;
