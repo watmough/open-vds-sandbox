@@ -100,6 +100,7 @@ namespace OpenVDS
       std::string m_bucket;
       std::string m_objectId;
       std::unique_ptr<Aws::S3::S3Client> m_s3Client;
+      bool m_disableInitializeSdk;
   };
 }
 #endif //IOMANAGERAWS_H

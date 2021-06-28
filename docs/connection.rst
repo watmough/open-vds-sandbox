@@ -40,6 +40,7 @@ The recognised keys for ``s3`` connection string are
   - LogLevel (Note: this is to control the AWS specific logs. Possible values: Off, Fatal, Error, Warn, Info, Debug, Trace)
   - ConnectionTimoutMs
   - RequestTimeoutMs
+  - DisableInitApi (This will disable init/deinit of AWS sdk. Possible values: 1, On, True, Yes (case insensitive), all other values are false.)
 
 ``azure`` has two modes. The connection string mode or the bearer token mode.
 If the connection string contains a key with name BearerToken it will parse the

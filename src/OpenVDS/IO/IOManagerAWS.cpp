@@ -326,6 +326,7 @@ namespace OpenVDS
     , m_region(openOptions.region)
     , m_bucket(openOptions.bucket)
     , m_objectId(openOptions.key)
+    , m_disableInitializeSdk(openOptions.disableInitApi)
   {
     if (m_bucket.empty())
     {
@@ -336,7 +337,9 @@ namespace OpenVDS
 
     if (m_objectId.size() && m_objectId[m_objectId.size() -1] == '/')
       m_objectId.resize(m_objectId.size() - 1);
-    initializeAWSSDK(openOptions.logFilenamePrefix, openOptions.loglevel);
+
+    if (!m_disableInitializeSdk)
+      initializeAWSSDK(openOptions.logFilenamePrefix, openOptions.loglevel);
 
     Aws::String profileName = "";
 
@@ -455,7 +458,9 @@ namespace OpenVDS
   IOManagerAWS::~IOManagerAWS()
   {
     m_s3Client.reset();
-    deinitializeAWSSDK();
+
+    if (!m_disableInitializeSdk)
+      deinitializeAWSSDK();
   }
 
   std::shared_ptr<Request> IOManagerAWS::ReadObjectInfo(const std::string &objectName, std::shared_ptr<TransferDownloadHandler> handler)
