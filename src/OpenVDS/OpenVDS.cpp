@@ -172,6 +172,21 @@ static std::unique_ptr<OpenOptions> createS3OpenOptions(const StringWrapper &url
         return nullptr;
       }
     }
+    else if (connectionPair.first == "disableinitapi")
+    {
+      auto value = connectionPair.second;
+      std::transform(value.begin(), value.end(), value.begin(), asciitolower);
+      static const std::string trueValues[] = { "1", "on", "true", "yes" };
+      openOptions->disableInitApi = false;
+      for (auto& trueValue : trueValues)
+      {
+        if (value == trueValue)
+        {
+          openOptions->disableInitApi = true;
+          break;
+        }
+      }
+    }
     else
     {
       error.code = -1;

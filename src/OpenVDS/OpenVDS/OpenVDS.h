@@ -92,8 +92,9 @@ struct AWSOpenOptions : OpenOptions
   std::string loglevel;
   int connectionTimeoutMs;
   int requestTimeoutMs;
+  bool disableInitApi;
 
-  AWSOpenOptions() : OpenOptions(AWS), connectionTimeoutMs(3000), requestTimeoutMs(6000) {}
+  AWSOpenOptions() : OpenOptions(AWS), connectionTimeoutMs(3000), requestTimeoutMs(6000), disableInitApi(false) {}
   /// <summary>
   /// AWSOpenOptions constructor
   /// </summary>
@@ -115,7 +116,7 @@ struct AWSOpenOptions : OpenOptions
   /// <param name="requestTimeoutMs">
   /// This paramter allows to override the time a request can take
   /// </param>
-  AWSOpenOptions(std::string const & bucket, std::string const & key, std::string const & region = std::string(), std::string const & endpointOverride = std::string(), int connectionTimeoutMs = 3000, int requestTimeoutMs = 6000) : OpenOptions(AWS), bucket(bucket), key(key), region(region), endpointOverride(endpointOverride), connectionTimeoutMs(connectionTimeoutMs), requestTimeoutMs(requestTimeoutMs) {}
+  AWSOpenOptions(std::string const & bucket, std::string const & key, std::string const & region = std::string(), std::string const & endpointOverride = std::string(), int connectionTimeoutMs = 3000, int requestTimeoutMs = 6000, bool disableInitApi = false) : OpenOptions(AWS), bucket(bucket), key(key), region(region), endpointOverride(endpointOverride), connectionTimeoutMs(connectionTimeoutMs), requestTimeoutMs(requestTimeoutMs), disableInitApi(disableInitApi) {}
 };
 
 /// <summary>
