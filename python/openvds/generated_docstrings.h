@@ -58,6 +58,8 @@ static const char *__doc_OpenVDS_AWSOpenOptions_bucket = R"doc()doc";
 
 static const char *__doc_OpenVDS_AWSOpenOptions_connectionTimeoutMs = R"doc()doc";
 
+static const char *__doc_OpenVDS_AWSOpenOptions_disableInitApi = R"doc()doc";
+
 static const char *__doc_OpenVDS_AWSOpenOptions_endpointOverride = R"doc()doc";
 
 static const char *__doc_OpenVDS_AWSOpenOptions_expiration = R"doc()doc";
@@ -674,9 +676,17 @@ static const char *__doc_OpenVDS_DMSOpenOptions_DMSOpenOptions = R"doc()doc";
 
 static const char *__doc_OpenVDS_DMSOpenOptions_DMSOpenOptions_2 = R"doc()doc";
 
+static const char *__doc_OpenVDS_DMSOpenOptions_authTokenUrl = R"doc()doc";
+
+static const char *__doc_OpenVDS_DMSOpenOptions_clientId = R"doc()doc";
+
+static const char *__doc_OpenVDS_DMSOpenOptions_clientSecret = R"doc()doc";
+
 static const char *__doc_OpenVDS_DMSOpenOptions_datasetPath = R"doc()doc";
 
 static const char *__doc_OpenVDS_DMSOpenOptions_logLevel = R"doc()doc";
+
+static const char *__doc_OpenVDS_DMSOpenOptions_refreshToken = R"doc()doc";
 
 static const char *__doc_OpenVDS_DMSOpenOptions_sdApiKey = R"doc()doc";
 
@@ -805,6 +815,32 @@ handle :
 Returns:
 --------
     The VolumeDataAccessManagerInterface of the VDS)doc";
+
+static const char *__doc_OpenVDS_GetCompressionMethod =
+R"doc(Get the primary CompressionMethod for a VDS
+
+Parameters:
+-----------
+
+handle :
+    The handle of the VDS
+
+Returns:
+--------
+    The CompressionMethod used for the VDS)doc";
+
+static const char *__doc_OpenVDS_GetCompressionTolerance =
+R"doc(Get the primary compression tolerance used for a VDS
+
+Parameters:
+-----------
+
+handle :
+    The handle of the VDS
+
+Returns:
+--------
+    The compression tolerance used for the VDS)doc";
 
 static const char *__doc_OpenVDS_GetGlobalState =
 R"doc(Get the GlobalState interface
@@ -1330,6 +1366,27 @@ Returns:
 --------
     The buffer size needed.)doc";
 
+static const char *__doc_OpenVDS_IVolumeDataAccessManager_GetVDSChunkCount =
+R"doc(Get the chunk count for the specific DimensionsND/LOD/Channel
+combination.
+
+Parameters:
+-----------
+
+dimensionsND :
+    The dimensions group we're getting the chunk count for.
+
+LOD :
+    The LOD level we're getting the chunk count status for.
+
+channel :
+    The channel index we're getting the chunk count status for.
+
+Returns:
+--------
+    The chunk count for the specific DimensionsND/LOD/Channel
+    combination.)doc";
+
 static const char *__doc_OpenVDS_IVolumeDataAccessManager_GetVDSProduceStatus =
 R"doc(Get the produce status for the specific DimensionsND/LOD/Channel
 combination.
@@ -1760,6 +1817,10 @@ static const char *__doc_OpenVDS_InMemoryOpenOptions_name = R"doc()doc";
 static const char *__doc_OpenVDS_IndexOutOfRangeException = R"doc()doc";
 
 static const char *__doc_OpenVDS_IndexOutOfRangeException_GetErrorMessage = R"doc()doc";
+
+static const char *__doc_OpenVDS_IndexOutOfRangeException_IndexOutOfRangeException = R"doc()doc";
+
+static const char *__doc_OpenVDS_IndexOutOfRangeException_m_errorMessage = R"doc()doc";
 
 static const char *__doc_OpenVDS_IndexRegion = R"doc()doc";
 
@@ -2523,6 +2584,8 @@ static const char *__doc_OpenVDS_OpenOptions_ConnectionType_Azure = R"doc()doc";
 
 static const char *__doc_OpenVDS_OpenOptions_ConnectionType_AzurePresigned = R"doc()doc";
 
+static const char *__doc_OpenVDS_OpenOptions_ConnectionType_AzureSdkForCpp = R"doc()doc";
+
 static const char *__doc_OpenVDS_OpenOptions_ConnectionType_ConnectionTypeCount = R"doc()doc";
 
 static const char *__doc_OpenVDS_OpenOptions_ConnectionType_DMS = R"doc()doc";
@@ -3158,6 +3221,27 @@ Returns:
     The buffer size needed.)doc";
 
 static const char *__doc_OpenVDS_VolumeDataAccessManager_GetProjectedVolumeSubsetBufferSize_2 = R"doc()doc";
+
+static const char *__doc_OpenVDS_VolumeDataAccessManager_GetVDSChunkCount =
+R"doc(Get the chunk count for the specific DimensionsND/LOD/Channel
+combination.
+
+Parameters:
+-----------
+
+dimensionsND :
+    The dimensions group we're getting the chunk count for.
+
+LOD :
+    The LOD level we're getting the chunk count status for.
+
+channel :
+    The channel index we're getting the chunk count status for.
+
+Returns:
+--------
+    The chunk count for the specific DimensionsND/LOD/Channel
+    combination.)doc";
 
 static const char *__doc_OpenVDS_VolumeDataAccessManager_GetVDSProduceStatus =
 R"doc(Get the produce status for the specific DimensionsND/LOD/Channel

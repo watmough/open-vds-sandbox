@@ -53,6 +53,7 @@ PyGlobal::initModule(py::module& m)
 
   OpenOptions_ConnectionType_.value("AWS"                         , OpenOptions::ConnectionType::AWS        , OPENVDS_DOCSTRING(OpenOptions_ConnectionType_AWS));
   OpenOptions_ConnectionType_.value("Azure"                       , OpenOptions::ConnectionType::Azure      , OPENVDS_DOCSTRING(OpenOptions_ConnectionType_Azure));
+  OpenOptions_ConnectionType_.value("AzureSdkForCpp"              , OpenOptions::ConnectionType::AzureSdkForCpp, OPENVDS_DOCSTRING(OpenOptions_ConnectionType_AzureSdkForCpp));
   OpenOptions_ConnectionType_.value("AzurePresigned"              , OpenOptions::ConnectionType::AzurePresigned, OPENVDS_DOCSTRING(OpenOptions_ConnectionType_AzurePresigned));
   OpenOptions_ConnectionType_.value("GoogleStorage"               , OpenOptions::ConnectionType::GoogleStorage, OPENVDS_DOCSTRING(OpenOptions_ConnectionType_GoogleStorage));
   OpenOptions_ConnectionType_.value("DMS"                         , OpenOptions::ConnectionType::DMS        , OPENVDS_DOCSTRING(OpenOptions_ConnectionType_DMS));
@@ -67,7 +68,7 @@ PyGlobal::initModule(py::module& m)
     AWSOpenOptions_(m,"AWSOpenOptions", OPENVDS_DOCSTRING(AWSOpenOptions));
 
   AWSOpenOptions_.def(py::init<                              >(), OPENVDS_DOCSTRING(AWSOpenOptions_AWSOpenOptions));
-  AWSOpenOptions_.def(py::init<const std::string &, const std::string &, const std::string &, const std::string &, int, int>(), py::arg("bucket").none(false), py::arg("key").none(false), py::arg("region").none(false), py::arg("endpointOverride").none(false), py::arg("connectionTimeoutMs") = 3000, py::arg("requestTimeoutMs") = 6000, OPENVDS_DOCSTRING(AWSOpenOptions_AWSOpenOptions_2));
+  AWSOpenOptions_.def(py::init<const std::string &, const std::string &, const std::string &, const std::string &, int, int, bool>(), py::arg("bucket").none(false), py::arg("key").none(false), py::arg("region").none(false), py::arg("endpointOverride").none(false), py::arg("connectionTimeoutMs") = 3000, py::arg("requestTimeoutMs") = 6000, py::arg("disableInitApi") = false, OPENVDS_DOCSTRING(AWSOpenOptions_AWSOpenOptions_2));
   AWSOpenOptions_.def_readwrite("bucket"                      , &AWSOpenOptions::bucket        , OPENVDS_DOCSTRING(AWSOpenOptions_bucket));
   AWSOpenOptions_.def_readwrite("key"                         , &AWSOpenOptions::key           , OPENVDS_DOCSTRING(AWSOpenOptions_key));
   AWSOpenOptions_.def_readwrite("region"                      , &AWSOpenOptions::region        , OPENVDS_DOCSTRING(AWSOpenOptions_region));
@@ -80,6 +81,7 @@ PyGlobal::initModule(py::module& m)
   AWSOpenOptions_.def_readwrite("loglevel"                    , &AWSOpenOptions::loglevel      , OPENVDS_DOCSTRING(AWSOpenOptions_loglevel));
   AWSOpenOptions_.def_readwrite("connectionTimeoutMs"         , &AWSOpenOptions::connectionTimeoutMs, OPENVDS_DOCSTRING(AWSOpenOptions_connectionTimeoutMs));
   AWSOpenOptions_.def_readwrite("requestTimeoutMs"            , &AWSOpenOptions::requestTimeoutMs, OPENVDS_DOCSTRING(AWSOpenOptions_requestTimeoutMs));
+  AWSOpenOptions_.def_readwrite("disableInitApi"              , &AWSOpenOptions::disableInitApi, OPENVDS_DOCSTRING(AWSOpenOptions_disableInitApi));
 
   // AzureOpenOptions
   py::class_<AzureOpenOptions, OpenOptions> 
@@ -188,12 +190,16 @@ PyGlobal::initModule(py::module& m)
     DMSOpenOptions_(m,"DMSOpenOptions", OPENVDS_DOCSTRING(DMSOpenOptions));
 
   DMSOpenOptions_.def(py::init<                              >(), OPENVDS_DOCSTRING(DMSOpenOptions_DMSOpenOptions));
-  DMSOpenOptions_.def(py::init<const std::string &, const std::string &, const std::string &, const std::string &, int>(), py::arg("sdAuthorityUrl").none(false), py::arg("sdApiKey").none(false), py::arg("sdToken").none(false), py::arg("datasetPath").none(false), py::arg("logLevel").none(false), OPENVDS_DOCSTRING(DMSOpenOptions_DMSOpenOptions_2));
+  DMSOpenOptions_.def(py::init<const std::string &, const std::string &, const std::string &, const std::string &, int, const std::string &, const std::string &, const std::string &, const std::string &>(), py::arg("sdAuthorityUrl").none(false), py::arg("sdApiKey").none(false), py::arg("sdToken").none(false), py::arg("datasetPath").none(false), py::arg("logLevel").none(false), py::arg("authTokenUrl").none(false), py::arg("refreshToken").none(false), py::arg("clientId").none(false), py::arg("clientSecret").none(false), OPENVDS_DOCSTRING(DMSOpenOptions_DMSOpenOptions_2));
   DMSOpenOptions_.def_readwrite("sdAuthorityUrl"              , &DMSOpenOptions::sdAuthorityUrl, OPENVDS_DOCSTRING(DMSOpenOptions_sdAuthorityUrl));
   DMSOpenOptions_.def_readwrite("sdApiKey"                    , &DMSOpenOptions::sdApiKey      , OPENVDS_DOCSTRING(DMSOpenOptions_sdApiKey));
   DMSOpenOptions_.def_readwrite("sdToken"                     , &DMSOpenOptions::sdToken       , OPENVDS_DOCSTRING(DMSOpenOptions_sdToken));
   DMSOpenOptions_.def_readwrite("datasetPath"                 , &DMSOpenOptions::datasetPath   , OPENVDS_DOCSTRING(DMSOpenOptions_datasetPath));
   DMSOpenOptions_.def_readwrite("logLevel"                    , &DMSOpenOptions::logLevel      , OPENVDS_DOCSTRING(DMSOpenOptions_logLevel));
+  DMSOpenOptions_.def_readwrite("authTokenUrl"                , &DMSOpenOptions::authTokenUrl  , OPENVDS_DOCSTRING(DMSOpenOptions_authTokenUrl));
+  DMSOpenOptions_.def_readwrite("refreshToken"                , &DMSOpenOptions::refreshToken  , OPENVDS_DOCSTRING(DMSOpenOptions_refreshToken));
+  DMSOpenOptions_.def_readwrite("clientId"                    , &DMSOpenOptions::clientId      , OPENVDS_DOCSTRING(DMSOpenOptions_clientId));
+  DMSOpenOptions_.def_readwrite("clientSecret"                , &DMSOpenOptions::clientSecret  , OPENVDS_DOCSTRING(DMSOpenOptions_clientSecret));
 
   // HttpOpenOptions
   py::class_<HttpOpenOptions, OpenOptions> 
@@ -271,6 +277,8 @@ PyGlobal::initModule(py::module& m)
   m.def("getLayout"                   , static_cast<native::VolumeDataLayout *(*)(native::VDSHandle)>(&GetLayout), py::arg("handle").none(false), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(GetLayout));
   m.def("getAccessManagerInterface"   , static_cast<native::IVolumeDataAccessManager *(*)(native::VDSHandle)>(&GetAccessManagerInterface), py::arg("handle").none(false), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(GetAccessManagerInterface));
   m.def("getAccessManager"            , static_cast<native::VolumeDataAccessManager(*)(native::VDSHandle)>(&GetAccessManager), py::arg("handle").none(false), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(GetAccessManager));
+  m.def("getCompressionMethod"        , static_cast<native::CompressionMethod(*)(native::VDSHandle)>(&GetCompressionMethod), py::arg("handle").none(false), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(GetCompressionMethod));
+  m.def("getCompressionTolerance"     , static_cast<float(*)(native::VDSHandle)>(&GetCompressionTolerance), py::arg("handle").none(false), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(GetCompressionTolerance));
   m.def("close"                       , static_cast<void(*)(native::VDSHandle)>(&Close), py::arg("handle").none(false), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(Close));
   m.def("getGlobalState"              , static_cast<native::GlobalState *(*)()>(&GetGlobalState), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(GetGlobalState));
 //AUTOGEN-END
