@@ -124,19 +124,20 @@ static std::unique_ptr<OpenOptions> createS3OpenOptions(const StringWrapper &url
     {
       openOptions->region = connectionPair.second;
     }
-    else if (connectionPair.first == "endpointoverride")
+    else if (connectionPair.first == "endpointoverride" || connectionPair.first == "endpoint_override")
     {
       openOptions->endpointOverride = connectionPair.second;
     }
-    else if (connectionPair.first == "accesskeyid")
+    else if (connectionPair.first == "accesskeyid" || connectionPair.first == "access_key_id")
     {
       openOptions->accessKeyId = connectionPair.second;
     }
-    else if (connectionPair.first == "secretkey")
+    else if (connectionPair.first == "secretkey" || connectionPair.first == "secretaccesskey"
+      || connectionPair.first == "secret_key" || connectionPair.first == "secret_access_key")
     {
       openOptions->secretKey = connectionPair.second;
     }
-    else if (connectionPair.first == "sessiontoken")
+    else if (connectionPair.first == "sessiontoken" || connectionPair.first == "session_token")
     {
       openOptions->sessionToken = connectionPair.second;
     }
@@ -144,15 +145,15 @@ static std::unique_ptr<OpenOptions> createS3OpenOptions(const StringWrapper &url
     {
       openOptions->expiration = connectionPair.second;
     }
-    else if (connectionPair.first == "logfilenameprefix")
+    else if (connectionPair.first == "logfilenameprefix" || connectionPair.first == "log_filename_prefix")
     {
       openOptions->logFilenamePrefix = connectionPair.second;
     }
-    else if (connectionPair.first == "loglevel")
+    else if (connectionPair.first == "loglevel" || connectionPair.first == "log_level")
     {
       openOptions->loglevel = connectionPair.second;
     }
-    else if (connectionPair.first == "connectiontimeoutms")
+    else if (connectionPair.first == "connectiontimeoutms" || connectionPair.first == "connection_timeout_ms")
     {
       openOptions->connectionTimeoutMs = strtol(&connectionPair.second[0], nullptr, 10);
       if (openOptions->connectionTimeoutMs == 0)
@@ -162,7 +163,7 @@ static std::unique_ptr<OpenOptions> createS3OpenOptions(const StringWrapper &url
         return nullptr;
       }
     }
-    else if (connectionPair.first == "requesttimeoutms")
+    else if (connectionPair.first == "requesttimeoutms" || connectionPair.first == "request_timeout_ms")
     {
       openOptions->requestTimeoutMs = strtol(&connectionPair.second[0], nullptr, 10);
       if (openOptions->requestTimeoutMs == 0)
@@ -172,7 +173,7 @@ static std::unique_ptr<OpenOptions> createS3OpenOptions(const StringWrapper &url
         return nullptr;
       }
     }
-    else if (connectionPair.first == "disableinitapi")
+    else if (connectionPair.first == "disableinitapi" || connectionPair.first == "disable_init_api")
     {
       auto value = connectionPair.second;
       std::transform(value.begin(), value.end(), value.begin(), asciitolower);
