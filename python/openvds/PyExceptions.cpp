@@ -68,7 +68,8 @@ py::register_exception<InvalidArgument>(m, "InvalidArgument");
 // IMPLEMENTED :  // IndexOutOfRangeException
 // IMPLEMENTED :  py::class_<IndexOutOfRangeException, Exception> 
 // IMPLEMENTED :    IndexOutOfRangeException_(m,"IndexOutOfRangeException", OPENVDS_DOCSTRING(IndexOutOfRangeException));
-
+// IMPLEMENTED :  py::class_<IndexOutOfRangeException, MessageBufferException>
+// IMPLEMENTED :  IndexOutOfRangeException_.def(py::init<const char *                  >(), py::arg("errorMessage").none(false), OPENVDS_DOCSTRING(IndexOutOfRangeException_IndexOutOfRangeException));
 // IMPLEMENTED :  IndexOutOfRangeException_.def("getErrorMessage"             , static_cast<const char *(IndexOutOfRangeException::*)() const>(&IndexOutOfRangeException::GetErrorMessage), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(IndexOutOfRangeException_GetErrorMessage));
 // IMPLEMENTED :  IndexOutOfRangeException_.def_property_readonly("errorMessage", &IndexOutOfRangeException::GetErrorMessage, OPENVDS_DOCSTRING(IndexOutOfRangeException_GetErrorMessage));
 py::register_exception<IndexOutOfRangeException>(m, "IndexOutOfRangeException");
