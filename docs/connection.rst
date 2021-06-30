@@ -33,7 +33,7 @@ The recognised keys for ``s3`` connection string are
   - Region
   - EndpointOverride
   - AccessKeyId
-  - SecretKey
+  - SecretKey or SecretAccessKey
   - SessionToken
   - Expiration (Note: AWS SDK only accepts 'Z' timezone for ISO 8601 time)
   - LogFilenamePrefix
@@ -41,6 +41,9 @@ The recognised keys for ``s3`` connection string are
   - ConnectionTimoutMs
   - RequestTimeoutMs
   - DisableInitApi (This will disable init/deinit of AWS sdk. Possible values: 1, On, True, Yes (case insensitive), all other values are false.)
+
+Note: Key values for S3 can be specified in `CamelCase` or `snake_case`
+
 
 ``azure`` has two modes. The connection string mode or the bearer token mode.
 If the connection string contains a key with name BearerToken it will parse the
