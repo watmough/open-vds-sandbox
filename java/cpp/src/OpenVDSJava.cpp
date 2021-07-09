@@ -153,18 +153,26 @@ getVolumeDataChannelDescriptor(JNIEnv *env, jobjectArray obj, std::multiset<std:
         bool isrenderable = env->CallBooleanMethod(element, env->GetMethodID(elm_class, "isRenderable", "()Z"));
         bool isallowlossycompression = env->CallBooleanMethod(element, env->GetMethodID(elm_class, "isAllowLossyCompression", "()Z"));
         bool isusezipforlosslesscompression = env->CallBooleanMethod(element, env->GetMethodID(elm_class, "isUseZipForLosslessCompression", "()Z"));
-        //bool isusenovalue = env->CallBooleanMethod(element, env->GetMethodID(elm_class, " isUseNoValue", "()Z"));
+        bool isusenovalue = env->CallBooleanMethod(element, env->GetMethodID(elm_class, "isUseNoValue", "()Z"));
         float novalue = env->CallFloatMethod(element, env->GetMethodID(elm_class, "getNoValue", "()F"));
         float integerscale = env->CallFloatMethod(element, env->GetMethodID(elm_class, "getIntegerScale", "()F"));
         float integeroffset = env->CallFloatMethod(element, env->GetMethodID(elm_class, "getIntegerOffset", "()F"));
         int flags = (isdiscrete << 0) | (!isallowlossycompression << 1) | (!isrenderable << 2) | (!isusezipforlosslesscompression << 3);
 
-        OpenVDS::VolumeDataChannelDescriptor tmp(static_cast<OpenVDS::VolumeDataChannelDescriptor::Format>(format),
-               static_cast<OpenVDS::VolumeDataChannelDescriptor::Components>(components), name->c_str(), unit->c_str(),
-               valuerangemin, valuerangemax, static_cast<OpenVDS::VolumeDataMapping>(mapping), mappedvaluecount, 
-               static_cast<OpenVDS::VolumeDataChannelDescriptor::Flags>(flags), novalue, integerscale, integeroffset);
-
-        result.emplace_back(tmp);
+        if (isusenovalue) {
+            OpenVDS::VolumeDataChannelDescriptor tmp(static_cast<OpenVDS::VolumeDataChannelDescriptor::Format>(format),
+                                                 static_cast<OpenVDS::VolumeDataChannelDescriptor::Components>(components), name->c_str(), unit->c_str(),
+                                                 valuerangemin, valuerangemax, static_cast<OpenVDS::VolumeDataMapping>(mapping), mappedvaluecount,
+                                                 static_cast<OpenVDS::VolumeDataChannelDescriptor::Flags>(flags), novalue, integerscale, integeroffset);
+            result.emplace_back(tmp);
+        }
+        else {
+            OpenVDS::VolumeDataChannelDescriptor tmp(static_cast<OpenVDS::VolumeDataChannelDescriptor::Format>(format),
+                                                     static_cast<OpenVDS::VolumeDataChannelDescriptor::Components>(components), name->c_str(), unit->c_str(),
+                                                     valuerangemin, valuerangemax, static_cast<OpenVDS::VolumeDataMapping>(mapping), mappedvaluecount,
+                                                     static_cast<OpenVDS::VolumeDataChannelDescriptor::Flags>(flags), integerscale, integeroffset);
+            result.emplace_back(tmp);
+        }
     }
 
     return result;
