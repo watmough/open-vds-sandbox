@@ -241,6 +241,11 @@ namespace OpenVDS
       error.string = exception.what();
       error.code = -1;
     }
+    catch (std::exception &exception)
+    {
+      error.string = exception.what();
+      error.code = -1;
+    }
     catch (...)
     {
       error.string = "Unknown DMS exception.";
