@@ -37,6 +37,11 @@ if (NOT DISABLE_AWS_IOMANAGER)
   file(GLOB SRC_LIB_PROVIDERS_AWS   ${dmsCMakeDir}/src/lib/cloud/providers/aws/*.cc)
   set_source_files_properties(${dmsCMakeDir}/src/lib/cloud/providers/aws/AwsStorage.cc PROPERTIES COMPILE_FLAGS ${DISABLE_WARNING_FLAG})
   set(SOURCES ${SOURCES} ${SRC_LIB_PROVIDERS_AWS})
+
+  add_definitions( -DHAS_IBM_STORAGE_PROVIDER )
+  file(GLOB SRC_LIB_PROVIDERS_IBM  ${dmsCMakeDir}/src/lib/cloud/providers/ibm/*.cc)
+  set_source_files_properties(${dmsCMakeDir}/src/lib/cloud/providers/ibm/IbmStorage.cc PROPERTIES COMPILE_FLAGS ${DISABLE_WARNING_FLAG})
+  set(SOURCES ${SOURCES} ${SRC_LIB_PROVIDERS_IBM})
 endif()
 
 # set major library versions
