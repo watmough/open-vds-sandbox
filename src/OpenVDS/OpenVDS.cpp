@@ -387,6 +387,8 @@ static std::unique_ptr<OpenOptions> createDMSOpenOptions(const StringWrapper& ur
       openOptions->clientId = connectionPair.second;
     if (connectionPair.first == "clientsecret" || connectionPair.first == "client_secret")
       openOptions->clientSecret = connectionPair.second;
+    if (connectionPair.first == "scopes")
+      openOptions->scopes = connectionPair.second;
   }
 
   return openOptions;
