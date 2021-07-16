@@ -456,7 +456,7 @@ struct DMSOpenOptions : OpenOptions
 {
   DMSOpenOptions() : OpenOptions(DMS), logLevel(0) {}
 
-  DMSOpenOptions(std::string const& sdAuthorityUrl, std::string const& sdApiKey, std::string const &sdToken, std::string const &datasetPath, int logLevel, std::string const &authTokenUrl = std::string(), std::string const &refreshToken = std::string(), std::string const &clientId = std::string(), std::string const &clientSecret = std::string())
+  DMSOpenOptions(std::string const& sdAuthorityUrl, std::string const& sdApiKey, std::string const &sdToken, std::string const &datasetPath, int logLevel, std::string const &authTokenUrl = std::string(), std::string const &refreshToken = std::string(), std::string const &clientId = std::string(), std::string const &clientSecret = std::string(), std::string const &scopes = std::string())
     : OpenOptions(DMS)
     , sdAuthorityUrl(sdAuthorityUrl)
     , sdApiKey(sdApiKey)
@@ -467,6 +467,7 @@ struct DMSOpenOptions : OpenOptions
     , refreshToken(refreshToken)
     , clientId(clientId)
     , clientSecret(clientSecret)
+    , scopes(scopes)
   {}
 
   std::string sdAuthorityUrl;
@@ -478,6 +479,7 @@ struct DMSOpenOptions : OpenOptions
   std::string refreshToken;
   std::string clientId;
   std::string clientSecret;
+  std::string scopes;
 };
 
 /// <summary>

@@ -280,15 +280,16 @@ static void addUploadCB(uv_async_t *handle)
     curl_easy_setopt(uploadRequest->curlEasy, CURLOPT_READDATA, uploadRequest.get());
     curl_easy_setopt(uploadRequest->curlEasy, CURLOPT_WRITEFUNCTION, &curlWriteCallback);
     curl_easy_setopt(uploadRequest->curlEasy, CURLOPT_WRITEDATA, uploadRequest.get());
+    curl_off_t filesize = curl_off_t(uploadRequest->completeSize);
     if (uploadRequest->post)
     {
       curl_easy_setopt(uploadRequest->curlEasy, CURLOPT_POST, long(1));
+      curl_easy_setopt(uploadRequest->curlEasy,CURLOPT_POSTFIELDSIZE_LARGE, filesize);
     }
     else
     {
       curl_easy_setopt(uploadRequest->curlEasy, CURLOPT_UPLOAD, 1L);
     }
-    curl_off_t filesize = curl_off_t(uploadRequest->completeSize);
     curl_easy_setopt(uploadRequest->curlEasy, CURLOPT_INFILESIZE_LARGE, filesize);
     curl_easy_setopt(uploadRequest->curlEasy, CURLOPT_DEBUGFUNCTION, curl_easy_debug_callback);
     if (curl_verbose_output)
