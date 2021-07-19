@@ -76,14 +76,17 @@ but following key/value pairs have to specified:
 
   - AuthTokenUrl
   - ClientId
-  - ClientSecret
+  - ClientSecret (Optional)
   - RefreshToken
+  - Scopes  (Optional)
     
 When these paramaters are provided OpenVDS will send a "x-www-form-urlencoded"
 http request to `AuthTokenUrl` with supplied values and also added:
-grant_type=refresh_token&scope=openid email. The used refresh token will be
-updated If the response contains a refresh_token member. It is the access_token
-member of the return that will be used as the sdtoken until it expires.
+grant_type=refresh_token&scope=openid email.
+scope can be overrided with the Scopes connectionString parameter.
+The ClientSecret is optional, as it is not needed when using, by eg, OAuth2 + PKCE.
+The used refresh token will be updated If the response contains a refresh_token member.
+It is the access_token member of the return that will be used as the sdtoken until it expires.
 
 NOTE: Key values for `sd` can use `snake_case` instead of `CammelCase` to match the
 look and feel of the response from the token provider.
