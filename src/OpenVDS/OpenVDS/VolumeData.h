@@ -115,11 +115,14 @@ constexpr int Dimensionality_Max = 6;
 /// This controls the rounding. Usually you want the size of the range to be all voxels in the range, but when we are copying from multiple adjacent ranges we only want to round up for the last one.
 /// </param>
 /// <returns>
+/// <param name="LOD">
+/// The LOD level for which the size is requested.
+/// </param>
 /// The number of voxels at the given LOD, at LOD 0 the result is voxelMax - voxelMin.
 /// </returns>
-inline int GetLODSize(int voxelMin, int voxelMax, int lod, bool includePartialUpperVoxel = true)
+inline int GetLODSize(int voxelMin, int voxelMax, int LOD, bool includePartialUpperVoxel = true)
 {
-  return ((voxelMax - includePartialUpperVoxel) >> lod) + includePartialUpperVoxel - (voxelMin >> lod);
+  return ((voxelMax - voxelMin - includePartialUpperVoxel) >> LOD) + includePartialUpperVoxel;
 }
 
 /// <summary>
