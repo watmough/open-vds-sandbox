@@ -42,14 +42,15 @@ public:
   int64_t GetNumChunksInRegion() const;
   int64_t GetChunkIndexInRegion(int64_t chunkInRegion) const;
   void GetChunkInRegion(int64_t chunkInRegion, VolumeDataChunk *volumeDataChunk) const { *volumeDataChunk = m_volumeDataLayer->GetChunkFromIndex(GetChunkIndexInRegion(chunkInRegion)); }
-  void GetChunksInRegion(std::vector<VolumeDataChunk> *volumeDataChunk, bool isAppend = false) const;
+  void GetChunksInRegion(std::vector<VolumeDataChunk> *volumeDataChunks, bool append = false) const;
   bool IsChunkInRegion(VolumeDataChunk const &volumeDataChunk) const;
 
   VolumeDataRegion() : m_volumeDataLayer(nullptr), m_chunksInRegion(0) {};
 
   VolumeDataRegion(VolumeDataLayer const &volumeDataLayer,
-                        const IndexArray &min,
-                        const IndexArray &max);
+                   const IndexArray &min,
+                   const IndexArray &max,
+                   bool excludeDuplicatedVoxels = true);
 
   static VolumeDataRegion VolumeDataRegionOverlappingChunk(VolumeDataLayer const &volumeDataLayer, VolumeDataChunk const &volumeDataChunk, const IndexArray &offset);
 };
