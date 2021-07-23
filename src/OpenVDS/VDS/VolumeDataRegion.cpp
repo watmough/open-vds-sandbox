@@ -20,6 +20,7 @@
 #include <OpenVDS/VolumeDataLayout.h>
 
 #include "VolumeDataChunk.h"
+#include "VolumeDataChannelMapping.h"
 
 #include <assert.h>
 #include <algorithm>
@@ -35,32 +36,32 @@ int64_t VolumeDataRegion::GetChunkIndexInRegion(int64_t chunkInRegion) const
 {
   assert(chunkInRegion >= 0 && chunkInRegion < m_chunksInRegion);
 
-  int64_t iChunkIndex = 0;
+  int64_t chunkIndex = 0;
 
-  for(int32_t iDimension = int32_t(ArraySize(m_chunkMin)) - 1; iDimension >= 0; iDimension--)
+  for(int dimension = int(ArraySize(m_chunkMin)) - 1; dimension >= 0; dimension--)
   {
-    iChunkIndex += (chunkInRegion / m_modulo[iDimension] + m_chunkMin[iDimension]) * m_layerModulo[iDimension];
-    chunkInRegion %= m_modulo[iDimension];
+    chunkIndex += (chunkInRegion / m_modulo[dimension] + m_chunkMin[dimension]) * m_layerModulo[dimension];
+    chunkInRegion %= m_modulo[dimension];
   }
 
-  return iChunkIndex;
+  return chunkIndex;
 }
 
-void VolumeDataRegion::GetChunksInRegion(std::vector<VolumeDataChunk>* volumeDataChunk, bool isAppend) const
+void VolumeDataRegion::GetChunksInRegion(std::vector<VolumeDataChunk>* volumeDataChunks, bool append) const
 {
-  if (!isAppend)
+  if (!append)
   {
-    volumeDataChunk->clear();
+    volumeDataChunks->clear();
   }
 
-  int32_t nChunksInRegion = (int32_t)GetNumChunksInRegion();
-  if(!nChunksInRegion) return;
+  int chunksInRegion = (int)GetNumChunksInRegion();
+  if(!chunksInRegion) return;
 
-  volumeDataChunk->reserve(nChunksInRegion);
+  volumeDataChunks->reserve(volumeDataChunks->size() + chunksInRegion);
 
-  for(int32_t iChunkInRegion = 0; iChunkInRegion < nChunksInRegion; iChunkInRegion++)
+  for(int chunkInRegion = 0; chunkInRegion < chunksInRegion; chunkInRegion++)
   {
-    volumeDataChunk->push_back(m_volumeDataLayer->GetChunkFromIndex(GetChunkIndexInRegion(iChunkInRegion)));
+    volumeDataChunks->push_back(m_volumeDataLayer->GetChunkFromIndex(GetChunkIndexInRegion(chunkInRegion)));
   }
 }
 
@@ -72,10 +73,10 @@ bool VolumeDataRegion::IsChunkInRegion(VolumeDataChunk const &volumeDataChunk) c
     IndexArray indexArray;
 
     m_volumeDataLayer->ChunkIndexToIndexArray(volumeDataChunk.index, indexArray);
-    for(int32_t iDimension = 0; iDimension < ArraySize(indexArray); iDimension++)
+    for(int dimension = 0; dimension < ArraySize(indexArray); dimension++)
     {
-      if(indexArray[iDimension] < m_chunkMin[iDimension] ||
-         indexArray[iDimension] > m_chunkMax[iDimension])
+      if(indexArray[dimension] < m_chunkMin[dimension] ||
+         indexArray[dimension] > m_chunkMax[dimension])
       {
         return false;
       }
@@ -85,21 +86,43 @@ bool VolumeDataRegion::IsChunkInRegion(VolumeDataChunk const &volumeDataChunk) c
   return false;
 }
 
-VolumeDataRegion::VolumeDataRegion(VolumeDataLayer const &volumeDataLayer, const IndexArray &min, const IndexArray &max)
+VolumeDataRegion::VolumeDataRegion(VolumeDataLayer const &volumeDataLayer, const IndexArray &min, const IndexArray &max, bool excludeDuplicatedVoxels)
   : m_volumeDataLayer(&volumeDataLayer)
 {
+  const VolumeDataChannelMapping *volumeDataChannelMapping = volumeDataLayer.GetVolumeDataChannelMapping();
+
   int64_t modulo = 1;
 
-  for(int32_t iDimension = 0; iDimension < ArraySize(m_chunkMin); iDimension++)
+  for(int dimension = 0; dimension < ArraySize(m_chunkMin); dimension++)
   {
-    m_chunkMin[iDimension] = volumeDataLayer.VoxelToIndex(min[iDimension], iDimension);
-    m_chunkMax[iDimension] = volumeDataLayer.VoxelToIndex(max[iDimension] - 1, iDimension);
+    int inclusiveVoxelMin = min[dimension];
+    int inclusiveVoxelMax = max[dimension] - 1;
 
-    m_layerModulo[iDimension] = volumeDataLayer.m_modulo[iDimension];
-    m_modulo[iDimension] = modulo;
-    modulo *= m_chunkMax[iDimension] - m_chunkMin[iDimension] + 1;
+    // Round to voxel boundaries to avoid including voxels that are duplicated between chunks
+    if(volumeDataLayer.GetLOD() > 0 && excludeDuplicatedVoxels && volumeDataLayer.IsDimensionLODDecimated(dimension))
+    {
+      int duplicatedVoxels = volumeDataLayer.GetNegativeRenderMargin() % (1 << volumeDataLayer.GetLOD());
 
-    assert(m_chunkMin[iDimension] <= m_chunkMax[iDimension]);
+      inclusiveVoxelMin += duplicatedVoxels;
+      inclusiveVoxelMax = std::max(inclusiveVoxelMin, inclusiveVoxelMax);
+    }
+
+    if(volumeDataChannelMapping)
+    {
+      m_chunkMin[dimension] = volumeDataChannelMapping->GetMappedChunkIndexFromVoxel(volumeDataLayer.GetPrimaryChannelLayer(), inclusiveVoxelMin, dimension);
+      m_chunkMax[dimension] = volumeDataChannelMapping->GetMappedChunkIndexFromVoxel(volumeDataLayer.GetPrimaryChannelLayer(), inclusiveVoxelMax, dimension);
+    }
+    else
+    {
+      m_chunkMin[dimension] = volumeDataLayer.VoxelToIndex(inclusiveVoxelMin, dimension);
+      m_chunkMax[dimension] = volumeDataLayer.VoxelToIndex(inclusiveVoxelMax, dimension);
+    }
+
+    m_layerModulo[dimension] = volumeDataLayer.m_modulo[dimension];
+    m_modulo[dimension] = modulo;
+    modulo *= m_chunkMax[dimension] - m_chunkMin[dimension] + 1;
+
+    assert(m_chunkMin[dimension] <= m_chunkMax[dimension]);
   }
 
   m_chunksInRegion = modulo;
