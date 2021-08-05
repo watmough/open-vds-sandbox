@@ -40,7 +40,7 @@ static int32_t omp_get_max_threads()
 
 static int32_t omp_get_thread_num()
 {
-  return 1;
+  return 0;
 }
 #endif
 
