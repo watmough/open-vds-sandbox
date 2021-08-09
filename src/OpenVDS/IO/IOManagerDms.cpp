@@ -190,9 +190,10 @@ namespace OpenVDS
   IOManagerDms::IOManagerDms(const DMSOpenOptions& openOptions, IOManager::AccessPattern accessPatttern, Error& error)
     : IOManager(openOptions.connectionType)
     , m_opened(false)
+    , m_useFileNameForSingleFileDatasets(openOptions.useFileNameForSingleFileDatasets)
     , m_threadPool(16)
   {
-    if (openOptions.datasetPath.size())
+    if (openOptions.datasetPath.size() && m_useFileNameForSingleFileDatasets)
     {
       auto it = openOptions.datasetPath.rfind('/');
       if (it == openOptions.datasetPath.size() - 1)
@@ -203,6 +204,10 @@ namespace OpenVDS
       {
         m_filename = openOptions.datasetPath.substr(it+1);
       }
+    }
+    else
+    {
+      m_filename = "0";
     }
 
 
