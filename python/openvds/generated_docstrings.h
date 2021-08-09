@@ -688,11 +688,15 @@ static const char *__doc_OpenVDS_DMSOpenOptions_logLevel = R"doc()doc";
 
 static const char *__doc_OpenVDS_DMSOpenOptions_refreshToken = R"doc()doc";
 
+static const char *__doc_OpenVDS_DMSOpenOptions_scopes = R"doc()doc";
+
 static const char *__doc_OpenVDS_DMSOpenOptions_sdApiKey = R"doc()doc";
 
 static const char *__doc_OpenVDS_DMSOpenOptions_sdAuthorityUrl = R"doc()doc";
 
 static const char *__doc_OpenVDS_DMSOpenOptions_sdToken = R"doc()doc";
+
+static const char *__doc_OpenVDS_DMSOpenOptions_useFileNameForSingleFileDatasets = R"doc()doc";
 
 static const char *__doc_OpenVDS_DimensionsND = R"doc(2D or 3D dimension group\n)doc";
 
@@ -871,8 +875,12 @@ includePartialUpperVoxel :
 
 Returns:
 --------
-    The number of voxels at the given LOD, at LOD 0 the result is
-    voxelMax - voxelMin.)doc";
+    $LOD :
+
+The LOD level for which the size is requested.
+
+The number of voxels at the given LOD, at LOD 0 the result is voxelMax
+- voxelMin.)doc";
 
 static const char *__doc_OpenVDS_GetLayout =
 R"doc(Get the VolumeDataLayout for a VDS
@@ -2583,8 +2591,6 @@ static const char *__doc_OpenVDS_OpenOptions_ConnectionType_AWS = R"doc()doc";
 static const char *__doc_OpenVDS_OpenOptions_ConnectionType_Azure = R"doc()doc";
 
 static const char *__doc_OpenVDS_OpenOptions_ConnectionType_AzurePresigned = R"doc()doc";
-
-static const char *__doc_OpenVDS_OpenOptions_ConnectionType_AzureSdkForCpp = R"doc()doc";
 
 static const char *__doc_OpenVDS_OpenOptions_ConnectionType_ConnectionTypeCount = R"doc()doc";
 

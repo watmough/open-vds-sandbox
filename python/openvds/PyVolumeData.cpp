@@ -89,7 +89,7 @@ PyVolumeData::initModule(py::module& m)
   CompressionMethod_.value("WaveletNormalizeBlockLossless", CompressionMethod::WaveletNormalizeBlockLossless, OPENVDS_DOCSTRING(CompressionMethod_WaveletNormalizeBlockLossless));
 
   m.def("compressionMethod_IsWavelet" , static_cast<bool(*)(native::CompressionMethod)>(&CompressionMethod_IsWavelet), py::arg("compressionMethod").none(false), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(CompressionMethod_IsWavelet));
-  m.def("getLODSize"                  , static_cast<int(*)(int, int, int, bool)>(&GetLODSize), py::arg("voxelMin").none(false), py::arg("voxelMax").none(false), py::arg("lod").none(false), py::arg("includePartialUpperVoxel") = true, py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(GetLODSize));
+  m.def("getLODSize"                  , static_cast<int(*)(int, int, int, bool)>(&GetLODSize), py::arg("voxelMin").none(false), py::arg("voxelMax").none(false), py::arg("LOD").none(false), py::arg("includePartialUpperVoxel") = true, py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(GetLODSize));
 //AUTOGEN-END
 }
 
