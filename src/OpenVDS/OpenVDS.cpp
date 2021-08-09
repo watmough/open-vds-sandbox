@@ -93,6 +93,22 @@ static std::string urlDecode(const StringWrapper& url)
   return std::string(output.data(), output.data() + output.size());
 }
 
+static bool isTrue(const std::string& str)
+{
+  auto value = str;
+  std::transform(value.begin(), value.end(), value.begin(), asciitolower);
+  static const std::string trueValues[] = { "1", "on", "true", "yes" };
+  for (auto& trueValue : trueValues)
+  {
+    if (value == trueValue)
+    {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 static std::unique_ptr<OpenOptions> createS3OpenOptions(const StringWrapper &url, const StringWrapper &connectionString, Error &error)
 {
   std::unique_ptr<AWSOpenOptions> openOptions(new AWSOpenOptions());
@@ -175,18 +191,7 @@ static std::unique_ptr<OpenOptions> createS3OpenOptions(const StringWrapper &url
     }
     else if (connectionPair.first == "disableinitapi" || connectionPair.first == "disable_init_api")
     {
-      auto value = connectionPair.second;
-      std::transform(value.begin(), value.end(), value.begin(), asciitolower);
-      static const std::string trueValues[] = { "1", "on", "true", "yes" };
-      openOptions->disableInitApi = false;
-      for (auto& trueValue : trueValues)
-      {
-        if (value == trueValue)
-        {
-          openOptions->disableInitApi = true;
-          break;
-        }
-      }
+      openOptions->disableInitApi = isTrue(connectionPair.second);
     }
     else
     {
@@ -389,6 +394,9 @@ static std::unique_ptr<OpenOptions> createDMSOpenOptions(const StringWrapper& ur
       openOptions->clientSecret = connectionPair.second;
     if (connectionPair.first == "scopes")
       openOptions->scopes = connectionPair.second;
+    if (connectionPair.first == "usefilenameforsinglefiledatasets" || connectionPair.first == "use_file_name_for_single_file_datasets"
+      || connectionPair.first == "use_filename_for_single_file_datasets")
+      openOptions->useFileNameForSingleFileDatasets = isTrue(connectionPair.second);
   }
 
   return openOptions;

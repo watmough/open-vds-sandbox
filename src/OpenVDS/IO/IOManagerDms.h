@@ -82,9 +82,11 @@ namespace OpenVDS
     std::unique_ptr<seismicdrive::SDGenericDataset> m_dataset;
     std::string m_filename;
     bool m_opened;
+    bool m_useFileNameForSingleFileDatasets;
     ThreadPool m_threadPool;
     std::unique_ptr<CurlHandler> m_curlHandler;
     std::unique_ptr<TokenRefresher> m_tokenRefresher;
+
   };
 }
 
