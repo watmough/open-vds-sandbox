@@ -25,8 +25,20 @@ of the SAS url and prepend ``https``.
 
 The ``connection`` string will provide ``protocol`` or backend specific data for
 the connection to the VDS. The string is a key/value string where the key and
-value is separated with a ``=``. Each key/value pair is separated with a ``;``. It
-is allowed for the value to contain extra ``=``, but the key can not.
+value is separated with a ``=``. Each key/value pair is separated with a ``;``.
+It is allowed for the value to contain extra ``=``, but the key can not. Having
+duplicate keys is allowed, and the value of the latter specified key that will
+be used.
+
+There are some globally recognized keys for the connection string. They are:
+  - WaveletAdaptiveTolerance
+  - WaveletAdaptiveRatio
+  - WaveletAdaptiveMode
+
+``WaveletAdaptiveMode`` should normally not be used since specifying either
+``WaveletAdaptiveTolerance`` or ``WaveletAdaptiveRatio`` will set the correct
+``WaveletAdaptiveMode``. However, it is possible to set ``WaveletAdaptiveMode`` to
+``BestQuality`` to get the default behavior for a ``connection`` string.
 
 The recognised keys for ``s3`` connection string are
 
