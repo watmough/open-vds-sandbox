@@ -12,6 +12,7 @@ set(SOURCE_FILES
   IO/IOManagerGoogle.cpp
   IO/IOManagerHttp.cpp
   IO/IOManagerDms.cpp
+  IO/IORefreshToken.cpp
   BulkDataStore/HueBulkDataStore.cpp
   BulkDataStore/ExtentAllocator.cpp
   BulkDataStore/VDSObjectParser.cpp
@@ -41,8 +42,8 @@ set(SOURCE_FILES
   VDS/VolumeDataRequestProcessor.cpp
   VDS/VolumeIndexer.cpp
   VDS/Env.cpp
-  ${COMMON_DIR}/Base64/Base64.cpp
-   "IO/IORefreshToken.cpp")
+  VDS/StringToDouble.cpp
+  ${COMMON_DIR}/Base64/Base64.cpp)
 
 set (PRIVATE_HEADER_FILES
   IO/File.h
@@ -56,6 +57,7 @@ set (PRIVATE_HEADER_FILES
   IO/IOManagerHttp.h
   IO/IOManagerRequestImpl.h
   IO/IOManagerTransformer.h
+  IO/IORefreshToken.h
   VDS/VDS.h
   VDS/VolumeDataPartition.h
   VDS/VolumeDataChannelMapping.h
@@ -92,9 +94,9 @@ set (PRIVATE_HEADER_FILES
   VDS/Env.h
   VDS/ConnectionStringParser.h
   VDS/GlobalStateImpl.h
+  VDS/StringToDouble.h
   ${COMMON_DIR}/Base64/Base64.h
-  ${COMMON_DIR}/ThreadPool/ThreadPool.h
-   "IO/IORefreshToken.h")
+  ${COMMON_DIR}/ThreadPool/ThreadPool.h)
 
 file(GLOB EXPORTED_HEADER_FILES OpenVDS/*.h)
 
