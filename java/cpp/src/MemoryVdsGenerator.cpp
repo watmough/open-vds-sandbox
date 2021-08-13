@@ -32,7 +32,7 @@
 #include <OpenVDS/MetadataContainer.h>
 #include <OpenVDS/VolumeDataLayout.h>
 #include <OpenVDS/VolumeDataAccess.h>
-#include <OpenVDS/SimplexNoiseKernel.h>
+#include <Noise/SimplexNoiseKernel.h>
 
 #include <random>
 
