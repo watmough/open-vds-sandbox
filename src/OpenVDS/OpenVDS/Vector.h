@@ -41,10 +41,14 @@ struct Vector
   Vector()
     : data{}
   {}
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
   template<typename ...Args>
   Vector(Args... args)
     : data{args...}
   {}
+#endif
+
   inline       T &operator[] (size_t n)        { return data[n]; }
   inline const T &operator[] (size_t n) const  { return data[n]; }
 };
