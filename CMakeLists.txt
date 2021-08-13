@@ -60,9 +60,9 @@ if (Python_ROOT_DIR)
 endif()
 
 if (OPENVDS_PYTHON_VERSION)
-  find_package(Python3 ${OPENVDS_PYTHON_VERSION} EXACT REQUIRED COMPONENTS Interpreter Development ${PYTHON_ROOT_DIR_HINT})
+  find_package(Python3 ${OPENVDS_PYTHON_VERSION} EXACT REQUIRED COMPONENTS Interpreter Development.Module ${PYTHON_ROOT_DIR_HINT})
 else()
-  find_package(Python3 ${PYTHON_REQUIRED} COMPONENTS Interpreter Development ${PYTHON_ROOT_DIR_HINT})
+  find_package(Python3 ${PYTHON_REQUIRED} COMPONENTS Interpreter Development.Module ${PYTHON_ROOT_DIR_HINT})
 endif()
 
 if (Python3_FOUND)
