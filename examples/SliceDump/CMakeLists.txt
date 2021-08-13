@@ -4,6 +4,7 @@ if (OpenMP_CXX_FOUND)
     target_link_libraries(slicedump PRIVATE OpenMP::OpenMP_CXX)
 endif()
 set_target_properties(slicedump PROPERTIES FOLDER examples)
+target_include_directories(slicedump PRIVATE ${COMMON_DIR})
 
 setWarningFlagsForTarget(slicedump)
 copyDllForTarget(slicedump)

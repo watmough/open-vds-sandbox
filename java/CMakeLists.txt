@@ -142,6 +142,8 @@ set_target_properties(openvds-javacpp PROPERTIES
 copyDllForTarget(openvds-javacpp)
 target_include_directories(openvds-javacpp PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/cpp/include)
 target_include_directories(openvds-javacpp PUBLIC ${JAVA_INCLUDE_PATH} ${JAVA_INCLUDE_PATH2})
+target_include_directories(openvds-javacpp PRIVATE ${COMMON_DIR})
+
 target_link_libraries(openvds-javacpp PRIVATE openvds openvds-java-generated-headers)
 
 # Install jar and natives

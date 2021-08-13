@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.16.0)
 project(OpenVDSExamples)
 if (CMAKE_PROJECT_NAME STREQUAL "OpenVDSExamples")
+  set(COMMON_DIR ${CMAKE_CURRENT_SOURCE_DIR}/common)
   include(modules/InstalledPaths.cmake)
   include(modules/SetWarnings.cmake)
   include(modules/CopyDllForTarget.cmake)
