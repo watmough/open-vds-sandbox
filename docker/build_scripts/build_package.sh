@@ -10,6 +10,7 @@ cmake_generator=""
 platform_name=""
 skplat_name=""
 distribution=""
+output_dir=""
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
   cmake_generator="Ninja"
   platform_name="linux"
@@ -54,6 +55,11 @@ case $key in
     ;;
     -n|--name)
     name="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    -o|--output_dir)
+    output_dir="$2"
     shift # past argument
     shift # past value
     ;;
@@ -132,3 +138,7 @@ else
   tar -zcvf $name-$openvds_version-$distribution.tar.gz $name-$openvds_version
 fi
 rm -rf $name-$openvds_version
+
+if [[ "$output_dir" != "" ]]; then
+  cp -r * $output_dir
+fi
