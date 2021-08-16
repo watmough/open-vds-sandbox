@@ -221,7 +221,7 @@ configure_file(CMake/InstalledPaths.cmake.in ${CMAKE_BINARY_DIR}/CMake/Installed
 install(FILES CMake/CopyDllForTarget.cmake CMake/SetWarnings.cmake ${CMAKE_BINARY_DIR}/CMake/InstalledPaths.cmake
   DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/openvds/examples/modules)
 install(DIRECTORY examples DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/openvds)
-install(DIRECTORY common/noise DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/openvds/examples/common)
+install(DIRECTORY common/Noise DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/openvds/examples/common)
 
 configure_file(docker/build_scripts/README.txt.in ${CMAKE_BINARY_DIR}/README.txt)
 install(FILES ${CMAKE_SOURCE_DIR}/Attributions.md ${CMAKE_BINARY_DIR}/README.txt ${CMAKE_SOURCE_DIR}/LICENSE DESTINATION ${CMAKE_INSTALL_PREFIX}/)
