@@ -981,6 +981,30 @@ OPENVDS_EXPORT void Close(VDSHandle handle);
 /// </returns>
 OPENVDS_EXPORT GlobalState *GetGlobalState();
 
+/// <summary>
+/// Get the name of the OpenVDS implementation
+/// </summary>
+/// <returns>
+/// A null terminated string
+/// </returns>
+OPENVDS_EXPORT const char *GetOpenVDSName();
+
+/// <summary>
+/// Get the version for the OpenVDS implementation
+/// </summary>
+/// <returnes>
+/// A version string
+/// </returnes>
+OPENVDS_EXPORT const char *GetOpenVDSVersion();
+
+/// <summary>
+/// Get revision of the OpenVDS build
+/// </summary>
+/// <returnes>
+/// A revision string
+/// </returnes>
+OPENVDS_EXPORT const char *GetOpenVDSRevision();
+
 }
 
 #endif //OPENVDS_H

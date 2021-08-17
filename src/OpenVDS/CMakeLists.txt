@@ -43,6 +43,7 @@ set(SOURCE_FILES
   VDS/VolumeIndexer.cpp
   VDS/Env.cpp
   VDS/StringToDouble.cpp
+  ${CMAKE_CURRENT_BINARY_DIR}/VDS/GetGitRevision.cpp
   ${COMMON_DIR}/Base64/Base64.cpp)
 
 set (PRIVATE_HEADER_FILES
@@ -150,10 +151,23 @@ foreach(DEP ${dependency_targets_3rdparty})
   add_dependencies(openvds_objects ${DEP})
 endforeach()
 
-target_include_directories(openvds_objects PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}" "${COMMON_DIR}")
+target_include_directories(openvds_objects PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}" "${COMMON_DIR}" "${CMAKE_CURRENT_BINARY_DIR}")
 target_include_directories(openvds_objects PRIVATE "VDS")
 target_compile_definitions(openvds_objects PRIVATE openvds_EXPORTS)
 target_compile_definitions(openvds_objects PRIVATE -DHUEBDS_EXPORTS= ) # We're not building HueBulkDataStore as a shared library
+target_compile_definitions(openvds_objects PRIVATE PROJECT_NAME="${CMAKE_PROJECT_NAME}" PROJECT_VERSION="${PROJECT_VERSION}")
+
+set(OPENVDS_REVISION "")
+find_package(Git)
+if(Git_FOUND)
+  execute_process(
+      COMMAND ${GIT_EXECUTABLE} rev-parse HEAD
+      OUTPUT_VARIABLE OPENVDS_REVISION
+      ERROR_QUIET
+      OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+endif()
+configure_file(VDS/GetGitRevision.cpp.in VDS/GetGitRevision.cpp)
 
 #needed for ENABLE_SSE_TRANSFORM
  if (NOT (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC"))

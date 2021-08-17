@@ -282,6 +282,9 @@ PyGlobal::initModule(py::module& m)
   m.def("getCompressionTolerance"     , static_cast<float(*)(native::VDSHandle)>(&GetCompressionTolerance), py::arg("handle").none(false), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(GetCompressionTolerance));
   m.def("close"                       , static_cast<void(*)(native::VDSHandle)>(&Close), py::arg("handle").none(false), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(Close));
   m.def("getGlobalState"              , static_cast<native::GlobalState *(*)()>(&GetGlobalState), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(GetGlobalState));
+  m.def("getOpenVDSName"              , static_cast<const char *(*)()>(&GetOpenVDSName), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(GetOpenVDSName));
+  m.def("getOpenVDSVersion"           , static_cast<const char *(*)()>(&GetOpenVDSVersion), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(GetOpenVDSVersion));
+  m.def("getOpenVDSRevision"          , static_cast<const char *(*)()>(&GetOpenVDSRevision), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(GetOpenVDSRevision));
 //AUTOGEN-END
   Error_.def(py::init<>());
   Error_.def("__repr__", [](native::Error const& self){ std::string tmp = std::to_string(self.code); return std::string("Error(code=") + tmp + ", string='" + self.string + "')"; });
@@ -309,4 +312,8 @@ PyGlobal::initModule(py::module& m)
 // IMPLEMENTED : AWSOpenOptions_.def(py::init<const std::string &, const std::string &, const std::string &, const std::string &>(), py::arg("bucket").none(false), py::arg("key").none(false), py::arg("region").none(false), py::arg("endpointOverride").none(false), OPENVDS_DOCSTRING(AWSOpenOptions_AWSOpenOptions_2));
   AWSOpenOptions_.def(py::init<const std::string &, const std::string &, const std::string &, const std::string &>(), py::arg("bucket").none(false), py::arg("key").none(false), py::arg("region").none(false) = "", py::arg("endpointOverride").none(false) = "", OPENVDS_DOCSTRING(AWSOpenOptions_AWSOpenOptions_2));
 }
+
+// IMPLEMENTED : m.def_property_readonly("openVDSName", &GetOpenVDSName, OPENVDS_DOCSTRING(GetOpenVDSName));
+// IMPLEMENTED : m.def_property_readonly("openVDSVersion", &GetOpenVDSVersion, OPENVDS_DOCSTRING(GetOpenVDSVersion));
+// IMPLEMENTED : m.def_property_readonly("openVDSRevision", &GetOpenVDSRevision, OPENVDS_DOCSTRING(GetOpenVDSRevision));
 
