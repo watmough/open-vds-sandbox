@@ -932,4 +932,14 @@ void SetIoManagerTransformer(std::function<IOManager* (IOManager*)> transformer)
 {
   iomanagerTransformer = transformer;
 }
+
+const char *GetOpenVDSName()
+{
+  return PROJECT_NAME;
+}
+
+const char *GetOpenVDSVersion()
+{
+  return PROJECT_VERSION;
+}
 }

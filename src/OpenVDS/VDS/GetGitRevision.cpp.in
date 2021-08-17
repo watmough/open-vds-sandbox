@@ -1,0 +1,10 @@
+#include <OpenVDS/OpenVDS.h>
+
+namespace OpenVDS
+{
+
+const char *GetOpenVDSRevision()
+{
+  return "@OPENVDS_REVISION@";
+}
+}

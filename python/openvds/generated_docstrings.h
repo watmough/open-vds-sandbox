@@ -895,6 +895,23 @@ Returns:
 --------
     The VolumeDataLayout of the VDS)doc";
 
+static const char *__doc_OpenVDS_GetOpenVDSName =
+R"doc(Get the name of the OpenVDS implementation
+
+Returns:
+--------
+    A null terminated string)doc";
+
+static const char *__doc_OpenVDS_GetOpenVDSRevision =
+R"doc(Get revision of the OpenVDS build
+
+<returnes> A revision string </returnes>)doc";
+
+static const char *__doc_OpenVDS_GetOpenVDSVersion =
+R"doc(Get the version for the OpenVDS implementation
+
+<returnes> A version string </returnes>)doc";
+
 static const char *__doc_OpenVDS_GlobalState = R"doc(Object that contains global runtime data)doc";
 
 static const char *__doc_OpenVDS_GlobalState_2 = R"doc()doc";

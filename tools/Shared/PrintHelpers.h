@@ -3,6 +3,7 @@
 
 #include <json/json.h>
 #include <fmt/format.h>
+#include <OpenVDS/OpenVDS.h>
 
 namespace OpenVDS
 {
@@ -56,8 +57,13 @@ printVersion(bool jsonOutput, const std::string &name)
   {
     Json::Value version;
     version["name"] = name;
-    version["project"] = PROJECT_NAME;
-    version["version"] = PROJECT_VERSION;
+    version["project"] = OpenVDS::GetOpenVDSName();
+    version["version"] = OpenVDS::GetOpenVDSVersion();
+    std::string rev = OpenVDS::GetOpenVDSRevision();
+    if (rev.size())
+    {
+      version["revision"] = OpenVDS::GetOpenVDSRevision();
+    }
     Json::Value info;
     info["version"] = version;
     Json::StreamWriterBuilder wbuilder;
@@ -67,7 +73,15 @@ printVersion(bool jsonOutput, const std::string &name)
   }
   else
   {
-    fmt::print(stdout, "{} - {} {}\n", name, PROJECT_NAME, PROJECT_VERSION);
+    std::string rev = OpenVDS::GetOpenVDSRevision();
+    if (rev.size())
+    {
+      fmt::print(stdout, "{} - {} {} - Revision: {}\n", name, OpenVDS::GetOpenVDSName(), OpenVDS::GetOpenVDSVersion(), rev);
+    }
+    else
+    {
+      fmt::print(stdout, "{} - {} {}\n", name, OpenVDS::GetOpenVDSName(), OpenVDS::GetOpenVDSVersion());
+    }
   }
 }
 
