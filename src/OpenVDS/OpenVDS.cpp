@@ -445,33 +445,20 @@ static const std::vector<UrlToOpenOptions> urlToOpenOptions = {
 static bool GetWaveletAdaptiveInfo(std::string& connectionString, WaveletAdaptiveMode &mode, float &tolerance, float &ratio, Error &error)
 {
   std::vector<std::string> waveletAdaptiveKeys;
-  waveletAdaptiveKeys.emplace_back("WaveletAdaptiveMode");
   waveletAdaptiveKeys.emplace_back("WaveletAdaptiveTolerance");
   waveletAdaptiveKeys.emplace_back("WaveletAdaptiveRatio");
   auto waveletAdaptivePair = RemoveKeyValue(waveletAdaptiveKeys, connectionString, error);
   if (error.code || waveletAdaptivePair.first < 0)
     return false;
-  assert(waveletAdaptivePair.first < waveletAdaptiveKeys.size());
+  assert(waveletAdaptivePair.first < int(waveletAdaptiveKeys.size()));
   if (waveletAdaptivePair.first == 0)
-  {
-    std::string value = waveletAdaptivePair.second;
-    std::transform(value.begin(), value.end(), value.begin(), asciitolower);
-    if (value != "bestquality" && value != "best_quality")
-    {
-      error.code = -1;
-      error.string = fmt::format("Connection string parameter WaveletAdaptiveMode is specified with illigal value {}. The only value valid for this property is BestQuality, the other modes will be set by specifying WavletAdaptiveTolerance and WaveletAdaptiveRatio properties.", waveletAdaptivePair.second);
-      return false;
-    }
-    mode = WaveletAdaptiveMode::BestQuality;
-  }
-  if (waveletAdaptivePair.first == 1)
   {
     tolerance = float(StringToDouble(waveletAdaptivePair.second, error));
     if (error.code)
       error.string = fmt::format("Connection string parameter WaveletAdaptiveRatio: {}", error.string);
     mode = WaveletAdaptiveMode::Tolerance;
   }
-  else if (waveletAdaptivePair.first == 2)
+  else if (waveletAdaptivePair.first == 0)
   {
     ratio = float(StringToDouble(waveletAdaptivePair.second, error));
     if (error.code)
@@ -521,7 +508,7 @@ OpenOptions* CreateOpenOptions(StringWrapper urlWrapper, StringWrapper connectio
     if (adaptiveMode == WaveletAdaptiveMode::Ratio)
       openOptions->waveletAdaptiveRatio = adaptiveRatio;
     if (adaptiveMode == WaveletAdaptiveMode::Tolerance)
-    openOptions->waveletAdaptiveTolerance = adaptiveTolerance;
+      openOptions->waveletAdaptiveTolerance = adaptiveTolerance;
   }
 
   return openOptions.release();
