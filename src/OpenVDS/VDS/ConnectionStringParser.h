@@ -96,17 +96,50 @@ inline void TokenizeConnectionString(It begin, It end, Callback callback, Error&
   return;
 }
 
+struct MatchedKeys
+{
+  int index;
+  std::string key;
+  std::string value;
+};
+
+inline std::string createMatchKeysArray(const std::vector<std::string>& matchKeys)
+{
+  std::string ret = "[";
+  for (int i = 0; i < int(matchKeys.size()); i++)
+  {
+    ret += matchKeys[i];
+    if (i + 1 < int(matchKeys.size()))
+      ret += ", ";
+  }
+  ret += "]";
+  return ret;
+}
+
+inline std::string createMatchKeysArray(const std::vector<MatchedKeys>& matchKeys)
+{
+  std::string ret = "[";
+  for (int i = 0; i < int(matchKeys.size()); i++)
+  {
+    ret += matchKeys[i].key;
+    if (i + 1 < int(matchKeys.size()))
+      ret += ", ";
+  }
+  ret += "]";
+  return ret;
+}
+
 inline std::pair<int, std::string> RemoveKeyValue(const std::vector<std::string> & matchKeys, std::string &connectionString, Error &error)
 {
   using It = decltype(connectionString.begin());
-  std::pair<int, std::string> ret = std::make_pair(-1, std::string());
   std::vector<std::string> lowercaseMatchKeys = matchKeys;
+  std::vector<MatchedKeys> matches;
   for (auto& lowercaseMatchKey : lowercaseMatchKeys)
   {
     std::transform(lowercaseMatchKey.begin(), lowercaseMatchKey.end(), lowercaseMatchKey.begin(), asciitolower);
   }
   TokenizeConnectionString(connectionString.begin(), connectionString.end(),
-    [&lowercaseMatchKeys, &connectionString, &ret](It keyValueBegin, It keyValueEnd, std::string&& key, std::string&& value, It *newKeyValueEnd, int *endAdjust)
+    [&lowercaseMatchKeys, &connectionString, &matches](It keyValueBegin, It keyValueEnd, std::string&& key, std::string&& value, It* newKeyValueEnd, int* endAdjust)
   {
     auto it = std::find(lowercaseMatchKeys.begin(), lowercaseMatchKeys.end(), key);
     if (it != lowercaseMatchKeys.end())
@@ -118,12 +151,28 @@ inline std::pair<int, std::string> RemoveKeyValue(const std::vector<std::string>
       else if (keyValueEnd != connectionString.end())
         eraseEnd++;
       connectionString.erase(eraseBegin, eraseEnd);
-      ret = std::make_pair(int(it - lowercaseMatchKeys.begin()), std::move(value));
+      matches.emplace_back();
+      matches.back().index = int(it - lowercaseMatchKeys.begin());
+      matches.back().key = std::move(key);
+      matches.back().value = std::move(value);
       *endAdjust = int(eraseBegin - eraseEnd);
       *newKeyValueEnd = eraseEnd + *endAdjust;
     }
   }
   , error);
+
+  auto ret = std::make_pair(-1, std::string());
+  if (int(matches.size()) > 1)
+  {
+    std::string matchKeysArray = createMatchKeysArray(lowercaseMatchKeys);
+    std::string matchedKeysArray = createMatchKeysArray(matches);
+    error.string = fmt::format("Multiple values of the mutually exclusive group {} found. Found keys are: {}", matchKeysArray, matchedKeysArray);
+    error.code = -1;
+  }
+  else if (int(matches.size()) == 1)
+  {
+    ret = std::make_pair(matches[0].index, matches[0].value);
+  }
   return ret;
 }
 
@@ -132,13 +181,33 @@ inline std::map<std::string, std::string> ParseConnectionString(const char* conn
   std::map<std::string, std::string> ret;
   auto end = connectionString + connectionStringSize;
   using It = const char*;
+
+  std::vector<std::pair<std::string, std::string>> allKeyValues;
   TokenizeConnectionString(connectionString, end,
-    [&ret](It keyValueBegin, It keyValueEnd, std::string&& key, std::string&& value, It *newKeyValueEnd, int *endAdjust)
+    [&allKeyValues](It keyValueBegin, It keyValueEnd, std::string&& key, std::string&& value, It *newKeyValueEnd, int *endAdjust)
   {
-    ret.emplace(std::move(key), std::move(value));
+    allKeyValues.emplace_back(std::move(key), std::move(value));
   }, error);
+  if (allKeyValues.size())
+  {
+    std::sort(allKeyValues.begin(), allKeyValues.end(), [](const std::pair<std::string, std::string>& a, const std::pair<std::string, std::string>& b)
+    {
+      return a < b;
+    });
+    for (int i = 0; i < int(allKeyValues.size()); i++)
+    {
+      if (i != 0 && allKeyValues[i].first == allKeyValues[i - 1].first)
+      {
+        error.code = -1;
+        error.string = fmt::format("Connection string contains duplicate key {}. A connection string can only contain one Key.", allKeyValues[i].first);
+        return ret;
+      }
+      ret.emplace(allKeyValues[i].first, allKeyValues[i].second);
+    }
+  }
   return ret;
 }
+
 inline std::map<std::string, std::string> ParseConnectionString(const std::string connectionString, Error& error)
 {
   return ParseConnectionString(connectionString.data(), connectionString.size(), error);

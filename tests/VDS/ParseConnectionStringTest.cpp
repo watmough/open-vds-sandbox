@@ -68,6 +68,26 @@ GTEST_TEST(VDS_integration, ParseConnectionString)
   map = OpenVDS::ParseConnectionString(noEquals2.data(), noEquals2.size(), error);
   EXPECT_NE(error.code, 0);
 
+  error = OpenVDS::Error();
+  std::string duplicates1 = "Foo=bar;Foo=foo";
+  map = OpenVDS::ParseConnectionString(duplicates1.data(), duplicates1.size(), error);
+  EXPECT_NE(error.code, 0);
+
+  error = OpenVDS::Error();
+  std::string duplicates2 = "Foo=bar;Bar=foo;Foo=foo";
+  map = OpenVDS::ParseConnectionString(duplicates2.data(), duplicates2.size(), error);
+  EXPECT_NE(error.code, 0);
+  
+  error = OpenVDS::Error();
+  std::string duplicates3 = "Bar=foo;Foo=bar;Foo=foo";
+  map = OpenVDS::ParseConnectionString(duplicates3.data(), duplicates3.size(), error);
+  EXPECT_NE(error.code, 0);
+  
+  error = OpenVDS::Error();
+  std::string duplicates4 = "Foo=bar;Foo=foo;Bar=foo";
+  map = OpenVDS::ParseConnectionString(duplicates4.data(), duplicates4.size(), error);
+  EXPECT_NE(error.code, 0);
+
   {
     error = OpenVDS::Error();
     std::string remove = "Hello=World;Another=Element";
@@ -103,76 +123,63 @@ GTEST_TEST(VDS_integration, ParseConnectionString)
   }
   {
     error = OpenVDS::Error();
-    std::string remove = "The=Only;Duplicates=ShouldBeRemoved;The=Twice";
+    std::string remove = "The=Only;Duplicates=AreNotAllowed;The=Twice";
     auto removed = OpenVDS::RemoveKeyValue(mkStringVec("The"), remove, error);
-    EXPECT_EQ(error.code, 0);
-    EXPECT_EQ(remove, "Duplicates=ShouldBeRemoved");
-    EXPECT_EQ(removed.second, "Twice");
+    EXPECT_EQ(error.code, -1);
   }
   {
     error = OpenVDS::Error();
-    std::string remove = "Some=Thing;The=Only;The=Twice;Duplicates=ShouldBeRemoved;More=Data";
+    std::string remove = "Some=Thing;The=Only;The=Twice;Duplicates=AreNotAllowed;More=Data";
     auto removed = OpenVDS::RemoveKeyValue(mkStringVec("The"), remove, error);
-    EXPECT_EQ(error.code, 0);
-    EXPECT_EQ(remove, "Some=Thing;Duplicates=ShouldBeRemoved;More=Data");
-    EXPECT_EQ(removed.second, "Twice");
+    EXPECT_EQ(error.code, -1);
   }
   {
     error = OpenVDS::Error();
     std::string remove = "The=Only;The=Twice;Duplicates=ShouldBeRemoved;More=Data";
     auto removed = OpenVDS::RemoveKeyValue(mkStringVec("The"), remove, error);
-    EXPECT_EQ(error.code, 0);
-    EXPECT_EQ(remove, "Duplicates=ShouldBeRemoved;More=Data");
-    EXPECT_EQ(removed.second, "Twice");
+    EXPECT_EQ(error.code, -1);
   }
   {
     error = OpenVDS::Error();
     std::string remove = "Duplicates=ShouldBeRemoved;More=Data;The=Only;The=Twice";
     auto removed = OpenVDS::RemoveKeyValue(mkStringVec("The"), remove, error);
-    EXPECT_EQ(error.code, 0);
-    EXPECT_EQ(remove, "Duplicates=ShouldBeRemoved;More=Data");
-    EXPECT_EQ(removed.second, "Twice");
+    EXPECT_EQ(error.code, -1);
   }
   {
     error = OpenVDS::Error();
-    std::string remove = "Duplicates=ShouldBeRemoved;More=Data;The=Only;The=Twice";
+    std::string remove = "Duplicates=ShouldBeRemoved;More=Data;The=Only";
     std::vector<std::string> keys;
     keys.emplace_back("more");
     keys.emplace_back("the");
     auto removed = OpenVDS::RemoveKeyValue(keys, remove, error);
-    EXPECT_EQ(error.code, 0);
-    EXPECT_EQ(remove, "Duplicates=ShouldBeRemoved");
-    EXPECT_EQ(removed.first, 1);
-    EXPECT_EQ(removed.second, "Twice");
+    EXPECT_EQ(error.code, -1);
   }
   {
     error = OpenVDS::Error();
-    std::string remove = "Duplicates=;More=Data;The=Only;The=Twice";
+    std::string remove = "Duplicates=;More=Data;The=Only";
     std::vector<std::string> keys;
     keys.emplace_back("more");
     keys.emplace_back("the");
     auto removed = OpenVDS::RemoveKeyValue(keys, remove, error);
-    EXPECT_EQ(error.code, 0);
+    EXPECT_EQ(error.code, -1);
   }
   {
     error = OpenVDS::Error();
-    std::string remove = "More=Data;The=Only;The=Twice;Duplicates=";
+    std::string remove = "More=Data;The=Twice;Duplicates=";
     std::vector<std::string> keys;
     keys.emplace_back("more");
     keys.emplace_back("the");
     auto removed = OpenVDS::RemoveKeyValue(keys, remove, error);
-    EXPECT_EQ(error.code, 0);
-    EXPECT_EQ(remove, "Duplicates=");
+    EXPECT_EQ(error.code, -1);
   }
   {
     error = OpenVDS::Error();
-    std::string remove = "More=Data;The=Only;The=Twice;Duplicates=;The=";
+    std::string remove = "More=Data;Duplicates=;The=";
     std::vector<std::string> keys;
     keys.emplace_back("more");
     keys.emplace_back("the");
     auto removed = OpenVDS::RemoveKeyValue(keys, remove, error);
-    EXPECT_EQ(error.code, 0);
-    EXPECT_EQ(remove, "Duplicates=");
+    EXPECT_EQ(error.code, -1);
   }
 
 }
