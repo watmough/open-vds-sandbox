@@ -1468,6 +1468,7 @@ main(int argc, char* argv[])
   std::string urlConnection;
   std::string inputConnection;
   std::string persistentID;
+  bool singleConnection = false;
   bool uniqueID = false;
   bool disablePersistentID = false;
   bool prestack = false;
@@ -1508,6 +1509,7 @@ main(int argc, char* argv[])
   options.add_option("", "", "url", "Url with cloud vendor scheme used for target location or file name of output VDS file.", cxxopts::value<std::string>(url), "<string>");
   options.add_option("", "", "url-connection", "Connection string used for additional parameters to the url connection", cxxopts::value<std::string>(urlConnection), "<string>");
   options.add_option("", "", "vdsfile", "File name of output VDS file.", cxxopts::value<std::string>(url), "<string>");
+  options.add_option("", "", "single-connection", "Use single connection string. When specified url-connection will be used for input-connection as well", cxxopts::value<bool>(singleConnection), "");
   options.add_option("", "", "input-connection", "Connection string used for additional parameters to the input connection", cxxopts::value<std::string>(inputConnection), "<string>");
   options.add_option("", "", "persistentID", "A globally unique ID for the VDS, usually an 8-digit hexadecimal number.", cxxopts::value<std::string>(persistentID), "<ID>");
   options.add_option("", "", "uniqueID", "Generate a new globally unique ID when scanning the input SEG-Y file.", cxxopts::value<bool>(uniqueID), "");
@@ -1637,6 +1639,14 @@ main(int argc, char* argv[])
     OpenVDS::printError(jsonOutput, "SEGY", "Only one input SEG-Y file may be specified");
     return EXIT_FAILURE;
   }
+
+  if (singleConnection && inputConnection.size())
+  {
+    OpenVDS::printError(jsonOutput, "Args", "Both --single-connection and --input-connection specified.");
+      return EXIT_FAILURE;
+  }
+  if (singleConnection)
+    inputConnection = urlConnection;
 
   if(uniqueID && !persistentID.empty())
   {
