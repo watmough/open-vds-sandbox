@@ -479,8 +479,8 @@ OpenOptions* CreateOpenOptions(StringWrapper urlWrapper, StringWrapper connectio
   std::string connectionString(connectionStringWrapper.data, connectionStringWrapper.size);
 
   WaveletAdaptiveMode adaptiveMode;
-  float adaptiveTolerance;
-  float adaptiveRatio;
+  float adaptiveTolerance = 0.0f;
+  float adaptiveRatio = 0.0f;
   bool adaptiveDataSet = GetWaveletAdaptiveInfo(connectionString, adaptiveMode, adaptiveTolerance, adaptiveRatio, error);
   if (error.code)
     return nullptr;
