@@ -1,0 +1,22 @@
+if ${PYTHON_DO_AUTODETECT_CA_CERTIFICATES}:
+  import os
+  if os.environ.get("SSL_CERT_FILE") == None and os.environ.get("SSL_CERT_DIR") == None:
+    prefer_certifi = os.environ.get("OPENVDS_PYTHON_PREFER_CERTIFI")
+    if prefer_certifi == None:
+      possible_certs = [
+        '/etc/ssl/certs/ca-certificates.crt',
+        '/etc/pki/tls/certs/ca-bundle.crt',
+        '/usr/share/ssl/certs/ca-bundle.crt',
+        '/usr/local/share/certs/ca-root-nss.crt',
+        '/etc/ssl/cert.pem']
+      for cert in possible_certs:
+        if os.path.isfile(cert):
+          os.environ["SSL_CERT_FILE"] = cert
+          break
+    if os.environ.get("SSL_CERT_FILE") == None:
+      if prefer_certifi:
+        import certifi
+      if prefer_certifi or ('certifi' in sys.modules):
+        os.environ["SSL_CERT_FILE"] = certifi.where()
+
+from .api import *
