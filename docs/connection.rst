@@ -40,8 +40,8 @@ The recognised keys for ``s3`` connection string are
 
   - Region
   - EndpointOverride
-  - AccessKeyId
-  - SecretKey or SecretAccessKey
+  - AccessKeyId or AwsAccessKeyId
+  - SecretKey, SecretAccessKey, AwsSecretKey or AwsSecretAccessKey
   - SessionToken
   - Expiration (Note: AWS SDK only accepts 'Z' timezone for ISO 8601 time)
   - LogFilenamePrefix
