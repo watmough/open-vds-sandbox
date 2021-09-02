@@ -11,6 +11,7 @@ platform_name=""
 skplat_name=""
 distribution=""
 output_dir=""
+auditwheels="no"
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
   cmake_generator="Ninja"
   platform_name="linux"
@@ -62,6 +63,10 @@ case $key in
     output_dir="$2"
     shift # past argument
     shift # past value
+    ;;
+  -a|--auditwheels)
+    auditwheels="yes"
+    shift
     ;;
     *)    # unknown option
     openvds_path="$1" # save it in an array for later
@@ -124,12 +129,24 @@ for python_executable in "${python_executables[@]}"; do
   [[ -d "$skbuild_dir/cmake-build" ]] || mkdir -p "$skbuild_dir/cmake-build"
   cp -r "$build_dir"/* "$skbuild_dir/cmake-build"
   
-  "$python_executable" setup.py --skip-cmake bdist_wheel 
+  "$python_executable" setup.py --skip-cmake bdist_wheel
+
   cp -r $skbuild_dir/cmake-install/* binpackage/$name-$openvds_version
+
+  if [[ "$auditwheels" == "yes" ]]; then
+    old_dir=$PWD
+    cd $openvds_path/dist
+    LD_LIBRARY_PATH=$skbuild_dir/cmake-install/lib64 auditwheel repair *.whl
+    cp wheelhouse/*manylinux* $openvds_path/binpackage/$name-$openvds_version/
+    mv wheelhouse/*manylinux* $openvds_path/binpackage/python/$distribution/
+    cd $old_dir
+  else
+    cp $openvds_path/dist/* $openvds_path/binpackage/$name-$openvds_version/
+    mv $openvds_path/dist/* $openvds_path/binpackage/python/$distribution/
+  fi
+  rm -rf $openvds_path/dist
 done
 
-cp $openvds_path/dist/* $openvds_path/binpackage/$name-$openvds_version/
-cp $openvds_path/dist/* $openvds_path/binpackage/python/$distribution/
 cd $openvds_path/binpackage
 
 if [[ "$platform_name" == "win" ]]; then

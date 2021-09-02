@@ -54,17 +54,22 @@ set_target_properties(core
   VS_DEBUGGER_ENVIRONMENT "PYTHONPATH=${CMAKE_CURRENT_BINARY_DIR}/..;$ENV{PYTHONPATH}"
   )
 
-SET(pythonsources
-    ${CMAKE_CURRENT_SOURCE_DIR}/__init__.py
-    ${CMAKE_CURRENT_SOURCE_DIR}/api.py
-    ${CMAKE_CURRENT_SOURCE_DIR}/volumedataaccess.py
-    ${CMAKE_CURRENT_SOURCE_DIR}/volumedataaccessors.py
-    ${CMAKE_CURRENT_SOURCE_DIR}/asyncmethods.py
-)
+if (PYTHON_AUTODETECT_CA_CERTIFICATES)
+  set(PYTHON_DO_AUTODETECT_CA_CERTIFICATES True)
+else()
+  set(PYTHON_DO_AUTODETECT_CA_CERTIFICATES False)
+endif()
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/__init__.py.in ${CMAKE_CURRENT_BINARY_DIR}/__init__.py)
+
+list(APPEND pythonsources ${CMAKE_CURRENT_BINARY_DIR}/__init__.py)
+list(APPEND pythonsources ${CMAKE_CURRENT_SOURCE_DIR}/api.py)
+list(APPEND pythonsources ${CMAKE_CURRENT_SOURCE_DIR}/volumedataaccess.py)
+list(APPEND pythonsources ${CMAKE_CURRENT_SOURCE_DIR}/volumedataaccessors.py)
+list(APPEND pythonsources ${CMAKE_CURRENT_SOURCE_DIR}/asyncmethods.py)
 
 add_custom_target(core_py_files ALL
   COMMAND ${CMAKE_COMMAND} -E copy_if_different ${pythonsources} $<TARGET_FILE_DIR:core>)
-#add_dependencies(core core_py_files)
 
 copyDllForTarget(core)
 setWarningFlagsForTarget(core)
@@ -81,12 +86,6 @@ install(TARGETS core LIBRARY CONFIGURATIONS Release RelWithDebInfo MinSizeRel DE
 install(TARGETS core LIBRARY CONFIGURATIONS Debug DESTINATION python/Debug/openvds)
 install(FILES ${pythonsources} CONFIGURATIONS Release RelWithDebInfo MinSizeRel DESTINATION python/openvds)
 install(FILES ${pythonsources} CONFIGURATIONS Debug DESTINATION python/Debug/openvds)
-
-if (WIN32)
-  set(INSTALL_TYPE RUNTIME)
-else()
-  set(INSTALL_TYPE LIBRARY)
-endif()
 
 get_property(runtime_3rdparty_release GLOBAL PROPERTY OPENVDS_RUNTIME_LIBS_RELEASE)
 get_property(runtime_3rdparty_debug   GLOBAL PROPERTY OPENVDS_RUNTIME_LIBS_DEBUG)
