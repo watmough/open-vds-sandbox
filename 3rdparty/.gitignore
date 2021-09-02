@@ -20,3 +20,5 @@ cmakerc*
 azure-sdk-for-cpp*
 libxml2*
 !dms-git
+azure-sdk-for-cpp*
+libxml2*

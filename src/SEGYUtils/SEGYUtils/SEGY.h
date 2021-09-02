@@ -55,6 +55,16 @@ struct HeaderField
   HeaderField(int byteLocation, FieldWidth fieldWidth) : byteLocation(byteLocation), fieldWidth(fieldWidth) {}
 
   bool       Defined() const { return byteLocation != 0; }
+
+  bool operator==(const HeaderField& hf) const
+  {
+    return byteLocation == hf.byteLocation && fieldWidth == hf.fieldWidth;
+  }
+
+  bool operator!=(const HeaderField& hf) const
+  {
+    return !(*this == hf);
+  }
 };
 
 namespace BinaryHeader
