@@ -56,7 +56,7 @@ namespace OpenVDS
         return;
       }
 
-      uint64_t size;
+      uint64_t size = 0;
       std::string created_date;
       try
       {

@@ -672,7 +672,7 @@ VolumeDataStore::SerializeVolumeData(const VolumeDataChunk& chunk, const DataBlo
     }
     else
     {
-      uint64_t compressedSize;
+      uint64_t compressedSize = (uint64_t) destinationBuffer.size();
       SerializeRLEFromBuffer(dataBlock, dataBlockHeader, targetBuffer, compressedSize, tmpbuffersize, tmpdata.get());
       destinationBuffer.resize(compressedSize);
     }
