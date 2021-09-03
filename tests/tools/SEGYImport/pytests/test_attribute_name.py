@@ -1,10 +1,17 @@
 import os
+import tempfile
 from pathlib import Path
 
 import pytest
 import openvds
 
-from segyimport_test_config import test_data_dir, test_output_dir, ImportExecutor
+from segyimport_test_config import test_data_dir, ImportExecutor
+
+
+class TempVDSGuard:
+    def __init__(self, base_name="import_test"):
+        self.temp_dir = tempfile.TemporaryDirectory()
+        self.filename = os.path.join(self.temp_dir.name, base_name + ".vds")
 
 
 @pytest.fixture
@@ -14,26 +21,23 @@ def poststack_segy() -> str:
 
 
 @pytest.fixture
-def output_vds() -> str:
-    vds_filename = os.path.join(test_output_dir, "import_test.vds")
-    if Path(vds_filename).exists():
-        os.remove(vds_filename)
-    return vds_filename
+def output_vds() -> TempVDSGuard:
+    return TempVDSGuard()
 
 
 def test_default_attribute_and_unit(poststack_segy, output_vds):
     ex = ImportExecutor()
 
-    ex.add_args(["--vdsfile", output_vds])
+    ex.add_args(["--vdsfile", output_vds.filename])
 
     ex.add_arg(poststack_segy)
 
     result = ex.run()
 
     assert result == 0, ex.output()
-    assert Path(output_vds).exists()
+    assert Path(output_vds.filename).exists()
 
-    with openvds.open(output_vds, "") as handle:
+    with openvds.open(output_vds.filename, "") as handle:
         layout = openvds.getLayout(handle)
         descriptor = layout.getChannelDescriptor(0)
         assert descriptor.name == "Amplitude"
@@ -45,7 +49,7 @@ def test_custom_attribute_name(poststack_segy, output_vds):
 
     ex = ImportExecutor()
 
-    ex.add_args(["--vdsfile", output_vds])
+    ex.add_args(["--vdsfile", output_vds.filename])
     ex.add_args(["--attribute-name", custom_attribute_name])
 
     ex.add_arg(poststack_segy)
@@ -53,9 +57,9 @@ def test_custom_attribute_name(poststack_segy, output_vds):
     result = ex.run()
 
     assert result == 0, ex.output()
-    assert Path(output_vds).exists()
+    assert Path(output_vds.filename).exists()
 
-    with openvds.open(output_vds, "") as handle:
+    with openvds.open(output_vds.filename, "") as handle:
         layout = openvds.getLayout(handle)
         descriptor = layout.getChannelDescriptor(0)
         assert descriptor.name == custom_attribute_name
@@ -67,7 +71,7 @@ def test_custom_attribute_unit(poststack_segy, output_vds):
 
     ex = ImportExecutor()
 
-    ex.add_args(["--vdsfile", output_vds])
+    ex.add_args(["--vdsfile", output_vds.filename])
     ex.add_args(["--attribute-unit", custom_attribute_unit])
 
     ex.add_arg(poststack_segy)
@@ -75,9 +79,9 @@ def test_custom_attribute_unit(poststack_segy, output_vds):
     result = ex.run()
 
     assert result == 0, ex.output()
-    assert Path(output_vds).exists()
+    assert Path(output_vds.filename).exists()
 
-    with openvds.open(output_vds, "") as handle:
+    with openvds.open(output_vds.filename, "") as handle:
         layout = openvds.getLayout(handle)
         descriptor = layout.getChannelDescriptor(0)
         assert descriptor.name == "Amplitude"
@@ -89,7 +93,7 @@ def test_invalid_attribute_name(poststack_segy, output_vds):
 
     ex = ImportExecutor()
 
-    ex.add_args(["--vdsfile", output_vds])
+    ex.add_args(["--vdsfile", output_vds.filename])
     ex.add_args(["--attribute-name", custom_attribute_name])
 
     ex.add_arg(poststack_segy)
@@ -97,7 +101,7 @@ def test_invalid_attribute_name(poststack_segy, output_vds):
     result = ex.run()
 
     assert result > 0, ex.output()
-    assert not Path(output_vds).exists()
+    assert not Path(output_vds.filename).exists()
 
 
 def test_invalid_attribute_unit(poststack_segy, output_vds):
@@ -105,7 +109,7 @@ def test_invalid_attribute_unit(poststack_segy, output_vds):
 
     ex = ImportExecutor()
 
-    ex.add_args(["--vdsfile", output_vds])
+    ex.add_args(["--vdsfile", output_vds.filename])
     ex.add_args(["--attribute-unit", custom_attribute_unit])
 
     ex.add_arg(poststack_segy)
@@ -113,4 +117,4 @@ def test_invalid_attribute_unit(poststack_segy, output_vds):
     result = ex.run()
 
     assert result > 0, ex.output()
-    assert not Path(output_vds).exists()
+    assert not Path(output_vds.filename).exists()
