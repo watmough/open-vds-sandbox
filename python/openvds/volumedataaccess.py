@@ -62,7 +62,7 @@ def _ndarraypositions(tuples: List[Tuple[float]]):
   return arr
 
 class VolumeDataRequest(object):
-  def __init__(self, min: Tuple[int] = None, max: Tuple[int] = None, data_out=None, dimensionsND=DimensionsND.Dimensions_012, lod=0, channel=0, format=VoxelFormat.Format_R32, replacementNoValue=None, projectedDimensions=DimensionsND.Dimensions_012, interpolationMethod=InterpolationMethod.Cubic, voxelPlane=None):
+  def __init__(self, min: Tuple[int] = (), max: Tuple[int] = (), data_out=None, dimensionsND=DimensionsND.Dimensions_012, lod=0, channel=0, format=VoxelFormat.Format_R32, replacementNoValue=None, projectedDimensions=DimensionsND.Dimensions_012, interpolationMethod=InterpolationMethod.Cubic, voxelPlane=None):
     array_interface = None
     if hasattr(data_out, "__array_interface__"):
       array_interface = data_out.__array_interface__

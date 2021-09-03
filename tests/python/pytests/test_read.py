@@ -4,7 +4,7 @@ import pytest
 
 from CreateVds import *
 
-def test_open_download_fail(dataset_80_r32_64):
+def test_read_accessor(dataset_80_r32_64):
     with openvds.open(dataset_80_r32_64, "") as handle:
         acc = openvds.VolumeDataAccessManager(handle)
         accessor = acc.createVolumeData3DReadAccessorR32(openvds.DimensionsND.Dimensions_012)
@@ -31,3 +31,10 @@ def test_open_download_fail(dataset_80_r32_64):
         v9 = accessor.getValue((3,0,0))
         assert v9 == 80.0 * 80.0 * 3.0
 
+
+def test_read_traces(dataset_80_r32_64):
+    with openvds.open(dataset_80_r32_64, "") as handle:
+        acc = openvds.VolumeDataAccessManager(handle)
+        r = acc.requestVolumeTraces([(0, 10.5, 10.5), (0, 20.5, 20.5)], 0)
+        assert r.data[0] == 80 * 10 + 80 * 80 * 10
+        assert r.data[80] == 80 * 20 + 80 * 80 * 20
