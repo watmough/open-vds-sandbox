@@ -3,7 +3,7 @@ FROM quay.io/pypa/manylinux2014_x86_64
 RUN curl -sSL  -o ninja.zip "https://github.com/ninja-build/ninja/releases/download/v1.10.2/ninja-linux.zip"
 RUN unzip ninja.zip && mv ninja /usr/local/bin/ && rm -vf ninja* && ln -s /usr/local/bin/ninja /usr/local/bin/ninja-build
 
-RUN yum install -y vim java-1.8.0-openjdk-devel libxml2-devel zlib-devel boost169-devel openssl-devel libcurl-devel libuv-devel libuuid-devel
+RUN yum install -y vim less gdb java-1.8.0-openjdk-devel libxml2-devel zlib-devel boost169-devel openssl-devel libcurl-devel libuv-devel libuuid-devel
 
 RUN /opt/python/cp36-cp36m/bin/python -m pip install scikit-build
 RUN /opt/python/cp37-cp37m/bin/python -m pip install scikit-build
