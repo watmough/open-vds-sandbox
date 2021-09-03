@@ -79,7 +79,7 @@ bool VolumeDataStore::Verify(const VolumeDataChunk &volumeDataChunk, const std::
       int32_t createSizeX    = waveletHeader[2];
       int32_t createSizeY    = waveletHeader[3];
       int32_t createSizeZ    = waveletHeader[4];
-      int32_t dimensions     = waveletHeader[5];
+      int32_t dimensions     = waveletHeader[5] & 0xff;
 
       isValid = dataVersion >= WAVELET_DATA_VERSION_1_4 &&
                 dataVersion <= WAVELET_DATA_VERSION_1_5 &&
