@@ -133,7 +133,7 @@ option(BUILD_CURL   "Build libcurl as part of the openVDS build" ${DEFAULT_BUILD
 option(BUILD_UV     "Build libuv as part of the openVDS build" ${DEFAULT_BUILD_UV})
 option(BUILD_LIBXML "Build libxml2 as part of the openVDS build" ${DEFAULT_BUILD_LIBXML})
 option(USE_LIBRESSL "Build libressl as part of the openVDS build and use it instead of OpenSSL" ${DEFAULT_USE_LIBRESSL})
-option(PYTHON_AUTODETECT_CA_CERTIFICATES "Make python initialization script autodetect location of ca certificates" OFF)
+option(AUTODETECT_CA_CERTIFICATES "Make python initialization script autodetect location of ca certificates" OFF)
 
 include(CMakeDependentOption)
 

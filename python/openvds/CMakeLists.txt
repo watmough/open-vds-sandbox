@@ -54,15 +54,7 @@ set_target_properties(core
   VS_DEBUGGER_ENVIRONMENT "PYTHONPATH=${CMAKE_CURRENT_BINARY_DIR}/..;$ENV{PYTHONPATH}"
   )
 
-if (PYTHON_AUTODETECT_CA_CERTIFICATES)
-  set(PYTHON_DO_AUTODETECT_CA_CERTIFICATES True)
-else()
-  set(PYTHON_DO_AUTODETECT_CA_CERTIFICATES False)
-endif()
-
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/__init__.py.in ${CMAKE_CURRENT_BINARY_DIR}/__init__.py)
-
-list(APPEND pythonsources ${CMAKE_CURRENT_BINARY_DIR}/__init__.py)
+list(APPEND pythonsources ${CMAKE_CURRENT_SOURCE_DIR}/__init__.py)
 list(APPEND pythonsources ${CMAKE_CURRENT_SOURCE_DIR}/api.py)
 list(APPEND pythonsources ${CMAKE_CURRENT_SOURCE_DIR}/volumedataaccess.py)
 list(APPEND pythonsources ${CMAKE_CURRENT_SOURCE_DIR}/volumedataaccessors.py)

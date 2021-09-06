@@ -39,14 +39,54 @@
 #include "VDS/GlobalStateImpl.h"
 #include "VDS/WaveletTypes.h"
 #include "VDS/StringToDouble.h"
+#include "VDS/Env.h"
 
 #include "IO/IOManager.h"
 #include "IO/IOManagerTransformer.h"
+#include "IO/File.h"
 
 #include <fmt/format.h>
 
 namespace OpenVDS
 {
+
+#ifdef AUTODETECT_CA_CERTIFICATES
+static void initOpenSSLCaCertFile()
+{
+  static bool init_done = false;
+  if (init_done)
+    return;
+  init_done = true;
+  bool isCertFileSet = isEnvironmentVariableSet("SSL_CERT_FILE");
+  bool isCertDirSet = isEnvironmentVariableSet("SSL_CERT_DIR");
+  if (!isCertFileSet && !isCertDirSet)
+  {
+    static const std::string cert_paths[] = {
+        "/etc/ssl/certs/ca-certificates.crt",
+        "/etc/pki/tls/certs/ca-bundle.crt",
+        "/usr/share/ssl/certs/ca-bundle.crt",
+        "/usr/local/share/certs/ca-root-nss.crt",
+        "/etc/ssl/cert.pem" };
+    for (const auto& cert_path : cert_paths)
+    {
+      if (File::Exists(cert_path))
+      {
+        setEnvironmentVariable("SSL_CERT_FILE", cert_path);
+      }
+    }
+  }
+}
+
+struct InitOpenSSLCaCertFile
+{
+  InitOpenSSLCaCertFile()
+  {
+    initOpenSSLCaCertFile();
+  }
+};
+
+static InitOpenSSLCaCertFile intSsl;
+#endif //AUTODETECT_CA_CERTIFICATES
 
 static std::function<IOManager* (IOManager*)> iomanagerTransformer;
 
