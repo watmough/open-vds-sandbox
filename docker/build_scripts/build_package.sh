@@ -12,6 +12,8 @@ skplat_name=""
 distribution=""
 output_dir=""
 auditwheels="no"
+libdir_suffix=""
+[[ -d /usr/lib64 ]] && libdir_suffix="64"
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
   cmake_generator="Ninja"
   platform_name="linux"
@@ -136,7 +138,7 @@ for python_executable in "${python_executables[@]}"; do
   if [[ "$auditwheels" == "yes" ]]; then
     old_dir=$PWD
     cd $openvds_path/dist
-    LD_LIBRARY_PATH=$skbuild_dir/cmake-install/lib64 auditwheel repair *.whl
+    LD_LIBRARY_PATH=$skbuild_dir/cmake-install/lib${libdir_suffix} auditwheel repair *.whl
     cp wheelhouse/*manylinux* $openvds_path/binpackage/$name-$openvds_version/
     mv wheelhouse/*manylinux* $openvds_path/binpackage/python/$distribution/
     cd $old_dir
@@ -146,6 +148,31 @@ for python_executable in "${python_executables[@]}"; do
   fi
   rm -rf $openvds_path/dist
 done
+
+
+if [[ "$auditwheels" == "yes" ]]; then
+  cd $openvds_path/binpackage/$name-$openvds_version
+  mkdir lib${libdir_suffix}_new
+  mkdir temp
+  cd temp
+  manylinux_wheels=( $openvds_path/binpackage/$name-$openvds_version/*manylinux*.whl )
+  unzip ${manylinux_wheels[0]}
+  cd ..
+  cp temp/openvds.libs/* lib${libdir_suffix}_new
+  cd lib${libdir_suffix}_new
+  the_openvds_lib_pattern=( libopenvds* )
+  the_openvds_lib=${the_openvds_lib_pattern[0]}
+  for ovds_link in ../lib${libdir_suffix}/libopenvds.so*; do
+    ln -s $the_openvds_lib $(basename $ovds_link)
+  done
+  cp -av ../lib${libdir_suffix}/libopenvds-java* .
+  cp -av ../lib${libdir_suffix}/libsegy* .
+  patchelf --set-rpath '$ORIGIN' *
+  cd ..
+  rm -rf lib${libdir_suffix}
+  mv lib${libdir_suffix}_new lib${libdir_suffix}
+  rm -rf temp
+fi
 
 cd $openvds_path/binpackage
 
