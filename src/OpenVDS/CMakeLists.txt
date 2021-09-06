@@ -162,6 +162,10 @@ target_compile_definitions(openvds_objects PRIVATE openvds_EXPORTS)
 target_compile_definitions(openvds_objects PRIVATE -DHUEBDS_EXPORTS= ) # We're not building HueBulkDataStore as a shared library
 target_compile_definitions(openvds_objects PRIVATE PROJECT_NAME="${CMAKE_PROJECT_NAME}" PROJECT_VERSION="${PROJECT_VERSION}")
 
+if (AUTODETECT_CA_CERTIFICATES)
+  target_compile_definitions(openvds_objects PRIVATE AUTODETECT_CA_CERTIFICATES)
+endif()
+
 set(OPENVDS_REVISION "")
 find_package(Git)
 if(Git_FOUND)
