@@ -5,7 +5,8 @@ if(CCACHE_PROGRAM)
     set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
 endif()
 
-set(OpenVDSVersion 2.1.6)
+file(READ "${CMAKE_SOURCE_DIR}/VERSION" OpenVDSVersion)
+string(STRIP ${OpenVDSVersion} OpenVDSVersion)
 
 project(OpenVDS VERSION ${OpenVDSVersion})
 

@@ -78,7 +78,7 @@ esac
 done
 
 if [[ "$openvds_version" == "" ]]; then
-  openvds_version=$(grep -E "set\(OpenVDSVersion" "$openvds_path/CMakeLists.txt" | sed 's/[^0-9|.]*//g')
+  openvds_version=${openvds_version:-$(<$openvds_path/VERSION)}
 fi
 if [[ "$openvds_version" == "" ]]; then
   echo "Please specify OpenVDS version using -v --version"
