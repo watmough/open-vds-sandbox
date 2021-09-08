@@ -43,14 +43,21 @@ struct PendingDownloadRequest
   std::shared_ptr<ReadChunkTransfer> m_transferHandle;
   int m_ref;
   bool m_canMove;
-  PendingDownloadRequest() : m_lockedMetadataPage(nullptr), m_ref(0), m_canMove(true)
+  bool m_isConstantValue;
+  PendingDownloadRequest() : m_lockedMetadataPage(nullptr), m_ref(0), m_canMove(true), m_isConstantValue(false)
   {
   }
 
-  explicit PendingDownloadRequest(MetadataPage* lockedMetadataPage, int adaptiveLevelToRequest) : m_lockedMetadataPage(lockedMetadataPage), m_adaptiveLevelToRequest(adaptiveLevelToRequest), m_activeTransfer(nullptr), m_ref(1), m_canMove(true)
+  explicit PendingDownloadRequest(MetadataPage* lockedMetadataPage, int adaptiveLevelToRequest) : m_lockedMetadataPage(lockedMetadataPage), m_adaptiveLevelToRequest(adaptiveLevelToRequest), m_activeTransfer(nullptr), m_ref(1), m_canMove(true), m_isConstantValue(false)
+
   {
   }
-  explicit PendingDownloadRequest(std::shared_ptr<Request> activeTransfer, std::shared_ptr<ReadChunkTransfer> handler) : m_lockedMetadataPage(nullptr), m_adaptiveLevelToRequest(-1), m_activeTransfer(activeTransfer), m_transferHandle(handler), m_ref(1), m_canMove(true)
+  explicit PendingDownloadRequest(std::shared_ptr<Request> activeTransfer, std::shared_ptr<ReadChunkTransfer> handler) : m_lockedMetadataPage(nullptr), m_adaptiveLevelToRequest(-1), m_activeTransfer(activeTransfer), m_transferHandle(handler), m_ref(1), m_canMove(true), m_isConstantValue(false)
+
+  {
+  }
+  explicit PendingDownloadRequest(std::shared_ptr<ReadChunkTransfer> handler) : m_lockedMetadataPage(nullptr), m_adaptiveLevelToRequest(-1), m_transferHandle(handler), m_ref(1), m_canMove(true), m_isConstantValue(true)
+
   {
   }
 };
