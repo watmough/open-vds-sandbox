@@ -331,6 +331,7 @@ bool VolumeDataStoreIOManager::PrepareReadChunk(const VolumeDataChunk &chunk, in
   unsigned char const* metadataPageEntry;
 
   IORange ioRange = IORange();
+  bool isConstantValue = false;
 
   std::string layerName = GetLayerName(*chunk.layer);
   auto metadataManager = GetMetadataMangerForLayer(layerName);
@@ -394,6 +395,7 @@ bool VolumeDataStoreIOManager::PrepareReadChunk(const VolumeDataChunk &chunk, in
     metadataManager->UnlockPage(metadataPage);
 
     ioRange = CalculateRangeHeaderImpl(parsedMetadata, metadataStatus, adaptiveLevel);
+    isConstantValue = IsConstantChunkHash(parsedMetadata.m_chunkHash);
 
     lock.lock();
   }
@@ -402,7 +404,14 @@ bool VolumeDataStoreIOManager::PrepareReadChunk(const VolumeDataChunk &chunk, in
   {
     std::string url = CreateUrlForChunk(layerName, chunk.index);
     auto transferHandler = std::make_shared<ReadChunkTransfer>(compressionInfo, (metadataManager != nullptr) ? parsedMetadata.CreateChunkMetadata() : std::vector<uint8_t>());
-    m_pendingDownloadRequests[chunk] = PendingDownloadRequest(m_ioManager->ReadObject(url, transferHandler, ioRange), transferHandler);
+    if (isConstantValue)
+    {
+      m_pendingDownloadRequests[chunk] = PendingDownloadRequest(transferHandler);
+    }
+    else
+    {
+      m_pendingDownloadRequests[chunk] = PendingDownloadRequest(m_ioManager->ReadObject(url, transferHandler, ioRange), transferHandler);
+    }
   }
   else
   {
@@ -435,6 +444,7 @@ bool VolumeDataStoreIOManager::ReadChunk(const VolumeDataChunk &chunk, int adapt
 
   auto activeTransfer = pendingRequest.m_activeTransfer;
   auto transferHandler = pendingRequest.m_transferHandle;
+  bool isConstantValue = pendingRequest.m_isConstantValue;
 
   if (pendingRequest.m_metadataPageRequestError.code != 0)
   {
@@ -447,7 +457,7 @@ bool VolumeDataStoreIOManager::ReadChunk(const VolumeDataChunk &chunk, int adapt
     return false;
   }
 
-  if(!activeTransfer)
+  if(!activeTransfer && !isConstantValue)
   {
     error.code = -1;
     error.string = "Failed to read metadata for chunk: " + std::to_string(chunk.index);
@@ -459,12 +469,16 @@ bool VolumeDataStoreIOManager::ReadChunk(const VolumeDataChunk &chunk, int adapt
     return false;
   }
 
-  lock.unlock();
+  if (!isConstantValue)
+  {
+    lock.unlock();
 
-  if (!activeTransfer->WaitForFinish(error))
-    return false;
+    if (!activeTransfer->WaitForFinish(error))
+      return false;
 
-  lock.lock();
+    lock.lock();
+
+  }
 
   bool moveData = pendingRequestIterator->second.m_canMove;
   if (--pendingRequestIterator->second.m_ref == 0)
@@ -489,7 +503,7 @@ bool VolumeDataStoreIOManager::ReadChunk(const VolumeDataChunk &chunk, int adapt
       serializedData = transferHandler->m_data;
   }
 
-  if(!transferHandler->m_metadataFromHeader.empty())
+  if(!transferHandler->m_metadataFromHeader.empty() && !isConstantValue)
   {
     if(!transferHandler->m_metadataFromPage.empty() && transferHandler->m_metadataFromPage != transferHandler->m_metadataFromHeader)
     {
@@ -506,7 +520,7 @@ bool VolumeDataStoreIOManager::ReadChunk(const VolumeDataChunk &chunk, int adapt
   }
   else if(!transferHandler->m_metadataFromPage.empty())
   {
-    if (!m_warnedAboutMissingMetadataTag) // Log once and move along.
+    if (!m_warnedAboutMissingMetadataTag && !isConstantValue) // Log once and move along.
     {
       lock.lock();
       if (!m_warnedAboutMissingMetadataTag)
@@ -611,9 +625,15 @@ void VolumeDataStoreIOManager::PageTransferCompleted(MetadataPage* metadataPage,
           IORange ioRange = CalculateRangeHeaderImpl(parsedMetadata, metadataManager->GetMetadataStatus(), pendingRequest.m_adaptiveLevelToRequest);
 
           std::string url = CreateUrlForChunk(metadataManager->LayerUrlStr(), volumeDataChunk.index);
-          auto transferHandler = std::make_shared<ReadChunkTransfer>(compressionInfo, parsedMetadata.CreateChunkMetadata());
-          pendingRequest.m_activeTransfer = m_ioManager->ReadObject(url, transferHandler, ioRange);
-          pendingRequest.m_transferHandle = transferHandler;
+          pendingRequest.m_transferHandle = std::make_shared<ReadChunkTransfer>(compressionInfo, parsedMetadata.CreateChunkMetadata());
+          if (IsConstantChunkHash(parsedMetadata.m_chunkHash))
+          {
+            pendingRequest.m_isConstantValue = true;
+          }
+          else
+          {
+            pendingRequest.m_activeTransfer = m_ioManager->ReadObject(url, pendingRequest.m_transferHandle, ioRange);
+          }
         }
       }
 
