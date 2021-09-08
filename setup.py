@@ -10,14 +10,13 @@ if sys.version_info[0] < 3:
 
 openvds_version=""
 dir_path = os.path.dirname(os.path.realpath(__file__))
-with open(dir_path + "/CMakeLists.txt", "r") as file:
+with open(dir_path + "/VERSION", "r") as file:
     for line in file:
-         if re.search("set\(OpenVDSVersion", line):
-             openvds_version = re.sub("[^0-9|.]*", "", line)
+             openvds_version = line.strip()
              break
 
 if not openvds_version:
-    print("Fatal error: Failed to parse version from CMakeLists.txt")
+    print("Fatal error: Failed to parse version from VERSION")
     exit(1)
 
 try:
