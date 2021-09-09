@@ -34,7 +34,7 @@ macro(BuildAWSSDK)
     list(APPEND AWS_DLLS_LIST "lib${LIBSUFFIX}/libaws-cpp-sdk-transfer.so")
     
     if (BUILD_CURL)
-      set(PLATFORM_CMAKE_ARGS ";-DCURL_DIR=${curl_INSTALL_INT_CONFIG}/lib64/cmake/CURL")
+      set(PLATFORM_CMAKE_ARGS ";-DCURL_DIR=${curl_INSTALL_INT_CONFIG}/lib${LIBSUFFIX}/cmake/CURL")
       set(PLATFORM_DEPNDS "curl")
     endif()
   endif()
