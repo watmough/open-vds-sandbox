@@ -162,8 +162,7 @@ namespace OpenVDS
 
       try
       {
-        if (data->size())
-          request_ptr->m_dataset.writeBlock(requestName, (const char*)data->data(), data->size(), false);
+        request_ptr->m_dataset.writeBlock(requestName, (const char*)data->data(), data->size(), false);
       }
       catch (const seismicdrive::SDException& ex)
       {
