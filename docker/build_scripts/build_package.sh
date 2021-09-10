@@ -139,6 +139,33 @@ for python_executable in "${python_executables[@]}"; do
     old_dir=$PWD
     cd $openvds_path/dist
     LD_LIBRARY_PATH=$skbuild_dir/cmake-install/lib${libdir_suffix} auditwheel repair *.whl
+    manylinux_wheels=( $PWD/wheelhouse/*manylinux*.whl )
+    the_wheel=${manylinux_wheels[0]}
+    rm -rf tmp
+    mkdir tmp
+    cd tmp
+    unzip $the_wheel
+    data_dirs=( $PWD/*.data )
+    the_datadir=${data_dirs[0]}
+    cd $the_datadir/data
+    mkdir lib_new
+    cp ../../openvds.libs/* lib_new/
+    cd lib_new
+    the_openvds_lib_pattern=( libopenvds* )
+    the_openvds_lib=${the_openvds_lib_pattern[0]}
+    for ovds_link in ../lib${libdir_suffix}/libopenvds.so*; do
+      ln -s $the_openvds_lib $(basename $ovds_link)
+    done
+    cp -av ../lib${libdir_suffix}/libopenvds-java* .
+    cp -av ../lib${libdir_suffix}/libsegy* .
+    patchelf --set-rpath '$ORIGIN' *
+    cd ..
+    rm -rf lib${libdir_suffix}
+    mv lib_new lib${libdir_suffix}
+    cd $openvds_path/dist
+    rm $the_wheel
+    $base_dir/repair_wheel_extra tmp $the_wheel
+
     cp wheelhouse/*manylinux* $openvds_path/binpackage/$name-$openvds_version/
     mv wheelhouse/*manylinux* $openvds_path/binpackage/python/$distribution/
     cd $old_dir
