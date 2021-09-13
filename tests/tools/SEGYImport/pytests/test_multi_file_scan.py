@@ -5,7 +5,7 @@ from typing import List
 import pytest
 import openvds
 
-from segyimport_test_config import test_data_dir, test_output_dir, ImportExecutor
+from segyimport_test_config import test_data_dir, ImportExecutor, TempScanFileGuard, TempVDSGuard
 
 
 @pytest.fixture
@@ -39,13 +39,13 @@ def multi_file_input_files(multi_file_input_parts_count, multi_file_input_base_n
 
 
 @pytest.fixture
-def multi_file_scan_file_info_files(multi_file_input_parts_count, multi_file_input_base_name) -> List[str]:
+def multi_file_scan_file_info_files(multi_file_input_parts_count, multi_file_input_base_name) -> List[TempScanFileGuard]:
     """File info filenames to be output when using --scan"""
-    filenames = []
+    guards = []
     for i in range(1, multi_file_input_parts_count + 1):
-        file_info_name = f"{multi_file_input_base_name}{i:02}.segy.scan.json"
-        filenames.append(os.path.join(test_output_dir, file_info_name))
-    return filenames
+        file_info_base_name = f"{multi_file_input_base_name}{i:02}.segy"
+        guards.append(TempScanFileGuard(file_info_base_name))
+    return guards
 
 
 @pytest.fixture
@@ -62,10 +62,10 @@ def test_multi_file_scan_one_file_info(multi_file_input_glob):
     """
     Tests --scan with multiple input SEGY files, but only one file info file specified.
     """
-    file_info_filename = os.path.join(test_output_dir, "test.scan.json")
+    file_info_guard = TempScanFileGuard("multi_single_test")
 
     ex = ImportExecutor()
-    ex.add_args(["--prestack", "--scan", "--file-info", file_info_filename, multi_file_input_glob])
+    ex.add_args(["--prestack", "--scan", "--file-info", file_info_guard.filename, multi_file_input_glob])
     result = ex.run()
 
     # import should have failed
@@ -79,12 +79,12 @@ def test_multi_file_scan(multi_file_input_files, multi_file_scan_file_info_files
     ex = ImportExecutor()
     ex.add_args(["--prestack", "--scan"])
 
-    for filename in multi_file_scan_file_info_files:
-        ex.add_args(["--file-info", filename])
+    for scan_file_guard in multi_file_scan_file_info_files:
+        ex.add_args(["--file-info", scan_file_guard.filename])
 
         # ensure the output file doesn't exist
-        if Path(filename).exists():
-            os.remove(filename)
+        if Path(scan_file_guard.filename).exists():
+            os.remove(scan_file_guard.filename)
 
     ex.add_args(multi_file_input_files)
 
@@ -95,15 +95,15 @@ def test_multi_file_scan(multi_file_input_files, multi_file_scan_file_info_files
 
     # output files should exist
     for filename in multi_file_scan_file_info_files:
-        assert Path(filename).exists()
+        assert Path(scan_file_guard.filename).exists()
 
 
 def test_multi_file_import_with_file_infos(multi_file_input_files, multi_file_input_file_info_files):
     ex = ImportExecutor()
     ex.add_arg("--prestack")
 
-    vds_filename = os.path.join(test_output_dir, "import_test.vds")
-    ex.add_args(["--vdsfile", vds_filename])
+    vds_guard = TempVDSGuard("import_test")
+    ex.add_args(["--vdsfile", vds_guard.filename])
 
     for filename in multi_file_input_file_info_files:
         ex.add_args(["--file-info", filename])
@@ -116,10 +116,10 @@ def test_multi_file_import_with_file_infos(multi_file_input_files, multi_file_in
     assert result == 0, ex.output()
 
     # output file should exist
-    assert Path(vds_filename).exists()
+    assert Path(vds_guard.filename).exists()
 
     # check dimensions of VDS
-    with openvds.open(vds_filename, "") as handle:
+    with openvds.open(vds_guard.filename, "") as handle:
         layout = openvds.getLayout(handle)
         assert layout.dimensionality == 4
         assert layout.numSamples[0] == 851

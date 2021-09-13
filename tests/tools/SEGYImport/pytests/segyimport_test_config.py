@@ -3,10 +3,13 @@ Global configuration information for SEGYImport pytests
 """
 import os
 import subprocess
-from typing import List
+import tempfile
+import weakref
+from typing import List, Union, Any
 
-test_output_dir = "c:\\temp\\SEGY\\t"
 test_data_dir = "c:\\temp\\SEGY\\RegressionTestData"
+
+_temp_dir = None
 
 
 class ImportExecutor:
@@ -36,3 +39,24 @@ class ImportExecutor:
         """Convenience method to return a string showing the command and arguments"""
         return " ".join(self.args)
         pass
+
+
+class TempFileGuard:
+    def __init__(self, base_name: str, extension: str):
+        global _temp_dir
+        if not _temp_dir or not _temp_dir():
+            self.temp_dir = tempfile.TemporaryDirectory()
+            _temp_dir = weakref.ref(self.temp_dir)
+        else:
+            self.temp_dir = _temp_dir()
+        self.filename = os.path.join(self.temp_dir.name, base_name + extension)
+
+
+class TempVDSGuard(TempFileGuard):
+    def __init__(self, base_name="import_test"):
+        super().__init__(base_name, ".vds")
+
+
+class TempScanFileGuard(TempFileGuard):
+    def __init__(self, base_name="scan_test"):
+        super().__init__(base_name, ".scan.json")

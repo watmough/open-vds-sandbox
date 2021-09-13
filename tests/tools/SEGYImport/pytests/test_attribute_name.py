@@ -1,17 +1,10 @@
 import os
-import tempfile
 from pathlib import Path
 
 import pytest
 import openvds
 
-from segyimport_test_config import test_data_dir, ImportExecutor
-
-
-class TempVDSGuard:
-    def __init__(self, base_name="import_test"):
-        self.temp_dir = tempfile.TemporaryDirectory()
-        self.filename = os.path.join(self.temp_dir.name, base_name + ".vds")
+from segyimport_test_config import test_data_dir, ImportExecutor, TempVDSGuard
 
 
 @pytest.fixture
