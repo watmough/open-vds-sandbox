@@ -19,6 +19,7 @@
 
 #include <stddef.h>
 #include <tuple>
+#include <math.h>
 
 #if defined(__GNUC__)
 #pragma GCC diagnostic push
@@ -134,11 +135,10 @@ struct Vector
   inline const T &operator[] (size_t n) const { return d[n]; }
 };
 */
-/*
 template<typename T, size_t N>
 static inline bool operator==(const Vector<T, N> &a, const Vector<T, N> &b)
 {
-  for (int i = 0; i < N; i++)
+  for (int i = 0; i < int(N); i++)
     if (a[i] != b[i])
       return false;
 
@@ -148,13 +148,13 @@ static inline bool operator==(const Vector<T, N> &a, const Vector<T, N> &b)
 template<typename T, size_t N>
 bool operator!=(const Vector<T, N> &a, const Vector<T, N> &b)
 {
-  for (int i = 0; i < N; i++)
+  for (int i = 0; i < int(N); i++)
     if (a[i] == b[i])
       return false;
 
   return true;
 }
-*/
+
 using IntVector2 = Vector<int,2>;
 using IntVector3 = Vector<int,3>;
 using IntVector4 = Vector<int,4>;
@@ -173,8 +173,117 @@ template<size_t N>
 using FloatVector = Vector<float, N>;
 template<size_t N>
 using DoubleVector = Vector<double, N>;
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+template<typename T, size_t SIZE>
+void Clear(Vector<T, SIZE> &vec)
+{
+  for (int i = 0; i < int(SIZE); i++)
+  {
+    vec[i] = T(0);
+  }
 }
 
+template<size_t I = 0, typename Vec, typename... Args>
+inline typename std::enable_if<I == sizeof...(Args), void>::type AssignMember(Vec &, const std::tuple<Args...>&)
+{ }
+
+template<size_t I = 0, typename Vec, typename... Args>
+inline typename std::enable_if<I < sizeof...(Args), void>::type AssignMember(Vec &vec, const std::tuple<Args...>& args)
+{
+  vec[I] = std::get<I>(args);
+  AssignMember<I + 1, Vec, Args...>(vec, args);
+}
+
+template<typename Vec, typename ...Args>
+void Assign(Vec &vec, Args... args)
+{
+  AssignMember(vec, std::make_tuple(args...));
+}
+
+template<typename T, size_t SIZE>
+void Scale(Vector<T,SIZE> &vec, T scale)
+{
+  for (int i = 0; i < int(SIZE); i++)
+  {
+    vec.data[i] *= scale;
+  }
+}
+
+template<typename T, size_t SIZE>
+T DotProduct(const T (&a)[SIZE], const T (&b)[SIZE])
+{
+  T ret(0);
+  for (int i = 0; i < int(SIZE); i++)
+  {
+    ret += a[i] * b[i];
+  }
+  return ret;
+}
+
+template<typename T, size_t SIZE>
+T DotProduct(const Vector<T, SIZE>& a, const Vector<T, SIZE>& b)
+{
+  DotProduct(a.data, b.data);
+}
+
+template<typename T, size_t SIZE>
+T Length(const T(&a)[SIZE])
+{
+  return sqrt(DotProduct(a, a));
+}
+
+template<typename T, size_t SIZE>
+T Length(const Vector<T, SIZE> &a)
+{
+  return sqrt(DotProduct(a.data, a.data));
+}
+
+template<typename T>
+void CrossProduct(T (& result)[3], const T (&a)[3], const T (&b)[3])
+{
+  
+  result[0] = a[1] * b[2] - a[2] * b[1];
+  result[1] = a[2] * b[0] - a[0] * b[2];
+  result[2] = a[0] * b[1] - a[1] * b[0];
+}
+
+template<typename T, size_t SIZE>
+Vector<T, SIZE> operator+(const Vector<T, SIZE>& a, const Vector<T, SIZE>& b)
+{
+  Vector<T, SIZE> ret;
+  for (int i = 0; i < int(SIZE); i++)
+  {
+    ret.data[i] = a.data[i] + b.data[i];
+  }
+  return ret;
+}
+
+
+template<typename T, size_t SIZE>
+Vector<T, SIZE> operator-(const Vector<T, SIZE>& a, const Vector<T, SIZE>& b)
+{
+  Vector<T, SIZE> ret;
+  for (int i = 0; i < int(SIZE); i++)
+  {
+    ret.data[i] = a.data[i] - b.data[i];
+  }
+  return ret;
+}
+
+template<typename T, size_t SIZE>
+Vector<T, SIZE> Multiply(const Vector<T, SIZE> &a, const Vector<T, SIZE> &b)
+{
+  Vector<T, SIZE> ret;
+  for (int i = 0; i < int(SIZE); i++)
+  {
+    ret.data[i] = a.data[i] * b.data[i];
+  }
+  return ret;
+}
+
+#endif
+}
 #if defined(__GNUC__)
 #pragma GCC diagnostic pop
 #endif

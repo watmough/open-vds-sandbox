@@ -16,11 +16,14 @@
 ****************************************************************************/
 
 #include <OpenVDS/VolumeDataLayoutDescriptor.h>
+#include <OpenVDS/KnownMetadata.h>
+#include <OpenVDS/IJKCoordinateTransformer.h>
 
 #include "VolumeDataLayoutImpl.h"
 #include "VolumeDataChannelMapping.h"
 #include "DimensionGroup.h"
 #include "VDS.h"
+
 
 #include "Bitmask.h"
 
@@ -40,6 +43,210 @@ static std::condition_variable &StaticGetPendingRequestCountChangedCondition()
   static std::condition_variable pendingRequestCountChangedCondition;
 
   return pendingRequestCountChangedCondition;
+}
+
+static void StaticGetVDSIJKGridDefinitionFromVDSMetadata(VDSIJKGridDefinition &vdsIjkGridDefinition, const VolumeDataLayout *layout)
+{
+  if(!layout)
+  {
+    Clear(vdsIjkGridDefinition.origin);
+    Assign(vdsIjkGridDefinition.iUnitStep, 1.0, 0.0, 0.0);
+    Assign(vdsIjkGridDefinition.jUnitStep, 0.0, 1.0, 0.0);
+    Assign(vdsIjkGridDefinition.kUnitStep, 0.0, 0.0, 1.0);
+    Assign(vdsIjkGridDefinition.dimensionMap, 2, 1, 0);
+    return;
+  }
+
+  // Set up basic grid
+  DoubleVector2 originDoubleVector2 = layout->GetMetadataDoubleVector2(KNOWNMETADATA_SURVEYCOORDINATESYSTEM, KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_ORIGIN);
+  DoubleVector2 inlineSpacingDoubleVector2 = layout->GetMetadataDoubleVector2(KNOWNMETADATA_SURVEYCOORDINATESYSTEM, KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_INLINESPACING);
+  DoubleVector2 crosslineSpacingDoubleVector2 = layout->GetMetadataDoubleVector2(KNOWNMETADATA_SURVEYCOORDINATESYSTEM, KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_CROSSLINESPACING);
+
+  DoubleVector3 originVector3 = layout->GetMetadataDoubleVector3(KNOWNMETADATA_SURVEYCOORDINATESYSTEM, KNOWNMETADATA_SURVEYCOORDINATE_3DIJK_ORIGIN3D);
+  DoubleVector3 iStepVector3 = layout->GetMetadataDoubleVector3(KNOWNMETADATA_SURVEYCOORDINATESYSTEM, KNOWNMETADATA_SURVEYCOORDINATE_3DIJK_I_STEPVECTOR);
+  DoubleVector3 jStepVector3 = layout->GetMetadataDoubleVector3(KNOWNMETADATA_SURVEYCOORDINATESYSTEM, KNOWNMETADATA_SURVEYCOORDINATE_3DIJK_J_STEPVECTOR);
+  DoubleVector3 kStepVector3 = layout->GetMetadataDoubleVector3(KNOWNMETADATA_SURVEYCOORDINATESYSTEM, KNOWNMETADATA_SURVEYCOORDINATE_3DIJK_K_STEPVECTOR);
+
+  bool
+    isInlineCrosslineSystem = false;
+
+  if (layout->IsMetadataDoubleVector2Available(KNOWNMETADATA_SURVEYCOORDINATESYSTEM, KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_ORIGIN))
+  {
+    Assign(vdsIjkGridDefinition.origin, originDoubleVector2.X, originDoubleVector2.Y, 0.0);
+    isInlineCrosslineSystem = true; // Used for 2D cases
+  }
+  else
+  {
+    Assign(vdsIjkGridDefinition.origin, originVector3.X, originVector3.Y, originVector3.Z);
+  }
+  
+  if(inlineSpacingDoubleVector2.X == 0 && inlineSpacingDoubleVector2.Y == 0)
+  {
+    Assign(inlineSpacingDoubleVector2, 1, 0);
+  }
+
+  if(crosslineSpacingDoubleVector2.X == 0 && crosslineSpacingDoubleVector2.Y == 0)
+  {
+    Assign(crosslineSpacingDoubleVector2, 0, 1);
+  }
+
+  int  dimensionMap[] = { -1, -1, -1 };
+
+  int 
+    aiUnusedDimensions[Dimensionality_Max];
+
+  int
+    nUnusedDimensions = 0;
+
+  int
+    nDimension = layout->GetDimensionality();
+
+  // Figure out which dimension is I, J and K
+  for(int iDimension = 0; iDimension < nDimension; iDimension++)
+  {
+    VolumeDataAxisDescriptor axisDescriptor = layout->GetAxisDescriptor(iDimension);
+
+    if(strcmp(axisDescriptor.GetName(), KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_AXISNAME_INLINE) == 0 || 
+       strcmp(axisDescriptor.GetName(), KNOWNMETADATA_SURVEYCOORDINATE_3DIJK_AXISNAME_I)         == 0)
+    {
+      dimensionMap[0] = iDimension;
+    }
+    else if(strcmp(axisDescriptor.GetName(), KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_AXISNAME_CROSSLINE) == 0 || 
+            strcmp(axisDescriptor.GetName(), KNOWNMETADATA_SURVEYCOORDINATE_3DIJK_AXISNAME_J)            == 0)
+    {
+      dimensionMap[1] = iDimension;
+    }
+    else if(strcmp(axisDescriptor.GetName(), KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_AXISNAME_TIME)   == 0 || 
+            strcmp(axisDescriptor.GetName(), KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_AXISNAME_DEPTH)  == 0 || 
+            strcmp(axisDescriptor.GetName(), KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_AXISNAME_SAMPLE) == 0 ||
+            strcmp(axisDescriptor.GetName(), KNOWNMETADATA_SURVEYCOORDINATE_3DIJK_AXISNAME_K)         == 0)
+    {
+      dimensionMap[2] = iDimension;
+    }
+    else
+    {
+      aiUnusedDimensions[nUnusedDimensions++] = iDimension;
+    }
+  }
+
+  int 
+    iUseDimension = 0;
+
+  if(nDimension >= 3 && dimensionMap[2] == -1 && iUseDimension < nUnusedDimensions)
+  {
+    dimensionMap[2] = aiUnusedDimensions[iUseDimension++];
+  }
+  if(dimensionMap[1] == -1 && iUseDimension < nUnusedDimensions)
+  {
+    dimensionMap[1] = aiUnusedDimensions[iUseDimension++];
+  }
+  if(dimensionMap[0] == -1 && iUseDimension < nUnusedDimensions)
+  {
+    dimensionMap[0] = aiUnusedDimensions[iUseDimension++];
+  }
+
+  Assign(vdsIjkGridDefinition.dimensionMap, dimensionMap[0], dimensionMap[1], dimensionMap[2]);
+
+  // Take axis coordinates into account and get the position of the volume in the bingrid
+  for (int iIJK = 0; iIJK < 3; iIJK++)
+  {
+    double cStepVector[] = { 0.0, 0.0, 0.0 };
+
+    int
+      iDimension = dimensionMap[iIJK];
+
+    if(iDimension != -1)
+    {
+      VolumeDataAxisDescriptor cAxisDescriptor = layout->GetAxisDescriptor(iDimension);
+
+      if(strcmp(cAxisDescriptor.GetName(), KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_AXISNAME_INLINE) == 0)
+      {
+        Assign(cStepVector, inlineSpacingDoubleVector2.X, inlineSpacingDoubleVector2.Y, 0.0);
+      }
+      else if(strcmp(cAxisDescriptor.GetName(), KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_AXISNAME_CROSSLINE) == 0)
+      {
+        Assign(cStepVector, crosslineSpacingDoubleVector2.X, crosslineSpacingDoubleVector2.Y, 0.0);
+      }
+      else if(strcmp(cAxisDescriptor.GetName(), KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_AXISNAME_TIME) == 0 || 
+              strcmp(cAxisDescriptor.GetName(), KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_AXISNAME_DEPTH) == 0 ||
+              strcmp(cAxisDescriptor.GetName(), KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_AXISNAME_SAMPLE) == 0)
+      {
+        Assign(cStepVector, 0.0, 0.0, -1.0);
+      }
+      else if(strcmp(cAxisDescriptor.GetName(), KNOWNMETADATA_SURVEYCOORDINATE_3DIJK_AXISNAME_I) == 0)
+      {
+        static_assert(sizeof(cStepVector) == sizeof(iStepVector3), "Sizes doesn't match");
+        memcpy(cStepVector, &iStepVector3, sizeof(iStepVector3));
+      }
+      else if (strcmp(cAxisDescriptor.GetName(), KNOWNMETADATA_SURVEYCOORDINATE_3DIJK_AXISNAME_J) == 0)
+      {
+        static_assert(sizeof(cStepVector) == sizeof(jStepVector3), "Sizes doesn't match");
+        memcpy(cStepVector, &jStepVector3, sizeof(jStepVector3));
+      }
+      else if (strcmp(cAxisDescriptor.GetName(), KNOWNMETADATA_SURVEYCOORDINATE_3DIJK_AXISNAME_K) == 0)
+      {
+        static_assert(sizeof(cStepVector) == sizeof(kStepVector3), "Sizes doesn't match");
+        memcpy(cStepVector, &kStepVector3, sizeof(kStepVector3));
+      }
+      else if(strcmp(cAxisDescriptor.GetName(), "X") == 0)
+      {
+        Assign(cStepVector, 1.0, 0.0, 0.0);
+      }
+      else if(strcmp(cAxisDescriptor.GetName(), "Y") == 0)
+      {
+        Assign(cStepVector, 0.0, 1.0, 0.0);
+      }
+      else if(strcmp(cAxisDescriptor.GetName(), "Z") == 0)
+      {
+        Assign(cStepVector, 0.0, 0.0, 1.0);
+      }
+
+
+      for (auto& n : vdsIjkGridDefinition.origin.data)
+      {
+        n += cAxisDescriptor.GetCoordinateMin();
+      }
+
+      if (cAxisDescriptor.GetCoordinateStep() != 0)
+      {
+        for (auto& n : cStepVector)
+          n *= cAxisDescriptor.GetCoordinateStep();
+      }
+    }
+    else
+    {
+      if (isInlineCrosslineSystem)
+      {
+        Assign(cStepVector, 0.0, 0.0, -1.0);
+      }
+      else
+      {
+        double cIStepVector[] = { vdsIjkGridDefinition.iUnitStep.X, vdsIjkGridDefinition.iUnitStep.Y, vdsIjkGridDefinition.iUnitStep.Z };
+        double cJStepVector[] = { vdsIjkGridDefinition.jUnitStep.X, vdsIjkGridDefinition.jUnitStep.Y, vdsIjkGridDefinition.jUnitStep.Z };
+
+        double rLengthI = Length(cIStepVector);
+        double rLengthJ = Length(cJStepVector);
+
+        // Canceling the effect of cross product on the size of the resulting 
+        // step vector, and using the average of the IStepVector and JStepVector
+        double rScale = (rLengthI + rLengthJ) / (2 * rLengthI * rLengthJ); 
+
+        CrossProduct(cStepVector , cJStepVector, cIStepVector);
+        cStepVector[0] *= rScale;
+        cStepVector[1] *= rScale;
+        cStepVector[2] *= rScale;
+      }
+    }
+
+    switch(iIJK)
+    {
+    case 0: Assign(vdsIjkGridDefinition.iUnitStep, cStepVector[0], cStepVector[1], cStepVector[2]); break;
+    case 1: Assign(vdsIjkGridDefinition.jUnitStep, cStepVector[0], cStepVector[1], cStepVector[2]); break;
+    case 2: Assign(vdsIjkGridDefinition.kUnitStep, cStepVector[0], cStepVector[1], cStepVector[2]); break;
+    default:
+      assert(false);
+    }
+  }
 }
 
 VolumeDataLayoutImpl::VolumeDataLayoutImpl(VDS &vds,
@@ -326,6 +533,15 @@ const char *VolumeDataLayoutImpl::GetDimensionUnit(int32_t dimension) const
   return m_dimensionUnit[dimension];
 }
   
+VDSIJKGridDefinition VolumeDataLayoutImpl::GetVDSIJKGridDefinitionFromMetadata() const
+{
+  VDSIJKGridDefinition vdsIjkGridDefinition;
+  StaticGetVDSIJKGridDefinitionFromVDSMetadata(vdsIjkGridDefinition, this);
+
+  return vdsIjkGridDefinition;
+
+}
+
 void VolumeDataLayoutImpl::SetContentsHash(VolumeDataHash const &contentsHash)
 {
   m_contentsHash = contentsHash;

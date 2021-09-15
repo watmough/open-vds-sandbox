@@ -803,6 +803,7 @@ def generate_all(args):
     parameters, filenames = parse_args(args)
     if filenames:
         for filename in filenames:
+            print("PROCESSING FILE {}".format(filename))
             output = []
             parser = Parser(filename, parameters, output)
             parser.run()

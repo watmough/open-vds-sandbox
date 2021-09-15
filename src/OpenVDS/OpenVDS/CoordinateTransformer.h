@@ -1,3 +1,20 @@
+/****************************************************************************
+** Copyright 2021 The Open Group
+** Copyright 2021 Bluware, Inc.
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+****************************************************************************/
+
 #ifndef COORDINATETRANSFORMER_H
 #define COORDINATETRANSFORMER_H
 
@@ -74,6 +91,12 @@ struct IJKGridDefinition
     , kUnitStep(kUnitStep)
   {}
 
+  inline bool operator==(const IJKGridDefinition& b) const
+  {
+    const IJKGridDefinition& a = *this;
+    return a.origin == b.origin && a.iUnitStep == b.iUnitStep && a.jUnitStep == b.jUnitStep && a.kUnitStep == b.kUnitStep;
+  }
+
   DoubleVector3 origin;
   DoubleVector3 iUnitStep;
   DoubleVector3 jUnitStep;
@@ -90,6 +113,13 @@ struct VDSIJKGridDefinition : public IJKGridDefinition
     : IJKGridDefinition(ijkGridDefinition)
     , dimensionMap(dimensionMap)
   {}
+
+  inline bool operator==(const VDSIJKGridDefinition& b) const
+  {
+    const VDSIJKGridDefinition& a = *this;
+    return static_cast<const IJKGridDefinition&>(a) == static_cast<const IJKGridDefinition&>(b) && a.dimensionMap == b.dimensionMap; 
+  }
+
   IntVector3 dimensionMap;
 };
 

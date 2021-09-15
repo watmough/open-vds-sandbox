@@ -31,6 +31,10 @@ pybind11_add_module(core MODULE
     PyGlobalState.h
     PyExceptions.cpp
     PyExceptions.h
+    PyCoordinateTransformer.cpp
+    PyCoordinateTransformer.h
+    PyIJKCoordinateTransformer.cpp
+    PyIJKCoordinateTransformer.h
 )
 
 if (MSVC AND (CMAKE_CXX_COMPILER_ID STREQUAL "Clang"))

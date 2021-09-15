@@ -277,7 +277,7 @@ struct BLOB
   }
 };
 
-template<typename T, size_t N>
+template<typename T, int N>
 struct VectorAdapter
 {
 

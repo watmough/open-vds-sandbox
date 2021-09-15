@@ -22,6 +22,7 @@
 #include <OpenVDS/VolumeDataAxisDescriptor.h>
 #include <OpenVDS/VolumeDataLayoutDescriptor.h>
 #include <OpenVDS/MetadataAccess.h>
+#include <OpenVDS/CoordinateTransformer.h>
 
 namespace OpenVDS
 {
@@ -94,8 +95,8 @@ public:
   virtual float GetDimensionMin(int dimension) const = 0; ///< get the coordinate minimum for the given dimension
   virtual float GetDimensionMax(int dimension) const = 0; ///< get the coordinate maximum for the given dimension
 
-//  virtual VDSIJKGridDefinition 
-//                getVDSIJKGridDefinitionFromMetadata() const = 0; ///< get the VDSIJKGridDefinition from the metadata in this VDS
+  virtual VDSIJKGridDefinition 
+                GetVDSIJKGridDefinitionFromMetadata() const = 0; ///< get the VDSIJKGridDefinition from the metadata in this VDS
 
   virtual bool  IsChannelUseNoValue(int channel) const = 0; ///< Returns true if the given channel index uses No Value
   virtual float GetChannelNoValue(int channel) const = 0;   ///< gets the No Value for the given channel index
