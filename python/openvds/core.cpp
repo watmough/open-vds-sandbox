@@ -34,6 +34,8 @@
 #include "PyVolumeSampler.h"
 #include "PyGlobalState.h"
 #include "PyExceptions.h"
+#include "PyCoordinateTransformer.h"
+#include "PyIJKCoordinateTransformer.h"
 
 
 PYBIND11_MODULE(core, m) {
@@ -52,4 +54,6 @@ PYBIND11_MODULE(core, m) {
   PyVolumeSampler::initModule(m);
   PyGlobalState::initModule(m);
   PyExceptions::initModule(m);
+  PyCoordinateTransformer::initModule(m);
+  PyIJKCoordinateTransformer::initModule(m);
 }

@@ -78,6 +78,12 @@ static const char *__doc_OpenVDS_AWSOpenOptions_secretKey = R"doc()doc";
 
 static const char *__doc_OpenVDS_AWSOpenOptions_sessionToken = R"doc()doc";
 
+static const char *__doc_OpenVDS_Assign = R"doc()doc";
+
+static const char *__doc_OpenVDS_AssignMember = R"doc()doc";
+
+static const char *__doc_OpenVDS_AssignMember_2 = R"doc()doc";
+
 static const char *__doc_OpenVDS_AzureOpenOptions = R"doc(Options for opening a VDS in Azure)doc";
 
 static const char *__doc_OpenVDS_AzureOpenOptions_AzureOpenOptions = R"doc()doc";
@@ -177,6 +183,8 @@ static const char *__doc_OpenVDS_CalculateNoise2D = R"doc()doc";
 static const char *__doc_OpenVDS_CalculateNoise3D = R"doc()doc";
 
 static const char *__doc_OpenVDS_CalculateNoise4D = R"doc()doc";
+
+static const char *__doc_OpenVDS_Clear = R"doc()doc";
 
 static const char *__doc_OpenVDS_Close =
 R"doc(Close a VDS and free up all associated resources
@@ -670,6 +678,8 @@ static const char *__doc_OpenVDS_CreateVolumeDataReadWriteAccessor_41 = R"doc()d
 
 static const char *__doc_OpenVDS_CreateVolumeDataReadWriteAccessor_42 = R"doc()doc";
 
+static const char *__doc_OpenVDS_CrossProduct = R"doc()doc";
+
 static const char *__doc_OpenVDS_DMSOpenOptions = R"doc()doc";
 
 static const char *__doc_OpenVDS_DMSOpenOptions_DMSOpenOptions = R"doc()doc";
@@ -769,6 +779,10 @@ static const char *__doc_OpenVDS_DimensionsND_Dimensions_345 = R"doc()doc";
 static const char *__doc_OpenVDS_DimensionsND_Dimensions_35 = R"doc()doc";
 
 static const char *__doc_OpenVDS_DimensionsND_Dimensions_45 = R"doc()doc";
+
+static const char *__doc_OpenVDS_DotProduct = R"doc()doc";
+
+static const char *__doc_OpenVDS_DotProduct_2 = R"doc()doc";
 
 static const char *__doc_OpenVDS_Error = R"doc()doc";
 
@@ -1176,6 +1190,187 @@ static const char *__doc_OpenVDS_IHasVolumeDataAccess_GetVolumeDataAccessManager
 
 static const char *__doc_OpenVDS_IHasVolumeDataAccess_IHasVolumeDataAccess = R"doc()doc";
 
+static const char *__doc_OpenVDS_IJKCoordinateTransformer =
+R"doc(<summary> IJKCoordinateTransformer may be used to transform between
+the following three-dimensional index and coordinate systems of a
+volume:
+
+IJK Index - a 3D index into the volume based on IJK dimensions.
+Dimensions I and J are usually horizontal directions, whereas K is
+usually the vertical direction. Transforms are provided to/from
+integer IJK indexes and also floating-point IJK positions.
+
+World Coordinate - a world position, related to IJK through the IJK
+grid definition provided on construction.
+
+Annotation Coordinate - a coordinate position based on the annotation
+axes of the volume (inline, crossline, depth, time, etc.). The order
+of annotation coordinate values correspond to the volume axes for each
+IJK dimension. That is, the annotation coordinate X value specifies
+the coordinate for the annotation axis corresponding to the I
+direction, and so on. When used with a VDS, annotation coordinates are
+based on the VDS axis descriptors.
+
+Voxel Index - a 3D index into the volume based on volume data
+dimesions, where dimension 0 is the data dimension that changes the
+fastest, dimension 1 is the data dimension that changes second
+fastest, etc. Transforms are provided to/from integer voxel indexes
+and also floating-point voxel positions. When used with a VDS, voxel
+index 0 refers to dimension 0, ranging from 0 to Dimension0Size - 1,
+and so on. The relationship between IJK dimensions and voxel
+dimensions is controlled by the IJK dimension map provided at
+construction. If the dimension map is (0, 1, 2), the IJK dimensions
+are the same as voxel dimensions. However, it is often the case that
+the dimension map is not (0, 1, 2), and so IJK dimensions are not the
+same as voxel dimensions, especially when used with a VDS. When used
+with a VDS, the dimension map is often set to (2, 1, 0), meaning that
+IJK corresponds to voxel dimensions (2, 1, 0). However, this is not a
+strict rule, and the dimension map will generally be defined based on
+the VDS axis descriptors. If a particular VDS axis is given the name
+"I", "J", or "K", that axis index will be considered as dimension I,
+J, or K. This is not very common. If a particular VDS axis is given
+the name "Inline", it will be considered as dimension I. If a
+particular VDS axis is given the name "Crossline", it will be
+considered as dimension J. If a particular VDS axis is given the name
+"Time", "Depth", or "Sample", it will be considered as dimension K.
+</summary>)doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_AnnotationToIJKIndex = R"doc(Transform the given annotation position to a IJK index)doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_AnnotationToIJKPosition = R"doc(Transform the given annotation position to a IJK position)doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_AnnotationToVoxelIndex = R"doc(Transform the given annotation position to a voxel index)doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_AnnotationToVoxelPosition = R"doc(Transform the given annotation position to a voxel position)doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_AnnotationToWorld = R"doc(Transform the given annotation position to a world position)doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_AnnotationsDefined =
+R"doc(Whether or not the annotation start/end coordinates are set, which
+defines the annotation coordinate system)doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_ConvertIJKPositionToIndex =
+R"doc(Convert the given IJK position to IJK index. Return (-1, -1, -1) if
+any component is outside valid range.)doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_ConvertVoxelPositionToIndex =
+R"doc(Convert the given voxel position to voxel index. Return (-1, -1, -1)
+if any component is outside valid range.)doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_ErrorCodeIfIJKPositionOutOfRange = R"doc()doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_ErrorCodeIfVoxelPositionOutOfRange = R"doc()doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_HomogeneousMultiply = R"doc()doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_IJKAnnotationEnd =
+R"doc(The annotation end coordinates, corresponding to max IJK index (i.e.
+IJKSize - (1, 1, 1)))doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_IJKAnnotationStart =
+R"doc(The annotation start coordinates, corresponding to min IJK index (i.e.
+0, 0, 0))doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_IJKCoordinateTransformer = R"doc()doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_IJKCoordinateTransformer_2 = R"doc()doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_IJKCoordinateTransformer_3 = R"doc()doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_IJKCoordinateTransformer_4 = R"doc()doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_IJKCoordinateTransformer_5 = R"doc()doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_IJKCoordinateTransformer_6 = R"doc()doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_IJKCoordinateTransformer_7 = R"doc()doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_IJKCoordinateTransformer_8 = R"doc()doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_IJKGrid =
+R"doc(The IJK grid definition relating IJK coordinates to world XYZ
+coordinates)doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_IJKIndexToAnnotation = R"doc(Transform the given IJK index to an annotation position)doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_IJKIndexToVoxelIndex = R"doc(Transform the given IJK index to a voxel index)doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_IJKIndexToWorld = R"doc(Transform the given IJK index to a world position)doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_IJKPositionToAnnotation = R"doc(Transform the given IJK position to an annotation position)doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_IJKPositionToVoxelPosition = R"doc(Transform the given IJK position to a voxel position)doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_IJKPositionToWorld = R"doc(Transform the given IJK position to a world position)doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_IJKSize = R"doc(The number of voxels in each IJK dimension)doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_IJKToVoxelDimensionMap = R"doc(Mapping from IJK to voxel volume dimensions)doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_IJKToWorldTransform = R"doc(The matrix used to transform from IJK coordinates to world coordinates)doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_InitTransformMatrixes = R"doc()doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_InverseMatrix = R"doc()doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_IsIJKIndexOutOfRange = R"doc(Determine whether the given IJK index is out of range)doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_IsIJKPositionOutOfRange = R"doc(Determine whether the given IJK position is out of range)doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_IsVoxelIndexOutOfRange = R"doc(Determine whether the given voxel index is out of range)doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_IsVoxelPositionOutOfRange = R"doc(Determine whether the given voxel position is out of range)doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_VoxelIndexToAnnotation = R"doc(Transform the given voxel index to an annotation position)doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_VoxelIndexToIJKIndex = R"doc(Transform the given voxel index to an IJK index)doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_VoxelIndexToWorld = R"doc(Transform the given voxel index to a world position)doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_VoxelPositionToAnnotation = R"doc(Transform the given voxel position to an annotation position)doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_VoxelPositionToIJKPosition = R"doc(Transform the given voxel position to an IJK position)doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_VoxelPositionToWorld = R"doc(Transform the given voxel position to a world position)doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_WorldToAnnotation = R"doc(Transform the given world position to an annotation position)doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_WorldToIJKIndex = R"doc(Transform the given world position to a IJK index)doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_WorldToIJKPosition = R"doc(Transform the given world position to a IJK position)doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_WorldToIJKTransform = R"doc(The matrix used to transform from world coordinates to IJK coordinates)doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_WorldToVoxelIndex = R"doc(Transform the given world position to a voxel index)doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_WorldToVoxelPosition = R"doc(Transform the given world position to a voxel position)doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_getPositionMatrix = R"doc()doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_getScaleMatrix = R"doc()doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_m_IJKAnnotationEnd = R"doc()doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_m_IJKAnnotationStart = R"doc()doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_m_IJKGridDefinition = R"doc()doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_m_IJKSize = R"doc()doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_m_IJKToVoxelDimensionMap = R"doc()doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_m_IJKToWorldTransform = R"doc()doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_m_WorldToIJKTransform = R"doc()doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_operator_eq = R"doc(Equality operator)doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_setOrientationMatrix = R"doc()doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_setPositionOrientationScaleMatrix = R"doc()doc";
+
+static const char *__doc_OpenVDS_IJKCoordinateTransformer_setUnitMatrix = R"doc()doc";
+
 static const char *__doc_OpenVDS_IJKGridDefinition = R"doc()doc";
 
 static const char *__doc_OpenVDS_IJKGridDefinition_IJKGridDefinition = R"doc()doc";
@@ -1187,6 +1382,8 @@ static const char *__doc_OpenVDS_IJKGridDefinition_iUnitStep = R"doc()doc";
 static const char *__doc_OpenVDS_IJKGridDefinition_jUnitStep = R"doc()doc";
 
 static const char *__doc_OpenVDS_IJKGridDefinition_kUnitStep = R"doc()doc";
+
+static const char *__doc_OpenVDS_IJKGridDefinition_operator_eq = R"doc()doc";
 
 static const char *__doc_OpenVDS_IJKGridDefinition_origin = R"doc()doc";
 
@@ -2156,9 +2353,19 @@ static const char *__doc_OpenVDS_KnownUnitNames_USSurveyFoot = R"doc(String repr
 
 static const char *__doc_OpenVDS_KnownUnitNames_Unitless = R"doc(String representing unitless)doc";
 
+static const char *__doc_OpenVDS_Length = R"doc()doc";
+
+static const char *__doc_OpenVDS_Length_2 = R"doc()doc";
+
 static const char *__doc_OpenVDS_M4 = R"doc()doc";
 
 static const char *__doc_OpenVDS_M4_data = R"doc()doc";
+
+static const char *__doc_OpenVDS_Matrix = R"doc()doc";
+
+static const char *__doc_OpenVDS_Matrix_data = R"doc()doc";
+
+static const char *__doc_OpenVDS_Matrix_element_count = R"doc()doc";
 
 static const char *__doc_OpenVDS_MessageBufferException = R"doc()doc";
 
@@ -2515,6 +2722,8 @@ static const char *__doc_OpenVDS_MetadataWriteAccess_SetMetadataString = R"doc()
 
 static const char *__doc_OpenVDS_MetadataWriteAccess_SetMetadataString_2 = R"doc()doc";
 
+static const char *__doc_OpenVDS_Multiply = R"doc()doc";
+
 static const char *__doc_OpenVDS_NoiseKernel = R"doc()doc";
 
 static const char *__doc_OpenVDS_NoiseKernel_Do = R"doc()doc";
@@ -2807,6 +3016,8 @@ static const char *__doc_OpenVDS_ResultConverter_ConvertValueT = R"doc()doc";
 
 static const char *__doc_OpenVDS_ResultConverter_ReciprocalScale = R"doc()doc";
 
+static const char *__doc_OpenVDS_Scale = R"doc()doc";
+
 static const char *__doc_OpenVDS_SimplexNoise = R"doc()doc";
 
 static const char *__doc_OpenVDS_StringWrapper = R"doc()doc";
@@ -2893,6 +3104,8 @@ static const char *__doc_OpenVDS_VDSIJKGridDefinition_VDSIJKGridDefinition = R"d
 static const char *__doc_OpenVDS_VDSIJKGridDefinition_VDSIJKGridDefinition_2 = R"doc()doc";
 
 static const char *__doc_OpenVDS_VDSIJKGridDefinition_dimensionMap = R"doc()doc";
+
+static const char *__doc_OpenVDS_VDSIJKGridDefinition_operator_eq = R"doc()doc";
 
 static const char *__doc_OpenVDS_VDSProduceStatus = R"doc()doc";
 
@@ -4627,6 +4840,8 @@ static const char *__doc_OpenVDS_VolumeDataLayout_GetDimensionality = R"doc()doc
 
 static const char *__doc_OpenVDS_VolumeDataLayout_GetLayoutDescriptor = R"doc()doc";
 
+static const char *__doc_OpenVDS_VolumeDataLayout_GetVDSIJKGridDefinitionFromMetadata = R"doc()doc";
+
 static const char *__doc_OpenVDS_VolumeDataLayout_IsChannelAllowingLossyCompression = R"doc()doc";
 
 static const char *__doc_OpenVDS_VolumeDataLayout_IsChannelAvailable = R"doc()doc";
@@ -5411,9 +5626,17 @@ static const char *__doc_OpenVDS_WriteElement_2 = R"doc()doc";
 
 static const char *__doc_OpenVDS_fastInvert = R"doc()doc";
 
+static const char *__doc_OpenVDS_operator_add = R"doc()doc";
+
 static const char *__doc_OpenVDS_operator_bor = R"doc()doc";
 
 static const char *__doc_OpenVDS_operator_bor_2 = R"doc()doc";
+
+static const char *__doc_OpenVDS_operator_eq = R"doc()doc";
+
+static const char *__doc_OpenVDS_operator_ne = R"doc()doc";
+
+static const char *__doc_OpenVDS_operator_sub = R"doc()doc";
 
 static const char *__doc_OpenVDS_optional = R"doc()doc";
 

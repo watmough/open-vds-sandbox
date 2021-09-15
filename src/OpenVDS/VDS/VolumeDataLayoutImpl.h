@@ -165,6 +165,8 @@ public:
   float GetDimensionMin(int32_t dimension) const override { VerifyDimensionMax(dimension); return m_dimensionCoordinateMin[dimension]; }
   float GetDimensionMax(int32_t dimension) const override { VerifyDimensionMax(dimension); return m_dimensionCoordinateMax[dimension]; }
 
+  VDSIJKGridDefinition GetVDSIJKGridDefinitionFromMetadata() const override;
+
   bool  IsChannelUseNoValue(int32_t channel) const override { ValidateChannelIndex(channel); return m_volumeDataChannelDescriptor[channel].IsUseNoValue(); }
 
   float GetChannelNoValue(int32_t channel) const override { ValidateChannelIndex(channel); return m_volumeDataChannelDescriptor[channel].GetNoValue(); }
