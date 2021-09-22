@@ -60,8 +60,8 @@ def test_2d_poststack_volume_info(poststack_2d_segy, output_vds):
         assert descriptor.coordinateMax == 1977.0
         assert descriptor.coordinateStep == 1.0
 
-        assert layout.getChannelValueRangeMin(0) == -302681.94
-        assert layout.getChannelValueRangeMax(0) == 303745.38
+        assert layout.getChannelValueRangeMin(0) == -302681.9375
+        assert layout.getChannelValueRangeMax(0) == 303745.375
 
         # check lattice metadata is NOT there
         assert not layout.isMetadataDoubleVector2Available(
@@ -103,6 +103,21 @@ def test_2d_poststack_read(poststack_2d_segy, output_vds):
     assert result == 0, ex.output()
     assert Path(output_vds.filename).exists()
 
+    with openvds.open(output_vds.filename, "") as handle:
+        layout = openvds.getLayout(handle)
+        access_manager = openvds.getAccessManager(handle)
+        dim0_size = layout.getDimensionNumSamples(0)
+        dim1_size = layout.getDimensionNumSamples(1)
+        request = access_manager.requestVolumeSubset((0, 0, 0, 0, 0, 0), (dim0_size, dim1_size, 1, 1, 1, 1),
+                                                     dimensionsND=openvds.DimensionsND.Dimensions_01,
+                                                     format=openvds.VolumeDataChannelDescriptor.Format.Format_R32)
+        data = request.data.reshape(dim1_size, dim0_size)
+        for dim1 in range(dim1_size):
+            total = 0
+            for dim0 in range(dim0_size):
+                total += abs(data[dim1, dim0])
+            assert total > 0.0, f"trace at {dim1}"
+
 
 def test_2d_prestack_volume_info(prestack_2d_segy, output_vds):
     # run importer
@@ -112,26 +127,6 @@ def test_2d_prestack_volume_info(prestack_2d_segy, output_vds):
     # check sample value range
     # check lattice metadata is NOT there
     # check 2D trace info metadata
-
-    ex = ImportExecutor()
-
-    ex.add_arg("--2d")
-    ex.add_arg("--prestack")
-    ex.add_args(["--vdsfile", output_vds.filename])
-
-    ex.add_arg(prestack_2d_segy)
-
-    result = ex.run()
-
-    assert result == 0, ex.output()
-    assert Path(output_vds.filename).exists()
-
-
-def test_2d_prestack_read(prestack_2d_segy, output_vds):
-    # run importer
-    # open VDS
-    # read VDS (entire thing at once)
-    # check that each trace is non-zero
 
     ex = ImportExecutor()
 
@@ -177,8 +172,8 @@ def test_2d_prestack_read(prestack_2d_segy, output_vds):
         assert descriptor.coordinateMax == 1977.0
         assert descriptor.coordinateStep == 1.0
 
-        assert layout.getChannelValueRangeMin(0) == -420799.12
-        assert layout.getChannelValueRangeMax(0) == 421478.38
+        assert layout.getChannelValueRangeMin(0) == -420799.125
+        assert layout.getChannelValueRangeMax(0) == 421478.375
 
         # check lattice metadata is NOT there
         assert not layout.isMetadataDoubleVector2Available(
@@ -200,3 +195,69 @@ def test_2d_prestack_read(prestack_2d_segy, output_vds):
                                               openvds.KnownMetadata.energySourcePointNumbers().name)
         assert layout.isMetadataBLOBAvailable(openvds.KnownMetadata.ensembleNumbers().category,
                                               openvds.KnownMetadata.ensembleNumbers().name)
+
+
+def test_2d_prestack_read(prestack_2d_segy, output_vds):
+    # run importer
+    # open VDS
+    # read VDS (entire thing at once)
+    # check that each trace is non-zero
+
+    ex = ImportExecutor()
+
+    ex.add_arg("--2d")
+    ex.add_arg("--prestack")
+    ex.add_args(["--vdsfile", output_vds.filename])
+
+    ex.add_arg(prestack_2d_segy)
+
+    result = ex.run()
+
+    assert result == 0, ex.output()
+    assert Path(output_vds.filename).exists()
+
+    with openvds.open(output_vds.filename, "") as handle:
+        layout = openvds.getLayout(handle)
+        access_manager = openvds.getAccessManager(handle)
+        dim0_size = layout.getDimensionNumSamples(0)
+        dim1_size = layout.getDimensionNumSamples(1)
+        dim2_size = layout.getDimensionNumSamples(2)
+
+        trace_channel = layout.getChannelIndex("Trace")
+        assert trace_channel > 0
+        offset_channel = layout.getChannelIndex("Offset")
+        assert offset_channel > 0
+
+        request = access_manager.requestVolumeSubset((0, 0, 0, 0, 0, 0),
+                                                     (dim0_size, dim1_size, dim2_size, 1, 1, 1),
+                                                     format=openvds.VolumeDataChannelDescriptor.Format.Format_R32,
+                                                     dimensionsND=openvds.DimensionsND.Dimensions_012)
+        offset_request = access_manager.requestVolumeSubset((0, 0, 0, 0, 0, 0),
+                                                            (1, dim1_size, dim2_size, 1, 1, 1),
+                                                            format=openvds.VolumeDataChannelDescriptor.Format.Format_R32,
+                                                            dimensionsND=openvds.DimensionsND.Dimensions_012)
+        trace_flag_request = access_manager.requestVolumeSubset((0, 0, 0, 0, 0, 0),
+                                                                (1, dim1_size, dim2_size, 1, 1, 1),
+                                                                format=openvds.VolumeDataChannelDescriptor.Format.Format_U8,
+                                                                dimensionsND=openvds.DimensionsND.Dimensions_012)
+
+        data = request.data.reshape(dim2_size, dim1_size, dim0_size)
+        offset_data = offset_request.data.reshape(dim2_size, dim1_size)
+        trace_flag_data = trace_flag_request.data.reshape(dim2_size, dim1_size)
+
+        for dim2 in range(dim2_size):
+            for dim1 in range(dim1_size):
+                trace_flag = trace_flag_data[dim2, dim1]
+                trace_offset = offset_data[dim2, dim1]
+                ensemble_number = layout.getAxisDescriptor(2).sampleIndexToCoordinate(dim2)
+
+                total = 0
+                for dim0 in range(dim0_size):
+                    total += abs(data[dim1, dim0])
+
+                message = f"trace at dim1 {dim1} dim2 {dim2} offset {trace_offset} CDP {ensemble_number}"
+
+                if trace_flag == 0:
+                    assert total == 0.0, f"dead {message}"
+                else:
+                    assert total > 0.0, message

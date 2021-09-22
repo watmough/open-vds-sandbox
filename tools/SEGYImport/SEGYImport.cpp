@@ -21,6 +21,7 @@
 #include "VDS/Hash.h"
 #include <SEGYUtils/DataProvider.h>
 #include <SEGYUtils/TraceDataManager.h>
+#include "TraceInfo2DManager.h"
 
 #include <OpenVDS/OpenVDS.h>
 #include <OpenVDS/MetadataContainer.h>
@@ -58,6 +59,8 @@
 #define NOMINMAX 1
 #include <io.h>
 #include <windows.h>
+
+constexpr double METERS_PER_FOOT = 0.3048;
 
 int64_t GetTotalSystemMemory()
 {
@@ -701,9 +704,12 @@ copySamples(const void* data, SEGY::BinaryHeader::DataSampleFormatCode dataSampl
 }
 
 bool
-analyzeSegment(DataProvider &dataProvider, SEGYFileInfo const& fileInfo, SEGYSegmentInfo const& segmentInfo, float valueRangePercentile, OpenVDS::FloatRange& valueRange, int& fold, int& secondaryStep, const SEGY::SEGYType segyType, int& offsetStart, int& offsetEnd, int& offsetStep, OpenVDS::PrintConfig printConfig, OpenVDS::Error& error)
+analyzeSegment(DataProvider &dataProvider, SEGYFileInfo const& fileInfo, SEGYSegmentInfo const& segmentInfo, float valueRangePercentile, OpenVDS::FloatRange& valueRange, int& fold, int& secondaryStep, const SEGY::SEGYType segyType, int& offsetStart, int& offsetEnd, int& offsetStep, TraceInfo2DManager * pTraceInfo2DManager, OpenVDS::PrintConfig printConfig, OpenVDS::Error& error)
 {
   assert(segmentInfo.m_traceStop >= segmentInfo.m_traceStart && "A valid segment info should always have a stop trace greater or equal to the start trace");
+  assert(pTraceInfo2DManager != nullptr);
+
+  pTraceInfo2DManager->Clear();
 
   bool success = true;
 
@@ -747,7 +753,7 @@ analyzeSegment(DataProvider &dataProvider, SEGYFileInfo const& fileInfo, SEGYSeg
       traceBufferStart = trace;
       traceBufferSize = (segmentInfo.m_traceStop - trace + 1) < 1000 ? int(segmentInfo.m_traceStop - trace + 1) : 1000;
 
-      buffer.reset(new char[traceByteSize * traceBufferSize]);
+      buffer.reset(new char[static_cast<size_t>(traceByteSize) * traceBufferSize]);
       int64_t offset = SEGY::TextualFileHeaderSize + SEGY::BinaryFileHeaderSize + traceByteSize * traceBufferStart;
       success = dataProvider.Read(buffer.get(), offset, traceByteSize * traceBufferSize, error);
 
@@ -760,7 +766,7 @@ analyzeSegment(DataProvider &dataProvider, SEGYFileInfo const& fileInfo, SEGYSeg
     const void *header = buffer.get() + traceByteSize * (trace - traceBufferStart);
     const void *data   = buffer.get() + traceByteSize * (trace - traceBufferStart) + SEGY::TraceHeaderSize;
 
-    int tracePrimaryKey = SEGY::ReadFieldFromHeader(header, fileInfo.m_primaryKey, fileInfo.m_headerEndianness);
+    int tracePrimaryKey = fileInfo.Is2D() ? 0 : SEGY::ReadFieldFromHeader(header, fileInfo.m_primaryKey, fileInfo.m_headerEndianness);
     int traceSecondaryKey = fileInfo.IsUnbinned() ? static_cast<int>(trace - segmentInfo.m_traceStart + 1) : SEGY::ReadFieldFromHeader(header, fileInfo.m_secondaryKey, fileInfo.m_headerEndianness);
 
     if(tracePrimaryKey != segmentInfo.m_primaryKey)
@@ -768,6 +774,8 @@ analyzeSegment(DataProvider &dataProvider, SEGYFileInfo const& fileInfo, SEGYSeg
       OpenVDS::printWarning(printConfig, "SEGY", fmt::format("trace {} has a primary key that doesn't match with the segment. This trace will be ignored.", segmentInfo.m_traceStart + trace));
       continue;
     }
+
+    pTraceInfo2DManager->AddTraceInfo(static_cast<const char *>(header));
 
     if(gatherFold > 0 && traceSecondaryKey == gatherSecondaryKey)
     {
@@ -882,6 +890,38 @@ analyzeSegment(DataProvider &dataProvider, SEGYFileInfo const& fileInfo, SEGYSeg
   return success;
 }
 
+double
+ConvertDistance(SEGY::BinaryHeader::MeasurementSystem segyMeasurementSystem, double distance)
+{
+  // convert SEGY distance to meters
+  if (segyMeasurementSystem == SEGY::BinaryHeader::MeasurementSystem::Feet)
+  {
+    return distance * METERS_PER_FOOT;
+  }
+
+  // if measurement system field in header is Meters or Unknown then return the value unchanged
+  return distance;
+}
+
+float
+ConvertDistance(SEGY::BinaryHeader::MeasurementSystem segyMeasurementSystem, float distance)
+{
+  return static_cast<float>(ConvertDistance(segyMeasurementSystem, static_cast<double>(distance)));
+}
+
+double
+ConvertDistanceInverse(SEGY::BinaryHeader::MeasurementSystem segyMeasurementSystem, double distance)
+{
+  // convert meters to SEGY distance
+  if (segyMeasurementSystem == SEGY::BinaryHeader::MeasurementSystem::Feet)
+  {
+    return distance / METERS_PER_FOOT;
+  }
+
+  // if measurement system field in header is Meters or Unknown then return the value unchanged
+  return distance;
+}
+
 bool
 createSEGYMetadata(DataProvider &dataProvider, SEGYFileInfo const &fileInfo, OpenVDS::MetadataContainer& metadataContainer, SEGY::BinaryHeader::MeasurementSystem &measurementSystem, OpenVDS::Error& error)
 {
@@ -907,9 +947,11 @@ createSEGYMetadata(DataProvider &dataProvider, SEGYFileInfo const &fileInfo, Ope
 }
 
 void
-createSurveyCoordinateSystemMetadata(SEGYFileInfo const& fileInfo, SEGY::BinaryHeader::MeasurementSystem measurementSystem, std::string const &crsWkt, OpenVDS::MetadataContainer& metadataContainer)
+createSurveyCoordinateSystemMetadata(SEGYFileInfo const& fileInfo, SEGY::BinaryHeader::MeasurementSystem segyMeasurementSystem, std::string const &crsWkt, OpenVDS::MetadataContainer& metadataContainer)
 {
   if (fileInfo.m_segmentInfoLists.empty()) return;
+
+  if (fileInfo.Is2D()) return;
 
   double inlineSpacing[2] = { 0, 0 };
   double crosslineSpacing[2] = { 0, 0 };
@@ -991,19 +1033,19 @@ createSurveyCoordinateSystemMetadata(SEGYFileInfo const& fileInfo, SEGY::BinaryH
   origin[1] -= crosslineSpacing[1] * firstSegmentInfo.m_binInfoStart.m_crosslineNumber;
 
   // Set coordinate system
-  metadataContainer.SetMetadataDoubleVector2(LATTICE_CATEGORY, LATTICE_ORIGIN, OpenVDS::DoubleVector2(origin[0], origin[1]));
-  metadataContainer.SetMetadataDoubleVector2(LATTICE_CATEGORY, LATTICE_INLINE_SPACING, OpenVDS::DoubleVector2(inlineSpacing[0], inlineSpacing[1]));
-  metadataContainer.SetMetadataDoubleVector2(LATTICE_CATEGORY, LATTICE_CROSSLINE_SPACING, OpenVDS::DoubleVector2(crosslineSpacing[0], crosslineSpacing[1]));
+  metadataContainer.SetMetadataDoubleVector2(LATTICE_CATEGORY, LATTICE_ORIGIN, OpenVDS::DoubleVector2(ConvertDistance(segyMeasurementSystem, origin[0]), ConvertDistance(segyMeasurementSystem, origin[1])));
+  metadataContainer.SetMetadataDoubleVector2(LATTICE_CATEGORY, LATTICE_INLINE_SPACING, OpenVDS::DoubleVector2(ConvertDistance(segyMeasurementSystem, inlineSpacing[0]), ConvertDistance(segyMeasurementSystem, inlineSpacing[1])));
+  metadataContainer.SetMetadataDoubleVector2(LATTICE_CATEGORY, LATTICE_CROSSLINE_SPACING, OpenVDS::DoubleVector2(ConvertDistance(segyMeasurementSystem, crosslineSpacing[0]), ConvertDistance(segyMeasurementSystem, crosslineSpacing[1])));
 
   if(!crsWkt.empty())
   {
     metadataContainer.SetMetadataString(LATTICE_CATEGORY, CRS_WKT, crsWkt);
   }
-  if(measurementSystem == SEGY::BinaryHeader::MeasurementSystem::Meters)
+  if(segyMeasurementSystem == SEGY::BinaryHeader::MeasurementSystem::Meters)
   {
     metadataContainer.SetMetadataString(LATTICE_CATEGORY, LATTICE_UNIT, KNOWNMETADATA_UNIT_METER);
   }
-  else if(measurementSystem == SEGY::BinaryHeader::MeasurementSystem::Feet)
+  else if(segyMeasurementSystem == SEGY::BinaryHeader::MeasurementSystem::Feet)
   {
     metadataContainer.SetMetadataString(LATTICE_CATEGORY, LATTICE_UNIT, KNOWNMETADATA_UNIT_FOOT);
   }
@@ -1075,6 +1117,54 @@ createImportInformationMetadata(const std::vector<DataProvider> &dataProviders, 
   metadataContainer.SetMetadataDouble(KNOWNMETADATA_CATEGORY_IMPORTINFORMATION, KNOWNMETADATA_IMPORTINFORMATION_INPUTFILESIZE, (double)inputFileSize);
   metadataContainer.SetMetadataString(KNOWNMETADATA_CATEGORY_IMPORTINFORMATION, KNOWNMETADATA_IMPORTINFORMATION_INPUTTIMESTAMP, inputTimeStamp);
   metadataContainer.SetMetadataString(KNOWNMETADATA_CATEGORY_IMPORTINFORMATION, KNOWNMETADATA_IMPORTINFORMATION_IMPORTTIMESTAMP, importTimeStamp);
+  return true;
+}
+
+bool
+create2DTraceInformationMetadata(const bool is2D, TraceInfo2DManager * pTraceInfo2DManager, OpenVDS::MetadataContainer& metadataContainer, OpenVDS::Error& error)
+{
+  if (!is2D || pTraceInfo2DManager == nullptr || pTraceInfo2DManager->Count() == 0)
+  {
+    metadataContainer.ClearMetadata(KNOWNMETADATA_TRACECOORDINATES, KNOWNMETADATA_TRACEPOSITIONS);
+    metadataContainer.ClearMetadata(KNOWNMETADATA_TRACECOORDINATES, KNOWNMETADATA_TRACEVERTICALOFFSETS);
+    metadataContainer.ClearMetadata(KNOWNMETADATA_TRACECOORDINATES, KNOWNMETADATA_ENERGYSOURCEPOINTNUMBERS);
+    metadataContainer.ClearMetadata(KNOWNMETADATA_TRACECOORDINATES, KNOWNMETADATA_ENSEMBLENUMBERS);
+    return true;
+  }
+
+  // create KNOWNMETADATA_TRACECOORDINATES metadata items:  KNOWNMETADATA_TRACEPOSITIONS, KNOWNMETADATA_TRACEVERTICALOFFSETS, KNOWNMETADATA_ENERGYSOURCEPOINTNUMBERS, KNOWNMETADATA_ENSEMBLENUMBERS
+
+  const auto
+    nItems = pTraceInfo2DManager->Count();
+
+  std::vector<double>
+    tracePositions,
+    verticalOffsets;
+  std::vector<int32_t>
+    espNumbers,
+    ensembleNumbers;
+
+  tracePositions.reserve(nItems * 2);
+  verticalOffsets.reserve(nItems);
+  espNumbers.reserve(nItems);
+  ensembleNumbers.reserve(nItems);
+
+  for (int i = 0; i < nItems; ++i)
+  {
+    const auto
+      & item = pTraceInfo2DManager->Get(i);
+    tracePositions.push_back(item.x);
+    tracePositions.push_back(item.y);
+    verticalOffsets.push_back(item.startTime);
+    espNumbers.push_back(item.energySourcePointNumber);
+    ensembleNumbers.push_back(item.ensembleNumber);
+  }
+
+  metadataContainer.SetMetadataBLOB(KNOWNMETADATA_TRACECOORDINATES, KNOWNMETADATA_TRACEPOSITIONS, tracePositions);
+  metadataContainer.SetMetadataBLOB(KNOWNMETADATA_TRACECOORDINATES, KNOWNMETADATA_TRACEVERTICALOFFSETS, verticalOffsets);
+  metadataContainer.SetMetadataBLOB(KNOWNMETADATA_TRACECOORDINATES, KNOWNMETADATA_ENERGYSOURCEPOINTNUMBERS, espNumbers);
+  metadataContainer.SetMetadataBLOB(KNOWNMETADATA_TRACECOORDINATES, KNOWNMETADATA_ENSEMBLENUMBERS, ensembleNumbers);
+
   return true;
 }
 
@@ -1208,7 +1298,24 @@ createAxisDescriptors(SEGYFileInfo const& fileInfo, SEGY::SampleUnits sampleUnit
 
   axisDescriptors.emplace_back(fileInfo.m_sampleCount, KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_AXISNAME_SAMPLE, sampleUnit, (float)fileInfo.m_startTimeMilliseconds, (float)fileInfo.m_startTimeMilliseconds + (fileInfo.m_sampleCount - 1) * (float)fileInfo.m_sampleIntervalMilliseconds);
 
-  if (fileInfo.IsUnbinned())
+  if (fileInfo.Is2D())
+  {
+    assert(fileInfo.m_segmentInfoLists.size() == 1 && fileInfo.m_segmentInfoLists[0].size() == 1);
+
+    if (fold > 1)
+    {
+      axisDescriptors.emplace_back(fold, VDS_DIMENSION_TRACE_NAME(VDS_DIMENSION_TRACE_SORT_OFFSET), KNOWNMETADATA_UNIT_UNITLESS, 1.0f, static_cast<float>(fold));
+    }
+
+    const auto
+      & segmentInfo = fileInfo.m_segmentInfoLists[0][0];
+
+    // the secondary key axis will be 1..N
+    const auto
+      secondaryKeyCount = segmentInfo.m_binInfoStop.m_crosslineNumber - segmentInfo.m_binInfoStart.m_crosslineNumber + 1;
+    axisDescriptors.emplace_back(secondaryKeyCount, VDS_DIMENSION_CDP_NAME, KNOWNMETADATA_UNIT_UNITLESS, 1.0f, static_cast<float>(secondaryKeyCount));
+  }
+  else if (fileInfo.IsUnbinned())
   {
     int
       maxTraceNumber = 0;
@@ -1297,12 +1404,12 @@ createAxisDescriptors(SEGYFileInfo const& fileInfo, SEGY::SampleUnits sampleUnit
 
 struct OffsetChannelInfo
 {
-  int   offsetStart;
-  int   offsetEnd;
-  int   offsetStep;
+  float offsetStart;
+  float offsetEnd;
+  float offsetStep;
   bool  hasOffset;
 
-  OffsetChannelInfo(bool has, int start, int end, int step) : offsetStart(start), offsetEnd(end), offsetStep(step), hasOffset(has) {}
+  OffsetChannelInfo(bool has, float start, float end, float step) : offsetStart(start), offsetEnd(end), offsetStep(step), hasOffset(has) {}
 };
 
 static std::vector<OpenVDS::VolumeDataChannelDescriptor>
@@ -1323,7 +1430,7 @@ createChannelDescriptors(SEGYFileInfo const& fileInfo, OpenVDS::FloatRange const
   if (offsetInfo.hasOffset)
   {
     // offset channel
-    channelDescriptors.emplace_back(OpenVDS::VolumeDataFormat::Format_R32, OpenVDS::VolumeDataComponents::Components_1, "Offset", KNOWNMETADATA_UNIT_METER, static_cast<float>(offsetInfo.offsetStart), static_cast<float>(offsetInfo.offsetEnd), OpenVDS::VolumeDataMapping::PerTrace, OpenVDS::VolumeDataChannelDescriptor::NoLossyCompression);
+    channelDescriptors.emplace_back(OpenVDS::VolumeDataFormat::Format_R32, OpenVDS::VolumeDataComponents::Components_1, "Offset", KNOWNMETADATA_UNIT_METER, float(offsetInfo.offsetStart), float(offsetInfo.offsetEnd), OpenVDS::VolumeDataMapping::PerTrace, OpenVDS::VolumeDataChannelDescriptor::NoLossyCompression);
 
     // TODO channels for other gather types - "Angle", "Vrms", "Frequency"
   }
@@ -1444,9 +1551,63 @@ findFirstTrace(TraceDataManager& traceDataManager, const SEGYSegmentInfo& segmen
 }
 
 int
+VoxelIndexToDataIndex(const SEGYFileInfo& fileInfo, const int primaryIndex, const int secondaryIndex, const int tertiaryIndex, const int chunkMin[6], const int pitch[6])
+{
+  // The given voxel position consists of the indices for sample, trace (offset), secondary key, primary key. Which of those indices is actually used will depend on the SEGY type.
+
+  // In all cases we assume the sample index is 0, and we won't use it when computing the data index
+
+  if (fileInfo.Is2D())
+  {
+    if (fileInfo.HasGatherOffset())
+    {
+      // use indices for trace, secondary key
+      return (secondaryIndex - chunkMin[2]) * pitch[2] + (tertiaryIndex - chunkMin[1]) * pitch[1];
+    }
+    // else use index for secondary key
+    return (secondaryIndex - chunkMin[1]) * pitch[1];
+  }
+
+  if (fileInfo.Is4D())
+  {
+    // use all the indices
+    return (primaryIndex - chunkMin[3]) * pitch[3] + (secondaryIndex - chunkMin[2]) * pitch[2] + (tertiaryIndex - chunkMin[1]) * pitch[1];
+  }
+
+  // else it's 3D poststack; use the indices for secondary key, primary key
+  return (primaryIndex - chunkMin[2]) * pitch[2] + (secondaryIndex - chunkMin[1]) * pitch[1];
+}
+
+int
+TraceIndex2DToEnsembleNumber(TraceInfo2DManager * pTraceInfo2DManager, int traceIndex, OpenVDS::Error & error)
+{
+  assert(pTraceInfo2DManager != nullptr);
+
+  error = {};
+
+  if (pTraceInfo2DManager == nullptr)
+  {
+    error.code = 1;
+    error.string = "TraceIndex2DToEnsembleNumber:  2D trace information is missing";
+    return 0;
+  }
+
+  assert(traceIndex >= 0);
+  assert(traceIndex < pTraceInfo2DManager->Count());
+  if (traceIndex < 0 || traceIndex >= pTraceInfo2DManager->Count())
+  {
+    error.code = 1;
+    error.string = "TraceIndex2DToEnsembleNumber:  Requested trace index is missing from 2D trace info";
+    return 0;
+  }
+
+  return pTraceInfo2DManager->Get(traceIndex).ensembleNumber;
+}
+
+int
 SecondaryKeyDimension(const SEGYFileInfo& fileInfo)
 {
-  if (fileInfo.Is4D())
+  if (fileInfo.m_segyType == SEGY::SEGYType::Prestack || fileInfo.m_segyType == SEGY::SEGYType::Prestack2D)
   {
     return 2;
   }
@@ -1456,12 +1617,14 @@ SecondaryKeyDimension(const SEGYFileInfo& fileInfo)
 int
 PrimaryKeyDimension(const SEGYFileInfo& fileInfo)
 {
-  if (fileInfo.Is4D())
+  if (fileInfo.m_segyType == SEGY::SEGYType::Prestack || fileInfo.m_segyType == SEGY::SEGYType::Prestack2D)
   {
+    // Prestack2D doesn't really have a primary key dimension, but we'll use the same one as for Prestack as sort of a placeholder.
     return 3;
   }
   return 2;
 }
+
 int
 main(int argc, char* argv[])
 {
@@ -1476,8 +1639,8 @@ main(int argc, char* argv[])
 
   std::string headerFormatFileName;
   std::vector<std::string> headerFields;
-  std::string primaryKey = "InlineNumber";
-  std::string secondaryKey = "CrosslineNumber";
+  std::string primaryKey;
+  std::string secondaryKey;
   std::string sampleUnit;
   std::string crsWkt;
   double scale = 0;
@@ -1502,6 +1665,7 @@ main(int argc, char* argv[])
   bool uniqueID = false;
   bool disablePersistentID = false;
   bool prestack = false;
+  bool is2D = false;
   bool traceOrderByOffset = true;
   bool useJsonOutput = false;
   bool disablePrintSegyTextHeader = false;
@@ -1512,6 +1676,11 @@ main(int argc, char* argv[])
   bool disableWarning = false;
   std::string attributeName = AMPLITUDE_ATTRIBUTE_NAME;
   std::string attributeUnit;
+
+  // default key names used if not supplied by user
+  std::string defaultPrimaryKey = "InlineNumber";
+  std::string defaultSecondaryKey = "CrosslineNumber";
+
 
   std::string supportedCompressionMethods = "None";
   if (OpenVDS::IsCompressionMethodSupported(OpenVDS::CompressionMethod::Wavelet)) supportedCompressionMethods += ", Wavelet";
@@ -1525,8 +1694,8 @@ main(int argc, char* argv[])
 
   options.add_option("", "", "header-format", "A JSON file defining the header format for the input SEG-Y file. The expected format is a dictonary of strings (field names) to pairs (byte position, field width) where field width can be \"TwoByte\" or \"FourByte\". Additionally, an \"Endianness\" key can be specified as \"BigEndian\" or \"LittleEndian\".", cxxopts::value<std::string>(headerFormatFileName), "<file>");
   options.add_option("", "", "header-field", "A single definition of a header field. The expected format is a \"fieldname=offset:width\" where the \":width\" is optional. Its also possible to specify range: \"fieldname=begin-end\". Multiple header-fields is specified by providing multiple --header-field arguments.", cxxopts::value<std::vector<std::string>>(headerFields), "header_name=offset:width");
-  options.add_option("", "p", "primary-key", "The name of the trace header field to use as the primary key.", cxxopts::value<std::string>(primaryKey)->default_value("Inline"), "<field>");
-  options.add_option("", "s", "secondary-key", "The name of the trace header field to use as the secondary key.", cxxopts::value<std::string>(secondaryKey)->default_value("Crossline"), "<field>");
+  options.add_option("", "p", "primary-key", "The name of the trace header field to use as the primary key.", cxxopts::value<std::string>(primaryKey), "<field>");
+  options.add_option("", "s", "secondary-key", "The name of the trace header field to use as the secondary key.", cxxopts::value<std::string>(secondaryKey), "<field>");
   options.add_option("", "", "prestack", "Import binned prestack data (PSTM/PSDM gathers).", cxxopts::value<bool>(prestack), "");
   options.add_option("", "", "scale", "If a scale override (floating point) is given, it is used to scale the coordinates in the header instead of determining the scale factor from the coordinate scale trace header field.", cxxopts::value<double>(scale), "<value>");
   options.add_option("", "", "sample-unit", "A sample unit of 'ms' is used for datasets in the time domain (default), while a sample unit of 'm' or 'ft' is used for datasets in the depth domain", cxxopts::value<std::string>(sampleUnit), "<string>");
@@ -1553,6 +1722,7 @@ main(int argc, char* argv[])
   options.add_option("", "", "disable-print-text-header", "Print the text header of the input segy file.", cxxopts::value<bool>(disablePrintSegyTextHeader), "");
   options.add_option("", "", "attribute-name", "The name of the primary VDS channel. The name may be Amplitude (default), Attribute, Depth, Probability, Time, Vavg, Vint, or Vrms", cxxopts::value<std::string>(attributeName)->default_value(AMPLITUDE_ATTRIBUTE_NAME), "<string>");
   options.add_option("", "", "attribute-unit", "The units of the primary VDS channel. The unit name may be blank (default), ft, ft/s, Hz, m, m/s, ms, or s", cxxopts::value<std::string>(attributeUnit), "<string>");
+  options.add_option("", "", "2d", "Import 2D data.", cxxopts::value<bool>(is2D), "");
   // TODO add option for turning off traceOrderByOffset
 
   options.add_option("", "q", "quiet", "Disable info level output.", cxxopts::value<bool>(disableInfo), "");
@@ -1646,13 +1816,38 @@ main(int argc, char* argv[])
     }
   }
 
+  if (is2D)
+  {
+    defaultSecondaryKey = "EnsembleNumber";
+  }
+
+  if (primaryKey.empty())
+  {
+    primaryKey = defaultPrimaryKey;
+  }
+  if (secondaryKey.empty())
+  {
+    secondaryKey = defaultSecondaryKey;
+  }
+
   // get the canonical field name for the primary and secondary key
   ResolveAlias(primaryKey);
   ResolveAlias(secondaryKey);
 
   SEGY::SEGYType segyType = SEGY::SEGYType::Poststack;
 
-  if (primaryKey == "inlinenumber" || primaryKey == "crosslinenumber")
+  if (is2D)
+  {
+    if (prestack)
+    {
+      segyType = SEGY::SEGYType::Prestack2D;
+    }
+    else
+    {
+      segyType = SEGY::SEGYType::Poststack2D;
+    }
+  }
+  else if (primaryKey == "inlinenumber" || primaryKey == "crosslinenumber")
   {
     if (prestack)
     {
@@ -1763,9 +1958,6 @@ main(int argc, char* argv[])
   SEGY::HeaderField
     startTimeHeaderField = g_traceHeaderFields["starttime"];
 
-  SEGYBinInfoHeaderFields
-    binInfoHeaderFields(g_traceHeaderFields[primaryKey], g_traceHeaderFields[secondaryKey], g_traceHeaderFields["coordinatescale"], g_traceHeaderFields["ensemblexcoordinate"], g_traceHeaderFields["ensembleycoordinate"], scale);
-
   OpenVDS::Error
     error;
   std::string errorFileName;
@@ -1815,6 +2007,13 @@ main(int argc, char* argv[])
   SEGYFileInfo
     fileInfo(headerEndianness);
   fileInfo.m_segyType = segyType;
+
+  const auto
+    xcoordHeaderFieldIndex = fileInfo.Is2D() ? "sourcexcoordinate" : "ensemblexcoordinate",
+    ycoordHeaderFieldIndex = fileInfo.Is2D() ? "sourceycoordinate" : "ensembleycoordinate";
+
+  SEGYBinInfoHeaderFields
+    binInfoHeaderFields(g_traceHeaderFields[primaryKey], g_traceHeaderFields[secondaryKey], g_traceHeaderFields["coordinatescale"], g_traceHeaderFields[xcoordHeaderFieldIndex], g_traceHeaderFields[ycoordHeaderFieldIndex], scale);
 
   // Scan the file if '--scan' was passed or we're uploading but no fileInfo file was specified
   if (scan || fileInfoFileNames.empty())
@@ -1966,9 +2165,9 @@ main(int argc, char* argv[])
 
   // Check for only a single segment
 
-  if (fileInfo.m_segmentInfoLists.size() == 1 && fileInfo.m_segmentInfoLists[0].size() == 1)
+  if (!is2D && fileInfo.m_segmentInfoLists.size() == 1 && fileInfo.m_segmentInfoLists[0].size() == 1)
   {
-    OpenVDS::printWarning_with_condition_fatal(printConfig, !ignoreWarnings, "SegmentInfoList", "Warning: There is only one segment, either this is (as of now unsupported) 2D data or this usually indicates using the wrong header format for the input dataset.", "Use --ignore-warnings to force the import to go ahead.");
+    OpenVDS::printWarning_with_condition_fatal(printConfig, !ignoreWarnings, "SegmentInfoList", "Warning: There is only one segment, either this is 2D data or this usually indicates using the wrong header format for the input dataset.", "Use --2d for 2D data. Use --ignore-warnings to force the import to go ahead.");
   }
 
   // Determine value range, fold and primary/secondary step
@@ -1979,9 +2178,20 @@ main(int argc, char* argv[])
 
   const float valueRangePercentile = 99.5f; // 99.5f is the same default as Petrel uses.
 
+  // Create the appropriate TraceInfo2DManager here so that it can be called during AnalzyeSegment.
+    //
+    // Note: Piggybacking the gathering of 2D trace info onto AnalyzeSegment is possible because
+    // a) 2D SEGY has exactly one segment, and b) AnalyzeSegment reads every trace in the segment its
+    // analyzing. If (b) is no longer true because we've changed the analysis strategy then something
+    // will need to take the place of this piggybacking.
+    //
+  auto traceInfo2DManager = fileInfo.Is2D()
+    ? std::unique_ptr<TraceInfo2DManager>(new TraceInfo2DManagerImpl(fileInfo.m_headerEndianness, scale, g_traceHeaderFields["coordinatescale"], g_traceHeaderFields["sourcexcoordinate"], g_traceHeaderFields["sourceycoordinate"], g_traceHeaderFields["starttime"], g_traceHeaderFields["energysourcepointnumber"], g_traceHeaderFields["ensemblenumber"]))
+    : std::unique_ptr<TraceInfo2DManager>(new TraceInfo2DManager());
+
   int fileIndex;
-  auto representativeSegment = findRepresentativeSegment(fileInfo, primaryStep, fileIndex);
-  analyzeSegment(dataProviders[fileIndex], fileInfo, representativeSegment, valueRangePercentile, valueRange, fold, secondaryStep, segyType, offsetStart, offsetEnd, offsetStep, printConfig, error);
+  const auto& representativeSegment = findRepresentativeSegment(fileInfo, primaryStep, fileIndex);
+  analyzeSegment(dataProviders[fileIndex], fileInfo, representativeSegment, valueRangePercentile, valueRange, fold, secondaryStep, segyType, offsetStart, offsetEnd, offsetStep, traceInfo2DManager.get(), printConfig, error);
 
   if (error.code != 0)
   {
@@ -2102,9 +2312,6 @@ main(int argc, char* argv[])
     OpenVDS::printWarning_with_condition_fatal(printConfig, !ignoreWarnings, "SEGY", msg, fatal_msg);
   }
 
-  // Create channel descriptors
-  std::vector<OpenVDS::VolumeDataChannelDescriptor> channelDescriptors = createChannelDescriptors(fileInfo, valueRange, OffsetChannelInfo(fileInfo.HasGatherOffset(), offsetStart, offsetEnd, offsetStep), attributeName, attributeUnit);
-
   // Create metadata
   OpenVDS::MetadataContainer
     metadataContainer;
@@ -2118,10 +2325,10 @@ main(int argc, char* argv[])
   }
 
   SEGY::BinaryHeader::MeasurementSystem
-    measurementSystem;
+    segyMeasurementSystem;
 
   // get SEGY metadata from first file
-  createSEGYMetadata(dataProviders[0], fileInfo, metadataContainer, measurementSystem, error);
+  createSEGYMetadata(dataProviders[0], fileInfo, metadataContainer, segyMeasurementSystem, error);
 
   if (error.code != 0)
   {
@@ -2129,9 +2336,23 @@ main(int argc, char* argv[])
     return EXIT_FAILURE;
   }
 
+  OffsetChannelInfo
+    offsetInfo(fileInfo.HasGatherOffset(), ConvertDistance(segyMeasurementSystem, static_cast<float>(offsetStart)), ConvertDistance(segyMeasurementSystem, static_cast<float>(offsetEnd)), ConvertDistance(segyMeasurementSystem, static_cast<float>(offsetStep)));
+
+  // Create channel descriptors
+  std::vector<OpenVDS::VolumeDataChannelDescriptor> channelDescriptors = createChannelDescriptors(fileInfo, valueRange, offsetInfo, attributeName, attributeUnit);
+
   if (segyType == SEGY::SEGYType::Poststack || segyType == SEGY::SEGYType::Prestack)
   {
-    createSurveyCoordinateSystemMetadata(fileInfo, measurementSystem, crsWkt, metadataContainer);
+    createSurveyCoordinateSystemMetadata(fileInfo, segyMeasurementSystem, crsWkt, metadataContainer);
+  }
+
+  create2DTraceInformationMetadata(is2D, traceInfo2DManager.get(), metadataContainer, error);
+
+  if (error.code != 0)
+  {
+    OpenVDS::printError(printConfig, "Metadata", error.string);
+    return EXIT_FAILURE;
   }
 
   OpenVDS::Error createError;
@@ -2174,7 +2395,7 @@ main(int argc, char* argv[])
 
   OpenVDS::DimensionsND writeDimensionGroup = OpenVDS::DimensionsND::Dimensions_012;
 
-  if (IsSEGYTypeUnbinned(segyType))
+  if (IsSEGYTypeUnbinned(segyType) || segyType == SEGY::SEGYType::Poststack2D)
   {
     writeDimensionGroup = OpenVDS::DimensionsND::Dimensions_01;
   }
@@ -2239,11 +2460,19 @@ main(int argc, char* argv[])
     chunkInfo.sampleStart = chunkInfo.min[0];
     chunkInfo.sampleCount = chunkInfo.max[0] - chunkInfo.min[0];
 
-    chunkInfo.secondaryKeyStart = (int)floorf(layout->GetAxisDescriptor(SecondaryKeyDimension(fileInfo)).SampleIndexToCoordinate(chunkInfo.min[SecondaryKeyDimension(fileInfo)]) + 0.5f);
-    chunkInfo.secondaryKeyStop = (int)floorf(layout->GetAxisDescriptor(SecondaryKeyDimension(fileInfo)).SampleIndexToCoordinate(chunkInfo.max[SecondaryKeyDimension(fileInfo)] - 1) + 0.5f);
+    OpenVDS::Error traceIndexError;
 
-    chunkInfo.primaryKeyStart = (int)floorf(layout->GetAxisDescriptor(PrimaryKeyDimension(fileInfo)).SampleIndexToCoordinate(chunkInfo.min[PrimaryKeyDimension(fileInfo)]) + 0.5f);
-    chunkInfo.primaryKeyStop = (int)floorf(layout->GetAxisDescriptor(PrimaryKeyDimension(fileInfo)).SampleIndexToCoordinate(chunkInfo.max[PrimaryKeyDimension(fileInfo)] - 1) + 0.5f);
+    chunkInfo.secondaryKeyStart = fileInfo.Is2D() ? TraceIndex2DToEnsembleNumber(traceInfo2DManager.get(), chunkInfo.min[SecondaryKeyDimension(fileInfo)], traceIndexError) : (int)floorf(layout->GetAxisDescriptor(SecondaryKeyDimension(fileInfo)).SampleIndexToCoordinate(chunkInfo.min[SecondaryKeyDimension(fileInfo)]) + 0.5f);
+    chunkInfo.secondaryKeyStop = fileInfo.Is2D() ? TraceIndex2DToEnsembleNumber(traceInfo2DManager.get(), chunkInfo.max[SecondaryKeyDimension(fileInfo)] - 1, traceIndexError) : (int)floorf(layout->GetAxisDescriptor(SecondaryKeyDimension(fileInfo)).SampleIndexToCoordinate(chunkInfo.max[SecondaryKeyDimension(fileInfo)] - 1) + 0.5f);
+
+    if (fileInfo.Is2D() && traceIndexError.code != 0)
+    {
+      OpenVDS::printWarning(printConfig, "2DEnsembleIndex", "Could not translate trace index to ensemble number", fmt::format("{}", error.code), error.string);
+      break;
+    }
+
+    chunkInfo.primaryKeyStart = fileInfo.Is2D() ? 0 : (int)floorf(layout->GetAxisDescriptor(PrimaryKeyDimension(fileInfo)).SampleIndexToCoordinate(chunkInfo.min[PrimaryKeyDimension(fileInfo)]) + 0.5f);
+    chunkInfo.primaryKeyStop = fileInfo.Is2D() ? 0 : (int)floorf(layout->GetAxisDescriptor(PrimaryKeyDimension(fileInfo)).SampleIndexToCoordinate(chunkInfo.max[PrimaryKeyDimension(fileInfo)] - 1) + 0.5f);
 
     // For each input file, find the lower/upper segments and then add data requests to that file's traceDataManager
 
@@ -2269,7 +2498,13 @@ main(int argc, char* argv[])
           lower,
           upper;
 
-        if (fileInfo.IsUnbinned())
+        if (fileInfo.Is2D())
+        {
+          // Hopefully 2D files always a single line
+          lower = segmentInfoList.begin();
+          upper = segmentInfoList.end();
+        }
+        else if (fileInfo.IsUnbinned())
         {
           // For unbinned data we set lower and upper based on the 1-based indices instead of searching on the segment primary keys.
           // When we implement raw gathers mode we'll need to modify this.
@@ -2436,7 +2671,7 @@ main(int argc, char* argv[])
 
           const void* data = header + SEGY::TraceHeaderSize;
 
-          int primaryTest = SEGY::ReadFieldFromHeader(header, fileInfo.m_primaryKey, fileInfo.m_headerEndianness),
+          int primaryTest = fileInfo.Is2D() ? 0 : SEGY::ReadFieldFromHeader(header, fileInfo.m_primaryKey, fileInfo.m_headerEndianness),
             secondaryTest = fileInfo.IsUnbinned() ? static_cast<int>(trace - segment->m_traceStart + 1) : SEGY::ReadFieldFromHeader(header, fileInfo.m_secondaryKey, fileInfo.m_headerEndianness);
 
           // Check if the trace is outside the secondary range and go to the next segment if it is
@@ -2455,7 +2690,12 @@ main(int argc, char* argv[])
           int
             primaryIndex,
             secondaryIndex;
-          if (fileInfo.IsUnbinned())
+          if (fileInfo.Is2D())
+          {
+            primaryIndex = 0;
+            secondaryIndex = traceInfo2DManager->GetIndexOfEnsembleNumber(secondaryTest);
+          }
+          else if (fileInfo.IsUnbinned())
           {
             primaryIndex = static_cast<int>(segment - segmentInfo.begin());
             secondaryIndex = secondaryTest - 1;
@@ -2490,65 +2730,68 @@ main(int argc, char* argv[])
           }
 
           {
-            int targetOffset;
-            if (fileInfo.Is4D())
-            {
-              targetOffset = (primaryIndex - chunkInfo.min[3]) * amplitudePitch[3] + (secondaryIndex - chunkInfo.min[2]) * amplitudePitch[2] + (tertiaryIndex - chunkInfo.min[1]) * amplitudePitch[1];
-            }
-            else
-            {
-              targetOffset = (primaryIndex - chunkInfo.min[2]) * amplitudePitch[2] + (secondaryIndex - chunkInfo.min[1]) * amplitudePitch[1];
-            }
+            //int targetOffset;
+            //if (fileInfo.Is4D())
+            //{
+            //  targetOffset = (primaryIndex - chunkInfo.min[3]) * amplitudePitch[3] + (secondaryIndex - chunkInfo.min[2]) * amplitudePitch[2] + (tertiaryIndex - chunkInfo.min[1]) * amplitudePitch[1];
+            //}
+            //else
+            //{
+            //  targetOffset = (primaryIndex - chunkInfo.min[2]) * amplitudePitch[2] + (secondaryIndex - chunkInfo.min[1]) * amplitudePitch[1];
+            //}
+            const int targetOffset = VoxelIndexToDataIndex(fileInfo, primaryIndex, secondaryIndex, tertiaryIndex, chunkInfo.min, amplitudePitch);
 
             copySamples(data, fileInfo.m_dataSampleFormatCode, fileInfo.m_headerEndianness, &reinterpret_cast<float*>(amplitudeBuffer)[targetOffset], chunkInfo.sampleStart, chunkInfo.sampleCount);
           }
 
           if (traceFlagBuffer)
           {
-            int targetOffset;
-            if (fileInfo.Is4D())
-            {
-              targetOffset = (primaryIndex - chunkInfo.min[3]) * traceFlagPitch[3] + (secondaryIndex - chunkInfo.min[2]) * traceFlagPitch[2] + (tertiaryIndex - chunkInfo.min[1]) * traceFlagPitch[1];
-            }
-            else
-            {
-              targetOffset = (primaryIndex - chunkInfo.min[2]) * traceFlagPitch[2] + (secondaryIndex - chunkInfo.min[1]) * traceFlagPitch[1];
-            }
+            //int targetOffset;
+            //if (fileInfo.Is4D())
+            //{
+            //  targetOffset = (primaryIndex - chunkInfo.min[3]) * traceFlagPitch[3] + (secondaryIndex - chunkInfo.min[2]) * traceFlagPitch[2] + (tertiaryIndex - chunkInfo.min[1]) * traceFlagPitch[1];
+            //}
+            //else
+            //{
+            //  targetOffset = (primaryIndex - chunkInfo.min[2]) * traceFlagPitch[2] + (secondaryIndex - chunkInfo.min[1]) * traceFlagPitch[1];
+            //}
+            const int targetOffset = VoxelIndexToDataIndex(fileInfo, primaryIndex, secondaryIndex, tertiaryIndex, chunkInfo.min, traceFlagPitch);
 
             reinterpret_cast<uint8_t*>(traceFlagBuffer)[targetOffset] = true;
           }
 
           if (segyTraceHeaderBuffer)
           {
-            int targetOffset;
-            if (fileInfo.Is4D())
-            {
-              targetOffset = (primaryIndex - chunkInfo.min[3]) * segyTraceHeaderPitch[3] + (secondaryIndex - chunkInfo.min[2]) * segyTraceHeaderPitch[2] + (tertiaryIndex - chunkInfo.min[1]) * segyTraceHeaderPitch[1];
-            }
-            else
-            {
-              targetOffset = (primaryIndex - chunkInfo.min[2]) * segyTraceHeaderPitch[2] + (secondaryIndex - chunkInfo.min[1]) * segyTraceHeaderPitch[1];
-            }
+            //int targetOffset;
+            //if (fileInfo.Is4D())
+            //{
+            //  targetOffset = (primaryIndex - chunkInfo.min[3]) * segyTraceHeaderPitch[3] + (secondaryIndex - chunkInfo.min[2]) * segyTraceHeaderPitch[2] + (tertiaryIndex - chunkInfo.min[1]) * segyTraceHeaderPitch[1];
+            //}
+            //else
+            //{
+            //  targetOffset = (primaryIndex - chunkInfo.min[2]) * segyTraceHeaderPitch[2] + (secondaryIndex - chunkInfo.min[1]) * segyTraceHeaderPitch[1];
+            //}
+            const int targetOffset = VoxelIndexToDataIndex(fileInfo, primaryIndex, secondaryIndex, tertiaryIndex, chunkInfo.min, segyTraceHeaderPitch);
 
             memcpy(&reinterpret_cast<uint8_t*>(segyTraceHeaderBuffer)[targetOffset], header, SEGY::TraceHeaderSize);
           }
 
           if (offsetBuffer)
           {
-            // offset is only applicable to 4D?
-            int targetOffset;
-            if (fileInfo.Is4D())
-            {
-              targetOffset = (primaryIndex - chunkInfo.min[3]) * offsetPitch[3] + (secondaryIndex - chunkInfo.min[2]) * offsetPitch[2] + (tertiaryIndex - chunkInfo.min[1]) * offsetPitch[1];
-            }
-            else
-            {
-              targetOffset = (primaryIndex - chunkInfo.min[2]) * offsetPitch[2] + (secondaryIndex - chunkInfo.min[1]) * offsetPitch[1];
-            }
+            //int targetOffset;
+            //if (fileInfo.Is4D())
+            //{
+            //  targetOffset = (primaryIndex - chunkInfo.min[3]) * offsetPitch[3] + (secondaryIndex - chunkInfo.min[2]) * offsetPitch[2] + (tertiaryIndex - chunkInfo.min[1]) * offsetPitch[1];
+            //}
+            //else
+            //{
+            //  targetOffset = (primaryIndex - chunkInfo.min[2]) * offsetPitch[2] + (secondaryIndex - chunkInfo.min[1]) * offsetPitch[1];
+            //}
+            const int targetOffset = VoxelIndexToDataIndex(fileInfo, primaryIndex, secondaryIndex, tertiaryIndex, chunkInfo.min, offsetPitch);
 
-            const int
-              traceOffset = SEGY::ReadFieldFromHeader(header, g_traceHeaderFields["offset"], fileInfo.m_headerEndianness);
-            reinterpret_cast<float*>(offsetBuffer)[targetOffset] = static_cast<float>(traceOffset);
+            const auto
+              traceOffset = ConvertDistance(segyMeasurementSystem, static_cast<float>(SEGY::ReadFieldFromHeader(header, g_traceHeaderFields["offset"], fileInfo.m_headerEndianness)));
+            static_cast<float*>(offsetBuffer)[targetOffset] = traceOffset;
           }
         }
       }

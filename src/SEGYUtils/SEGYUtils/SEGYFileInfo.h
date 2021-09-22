@@ -117,6 +117,8 @@ struct SEGYFileInfo
   OPENVDS_EXPORT bool IsUnbinned() const;
 
   OPENVDS_EXPORT bool HasGatherOffset() const;
+
+  OPENVDS_EXPORT bool Is2D() const;
 };
 
 #endif  // SEGY_FILE_INFO_H

@@ -1,5 +1,7 @@
 add_executable(SEGYImport
   SEGYImport.cpp
+  TraceInfo2DManager.cpp
+  TraceInfo2DManager.h
   )
 
 target_link_libraries(SEGYImport PRIVATE Threads::Threads openvds segyutils jsoncpp_lib_static fmt::fmt)
