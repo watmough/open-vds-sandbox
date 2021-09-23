@@ -108,15 +108,33 @@ def test_2d_poststack_read(poststack_2d_segy, output_vds):
         access_manager = openvds.getAccessManager(handle)
         dim0_size = layout.getDimensionNumSamples(0)
         dim1_size = layout.getDimensionNumSamples(1)
-        request = access_manager.requestVolumeSubset((0, 0, 0, 0, 0, 0), (dim0_size, dim1_size, 1, 1, 1, 1),
-                                                     dimensionsND=openvds.DimensionsND.Dimensions_01,
-                                                     format=openvds.VolumeDataChannelDescriptor.Format.Format_R32)
+
+        trace_channel = layout.getChannelIndex("Trace")
+        assert trace_channel > 0
+
+        request = access_manager.requestVolumeSubset((0, 0, 0, 0, 0, 0),
+                                                     (dim0_size, dim1_size, 1, 1, 1, 1),
+                                                     channel=0,
+                                                     format=openvds.VolumeDataChannelDescriptor.Format.Format_R32,
+                                                     dimensionsND=openvds.DimensionsND.Dimensions_01)
+        trace_flag_request = access_manager.requestVolumeSubset((0, 0, 0, 0, 0, 0),
+                                                                (1, dim1_size, 1, 1, 1, 1),
+                                                                channel=trace_channel,
+                                                                format=openvds.VolumeDataChannelDescriptor.Format.Format_U8,
+                                                                dimensionsND=openvds.DimensionsND.Dimensions_01)
+
         data = request.data.reshape(dim1_size, dim0_size)
+        trace_flag_data = trace_flag_request.data
+
         for dim1 in range(dim1_size):
             total = 0
             for dim0 in range(dim0_size):
                 total += abs(data[dim1, dim0])
-            assert total > 0.0, f"trace at {dim1}"
+
+            if trace_flag_data[dim1] == 0:
+                assert total == 0.0, f"dead trace at {dim1}"
+            else:
+                assert total > 0.0, f"trace at {dim1}"
 
 
 def test_2d_prestack_volume_info(prestack_2d_segy, output_vds):
@@ -230,14 +248,17 @@ def test_2d_prestack_read(prestack_2d_segy, output_vds):
 
         request = access_manager.requestVolumeSubset((0, 0, 0, 0, 0, 0),
                                                      (dim0_size, dim1_size, dim2_size, 1, 1, 1),
+                                                     channel=0,
                                                      format=openvds.VolumeDataChannelDescriptor.Format.Format_R32,
                                                      dimensionsND=openvds.DimensionsND.Dimensions_012)
         offset_request = access_manager.requestVolumeSubset((0, 0, 0, 0, 0, 0),
                                                             (1, dim1_size, dim2_size, 1, 1, 1),
+                                                            channel=offset_channel,
                                                             format=openvds.VolumeDataChannelDescriptor.Format.Format_R32,
                                                             dimensionsND=openvds.DimensionsND.Dimensions_012)
         trace_flag_request = access_manager.requestVolumeSubset((0, 0, 0, 0, 0, 0),
                                                                 (1, dim1_size, dim2_size, 1, 1, 1),
+                                                                channel=trace_channel,
                                                                 format=openvds.VolumeDataChannelDescriptor.Format.Format_U8,
                                                                 dimensionsND=openvds.DimensionsND.Dimensions_012)
 
@@ -253,7 +274,7 @@ def test_2d_prestack_read(prestack_2d_segy, output_vds):
 
                 total = 0
                 for dim0 in range(dim0_size):
-                    total += abs(data[dim1, dim0])
+                    total += abs(data[dim2, dim1, dim0])
 
                 message = f"trace at dim1 {dim1} dim2 {dim2} offset {trace_offset} CDP {ensemble_number}"
 
