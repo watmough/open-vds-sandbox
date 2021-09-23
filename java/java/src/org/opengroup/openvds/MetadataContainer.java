@@ -17,8 +17,7 @@
 
 package org.opengroup.openvds;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.nio.ByteBuffer;
 
 public class MetadataContainer extends MetadataReadAccess {
 
@@ -51,6 +50,8 @@ public class MetadataContainer extends MetadataReadAccess {
     private static native void cpSetMetadataDoubleVector4(long handle, String category, String name, double[] value);
 
     private static native void cpSetMetadataString(long handle, String category, String name, String value);
+
+    private static native void cpSetMetadataBLOB(long handle, String category, String name, byte[] blobValues);
 
     /**
      * Constructor around existing JNI object
@@ -202,6 +203,32 @@ public class MetadataContainer extends MetadataReadAccess {
             throw new IllegalArgumentException("Null String Metadata.");
         }
         cpSetMetadataString(_handle, category, name, value);
+    }
+
+    /**
+     * set Meta data blob using a byte array
+     * @param category
+     * @param name
+     * @param blobValues
+     */
+    public void setMetadataBLOB(String category, String name, byte[] blobValues) {
+        if (blobValues == null) {
+            throw new IllegalArgumentException("Blob values array is null.");
+        }
+        cpSetMetadataBLOB(_handle, category, name, blobValues);
+    }
+
+    /**
+     * set Meta data blob using a byte array
+     * @param category
+     * @param name
+     * @param blobValues
+     */
+    public void setMetadataBLOB(String category, String name, ByteBuffer blobValues) {
+        if (blobValues == null) {
+            throw new IllegalArgumentException("Blob values buffer is null.");
+        }
+        cpSetMetadataBLOB(_handle, category, name, blobValues.array());
     }
 
 

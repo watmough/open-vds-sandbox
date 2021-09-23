@@ -31,6 +31,14 @@ public abstract class BufferUtils {
      * @param array Th array to be copied into the new buffer
      * @return A direct buffer copy of the given array
      */
+    public static ByteBuffer toBuffer(byte[] array) {
+        return (ByteBuffer) createByteBuffer(array.length).put(array).clear();
+    }
+
+    /**
+     * @param array Th array to be copied into the new buffer
+     * @return A direct buffer copy of the given array
+     */
     public static FloatBuffer toBuffer(float[] array) {
         return (FloatBuffer) createFloatBuffer(array.length).put(array).clear();
     }

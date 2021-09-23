@@ -583,6 +583,67 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_cpGetC
     return 0;
 }
 
+/*
+ * Class:     org_opengroup_openvds_VolumeDataAccessManager
+ * Method:    cpGetCurrentUploadErrorInfo
+ * Signature: (JLorg/opengroup/openvds/ErrorInfo;)V
+ */
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_cpGetCurrentUploadErrorInfo
+        (JNIEnv * env, jclass, jlong handle, jobject errorObj)
+{
+    try {
+        const char *pObjectID = nullptr;
+        const char *pErrorString = nullptr;
+        int32_t errorCode = 0;
+
+        GetManager(handle)->GetCurrentUploadError(&pObjectID, &errorCode, &pErrorString);
+
+        // Get the class of the given error object
+        jclass clazz = env->GetObjectClass(errorObj);
+
+        // Get Field references
+        jfieldID paramCode = env->GetFieldID(clazz, "errorCode", "I");
+        jfieldID paramMessage = env->GetFieldID(clazz, "errorMessage", "Ljava/lang/String;");
+        jfieldID paramID = env->GetFieldID(clazz, "objectID", "Ljava/lang/String;");
+
+        // Set fields for object
+        jstring strMsg = NewJString(env, pErrorString);
+        jstring strID = NewJString(env, pObjectID);
+        env->SetIntField(errorObj, paramCode, errorCode);
+        env->SetObjectField(errorObj, paramMessage, strMsg);
+        env->SetObjectField(errorObj, paramID, strID);
+    }
+    CATCH_EXCEPTIONS_FOR_JAVA;
+}
+
+/*
+ * Class:     org_opengroup_openvds_VolumeDataAccessManager
+ * Method:    cpGetCurrentDownloadErrorInfo
+ * Signature: (JLorg/opengroup/openvds/ErrorInfo;)V
+ */
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_cpGetCurrentDownloadErrorInfo
+        (JNIEnv * env, jclass, jlong handle, jobject errorObj)
+{
+    try {
+        const char *pErrorString = nullptr;
+        int32_t errorCode = 0;
+        GetManager(handle)->GetCurrentDownloadError(&errorCode, &pErrorString);
+
+        // Get the class of the given error object
+        jclass clazz = env->GetObjectClass(errorObj);
+
+        // Get Field references
+        jfieldID paramCode = env->GetFieldID(clazz, "errorCode", "I");
+        jfieldID paramMessage = env->GetFieldID(clazz, "errorMessage", "Ljava/lang/String;");
+
+        // Set fields for object
+        env->SetIntField(errorObj, paramCode, errorCode);
+        jstring strMsg = NewJString(env, pErrorString);
+        env->SetObjectField(errorObj, paramMessage, strMsg);
+    }
+    CATCH_EXCEPTIONS_FOR_JAVA;
+}
+
 #ifdef __cplusplus
 }
 #endif

@@ -242,6 +242,47 @@ extern "C" {
         CATCH_EXCEPTIONS_FOR_JAVA;
     }
 
+    /*
+    * Class:     org_opengroup_openvds_VolumeDataPage
+    * Method:    cpGetShortBuffer
+    * Signature: (J[II)[S
+    */
+    JNIEXPORT jshortArray JNICALL Java_org_opengroup_openvds_VolumeDataPage_cpGetShortBuffer
+            (JNIEnv * env, jclass, jlong handle, jintArray pitchParam, jint lod)
+    {
+        try {
+            int pitch[OpenVDS::Dimensionality_Max];
+            OpenVDS::VolumeDataPage* page = GetVolumePage(handle);
+
+            const short* readData = (const short*)page->GetBuffer(pitch);
+            env->SetIntArrayRegion(pitchParam, 0, OpenVDS::Dimensionality_Max, (jint *)pitch);
+            int nbElem = GetBufferAllocatedSize(page);
+            return NewJShortArray(env, readData, nbElem);
+        }
+        CATCH_EXCEPTIONS_FOR_JAVA;
+        return NULL;
+    }
+
+    /*
+     * Class:     org_opengroup_openvds_VolumeDataPage
+     * Method:    cpSetShortBuffer
+     * Signature: (J[S)V
+     */
+    JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataPage_cpSetShortBuffer
+            (JNIEnv * env, jclass, jlong handle, jshortArray values)
+    {
+        try {
+            OpenVDS::VolumeDataPage * page = GetVolumePage(handle);
+            int pitch[OpenVDS::Dimensionality_Max];
+            short* pageBuffer = (short*)page->GetWritableBuffer(pitch);
+            int valueSize = env->GetArrayLength(values);
+            jshort *src = env->GetShortArrayElements(values, NULL);
+            std::memcpy(pageBuffer, src, valueSize * sizeof (short));
+            env->ReleaseShortArrayElements(values, src, 0);
+        }
+        CATCH_EXCEPTIONS_FOR_JAVA;
+    }
+
 #ifdef __cplusplus
 }
 #endif
