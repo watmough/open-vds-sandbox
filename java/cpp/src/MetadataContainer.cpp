@@ -285,6 +285,23 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_cpSetMetadat
     CATCH_EXCEPTIONS_FOR_JAVA;
 }
 
+/*
+ * Class:     org_opengroup_openvds_MetadataContainer
+ * Method:    cpSetMetadataBLOB
+ * Signature: (JLjava/lang/String;Ljava/lang/String;[B)V
+ */
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_cpSetMetadataBLOB
+        (JNIEnv * env, jclass, jlong handle, jstring category, jstring name, jbyteArray valueArray)
+{
+    try {
+        int valueSize = env->GetArrayLength(valueArray);
+        jbyte *src = env->GetByteArrayElements(valueArray, NULL);
+        GetAccess( handle )->SetMetadataBLOB(JStringToString( env, category ).c_str(), JStringToString( env, name ).c_str(), src, valueSize);
+        env->ReleaseByteArrayElements(valueArray, src, 0);
+    }
+    CATCH_EXCEPTIONS_FOR_JAVA;
+}
+
 #ifdef __cplusplus
 }
 #endif

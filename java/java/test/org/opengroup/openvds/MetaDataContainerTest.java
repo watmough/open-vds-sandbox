@@ -17,11 +17,15 @@
 
 package org.opengroup.openvds;
 
+import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.io.File;
+import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
+import java.util.Random;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
@@ -308,4 +312,66 @@ public class MetaDataContainerTest {
         }
     }
 
+    @Test
+    public void testMetaDataBlob() {
+        MetadataContainer metaData = new MetadataContainer();
+
+        byte[] blobArray = new byte[3200];
+        Random rand = new Random(System.currentTimeMillis());
+        rand.nextBytes(blobArray);
+
+        metaData.setMetadataBLOB("Blob data", "blob array", blobArray);
+
+        Assert.assertTrue(metaData.isMetadataBLOBAvailable("Blob data", "blob array"));
+        byte[] metadataBLOBArray = metaData.getMetadataBLOB("Blob data", "blob array");
+        Assert.assertEquals(blobArray, metadataBLOBArray);
+    }
+
+    @Test
+    public void testMetaDataBlobBuffer() {
+        MetadataContainer metaData = new MetadataContainer();
+
+        byte[] blobArray = new byte[3200];
+        Random rand = new Random(System.currentTimeMillis());
+        rand.nextBytes(blobArray);
+
+        ByteBuffer blobBuffer = ByteBuffer.wrap(blobArray);
+        metaData.setMetadataBLOB("Blob data", "blob array", blobBuffer);
+
+        Assert.assertTrue(metaData.isMetadataBLOBAvailable("Blob data", "blob array"));
+        ByteBuffer metadataBLOBBuffer = metaData.getMetadataBLOBAsBuffer("Blob data", "blob array");
+
+        // compares buffer
+        Assert.assertTrue(metadataBLOBBuffer.equals(blobBuffer));
+    }
+
+    @Test
+    public void testMetaDataBlobFloatBuffer() {
+        MetadataContainer metaData = new MetadataContainer();
+
+        // put floats in a byte buffer
+        float[] blobFloatArray = new float[2000];
+        Random rand = new Random(System.currentTimeMillis());
+        for (int i = 0 ; i < blobFloatArray.length ; ++i) {
+            blobFloatArray[i] = rand.nextFloat();
+        }
+        ByteBuffer byteBuffer = ByteBuffer.allocate(Float.BYTES * blobFloatArray.length);
+        byteBuffer.asFloatBuffer().put(blobFloatArray);
+
+        // writes them
+        metaData.setMetadataBLOB("Blob data", "blob array", byteBuffer);
+
+        // reread and compare
+        Assert.assertTrue(metaData.isMetadataBLOBAvailable("Blob data", "blob array"));
+        ByteBuffer metadataBLOBBuffer = metaData.getMetadataBLOBAsBuffer("Blob data", "blob array");
+        FloatBuffer metaDataFB = metadataBLOBBuffer.asFloatBuffer();
+        int size = metaDataFB.remaining();
+        float[] readFloats = new float[size];
+        metaDataFB.get(readFloats);
+
+        // compares buffer
+        Assert.assertEquals(blobFloatArray, readFloats);
+    }
 }
+
+

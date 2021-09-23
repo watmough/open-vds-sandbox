@@ -17,6 +17,8 @@
 
 package org.opengroup.openvds;
 
+import java.nio.ByteBuffer;
+
 public class MetadataReadAccess extends JniPointerWithoutDeletion {
 
     private static native boolean cpIsMetadataIntAvailable(long handle, String category, String name);
@@ -72,6 +74,8 @@ public class MetadataReadAccess extends JniPointerWithoutDeletion {
     private static native double[] cpGetMetadataDoubleVector4(long handle, String category, String name);
 
     private static native String cpGetMetadataString(long handle, String category, String name);
+
+    private static native byte[] cpGetMetadataBLOB(long handle, String category, String name);
 
     private static native MetadataKey[] cpGetMetadataKeys(long handle);
 
@@ -335,6 +339,27 @@ public class MetadataReadAccess extends JniPointerWithoutDeletion {
      */
     public String getMetadataString(String category, String name) {
         return cpGetMetadataString(_handle, category, name);
+    }
+
+    /**
+     * get Metadata blob as byte array
+     * @param category
+     * @param name
+     * @return
+     */
+    public byte[] getMetadataBLOB(String category, String name) {
+        return cpGetMetadataBLOB(_handle, category, name);
+    }
+
+    /**
+     * get Metadata blob as byte buffer
+     * @param category
+     * @param name
+     * @return
+     */
+    public ByteBuffer getMetadataBLOBAsBuffer(String category, String name) {
+        byte[] blobArray = cpGetMetadataBLOB(_handle, category, name);
+        return ByteBuffer.wrap(blobArray);
     }
 
     /**

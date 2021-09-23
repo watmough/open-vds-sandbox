@@ -41,6 +41,11 @@ public class VolumeDataPage extends JniPointerWithoutDeletion {
 
     private static native void cpSetDoubleBuffer(long handle, double[] buffer);
 
+    private static native short[] cpGetShortBuffer(long handle, int[] pitch, int lod);
+
+    private static native void cpSetShortBuffer(long handle, short[] buffer);
+
+
     private final int dimensionality;
     private final int lod;
 
@@ -145,6 +150,26 @@ public class VolumeDataPage extends JniPointerWithoutDeletion {
     }
 
     /**
+     * Read short array of page
+     * @param pitch will receive pitch values for this page
+     * @return the short array of page data
+     */
+    public short[] readShortBuffer(int[] pitch) {
+        checkDimParamArray(pitch, "Wrong pitch array parameter size, expected ");
+        return cpGetShortBuffer(_handle, pitch, lod);
+    }
+
+    /**
+     * Set short array int page
+     * @param buffer values to set. Size must match page sample size
+     * @param pitch chunk pitch (got by a read)
+     */
+    public void writeShortBuffer(short[] buffer, int[] pitch) {
+        checkBufferSize(buffer, pitch, dimensionality, lod);
+        cpSetShortBuffer(_handle, buffer);
+    }
+
+    /**
      * Read double array of page
      * @param pitch will receive pitch values for this page
      * @return the double array of page data
@@ -186,6 +211,13 @@ public class VolumeDataPage extends JniPointerWithoutDeletion {
     }
 
     private void checkBufferSize(double[] buffer, int[] pitch, int dim, int lod) {
+        if (buffer == null) {
+            throw new IllegalArgumentException("Wrong buffer size, got NULL");
+        }
+        checkBufferSize(buffer.length, pitch, dimensionality, lod);
+    }
+
+    private void checkBufferSize(short[] buffer, int[] pitch, int dim, int lod) {
         if (buffer == null) {
             throw new IllegalArgumentException("Wrong buffer size, got NULL");
         }

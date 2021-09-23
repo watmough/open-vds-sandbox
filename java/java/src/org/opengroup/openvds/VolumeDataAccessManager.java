@@ -147,6 +147,10 @@ public class VolumeDataAccessManager extends JniPointerWithoutDeletion {
 
     private static native int cpGetCurrentUploadErrorCode(long handle);
 
+    private static native void cpGetCurrentUploadErrorInfo(long handle, ConnectionErrorInfo error);
+
+    private static native void cpGetCurrentDownloadErrorInfo(long handle, ConnectionErrorInfo error);
+
     public VolumeDataAccessManager(long handle) {
         super(handle);
     }
@@ -770,5 +774,23 @@ public class VolumeDataAccessManager extends JniPointerWithoutDeletion {
 
     public int getCurrentUploadErrorCode() {
         return cpGetCurrentUploadErrorCode(_handle);
+    }
+
+    /**
+     * @return current upload error information (code and message in a simple class)
+     */
+    public ConnectionErrorInfo getCurrentUploadErrorInfo() {
+        ConnectionErrorInfo connectionErrorInfo = new ConnectionErrorInfo();
+        cpGetCurrentUploadErrorInfo(_handle, connectionErrorInfo);
+        return connectionErrorInfo;
+    }
+
+    /**
+     * @return current upload error information (code and message in a simple class)
+     */
+    public ConnectionErrorInfo getCurrentDownloadErrorInfo() {
+        ConnectionErrorInfo connectionErrorInfo = new ConnectionErrorInfo();
+        cpGetCurrentDownloadErrorInfo(_handle, connectionErrorInfo);
+        return connectionErrorInfo;
     }
 }

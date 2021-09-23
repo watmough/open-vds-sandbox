@@ -445,6 +445,27 @@ extern "C" {
 
     /*
     * Class:     org_opengroup_openvds_MetadataReadAccess
+    * Method:    cpGetMetadataBLOB
+    * Signature: (JLjava/lang/String;Ljava/lang/String;)[B
+    */
+    JNIEXPORT jbyteArray JNICALL Java_org_opengroup_openvds_MetadataReadAccess_cpGetMetadataBLOB
+            (JNIEnv *env, jclass, jlong handle, jstring category, jstring name)
+    {
+        try {
+            // read blob
+            std::vector<int8_t> blob;
+            GetAccess( handle )->GetMetadataBLOB(JStringToString( env, category ).c_str(), JStringToString( env, name ).c_str(), blob );
+
+            // convert to array
+            const char* blobArray = reinterpret_cast<const char *>(blob.data());
+            return NewJByteArray(env, blobArray, blob.size());
+        }
+        CATCH_EXCEPTIONS_FOR_JAVA;
+        return NULL;
+    }
+
+    /*
+    * Class:     org_opengroup_openvds_MetadataReadAccess
     * Method:    cpGetMetadataKeys
     * Signature: (J)[Lorg/opengroup/openvds/MetadataKey;
     */

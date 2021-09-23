@@ -27,10 +27,10 @@ import java.io.File;
 
 import static org.testng.Assert.fail;
 
-public class PageAccessorTest {
+public class PageAccessorFloatTest {
 
     private static String TEMP_FILE_NAME_VOL_INDEX = "volIndexer";
-    private static String TEMP_FILE_NAME_COPY = "vdsCopy";
+    private static String TEMP_FILE_NAME_COPY = "vdsFloatCopy";
 
     public String url;
     public VolumeDataLayoutDescriptor ld;

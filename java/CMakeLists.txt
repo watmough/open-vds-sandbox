@@ -18,6 +18,7 @@ set(JAVA_SOURCE_FILES
   java/src/org/opengroup/openvds/BufferUtils.java
   java/src/org/opengroup/openvds/Cleaner.java
   java/src/org/opengroup/openvds/CompressionMethod.java
+  java/src/org/opengroup/openvds/ConnectionErrorInfo.java
   java/src/org/opengroup/openvds/DimensionsND.java
   java/src/org/opengroup/openvds/experimental/VariousJavaTests.java
   java/src/org/opengroup/openvds/GoogleOpenOptions.java
@@ -97,7 +98,9 @@ set(JAVA_TEST_SOURCES_FILES
   java/test/org/opengroup/openvds/CreateVDSTest.java
   java/test/org/opengroup/openvds/WriteDataTest.java
   java/test/org/opengroup/openvds/MetaDataContainerTest.java
-  java/test/org/opengroup/openvds/PageAccessorTest.java
+  java/test/org/opengroup/openvds/PageAccessorByteTest.java
+  java/test/org/opengroup/openvds/PageAccessorFloatTest.java
+  java/test/org/opengroup/openvds/PageAccessorShortTest.java
   )
 
 add_jar(openvds-java-test

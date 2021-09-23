@@ -157,7 +157,7 @@ public class CreateVDS {
                 true, // is renderable
                 false, // allow lossy compression
                 false, // use zip for lossless compresion
-                true,  // use no value
+                false,  // use no value
                 -999.25f, // no value
                 scaleOffset[0], // integer scale
                 scaleOffset[1]); // integer offset
