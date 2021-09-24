@@ -2730,15 +2730,6 @@ main(int argc, char* argv[])
           }
 
           {
-            //int targetOffset;
-            //if (fileInfo.Is4D())
-            //{
-            //  targetOffset = (primaryIndex - chunkInfo.min[3]) * amplitudePitch[3] + (secondaryIndex - chunkInfo.min[2]) * amplitudePitch[2] + (tertiaryIndex - chunkInfo.min[1]) * amplitudePitch[1];
-            //}
-            //else
-            //{
-            //  targetOffset = (primaryIndex - chunkInfo.min[2]) * amplitudePitch[2] + (secondaryIndex - chunkInfo.min[1]) * amplitudePitch[1];
-            //}
             const int targetOffset = VoxelIndexToDataIndex(fileInfo, primaryIndex, secondaryIndex, tertiaryIndex, chunkInfo.min, amplitudePitch);
 
             copySamples(data, fileInfo.m_dataSampleFormatCode, fileInfo.m_headerEndianness, &reinterpret_cast<float*>(amplitudeBuffer)[targetOffset], chunkInfo.sampleStart, chunkInfo.sampleCount);
@@ -2746,15 +2737,6 @@ main(int argc, char* argv[])
 
           if (traceFlagBuffer)
           {
-            //int targetOffset;
-            //if (fileInfo.Is4D())
-            //{
-            //  targetOffset = (primaryIndex - chunkInfo.min[3]) * traceFlagPitch[3] + (secondaryIndex - chunkInfo.min[2]) * traceFlagPitch[2] + (tertiaryIndex - chunkInfo.min[1]) * traceFlagPitch[1];
-            //}
-            //else
-            //{
-            //  targetOffset = (primaryIndex - chunkInfo.min[2]) * traceFlagPitch[2] + (secondaryIndex - chunkInfo.min[1]) * traceFlagPitch[1];
-            //}
             const int targetOffset = VoxelIndexToDataIndex(fileInfo, primaryIndex, secondaryIndex, tertiaryIndex, chunkInfo.min, traceFlagPitch);
 
             reinterpret_cast<uint8_t*>(traceFlagBuffer)[targetOffset] = true;
@@ -2762,15 +2744,6 @@ main(int argc, char* argv[])
 
           if (segyTraceHeaderBuffer)
           {
-            //int targetOffset;
-            //if (fileInfo.Is4D())
-            //{
-            //  targetOffset = (primaryIndex - chunkInfo.min[3]) * segyTraceHeaderPitch[3] + (secondaryIndex - chunkInfo.min[2]) * segyTraceHeaderPitch[2] + (tertiaryIndex - chunkInfo.min[1]) * segyTraceHeaderPitch[1];
-            //}
-            //else
-            //{
-            //  targetOffset = (primaryIndex - chunkInfo.min[2]) * segyTraceHeaderPitch[2] + (secondaryIndex - chunkInfo.min[1]) * segyTraceHeaderPitch[1];
-            //}
             const int targetOffset = VoxelIndexToDataIndex(fileInfo, primaryIndex, secondaryIndex, tertiaryIndex, chunkInfo.min, segyTraceHeaderPitch);
 
             memcpy(&reinterpret_cast<uint8_t*>(segyTraceHeaderBuffer)[targetOffset], header, SEGY::TraceHeaderSize);
@@ -2778,15 +2751,6 @@ main(int argc, char* argv[])
 
           if (offsetBuffer)
           {
-            //int targetOffset;
-            //if (fileInfo.Is4D())
-            //{
-            //  targetOffset = (primaryIndex - chunkInfo.min[3]) * offsetPitch[3] + (secondaryIndex - chunkInfo.min[2]) * offsetPitch[2] + (tertiaryIndex - chunkInfo.min[1]) * offsetPitch[1];
-            //}
-            //else
-            //{
-            //  targetOffset = (primaryIndex - chunkInfo.min[2]) * offsetPitch[2] + (secondaryIndex - chunkInfo.min[1]) * offsetPitch[1];
-            //}
             const int targetOffset = VoxelIndexToDataIndex(fileInfo, primaryIndex, secondaryIndex, tertiaryIndex, chunkInfo.min, offsetPitch);
 
             const auto
