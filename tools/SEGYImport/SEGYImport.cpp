@@ -218,15 +218,38 @@ SerializeSEGYFileInfo(SEGYFileInfo const& fileInfo, const int fileIndex)
   jsonFileInfo["primaryKey"] = SerializeSEGYHeaderField(fileInfo.m_primaryKey);
   jsonFileInfo["secondaryKey"] = SerializeSEGYHeaderField(fileInfo.m_secondaryKey);
 
-  Json::Value
-    jsonSegmentInfoArray(Json::ValueType::arrayValue);
-
-  for (auto const& segmentInfo : fileInfo.m_segmentInfoLists[fileIndex])
+  if (fileInfo.m_segyType == SEGY::SEGYType::PrestackOffsetSorted)
   {
-    jsonSegmentInfoArray.append(SerializeSEGYSegmentInfo(segmentInfo));
-  }
+    Json::Value
+      jsonOffsetMap;
 
-  jsonFileInfo["segmentInfo"] = jsonSegmentInfoArray;
+    for (const auto& entry : fileInfo.m_segmentInfoListsByOffset[fileIndex])
+    {
+      Json::Value
+        jsonSegmentInfoArray(Json::ValueType::arrayValue);
+
+      for (auto const& segmentInfo : entry.second)
+      {
+        jsonSegmentInfoArray.append(SerializeSEGYSegmentInfo(segmentInfo));
+      }
+
+      jsonOffsetMap[std::to_string(entry.first)] = jsonSegmentInfoArray;
+    }
+
+    jsonFileInfo["segmentInfo"] = jsonOffsetMap;
+  }
+  else
+  {
+    Json::Value
+      jsonSegmentInfoArray(Json::ValueType::arrayValue);
+
+    for (auto const& segmentInfo : fileInfo.m_segmentInfoLists[fileIndex])
+    {
+      jsonSegmentInfoArray.append(SerializeSEGYSegmentInfo(segmentInfo));
+    }
+
+    jsonFileInfo["segmentInfo"] = jsonSegmentInfoArray;
+  }
 
   return jsonFileInfo;
 }
@@ -1257,16 +1280,42 @@ parseSEGYFileInfoFile(const DataProvider& dataProvider, SEGYFileInfo& fileInfo, 
     }
     fileInfo.m_traceCounts[fileIndex] = jsonFileInfo["traceCount"].asInt64();
 
-    if (fileInfo.m_segmentInfoLists.size() <= fileIndex)
+    if (fileInfo.m_segyType == SEGY::SEGYType::PrestackOffsetSorted)
     {
-      fileInfo.m_segmentInfoLists.resize(fileIndex + 1);
+      if (fileInfo.m_segmentInfoListsByOffset.size() <= fileIndex)
+      {
+        fileInfo.m_segmentInfoListsByOffset.resize(fileIndex + 1);
+      }
+      auto&
+        offsetMap = fileInfo.m_segmentInfoListsByOffset[fileIndex];
+      offsetMap.clear();
+
+      const auto&
+        jsonSegmentInfo = jsonFileInfo["segmentInfo"];
+      for (Json::ValueConstIterator iter = jsonSegmentInfo.begin(); iter != jsonSegmentInfo.end(); ++iter)
+      {
+        const auto
+          offsetValue = std::stoi(iter.key().asString());
+        auto&
+          segmentInfoList = offsetMap[offsetValue];
+        for (const auto& jsonSegmentInfo : *iter)
+        {
+          segmentInfoList.push_back(segmentInfoFromJson(jsonSegmentInfo));
+        }
+      }
     }
-    auto&
-      segmentInfo = fileInfo.m_segmentInfoLists[fileIndex];
-    segmentInfo.clear();
-    for (const auto& jsonSegmentInfo : jsonFileInfo["segmentInfo"])
+    else
     {
-      segmentInfo.push_back(segmentInfoFromJson(jsonSegmentInfo));
+      if (fileInfo.m_segmentInfoLists.size() <= fileIndex)
+      {
+        fileInfo.m_segmentInfoLists.resize(fileIndex + 1);
+      }
+      auto&
+        segmentInfo = fileInfo.m_segmentInfoLists[fileIndex];
+      for (Json::Value jsonSegmentInfo : jsonFileInfo["segmentInfo"])
+      {
+        segmentInfo.push_back(segmentInfoFromJson(jsonSegmentInfo));
+      }
     }
   }
   catch (Json::Exception &e)
@@ -1666,6 +1715,7 @@ main(int argc, char* argv[])
   bool disablePersistentID = false;
   bool prestack = false;
   bool is2D = false;
+  bool isOffsetSorted = false;
   bool traceOrderByOffset = true;
   bool useJsonOutput = false;
   bool disablePrintSegyTextHeader = false;
@@ -1723,6 +1773,7 @@ main(int argc, char* argv[])
   options.add_option("", "", "attribute-name", "The name of the primary VDS channel. The name may be Amplitude (default), Attribute, Depth, Probability, Time, Vavg, Vint, or Vrms", cxxopts::value<std::string>(attributeName)->default_value(AMPLITUDE_ATTRIBUTE_NAME), "<string>");
   options.add_option("", "", "attribute-unit", "The units of the primary VDS channel. The unit name may be blank (default), ft, ft/s, Hz, m, m/s, ms, or s", cxxopts::value<std::string>(attributeUnit), "<string>");
   options.add_option("", "", "2d", "Import 2D data.", cxxopts::value<bool>(is2D), "");
+  options.add_option("", "", "offset-sorted", "Import prestack data sorted by trace header Offset value.", cxxopts::value<bool>(isOffsetSorted), "");
   // TODO add option for turning off traceOrderByOffset
 
   options.add_option("", "q", "quiet", "Disable info level output.", cxxopts::value<bool>(disableInfo), "");
@@ -1836,6 +1887,10 @@ main(int argc, char* argv[])
 
   SEGY::SEGYType segyType = SEGY::SEGYType::Poststack;
 
+  if (isOffsetSorted)
+  {
+    segyType = SEGY::SEGYType::PrestackOffsetSorted;
+  }
   if (is2D)
   {
     if (prestack)
@@ -1956,7 +2011,8 @@ main(int argc, char* argv[])
   }
 
   SEGY::HeaderField
-    startTimeHeaderField = g_traceHeaderFields["starttime"];
+    startTimeHeaderField = g_traceHeaderFields["starttime"],
+    offsetHeaderField = g_traceHeaderFields["offset"];
 
   OpenVDS::Error
     error;
@@ -2031,7 +2087,7 @@ main(int argc, char* argv[])
       fileInfo.m_persistentID = OpenVDS::HashCombiner(hash);
     }
 
-    bool success = fileInfo.Scan(dataProviders, error, primaryKeyHeaderField, secondaryKeyHeaderField, startTimeHeaderField, binInfoHeaderFields);
+    bool success = fileInfo.Scan(dataProviders, error, primaryKeyHeaderField, secondaryKeyHeaderField, startTimeHeaderField, offsetHeaderField, binInfoHeaderFields);
 
     if (!success)
     {

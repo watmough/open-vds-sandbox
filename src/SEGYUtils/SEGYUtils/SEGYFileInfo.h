@@ -93,6 +93,11 @@ struct SEGYFileInfo
   std::vector<std::vector<SEGYSegmentInfo>>
                 m_segmentInfoLists;
 
+  // vector of per-file offset-vector maps for SEGYType::PrestackOffsetSorted
+  std::vector<std::map<int, std::vector<SEGYSegmentInfo>>>
+                m_segmentInfoListsByOffset;
+
+
   SEGY::HeaderField
                 m_primaryKey,
                 m_secondaryKey;
@@ -108,7 +113,7 @@ struct SEGYFileInfo
 
   OPENVDS_EXPORT int  TraceByteSize() const;
 
-  OPENVDS_EXPORT bool Scan(const std::vector<DataProvider>& dataProviders, OpenVDS::Error &error, SEGY::HeaderField const &primaryKeyHeaderField, SEGY::HeaderField const &secondaryKeyHeaderField = SEGY::HeaderField(), SEGY::HeaderField const &startTimeHeaderField = SEGY::TraceHeader::StartTimeHeaderField, SEGYBinInfoHeaderFields const &binInfoHeaderFields = SEGYBinInfoHeaderFields::StandardHeaderFields());
+  OPENVDS_EXPORT bool Scan(const std::vector<DataProvider>& dataProviders, OpenVDS::Error &error, SEGY::HeaderField const &primaryKeyHeaderField, SEGY::HeaderField const &secondaryKeyHeaderField = SEGY::HeaderField(), SEGY::HeaderField const &startTimeHeaderField = SEGY::TraceHeader::StartTimeHeaderField, SEGY::HeaderField const& offsetHeaderField = SEGY::TraceHeader::OffsetHeaderField, SEGYBinInfoHeaderFields const &binInfoHeaderFields = SEGYBinInfoHeaderFields::StandardHeaderFields());
 
   OPENVDS_EXPORT SEGYBinInfo readBinInfoFromHeader(const char* header, SEGYBinInfoHeaderFields const& headerFields, SEGY::Endianness endianness, int segmentTraceIndex) const;
 
@@ -119,6 +124,8 @@ struct SEGYFileInfo
   OPENVDS_EXPORT bool HasGatherOffset() const;
 
   OPENVDS_EXPORT bool Is2D() const;
+
+  OPENVDS_EXPORT bool IsOffsetSorted() const;
 };
 
 #endif  // SEGY_FILE_INFO_H

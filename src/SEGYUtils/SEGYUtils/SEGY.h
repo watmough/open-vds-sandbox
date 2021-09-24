@@ -327,6 +327,7 @@ enum class SEGYType
   CDPGathers = 4,
   ShotGathers = 5,
   ReceiverGathers = 6,
+  PrestackOffsetSorted = 7
 };
 
 OPENVDS_EXPORT bool IsSEGYTypeUnbinned(SEGYType segyType);

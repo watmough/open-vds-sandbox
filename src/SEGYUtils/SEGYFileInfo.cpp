@@ -54,6 +54,12 @@ SEGYFileInfo::Is2D() const
   return m_segyType == SEGYType::Poststack2D || m_segyType == SEGYType::Prestack2D;
 }
 
+bool
+SEGYFileInfo::IsOffsetSorted() const
+{
+  return m_segyType == SEGYType::PrestackOffsetSorted;
+}
+
 SEGYBinInfo
 SEGYFileInfo::readBinInfoFromHeader(const char *header, SEGYBinInfoHeaderFields const &headerFields, Endianness endianness, int segmentTraceIndex) const
 {
@@ -99,8 +105,15 @@ SEGYFileInfo::StaticGetUniqueID()
 }
 
 bool
-SEGYFileInfo::Scan(const std::vector<DataProvider>& dataProviders, OpenVDS::Error &error, HeaderField const &primaryKeyHeaderField, HeaderField const &secondaryKeyHeaderField, SEGY::HeaderField const &startTimeHeaderField, SEGYBinInfoHeaderFields const &binInfoHeaderFields)
+SEGYFileInfo::Scan(const std::vector<DataProvider>& dataProviders, OpenVDS::Error &error, HeaderField const &primaryKeyHeaderField, HeaderField const &secondaryKeyHeaderField, SEGY::HeaderField const &startTimeHeaderField, SEGY::HeaderField const& offsetHeaderField, SEGYBinInfoHeaderFields const &binInfoHeaderFields)
 {
+  std::function<int(const char*)>
+    readOffset = [](const char* traceHeader) { return -1; };
+  if (IsOffsetSorted())
+  {
+    readOffset = [offsetHeaderField, this](const char* traceHeader) { return ReadFieldFromHeader(traceHeader, offsetHeaderField, m_headerEndianness); };
+  }
+
   char textualFileHeader[TextualFileHeaderSize];
   char binaryFileHeader[BinaryFileHeaderSize];
   char traceHeader[TraceHeaderSize];
@@ -148,14 +161,6 @@ SEGYFileInfo::Scan(const std::vector<DataProvider>& dataProviders, OpenVDS::Erro
 
   for (const auto& dataProvider : dataProviders)
   {
-    m_segmentInfoLists.emplace_back();
-    m_traceCounts.emplace_back();
-
-    auto&
-      segmentInfos = m_segmentInfoLists.back();
-    auto&
-      traceCount = m_traceCounts.back();
-
     int64_t fileSize = dataProvider.Size(error);
 
     if (error.code != 0)
@@ -176,6 +181,32 @@ SEGYFileInfo::Scan(const std::vector<DataProvider>& dataProviders, OpenVDS::Erro
       return false;
     }
 
+    int
+      currentOffset = readOffset(traceHeader);
+
+    std::function<void(int, const SEGYSegmentInfo&)>
+      pushSegmentInfo;
+
+    if (IsOffsetSorted())
+    {
+      m_segmentInfoListsByOffset.emplace_back();
+      auto&
+        offsetMap = m_segmentInfoListsByOffset.back();
+      offsetMap.emplace(currentOffset, std::vector<SEGYSegmentInfo>());
+
+      pushSegmentInfo = [this](int offset, const SEGYSegmentInfo& segmentInfo) { m_segmentInfoListsByOffset.back()[offset].push_back(segmentInfo); };
+    }
+    else
+    {
+      m_segmentInfoLists.emplace_back();
+
+      pushSegmentInfo = [this](int offset, const SEGYSegmentInfo& segmentInfo) { m_segmentInfoLists.back().push_back(segmentInfo); };
+    }
+
+    m_traceCounts.emplace_back();
+    auto&
+      traceCount = m_traceCounts.back();
+
     // If the sample count is not set in the binary header we try to find it from the first trace header
     if (m_sampleCount == 0)
     {
@@ -188,7 +219,7 @@ SEGYFileInfo::Scan(const std::vector<DataProvider>& dataProviders, OpenVDS::Erro
       m_sampleIntervalMilliseconds = ReadFieldFromHeader(traceHeader, TraceHeader::SampleIntervalHeaderField, m_headerEndianness) / 1000.0;
     }
 
-    int64_t traceDataSize = (fileSize - TextualFileHeaderSize - BinaryFileHeaderSize);
+    const int64_t traceDataSize = (fileSize - TextualFileHeaderSize - BinaryFileHeaderSize);
 
     traceCount = traceDataSize / TraceByteSize();
 
@@ -217,6 +248,10 @@ SEGYFileInfo::Scan(const std::vector<DataProvider>& dataProviders, OpenVDS::Erro
 
     int readCount = 1;
 
+    int
+      testOffset,
+      nextOffset;
+
     while (segmentInfo.m_traceStop != lastTrace)
     {
       dataProvider.Read(traceHeader, TextualFileHeaderSize + BinaryFileHeaderSize + trace * TraceByteSize(), TraceHeaderSize, error);
@@ -227,9 +262,10 @@ SEGYFileInfo::Scan(const std::vector<DataProvider>& dataProviders, OpenVDS::Erro
       }
       readCount++;
 
-      int primaryKey = ReadFieldFromHeader(traceHeader, primaryKeyHeaderField, m_headerEndianness);
+      primaryKey = ReadFieldFromHeader(traceHeader, primaryKeyHeaderField, m_headerEndianness);
+      testOffset = readOffset(traceHeader);
 
-      if (primaryKey == segmentInfo.m_primaryKey) // expand current segment if the primary key matches
+      if (primaryKey == segmentInfo.m_primaryKey && (!IsOffsetSorted() || testOffset == currentOffset)) // expand current segment if the primary key matches
       {
         assert(trace > segmentInfo.m_traceStop);
         segmentInfo.m_traceStop = trace;
@@ -241,17 +277,21 @@ SEGYFileInfo::Scan(const std::vector<DataProvider>& dataProviders, OpenVDS::Erro
         outsideTrace = trace;
         outsideBinInfo = readBinInfoFromHeader(traceHeader, binInfoHeaderFields, m_headerEndianness, 1);
         nextPrimaryKey = primaryKey;
+        nextOffset = testOffset;
       }
 
       if (outsideTrace == segmentInfo.m_traceStop + 1) // current segment is finished
       {
-        segmentInfos.push_back(segmentInfo);
-        int64_t segmentLength = segmentInfo.m_traceStop - segmentInfo.m_traceStart + 1;
+        pushSegmentInfo(currentOffset, segmentInfo);
+
+        const int64_t
+          segmentLength = segmentInfo.m_traceStop - segmentInfo.m_traceStart + 1;
 
         // start a new segment
         segmentInfo = SEGYSegmentInfo(nextPrimaryKey, outsideTrace, outsideBinInfo);
         trace = std::min(lastTrace, outsideTrace + segmentLength);
         outsideTrace = 0, jump = 1;
+        currentOffset = nextOffset;
       }
       else if (outsideTrace == 0) // looking for a trace outside the current segment
       {
@@ -270,7 +310,7 @@ SEGYFileInfo::Scan(const std::vector<DataProvider>& dataProviders, OpenVDS::Erro
     }
 
     // final segment in this file is finished
-    segmentInfos.push_back(segmentInfo);
+    pushSegmentInfo(testOffset, segmentInfo);
   }
 
   return true;
