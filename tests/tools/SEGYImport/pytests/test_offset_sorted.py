@@ -132,6 +132,36 @@ def test_survey_coordinate_system(offset_sorted_executor):
         assert value.y == pytest.approx(3.02, abs=0.05)
 
 
+def test_axes(offset_sorted_executor):
+    ex, output_vds = offset_sorted_executor
+
+    result = ex.run()
+
+    assert result == 0, ex.output()
+    assert Path(output_vds.filename).exists()
+
+    with openvds.open(output_vds.filename, "") as handle:
+        layout = openvds.getLayout(handle)
+
+        assert 4 == layout.getDimensionality()
+
+        assert 1876 == layout.getDimensionNumSamples(0)
+        assert 0.0 == layout.getDimensionMin(0)
+        assert 7500.0 == layout.getDimensionMax(0)
+
+        assert 65 == layout.getDimensionNumSamples(1)
+        assert 1.0 == layout.getDimensionMin(1)
+        assert 65.0 == layout.getDimensionMax(1)
+
+        assert 160 == layout.getDimensionNumSamples(2)
+        assert 1961.0 == layout.getDimensionMin(2)
+        assert 2120.0 == layout.getDimensionMax(2)
+
+        assert 40 == layout.getDimensionNumSamples(3)
+        assert 4982.0 == layout.getDimensionMin(3)
+        assert 5021.0 == layout.getDimensionMax(3)
+
+
 def test_read_gather(offset_sorted_executor):
     ex, output_vds = offset_sorted_executor
 
