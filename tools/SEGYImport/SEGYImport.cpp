@@ -52,6 +52,7 @@
 
 #include <chrono>
 #include <numeric>
+#include <set>
 
 #if defined(WIN32)
 #undef WIN32_LEAN_AND_MEAN // avoid warnings if defined on command line
@@ -590,29 +591,56 @@ getOrderedSegmentListIndices(SEGYFileInfo const& fileInfo, size_t& globalTotalSe
 
   std::vector<int>
     orderedListIndices;
-  size_t
-    longestList = 0;
   globalTotalSegments = 0;
-  for (size_t i = 0; i < fileInfo.m_segmentInfoLists.size(); ++i)
+
+  if (fileInfo.IsOffsetSorted())
   {
-    orderedListIndices.push_back(static_cast<int>(i));
-    globalTotalSegments += fileInfo.m_segmentInfoLists[i].size();
-    if (fileInfo.m_segmentInfoLists[i].size() > fileInfo.m_segmentInfoLists[longestList].size())
+    for (int i = 0; i < fileInfo.m_segmentInfoListsByOffset.size(); ++i)
     {
-      longestList = i;
+      orderedListIndices.push_back(i);
+      for (const auto& entry : fileInfo.m_segmentInfoListsByOffset[i])
+      {
+        globalTotalSegments += entry.second.size();
+      }
     }
+
+    // don't need to check for ascending/descending primary key because the map will have offsets (keys) sorted in ascending order
+
+    auto
+      comparator = [&](int i1, int i2)
+    {
+      const auto
+        & v1 = fileInfo.m_segmentInfoListsByOffset[i1],
+        & v2 = fileInfo.m_segmentInfoListsByOffset[i2];
+      return (*v1.begin()).first < (*v2.begin()).first;
+    };
+    std::sort(orderedListIndices.begin(), orderedListIndices.end(), comparator);
   }
-  const bool
-    isAscending = fileInfo.m_segmentInfoLists[longestList].front().m_binInfoStart.m_inlineNumber <= fileInfo.m_segmentInfoLists[longestList].back().m_binInfoStart.m_inlineNumber;
-  auto
-    comparator = [&](int i1, int i2)
+  else
   {
-    const auto
-      & v1 = fileInfo.m_segmentInfoLists[i1],
-      & v2 = fileInfo.m_segmentInfoLists[i2];
-    return isAscending ? v1.front().m_binInfoStart.m_inlineNumber < v2.front().m_binInfoStart.m_inlineNumber : v2.front().m_binInfoStart.m_inlineNumber < v1.front().m_binInfoStart.m_inlineNumber;
-  };
-  std::sort(orderedListIndices.begin(), orderedListIndices.end(), comparator);
+    size_t
+      longestList = 0;
+    for (size_t i = 0; i < fileInfo.m_segmentInfoLists.size(); ++i)
+    {
+      orderedListIndices.push_back(static_cast<int>(i));
+      globalTotalSegments += fileInfo.m_segmentInfoLists[i].size();
+      if (fileInfo.m_segmentInfoLists[i].size() > fileInfo.m_segmentInfoLists[longestList].size())
+      {
+        longestList = i;
+      }
+    }
+    const bool
+      isAscending = fileInfo.m_segmentInfoLists[longestList].front().m_binInfoStart.m_inlineNumber <= fileInfo.m_segmentInfoLists[longestList].back().m_binInfoStart.m_inlineNumber;
+    auto
+      comparator = [&](int i1, int i2)
+    {
+      const auto
+        & v1 = fileInfo.m_segmentInfoLists[i1],
+        & v2 = fileInfo.m_segmentInfoLists[i2];
+      return isAscending ? v1.front().m_binInfoStart.m_inlineNumber < v2.front().m_binInfoStart.m_inlineNumber : v2.front().m_binInfoStart.m_inlineNumber < v1.front().m_binInfoStart.m_inlineNumber;
+    };
+    std::sort(orderedListIndices.begin(), orderedListIndices.end(), comparator);
+  }
 
   return orderedListIndices;
 }
@@ -620,6 +648,8 @@ getOrderedSegmentListIndices(SEGYFileInfo const& fileInfo, size_t& globalTotalSe
 SEGYSegmentInfo const&
 findRepresentativeSegment(SEGYFileInfo const& fileInfo, int& primaryStep, int& bestListIndex)
 {
+  assert(!fileInfo.IsOffsetSorted());
+
   // Since we give more weight to segments near the center of the data we need a sorted index of segment lists so that we can
   // traverse the lists in data order, instead of the arbitrary order given by the filename ordering.
   size_t
@@ -684,6 +714,97 @@ findRepresentativeSegment(SEGYFileInfo const& fileInfo, int& primaryStep, int& b
   primaryStep = primaryStep ? primaryStep : std::max(segmentPrimaryStep, 1);
 
   return fileInfo.m_segmentInfoLists[bestListIndex][bestIndex];
+}
+
+// Analog of findRepresentativeSegment for offset-sorted prestack
+int
+findRepresentativePrimaryKey(SEGYFileInfo const& fileInfo, int& primaryStep)
+{
+  // If primary keys are reverse-sorted in the file the structures we build below will hide that.
+  // For the computations we're doing in this method it's OK that we're not preserving the original order.
+
+  // scan segment infos to get primary key values and total trace count per primary key
+  std::map<int, int64_t>
+    primaryKeyLengths;
+  for (const auto& offsetMap : fileInfo.m_segmentInfoListsByOffset)
+  {
+    for (const auto& entry : offsetMap)
+    {
+      for (const auto& segmentInfo : entry.second)
+      {
+        const auto
+          segmentLength = segmentInfo.m_traceStop - segmentInfo.m_traceStart + 1;
+        const auto
+          newSum = segmentLength + primaryKeyLengths[segmentInfo.m_primaryKey];
+        primaryKeyLengths[segmentInfo.m_primaryKey] = newSum;
+      }
+    }
+  }
+
+  // determine primary step
+  primaryStep = 0;
+  int
+    segmentPrimaryStep = 0,
+    previousPrimaryKey = 0,
+    firstPrimaryKey = 0,
+    lastPrimaryKey = 0;
+  bool
+    firstSegment = true;
+  for (const auto& entry : primaryKeyLengths)
+  {
+    if (firstSegment)
+    {
+      firstSegment = false;
+      previousPrimaryKey = entry.first;
+      firstPrimaryKey = entry.first;
+      lastPrimaryKey = entry.first;
+    }
+    else
+    {
+      lastPrimaryKey = entry.first;
+
+      // Updating the primary step with the step for the previous segment intentionally ignores the step of the last segment since it can be anomalous
+      if (segmentPrimaryStep && (!primaryStep || std::abs(segmentPrimaryStep) < std::abs(primaryStep)))
+      {
+        primaryStep = segmentPrimaryStep;
+      }
+
+      segmentPrimaryStep = entry.first - previousPrimaryKey;
+      previousPrimaryKey = entry.first;
+    }
+  }
+
+  // If the primary step couldn't be determined, set it to the last step or 1
+  primaryStep = primaryStep ? primaryStep : std::max(segmentPrimaryStep, 1);
+
+  float
+    bestScore = 0.0f;
+  int
+    bestPrimaryKey = 0;
+
+  for (const auto& entry : primaryKeyLengths)
+  {
+    const auto&
+      numTraces = entry.second;
+
+    // index of this segment within the entirety of segments from all input files
+    const auto
+      factor = abs(static_cast<float>(entry.first - firstPrimaryKey) / static_cast<float>(lastPrimaryKey - firstPrimaryKey));
+
+    const auto
+      multiplier = 1.5f - abs(factor - 0.5f); // give 50% more importance to a segment in the middle of the dataset
+
+    const auto
+      score = static_cast<float>(numTraces) * multiplier;
+
+    if (score > bestScore)
+    {
+      bestScore = score;
+      bestPrimaryKey = entry.first;
+    }
+  }
+
+  return bestPrimaryKey;
 }
 
 void
@@ -764,10 +885,8 @@ analyzeSegment(DataProvider &dataProvider, SEGYFileInfo const& fileInfo, SEGYSeg
   // Determine fold and secondary step
   int gatherSecondaryKey = 0, gatherFold = 0, gatherSecondaryStep = 0;
 
-  bool
-    hasPreviousGatherOffset = false;
-  int
-    previousGatherOffset = 0;
+  std::set<int>
+    offsetValues;
 
   for (int64_t trace = segmentInfo.m_traceStart; trace <= segmentInfo.m_traceStop; trace++)
   {
@@ -823,25 +942,9 @@ analyzeSegment(DataProvider &dataProvider, SEGYFileInfo const& fileInfo, SEGYSeg
 
     if (fileInfo.HasGatherOffset())
     {
-      auto
+      const auto
         thisOffset = SEGY::ReadFieldFromHeader(header, g_traceHeaderFields["offset"], fileInfo.m_headerEndianness);
-      if (hasPreviousGatherOffset)
-      {
-        offsetStart = std::min(offsetStart, thisOffset);
-        offsetEnd = std::max(offsetEnd, thisOffset);
-        if (thisOffset != previousGatherOffset)
-        {
-          offsetStep = std::min(offsetStep, std::abs(thisOffset - previousGatherOffset));
-        }
-      }
-      else
-      {
-        offsetStart = thisOffset;
-        offsetEnd = thisOffset;
-        offsetStep = INT32_MAX;
-        hasPreviousGatherOffset = true;
-      }
-      previousGatherOffset = thisOffset;
+      offsetValues.insert(thisOffset);
     }
 
     // Update value range
@@ -880,13 +983,42 @@ analyzeSegment(DataProvider &dataProvider, SEGYFileInfo const& fileInfo, SEGYSeg
 
   if (fileInfo.HasGatherOffset() && !fileInfo.IsUnbinned())
   {
+    offsetStart = *offsetValues.begin();
+    offsetEnd = *offsetValues.rbegin();
+
+    // iterate over offsetValues to get offset step
+    if (offsetValues.size() > 1)
+    {
+      auto
+        iter = offsetValues.begin();
+      auto
+        previousOffset = *iter;
+      offsetStep = INT32_MAX;
+      while (++iter != offsetValues.end())
+      {
+        const auto
+          thisOffset = *iter;
+        offsetStep = std::min(offsetStep, thisOffset - previousOffset);
+        previousOffset = thisOffset;
+      }
+    }
+    else
+    {
+      offsetStep = 1;
+    }
+
+    // 'fold' calculated by counting traces in a gather may be incorrect if there are duplicate-key
+    // traces, so we'll ignore it and use the count of unique offset values
+    fold = static_cast<int>(offsetValues.size());
+
     // check that offset start/end/step is consistent
     if (offsetStart + (fold - 1) * offsetStep != offsetEnd)
     {
       const auto
-        msgFormat = "The detected gather offset start/end/step of '{0}/{1}/{2}' is not consistent with the detected fold of '{3}'. This usually indicates using the wrong header format for the input dataset.\n.";
-      error.string = fmt::format(msgFormat, offsetStart, offsetEnd, offsetStep, fold);
-      error.code = -1;
+        msgFormat = "The detected gather offset start/end/step of '{0}/{1}/{2}' is not consistent with the detected fold of '{3}'. This may indicate an incorrect header format for Offset trace header.";
+      const auto
+        msg = fmt::format(msgFormat, offsetStart, offsetEnd, offsetStep, fold);
+      OpenVDS::printError(printConfig, "analyzeSegment", msg);
       return false;
 
     }
@@ -911,6 +1043,312 @@ analyzeSegment(DataProvider &dataProvider, SEGYFileInfo const& fileInfo, SEGYSeg
   }
 
   return success;
+}
+
+// Analog of analyzeSegment for offset-sorted SEGY
+bool
+analyzePrimaryKey(const std::vector<DataProvider>& dataProviders, SEGYFileInfo const& fileInfo, const int primaryKey, float valueRangePercentile, OpenVDS::FloatRange& valueRange, int& fold, int& secondaryStep, int& offsetStart, int& offsetEnd, int& offsetStep, OpenVDS::PrintConfig printConfig, OpenVDS::Error& error)
+{
+  assert(fileInfo.IsOffsetSorted());
+
+  // TODO what kind of sanity checking should we do on offset-sorted segments?
+  //if (segmentInfo.m_traceStop < segmentInfo.m_traceStart)
+  //{
+  //  m_errorString = "Invalid parameters, a valid segment info should always have a stop trace greater than or equal to the start trace";
+  //  VDSImportSEGY::pLoggingInterface->LogError("VDSImportSEGY::analyzeSegment", m_errorString);
+  //  return false;
+  //}
+
+  bool
+    success = true;
+
+  valueRange = OpenVDS::FloatRange(0.0f, 1.0f);
+  secondaryStep = 0;
+  fold = 1;
+  offsetStart = 0;
+  offsetEnd = 0;
+  offsetStep = 0;
+
+  if (fileInfo.m_segmentInfoListsByOffset.empty() || fileInfo.m_segmentInfoListsByOffset.front().empty())
+  {
+    // no data to analyze
+    return true;
+  }
+
+  // get all offset values from all files
+  std::set<int>
+    globalOffsets;
+  for (const auto& offsetSegments : fileInfo.m_segmentInfoListsByOffset)
+  {
+    for (const auto& entry : offsetSegments)
+    {
+      globalOffsets.insert(entry.first);
+    }
+  }
+
+  fold = static_cast<int>(globalOffsets.size());
+
+  offsetStart = *globalOffsets.begin();
+  offsetEnd = *globalOffsets.rbegin();
+
+  // find offset step
+  if (globalOffsets.size() > 1)
+  {
+    auto
+      offsetsIter = ++globalOffsets.begin();
+    offsetStep = abs(*offsetsIter - offsetStart);
+    auto
+      previousOffset = *offsetsIter;
+    while (++offsetsIter != globalOffsets.end())
+    {
+      offsetStep = std::min(offsetStep, abs(*offsetsIter - previousOffset));
+      previousOffset = *offsetsIter;
+    }
+  }
+  else
+  {
+    offsetStep = 1;
+  }
+
+  // check that offset start/end/step is consistent
+  if (offsetStart + (fold - 1) * offsetStep != offsetEnd)
+  {
+    const auto
+      msgFormat = "The detected gather offset start/end/step of '{0}/{1}/{2}' is not consistent with the detected fold of '{3}'. This may indicate an incorrect header format for Offset trace header.";
+    const auto
+      msg = fmt::format(msgFormat, offsetStart, offsetEnd, offsetStep, fold);
+    OpenVDS::printError(printConfig, "analyzePrimaryKey", msg);
+    return false;
+  }
+
+
+  const int32_t
+    traceByteSize = fileInfo.TraceByteSize();
+
+  int64_t
+    traceBufferStart = 0,
+    traceBufferSize = 0;
+
+  std::vector<char>
+    buffer;
+
+  // 1. Find all the segments in all files that match the primary key
+  // 2. Get a total trace count of all the segments; pass trace count to value range estimator
+  std::map<int, std::vector<std::reference_wrapper<const SEGYSegmentInfo>>>
+    providerSegments;
+  int64_t
+    primaryKeyTraceCount = 0;
+  for (int fileIndex = 0; fileIndex < fileInfo.m_segmentInfoListsByOffset.size(); ++fileIndex)
+  {
+    const auto&
+      offsetSegments = fileInfo.m_segmentInfoListsByOffset[fileIndex];
+    for (const auto& entry : offsetSegments)
+    {
+      for (const auto& segmentInfo : entry.second)
+      {
+        if (segmentInfo.m_primaryKey == primaryKey)
+        {
+          providerSegments[fileIndex].push_back(std::cref(segmentInfo));
+          primaryKeyTraceCount += segmentInfo.m_traceStop - segmentInfo.m_traceStart + 1;
+        }
+      }
+    }
+  }
+
+  auto
+    segyValueRangeEstimator = CreateSEGYValueRangeEstimator(fileInfo, primaryKeyTraceCount, valueRangePercentile);
+
+  // For secondary step need to scan all traces in all segments to get a complete (hopefully) list of secondary keys, then figure out start/end/step.
+  // We need to get all secondary keys before doing any analysis because we may not encounter them in least-to-greatest order in the offset-sorted segments.
+  std::set<int>
+    allSecondaryKeys;
+
+  for (const auto& entry : providerSegments)
+  {
+    auto&
+      dataProvider = dataProviders[entry.first];
+    auto&
+      primaryKeySegments = entry.second;
+
+    for (const auto segmentInfoRef : primaryKeySegments)
+    {
+      const auto&
+        segmentInfo = segmentInfoRef.get();
+      for (int64_t trace = segmentInfo.m_traceStart; trace <= segmentInfo.m_traceStop; trace++)
+      {
+        if (trace - traceBufferStart >= traceBufferSize)
+        {
+          traceBufferStart = trace;
+          traceBufferSize = (segmentInfo.m_traceStop - trace + 1) < 1000 ? int(segmentInfo.m_traceStop - trace + 1) : 1000;
+
+          buffer.resize(traceByteSize * traceBufferSize);
+
+          const int64_t
+            offset = SEGY::TextualFileHeaderSize + SEGY::BinaryFileHeaderSize + traceByteSize * traceBufferStart;
+
+          OpenVDS::Error
+            error;
+
+          success = dataProvider.Read(buffer.data(), offset, (int32_t)(traceByteSize * traceBufferSize), error);
+
+          if (!success)
+          {
+            OpenVDS::printError(printConfig, "analyzePrimaryKey", error.string);
+            break;
+          }
+        }
+
+        const void
+          * header = buffer.data() + traceByteSize * (trace - traceBufferStart),
+          * data = buffer.data() + traceByteSize * (trace - traceBufferStart) + SEGY::TraceHeaderSize;
+
+        const int
+          tracePrimaryKey = SEGY::ReadFieldFromHeader(header, fileInfo.m_primaryKey, fileInfo.m_headerEndianness),
+          traceSecondaryKey = SEGY::ReadFieldFromHeader(header, fileInfo.m_secondaryKey, fileInfo.m_headerEndianness);
+
+        allSecondaryKeys.insert(traceSecondaryKey);
+
+        if (tracePrimaryKey != segmentInfo.m_primaryKey)
+        {
+          auto
+            warnString = fmt::format("Warning: trace {} has a primary key that doesn't match with the segment. This trace will be ignored.", segmentInfo.m_traceStart + trace);
+          OpenVDS::printWarning(printConfig, "analyzePrimaryKey", warnString);
+          continue;
+        }
+
+        // Update value range
+        int
+          sampleMin = 0;
+
+        segyValueRangeEstimator->UpdateValueRange((unsigned char*)data, sampleMin, fileInfo.m_sampleCount);
+      }
+    }
+  }
+
+  // Determine the secondary step
+  if (allSecondaryKeys.size() <= 1)
+  {
+    secondaryStep = 1;
+  }
+  else if (allSecondaryKeys.size() == 2)
+  {
+    secondaryStep = *allSecondaryKeys.rbegin() - *allSecondaryKeys.begin();
+  }
+  else
+  {
+    auto
+      secondaryIter = allSecondaryKeys.begin();
+    auto
+      previousSecondary = *secondaryIter;
+    auto
+      workingStep = 0;
+    secondaryStep = 0;
+    while (++secondaryIter != allSecondaryKeys.end())
+    {
+      // Updating the secondary step with the previously computed step intentionally ignores the step of the final secondary key since it can be anomalous
+      if (workingStep && (!secondaryStep || std::abs(workingStep) < std::abs(secondaryStep)))
+      {
+        secondaryStep = workingStep;
+      }
+
+      workingStep = *secondaryIter - previousSecondary;
+      previousSecondary = *secondaryIter;
+    }
+
+    // If the secondary step couldn't be determined, set it to the last step or 1
+    secondaryStep = secondaryStep ? secondaryStep : std::max(workingStep, 1);
+  }
+
+  // Set value range
+  segyValueRangeEstimator->GetValueRange(valueRange.Min, valueRange.Max);
+  return success;
+}
+
+std::pair<SEGYSegmentInfo, SEGYSegmentInfo>
+findFirstLastInlineSegmentInfos(const SEGYFileInfo& fileInfo, const std::vector<int>& orderedListIndices)
+{
+  if (fileInfo.IsOffsetSorted())
+  {
+    // Find least/greatest inline numbers
+    // Create synthetic segment infos for least/greatest inline using least/greatest crossline numbers on those inlines
+    // If inline is ascending:  return (least-inline segment info, greatest-inline segment info)
+    // else:  return (greatest-inline segment info, least-inline segment info)
+
+    int
+      minInline = INT32_MAX,
+      maxInline = -INT32_MAX;
+    const std::vector<SEGYSegmentInfo>
+      * pLongestList = nullptr;
+    for (const auto& offsetMap : fileInfo.m_segmentInfoListsByOffset)
+    {
+      for (const auto& entry : offsetMap)
+      {
+        if (pLongestList == nullptr || (entry.second.size() > pLongestList->size()))
+        {
+          pLongestList = &entry.second;
+        }
+        for (const auto& segmentInfo : entry.second)
+        {
+          minInline = std::min(minInline, segmentInfo.m_primaryKey);
+          maxInline = std::max(maxInline, segmentInfo.m_primaryKey);
+        }
+      }
+    }
+
+    SEGYSegmentInfo
+      minSegmentInfo{},
+      maxSegmentInfo{};
+    minSegmentInfo.m_primaryKey = minInline;
+    minSegmentInfo.m_binInfoStart = { minInline, INT32_MAX, 0.0, 0.0 };
+    minSegmentInfo.m_binInfoStop = { minInline, -INT32_MAX, 0.0, 0.0 };
+    maxSegmentInfo.m_primaryKey = maxInline;
+    maxSegmentInfo.m_binInfoStart = { maxInline, INT32_MAX, 0.0, 0.0 };
+    maxSegmentInfo.m_binInfoStop = { maxInline, -INT32_MAX, 0.0, 0.0 };
+
+    for (const auto& offsetMap : fileInfo.m_segmentInfoListsByOffset)
+    {
+      for (const auto& entry : offsetMap)
+      {
+        for (const auto& segmentInfo : entry.second)
+        {
+          if (segmentInfo.m_primaryKey == minInline)
+          {
+            if (segmentInfo.m_binInfoStart.m_crosslineNumber < minSegmentInfo.m_binInfoStart.m_crosslineNumber)
+            {
+              minSegmentInfo.m_binInfoStart = segmentInfo.m_binInfoStart;
+            }
+            if (segmentInfo.m_binInfoStop.m_crosslineNumber > minSegmentInfo.m_binInfoStop.m_crosslineNumber)
+            {
+              minSegmentInfo.m_binInfoStop = segmentInfo.m_binInfoStop;
+            }
+          }
+          if (segmentInfo.m_primaryKey == maxInline)
+          {
+            if (segmentInfo.m_binInfoStart.m_crosslineNumber < maxSegmentInfo.m_binInfoStart.m_crosslineNumber)
+            {
+              maxSegmentInfo.m_binInfoStart = segmentInfo.m_binInfoStart;
+            }
+            if (segmentInfo.m_binInfoStop.m_crosslineNumber > maxSegmentInfo.m_binInfoStop.m_crosslineNumber)
+            {
+              maxSegmentInfo.m_binInfoStop = segmentInfo.m_binInfoStop;
+            }
+          }
+        }
+      }
+    }
+
+    const bool
+      isAscending = pLongestList->front().m_primaryKey <= pLongestList->back().m_primaryKey;
+
+    if (isAscending)
+    {
+      return { minSegmentInfo, maxSegmentInfo };
+    }
+    return { maxSegmentInfo, minSegmentInfo };
+  }
+
+  // else it's not offset-sorted
+  return { std::cref(fileInfo.m_segmentInfoLists[orderedListIndices.front()].front()), std::cref(fileInfo.m_segmentInfoLists[orderedListIndices.back()].back()) };
 }
 
 double
@@ -972,7 +1410,7 @@ createSEGYMetadata(DataProvider &dataProvider, SEGYFileInfo const &fileInfo, Ope
 void
 createSurveyCoordinateSystemMetadata(SEGYFileInfo const& fileInfo, SEGY::BinaryHeader::MeasurementSystem segyMeasurementSystem, std::string const &crsWkt, OpenVDS::MetadataContainer& metadataContainer)
 {
-  if (fileInfo.m_segmentInfoLists.empty()) return;
+  if (fileInfo.m_segmentInfoLists.empty() && fileInfo.m_segmentInfoListsByOffset.empty()) return;
 
   if (fileInfo.Is2D()) return;
 
@@ -987,11 +1425,9 @@ createSurveyCoordinateSystemMetadata(SEGYFileInfo const& fileInfo, SEGY::BinaryH
   // Determine crossline spacing
   int countedCrosslineSpacings = 0;
 
-  for (size_t listIndex : orderedListIndices)
+  auto
+    crosslineUpdater = [&countedCrosslineSpacings, &crosslineSpacing](const std::vector<SEGYSegmentInfo>& segmentInfoList)
   {
-    const auto
-      & segmentInfoList = fileInfo.m_segmentInfoLists[listIndex];
-
     for (auto const& segmentInfo : segmentInfoList)
     {
       int crosslineCount = segmentInfo.m_binInfoStop.m_crosslineNumber - segmentInfo.m_binInfoStart.m_crosslineNumber;
@@ -1008,6 +1444,24 @@ createSurveyCoordinateSystemMetadata(SEGYFileInfo const& fileInfo, SEGY::BinaryH
 
       countedCrosslineSpacings++;
     }
+  };
+
+  for (size_t listIndex : orderedListIndices)
+  {
+    if (fileInfo.IsOffsetSorted())
+    {
+      for (const auto& offsetSegmentMap : fileInfo.m_segmentInfoListsByOffset)
+      {
+        for (const auto& entry : offsetSegmentMap)
+        {
+          crosslineUpdater(entry.second);
+        }
+      }
+    }
+    else
+    {
+      crosslineUpdater(fileInfo.m_segmentInfoLists[listIndex]);
+    }
   }
 
   if (countedCrosslineSpacings > 0)
@@ -1022,8 +1476,11 @@ createSurveyCoordinateSystemMetadata(SEGYFileInfo const& fileInfo, SEGY::BinaryH
   }
 
   // Determine inline spacing
-  SEGYSegmentInfo const& firstSegmentInfo = fileInfo.m_segmentInfoLists[orderedListIndices.front()].front();
-  SEGYSegmentInfo const& lastSegmentInfo = fileInfo.m_segmentInfoLists[orderedListIndices.back()].back();
+  const auto
+    firstLastSegmentInfos = findFirstLastInlineSegmentInfos(fileInfo, orderedListIndices);
+  const SEGYSegmentInfo
+    & firstSegmentInfo = firstLastSegmentInfos.first,
+    & lastSegmentInfo = firstLastSegmentInfos.second;
 
   if (firstSegmentInfo.m_binInfoStart.m_inlineNumber != lastSegmentInfo.m_binInfoStart.m_inlineNumber)
   {
@@ -1415,24 +1872,58 @@ createAxisDescriptors(SEGYFileInfo const& fileInfo, SEGY::SampleUnits sampleUnit
       axisDescriptors.emplace_back(fold, VDS_DIMENSION_TRACE_NAME(VDS_DIMENSION_TRACE_SORT_OFFSET), KNOWNMETADATA_UNIT_UNITLESS, 1.0f, static_cast<float>(fold));
     }
 
-    int minInline = fileInfo.m_segmentInfoLists[0][0].m_binInfoStart.m_inlineNumber,
-      minCrossline = fileInfo.m_segmentInfoLists[0][0].m_binInfoStart.m_crosslineNumber,
-      maxInline = minInline,
+    int
+      minInline,
+      minCrossline,
+      maxInline,
+      maxCrossline;
+
+    auto updateMinMaxes = [&minInline, &minCrossline, &maxInline, &maxCrossline](const SEGYSegmentInfo& segmentInfo)
+    {
+      minInline = std::min(minInline, segmentInfo.m_binInfoStart.m_inlineNumber);
+      minInline = std::min(minInline, segmentInfo.m_binInfoStop.m_inlineNumber);
+      maxInline = std::max(maxInline, segmentInfo.m_binInfoStart.m_inlineNumber);
+      maxInline = std::max(maxInline, segmentInfo.m_binInfoStop.m_inlineNumber);
+
+      minCrossline = std::min(minCrossline, segmentInfo.m_binInfoStart.m_crosslineNumber);
+      minCrossline = std::min(minCrossline, segmentInfo.m_binInfoStop.m_crosslineNumber);
+      maxCrossline = std::max(maxCrossline, segmentInfo.m_binInfoStart.m_crosslineNumber);
+      maxCrossline = std::max(maxCrossline, segmentInfo.m_binInfoStop.m_crosslineNumber);
+    };
+
+    if (fileInfo.IsOffsetSorted())
+    {
+      const auto&
+        firstSegment = fileInfo.m_segmentInfoListsByOffset.front().begin()->second.front();
+      minInline = firstSegment.m_binInfoStart.m_inlineNumber;
+      minCrossline = firstSegment.m_binInfoStart.m_crosslineNumber;
+      maxInline = minInline;
       maxCrossline = minCrossline;
 
-    for (const auto& segmentInfoList : fileInfo.m_segmentInfoLists)
-    {
-      for (const auto& segmentInfo : segmentInfoList)
+      for (const auto& offsetSegments : fileInfo.m_segmentInfoListsByOffset)
       {
-        minInline = std::min(minInline, segmentInfo.m_binInfoStart.m_inlineNumber);
-        minInline = std::min(minInline, segmentInfo.m_binInfoStop.m_inlineNumber);
-        maxInline = std::max(maxInline, segmentInfo.m_binInfoStart.m_inlineNumber);
-        maxInline = std::max(maxInline, segmentInfo.m_binInfoStop.m_inlineNumber);
+        for (const auto& entry : offsetSegments)
+        {
+          for (const auto& segmentInfo : entry.second)
+          {
+            updateMinMaxes(segmentInfo);
+          }
+        }
+      }
+    }
+    else
+    {
+      minInline = fileInfo.m_segmentInfoLists[0][0].m_binInfoStart.m_inlineNumber;
+      minCrossline = fileInfo.m_segmentInfoLists[0][0].m_binInfoStart.m_crosslineNumber;
+      maxInline = minInline;
+      maxCrossline = minCrossline;
 
-        minCrossline = std::min(minCrossline, segmentInfo.m_binInfoStart.m_crosslineNumber);
-        minCrossline = std::min(minCrossline, segmentInfo.m_binInfoStop.m_crosslineNumber);
-        maxCrossline = std::max(maxCrossline, segmentInfo.m_binInfoStart.m_crosslineNumber);
-        maxCrossline = std::max(maxCrossline, segmentInfo.m_binInfoStop.m_crosslineNumber);
+      for (const auto& segmentInfoList : fileInfo.m_segmentInfoLists)
+      {
+        for (const auto& segmentInfo : segmentInfoList)
+        {
+          updateMinMaxes(segmentInfo);
+        }
       }
     }
 
@@ -1656,7 +2147,7 @@ TraceIndex2DToEnsembleNumber(TraceInfo2DManager * pTraceInfo2DManager, int trace
 int
 SecondaryKeyDimension(const SEGYFileInfo& fileInfo)
 {
-  if (fileInfo.m_segyType == SEGY::SEGYType::Prestack || fileInfo.m_segyType == SEGY::SEGYType::Prestack2D)
+  if (fileInfo.m_segyType == SEGY::SEGYType::Prestack || fileInfo.m_segyType == SEGY::SEGYType::Prestack2D || fileInfo.m_segyType == SEGY::SEGYType::PrestackOffsetSorted)
   {
     return 2;
   }
@@ -2245,11 +2736,23 @@ main(int argc, char* argv[])
     ? std::unique_ptr<TraceInfo2DManager>(new TraceInfo2DManagerImpl(fileInfo.m_headerEndianness, scale, g_traceHeaderFields["coordinatescale"], g_traceHeaderFields["sourcexcoordinate"], g_traceHeaderFields["sourceycoordinate"], g_traceHeaderFields["starttime"], g_traceHeaderFields["energysourcepointnumber"], g_traceHeaderFields["ensemblenumber"]))
     : std::unique_ptr<TraceInfo2DManager>(new TraceInfo2DManager());
 
-  int fileIndex;
-  const auto& representativeSegment = findRepresentativeSegment(fileInfo, primaryStep, fileIndex);
-  analyzeSegment(dataProviders[fileIndex], fileInfo, representativeSegment, valueRangePercentile, valueRange, fold, secondaryStep, segyType, offsetStart, offsetEnd, offsetStep, traceInfo2DManager.get(), printConfig, error);
+  bool
+    analyzeResult = false;
+  if (fileInfo.IsOffsetSorted())
+  {
+    const auto
+      primaryKey = findRepresentativePrimaryKey(fileInfo, primaryStep);
+    analyzeResult = analyzePrimaryKey(dataProviders, fileInfo, primaryKey, valueRangePercentile, valueRange, fold, secondaryStep, offsetStart, offsetEnd, offsetStep, printConfig, error);
+  }
+  else
+  {
+    int fileIndex;
+    const auto& representativeSegment = findRepresentativeSegment(fileInfo, primaryStep, fileIndex);
+    assert(fileIndex < dataProviders.size());
+    analyzeResult = analyzeSegment(dataProviders[fileIndex], fileInfo, representativeSegment, valueRangePercentile, valueRange, fold, secondaryStep, segyType, offsetStart, offsetEnd, offsetStep, traceInfo2DManager.get(), printConfig, error);
+  }
 
-  if (error.code != 0)
+  if (!analyzeResult || error.code != 0)
   {
     OpenVDS::printError(printConfig, "SEGY", error.string);
     return EXIT_FAILURE;
@@ -2459,6 +2962,10 @@ main(int argc, char* argv[])
   {
     writeDimensionGroup = OpenVDS::DimensionsND::Dimensions_013;
   }
+  else if (fileInfo.IsOffsetSorted())
+  {
+    writeDimensionGroup = OpenVDS::DimensionsND::Dimensions_023;
+  }
 
   auto amplitudeAccessor = accessManager.CreateVolumeDataPageAccessor(writeDimensionGroup, 0, 0, 8, OpenVDS::VolumeDataAccessManager::AccessMode_Create);
   auto traceFlagAccessor = accessManager.CreateVolumeDataPageAccessor(writeDimensionGroup, 0, 1, 8, OpenVDS::VolumeDataAccessManager::AccessMode_Create);
@@ -2498,7 +3005,9 @@ main(int argc, char* argv[])
   const auto
     perFileMemoryLimit = dvmMemoryLimit / dataProviders.size();
 
-  for (size_t fileIndex = 0; fileIndex < fileInfo.m_segmentInfoLists.size(); ++fileIndex)
+  assert(dataProviders.size() == fileInfo.IsOffsetSorted() ? fileInfo.m_segmentInfoListsByOffset.size() : fileInfo.m_segmentInfoLists.size());
+
+  for (size_t fileIndex = 0; fileIndex < dataProviders.size(); ++fileIndex)
   {
     dataViewManagers.emplace_back(std::make_shared<DataViewManager>(dataProviders[fileIndex], perFileMemoryLimit));
     traceDataManagers.emplace_back(dataViewManagers.back(), 128, traceByteSize, fileInfo.m_traceCounts[fileIndex]);
@@ -2534,8 +3043,25 @@ main(int argc, char* argv[])
 
     for (size_t fileIndex = 0; fileIndex < fileInfo.m_segmentInfoLists.size(); ++fileIndex)
     {
+      const int
+        offetSortedOffsetValue = fileInfo.IsOffsetSorted() ? offsetStart + offsetStep * chunkInfo.min[1] : 0;
+
+      if (fileInfo.IsOffsetSorted())
+      {
+        // for offset sorted chunks should only have a single offset (i.e. dim 02 or 023)
+        assert(chunkInfo.min[1] + 1 == chunkInfo.max[1]);
+
+        // If the calculated offset value isn't present in this file's map then skip
+        if (fileInfo.m_segmentInfoListsByOffset[fileIndex].find(offetSortedOffsetValue) == fileInfo.m_segmentInfoListsByOffset[fileIndex].end())
+        {
+          continue;
+        }
+      }
+
       auto&
-        segmentInfoList = fileInfo.m_segmentInfoLists[fileIndex];
+        segmentInfoList = fileInfo.IsOffsetSorted()
+        ? fileInfo.m_segmentInfoListsByOffset[fileIndex][offetSortedOffsetValue]
+        : fileInfo.m_segmentInfoLists[fileIndex];
 
       // does this file have any segments in the primary key range?
       bool hasSegments;
@@ -2610,9 +3136,15 @@ main(int argc, char* argv[])
 
     auto &chunkInfo = chunkInfos[chunk];
 
+    const int
+      offsetSortedOffsetValue = fileInfo.IsOffsetSorted() ? offsetStart + offsetStep * chunkInfo.min[1] : 0;
+
     // if we've crossed to a new inline then trim the trace page cache
     if (chunk > 0)
     {
+
+      // TODO alternate version for offset sorted
+
       const auto& previousChunkInfo = chunkInfos[chunk - 1];
 
       for (size_t chunkFileIndex = 0; chunkFileIndex < dataProviders.size(); ++chunkFileIndex)
@@ -2685,7 +3217,7 @@ main(int argc, char* argv[])
       const auto upperSegmentIndex = std::get<1>(result->second);
 
       const auto&
-        segmentInfo = fileInfo.m_segmentInfoLists[fileIndex];
+        segmentInfo = fileInfo.IsOffsetSorted() ? fileInfo.m_segmentInfoListsByOffset[fileIndex][offsetSortedOffsetValue] : fileInfo.m_segmentInfoLists[fileIndex];
       auto&
         traceDataManager = traceDataManagers[fileIndex];
 
@@ -2767,14 +3299,33 @@ main(int argc, char* argv[])
 
           if (fileInfo.Is4D() && traceOrderByOffset)
           {
-            // recalculate tertiaryIndex from header offset value
-            const auto
-              thisOffset = SEGY::ReadFieldFromHeader(header, g_traceHeaderFields["offset"], fileInfo.m_headerEndianness);
-            tertiaryIndex = (thisOffset - offsetStart) / offsetStep;
-
-            // sanity check the new index
-            if (tertiaryIndex < 0 || tertiaryIndex >= fold)
+            if (fileInfo.IsOffsetSorted())
             {
+              // force the tertiary index to the index specified for the current chunk
+              tertiaryIndex = chunkInfo.min[1];
+
+              assert(offsetSortedOffsetValue == SEGY::ReadFieldFromHeader(header, offsetHeaderField, fileInfo.m_headerEndianness));
+            }
+            else
+            {
+              if (traceOrderByOffset)
+              {
+                // recalculate tertiaryIndex from header offset value
+                const auto
+                  thisOffset = SEGY::ReadFieldFromHeader(header, g_traceHeaderFields["offset"], fileInfo.m_headerEndianness);
+                tertiaryIndex = (thisOffset - offsetStart) / offsetStep;
+
+                // sanity check the new index
+                if (tertiaryIndex < 0 || tertiaryIndex >= fold)
+                {
+                  continue;
+                }
+              }
+            }
+
+            if (tertiaryIndex < chunkInfo.min[1] || tertiaryIndex >= chunkInfo.max[1])
+            {
+              // the current gather trace number is not within the request bounds
               continue;
             }
           }
