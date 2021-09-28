@@ -81,8 +81,9 @@ def test_produce_status(offset_sorted_executor):
     with openvds.open(output_vds.filename, "") as handle:
         access_manager = openvds.getAccessManager(handle)
 
-        assert access_manager.getVDSProduceStatus(openvds.DimensionsND.Dimensions_02) != openvds.VDSProduceStatus.Unavailable
         assert access_manager.getVDSProduceStatus(openvds.DimensionsND.Dimensions_023) != openvds.VDSProduceStatus.Unavailable
+
+        assert access_manager.getVDSProduceStatus(openvds.DimensionsND.Dimensions_02) == openvds.VDSProduceStatus.Unavailable
 
         assert access_manager.getVDSProduceStatus(openvds.DimensionsND.Dimensions_01) == openvds.VDSProduceStatus.Unavailable
         assert access_manager.getVDSProduceStatus(openvds.DimensionsND.Dimensions_03) == openvds.VDSProduceStatus.Unavailable
@@ -116,20 +117,20 @@ def test_survey_coordinate_system(offset_sorted_executor):
         value = layout.getMetadataDoubleVector2(
             openvds.KnownMetadata.surveyCoordinateSystemOrigin().category,
             openvds.KnownMetadata.surveyCoordinateSystemOrigin().name)
-        assert value.x == pytest.approx(431961.93, abs=0.05)
-        assert value.y == pytest.approx(6348554.9, abs=0.05)
+        assert value[0] == pytest.approx(431961.93, abs=0.05)
+        assert value[1] == pytest.approx(6348554.9, abs=0.05)
 
         value = layout.getMetadataDoubleVector2(
             openvds.KnownMetadata.surveyCoordinateSystemInlineSpacing().category,
             openvds.KnownMetadata.surveyCoordinateSystemInlineSpacing().name)
-        assert value.x == pytest.approx(6.05, abs=0.05)
-        assert value.y == pytest.approx(24.26, abs=0.05)
+        assert value[0] == pytest.approx(6.05, abs=0.05)
+        assert value[1] == pytest.approx(24.26, abs=0.05)
 
         value = layout.getMetadataDoubleVector2(
             openvds.KnownMetadata.surveyCoordinateSystemCrosslineSpacing().category,
             openvds.KnownMetadata.surveyCoordinateSystemCrosslineSpacing().name)
-        assert value.x == pytest.approx(-12.13, abs=0.05)
-        assert value.y == pytest.approx(3.02, abs=0.05)
+        assert value[0] == pytest.approx(-12.13, abs=0.05)
+        assert value[1] == pytest.approx(3.02, abs=0.05)
 
 
 def test_axes(offset_sorted_executor):
@@ -161,6 +162,9 @@ def test_axes(offset_sorted_executor):
         assert 4982.0 == layout.getDimensionMin(3)
         assert 5021.0 == layout.getDimensionMax(3)
 
+        assert pytest.approx(-0.137178, abs=1.0e-05) == layout.getChannelValueRangeMin(0)
+        assert pytest.approx(0.141104, abs=1.0e-05) == layout.getChannelValueRangeMax(0)
+
 
 def test_read_gather(offset_sorted_executor):
     ex, output_vds = offset_sorted_executor
@@ -186,12 +190,12 @@ def test_read_gather(offset_sorted_executor):
                                                      (dim0_size, dim1_size, crossline_index + 1, inline_index + 1, 1, 1),
                                                      channel=0,
                                                      format=openvds.VolumeDataChannelDescriptor.Format.Format_R32,
-                                                     dimensionsND=openvds.DimensionsND.Dimensions_02)
+                                                     dimensionsND=openvds.DimensionsND.Dimensions_023)
         trace_flag_request = access_manager.requestVolumeSubset((0, 0, crossline_index, inline_index, 0, 0),
                                                                 (1, dim1_size, crossline_index + 1, inline_index + 1, 1, 1),
                                                                 channel=trace_channel,
                                                                 format=openvds.VolumeDataChannelDescriptor.Format.Format_U8,
-                                                                dimensionsND=openvds.DimensionsND.Dimensions_02)
+                                                                dimensionsND=openvds.DimensionsND.Dimensions_023)
 
         data = request.data.reshape(dim1_size, dim0_size)
         trace_flag_data = trace_flag_request.data
@@ -259,40 +263,43 @@ def test_compare_with_conventional_sorted(offset_sorted_executor, conventional_s
                     request = access_manager.requestVolumeSubset(voxel_min, voxel_max,
                                                                  channel=0,
                                                                  format=openvds.VolumeDataChannelDescriptor.Format.Format_R32,
-                                                                 dimensionsND=openvds.DimensionsND.Dimensions_02)
+                                                                 dimensionsND=openvds.DimensionsND.Dimensions_023)
                     request_conv = access_manager_conv.requestVolumeSubset(voxel_min, voxel_max,
                                                                            channel=0,
                                                                            format=openvds.VolumeDataChannelDescriptor.Format.Format_R32,
-                                                                           dimensionsND=openvds.DimensionsND.Dimensions_01)
+                                                                           dimensionsND=openvds.DimensionsND.Dimensions_012)
 
                     trace_flag_request = access_manager.requestVolumeSubset(voxel_min, trace_voxel_max,
                                                                             channel=trace_channel,
                                                                             format=openvds.VolumeDataChannelDescriptor.Format.Format_U8,
-                                                                            dimensionsND=openvds.DimensionsND.Dimensions_02)
+                                                                            dimensionsND=openvds.DimensionsND.Dimensions_023)
                     trace_flag_request_conv = access_manager_conv.requestVolumeSubset(voxel_min, trace_voxel_max,
                                                                                       channel=trace_channel_conv,
                                                                                       format=openvds.VolumeDataChannelDescriptor.Format.Format_U8,
-                                                                                      dimensionsND=openvds.DimensionsND.Dimensions_01)
+                                                                                      dimensionsND=openvds.DimensionsND.Dimensions_012)
 
                     offset_request = access_manager.requestVolumeSubset(voxel_min, trace_voxel_max,
                                                                         channel=offset_channel,
                                                                         format=openvds.VolumeDataChannelDescriptor.Format.Format_R32,
-                                                                        dimensionsND=openvds.DimensionsND.Dimensions_02)
+                                                                        dimensionsND=openvds.DimensionsND.Dimensions_023)
                     offset_request_conv = access_manager_conv.requestVolumeSubset(voxel_min, trace_voxel_max,
                                                                                   channel=offset_channel_conv,
                                                                                   format=openvds.VolumeDataChannelDescriptor.Format.Format_R32,
-                                                                                  dimensionsND=openvds.DimensionsND.Dimensions_01)
+                                                                                  dimensionsND=openvds.DimensionsND.Dimensions_012)
 
                     sample_data = request.data.reshape(fold, num_z)
                     sample_data_conv = request_conv.data.reshape(fold, num_z)
 
                     for trace_index in range(fold):
-                        assert trace_flag_request.data[trace_index] == trace_flag_request_conv.data[trace_index]
-                        assert offset_request.data[trace_index] == offset_request_conv.data[trace_index]
+                        assert trace_flag_request.data[trace_index] == trace_flag_request_conv.data[trace_index],\
+                            f"trace index {trace_index}  xl index {crossline_index}  il index {inline_index}"
+                        assert offset_request.data[trace_index] == offset_request_conv.data[trace_index],\
+                            f"trace index {trace_index}  xl index {crossline_index}  il index {inline_index}"
 
                         if trace_flag_request.data[trace_index] != 0:
                             for sample_index in range(num_z):
-                                assert sample_data[trace_index, sample_index] == sample_data_conv[trace_index, sample_index]
+                                assert sample_data[trace_index, sample_index] == sample_data_conv[trace_index, sample_index],\
+                                    f"sample index {sample_index}  trace index {trace_index}  xl index {crossline_index}  il index {inline_index}"
 
 
 def test_create_scan_file(offset_sorted_segy, output_scan):
@@ -328,16 +335,10 @@ def test_with_scan_file(offset_sorted_segy, offset_sorted_scan, output_vds):
     result = ex.run()
 
     assert result == 0, ex.output()
-    assert Path(output_scan.filename).exists()
+    assert Path(output_vds.filename).exists()
 
     # check produce status as a quick test for output VDS validity
     with openvds.open(output_vds.filename, "") as handle:
         access_manager = openvds.getAccessManager(handle)
 
-        assert access_manager.getVDSProduceStatus(openvds.DimensionsND.Dimensions_02) != openvds.VDSProduceStatus.Unavailable
         assert access_manager.getVDSProduceStatus(openvds.DimensionsND.Dimensions_023) != openvds.VDSProduceStatus.Unavailable
-
-        assert access_manager.getVDSProduceStatus(openvds.DimensionsND.Dimensions_01) == openvds.VDSProduceStatus.Unavailable
-        assert access_manager.getVDSProduceStatus(openvds.DimensionsND.Dimensions_03) == openvds.VDSProduceStatus.Unavailable
-        assert access_manager.getVDSProduceStatus(openvds.DimensionsND.Dimensions_012) == openvds.VDSProduceStatus.Unavailable
-        assert access_manager.getVDSProduceStatus(openvds.DimensionsND.Dimensions_013) == openvds.VDSProduceStatus.Unavailable
