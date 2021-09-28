@@ -45,7 +45,7 @@ bool
 SEGYFileInfo::HasGatherOffset() const
 {
   // TODO unbinned gathers may be angle gathers?
-  return m_segyType == SEGYType::Prestack || m_segyType == SEGYType::Prestack2D || IsUnbinned();
+  return m_segyType == SEGYType::Prestack || m_segyType == SEGYType::Prestack2D || IsOffsetSorted() || IsUnbinned();
 }
 
 bool

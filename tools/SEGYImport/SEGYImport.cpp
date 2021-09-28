@@ -847,6 +847,43 @@ copySamples(const void* data, SEGY::BinaryHeader::DataSampleFormatCode dataSampl
   }
 }
 
+void
+updateValueRangeHeaps(const SEGYFileInfo& fileInfo, const int heapSizeMax, std::vector<float>& minHeap, std::vector<float>& maxHeap, const void * data, std::vector<float>& sampleBuffer)
+{
+  if (fileInfo.m_dataSampleFormatCode == SEGY::BinaryHeader::DataSampleFormatCode::IBMFloat || fileInfo.m_dataSampleFormatCode == SEGY::BinaryHeader::DataSampleFormatCode::IEEEFloat)
+  {
+    sampleBuffer.resize(fileInfo.m_sampleCount);
+    copySamples(data, fileInfo.m_dataSampleFormatCode, fileInfo.m_headerEndianness, sampleBuffer.data(), 0, fileInfo.m_sampleCount);
+
+    for (int sample = 0; sample < fileInfo.m_sampleCount; sample++)
+    {
+      if (int(minHeap.size()) < heapSizeMax)
+      {
+        minHeap.push_back(sampleBuffer[sample]);
+        std::push_heap(minHeap.begin(), minHeap.end(), std::less<float>());
+      }
+      else if (sampleBuffer[sample] < minHeap[0])
+      {
+        std::pop_heap(minHeap.begin(), minHeap.end(), std::less<float>());
+        minHeap.back() = sampleBuffer[sample];
+        std::push_heap(minHeap.begin(), minHeap.end(), std::less<float>());
+      }
+
+      if (int(maxHeap.size()) < heapSizeMax)
+      {
+        maxHeap.push_back(sampleBuffer[sample]);
+        std::push_heap(maxHeap.begin(), maxHeap.end(), std::greater<float>());
+      }
+      else if (sampleBuffer[sample] > maxHeap[0])
+      {
+        std::pop_heap(maxHeap.begin(), maxHeap.end(), std::greater<float>());
+        maxHeap.back() = sampleBuffer[sample];
+        std::push_heap(maxHeap.begin(), maxHeap.end(), std::greater<float>());
+      }
+    }
+  }
+}
+
 bool
 analyzeSegment(DataProvider &dataProvider, SEGYFileInfo const& fileInfo, SEGYSegmentInfo const& segmentInfo, float valueRangePercentile, OpenVDS::FloatRange& valueRange, int& fold, int& secondaryStep, const SEGY::SEGYType segyType, int& offsetStart, int& offsetEnd, int& offsetStep, TraceInfo2DManager * pTraceInfo2DManager, OpenVDS::PrintConfig printConfig, OpenVDS::Error& error)
 {
@@ -879,8 +916,7 @@ analyzeSegment(DataProvider &dataProvider, SEGYFileInfo const& fileInfo, SEGYSeg
   maxHeap.reserve(heapSizeMax);
 
   // Allocate sample buffer for converting samples to float
-  std::unique_ptr<float[]> sampleBuffer(new float[fileInfo.m_sampleCount]);
-  float* samples = sampleBuffer.get();
+  std::vector<float> sampleBuffer(fileInfo.m_sampleCount);
 
   // Determine fold and secondary step
   int gatherSecondaryKey = 0, gatherFold = 0, gatherSecondaryStep = 0;
@@ -948,37 +984,7 @@ analyzeSegment(DataProvider &dataProvider, SEGYFileInfo const& fileInfo, SEGYSeg
     }
 
     // Update value range
-    if (fileInfo.m_dataSampleFormatCode == SEGY::BinaryHeader::DataSampleFormatCode::IBMFloat || fileInfo.m_dataSampleFormatCode == SEGY::BinaryHeader::DataSampleFormatCode::IEEEFloat)
-    {
-      copySamples(data, fileInfo.m_dataSampleFormatCode, fileInfo.m_headerEndianness, samples, 0, fileInfo.m_sampleCount);
-
-      for (int sample = 0; sample < fileInfo.m_sampleCount; sample++)
-      {
-        if (int(minHeap.size()) < heapSizeMax)
-        {
-          minHeap.push_back(samples[sample]);
-          std::push_heap(minHeap.begin(), minHeap.end(), std::less<float>());
-        }
-        else if (samples[sample] < minHeap[0])
-        {
-          std::pop_heap(minHeap.begin(), minHeap.end(), std::less<float>());
-          minHeap.back() = samples[sample];
-          std::push_heap(minHeap.begin(), minHeap.end(), std::less<float>());
-        }
-
-        if (int(maxHeap.size()) < heapSizeMax)
-        {
-          maxHeap.push_back(samples[sample]);
-          std::push_heap(maxHeap.begin(), maxHeap.end(), std::greater<float>());
-        }
-        else if (samples[sample] > maxHeap[0])
-        {
-          std::pop_heap(maxHeap.begin(), maxHeap.end(), std::greater<float>());
-          maxHeap.back() = samples[sample];
-          std::push_heap(maxHeap.begin(), maxHeap.end(), std::greater<float>());
-        }
-      }
-    }
+    updateValueRangeHeaps(fileInfo, heapSizeMax, minHeap, maxHeap, data, sampleBuffer);
   }
 
   if (fileInfo.HasGatherOffset() && !fileInfo.IsUnbinned())
@@ -1118,6 +1124,8 @@ analyzePrimaryKey(const std::vector<DataProvider>& dataProviders, SEGYFileInfo c
     const auto
       msg = fmt::format(msgFormat, offsetStart, offsetEnd, offsetStep, fold);
     OpenVDS::printError(printConfig, "analyzePrimaryKey", msg);
+    error.code = -1;
+    error.string = msg;
     return false;
   }
 
@@ -1155,8 +1163,16 @@ analyzePrimaryKey(const std::vector<DataProvider>& dataProviders, SEGYFileInfo c
     }
   }
 
-  auto
-    segyValueRangeEstimator = CreateSEGYValueRangeEstimator(fileInfo, primaryKeyTraceCount, valueRangePercentile);
+  // Create min/max heaps for determining value range
+  int heapSizeMax = int(((100.0f - valueRangePercentile) / 100.0f) * primaryKeyTraceCount * fileInfo.m_sampleCount / 2) + 1;
+
+  std::vector<float> minHeap, maxHeap;
+
+  minHeap.reserve(heapSizeMax);
+  maxHeap.reserve(heapSizeMax);
+
+  // Allocate sample buffer for converting samples to float
+  std::vector<float> sampleBuffer(fileInfo.m_sampleCount);
 
   // For secondary step need to scan all traces in all segments to get a complete (hopefully) list of secondary keys, then figure out start/end/step.
   // We need to get all secondary keys before doing any analysis because we may not encounter them in least-to-greatest order in the offset-sorted segments.
@@ -1187,9 +1203,9 @@ analyzePrimaryKey(const std::vector<DataProvider>& dataProviders, SEGYFileInfo c
             offset = SEGY::TextualFileHeaderSize + SEGY::BinaryFileHeaderSize + traceByteSize * traceBufferStart;
 
           OpenVDS::Error
-            error;
+            readError;
 
-          success = dataProvider.Read(buffer.data(), offset, (int32_t)(traceByteSize * traceBufferSize), error);
+          success = dataProvider.Read(buffer.data(), offset, (int32_t)(traceByteSize * traceBufferSize), readError);
 
           if (!success)
           {
@@ -1217,10 +1233,7 @@ analyzePrimaryKey(const std::vector<DataProvider>& dataProviders, SEGYFileInfo c
         }
 
         // Update value range
-        int
-          sampleMin = 0;
-
-        segyValueRangeEstimator->UpdateValueRange((unsigned char*)data, sampleMin, fileInfo.m_sampleCount);
+        updateValueRangeHeaps(fileInfo, heapSizeMax, minHeap, maxHeap, data, sampleBuffer);
       }
     }
   }
@@ -1260,7 +1273,20 @@ analyzePrimaryKey(const std::vector<DataProvider>& dataProviders, SEGYFileInfo c
   }
 
   // Set value range
-  segyValueRangeEstimator->GetValueRange(valueRange.Min, valueRange.Max);
+  if (!minHeap.empty())
+  {
+    assert(!maxHeap.empty());
+
+    if (minHeap[0] != maxHeap[0])
+    {
+      valueRange = OpenVDS::FloatRange(minHeap[0], maxHeap[0]);
+    }
+    else
+    {
+      valueRange = OpenVDS::FloatRange(minHeap[0], minHeap[0] + 1.0f);
+    }
+  }
+
   return success;
 }
 
@@ -2127,7 +2153,7 @@ TraceIndex2DToEnsembleNumber(TraceInfo2DManager * pTraceInfo2DManager, int trace
 
   if (pTraceInfo2DManager == nullptr)
   {
-    error.code = 1;
+    error.code = -1;
     error.string = "TraceIndex2DToEnsembleNumber:  2D trace information is missing";
     return 0;
   }
@@ -2136,7 +2162,7 @@ TraceIndex2DToEnsembleNumber(TraceInfo2DManager * pTraceInfo2DManager, int trace
   assert(traceIndex < pTraceInfo2DManager->Count());
   if (traceIndex < 0 || traceIndex >= pTraceInfo2DManager->Count())
   {
-    error.code = 1;
+    error.code = -1;
     error.string = "TraceIndex2DToEnsembleNumber:  Requested trace index is missing from 2D trace info";
     return 0;
   }
@@ -2382,7 +2408,7 @@ main(int argc, char* argv[])
   {
     segyType = SEGY::SEGYType::PrestackOffsetSorted;
   }
-  if (is2D)
+  else if (is2D)
   {
     if (prestack)
     {
@@ -2901,7 +2927,7 @@ main(int argc, char* argv[])
   // Create channel descriptors
   std::vector<OpenVDS::VolumeDataChannelDescriptor> channelDescriptors = createChannelDescriptors(fileInfo, valueRange, offsetInfo, attributeName, attributeUnit);
 
-  if (segyType == SEGY::SEGYType::Poststack || segyType == SEGY::SEGYType::Prestack)
+  if (segyType == SEGY::SEGYType::Poststack || segyType == SEGY::SEGYType::Prestack || fileInfo.IsOffsetSorted())
   {
     createSurveyCoordinateSystemMetadata(fileInfo, segyMeasurementSystem, crsWkt, metadataContainer);
   }
@@ -3200,10 +3226,11 @@ main(int argc, char* argv[])
     void* segyTraceHeaderBuffer = segyTraceHeaderPage ? segyTraceHeaderPage->GetWritableBuffer(segyTraceHeaderPitch) : nullptr;
     void* offsetBuffer = offsetPage ? offsetPage->GetWritableBuffer(offsetPitch) : nullptr;
 
+    const int pitchCheckDimension = fileInfo.IsOffsetSorted() ? 2 : 1;
     assert(amplitudePitch[0] == 1);
-    assert(!traceFlagBuffer || traceFlagPitch[1] == 1);
-    assert(!segyTraceHeaderBuffer || segyTraceHeaderPitch[1] == SEGY::TraceHeaderSize);
-    assert(!offsetBuffer || offsetPitch[1] == 1);
+    assert(!traceFlagBuffer || traceFlagPitch[pitchCheckDimension] == 1);
+    assert(!segyTraceHeaderBuffer || segyTraceHeaderPitch[pitchCheckDimension] == SEGY::TraceHeaderSize);
+    assert(!offsetBuffer || offsetPitch[pitchCheckDimension] == 1);
     
     for (size_t fileIndex = 0; fileIndex < fileInfo.m_segmentInfoLists.size(); ++fileIndex)
     {
