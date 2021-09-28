@@ -3005,7 +3005,7 @@ main(int argc, char* argv[])
   const auto
     perFileMemoryLimit = dvmMemoryLimit / dataProviders.size();
 
-  assert(dataProviders.size() == fileInfo.IsOffsetSorted() ? fileInfo.m_segmentInfoListsByOffset.size() : fileInfo.m_segmentInfoLists.size());
+  assert(dataProviders.size() == (fileInfo.IsOffsetSorted() ? fileInfo.m_segmentInfoListsByOffset.size() : fileInfo.m_segmentInfoLists.size()));
 
   for (size_t fileIndex = 0; fileIndex < dataProviders.size(); ++fileIndex)
   {
