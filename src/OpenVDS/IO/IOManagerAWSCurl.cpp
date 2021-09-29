@@ -263,7 +263,7 @@ std::shared_ptr<Request> IOManagerAWSCurl::ReadObject(const std::string& objectN
     std::map<std::string, std::string> headerMap;
     if (range.start != range.end)
     {
-      headerMap["Reange"] = fmt::format("bytes={}-{}", range.start, range.end);
+      headerMap["Range"] = fmt::format("bytes={}-{}", range.start, range.end);
     }
     auto headers = signRequest(m_host, url, m_signingConfig, "GET", empty_sha256(), headerMap);
     std::shared_ptr<DownloadRequestCurl> request = std::make_shared<DownloadRequestCurl>(objectName, handler);
