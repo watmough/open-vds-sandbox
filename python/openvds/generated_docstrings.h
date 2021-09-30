@@ -2363,6 +2363,8 @@ static const char *__doc_OpenVDS_M4_data = R"doc()doc";
 
 static const char *__doc_OpenVDS_Matrix = R"doc()doc";
 
+static const char *__doc_OpenVDS_Matrix_Matrix = R"doc()doc";
+
 static const char *__doc_OpenVDS_Matrix_data = R"doc()doc";
 
 static const char *__doc_OpenVDS_Matrix_element_count = R"doc()doc";

@@ -24,10 +24,12 @@
 #include <OpenVDS/MetadataAccess.h>
 #include <OpenVDS/VolumeData.h>
 #include <OpenVDS/VolumeDataAccessManager.h>
+#include <OpenVDS/Vector.h>
 
 #include <cstdint>
 #include <string>
 #include <vector>
+#include <tuple>
 
 namespace OpenVDS
 {
@@ -1005,7 +1007,6 @@ OPENVDS_EXPORT const char *GetOpenVDSVersion();
 /// A revision string
 /// </returnes>
 OPENVDS_EXPORT const char *GetOpenVDSRevision();
-
 }
 
 #endif //OPENVDS_H
