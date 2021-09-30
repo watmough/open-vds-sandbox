@@ -211,6 +211,7 @@ def test_read_gather(offset_sorted_executor):
                 assert total > 0.0, f"trace at {dim1}"
 
 
+@pytest.mark.skip(reason="This test is really inefficient and takes ~100 minutes to run")
 def test_compare_with_conventional_sorted(offset_sorted_executor, conventional_sorted_executor):
     ex, output_vds = offset_sorted_executor
 
