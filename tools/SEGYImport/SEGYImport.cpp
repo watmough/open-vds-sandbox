@@ -2183,7 +2183,7 @@ SecondaryKeyDimension(const SEGYFileInfo& fileInfo)
 int
 PrimaryKeyDimension(const SEGYFileInfo& fileInfo)
 {
-  if (fileInfo.m_segyType == SEGY::SEGYType::Prestack || fileInfo.m_segyType == SEGY::SEGYType::Prestack2D)
+  if (fileInfo.m_segyType == SEGY::SEGYType::Prestack || fileInfo.m_segyType == SEGY::SEGYType::Prestack2D || fileInfo.m_segyType == SEGY::SEGYType::PrestackOffsetSorted)
   {
     // Prestack2D doesn't really have a primary key dimension, but we'll use the same one as for Prestack as sort of a placeholder.
     return 3;
@@ -2738,7 +2738,11 @@ main(int argc, char* argv[])
 
   // Check for only a single segment
 
-  if (!is2D && fileInfo.m_segmentInfoLists.size() == 1 && fileInfo.m_segmentInfoLists[0].size() == 1)
+  const bool isOneSegment = fileInfo.IsOffsetSorted()
+    ? fileInfo.m_segmentInfoListsByOffset.size() == 1 && fileInfo.m_segmentInfoListsByOffset[0].size() == 1
+    : fileInfo.m_segmentInfoLists.size() == 1 && fileInfo.m_segmentInfoLists[0].size() == 1;
+
+  if (!is2D && isOneSegment)
   {
     OpenVDS::printWarning_with_condition_fatal(printConfig, !ignoreWarnings, "SegmentInfoList", "Warning: There is only one segment, either this is 2D data or this usually indicates using the wrong header format for the input dataset.", "Use --2d for 2D data. Use --ignore-warnings to force the import to go ahead.");
   }
@@ -3067,7 +3071,9 @@ main(int argc, char* argv[])
 
     // For each input file, find the lower/upper segments and then add data requests to that file's traceDataManager
 
-    for (size_t fileIndex = 0; fileIndex < fileInfo.m_segmentInfoLists.size(); ++fileIndex)
+    const auto segmentInfoListsSize = fileInfo.IsOffsetSorted() ? fileInfo.m_segmentInfoListsByOffset.size() : fileInfo.m_segmentInfoLists.size();
+
+    for (size_t fileIndex = 0; fileIndex < segmentInfoListsSize; ++fileIndex)
     {
       const int
         offetSortedOffsetValue = fileInfo.IsOffsetSorted() ? offsetStart + offsetStep * chunkInfo.min[1] : 0;
@@ -3136,6 +3142,10 @@ main(int argc, char* argv[])
       }
     }
   }
+
+  int64_t
+    amplitudePageCount = 0L,
+    traceCopyCount = 0L;
 
   for (int64_t chunk = 0; chunk < amplitudeAccessor->GetChunkCount() && error.code == 0; chunk++)
   {
@@ -3232,7 +3242,9 @@ main(int argc, char* argv[])
     assert(!segyTraceHeaderBuffer || segyTraceHeaderPitch[pitchCheckDimension] == SEGY::TraceHeaderSize);
     assert(!offsetBuffer || offsetPitch[pitchCheckDimension] == 1);
     
-    for (size_t fileIndex = 0; fileIndex < fileInfo.m_segmentInfoLists.size(); ++fileIndex)
+    const auto segmentInfoListsSize = fileInfo.IsOffsetSorted() ? fileInfo.m_segmentInfoListsByOffset.size() : fileInfo.m_segmentInfoLists.size();
+
+    for (size_t fileIndex = 0; fileIndex < segmentInfoListsSize; ++fileIndex)
     {
       auto result = chunkInfo.lowerUpperSegmentIndices.find(fileIndex);
       if (result == chunkInfo.lowerUpperSegmentIndices.end())
@@ -3367,6 +3379,7 @@ main(int argc, char* argv[])
             const int targetOffset = VoxelIndexToDataIndex(fileInfo, primaryIndex, secondaryIndex, tertiaryIndex, chunkInfo.min, amplitudePitch);
 
             copySamples(data, fileInfo.m_dataSampleFormatCode, fileInfo.m_headerEndianness, &reinterpret_cast<float*>(amplitudeBuffer)[targetOffset], chunkInfo.sampleStart, chunkInfo.sampleCount);
+            ++traceCopyCount;
           }
 
           if (traceFlagBuffer)

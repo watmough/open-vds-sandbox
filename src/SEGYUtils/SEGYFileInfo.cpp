@@ -32,7 +32,7 @@ using namespace SEGY;
 bool
 SEGYFileInfo::Is4D() const
 {
-  return m_segyType == SEGY::SEGYType::Prestack;
+  return m_segyType == SEGY::SEGYType::Prestack || m_segyType == SEGY::SEGYType::PrestackOffsetSorted;
 }
 
 bool
