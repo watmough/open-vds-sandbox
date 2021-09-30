@@ -20,95 +20,10 @@
 #include <OpenVDS/Vector.h>
 using namespace native;
 
-template<typename ELEM> struct ElemTraits;
-
-template<> struct ElemTraits<int>     { static const char* name() { return "Int";     }};
-template<> struct ElemTraits<float>   { static const char* name() { return "Float";   }};
-template<> struct ElemTraits<double>  { static const char* name() { return "Double";  }};
-
-// Vector Class Helper
-template<typename T, size_t COUNT>
-struct VCH
-{
-  template<typename CDEF>
-  static void addMembers(CDEF&) {}
-};
-
-template<typename T> struct VCH<T, 1> { template<typename CDEF> static void addMembers(CDEF& class_) { VCH<T, 0>::addMembers(class_); class_.def_readwrite("X", &T::X); } };
-template<typename T> struct VCH<T, 2> { template<typename CDEF> static void addMembers(CDEF& class_) { VCH<T, 1>::addMembers(class_); class_.def_readwrite("Y", &T::Y); } };
-template<typename T> struct VCH<T, 3> { template<typename CDEF> static void addMembers(CDEF& class_) { VCH<T, 2>::addMembers(class_); class_.def_readwrite("Z", &T::Z); } };
-template<typename T> struct VCH<T, 4> { template<typename CDEF> static void addMembers(CDEF& class_) { VCH<T, 3>::addMembers(class_); class_.def_readwrite("T", &T::T); } };
-
-// Vector Name Helper
-
-template<typename T, size_t COUNT>
-struct VNH 
-{
-  static std::string className() 
-  {
-    auto name = std::string(ElemTraits<T>::name()) + "Vector" + std::to_string(COUNT);
-    return name;
-  }
-};
-
-// Vector Class Helper Base
-template<typename T, size_t COUNT> struct VCHB;
-
-//template<typename T, typename ELEM> struct VCHB<T, ELEM, 2> { template<typename CDEF> static void addStuff(CDEF& class_) { class_.def(py::init<ELEM, ELEM>()); } };
-template<typename T> struct VCHB<T, 2> { template<typename CDEF> static void addCtor(CDEF& class_) { class_.def(py::init<T, T>()); } };
-template<typename T> struct VCHB<T, 3> { template<typename CDEF> static void addCtor(CDEF& class_) { class_.def(py::init<T, T, T>()); } };
-template<typename T> struct VCHB<T, 4> { template<typename CDEF> static void addCtor(CDEF& class_) { class_.def(py::init<T, T, T, T>()); } };
-
-template<typename T, size_t COUNT>
-struct VectorHelper
-{
-  static std::string repr(Vector<T, COUNT>* self) 
-  {
-    auto str    = VNH<T, COUNT>::className();
-    auto prefix = std::string("(");
-    auto data   = (T *)self;
-    for (int i = 0; i < int(COUNT); ++i) {
-      str += prefix + std::to_string(data[i]);
-      prefix = std::string(", ");
-    }
-    return str + ")";
-  }
-
-  static void init(py::module& m) 
-  {
-    py::class_<Vector<T, COUNT>>
-      class_(m, VNH<T, COUNT>::className().c_str());
-
-    class_.def(py::init<>());
-    VCHB<T, COUNT>::addCtor(class_);
-    class_.def("__iter__", [](Vector<T, COUNT>* self) { return py::make_iterator((T*)self, (T*)self + COUNT); });
-    class_.def("__repr__", repr);
-    class_.def(py::self == py::self);
-    class_.def(py::self != py::self);
-    class_.def("__eq__", [](Vector<T, COUNT> const& self, typename VectorAdapter<T, COUNT>::AdaptedType const& rhs) -> bool
-      { 
-        return self == Vector<T, COUNT>(rhs);
-      });
-    class_.def("__ne__", [](Vector<T, COUNT> const& self, typename VectorAdapter<T, COUNT>::AdaptedType const& rhs) -> bool
-      { 
-        return self != Vector<T, COUNT>(rhs);
-      });
-    VCH<Vector<T, COUNT>, COUNT>::addMembers(class_);
-  }
-};
 
 void 
 PyGlobal::initModule(py::module& m)
 {
-  VectorHelper<int, 2>   ::init(m);
-  VectorHelper<int, 3>   ::init(m);
-  VectorHelper<int, 4>   ::init(m);
-  VectorHelper<float, 2> ::init(m);
-  VectorHelper<float, 3> ::init(m);
-  VectorHelper<float, 4> ::init(m);
-  VectorHelper<double, 2>::init(m);
-  VectorHelper<double, 3>::init(m);
-  //VectorHelper<native::DoubleVector4>::init(m);
   // These are opaque pointers, so they must not be destructed from pybind11 code
   py::class_<VDS, std::unique_ptr<VDS, py::nodelete>>
     VDS_(m, "VDS");

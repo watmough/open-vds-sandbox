@@ -379,22 +379,10 @@ def can_generate_function(restype, arglist):
         return False
     if '[' in arglist or 'void *' in arglist or '**' in arglist:
         return False
-    if 'IntVector' in arglist or 'FloatVector' in arglist or 'DoubleVector' in arglist:
-        return False
-    if not '<' in restype:
-        if 'IntVector' in restype or 'FloatVector' in restype or 'DoubleVector' in restype:
-            return False
     return True
 
 class UnsupportedFunctionSignatureError(ValueError):
     pass
-
-def get_adapter_type(native_type):
-    if 'Vector' in native_type:
-        tmp = native_type.replace("&", "").replace("const", "").strip()
-        return re.sub(".+[:]+(.+)", r"\1Adapter", tmp)
-    else:
-        return native_type
 
 buffer_types = [ 
     'void', 
@@ -487,18 +475,11 @@ def try_generate_trampoline_function(node, all_, restype, arglist, params):
               callarg = "PyGetBufferSize<{}, {}>({})".format(nextarg, 'true' if is_mutable else 'false', argname)
               callargs.append(callarg)
               iParam += 1
-        elif 'Vector' in arg:
-            arg = "{}::AdaptedType".format(get_adapter_type(arg))
-            callargs.append(argname)
-            newargs.append("{} {}".format(arg, argname))
         else:
             callargs.append(argname)
             newargs.append("{} {}".format(arg, argname))
         iParam += 1
     call = "{}{}({})".format(call_prefix, node.spelling, ", ".join(callargs))        
-    if 'Vector' in restype:
-        restype = get_adapter_type(restype)
-        call = "({}::AdaptedType)({})".format(restype, call)
     newarglist = ", ".join(newargs)
     sig = "[]({}) BEGIN return {}; END".format(newarglist, call)
     if make_trampolines_readable:

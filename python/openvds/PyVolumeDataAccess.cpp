@@ -68,9 +68,8 @@ template<typename INDEX_TYPE, typename T>
 static void
 RegisterVolumeDataReadAccessor(py::module& m, const char* name)
 {
-  typedef typename VectorAdapter<typename INDEX_TYPE::element_type, INDEX_TYPE::element_count>::AdaptedType AdaptedIndexType;
   typedef VolumeDataReadAccessor<INDEX_TYPE, T>           AccessorType;
-  typedef std::tuple<AdaptedIndexType, AdaptedIndexType>  IndexRegionType;
+  typedef std::tuple<INDEX_TYPE, INDEX_TYPE>  IndexRegionType;
 
   py::class_<AccessorType, std::unique_ptr<AccessorType, py::nodelete>> 
     VolumeDataAccessor_(m, name, "A class that provides random read access to the voxel values of a VDS");
@@ -79,17 +78,17 @@ RegisterVolumeDataReadAccessor(py::module& m, const char* name)
   VolumeDataAccessor_.def("region", [](AccessorType* self, int64_t region)
     {
       auto r = self->Region(region);
-      IndexRegionType result = std::make_tuple((AdaptedIndexType)r.Min, (AdaptedIndexType)r.Max);
+      IndexRegionType result = std::make_tuple(r.Min, r.Max);
       return result;
     }, OPENVDS_DOCSTRING(IVolumeDataRegions_Region)
   );
-  VolumeDataAccessor_.def("regionFromIndex", [](AccessorType* self, AdaptedIndexType index)
+  VolumeDataAccessor_.def("regionFromIndex", [](AccessorType* self, INDEX_TYPE index)
     {
       return self->RegionFromIndex(index);
     }, OPENVDS_DOCSTRING(IVolumeDataRegions_RegionFromIndex)
   );
 
-  VolumeDataAccessor_.def("getValue", [](AccessorType* self, AdaptedIndexType index)
+  VolumeDataAccessor_.def("getValue", [](AccessorType* self, INDEX_TYPE index)
     {
       return self->GetValue(index);
     }
@@ -100,14 +99,13 @@ template<typename INDEX_TYPE, typename T>
 static void
 RegisterVolumeDataReadWriteAccessor(py::module& m, const char* name)
 {
-  typedef typename VectorAdapter<typename INDEX_TYPE::element_type, INDEX_TYPE::element_count>::AdaptedType AdaptedIndexType;
   typedef VolumeDataReadWriteAccessor<INDEX_TYPE, T> AccessorType;
   typedef VolumeDataReadAccessor<INDEX_TYPE, T>      BaseType;
 
   py::class_<AccessorType, BaseType, std::unique_ptr<AccessorType, py::nodelete>> 
     VolumeDataAccessor_(m, name, "A class that provides random read/write access to the voxel values of a VDS");
 
-  VolumeDataAccessor_.def("setValue", [](AccessorType* self, AdaptedIndexType index, T value)
+  VolumeDataAccessor_.def("setValue", [](AccessorType* self, INDEX_TYPE index, T value)
     {
       self->SetValue(index, value);
     });

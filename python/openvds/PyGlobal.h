@@ -129,6 +129,44 @@ struct type_caster<native::VectorWrapper<T>>
   }
   PYBIND11_TYPE_CASTER(native::VectorWrapper<T>, _("List[") + value_conv::name + _("]"));
 };
+
+template<typename T, size_t COUNT, typename ... PACK>
+struct TypeExpander : public TypeExpander<T, COUNT - 1, T, PACK...>
+{
+};
+
+template<typename T, typename ... PACK>
+struct TypeExpander<T, 0, PACK...>
+{
+  static constexpr auto name = _("Tuple[") + concat(make_caster<PACK>::name...) + _("]");
+  using tuple_type = std::tuple<PACK...>;
+};
+
+template<typename T, size_t SIZE>
+struct type_caster<OpenVDS::Vector<T, SIZE>>
+{
+  using TheVectorT = OpenVDS::Vector<T, SIZE>;
+  using TheTypeExpander = TypeExpander<T, SIZE>;
+  static constexpr auto TheName = TheTypeExpander::name;
+
+  static handle cast(OpenVDS::Vector<T, SIZE> && src, return_value_policy policy, handle parent)
+  {
+    TheTypeExpander::tuple_type tmp;
+    memcpy(&tmp, &src, sizeof(src));
+    return type_caster<TheTypeExpander::tuple_type>::cast(tmp, policy, parent);
+  }
+
+  bool load(handle src, bool convert)
+  {
+    type_caster<TheTypeExpander::tuple_type> caster;
+    bool casted = caster.load(src, convert);
+    if (!casted)
+      return false;
+    memcpy(&value, &static_cast<TheTypeExpander::tuple_type>(caster), sizeof(value));
+    return true;
+  }
+  PYBIND11_TYPE_CASTER(T, TheName);
+};
 }}
 
 // Helpers for methods that take buffer pointers
@@ -276,76 +314,6 @@ struct BLOB
   {
   }
 };
-
-template<typename T, int N>
-struct VectorAdapter
-{
-
-};
-
-template<typename T>
-struct VectorAdapter<T, 2>
-{
-  typedef native::Vector<T, 2> VectorType;
-  typedef std::tuple<T, T>     AdaptedType;
-
-  static VectorType   fromTuple(AdaptedType const& val) { return val; }
-  static AdaptedType  asTuple(VectorType const& val)    { return val; }
-};
-
-template<typename T>
-struct VectorAdapter<T, 3>
-{
-  typedef native::Vector<T, 3> VectorType;
-  typedef std::tuple<T, T, T>  AdaptedType;
-
-  static VectorType   fromTuple(AdaptedType const& val) { return val; }
-  static AdaptedType  asTuple(VectorType const& val)    { return val; }
-};
-
-template<typename T>
-struct VectorAdapter<T, 4>
-{
-  typedef native::Vector<T, 4>    VectorType;
-  typedef std::tuple<T, T, T, T>  AdaptedType;
-
-  static VectorType   fromTuple(AdaptedType const& val) { return val; }
-  static AdaptedType  asTuple(VectorType const& val)    { return val; }
-};
-
-template<typename T>
-struct VectorAdapter<T, 6>
-{
-  typedef native::Vector<T, 6>          VectorType;
-  typedef std::tuple<T, T, T, T, T, T>  AdaptedType;
-
-  static VectorType   fromTuple(AdaptedType const& val) { return val; }
-  static AdaptedType  asTuple(VectorType const& val)    { return val; }
-};
-
-template<typename T>
-using Vector2Adapter = VectorAdapter<T, 2>;
-template<typename T>
-using Vector3Adapter = VectorAdapter<T, 3>;
-template<typename T>
-using Vector4Adapter = VectorAdapter<T, 4>;
-template<typename T>
-using Vector6Adapter = VectorAdapter<T, 6>;
-
-typedef Vector2Adapter<int>     IntVector2Adapter;
-typedef Vector3Adapter<int>     IntVector3Adapter;
-typedef Vector4Adapter<int>     IntVector4Adapter;
-typedef Vector6Adapter<int>     IntVector6Adapter;
-
-typedef Vector2Adapter<float>   FloatVector2Adapter;
-typedef Vector3Adapter<float>   FloatVector3Adapter;
-typedef Vector4Adapter<float>   FloatVector4Adapter;
-typedef Vector6Adapter<float>   FloatVector6Adapter;
-
-typedef Vector2Adapter<double>  DoubleVector2Adapter;
-typedef Vector3Adapter<double>  DoubleVector3Adapter;
-typedef Vector4Adapter<double>  DoubleVector4Adapter;
-typedef Vector6Adapter<double>  DoubleVector6Adapter;
 
 class PyGlobal
 {

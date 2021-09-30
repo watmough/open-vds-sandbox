@@ -22,11 +22,13 @@
 #include <VDS/VolumeDataStoreIOManager.h>
 #include <IO/IOManagerTransformer.h>
 #include <utils/FacadeIOManager.h>
+#include <OpenVDS/Vector.h>
 
 #include <fmt/printf.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <pybind11/numpy.h>
+#include <pybind11/cast.h>
 
 namespace py = pybind11;
 
@@ -45,7 +47,7 @@ struct IOManagerErrorDataStore
   }
   void close()
   {
-    OpenVDS::SetIoManagerTransformer(std::function<OpenVDS::IOManager *(OpenVDS::IOManager*)>());
+    OpenVDS::SetIoManagerTransformer(std::function<OpenVDS::IOManager* (OpenVDS::IOManager*)>());
     backendData.clear();
   }
 };
@@ -55,25 +57,46 @@ static std::unique_ptr<IOManagerErrorDataStore> errorDataStore;
 class IOManagerPythonFacade : public OpenVDS::IOManager
 {
 public:
-  IOManagerPythonFacade(OpenVDS::IOManager *backend, IOManagerErrorDataStore *errorDataStore)
+  IOManagerPythonFacade(OpenVDS::IOManager* backend, IOManagerErrorDataStore* errorDataStore)
     : IOManager(backend->connectionType())
     , facade(backend, errorDataStore->backendData, errorDataStore->mutex)
-  {}
-  std::shared_ptr<OpenVDS::Request> ReadObjectInfo(const std::string& objectName, std::shared_ptr<OpenVDS::TransferDownloadHandler> handler) override { return facade.ReadObjectInfo(objectName, handler); }
-  std::shared_ptr<OpenVDS::Request> ReadObject(const std::string& objectName, std::shared_ptr<OpenVDS::TransferDownloadHandler> handler, const OpenVDS::IORange& range = OpenVDS::IORange()) override { return facade.ReadObject(objectName, handler, range); }
-  std::shared_ptr<OpenVDS::Request> WriteObject(const std::string& objectName, const std::string& contentDispostionFilename, const std::string& contentType, const std::vector<std::pair<std::string, std::string>>& metadataHeader, std::shared_ptr<std::vector<uint8_t>> data, std::function<void(const OpenVDS::Request& request, const OpenVDS::Error& error)> completedCallback = nullptr) override { return facade.WriteObject(objectName, contentDispostionFilename, contentType, metadataHeader, data, completedCallback); }
+  {
+  }
+  std::shared_ptr<OpenVDS::Request> ReadObjectInfo(const std::string& objectName, std::shared_ptr<OpenVDS::TransferDownloadHandler> handler) override
+  {
+    return facade.ReadObjectInfo(objectName, handler);
+  }
+  std::shared_ptr<OpenVDS::Request> ReadObject(const std::string& objectName, std::shared_ptr<OpenVDS::TransferDownloadHandler> handler, const OpenVDS::IORange& range = OpenVDS::IORange()) override
+  {
+    return facade.ReadObject(objectName, handler, range);
+  }
+  std::shared_ptr<OpenVDS::Request> WriteObject(const std::string& objectName, const std::string& contentDispostionFilename, const std::string& contentType, const std::vector<std::pair<std::string, std::string>>& metadataHeader, std::shared_ptr<std::vector<uint8_t>> data, std::function<void(const OpenVDS::Request& request, const OpenVDS::Error& error)> completedCallback = nullptr) override
+  {
+    return facade.WriteObject(objectName, contentDispostionFilename, contentType, metadataHeader, data, completedCallback);
+  }
 
   std::unique_ptr<OpenVDS::IOManager> deleter;
   IOManagerFacadeUtil facade;
 };
 
 
-IOManagerErrorDataStore *enableIoError()
+IOManagerErrorDataStore* enableIoError()
 {
   auto ret = new IOManagerErrorDataStore();
-  auto func = [ret](OpenVDS::IOManager* backend) { return new IOManagerPythonFacade(backend, ret); };
+  auto func = [ret](OpenVDS::IOManager* backend)
+  {
+    return new IOManagerPythonFacade(backend, ret);
+  };
   OpenVDS::SetIoManagerTransformer(func);
   return ret;
+}
+
+namespace pybind11
+{
+namespace detail
+{
+
+}
 }
 
 PYBIND11_MODULE(openvds_python_test, m) {
