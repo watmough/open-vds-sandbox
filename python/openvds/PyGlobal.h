@@ -28,6 +28,7 @@
 #include <OpenVDS/MetadataAccess.h>
 #include <OpenVDS/MetadataContainer.h>
 #include <OpenVDS/GlobalState.h>
+#include <OpenVDS/Matrix.h>
 
 #include "generated_docstrings.h"
 
@@ -142,17 +143,62 @@ struct TypeExpander<T, 0, PACK...>
   using tuple_type = std::tuple<PACK...>;
 };
 
-template<typename T, size_t SIZE>
-struct type_caster<OpenVDS::Vector<T, SIZE>>
+template<typename T, size_t V_SIZE, size_t COUNT, typename ... PACK>
+struct TypeExpander<native::Vector<T, V_SIZE>, COUNT, PACK...> : TypeExpander<native::Vector<T, V_SIZE>, COUNT - 1, native::Vector<T, V_SIZE>, PACK...>
+{};
+
+template<typename T, size_t V_SIZE, typename ... PACK>
+struct TypeExpander<native::Vector<T, V_SIZE>, 0, PACK...>
 {
-  using TheVectorT = OpenVDS::Vector<T, SIZE>;
+  static constexpr auto name = _("Tuple[") + concat(TypeExpander<T, V_SIZE>::name...) + _("]");
+  using tuple_type = std::tuple<PACK...>;
+};
+
+template<typename Tuple, typename Vector>
+void copyToTuple(const Vector &vec, Tuple &tuple)
+{
+  TupleVectorConverter<Tuple, Vector, sizeof(Vector::data) / sizeof(*Vector::data)>::copyToTuple(vec, tuple);
+}
+
+template<typename Tuple, typename Vector>
+void copyToVector(const Tuple &tuple, Vector &vec)
+{
+  TupleVectorConverter<Tuple, Vector, sizeof(Vector::data) / sizeof(*Vector::data)>::copyToVector(tuple, vec);
+}
+
+template<typename Tuple, typename Vector, size_t COUNT>
+struct TupleVectorConverter
+{
+  static void copyToTuple(const Vector &vec, Tuple &tuple)
+  {
+    std::get<COUNT - 1>(tuple) = vec.data[COUNT - 1];
+    TupleVectorConverter<Tuple, Vector, COUNT - 1>::copyToTuple(vec, tuple);
+  }
+  static void copyToVector(const Tuple &tuple, Vector &vec)
+  {
+    vec.data[COUNT - 1] = std::get<COUNT-1>(tuple);
+    TupleVectorConverter<Tuple, Vector, COUNT - 1>::copyToVector(tuple, vec);
+  }
+};
+
+template<typename Tuple, typename Vector>
+struct TupleVectorConverter<Tuple, Vector, 0>
+{
+  static void copyToTuple(const Vector &, Tuple &) { }
+  static void copyToVector(const Tuple &, Vector &) { }
+};
+
+template<typename T, size_t SIZE>
+struct type_caster<native::Vector<T, SIZE>>
+{
+  using TheVectorT = native::Vector<T, SIZE>;
   using TheTypeExpander = TypeExpander<T, SIZE>;
   static constexpr auto TheName = TheTypeExpander::name;
 
-  static handle cast(OpenVDS::Vector<T, SIZE> && src, return_value_policy policy, handle parent)
+  static handle cast(const native::Vector<T, SIZE> &src, return_value_policy policy, handle parent)
   {
     TheTypeExpander::tuple_type tmp;
-    memcpy(&tmp, &src, sizeof(src));
+    copyToTuple(src, tmp);
     return type_caster<TheTypeExpander::tuple_type>::cast(tmp, policy, parent);
   }
 
@@ -162,10 +208,37 @@ struct type_caster<OpenVDS::Vector<T, SIZE>>
     bool casted = caster.load(src, convert);
     if (!casted)
       return false;
-    memcpy(&value, &static_cast<TheTypeExpander::tuple_type>(caster), sizeof(value));
+    copyToVector(static_cast<TheTypeExpander::tuple_type>(caster), value);
     return true;
   }
-  PYBIND11_TYPE_CASTER(T, TheName);
+  PYBIND11_TYPE_CASTER(TheVectorT, TheName);
+};
+
+template<typename T, size_t SIZE>
+struct type_caster<native::Matrix<T, SIZE>>
+{
+  using TheVectorT = native::Vector<T, SIZE>;
+  using TheMatrixT = native::Matrix<T, SIZE>;
+  using TheTypeExpander = TypeExpander<TheVectorT, SIZE>;
+  static constexpr auto TheName = TheTypeExpander::name;
+
+  static handle cast(const native::Matrix<T, SIZE> &src, return_value_policy policy, handle parent)
+  {
+    TheTypeExpander::tuple_type tmp;
+    copyToTuple(src, tmp);
+    return type_caster<TheTypeExpander::tuple_type>::cast(tmp, policy, parent);
+  }
+
+  bool load(handle src, bool convert)
+  {
+    type_caster<TheTypeExpander::tuple_type> caster;
+    bool casted = caster.load(src, convert);
+    if (!casted)
+      return false;
+    copyToVector(static_cast<TheTypeExpander::tuple_type>(caster), value);
+    return true;
+  }
+  PYBIND11_TYPE_CASTER(TheMatrixT, TheName);
 };
 }}
 
