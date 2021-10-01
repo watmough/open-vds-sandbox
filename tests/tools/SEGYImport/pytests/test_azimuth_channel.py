@@ -4,8 +4,9 @@ from typing import Tuple
 
 import pytest
 import openvds
+import numpy as np
 
-from segyimport_test_config import test_data_dir, ImportExecutor, TempVDSGuard, TempScanFileGuard
+from segyimport_test_config import test_data_dir, ImportExecutor, TempVDSGuard
 
 
 @pytest.fixture
@@ -87,7 +88,23 @@ def test_azimuth_range_from_azimuth(azimuth_from_azimuth_executor):
         access_manager = openvds.getAccessManager(handle)
         layout = openvds.getLayout(handle)
 
-        # TODO check axis dimensions?
+        # check axis dimensions
+
+        assert layout.getDimensionMin(0) == 0
+        assert layout.getDimensionMax(0) == 3100
+        assert layout.getDimensionNumSamples(0) == 1551
+
+        assert layout.getDimensionMin(1) == 1
+        assert layout.getDimensionMax(1) == 107
+        assert layout.getDimensionNumSamples(1) == 107
+
+        assert layout.getDimensionMin(2) == 495
+        assert layout.getDimensionMax(2) == 2050
+        assert layout.getDimensionNumSamples(2) == 1556
+
+        assert layout.getDimensionMin(3) == 1000
+        assert layout.getDimensionMax(3) == 1000
+        assert layout.getDimensionNumSamples(3) == 1
 
         azimuth_channel = layout.getChannelIndex("Azimuth")
         assert azimuth_channel > 0
@@ -138,7 +155,23 @@ def test_azimuth_range_from_offset_xy(azimuth_from_offset_xy_executor):
         access_manager = openvds.getAccessManager(handle)
         layout = openvds.getLayout(handle)
 
-        # TODO check axis dimensions?
+        # check axis dimensions
+
+        assert layout.getDimensionMin(0) == 0
+        assert layout.getDimensionMax(0) == 7000
+        assert layout.getDimensionNumSamples(0) == 1751
+
+        assert layout.getDimensionMin(1) == 1
+        assert layout.getDimensionMax(1) == 280
+        assert layout.getDimensionNumSamples(1) == 280
+
+        assert layout.getDimensionMin(2) == 4715
+        assert layout.getDimensionMax(2) == 4715
+        assert layout.getDimensionNumSamples(2) == 1
+
+        assert layout.getDimensionMin(3) == 6117
+        assert layout.getDimensionMax(3) == 6163
+        assert layout.getDimensionNumSamples(3) == 47
 
         azimuth_channel = layout.getChannelIndex("Azimuth")
         assert azimuth_channel > 0
@@ -190,4 +223,31 @@ def test_samples_with_azimuth(azimuth_from_azimuth_executor):
         access_manager = openvds.getAccessManager(handle)
         layout = openvds.getLayout(handle)
 
-        assert False, "not implemented"
+        trace_channel = layout.getChannelIndex("Trace")
+        assert trace_channel > 0
+
+        # we're not going to read azimuths, but we require that the azimuth channel is present
+        azimuth_channel = layout.getChannelIndex("Azimuth")
+        assert azimuth_channel > 0
+
+        for dim3 in range(layout.getDimensionNumSamples(3)):
+            for dim2 in range(layout.getDimensionNumSamples(2)):
+                voxel_min = (0, 0, dim2, dim3, 0, 0)
+                voxel_max = (layout.getDimensionNumSamples(0), layout.getDimensionNumSamples(1), dim2 + 1, dim3 + 1, 1, 1)
+                trace_voxel_max = (1, layout.getDimensionNumSamples(1), dim2 + 1, dim3 + 1, 1, 1)
+
+                sample_request = access_manager.requestVolumeSubset(voxel_min,
+                                                                    voxel_max,
+                                                                    channel=0,
+                                                                    format=openvds.VolumeDataChannelDescriptor.Format.Format_R32)
+                trace_request = access_manager.requestVolumeSubset(voxel_min,
+                                                                   trace_voxel_max,
+                                                                   channel=trace_channel,
+                                                                   format=openvds.VolumeDataChannelDescriptor.Format.Format_U8)
+
+                sample_data = sample_request.data.reshape(layout.getDimensionNumSamples(1),
+                                                          layout.getDimensionNumSamples(0))
+                for dim1 in range(layout.getDimensionNumSamples(1)):
+                    if trace_request.data[dim1] > 0:
+                        total = np.sum(np.abs(sample_data[dim1, :]))
+                        assert total > 0.0, f"zero-data trace at dim1 {dim1}  dim2 {dim2}  dim3 {dim3}"
