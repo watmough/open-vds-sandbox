@@ -278,7 +278,12 @@ g_traceHeaderFields =
  { "inlinenumber",                  SEGY::TraceHeader::InlineNumberHeaderField },
  { "crosslinenumber",               SEGY::TraceHeader::CrosslineNumberHeaderField },
  { "receiver",                      SEGY::TraceHeader::ReceiverHeaderField },
- { "offset",                        SEGY::TraceHeader::OffsetHeaderField }
+ { "offset",                        SEGY::TraceHeader::OffsetHeaderField },
+ { "offsetx",                       SEGY::TraceHeader::OffsetXHeaderField },
+ { "offsety",                       SEGY::TraceHeader::OffsetYHeaderField },
+ { "azimuth",                       SEGY::TraceHeader::Azimuth },
+ { "mutestarttime",                 SEGY::TraceHeader::MuteStartTime },
+ { "muteendtime",                   SEGY::TraceHeader::MuteEndTime },
 };
 
 std::map<std::string, std::string>
@@ -2243,6 +2248,15 @@ main(int argc, char* argv[])
   bool disableWarning = false;
   std::string attributeName = AMPLITUDE_ATTRIBUTE_NAME;
   std::string attributeUnit;
+  bool isMutes = false;
+  bool isAzimuth = false;
+  SEGY::AzimuthType azimuthType = SEGY::AzimuthType::Azimuth;
+  SEGY::AzimuthUnits azimuthUnit = SEGY::AzimuthUnits::Degrees;
+  std::string azimuthTypeString;
+  std::string azimuthUnitString;
+
+  const std::string supportedAzimuthTypes("Azimuth (from trace header field) (default), OffsetXY (computed from OffsetX and OffsetY header fields)");
+  const std::string supportedAzimuthUnits("Radians, Degrees (default)");
 
   // default key names used if not supplied by user
   std::string defaultPrimaryKey = "InlineNumber";
@@ -2291,6 +2305,10 @@ main(int argc, char* argv[])
   options.add_option("", "", "attribute-unit", "The units of the primary VDS channel. The unit name may be blank (default), ft, ft/s, Hz, m, m/s, ms, or s", cxxopts::value<std::string>(attributeUnit), "<string>");
   options.add_option("", "", "2d", "Import 2D data.", cxxopts::value<bool>(is2D), "");
   options.add_option("", "", "offset-sorted", "Import prestack data sorted by trace header Offset value.", cxxopts::value<bool>(isOffsetSorted), "");
+  options.add_option("", "", "mute", "Enable Mutes channel in output VDS.", cxxopts::value<bool>(isMutes), "");
+  options.add_option("", "", "azimuth", "Enable Azimuth channel in output VDS.", cxxopts::value<bool>(isAzimuth), "");
+  options.add_option("", "", "azimuth-type", std::string("Azimuth type. Supported azimuth types are: ") + supportedAzimuthTypes + ".", cxxopts::value<std::string>(azimuthTypeString), "<string>");
+  options.add_option("", "", "azimuth-unit", std::string("Azimuth unit. Supported azimuth units are: ") + supportedAzimuthUnits + ".", cxxopts::value<std::string>(azimuthUnitString), "<string>");
   // TODO add option for turning off traceOrderByOffset
 
   options.add_option("", "q", "quiet", "Disable info level output.", cxxopts::value<bool>(disableInfo), "");
@@ -2504,6 +2522,42 @@ main(int argc, char* argv[])
     if (!ParseHeaderFieldArgs(headerFields, g_traceHeaderFields, headerEndianness, error))
     {
       OpenVDS::printError(printConfig, "HeaderFields", "Could not parse header-fields", error.string);
+      return EXIT_FAILURE;
+    }
+  }
+
+  if (!azimuthTypeString.empty())
+  {
+    std::transform(azimuthTypeString.begin(), azimuthTypeString.end(), azimuthTypeString.begin(), asciitolower);
+    if (azimuthTypeString == "azimuth")
+    {
+      azimuthType = SEGY::AzimuthType::Azimuth;
+    }
+    else if (azimuthTypeString == "offsetxy")
+    {
+      azimuthType = SEGY::AzimuthType::OffsetXY;
+    }
+    else
+    {
+      OpenVDS::printError(printConfig, "Args", fmt::format("Unknown Azimuth type '{}'", azimuthTypeString));
+      return EXIT_FAILURE;
+    }
+  }
+
+  if (!azimuthUnitString.empty())
+  {
+    std::transform(azimuthUnitString.begin(), azimuthUnitString.end(), azimuthUnitString.begin(), asciitolower);
+    if (azimuthUnitString == "radians")
+    {
+      azimuthUnit = SEGY::AzimuthUnits::Radians;
+    }
+    else if (azimuthUnitString == "degrees")
+    {
+      azimuthUnit = SEGY::AzimuthUnits::Degrees;
+    }
+    else
+    {
+      OpenVDS::printError(printConfig, "Args", fmt::format("Unknown Azimuth unit '{}'", azimuthUnitString));
       return EXIT_FAILURE;
     }
   }

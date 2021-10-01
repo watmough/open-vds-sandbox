@@ -32,11 +32,14 @@ def azimuth_from_azimuth_executor(azimuth_degrees_segy, output_vds) -> Tuple[Imp
 
     ex.add_args(["--header-field", "azimuth=25:4"])
     ex.add_arg("--azimuth")
-    ex.add_args(["--azimuth-type", "angle"])
+    ex.add_args(["--azimuth-type", "azimuth"])
     ex.add_args(["--azimuth-unit", "degrees"])
     ex.add_arg("--prestack")
     # TODO disable trace order by offset?
     ex.add_args(["--vdsfile", output_vds.filename])
+
+    # Need to ignore warnings because this data is only one segment
+    ex.add_arg("--ignore-warnings")
 
     ex.add_arg(azimuth_degrees_segy)
 

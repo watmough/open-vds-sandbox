@@ -204,6 +204,11 @@ static const HeaderField InlineNumberHeaderField(189, FieldWidth::FourByte);
 static const HeaderField CrosslineNumberHeaderField(193, FieldWidth::FourByte);
 static const HeaderField ReceiverHeaderField(13, FieldWidth::FourByte);
 static const HeaderField OffsetHeaderField(37, FieldWidth::FourByte);
+static const HeaderField OffsetXHeaderField(97, FieldWidth::TwoByte);
+static const HeaderField OffsetYHeaderField(95, FieldWidth::TwoByte);
+static const HeaderField Azimuth(61, FieldWidth::FourByte);
+static const HeaderField MuteStartTime(111, FieldWidth::TwoByte);
+static const HeaderField MuteEndTime(113, FieldWidth::TwoByte);
 
 } // end namespace TraceHeader
 
@@ -316,6 +321,22 @@ enum class SampleUnits
   Milliseconds = 0,
   Feet = 1,
   Meters = 2
+};
+
+enum class AzimuthUnits
+{
+  Radians = 0,
+  Degrees = 1,
+  MinValue = Radians,
+  MaxValue = Degrees
+};
+
+enum class AzimuthType
+{
+  Azimuth = 0,
+  OffsetXY = 1,
+  MinValue = Azimuth,
+  MaxValue = OffsetXY
 };
 
 enum class SEGYType
