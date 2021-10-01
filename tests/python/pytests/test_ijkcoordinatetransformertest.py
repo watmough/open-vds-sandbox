@@ -1,19 +1,20 @@
 import openvds
 
+import pytest
+
 IJKCoordinateTransformerTests_TestMaxDelta = 0.00000001
 
-def TestBasicFunctionality():
-
-  ijkGridDefinition = openvds.IJKGridDefinition(openvds.DoubleVector3(100, 200, 300), openvds.DoubleVector3(1, 0, 0), openvds.DoubleVector3(0, 2, 0), openvds.DoubleVector3(0, 0, 3))
-  ijkSize = openvds.IntVector3(10, 20, 30)
-  ijkToVoxelDimensionMap021 = openvds.IntVector3(0, 2, 1)
-  ijkAnnotationStart = openvds.DoubleVector3(1000, 2000, 3000)
-  ijkAnnotationEnd = openvds.DoubleVector3(1500, 2500, 3500)
+def test_basic_functionality():
+  ijkGridDefinition = openvds.IJKGridDefinition((100, 200, 300), (1, 0, 0), (0, 2, 0), (0, 0, 3))
+  ijkSize = (10, 20, 30)
+  ijkToVoxelDimensionMap021 = (0, 2, 1)
+  ijkAnnotationStart = (1000, 2000, 3000)
+  ijkAnnotationEnd = (1500, 2500, 3500)
 
   # Contructor with IJK grid definition and size; default IJK to voxel dimension map 2/1/0, annotations not defined
   ijkCoordinateTransformer = openvds.IJKCoordinateTransformer(ijkGridDefinition, ijkSize)
 
-  assert openvds.IntVector3(2, 1, 0) == ijkCoordinateTransformer.IJKToVoxelDimensionMap
+  assert (2, 1, 0) == ijkCoordinateTransformer.IJKToVoxelDimensionMap
   assert ijkGridDefinition == ijkCoordinateTransformer.IJKGrid
   assert not ijkCoordinateTransformer.annotationsDefined
 
@@ -21,14 +22,14 @@ def TestBasicFunctionality():
   ijkCoordinateTransformer = openvds.IJKCoordinateTransformer(ijkGridDefinition, ijkSize, ijkToVoxelDimensionMap021)
 
   assert ijkGridDefinition == ijkCoordinateTransformer.IJKGrid
-  assert openvds.IntVector3(0, 2, 1) == ijkCoordinateTransformer.IJKToVoxelDimensionMap
+  assert (0, 2, 1) == ijkCoordinateTransformer.IJKToVoxelDimensionMap
   assert not ijkCoordinateTransformer.annotationsDefined
 
   # Contructor with IJK grid definition, size, annotations; default IJK to voxel dimension map 2/1/0
   ijkCoordinateTransformer = openvds.IJKCoordinateTransformer(ijkGridDefinition, ijkSize, ijkAnnotationStart, ijkAnnotationEnd)
 
   assert ijkGridDefinition == ijkCoordinateTransformer.IJKGrid
-  assert openvds.IntVector3(2, 1, 0) == ijkCoordinateTransformer.IJKToVoxelDimensionMap
+  assert (2, 1, 0) == ijkCoordinateTransformer.IJKToVoxelDimensionMap
   assert ijkCoordinateTransformer.annotationsDefined
   assert ijkAnnotationStart == ijkCoordinateTransformer.IJKAnnotationStart
   assert ijkAnnotationEnd == ijkCoordinateTransformer.IJKAnnotationEnd
@@ -37,7 +38,7 @@ def TestBasicFunctionality():
   ijkCoordinateTransformer = openvds.IJKCoordinateTransformer(ijkGridDefinition, ijkSize, ijkToVoxelDimensionMap021, ijkAnnotationStart, ijkAnnotationEnd)
 
   assert ijkGridDefinition == ijkCoordinateTransformer.IJKGrid
-  assert openvds.IntVector3(0, 2, 1) == ijkCoordinateTransformer.IJKToVoxelDimensionMap
+  assert (0, 2, 1) == ijkCoordinateTransformer.IJKToVoxelDimensionMap
   assert ijkCoordinateTransformer.annotationsDefined
   assert ijkAnnotationStart == ijkCoordinateTransformer.IJKAnnotationStart
   assert ijkAnnotationEnd == ijkCoordinateTransformer.IJKAnnotationEnd
@@ -90,20 +91,20 @@ def TestBasicFunctionality():
   assert ijkCoordinateTransformer.isVoxelIndexOutOfRange((30, 19, 9))
   assert ijkCoordinateTransformer.isVoxelPositionOutOfRange((29.01, 19, 9))
 
-def TestIJKToWorld():
+def test_ijk_to_world():
 
-  ijkGridDefinition = openvds.IJKGridDefinition(openvds.DoubleVector3(100, 200, 300), openvds.DoubleVector3(1, 0, 0), openvds.DoubleVector3(0, 2, 0), openvds.DoubleVector3(0, 0, 3))
-  ijkSize = openvds.IntVector3(10, 20, 30)
+  ijkGridDefinition = openvds.IJKGridDefinition((100, 200, 300), (1, 0, 0), (0, 2, 0), (0, 0, 3))
+  ijkSize = (10, 20, 30)
   
   ijkCoordinateTransformer = openvds.IJKCoordinateTransformer(ijkGridDefinition, ijkSize)
 
-  assert openvds.DoubleVector3(100, 200, 300) == ijkCoordinateTransformer.IJKIndexToWorld((0, 0, 0))
-  assert openvds.DoubleVector3(109, 238, 387) == ijkCoordinateTransformer.IJKIndexToWorld((9, 19, 29))
-  assert openvds.DoubleVector3(104, 210, 318) == ijkCoordinateTransformer.IJKIndexToWorld((4, 5, 6))
+  assert (100, 200, 300) == ijkCoordinateTransformer.IJKIndexToWorld((0, 0, 0))
+  assert (109, 238, 387) == ijkCoordinateTransformer.IJKIndexToWorld((9, 19, 29))
+  assert (104, 210, 318) == ijkCoordinateTransformer.IJKIndexToWorld((4, 5, 6))
 
-  assert openvds.IntVector3(0, 0, 0) == ijkCoordinateTransformer.worldToIJKIndex((100, 200, 300))
-  assert openvds.IntVector3(9, 19, 29) == ijkCoordinateTransformer.worldToIJKIndex((109, 238, 387))
-  assert openvds.IntVector3(4, 5, 6) == ijkCoordinateTransformer.worldToIJKIndex((104, 210, 318))
+  assert (0, 0, 0) == ijkCoordinateTransformer.worldToIJKIndex((100, 200, 300))
+  assert (9, 19, 29) == ijkCoordinateTransformer.worldToIJKIndex((109, 238, 387))
+  assert (4, 5, 6) == ijkCoordinateTransformer.worldToIJKIndex((104, 210, 318))
 
   assert abs(100.1 - ijkCoordinateTransformer.IJKPositionToWorld((0.1, 0.2, 0.3))[0]) < IJKCoordinateTransformerTests_TestMaxDelta
   assert abs(200.4 - ijkCoordinateTransformer.IJKPositionToWorld((0.1, 0.2, 0.3))[1]) < IJKCoordinateTransformerTests_TestMaxDelta
@@ -121,25 +122,25 @@ def TestIJKToWorld():
   assert abs(4.8 - ijkCoordinateTransformer.worldToIJKPosition((104.9, 209.6, 314.1))[1]) < IJKCoordinateTransformerTests_TestMaxDelta
   assert abs(4.7 - ijkCoordinateTransformer.worldToIJKPosition((104.9, 209.6, 314.1))[2]) < IJKCoordinateTransformerTests_TestMaxDelta
 
-def TestIJKToAnnotation():
+def test_ijk_to_annotation():
 
-  ijkGridDefinition = openvds.IJKGridDefinition(openvds.DoubleVector3(100, 200, 300), openvds.DoubleVector3(1, 0, 0), openvds.DoubleVector3(0, 2, 0), openvds.DoubleVector3(0, 0, 3))
-  ijkSize = openvds.IntVector3(10, 20, 30)
-  ijkAnnotationStart = openvds.DoubleVector3(1000, 2000, 3000)
-  ijkAnnotationEnd = openvds.DoubleVector3(1500, 2500, 3500)
+  ijkGridDefinition = openvds.IJKGridDefinition((100, 200, 300), (1, 0, 0), (0, 2, 0), (0, 0, 3))
+  ijkSize = (10, 20, 30)
+  ijkAnnotationStart = (1000, 2000, 3000)
+  ijkAnnotationEnd = (1500, 2500, 3500)
 
   ijkCoordinateTransformer = openvds.IJKCoordinateTransformer(ijkGridDefinition, ijkSize, ijkAnnotationStart, ijkAnnotationEnd)
 
-  assert openvds.DoubleVector3(1000, 2000, 3000) == ijkCoordinateTransformer.IJKIndexToAnnotation((0, 0, 0))
-  assert openvds.DoubleVector3(1500, 2500, 3500) == ijkCoordinateTransformer.IJKIndexToAnnotation((9, 19, 29))
+  assert (1000, 2000, 3000) == ijkCoordinateTransformer.IJKIndexToAnnotation((0, 0, 0))
+  assert (1500, 2500, 3500) == ijkCoordinateTransformer.IJKIndexToAnnotation((9, 19, 29))
 
   assert abs(1222.2222222222222 - ijkCoordinateTransformer.IJKIndexToAnnotation((4, 5, 6))[0]) < IJKCoordinateTransformerTests_TestMaxDelta
   assert abs(2131.5789473684210 - ijkCoordinateTransformer.IJKIndexToAnnotation((4, 5, 6))[1]) < IJKCoordinateTransformerTests_TestMaxDelta
   assert abs(3103.4482758620690 - ijkCoordinateTransformer.IJKIndexToAnnotation((4, 5, 6))[2]) < IJKCoordinateTransformerTests_TestMaxDelta
 
-  assert openvds.IntVector3(0, 0, 0), ijkCoordinateTransformer.annotationToIJKIndex((1000, 2000, 3000))
-  assert openvds.IntVector3(9, 19, 29), ijkCoordinateTransformer.annotationToIJKIndex((1500, 2500, 3500))
-  assert openvds.IntVector3(4, 5, 6), ijkCoordinateTransformer.annotationToIJKIndex((1222.2222222222222, 2131.5789473684210, 3103.4482758620690))
+  assert (0, 0, 0) ==  ijkCoordinateTransformer.annotationToIJKIndex((1000, 2000, 3000))
+  assert (9, 19, 29) == ijkCoordinateTransformer.annotationToIJKIndex((1500, 2500, 3500))
+  assert (4, 5, 6) == ijkCoordinateTransformer.annotationToIJKIndex((1222.2222222222222, 2131.5789473684210, 3103.4482758620690))
 
   assert abs(1005.555555555556 - ijkCoordinateTransformer.IJKPositionToAnnotation((0.1, 0.2, 0.3))[0]) < IJKCoordinateTransformerTests_TestMaxDelta
   assert abs(2005.263157894737 - ijkCoordinateTransformer.IJKPositionToAnnotation((0.1, 0.2, 0.3))[1]) < IJKCoordinateTransformerTests_TestMaxDelta
@@ -157,51 +158,51 @@ def TestIJKToAnnotation():
   assert abs(4.8 - ijkCoordinateTransformer.annotationToIJKPosition((1272.222222222222, 2126.315789473684, 3081.034482758621))[1]) < IJKCoordinateTransformerTests_TestMaxDelta
   assert abs(4.7 - ijkCoordinateTransformer.annotationToIJKPosition((1272.222222222222, 2126.315789473684, 3081.034482758621))[2]) < IJKCoordinateTransformerTests_TestMaxDelta
 
-def TestIJKToVoxel():
+def test_ijk_to_voxel():
 
-  ijkGridDefinition = openvds.IJKGridDefinition(openvds.DoubleVector3(100, 200, 300), openvds.DoubleVector3(1, 0, 0), openvds.DoubleVector3(0, 2, 0), openvds.DoubleVector3(0, 0, 3))
-  ijkSize = openvds.IntVector3(10, 20, 30)
+  ijkGridDefinition = openvds.IJKGridDefinition((100, 200, 300), (1, 0, 0), (0, 2, 0), (0, 0, 3))
+  ijkSize = (10, 20, 30)
 
   ijkCoordinateTransformer = openvds.IJKCoordinateTransformer(ijkGridDefinition, ijkSize)
 
-  assert openvds.IntVector3(0, 0, 0) == ijkCoordinateTransformer.IJKIndexToVoxelIndex((0, 0, 0))
-  assert openvds.IntVector3(29, 19, 9) == ijkCoordinateTransformer.IJKIndexToVoxelIndex((9, 19, 29))
-  assert openvds.IntVector3(6, 5, 4) == ijkCoordinateTransformer.IJKIndexToVoxelIndex((4, 5, 6))
+  assert (0, 0, 0) == ijkCoordinateTransformer.IJKIndexToVoxelIndex((0, 0, 0))
+  assert (29, 19, 9) == ijkCoordinateTransformer.IJKIndexToVoxelIndex((9, 19, 29))
+  assert (6, 5, 4) == ijkCoordinateTransformer.IJKIndexToVoxelIndex((4, 5, 6))
 
-  assert openvds.IntVector3(0, 0, 0) == ijkCoordinateTransformer.voxelIndexToIJKIndex((0, 0, 0))
-  assert openvds.IntVector3(9, 19, 29) == ijkCoordinateTransformer.voxelIndexToIJKIndex((29, 19, 9))
-  assert openvds.IntVector3(4, 5, 6) == ijkCoordinateTransformer.voxelIndexToIJKIndex((6, 5, 4))
+  assert (0, 0, 0) == ijkCoordinateTransformer.voxelIndexToIJKIndex((0, 0, 0))
+  assert (9, 19, 29) == ijkCoordinateTransformer.voxelIndexToIJKIndex((29, 19, 9))
+  assert (4, 5, 6) == ijkCoordinateTransformer.voxelIndexToIJKIndex((6, 5, 4))
 
-  assert openvds.DoubleVector3(0.3, 0.2, 0.1) == ijkCoordinateTransformer.IJKPositionToVoxelPosition((0.1, 0.2, 0.3))
+  assert (0.3, 0.2, 0.1) == ijkCoordinateTransformer.IJKPositionToVoxelPosition((0.1, 0.2, 0.3))
 
-  assert openvds.DoubleVector3(0.1, 0.2, 0.3) == ijkCoordinateTransformer.voxelPositionToIJKPosition((0.3, 0.2, 0.1))
+  assert (0.1, 0.2, 0.3) == ijkCoordinateTransformer.voxelPositionToIJKPosition((0.3, 0.2, 0.1))
 
-  assert openvds.DoubleVector3(4.7, 4.8, 4.9) == ijkCoordinateTransformer.IJKPositionToVoxelPosition((4.9, 4.8, 4.7))
+  assert (4.7, 4.8, 4.9) == ijkCoordinateTransformer.IJKPositionToVoxelPosition((4.9, 4.8, 4.7))
 
-  assert openvds.DoubleVector3(4.9, 4.8, 4.7) == ijkCoordinateTransformer.voxelPositionToIJKPosition((4.7, 4.8, 4.9))
+  assert (4.9, 4.8, 4.7) == ijkCoordinateTransformer.voxelPositionToIJKPosition((4.7, 4.8, 4.9))
 
-def TestWorldToAnnotation():
+def test_world_to_annotation():
 
-  ijkGridDefinition = openvds.IJKGridDefinition(openvds.DoubleVector3(100, 200, 300), openvds.DoubleVector3(1, 0, 0), openvds.DoubleVector3(0, 2, 0), openvds.DoubleVector3(0, 0, 3))
-  ijkSize = openvds.IntVector3(10, 20, 30)
-  ijkAnnotationStart = openvds.DoubleVector3(1000, 2000, 3000)
-  ijkAnnotationEnd = openvds.DoubleVector3(1500, 2500, 3500)
+  ijkGridDefinition = openvds.IJKGridDefinition((100, 200, 300), (1, 0, 0), (0, 2, 0), (0, 0, 3))
+  ijkSize = (10, 20, 30)
+  ijkAnnotationStart = (1000, 2000, 3000)
+  ijkAnnotationEnd = (1500, 2500, 3500)
 
   ijkCoordinateTransformer = openvds.IJKCoordinateTransformer(ijkGridDefinition, ijkSize, ijkAnnotationStart, ijkAnnotationEnd)
 
   # Via IJK (0, 0, 0)
-  assert openvds.DoubleVector3(1000, 2000, 3000) == ijkCoordinateTransformer.worldToAnnotation((100, 200, 300))
+  assert (1000, 2000, 3000) == ijkCoordinateTransformer.worldToAnnotation((100, 200, 300))
   # Via IJK (9, 19, 29)
-  assert openvds.DoubleVector3(1500, 2500, 3500) == ijkCoordinateTransformer.worldToAnnotation((109, 238, 387))
+  assert (1500, 2500, 3500) == ijkCoordinateTransformer.worldToAnnotation((109, 238, 387))
   # Via IJK (4, 5, 6)
   assert abs(1222.2222222222222 - ijkCoordinateTransformer.worldToAnnotation((104, 210, 318))[0]) < IJKCoordinateTransformerTests_TestMaxDelta
   assert abs(2131.5789473684210 - ijkCoordinateTransformer.worldToAnnotation((104, 210, 318))[1]) < IJKCoordinateTransformerTests_TestMaxDelta
   assert abs(3103.4482758620690 - ijkCoordinateTransformer.worldToAnnotation((104, 210, 318))[2]) < IJKCoordinateTransformerTests_TestMaxDelta
 
   # Via IJK (0, 0, 0)
-  assert openvds.DoubleVector3(100, 200, 300) == ijkCoordinateTransformer.annotationToWorld((1000, 2000, 3000))
+  assert (100, 200, 300) == ijkCoordinateTransformer.annotationToWorld((1000, 2000, 3000))
   # Via IJK (9, 19, 29)
-  assert openvds.DoubleVector3(109, 238, 387) == ijkCoordinateTransformer.annotationToWorld((1500, 2500, 3500))
+  assert (109, 238, 387) == ijkCoordinateTransformer.annotationToWorld((1500, 2500, 3500))
   # Via IJK (4, 5, 6)
   assert abs(104.0 - ijkCoordinateTransformer.annotationToWorld((1222.2222222222222, 2131.5789473684210, 3103.4482758620690))[0]) < IJKCoordinateTransformerTests_TestMaxDelta
   assert abs(210.0 - ijkCoordinateTransformer.annotationToWorld((1222.2222222222222, 2131.5789473684210, 3103.4482758620690))[1]) < IJKCoordinateTransformerTests_TestMaxDelta
@@ -225,20 +226,20 @@ def TestWorldToAnnotation():
   assert abs(209.6 - ijkCoordinateTransformer.annotationToWorld((1272.222222222222, 2126.315789473684, 3081.034482758621))[1]) < IJKCoordinateTransformerTests_TestMaxDelta
   assert abs(314.1 - ijkCoordinateTransformer.annotationToWorld((1272.222222222222, 2126.315789473684, 3081.034482758621))[2]) < IJKCoordinateTransformerTests_TestMaxDelta
 
-def TestWorldToVoxel():
+def test_world_to_voxel():
 
-  ijkGridDefinition = openvds.IJKGridDefinition(openvds.DoubleVector3(100, 200, 300), openvds.DoubleVector3(1, 0, 0), openvds.DoubleVector3(0, 2, 0), openvds.DoubleVector3(0, 0, 3))
-  ijkSize = openvds.IntVector3(10, 20, 30)
+  ijkGridDefinition = openvds.IJKGridDefinition((100, 200, 300), (1, 0, 0), (0, 2, 0), (0, 0, 3))
+  ijkSize = (10, 20, 30)
 
   ijkCoordinateTransformer = openvds.IJKCoordinateTransformer(ijkGridDefinition, ijkSize)
 
-  assert openvds.DoubleVector3(100, 200, 300) == ijkCoordinateTransformer.voxelIndexToWorld((0, 0, 0))
-  assert openvds.DoubleVector3(109, 238, 387) == ijkCoordinateTransformer.voxelIndexToWorld((29, 19, 9))
-  assert openvds.DoubleVector3(104, 210, 318) == ijkCoordinateTransformer.voxelIndexToWorld((6, 5, 4))
+  assert (100, 200, 300) == ijkCoordinateTransformer.voxelIndexToWorld((0, 0, 0))
+  assert (109, 238, 387) == ijkCoordinateTransformer.voxelIndexToWorld((29, 19, 9))
+  assert (104, 210, 318) == ijkCoordinateTransformer.voxelIndexToWorld((6, 5, 4))
 
-  assert openvds.IntVector3(0, 0, 0) == ijkCoordinateTransformer.worldToVoxelIndex((100, 200, 300))
-  assert openvds.IntVector3(29, 19, 9) == ijkCoordinateTransformer.worldToVoxelIndex((109, 238, 387))
-  assert openvds.IntVector3(6, 5, 4) == ijkCoordinateTransformer.worldToVoxelIndex((104, 210, 318))
+  assert (0, 0, 0) == ijkCoordinateTransformer.worldToVoxelIndex((100, 200, 300))
+  assert (29, 19, 9) == ijkCoordinateTransformer.worldToVoxelIndex((109, 238, 387))
+  assert (6, 5, 4) == ijkCoordinateTransformer.worldToVoxelIndex((104, 210, 318))
 
   assert abs(100.1 - ijkCoordinateTransformer.voxelPositionToWorld((0.3, 0.2, 0.1))[0]) < IJKCoordinateTransformerTests_TestMaxDelta
   assert abs(200.4 - ijkCoordinateTransformer.voxelPositionToWorld((0.3, 0.2, 0.1))[1]) < IJKCoordinateTransformerTests_TestMaxDelta
@@ -256,25 +257,25 @@ def TestWorldToVoxel():
   assert abs(4.8 - ijkCoordinateTransformer.worldToVoxelPosition((104.9, 209.6, 314.1))[1]) < IJKCoordinateTransformerTests_TestMaxDelta
   assert abs(4.9 - ijkCoordinateTransformer.worldToVoxelPosition((104.9, 209.6, 314.1))[2]) < IJKCoordinateTransformerTests_TestMaxDelta
 
-def TestAnnotationToVoxel():
+def test_annotation_to_voxel():
 
-  ijkGridDefinition = openvds.IJKGridDefinition(openvds.DoubleVector3(100, 200, 300), openvds.DoubleVector3(1, 0, 0), openvds.DoubleVector3(0, 2, 0), openvds.DoubleVector3(0, 0, 3))
-  ijkSize = openvds.IntVector3(10, 20, 30)
-  ijkAnnotationStart = openvds.DoubleVector3(1000, 2000, 3000)
-  ijkAnnotationEnd = openvds.DoubleVector3(1500, 2500, 3500)
+  ijkGridDefinition = openvds.IJKGridDefinition((100, 200, 300), (1, 0, 0), (0, 2, 0), (0, 0, 3))
+  ijkSize = (10, 20, 30)
+  ijkAnnotationStart = (1000, 2000, 3000)
+  ijkAnnotationEnd = (1500, 2500, 3500)
 
   ijkCoordinateTransformer = openvds.IJKCoordinateTransformer(ijkGridDefinition, ijkSize, ijkAnnotationStart, ijkAnnotationEnd)
 
-  assert openvds.DoubleVector3(1000, 2000, 3000) == ijkCoordinateTransformer.voxelIndexToAnnotation((0, 0, 0))
-  assert openvds.DoubleVector3(1500, 2500, 3500) == ijkCoordinateTransformer.voxelIndexToAnnotation((29, 19, 9))
+  assert (1000, 2000, 3000) == ijkCoordinateTransformer.voxelIndexToAnnotation((0, 0, 0))
+  assert (1500, 2500, 3500) == ijkCoordinateTransformer.voxelIndexToAnnotation((29, 19, 9))
 
   assert abs(1222.2222222222222 - ijkCoordinateTransformer.voxelIndexToAnnotation((6, 5, 4))[0]) < IJKCoordinateTransformerTests_TestMaxDelta
   assert abs(2131.5789473684210 - ijkCoordinateTransformer.voxelIndexToAnnotation((6, 5, 4))[1]) < IJKCoordinateTransformerTests_TestMaxDelta
   assert abs(3103.4482758620690 - ijkCoordinateTransformer.voxelIndexToAnnotation((6, 5, 4))[2]) < IJKCoordinateTransformerTests_TestMaxDelta
 
-  assert openvds.IntVector3(0, 0, 0), ijkCoordinateTransformer.annotationToVoxelIndex((1000, 2000, 3000))
-  assert openvds.IntVector3(29, 19, 9), ijkCoordinateTransformer.annotationToVoxelIndex((1500, 2500, 3500))
-  assert openvds.IntVector3(6, 5, 4), ijkCoordinateTransformer.annotationToVoxelIndex((1222.2222222222222, 2131.5789473684210, 3103.4482758620690))
+  assert (0, 0, 0) == ijkCoordinateTransformer.annotationToVoxelIndex((1000, 2000, 3000))
+  assert (29, 19, 9) == ijkCoordinateTransformer.annotationToVoxelIndex((1500, 2500, 3500))
+  assert (6, 5, 4) == ijkCoordinateTransformer.annotationToVoxelIndex((1222.2222222222222, 2131.5789473684210, 3103.4482758620690))
 
   assert abs(1005.555555555556 - ijkCoordinateTransformer.voxelPositionToAnnotation((0.3, 0.2, 0.1))[0]) < IJKCoordinateTransformerTests_TestMaxDelta
   assert abs(2005.263157894737 - ijkCoordinateTransformer.voxelPositionToAnnotation((0.3, 0.2, 0.1))[1]) < IJKCoordinateTransformerTests_TestMaxDelta
@@ -341,59 +342,59 @@ def generateVDS(vds_name, axis_names):
 
   return openvds.open(vds_url, "")
     
-def TestVDSGetIJKCoordinateTransformerFromMetadata():
+def test_vds_get_ijk_coordinate_transformer_from_metadata():
   vds = generateVDS("time_cossline_inline", ("Time", "Crossline", "Inline"))
   layout = openvds.getLayout(vds)
   ijkCoordinateTransformer = openvds.IJKCoordinateTransformer(layout)
-  assert openvds.IntVector3(2, 1, 0) == ijkCoordinateTransformer.IJKToVoxelDimensionMap
-  assert openvds.IntVector3(AXIS2_SIZE, AXIS1_SIZE, AXIS0_SIZE) == ijkCoordinateTransformer.IJKSize
+  assert (2, 1, 0) == ijkCoordinateTransformer.IJKToVoxelDimensionMap
+  assert (AXIS2_SIZE, AXIS1_SIZE, AXIS0_SIZE) == ijkCoordinateTransformer.IJKSize
   assert ijkCoordinateTransformer.annotationsDefined
-  assert openvds.DoubleVector3(AXIS2_MIN, AXIS1_MIN, AXIS0_MIN) == ijkCoordinateTransformer.IJKAnnotationStart
-  assert openvds.DoubleVector3(AXIS2_MAX, AXIS1_MAX, AXIS0_MAX) == ijkCoordinateTransformer.IJKAnnotationEnd
+  assert (AXIS2_MIN, AXIS1_MIN, AXIS0_MIN) == ijkCoordinateTransformer.IJKAnnotationStart
+  assert (AXIS2_MAX, AXIS1_MAX, AXIS0_MAX) == ijkCoordinateTransformer.IJKAnnotationEnd
 
   vds = generateVDS("inline_time_cossline", ("Inline", "Time", "Crossline"))
   layout = openvds.getLayout(vds)
   ijkCoordinateTransformer = openvds.IJKCoordinateTransformer(layout)
   print(ijkCoordinateTransformer.IJKToVoxelDimensionMap)
-  assert openvds.IntVector3(0, 2, 1) == ijkCoordinateTransformer.IJKToVoxelDimensionMap
-  assert openvds.IntVector3(AXIS0_SIZE, AXIS2_SIZE, AXIS1_SIZE) == ijkCoordinateTransformer.IJKSize
+  assert (0, 2, 1) == ijkCoordinateTransformer.IJKToVoxelDimensionMap
+  assert (AXIS0_SIZE, AXIS2_SIZE, AXIS1_SIZE) == ijkCoordinateTransformer.IJKSize
   assert ijkCoordinateTransformer.annotationsDefined
-  assert openvds.DoubleVector3(AXIS0_MIN, AXIS2_MIN, AXIS1_MIN) == ijkCoordinateTransformer.IJKAnnotationStart
-  assert openvds.DoubleVector3(AXIS0_MAX, AXIS2_MAX, AXIS1_MAX) == ijkCoordinateTransformer.IJKAnnotationEnd
+  assert (AXIS0_MIN, AXIS2_MIN, AXIS1_MIN) == ijkCoordinateTransformer.IJKAnnotationStart
+  assert (AXIS0_MAX, AXIS2_MAX, AXIS1_MAX) == ijkCoordinateTransformer.IJKAnnotationEnd
 
   vds = generateVDS("inline_crossline_time", ("Inline", "Crossline", "Time"))
   layout = openvds.getLayout(vds)
   ijkCoordinateTransformer = openvds.IJKCoordinateTransformer(layout)
-  assert openvds.IntVector3(0, 1, 2) == ijkCoordinateTransformer.IJKToVoxelDimensionMap
-  assert openvds.IntVector3(AXIS0_SIZE, AXIS1_SIZE, AXIS2_SIZE) == ijkCoordinateTransformer.IJKSize
+  assert (0, 1, 2) == ijkCoordinateTransformer.IJKToVoxelDimensionMap
+  assert (AXIS0_SIZE, AXIS1_SIZE, AXIS2_SIZE) == ijkCoordinateTransformer.IJKSize
   assert ijkCoordinateTransformer.annotationsDefined
-  assert openvds.DoubleVector3(AXIS0_MIN, AXIS1_MIN, AXIS2_MIN) == ijkCoordinateTransformer.IJKAnnotationStart
-  assert openvds.DoubleVector3(AXIS0_MAX, AXIS1_MAX, AXIS2_MAX) == ijkCoordinateTransformer.IJKAnnotationEnd
+  assert (AXIS0_MIN, AXIS1_MIN, AXIS2_MIN) == ijkCoordinateTransformer.IJKAnnotationStart
+  assert (AXIS0_MAX, AXIS1_MAX, AXIS2_MAX) == ijkCoordinateTransformer.IJKAnnotationEnd
 
   # IJK annotations map directly
   vds = generateVDS("kji", ("K", "J", "I"))
   layout = openvds.getLayout(vds)
   ijkCoordinateTransformer = openvds.IJKCoordinateTransformer(layout)
-  assert openvds.IntVector3(2, 1, 0) == ijkCoordinateTransformer.IJKToVoxelDimensionMap
-  assert openvds.IntVector3(AXIS2_SIZE, AXIS1_SIZE, AXIS0_SIZE) == ijkCoordinateTransformer.IJKSize
+  assert (2, 1, 0) == ijkCoordinateTransformer.IJKToVoxelDimensionMap
+  assert (AXIS2_SIZE, AXIS1_SIZE, AXIS0_SIZE) == ijkCoordinateTransformer.IJKSize
   assert ijkCoordinateTransformer.annotationsDefined
-  assert openvds.DoubleVector3(AXIS2_MIN, AXIS1_MIN, AXIS0_MIN) == ijkCoordinateTransformer.IJKAnnotationStart
-  assert openvds.DoubleVector3(AXIS2_MAX, AXIS1_MAX, AXIS0_MAX) == ijkCoordinateTransformer.IJKAnnotationEnd
+  assert (AXIS2_MIN, AXIS1_MIN, AXIS0_MIN) == ijkCoordinateTransformer.IJKAnnotationStart
+  assert (AXIS2_MAX, AXIS1_MAX, AXIS0_MAX) == ijkCoordinateTransformer.IJKAnnotationEnd
 
   vds = generateVDS("ikj", ("I", "K", "J"))
   layout = openvds.getLayout(vds)
   ijkCoordinateTransformer = openvds.IJKCoordinateTransformer(layout)
-  assert openvds.IntVector3(0, 2, 1), ijkCoordinateTransformer.IJKToVoxelDimensionMap
-  assert openvds.IntVector3(AXIS0_SIZE, AXIS2_SIZE, AXIS1_SIZE), ijkCoordinateTransformer.IJKSize
+  assert (0, 2, 1) == ijkCoordinateTransformer.IJKToVoxelDimensionMap
+  assert (AXIS0_SIZE, AXIS2_SIZE, AXIS1_SIZE) == ijkCoordinateTransformer.IJKSize
   assert ijkCoordinateTransformer.annotationsDefined
-  assert openvds.DoubleVector3(AXIS0_MIN, AXIS2_MIN, AXIS1_MIN), ijkCoordinateTransformer.IJKAnnotationStart
-  assert openvds.DoubleVector3(AXIS0_MAX, AXIS2_MAX, AXIS1_MAX), ijkCoordinateTransformer.IJKAnnotationEnd
+  assert (AXIS0_MIN, AXIS2_MIN, AXIS1_MIN) == ijkCoordinateTransformer.IJKAnnotationStart
+  assert (AXIS0_MAX, AXIS2_MAX, AXIS1_MAX) == ijkCoordinateTransformer.IJKAnnotationEnd
 
   vds = generateVDS("ijk", ("I", "J", "K"))
   layout = openvds.getLayout(vds)
   ijkCoordinateTransformer = openvds.IJKCoordinateTransformer(layout)
-  assert openvds.IntVector3(0, 1, 2) == ijkCoordinateTransformer.IJKToVoxelDimensionMap
-  assert openvds.IntVector3(AXIS0_SIZE, AXIS1_SIZE, AXIS2_SIZE) == ijkCoordinateTransformer.IJKSize
+  assert (0, 1, 2) == ijkCoordinateTransformer.IJKToVoxelDimensionMap
+  assert (AXIS0_SIZE, AXIS1_SIZE, AXIS2_SIZE) == ijkCoordinateTransformer.IJKSize
   assert ijkCoordinateTransformer.annotationsDefined
-  assert openvds.DoubleVector3(AXIS0_MIN, AXIS1_MIN, AXIS2_MIN) == ijkCoordinateTransformer.IJKAnnotationStart
-  assert openvds.DoubleVector3(AXIS0_MAX, AXIS1_MAX, AXIS2_MAX) == ijkCoordinateTransformer.IJKAnnotationEnd
+  assert (AXIS0_MIN, AXIS1_MIN, AXIS2_MIN) == ijkCoordinateTransformer.IJKAnnotationStart
+  assert (AXIS0_MAX, AXIS1_MAX, AXIS2_MAX) == ijkCoordinateTransformer.IJKAnnotationEnd

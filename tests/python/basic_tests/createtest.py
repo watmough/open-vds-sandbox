@@ -37,7 +37,7 @@ def writePages(accessor, data):
     accessor.commit()
 
 shape = (layout.getDimensionNumSamples(2), layout.getDimensionNumSamples(1), layout.getDimensionNumSamples(0))
-data = np.arange(shape[0]*shape[1]*shape[2], step=1.0, dtype=np.float).reshape(shape)
+data = np.arange(shape[0]*shape[1]*shape[2], step=1.0, dtype=float).reshape(shape)
 
 manager = openvds.getAccessManager(vds)
 accessor = manager.createVolumeDataPageAccessor(openvds.DimensionsND.Dimensions_012, 0, 0, 8, openvds.VolumeDataAccessManager.AccessMode.AccessMode_Create, 1024)
