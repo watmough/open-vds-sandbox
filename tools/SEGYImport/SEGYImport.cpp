@@ -42,6 +42,9 @@
 #include <cassert>
 #include <algorithm>
 
+#define _USE_MATH_DEFINES
+#include <math.h>
+
 #include <cxxopts/cxxopts.hpp>
 #include <json/json.h>
 #include <fmt/format.h>
@@ -890,7 +893,7 @@ updateValueRangeHeaps(const SEGYFileInfo& fileInfo, const int heapSizeMax, std::
 }
 
 bool
-analyzeSegment(DataProvider &dataProvider, SEGYFileInfo const& fileInfo, SEGYSegmentInfo const& segmentInfo, float valueRangePercentile, OpenVDS::FloatRange& valueRange, int& fold, int& secondaryStep, const SEGY::SEGYType segyType, int& offsetStart, int& offsetEnd, int& offsetStep, TraceInfo2DManager * pTraceInfo2DManager, OpenVDS::PrintConfig printConfig, OpenVDS::Error& error)
+analyzeSegment(DataProvider &dataProvider, SEGYFileInfo const& fileInfo, SEGYSegmentInfo const& segmentInfo, float valueRangePercentile, OpenVDS::FloatRange& valueRange, int& fold, int& secondaryStep, const SEGY::SEGYType segyType, int& offsetStart, int& offsetEnd, int& offsetStep, TraceInfo2DManager * pTraceInfo2DManager, bool isTraceOrderByOffset, OpenVDS::PrintConfig printConfig, OpenVDS::Error& error)
 {
   assert(segmentInfo.m_traceStop >= segmentInfo.m_traceStart && "A valid segment info should always have a stop trace greater or equal to the start trace");
   assert(pTraceInfo2DManager != nullptr);
@@ -1018,20 +1021,22 @@ analyzeSegment(DataProvider &dataProvider, SEGYFileInfo const& fileInfo, SEGYSeg
       offsetStep = 1;
     }
 
-    // 'fold' calculated by counting traces in a gather may be incorrect if there are duplicate-key
-    // traces, so we'll ignore it and use the count of unique offset values
-    fold = static_cast<int>(offsetValues.size());
-
-    // check that offset start/end/step is consistent
-    if (offsetStart + (fold - 1) * offsetStep != offsetEnd)
+    if (isTraceOrderByOffset)
     {
-      const auto
-        msgFormat = "The detected gather offset start/end/step of '{0}/{1}/{2}' is not consistent with the detected fold of '{3}'. This may indicate an incorrect header format for Offset trace header.";
-      const auto
-        msg = fmt::format(msgFormat, offsetStart, offsetEnd, offsetStep, fold);
-      OpenVDS::printError(printConfig, "analyzeSegment", msg);
-      return false;
+      // 'fold' calculated by counting traces in a gather may be incorrect if there are duplicate-key
+      // traces, so we'll ignore it and use the count of unique offset values
+      fold = static_cast<int>(offsetValues.size());
 
+      // check that offset start/end/step is consistent
+      if (offsetStart + (fold - 1) * offsetStep != offsetEnd)
+      {
+        const auto
+          msgFormat = "The detected gather offset start/end/step of '{0}/{1}/{2}' is not consistent with the detected fold of '{3}'. This may indicate an incorrect header format for Offset trace header.";
+        const auto
+          msg = fmt::format(msgFormat, offsetStart, offsetEnd, offsetStep, fold);
+        OpenVDS::printError(printConfig, "analyzeSegment", msg);
+        return false;
+      }
     }
   }
 
@@ -1531,6 +1536,15 @@ createSurveyCoordinateSystemMetadata(SEGYFileInfo const& fileInfo, SEGY::BinaryH
     inlineSpacing[1] = -crosslineSpacing[0];
   }
 
+  if (crosslineSpacing[0] == 0.0 && crosslineSpacing[1] == 1.0 && inlineSpacing[0] == 0.0)
+  {
+    // Deal with Headwave quirk:  If crossline spacing is (0, 1) (i.e. only one crossline) and the inline spacing is (0, anything) then Headwave
+    // won't display sample data. In this case we'll change the crossline spacing to (-1, 0) (which seems to be how the Headwave SEGY importer
+    // handles this case).
+    crosslineSpacing[0] = -1;
+    crosslineSpacing[1] = 0;
+  }
+
   // Determine origin
   double origin[2];
 
@@ -1984,7 +1998,7 @@ struct OffsetChannelInfo
 };
 
 static std::vector<OpenVDS::VolumeDataChannelDescriptor>
-createChannelDescriptors(SEGYFileInfo const& fileInfo, OpenVDS::FloatRange const& valueRange, const OffsetChannelInfo& offsetInfo, const std::string& attributeName, const std::string& attributeUnit)
+createChannelDescriptors(SEGYFileInfo const& fileInfo, OpenVDS::FloatRange const& valueRange, const OffsetChannelInfo& offsetInfo, const std::string& attributeName, const std::string& attributeUnit, bool isAzimuthEnabled, bool isMuteEnabled)
 {
   std::vector<OpenVDS::VolumeDataChannelDescriptor>
     channelDescriptors;
@@ -2004,6 +2018,16 @@ createChannelDescriptors(SEGYFileInfo const& fileInfo, OpenVDS::FloatRange const
     channelDescriptors.emplace_back(OpenVDS::VolumeDataFormat::Format_R32, OpenVDS::VolumeDataComponents::Components_1, "Offset", KNOWNMETADATA_UNIT_METER, float(offsetInfo.offsetStart), float(offsetInfo.offsetEnd), OpenVDS::VolumeDataMapping::PerTrace, OpenVDS::VolumeDataChannelDescriptor::NoLossyCompression);
 
     // TODO channels for other gather types - "Angle", "Vrms", "Frequency"
+  }
+
+  if (isAzimuthEnabled)
+  {
+    channelDescriptors.emplace_back(OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataChannelDescriptor::Components_1, "Azimuth", "deg", FLT_MIN, FLT_MAX, OpenVDS::VolumeDataMapping::PerTrace, OpenVDS::VolumeDataChannelDescriptor::NoLossyCompression);
+  }
+
+  if (isMuteEnabled)
+  {
+    channelDescriptors.emplace_back(OpenVDS::VolumeDataChannelDescriptor::Format_U16, OpenVDS::VolumeDataChannelDescriptor::Components_2, "Mute", KNOWNMETADATA_UNIT_MILLISECOND, 0.0f, 65535.0f, OpenVDS::VolumeDataMapping::PerTrace, OpenVDS::VolumeDataChannelDescriptor::NoLossyCompression);
   }
 
   return channelDescriptors;
@@ -2197,6 +2221,21 @@ PrimaryKeyDimension(const SEGYFileInfo& fileInfo)
 }
 
 int
+findChannelDescriptorIndex(const std::string& channelName, const std::vector<OpenVDS::VolumeDataChannelDescriptor>& channelDescriptors)
+{
+  for (int index = 0; index < channelDescriptors.size(); ++index)
+  {
+    if (channelName == channelDescriptors[index].GetName())
+    {
+      return index;
+    }
+  }
+
+  // not found
+  return -1;
+}
+
+int
 main(int argc, char* argv[])
 {
 #if defined(WIN32)
@@ -2252,6 +2291,7 @@ main(int argc, char* argv[])
   bool isAzimuth = false;
   SEGY::AzimuthType azimuthType = SEGY::AzimuthType::Azimuth;
   SEGY::AzimuthUnits azimuthUnit = SEGY::AzimuthUnits::Degrees;
+  float azimuthScaleFactor = 1.0f;
   std::string azimuthTypeString;
   std::string azimuthUnitString;
 
@@ -2309,6 +2349,7 @@ main(int argc, char* argv[])
   options.add_option("", "", "azimuth", "Enable Azimuth channel in output VDS.", cxxopts::value<bool>(isAzimuth), "");
   options.add_option("", "", "azimuth-type", std::string("Azimuth type. Supported azimuth types are: ") + supportedAzimuthTypes + ".", cxxopts::value<std::string>(azimuthTypeString), "<string>");
   options.add_option("", "", "azimuth-unit", std::string("Azimuth unit. Supported azimuth units are: ") + supportedAzimuthUnits + ".", cxxopts::value<std::string>(azimuthUnitString), "<string>");
+  options.add_option("", "", "azimuth-scale", "Azimuth scale factor. Trace header field Azimuth values will be multiplied by this factor.", cxxopts::value<float>(azimuthScaleFactor), "<value>");
   // TODO add option for turning off traceOrderByOffset
 
   options.add_option("", "q", "quiet", "Disable info level output.", cxxopts::value<bool>(disableInfo), "");
@@ -2833,7 +2874,7 @@ main(int argc, char* argv[])
     int fileIndex;
     const auto& representativeSegment = findRepresentativeSegment(fileInfo, primaryStep, fileIndex);
     assert(fileIndex < dataProviders.size());
-    analyzeResult = analyzeSegment(dataProviders[fileIndex], fileInfo, representativeSegment, valueRangePercentile, valueRange, fold, secondaryStep, segyType, offsetStart, offsetEnd, offsetStep, traceInfo2DManager.get(), printConfig, error);
+    analyzeResult = analyzeSegment(dataProviders[fileIndex], fileInfo, representativeSegment, valueRangePercentile, valueRange, fold, secondaryStep, segyType, offsetStart, offsetEnd, offsetStep, traceInfo2DManager.get(), traceOrderByOffset, printConfig, error);
   }
 
   if (!analyzeResult || error.code != 0)
@@ -2983,7 +3024,7 @@ main(int argc, char* argv[])
     offsetInfo(fileInfo.HasGatherOffset(), ConvertDistance(segyMeasurementSystem, static_cast<float>(offsetStart)), ConvertDistance(segyMeasurementSystem, static_cast<float>(offsetEnd)), ConvertDistance(segyMeasurementSystem, static_cast<float>(offsetStep)));
 
   // Create channel descriptors
-  std::vector<OpenVDS::VolumeDataChannelDescriptor> channelDescriptors = createChannelDescriptors(fileInfo, valueRange, offsetInfo, attributeName, attributeUnit);
+  std::vector<OpenVDS::VolumeDataChannelDescriptor> channelDescriptors = createChannelDescriptors(fileInfo, valueRange, offsetInfo, attributeName, attributeUnit, isAzimuth, isMutes);
 
   if (segyType == SEGY::SEGYType::Poststack || segyType == SEGY::SEGYType::Prestack || fileInfo.IsOffsetSorted())
   {
@@ -3051,10 +3092,44 @@ main(int argc, char* argv[])
     writeDimensionGroup = OpenVDS::DimensionsND::Dimensions_023;
   }
 
+  int offsetChannelIndex = 0, azimuthChannelIndex = 0, muteChannelIndex = 0;
+
+  if (fileInfo.HasGatherOffset())
+  {
+    offsetChannelIndex = findChannelDescriptorIndex("Offset", channelDescriptors);
+    if (offsetChannelIndex < 0)
+    {
+      OpenVDS::printError(printConfig, "VDS", "Could not find VDS channel descriptor for Offset");
+      return EXIT_FAILURE;
+    }
+  }
+
+  if (isAzimuth)
+  {
+    azimuthChannelIndex = findChannelDescriptorIndex("Azimuth", channelDescriptors);
+    if (azimuthChannelIndex < 0)
+    {
+      OpenVDS::printError(printConfig, "VDS", "Could not find VDS channel descriptor for Azimuth");
+      return EXIT_FAILURE;
+    }
+  }
+
+  if (isMutes)
+  {
+    muteChannelIndex = findChannelDescriptorIndex("Mute", channelDescriptors);
+    if (muteChannelIndex < 0)
+    {
+      OpenVDS::printError(printConfig, "VDS", "Could not find VDS channel descriptor for Mute");
+      return EXIT_FAILURE;
+    }
+  }
+
   auto amplitudeAccessor = accessManager.CreateVolumeDataPageAccessor(writeDimensionGroup, 0, 0, 8, OpenVDS::VolumeDataAccessManager::AccessMode_Create);
   auto traceFlagAccessor = accessManager.CreateVolumeDataPageAccessor(writeDimensionGroup, 0, 1, 8, OpenVDS::VolumeDataAccessManager::AccessMode_Create);
   auto segyTraceHeaderAccessor = accessManager.CreateVolumeDataPageAccessor(writeDimensionGroup, 0, 2, 8, OpenVDS::VolumeDataAccessManager::AccessMode_Create);
-  auto offsetAccessor = fileInfo.HasGatherOffset() ? accessManager.CreateVolumeDataPageAccessor(writeDimensionGroup, 0, 3, 8, OpenVDS::VolumeDataAccessManager::AccessMode_Create) : nullptr;
+  auto offsetAccessor = fileInfo.HasGatherOffset() ? accessManager.CreateVolumeDataPageAccessor(writeDimensionGroup, 0, offsetChannelIndex, 8, OpenVDS::VolumeDataAccessManager::AccessMode_Create) : nullptr;
+  auto azimuthAccessor = isAzimuth ? accessManager.CreateVolumeDataPageAccessor(writeDimensionGroup, 0, azimuthChannelIndex, 8, OpenVDS::VolumeDataAccessManager::AccessMode_Create) : nullptr;
+  auto muteAccessor = isMutes ? accessManager.CreateVolumeDataPageAccessor(writeDimensionGroup, 0, muteChannelIndex, 8, OpenVDS::VolumeDataAccessManager::AccessMode_Create) : nullptr;
 
   int64_t traceByteSize = fileInfo.TraceByteSize();
 
@@ -3197,10 +3272,6 @@ main(int argc, char* argv[])
     }
   }
 
-  int64_t
-    amplitudePageCount = 0L,
-    traceCopyCount = 0L;
-
   for (int64_t chunk = 0; chunk < amplitudeAccessor->GetChunkCount() && error.code == 0; chunk++)
   {
     int new_percentage = int(double(chunk) / amplitudeAccessor->GetChunkCount() * 100);
@@ -3269,6 +3340,8 @@ main(int argc, char* argv[])
     OpenVDS::VolumeDataPage* traceFlagPage = nullptr;
     OpenVDS::VolumeDataPage* segyTraceHeaderPage = nullptr;
     OpenVDS::VolumeDataPage* offsetPage = nullptr;
+    OpenVDS::VolumeDataPage* azimuthPage = nullptr;
+    OpenVDS::VolumeDataPage* mutePage = nullptr;
 
     if (chunkInfo.min[0] == 0)
     {
@@ -3278,23 +3351,37 @@ main(int argc, char* argv[])
       {
         offsetPage = offsetAccessor->CreatePage(offsetAccessor->GetMappedChunkIndex(chunk));
       }
+      if (azimuthAccessor != nullptr)
+      {
+        azimuthPage = azimuthAccessor->CreatePage(azimuthAccessor->GetMappedChunkIndex(chunk));
+      }
+      if (muteAccessor != nullptr)
+      {
+        mutePage = muteAccessor->CreatePage(muteAccessor->GetMappedChunkIndex(chunk));
+      }
     }
 
     int amplitudePitch[OpenVDS::Dimensionality_Max];
     int traceFlagPitch[OpenVDS::Dimensionality_Max];
     int segyTraceHeaderPitch[OpenVDS::Dimensionality_Max];
     int offsetPitch[OpenVDS::Dimensionality_Max];
+    int azimuthPitch[OpenVDS::Dimensionality_Max];
+    int mutePitch[OpenVDS::Dimensionality_Max];
 
     void* amplitudeBuffer = amplitudePage->GetWritableBuffer(amplitudePitch);
     void* traceFlagBuffer = traceFlagPage ? traceFlagPage->GetWritableBuffer(traceFlagPitch) : nullptr;
     void* segyTraceHeaderBuffer = segyTraceHeaderPage ? segyTraceHeaderPage->GetWritableBuffer(segyTraceHeaderPitch) : nullptr;
     void* offsetBuffer = offsetPage ? offsetPage->GetWritableBuffer(offsetPitch) : nullptr;
+    void* azimuthBuffer = azimuthPage ? azimuthPage->GetWritableBuffer(azimuthPitch) : nullptr;
+    void* muteBuffer = mutePage ? mutePage->GetWritableBuffer(mutePitch) : nullptr;
 
     const int pitchCheckDimension = fileInfo.IsOffsetSorted() ? 2 : 1;
     assert(amplitudePitch[0] == 1);
     assert(!traceFlagBuffer || traceFlagPitch[pitchCheckDimension] == 1);
     assert(!segyTraceHeaderBuffer || segyTraceHeaderPitch[pitchCheckDimension] == SEGY::TraceHeaderSize);
     assert(!offsetBuffer || offsetPitch[pitchCheckDimension] == 1);
+    assert(!azimuthBuffer || azimuthPitch[pitchCheckDimension] == 1);
+    assert(!muteBuffer || mutePitch[pitchCheckDimension] == 2);
     
     const auto segmentInfoListsSize = fileInfo.IsOffsetSorted() ? fileInfo.m_segmentInfoListsByOffset.size() : fileInfo.m_segmentInfoLists.size();
 
@@ -3433,7 +3520,6 @@ main(int argc, char* argv[])
             const int targetOffset = VoxelIndexToDataIndex(fileInfo, primaryIndex, secondaryIndex, tertiaryIndex, chunkInfo.min, amplitudePitch);
 
             copySamples(data, fileInfo.m_dataSampleFormatCode, fileInfo.m_headerEndianness, &reinterpret_cast<float*>(amplitudeBuffer)[targetOffset], chunkInfo.sampleStart, chunkInfo.sampleCount);
-            ++traceCopyCount;
           }
 
           if (traceFlagBuffer)
@@ -3457,6 +3543,52 @@ main(int argc, char* argv[])
             const auto
               traceOffset = ConvertDistance(segyMeasurementSystem, static_cast<float>(SEGY::ReadFieldFromHeader(header, g_traceHeaderFields["offset"], fileInfo.m_headerEndianness)));
             static_cast<float*>(offsetBuffer)[targetOffset] = traceOffset;
+          }
+
+          if (azimuthBuffer)
+          {
+            float
+              azimuth;
+            if (azimuthType == SEGY::AzimuthType::Azimuth)
+            {
+              azimuth = static_cast<float>(SEGY::ReadFieldFromHeader(header, g_traceHeaderFields["azimuth"], fileInfo.m_headerEndianness));
+
+              // apply azimuth scale
+              azimuth = static_cast<float>(azimuth * azimuthScaleFactor);
+
+              if (azimuthUnit == SEGY::AzimuthUnits::Radians)
+              {
+                azimuth = static_cast<float>(azimuth * 180.0 / M_PI);
+              }
+            }
+            else
+            {
+              auto
+                offsetX = SEGY::ReadFieldFromHeader(header, g_traceHeaderFields["offsetx"], fileInfo.m_headerEndianness),
+                offsetY = SEGY::ReadFieldFromHeader(header, g_traceHeaderFields["offsety"], fileInfo.m_headerEndianness);
+              azimuth = static_cast<float>(atan2(offsetY, offsetX) * 180.0 / M_PI);
+
+              // transform from unit circle azimuth to compass azimuth
+              azimuth = fmod(450.0f - azimuth, 360.0f);
+            }
+
+            const int targetOffset = VoxelIndexToDataIndex(fileInfo, primaryIndex, secondaryIndex, tertiaryIndex, chunkInfo.min, azimuthPitch);
+
+            static_cast<float*>(azimuthBuffer)[targetOffset] = azimuth;
+          }
+
+          if (muteBuffer)
+          {
+            auto
+              muteStartTime = static_cast<uint16_t>(SEGY::ReadFieldFromHeader(header, g_traceHeaderFields["mutestarttime"], fileInfo.m_headerEndianness)),
+              muteEndTime = static_cast<uint16_t>(SEGY::ReadFieldFromHeader(header, g_traceHeaderFields["muteendtime"], fileInfo.m_headerEndianness));
+
+            // TODO Need to multiply by 2 the result of VoxelIndexToDataIndex, because it gives the two-component offset, and we want the plain offset into a uint16_t buffer?
+            const int
+              targetOffset = 2 * VoxelIndexToDataIndex(fileInfo, primaryIndex, secondaryIndex, tertiaryIndex, chunkInfo.min, mutePitch);
+
+            static_cast<uint16_t*>(muteBuffer)[targetOffset] = muteStartTime;
+            static_cast<uint16_t*>(muteBuffer)[targetOffset + 1] = muteEndTime;
           }
         }
       }
