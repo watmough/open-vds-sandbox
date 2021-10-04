@@ -323,6 +323,17 @@ public class VolumeDataAccessManager extends JniPointerWithoutDeletion {
                 box.getMin(), box.getMax(), FORMAT_U32.getCode());
     }
 
+    public long requestVolumeSubset(ShortBuffer outBuf,
+                                    DimensionsND dimensionsND, int lod, int channel,
+                                    NDBox box) {
+        B.checkDirectBuffer(outBuf);
+        if (B.getCapacityInBytes(outBuf) < getVolumeSubsetBufferSize(box, FORMAT_U16, lod, channel))
+            throwBufferTooSmallException();
+        return cpRequestVolumeSubset(_handle, outBuf, B.getCapacityInBytes(outBuf),
+                dimensionsND.ordinal(), lod, channel,
+                box.getMin(), box.getMax(), FORMAT_U16.getCode());
+    }
+
     /**
      * Request a subset of the input VDS.
      *
@@ -383,6 +394,18 @@ public class VolumeDataAccessManager extends JniPointerWithoutDeletion {
         return cpRequestVolumeSubsetR(_handle, outBuf, B.getCapacityInBytes(outBuf),
                 dimensionsND.ordinal(), lod, channel,
                 box.getMin(), box.getMax(), FORMAT_U32.getCode(), replacementNoValue);
+    }
+
+    public long requestVolumeSubset(ShortBuffer outBuf,
+                                    DimensionsND dimensionsND, int lod, int channel,
+                                    NDBox box,
+                                    float replacementNoValue) {
+        B.checkDirectBuffer(outBuf);
+        if (B.getCapacityInBytes(outBuf) < getVolumeSubsetBufferSize(box, FORMAT_U16, lod, channel))
+            throwBufferTooSmallException();
+        return cpRequestVolumeSubsetR(_handle, outBuf, B.getCapacityInBytes(outBuf),
+                dimensionsND.ordinal(), lod, channel,
+                box.getMin(), box.getMax(), FORMAT_U16.getCode(), replacementNoValue);
     }
 
     /**
