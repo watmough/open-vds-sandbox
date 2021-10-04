@@ -240,6 +240,8 @@ public abstract class BufferUtils {
             return outBuf.capacity() * Integer.BYTES;
         else if (outBuf instanceof ByteBuffer)
             return outBuf.capacity() * Byte.BYTES;
+        else if (outBuf instanceof ShortBuffer)
+            return outBuf.capacity() * Short.BYTES;
         throw new IllegalArgumentException();
     }
 }

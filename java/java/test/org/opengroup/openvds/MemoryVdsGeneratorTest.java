@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.nio.ShortBuffer;
 import java.util.LinkedList;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
@@ -664,6 +665,44 @@ public class MemoryVdsGeneratorTest {
         }
 
         B.release(floatBuffer0, floatBuffer1);
+
+        generator.close();
+        assertTrue(generator.isNull());
+    }
+
+    @Test
+    void testVolumeSubsetRequestShort() throws IOException {
+        int nXSamples = 60, nYSamples = 60, nZSamples = 60;
+        VolumeDataChannelDescriptor.Format format = FORMAT_U16;
+        MemoryVdsGenerator generator = new MemoryVdsGenerator(nZSamples, nYSamples, nXSamples, format);
+        assertTrue(!generator.isNull());
+        assertTrue(generator.ownHandle());
+
+        final VolumeDataLayout layout = generator.getLayout();
+        assertTrue(!layout.isNull());
+
+        final VolumeDataAccessManager accessManager = generator.getAccessManager();
+        assertTrue(!accessManager.isNull());
+
+        NDBox box = new NDBox(0, 0, 0, 0, 0, 0, nZSamples, nYSamples, 1, 0, 0, 0);
+
+        final ShortBuffer shortBuffer1 = B.createShortBuffer(nZSamples * nYSamples);
+        final long requestSubsetId = accessManager.requestVolumeSubset(shortBuffer1, DimensionsND.DIMENSIONS_012, 0, 0, box);
+        accessManager.waitForCompletion(requestSubsetId);
+
+        final ShortBuffer shortBuffer0 = B.createShortBuffer(nZSamples * nYSamples);
+        final float channelNoValue = layout.getChannelNoValue(0);
+        final long requestID0 = accessManager.requestVolumeSubset(shortBuffer0, DimensionsND.DIMENSIONS_012, 0, 0,
+                box, channelNoValue);
+        accessManager.waitForCompletion(requestID0);
+
+        for (int i = 0; i < nZSamples * nYSamples; i++) {
+            final short f1 = shortBuffer0.get(i);
+            final short f2 = shortBuffer1.get(i);
+            assertEquals(0, Short.compare(f1, f2), " value " + i + " is different");
+        }
+
+        B.release(shortBuffer0, shortBuffer1);
 
         generator.close();
         assertTrue(generator.isNull());
