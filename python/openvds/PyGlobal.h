@@ -157,18 +157,6 @@ struct TypeExpander<native::Matrix<T, V_SIZE>, 0, PACK...>
   using tuple_type = std::tuple<PACK...>;
 };
 
-template<typename Tuple, typename Vector>
-void copyToTuple(const Vector &vec, Tuple &tuple)
-{
-  TupleVectorConverter<Tuple, Vector, sizeof(Vector::data) / sizeof(*Vector::data)>::copyToTuple(vec, tuple);
-}
-
-template<typename Tuple, typename Vector>
-void copyToVector(const Tuple &tuple, Vector &vec)
-{
-  TupleVectorConverter<Tuple, Vector, sizeof(Vector::data) / sizeof(*Vector::data)>::copyToVector(tuple, vec);
-}
-
 template<typename Tuple, typename Vector, size_t COUNT>
 struct TupleVectorConverter
 {
@@ -190,6 +178,19 @@ struct TupleVectorConverter<Tuple, Vector, 0>
   static void copyToTuple(const Vector &, Tuple &) { }
   static void copyToVector(const Tuple &, Vector &) { }
 };
+
+template<typename Tuple, typename Vector>
+void copyToTuple(const Vector &vec, Tuple &tuple)
+{
+  TupleVectorConverter<Tuple, Vector, sizeof(Vector::data) / sizeof(*Vector::data)>::copyToTuple(vec, tuple);
+}
+
+template<typename Tuple, typename Vector>
+void copyToVector(const Tuple &tuple, Vector &vec)
+{
+  TupleVectorConverter<Tuple, Vector, sizeof(Vector::data) / sizeof(*Vector::data)>::copyToVector(tuple, vec);
+}
+
 
 template<typename T, size_t SIZE>
 struct type_caster<native::Vector<T, SIZE>>
@@ -233,11 +234,11 @@ struct type_caster<native::Matrix<T, SIZE>>
 
   bool load(handle src, bool convert)
   {
-    type_caster<TheTypeExpander::tuple_type> caster;
+    type_caster<typename TheTypeExpander::tuple_type> caster;
     bool casted = caster.load(src, convert);
     if (!casted)
       return false;
-    copyToVector(static_cast<TheTypeExpander::tuple_type>(caster), value);
+    copyToVector(static_cast<typename TheTypeExpander::tuple_type>(caster), value);
     return true;
   }
   PYBIND11_TYPE_CASTER(TheMatrixT, TheName);
