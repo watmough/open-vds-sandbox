@@ -143,14 +143,17 @@ struct TypeExpander<T, 0, PACK...>
   using tuple_type = std::tuple<PACK...>;
 };
 
+template<typename T, size_t V_SIZE, typename ... PACK>
+struct TypeExpander<native::Vector<T, V_SIZE>, V_SIZE, PACK...> : TypeExpander<T, V_SIZE> {};
+
 template<typename T, size_t V_SIZE, size_t COUNT, typename ... PACK>
-struct TypeExpander<native::Vector<T, V_SIZE>, COUNT, PACK...> : TypeExpander<native::Vector<T, V_SIZE>, COUNT - 1, native::Vector<T, V_SIZE>, PACK...>
+struct TypeExpander<native::Matrix<T, V_SIZE>, COUNT, PACK...> : TypeExpander<native::Vector<T, V_SIZE>, COUNT - 1, native::Vector<T, V_SIZE>, PACK...>
 {};
 
 template<typename T, size_t V_SIZE, typename ... PACK>
-struct TypeExpander<native::Vector<T, V_SIZE>, 0, PACK...>
+struct TypeExpander<native::Matrix<T, V_SIZE>, 0, PACK...>
 {
-  static constexpr auto name = _("Tuple[") + concat(TypeExpander<T, V_SIZE>::name...) + _("]");
+  static constexpr auto name = _("Tuple[") + concat(TypeExpander<PACK, V_SIZE>::name...) + _("]");
   using tuple_type = std::tuple<PACK...>;
 };
 
@@ -192,23 +195,23 @@ template<typename T, size_t SIZE>
 struct type_caster<native::Vector<T, SIZE>>
 {
   using TheVectorT = native::Vector<T, SIZE>;
-  using TheTypeExpander = TypeExpander<T, SIZE>;
+  using TheTypeExpander = TypeExpander<TheVectorT, SIZE>;
   static constexpr auto TheName = TheTypeExpander::name;
 
   static handle cast(const native::Vector<T, SIZE> &src, return_value_policy policy, handle parent)
   {
-    TheTypeExpander::tuple_type tmp;
+    typename TheTypeExpander::tuple_type tmp;
     copyToTuple(src, tmp);
-    return type_caster<TheTypeExpander::tuple_type>::cast(tmp, policy, parent);
+    return type_caster<typename TheTypeExpander::tuple_type>::cast(tmp, policy, parent);
   }
 
   bool load(handle src, bool convert)
   {
-    type_caster<TheTypeExpander::tuple_type> caster;
+    type_caster<typename TheTypeExpander::tuple_type> caster;
     bool casted = caster.load(src, convert);
     if (!casted)
       return false;
-    copyToVector(static_cast<TheTypeExpander::tuple_type>(caster), value);
+    copyToVector(static_cast<typename TheTypeExpander::tuple_type>(caster), value);
     return true;
   }
   PYBIND11_TYPE_CASTER(TheVectorT, TheName);
@@ -217,16 +220,15 @@ struct type_caster<native::Vector<T, SIZE>>
 template<typename T, size_t SIZE>
 struct type_caster<native::Matrix<T, SIZE>>
 {
-  using TheVectorT = native::Vector<T, SIZE>;
   using TheMatrixT = native::Matrix<T, SIZE>;
-  using TheTypeExpander = TypeExpander<TheVectorT, SIZE>;
+  using TheTypeExpander = TypeExpander<TheMatrixT, SIZE>;
   static constexpr auto TheName = TheTypeExpander::name;
 
   static handle cast(const native::Matrix<T, SIZE> &src, return_value_policy policy, handle parent)
   {
-    TheTypeExpander::tuple_type tmp;
+    typename TheTypeExpander::tuple_type tmp;
     copyToTuple(src, tmp);
-    return type_caster<TheTypeExpander::tuple_type>::cast(tmp, policy, parent);
+    return type_caster<typename TheTypeExpander::tuple_type>::cast(tmp, policy, parent);
   }
 
   bool load(handle src, bool convert)
