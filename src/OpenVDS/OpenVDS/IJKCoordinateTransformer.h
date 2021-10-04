@@ -123,6 +123,7 @@ public:
                           m_IJKSize = IntVector3(layout->GetDimensionNumSamples(m_IJKToVoxelDimensionMap[0]), layout->GetDimensionNumSamples(m_IJKToVoxelDimensionMap[1]), layout->GetDimensionNumSamples(m_IJKToVoxelDimensionMap[2]));
                           m_IJKAnnotationStart = DoubleVector3(layout->GetDimensionMin(m_IJKToVoxelDimensionMap[0]), layout->GetDimensionMin(m_IJKToVoxelDimensionMap[1]), layout->GetDimensionMin(m_IJKToVoxelDimensionMap[2]));
                           m_IJKAnnotationEnd = DoubleVector3(layout->GetDimensionMax(m_IJKToVoxelDimensionMap[0]), layout->GetDimensionMax(m_IJKToVoxelDimensionMap[1]), layout->GetDimensionMax(m_IJKToVoxelDimensionMap[2]));
+                          InitTransformMatrixes();
                         }
 
   /// <summary>
