@@ -1,10 +1,11 @@
+import os
 from pathlib import Path
 from typing import Tuple
 
 import pytest
 import openvds
 
-from segyimport_test_config import test_data_dir, ImportExecutor, TempVDSGuard, TempScanFileGuard
+from segyimport_test_config import test_data_dir, ImportExecutor, TempVDSGuard
 
 
 @pytest.fixture
@@ -14,7 +15,8 @@ def output_vds() -> TempVDSGuard:
 
 @pytest.fixture
 def mutes_segy() -> str:
-    return "C:\\temp\\SEGY\\mutes\\ST0202R08_PS_PrSDM_CIP_gathers_in_PP_Time_modified.segy"
+    return os.path.join(test_data_dir, "Plugins", "ImportPlugins", "SEGYUnittest", "Mutes",
+                        "ST0202R08_PS_PrSDM_CIP_gathers_in_PP_Time_modified_subset.segy")
 
 
 @pytest.fixture
@@ -22,7 +24,7 @@ def mutes_executor(mutes_segy, output_vds) -> Tuple[ImportExecutor, TempVDSGuard
     """Fixture to setup an ImportExecutor with common options for SEGY with mutes"""
     ex = ImportExecutor()
 
-    ex.add_arg("--mutes")
+    ex.add_arg("--mute")
     ex.add_arg("--prestack")
     ex.add_args(["--vdsfile", output_vds.filename])
 
@@ -94,4 +96,4 @@ def test_mutes_read(mutes_executor):
 
             for trace_index in range(dim1_size):
                 if trace_flag_request.data[trace_index] > 0:
-                    assert 0 < mutes_request.data[trace_index * 2] < mutes_request.data[trace_index * 2 + 1]
+                    assert 0 <= mutes_request.data[trace_index * 2] < mutes_request.data[trace_index * 2 + 1]

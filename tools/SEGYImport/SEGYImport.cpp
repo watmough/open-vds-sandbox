@@ -3383,7 +3383,7 @@ main(int argc, char* argv[])
     assert(!segyTraceHeaderBuffer || segyTraceHeaderPitch[pitchCheckDimension] == SEGY::TraceHeaderSize);
     assert(!offsetBuffer || offsetPitch[pitchCheckDimension] == 1);
     assert(!azimuthBuffer || azimuthPitch[pitchCheckDimension] == 1);
-    assert(!muteBuffer || mutePitch[pitchCheckDimension] == 2);
+    assert(!muteBuffer || mutePitch[pitchCheckDimension] == 1);
     
     const auto segmentInfoListsSize = fileInfo.IsOffsetSorted() ? fileInfo.m_segmentInfoListsByOffset.size() : fileInfo.m_segmentInfoLists.size();
 
@@ -3585,7 +3585,7 @@ main(int argc, char* argv[])
               muteStartTime = static_cast<uint16_t>(SEGY::ReadFieldFromHeader(header, g_traceHeaderFields["mutestarttime"], fileInfo.m_headerEndianness)),
               muteEndTime = static_cast<uint16_t>(SEGY::ReadFieldFromHeader(header, g_traceHeaderFields["muteendtime"], fileInfo.m_headerEndianness));
 
-            // TODO Need to multiply by 2 the result of VoxelIndexToDataIndex, because it gives the two-component offset, and we want the plain offset into a uint16_t buffer?
+            // Need to multiply by 2 the result of VoxelIndexToDataIndex, because it gives the two-component offset, and we want the plain offset into a uint16_t buffer
             const int
               targetOffset = 2 * VoxelIndexToDataIndex(fileInfo, primaryIndex, secondaryIndex, tertiaryIndex, chunkInfo.min, mutePitch);
 
