@@ -2350,7 +2350,9 @@ main(int argc, char* argv[])
   options.add_option("", "", "azimuth-type", std::string("Azimuth type. Supported azimuth types are: ") + supportedAzimuthTypes + ".", cxxopts::value<std::string>(azimuthTypeString), "<string>");
   options.add_option("", "", "azimuth-unit", std::string("Azimuth unit. Supported azimuth units are: ") + supportedAzimuthUnits + ".", cxxopts::value<std::string>(azimuthUnitString), "<string>");
   options.add_option("", "", "azimuth-scale", "Azimuth scale factor. Trace header field Azimuth values will be multiplied by this factor.", cxxopts::value<float>(azimuthScaleFactor), "<value>");
-  // TODO add option for turning off traceOrderByOffset
+
+  // TODO temporary option that will be removed/changed when new respace algo is implemented (traceOrderByOffset)
+  options.add_option("", "", "order-by-offset", "Order traces within a gather by offset.", cxxopts::value<bool>(traceOrderByOffset), "");
 
   options.add_option("", "q", "quiet", "Disable info level output.", cxxopts::value<bool>(disableInfo), "");
   options.add_option("", "Q", "very-quiet", "Disable warning level output.", cxxopts::value<bool>(disableWarning), "");
@@ -3598,12 +3600,16 @@ main(int argc, char* argv[])
     if (traceFlagPage) traceFlagPage->Release();
     if (segyTraceHeaderPage) segyTraceHeaderPage->Release();
     if (offsetPage) offsetPage->Release();
+    if (azimuthPage) azimuthPage->Release();
+    if (mutePage) mutePage->Release();
   }
 
   amplitudeAccessor->Commit();
   traceFlagAccessor->Commit();
   segyTraceHeaderAccessor->Commit();
   if (offsetAccessor) offsetAccessor->Commit();
+  if (azimuthAccessor) azimuthAccessor->Commit();
+  if (muteAccessor) muteAccessor->Commit();
 
   dataView.reset();
   traceDataManagers.clear();
