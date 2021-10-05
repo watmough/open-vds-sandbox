@@ -35,7 +35,7 @@ def azimuth_from_azimuth_executor(azimuth_degrees_segy, output_vds) -> Tuple[Imp
     ex.add_args(["--azimuth-type", "azimuth"])
     ex.add_args(["--azimuth-unit", "degrees"])
     ex.add_arg("--prestack")
-    # TODO disable trace order by offset?
+    ex.add_arg("--order-by-offset=false")
     ex.add_args(["--vdsfile", output_vds.filename])
 
     # Need to ignore warnings because this data is only one segment
@@ -56,7 +56,7 @@ def azimuth_from_offset_xy_executor(azimuth_offset_xy_segy, output_vds) -> Tuple
     ex.add_arg("--azimuth")
     ex.add_args(["--azimuth-type", "offsetxy"])
     ex.add_arg("--prestack")
-    # TODO disable trace order by offset?
+    ex.add_arg("--order-by-offset=false")
     ex.add_args(["--vdsfile", output_vds.filename])
 
     ex.add_arg(azimuth_offset_xy_segy)
@@ -133,7 +133,7 @@ def test_azimuth_range_from_azimuth(azimuth_from_azimuth_executor):
                                                                  trace_voxel_max,
                                                                  channel=azimuth_channel,
                                                                  format=openvds.VolumeDataChannelDescriptor.Format.Format_R32,
-                                                                 mensionsND=openvds.DimensionsND.Dimensions_012)
+                                                                 dimensionsND=openvds.DimensionsND.Dimensions_012)
 
             trace_data = trace_flag_request.data.reshape(dim2_size, dim1_size)
             azimuth_data = azimuth_request.data.reshape(dim2_size, dim1_size)
@@ -142,7 +142,7 @@ def test_azimuth_range_from_azimuth(azimuth_from_azimuth_executor):
                 for dim1 in range(dim1_size):
                     if trace_data[dim2, dim1] > 0:
                         azimuth_value = azimuth_data[dim2, dim1]
-                        assert 1.0 < azimuth_value <= 107.0,\
+                        assert 1.0 <= azimuth_value <= 107.0,\
                             f"azimuth value {azimuth_value}  dim1 {dim1}  dim2 {dim2}  dim3 {dim3}"
 
 
@@ -200,7 +200,7 @@ def test_azimuth_range_from_offset_xy(azimuth_from_offset_xy_executor):
                                                                  trace_voxel_max,
                                                                  channel=azimuth_channel,
                                                                  format=openvds.VolumeDataChannelDescriptor.Format.Format_R32,
-                                                                 mensionsND=openvds.DimensionsND.Dimensions_012)
+                                                                 dimensionsND=openvds.DimensionsND.Dimensions_012)
 
             trace_data = trace_flag_request.data.reshape(dim2_size, dim1_size)
             azimuth_data = azimuth_request.data.reshape(dim2_size, dim1_size)

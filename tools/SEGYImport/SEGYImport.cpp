@@ -2022,12 +2022,12 @@ createChannelDescriptors(SEGYFileInfo const& fileInfo, OpenVDS::FloatRange const
 
   if (isAzimuthEnabled)
   {
-    channelDescriptors.emplace_back(OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataChannelDescriptor::Components_1, "Azimuth", "deg", FLT_MIN, FLT_MAX, OpenVDS::VolumeDataMapping::PerTrace, OpenVDS::VolumeDataChannelDescriptor::NoLossyCompression);
+    channelDescriptors.emplace_back(OpenVDS::VolumeDataFormat::Format_R32, OpenVDS::VolumeDataComponents::Components_1, "Azimuth", "deg", FLT_MIN, FLT_MAX, OpenVDS::VolumeDataMapping::PerTrace, OpenVDS::VolumeDataChannelDescriptor::NoLossyCompression);
   }
 
   if (isMuteEnabled)
   {
-    channelDescriptors.emplace_back(OpenVDS::VolumeDataChannelDescriptor::Format_U16, OpenVDS::VolumeDataChannelDescriptor::Components_2, "Mute", KNOWNMETADATA_UNIT_MILLISECOND, 0.0f, 65535.0f, OpenVDS::VolumeDataMapping::PerTrace, OpenVDS::VolumeDataChannelDescriptor::NoLossyCompression);
+    channelDescriptors.emplace_back(OpenVDS::VolumeDataFormat::Format_U16, OpenVDS::VolumeDataComponents::Components_2, "Mute", KNOWNMETADATA_UNIT_MILLISECOND, 0.0f, 65535.0f, OpenVDS::VolumeDataMapping::PerTrace, OpenVDS::VolumeDataChannelDescriptor::NoLossyCompression);
   }
 
   return channelDescriptors;
