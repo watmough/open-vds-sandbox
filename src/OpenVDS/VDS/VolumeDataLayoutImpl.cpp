@@ -202,9 +202,10 @@ static void StaticGetVDSIJKGridDefinitionFromVDSMetadata(VDSIJKGridDefinition &v
       }
 
 
-      for (auto& n : vdsIjkGridDefinition.origin.data)
+      for (int addScaleIndex = 0; addScaleIndex < 3; addScaleIndex++)
       {
-        n += cAxisDescriptor.GetCoordinateMin();
+        auto& n = vdsIjkGridDefinition.origin.data[addScaleIndex];
+        n += cStepVector[addScaleIndex] * cAxisDescriptor.GetCoordinateMin();
       }
 
       if (cAxisDescriptor.GetCoordinateStep() != 0)
