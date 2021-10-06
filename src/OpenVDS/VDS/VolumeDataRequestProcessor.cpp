@@ -561,14 +561,11 @@ static bool RequestSubsetProcessPage(VolumeDataPageImpl* page, const VolumeDataC
   // Multiply sizes and offsets by number of components since BlockCopy is not component-aware
   if(chunk.layer->GetComponents() > 1)
   {
-    for (int32_t dimension = 0; dimension < DataBlock::Dimensionality_Max; dimension++)
-    {
-      sourceSize  [dimension] *= int(chunk.layer->GetComponents());
-      sourceOffset[dimension] *= int(chunk.layer->GetComponents());
-      targetSize  [dimension] *= int(chunk.layer->GetComponents());
-      targetOffset[dimension] *= int(chunk.layer->GetComponents());
-      overlapSize [dimension] *= int(chunk.layer->GetComponents());
-    }
+    sourceSize  [0] *= int(chunk.layer->GetComponents());
+    sourceOffset[0] *= int(chunk.layer->GetComponents());
+    targetSize  [0] *= int(chunk.layer->GetComponents());
+    targetOffset[0] *= int(chunk.layer->GetComponents());
+    overlapSize [0] *= int(chunk.layer->GetComponents());
   }
 
   void *source = page->GetRawBufferInternal();
