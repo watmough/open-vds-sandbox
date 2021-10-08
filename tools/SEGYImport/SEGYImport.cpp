@@ -3384,8 +3384,10 @@ main(int argc, char* argv[])
 
     for (size_t fileIndex = 0; fileIndex < segmentInfoListsSize; ++fileIndex)
     {
+      assert(fileInfo.IsOffsetSorted() ? chunkInfo.min[1] < gatherOffsetValues.size() : true);
+
       const int
-        offetSortedOffsetValue = fileInfo.IsOffsetSorted() ? offsetStart + offsetStep * chunkInfo.min[1] : 0;
+        offsetSortedOffsetValue = fileInfo.IsOffsetSorted() ? gatherOffsetValues[chunkInfo.min[1]] : 0;
 
       if (fileInfo.IsOffsetSorted())
       {
@@ -3393,7 +3395,7 @@ main(int argc, char* argv[])
         assert(chunkInfo.min[1] + 1 == chunkInfo.max[1]);
 
         // If the calculated offset value isn't present in this file's map then skip
-        if (fileInfo.m_segmentInfoListsByOffset[fileIndex].find(offetSortedOffsetValue) == fileInfo.m_segmentInfoListsByOffset[fileIndex].end())
+        if (fileInfo.m_segmentInfoListsByOffset[fileIndex].find(offsetSortedOffsetValue) == fileInfo.m_segmentInfoListsByOffset[fileIndex].end())
         {
           continue;
         }
@@ -3401,7 +3403,7 @@ main(int argc, char* argv[])
 
       auto&
         segmentInfoList = fileInfo.IsOffsetSorted()
-        ? fileInfo.m_segmentInfoListsByOffset[fileIndex][offetSortedOffsetValue]
+        ? fileInfo.m_segmentInfoListsByOffset[fileIndex][offsetSortedOffsetValue]
         : fileInfo.m_segmentInfoLists[fileIndex];
 
       // does this file have any segments in the primary key range?
@@ -3476,9 +3478,6 @@ main(int argc, char* argv[])
     }
 
     auto &chunkInfo = chunkInfos[chunk];
-
-    const int
-      offsetSortedOffsetValue = fileInfo.IsOffsetSorted() ? offsetStart + offsetStep * chunkInfo.min[1] : 0;
 
     // if we've crossed to a new inline then trim the trace page cache
     if (chunk > 0)
@@ -3573,6 +3572,11 @@ main(int argc, char* argv[])
         continue;
       }
 
+      assert(fileInfo.IsOffsetSorted() ? chunkInfo.min[1] < gatherOffsetValues.size() : true);
+
+      const int
+        offsetSortedOffsetValue = fileInfo.IsOffsetSorted() ? gatherOffsetValues[chunkInfo.min[1]] : 0;
+
       const auto lowerSegmentIndex = std::get<0>(result->second);
       const auto upperSegmentIndex = std::get<1>(result->second);
 
@@ -3608,6 +3612,9 @@ main(int argc, char* argv[])
           tertiaryIndex = 0,
           currentSecondaryKey = chunkInfo.secondaryKeyStart;
 
+        auto
+          gatherSpacing = CalculateGatherSpacing(fileInfo, fold, gatherOffsetValues, traceDataManager, traceSpacingByOffset, firstTrace, printConfig);
+
         for (int64_t trace = firstTrace; trace <= segment->m_traceStop; trace++, tertiaryIndex++)
         {
           const char* header = traceDataManager.getTraceData(trace, error);
@@ -3633,6 +3640,9 @@ main(int argc, char* argv[])
             // we've progressed to a new secondary key, so reset the tertiary (gather) index
             currentSecondaryKey = secondaryTest;
             tertiaryIndex = 0;
+
+            // then get respace info for the next gather
+            gatherSpacing = CalculateGatherSpacing(fileInfo, fold, gatherOffsetValues, traceDataManager, traceSpacingByOffset, trace, printConfig);
           }
 
           int
@@ -3657,7 +3667,7 @@ main(int argc, char* argv[])
           assert(primaryIndex >= chunkInfo.min[PrimaryKeyDimension(fileInfo)] && primaryIndex < chunkInfo.max[PrimaryKeyDimension(fileInfo)]);
           assert(secondaryIndex >= chunkInfo.min[SecondaryKeyDimension(fileInfo)] && secondaryIndex < chunkInfo.max[SecondaryKeyDimension(fileInfo)]);
 
-          if (fileInfo.Is4D() && traceOrderByOffset)
+          if (fileInfo.Is4D())
           {
             if (fileInfo.IsOffsetSorted())
             {
@@ -3668,18 +3678,12 @@ main(int argc, char* argv[])
             }
             else
             {
-              if (traceOrderByOffset)
-              {
-                // recalculate tertiaryIndex from header offset value
-                const auto
-                  thisOffset = SEGY::ReadFieldFromHeader(header, g_traceHeaderFields["offset"], fileInfo.m_headerEndianness);
-                tertiaryIndex = (thisOffset - offsetStart) / offsetStep;
+              tertiaryIndex = gatherSpacing->GetTertiaryIndex(trace);
 
-                // sanity check the new index
-                if (tertiaryIndex < 0 || tertiaryIndex >= fold)
-                {
-                  continue;
-                }
+              // sanity check the new index
+              if (tertiaryIndex < 0 || tertiaryIndex >= fold)
+              {
+                continue;
               }
             }
 
