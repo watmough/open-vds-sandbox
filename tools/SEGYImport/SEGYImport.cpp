@@ -2277,6 +2277,7 @@ main(int argc, char* argv[])
   bool prestack = false;
   bool is2D = false;
   bool isOffsetSorted = false;
+  // TODO remove traceOrderByOffset
   bool traceOrderByOffset = true;
   bool useJsonOutput = false;
   bool disablePrintSegyTextHeader = false;
@@ -2295,8 +2296,19 @@ main(int argc, char* argv[])
   std::string azimuthTypeString;
   std::string azimuthUnitString;
 
+  enum class TraceSpacingByOffset
+  {
+    Off = 0,
+    On = 1,
+    Auto = 2
+  };
+
+  TraceSpacingByOffset traceSpacingByOffset = TraceSpacingByOffset::Auto;
+  std::string traceSpacingByOffsetString;
+
   const std::string supportedAzimuthTypes("Azimuth (from trace header field) (default), OffsetXY (computed from OffsetX and OffsetY header fields)");
   const std::string supportedAzimuthUnits("Radians, Degrees (default)");
+  const std::string supportedTraceSpacingTypes("Off, On, Auto (default)");
 
   // default key names used if not supplied by user
   std::string defaultPrimaryKey = "InlineNumber";
@@ -2350,8 +2362,9 @@ main(int argc, char* argv[])
   options.add_option("", "", "azimuth-type", std::string("Azimuth type. Supported azimuth types are: ") + supportedAzimuthTypes + ".", cxxopts::value<std::string>(azimuthTypeString), "<string>");
   options.add_option("", "", "azimuth-unit", std::string("Azimuth unit. Supported azimuth units are: ") + supportedAzimuthUnits + ".", cxxopts::value<std::string>(azimuthUnitString), "<string>");
   options.add_option("", "", "azimuth-scale", "Azimuth scale factor. Trace header field Azimuth values will be multiplied by this factor.", cxxopts::value<float>(azimuthScaleFactor), "<value>");
+  options.add_option("", "", "respace-gathers", std::string("Respace traces in prestack gathers by Offset trace header field. Supported options are: ") + supportedTraceSpacingTypes + ".", cxxopts::value<std::string>(traceSpacingByOffsetString), "<string>");
 
-  // TODO temporary option that will be removed/changed when new respace algo is implemented (traceOrderByOffset)
+  // TODO remove traceOrderByOffset option
   options.add_option("", "", "order-by-offset", "Order traces within a gather by offset.", cxxopts::value<bool>(traceOrderByOffset), "");
 
   options.add_option("", "q", "quiet", "Disable info level output.", cxxopts::value<bool>(disableInfo), "");
@@ -2601,6 +2614,28 @@ main(int argc, char* argv[])
     else
     {
       OpenVDS::printError(printConfig, "Args", fmt::format("Unknown Azimuth unit '{}'", azimuthUnitString));
+      return EXIT_FAILURE;
+    }
+  }
+
+  if (!traceSpacingByOffsetString.empty())
+  {
+    std::transform(traceSpacingByOffsetString.begin(), traceSpacingByOffsetString.end(), traceSpacingByOffsetString.begin(), asciitolower);
+    if (traceSpacingByOffsetString == "off")
+    {
+      traceSpacingByOffset = TraceSpacingByOffset::Off;
+    }
+    else if (traceSpacingByOffsetString == "on")
+    {
+      traceSpacingByOffset = TraceSpacingByOffset::On;
+    }
+    else if (traceSpacingByOffsetString == "auto")
+    {
+      traceSpacingByOffset = TraceSpacingByOffset::Auto;
+    }
+    else
+    {
+      OpenVDS::printError(printConfig, "Args", fmt::format("Unknown --respace-gathers option '{}'", traceSpacingByOffsetString));
       return EXIT_FAILURE;
     }
   }

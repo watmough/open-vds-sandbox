@@ -29,8 +29,8 @@ def output_vds() -> TempVDSGuard:
 
 @pytest.fixture
 def prestack_segy() -> str:
-    return os.path.join(test_data_dir, "HeadwavePlatform", "PlatformIntegration", "Teleport_Trim", "3D_Prestack",
-                        "ST0202R08_Gather_Time.segy")
+    return os.path.join(test_data_dir, "HeadwavePlatform", "PlatformIntegration", "Teleport", "Teleport_Trim",
+                        "3D_Prestack", "ST0202R08_Gather_Time.segy")
 
 
 @pytest.fixture
@@ -82,7 +82,7 @@ def get_gathers_stats(vds_filename: str) -> Tuple[int, int, int, int, int, int]:
       number of gathers with no dead traces
       )
     """
-    with openvds.open(output_vds.filename, "") as handle:
+    with openvds.open(vds_filename, "") as handle:
         layout = openvds.getLayout(handle)
         access_manager = openvds.getAccessManager(handle)
 
@@ -107,7 +107,7 @@ def get_gathers_stats(vds_filename: str) -> Tuple[int, int, int, int, int, int]:
                                                                      1),
                                                                     channel=trace_channel,
                                                                     format=openvds.VolumeDataChannelDescriptor.Format.Format_U8,
-                                                                    dimensionsND=openvds.DimensionsND.Dimensions_023)
+                                                                    dimensionsND=openvds.DimensionsND.Dimensions_012)
 
             assert dim1_size == trace_flag_request.data.shape[0]
 
@@ -149,8 +149,7 @@ def test_gather_spacing_invalid_arg(invalid_executor):
     result = ex.run()
 
     assert result != 0, ex.output()
-    # TODO what text to look for?
-    assert "some message" in ex.output().lower()
+    assert "unknown --respace-gathers option" in ex.output().lower()
 
 
 def test_gather_spacing_default(default_executor):
@@ -163,7 +162,7 @@ def test_gather_spacing_default(default_executor):
 
     total, leading_only, middle_only, trailing_only, mixed, no_dead = get_gathers_stats(output_vds.filename)
 
-    assert total == 60
+    assert total == 71
     assert middle_only > 0
     assert mixed > 0
     assert trailing_only == 0
@@ -181,7 +180,7 @@ def test_gather_spacing_auto(auto_executor):
 
     total, leading_only, middle_only, trailing_only, mixed, no_dead = get_gathers_stats(output_vds.filename)
 
-    assert total == 60
+    assert total == 71
     assert middle_only > 0
     assert mixed > 0
     assert trailing_only == 0
@@ -199,7 +198,7 @@ def test_gather_spacing_on(on_executor):
 
     total, leading_only, middle_only, trailing_only, mixed, no_dead = get_gathers_stats(output_vds.filename)
 
-    assert total == 60
+    assert total == 71
     assert middle_only > 0
     assert mixed > 0
     assert trailing_only == 0
@@ -217,7 +216,7 @@ def test_gather_spacing_off(off_executor):
 
     total, leading_only, middle_only, trailing_only, mixed, no_dead = get_gathers_stats(output_vds.filename)
 
-    assert total == 60
+    assert total == 71
     assert trailing_only == total
     assert middle_only == 0
     assert mixed == 0
