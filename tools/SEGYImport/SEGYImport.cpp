@@ -2231,6 +2231,149 @@ findChannelDescriptorIndex(const std::string& channelName, const std::vector<Ope
   return -1;
 }
 
+class GatherSpacing
+{
+public:
+  GatherSpacing(int64_t firstTrace) : m_isRespace(false), m_firstTrace(firstTrace) {}
+
+  GatherSpacing(int64_t firstTrace, std::map<int64_t, int> traceIndices) : m_isRespace(true), m_firstTrace(firstTrace), m_traceIndices(std::move(traceIndices)) {}
+
+  int GetTertiaryIndex(int64_t traceNumber)
+  {
+    if (m_isRespace)
+    {
+      assert(traceNumber >= m_firstTrace && traceNumber < m_firstTrace + static_cast<int64_t>(m_traceIndices.size()));
+      return m_traceIndices[traceNumber];
+    }
+
+    assert(traceNumber >= m_firstTrace);
+    return static_cast<int>(traceNumber - m_firstTrace);
+  }
+
+private:
+  bool       m_isRespace;
+  int64_t    m_firstTrace;
+  std::map<int64_t, int>
+    m_traceIndices;
+};
+
+std::unique_ptr<GatherSpacing>
+CalculateGatherSpacing(const SEGYFileInfo& fileInfo, const int fold, const std::vector<int>& globalOffsetValues, TraceDataManager& traceDataManager, TraceSpacingByOffset traceSpacingByOffset, int64_t firstTrace, OpenVDS::PrintConfig printConfig)
+{
+  if (fileInfo.Is4D() && traceSpacingByOffset != TraceSpacingByOffset::Off)
+  {
+    OpenVDS::Error
+      error;
+    const char
+      * header = traceDataManager.getTraceData(firstTrace, error);
+    if (error.code != 0)
+    {
+      return std::unique_ptr<GatherSpacing>(new GatherSpacing(firstTrace));
+    }
+
+    const auto
+      primaryKey = SEGY::ReadFieldFromHeader(header, fileInfo.m_primaryKey, fileInfo.m_headerEndianness),
+      secondaryKey = SEGY::ReadFieldFromHeader(header, fileInfo.m_secondaryKey, fileInfo.m_headerEndianness);
+
+    std::vector<int>
+      gatherOffsets;
+    gatherOffsets.reserve(fold);
+    gatherOffsets.push_back(SEGY::ReadFieldFromHeader(header, g_traceHeaderFields["offset"], fileInfo.m_headerEndianness));
+
+    // read traces and stuff offset into a vector while primaryKey/secondaryKey match
+    int64_t
+      trace = firstTrace + 1;
+    for (int64_t trace = firstTrace + 1; trace < firstTrace + fold; ++trace)
+    {
+      header = traceDataManager.getTraceData(trace, error);
+      if (error.code != 0)
+      {
+        break;
+      }
+      const auto
+        testPrimary = SEGY::ReadFieldFromHeader(header, fileInfo.m_primaryKey, fileInfo.m_headerEndianness),
+        testSecondary = SEGY::ReadFieldFromHeader(header, fileInfo.m_secondaryKey, fileInfo.m_headerEndianness);
+      if (testPrimary != primaryKey || testSecondary != secondaryKey)
+      {
+        break;
+      }
+
+      gatherOffsets.push_back(SEGY::ReadFieldFromHeader(header, g_traceHeaderFields["offset"], fileInfo.m_headerEndianness));
+    }
+
+    // apply respace algorithm
+    int
+      gatherIndex = 0,
+      offsetIndex = 0,
+      tertiaryIndex = 0;
+    std::map<int64_t, int>
+      traceIndices;
+    auto
+      hasRoom = [&fold, &tertiaryIndex, &gatherOffsets, &gatherIndex]() { return (fold - tertiaryIndex) - (gatherOffsets.size() - gatherIndex) > 0; };
+    auto
+      offsetAtIndex = [&globalOffsetValues](int index) { return globalOffsetValues[index]; };
+
+    // skip tertiary indices before the first trace's offset
+    while (hasRoom() && offsetIndex < fold && offsetAtIndex(offsetIndex) != gatherOffsets[0])
+    {
+      ++offsetIndex;
+      ++tertiaryIndex;
+    }
+
+    // map traces to tertiary indices while we have room for dead traces and we have more input traces
+    while (hasRoom() && gatherIndex < gatherOffsets.size())
+    {
+      // process all the traces whose offset matches the current offset
+      const auto
+        currentOffset = offsetAtIndex(offsetIndex);
+      while (hasRoom() && gatherIndex < gatherOffsets.size() && gatherOffsets[gatherIndex] == currentOffset)
+      {
+        traceIndices[firstTrace + gatherIndex] = tertiaryIndex;
+        ++gatherIndex;
+        ++tertiaryIndex;
+      }
+
+      // advance to the next offset
+      ++offsetIndex;
+
+      // try to advance to tertiary index so that the next trace's offset is placed near-ish to where it might be expected
+      if (gatherIndex < gatherOffsets.size() && tertiaryIndex <= offsetIndex)
+      {
+        while (hasRoom() && gatherOffsets[gatherIndex] != offsetAtIndex(offsetIndex))
+        {
+          ++tertiaryIndex;
+          ++offsetIndex;
+
+          // hasRoom() will effectively take care of bounds-checking tertiaryIndex, but we need to explicitly check offsetIndex
+          if (offsetIndex >= fold)
+          {
+            // if the trace's offset doesn't match any expected offset values then this is unexpected and may indicate a data problem
+            const auto
+              warnString = fmt::format("Warning:  Unknown trace header Offset value {} found at primary key {}, secondary key {}. This may indicate corrupt data or an incorrect header format.", gatherOffsets[gatherIndex], primaryKey, secondaryKey);
+            OpenVDS::printWarning(printConfig, "Data", warnString);
+
+            // return a no-respacing GatherSpacing
+            return std::unique_ptr<GatherSpacing>(new GatherSpacing(firstTrace));
+          }
+        }
+      }
+    }
+
+    // map remaining traces to remaining indices
+    while (gatherIndex < gatherOffsets.size())
+    {
+      traceIndices[firstTrace + gatherIndex] = tertiaryIndex;
+      ++gatherIndex;
+      ++tertiaryIndex;
+    }
+
+    return std::unique_ptr<GatherSpacing>(new GatherSpacing(firstTrace, traceIndices));
+  }
+
+  // else return a GatherSpacing that doesn't alter the spacing
+  return std::unique_ptr<GatherSpacing>(new GatherSpacing(firstTrace));
+}
+
 int
 main(int argc, char* argv[])
 {
@@ -2900,7 +3043,7 @@ main(int argc, char* argv[])
     int fileIndex;
     const auto& representativeSegment = findRepresentativeSegment(fileInfo, primaryStep, fileIndex);
     assert(fileIndex < dataProviders.size());
-    analyzeResult = analyzeSegment(dataProviders[fileIndex], fileInfo, representativeSegment, valueRangePercentile, valueRange, fold, secondaryStep, segyType, offsetStart, offsetEnd, offsetStep, traceInfo2DManager.get(), traceOrderByOffset, printConfig, error);
+    analyzeResult = analyzeSegment(dataProviders[fileIndex], fileInfo, representativeSegment, valueRangePercentile, valueRange, fold, secondaryStep, segyType, traceInfo2DManager.get(), traceSpacingByOffset, gatherOffsetValues, printConfig, error);
   }
 
   if (!analyzeResult || error.code != 0)
@@ -3046,9 +3189,7 @@ main(int argc, char* argv[])
     return EXIT_FAILURE;
   }
 
-  int
-    offsetStart = 0,
-    offsetEnd = 0;
+  int offsetStart = 0, offsetEnd = 0;
 
   if (!gatherOffsetValues.empty())
   {
@@ -3056,7 +3197,7 @@ main(int argc, char* argv[])
     const auto
       minMax = std::minmax_element(gatherOffsetValues.begin(), gatherOffsetValues.end());
     offsetStart = *minMax.first,
-      offsetEnd = *minMax.second;;
+      offsetEnd = *minMax.second;
   }
 
   OffsetChannelInfo
