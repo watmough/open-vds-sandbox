@@ -66,6 +66,13 @@
 
 constexpr double METERS_PER_FOOT = 0.3048;
 
+enum class TraceSpacingByOffset
+{
+  Off = 0,
+  On = 1,
+  Auto = 2
+};
+
 int64_t GetTotalSystemMemory()
 {
     MEMORYSTATUSEX status;
@@ -893,7 +900,7 @@ updateValueRangeHeaps(const SEGYFileInfo& fileInfo, const int heapSizeMax, std::
 }
 
 bool
-analyzeSegment(DataProvider &dataProvider, SEGYFileInfo const& fileInfo, SEGYSegmentInfo const& segmentInfo, float valueRangePercentile, OpenVDS::FloatRange& valueRange, int& fold, int& secondaryStep, const SEGY::SEGYType segyType, int& offsetStart, int& offsetEnd, int& offsetStep, TraceInfo2DManager * pTraceInfo2DManager, bool isTraceOrderByOffset, OpenVDS::PrintConfig printConfig, OpenVDS::Error& error)
+analyzeSegment(DataProvider &dataProvider, SEGYFileInfo const& fileInfo, SEGYSegmentInfo const& segmentInfo, float valueRangePercentile, OpenVDS::FloatRange& valueRange, int& fold, int& secondaryStep, const SEGY::SEGYType segyType, TraceInfo2DManager * pTraceInfo2DManager, TraceSpacingByOffset& traceSpacingByOffset, std::vector<int>& offsetValues, OpenVDS::PrintConfig printConfig, OpenVDS::Error& error)
 {
   assert(segmentInfo.m_traceStop >= segmentInfo.m_traceStart && "A valid segment info should always have a stop trace greater or equal to the start trace");
   assert(pTraceInfo2DManager != nullptr);
@@ -905,9 +912,7 @@ analyzeSegment(DataProvider &dataProvider, SEGYFileInfo const& fileInfo, SEGYSeg
   valueRange = OpenVDS::FloatRange(0.0f, 1.0f);
   secondaryStep = 0;
   fold = 1;
-  offsetStart = 0;
-  offsetEnd = 0;
-  offsetStep = 0;
+  offsetValues.clear();
 
   const int traceByteSize = fileInfo.TraceByteSize();
 
@@ -929,8 +934,7 @@ analyzeSegment(DataProvider &dataProvider, SEGYFileInfo const& fileInfo, SEGYSeg
   // Determine fold and secondary step
   int gatherSecondaryKey = 0, gatherFold = 0, gatherSecondaryStep = 0;
 
-  std::set<int>
-    offsetValues;
+  std::map<int, std::vector<int>> gatherOffsetValues;
 
   for (int64_t trace = segmentInfo.m_traceStart; trace <= segmentInfo.m_traceStop; trace++)
   {
@@ -988,56 +992,84 @@ analyzeSegment(DataProvider &dataProvider, SEGYFileInfo const& fileInfo, SEGYSeg
     {
       const auto
         thisOffset = SEGY::ReadFieldFromHeader(header, g_traceHeaderFields["offset"], fileInfo.m_headerEndianness);
-      offsetValues.insert(thisOffset);
+      gatherOffsetValues[gatherSecondaryKey].push_back(thisOffset);
     }
 
     // Update value range
     updateValueRangeHeaps(fileInfo, heapSizeMax, minHeap, maxHeap, data, sampleBuffer);
   }
 
-  if (fileInfo.HasGatherOffset() && !fileInfo.IsUnbinned())
+  if (fileInfo.HasGatherOffset() && !fileInfo.IsUnbinned() && !gatherOffsetValues.empty())
   {
-    offsetStart = *offsetValues.begin();
-    offsetEnd = *offsetValues.rbegin();
+    // use the longest gather in the segment to populate the list of offset values
 
-    // iterate over offsetValues to get offset step
-    if (offsetValues.size() > 1)
+    // find the longest gather
+    int
+      longestSecondaryKey = (*gatherOffsetValues.begin()).first;
+
+    for (const auto& entry : gatherOffsetValues)
     {
-      auto
-        iter = offsetValues.begin();
-      auto
-        previousOffset = *iter;
-      offsetStep = INT32_MAX;
-      while (++iter != offsetValues.end())
+      if (entry.second.size() > gatherOffsetValues[longestSecondaryKey].size())
       {
-        const auto
-          thisOffset = *iter;
-        offsetStep = std::min(offsetStep, thisOffset - previousOffset);
-        previousOffset = thisOffset;
+        longestSecondaryKey = entry.first;
       }
     }
-    else
-    {
-      offsetStep = 1;
-    }
 
-    if (isTraceOrderByOffset)
-    {
-      // 'fold' calculated by counting traces in a gather may be incorrect if there are duplicate-key
-      // traces, so we'll ignore it and use the count of unique offset values
-      fold = static_cast<int>(offsetValues.size());
+    // copy the longest gather's offset values to the method arg
+    const auto
+      & longestGatherValues = gatherOffsetValues[longestSecondaryKey];
+    offsetValues.assign(longestGatherValues.begin(), longestGatherValues.end());
 
-      // check that offset start/end/step is consistent
-      if (offsetStart + (fold - 1) * offsetStep != offsetEnd)
+    if (traceSpacingByOffset != TraceSpacingByOffset::Off)
+    {
+      // Determine if offset values are suitable for computed respacing:  Values are monotonically increasing
+      bool
+        isSane = false;
+      size_t
+        numSorted = 0;
+
+      // check each gather to see if offsets are ordered within every gather
+      for (const auto& entry : gatherOffsetValues)
       {
         const auto
-          msgFormat = "The detected gather offset start/end/step of '{0}/{1}/{2}' is not consistent with the detected fold of '{3}'. This may indicate an incorrect header format for Offset trace header.";
-        const auto
-          msg = fmt::format(msgFormat, offsetStart, offsetEnd, offsetStep, fold);
+          & offsets = entry.second;
+        if (std::is_sorted(offsets.begin(), offsets.end()))
+        {
+          ++numSorted;
+        }
+        else
+        {
+          // if a gather is unordered then we're done
+          break;
+        }
+      }
+
+      if (numSorted == gatherOffsetValues.size())
+      {
+        // we can do respacing
+        if (traceSpacingByOffset == TraceSpacingByOffset::Auto)
+        {
+          // change the parameter to On to indicate that respacing is in effect
+          traceSpacingByOffset = TraceSpacingByOffset::On;
+        }
+      }
+      else if (traceSpacingByOffset == TraceSpacingByOffset::Auto)
+      {
+        // the offset spacing doesn't conform to our needs for respacing, so force the setting from Auto to Off
+        traceSpacingByOffset = TraceSpacingByOffset::Off;
+      }
+      else
+      {
+        // traceSpacingByOffset is set to On, but detected offset values aren't compatible with the respacing scheme
+
+        auto msg = "The detected gather offset values are not monotonically increasing. This may indicate an incorrect header format for the trace header Offset field and/or an incorrect option value for --respace-gathers.";
         OpenVDS::printError(printConfig, "analyzeSegment", msg);
+        return false;
+
         return false;
       }
     }
+
   }
 
   // If the secondary step couldn't be determined, set it to the last step or 1
@@ -2295,13 +2327,6 @@ main(int argc, char* argv[])
   float azimuthScaleFactor = 1.0f;
   std::string azimuthTypeString;
   std::string azimuthUnitString;
-
-  enum class TraceSpacingByOffset
-  {
-    Off = 0,
-    On = 1,
-    Auto = 2
-  };
 
   TraceSpacingByOffset traceSpacingByOffset = TraceSpacingByOffset::Auto;
   std::string traceSpacingByOffsetString;
