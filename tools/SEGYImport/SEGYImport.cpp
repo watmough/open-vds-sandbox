@@ -1095,7 +1095,7 @@ analyzeSegment(DataProvider &dataProvider, SEGYFileInfo const& fileInfo, SEGYSeg
 
 // Analog of analyzeSegment for offset-sorted SEGY
 bool
-analyzePrimaryKey(const std::vector<DataProvider>& dataProviders, SEGYFileInfo const& fileInfo, const int primaryKey, float valueRangePercentile, OpenVDS::FloatRange& valueRange, int& fold, int& secondaryStep, int& offsetStart, int& offsetEnd, int& offsetStep, OpenVDS::PrintConfig printConfig, OpenVDS::Error& error)
+analyzePrimaryKey(const std::vector<DataProvider>& dataProviders, SEGYFileInfo const& fileInfo, const int primaryKey, float valueRangePercentile, OpenVDS::FloatRange& valueRange, int& fold, int& secondaryStep, std::vector<int>& offsetValues, OpenVDS::PrintConfig printConfig, OpenVDS::Error& error)
 {
   assert(fileInfo.IsOffsetSorted());
 
@@ -1113,9 +1113,7 @@ analyzePrimaryKey(const std::vector<DataProvider>& dataProviders, SEGYFileInfo c
   valueRange = OpenVDS::FloatRange(0.0f, 1.0f);
   secondaryStep = 0;
   fold = 1;
-  offsetStart = 0;
-  offsetEnd = 0;
-  offsetStep = 0;
+  offsetValues.clear();
 
   if (fileInfo.m_segmentInfoListsByOffset.empty() || fileInfo.m_segmentInfoListsByOffset.front().empty())
   {
@@ -1136,41 +1134,7 @@ analyzePrimaryKey(const std::vector<DataProvider>& dataProviders, SEGYFileInfo c
 
   fold = static_cast<int>(globalOffsets.size());
 
-  offsetStart = *globalOffsets.begin();
-  offsetEnd = *globalOffsets.rbegin();
-
-  // find offset step
-  if (globalOffsets.size() > 1)
-  {
-    auto
-      offsetsIter = ++globalOffsets.begin();
-    offsetStep = abs(*offsetsIter - offsetStart);
-    auto
-      previousOffset = *offsetsIter;
-    while (++offsetsIter != globalOffsets.end())
-    {
-      offsetStep = std::min(offsetStep, abs(*offsetsIter - previousOffset));
-      previousOffset = *offsetsIter;
-    }
-  }
-  else
-  {
-    offsetStep = 1;
-  }
-
-  // check that offset start/end/step is consistent
-  if (offsetStart + (fold - 1) * offsetStep != offsetEnd)
-  {
-    const auto
-      msgFormat = "The detected gather offset start/end/step of '{0}/{1}/{2}' is not consistent with the detected fold of '{3}'. This may indicate an incorrect header format for Offset trace header.";
-    const auto
-      msg = fmt::format(msgFormat, offsetStart, offsetEnd, offsetStep, fold);
-    OpenVDS::printError(printConfig, "analyzePrimaryKey", msg);
-    error.code = -1;
-    error.string = msg;
-    return false;
-  }
-
+  offsetValues.assign(globalOffsets.begin(), globalOffsets.end());
 
   const int32_t
     traceByteSize = fileInfo.TraceByteSize();
@@ -2908,7 +2872,7 @@ main(int argc, char* argv[])
 
   OpenVDS::FloatRange valueRange;
   int fold = 1, primaryStep = 1, secondaryStep = 1;
-  int offsetStart, offsetEnd, offsetStep;
+  std::vector<int> gatherOffsetValues;
 
   const float valueRangePercentile = 99.5f; // 99.5f is the same default as Petrel uses.
 
@@ -2929,7 +2893,7 @@ main(int argc, char* argv[])
   {
     const auto
       primaryKey = findRepresentativePrimaryKey(fileInfo, primaryStep);
-    analyzeResult = analyzePrimaryKey(dataProviders, fileInfo, primaryKey, valueRangePercentile, valueRange, fold, secondaryStep, offsetStart, offsetEnd, offsetStep, printConfig, error);
+    analyzeResult = analyzePrimaryKey(dataProviders, fileInfo, primaryKey, valueRangePercentile, valueRange, fold, secondaryStep, gatherOffsetValues, printConfig, error);
   }
   else
   {
@@ -3082,8 +3046,21 @@ main(int argc, char* argv[])
     return EXIT_FAILURE;
   }
 
+  int
+    offsetStart = 0,
+    offsetEnd = 0;
+
+  if (!gatherOffsetValues.empty())
+  {
+    // use minmax_element because the offset values are not necessarily sorted (and use 1 for the offset step because the values aren't necessarily spaced consistently)
+    const auto
+      minMax = std::minmax_element(gatherOffsetValues.begin(), gatherOffsetValues.end());
+    offsetStart = *minMax.first,
+      offsetEnd = *minMax.second;;
+  }
+
   OffsetChannelInfo
-    offsetInfo(fileInfo.HasGatherOffset(), ConvertDistance(segyMeasurementSystem, static_cast<float>(offsetStart)), ConvertDistance(segyMeasurementSystem, static_cast<float>(offsetEnd)), ConvertDistance(segyMeasurementSystem, static_cast<float>(offsetStep)));
+    offsetInfo(fileInfo.HasGatherOffset(), ConvertDistance(segyMeasurementSystem, static_cast<float>(offsetStart)), ConvertDistance(segyMeasurementSystem, static_cast<float>(offsetEnd)), ConvertDistance(segyMeasurementSystem, 1.0f));
 
   // Create channel descriptors
   std::vector<OpenVDS::VolumeDataChannelDescriptor> channelDescriptors = createChannelDescriptors(fileInfo, valueRange, offsetInfo, attributeName, attributeUnit, isAzimuth, isMutes);
