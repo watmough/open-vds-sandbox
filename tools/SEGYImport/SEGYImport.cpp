@@ -2283,7 +2283,7 @@ CalculateGatherSpacing(const SEGYFileInfo& fileInfo, const int fold, const std::
     // read traces and stuff offset into a vector while primaryKey/secondaryKey match
     int64_t
       trace = firstTrace + 1;
-    for (int64_t trace = firstTrace + 1; trace < firstTrace + fold; ++trace)
+    for (int64_t trace = firstTrace + 1; trace < traceDataManager.fileTraceCount() && trace < firstTrace + fold; ++trace)
     {
       header = traceDataManager.getTraceData(trace, error);
       if (error.code != 0)

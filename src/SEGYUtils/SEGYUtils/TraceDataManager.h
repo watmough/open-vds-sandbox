@@ -141,6 +141,12 @@ public:
     m_dataViewManager->retireAllDataViews();
   }
 
+  int64_t
+  fileTraceCount() const
+  {
+    return m_numTraces;
+  }
+
 private:
   std::shared_ptr<DataViewManager>
     m_dataViewManager;
