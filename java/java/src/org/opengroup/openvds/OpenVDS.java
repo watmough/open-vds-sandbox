@@ -18,10 +18,11 @@
 package org.opengroup.openvds;
 
 import java.io.IOException;
-import java.util.List;
 
 public class OpenVDS extends VdsHandle {
-    private static native long cpOpenAWS(String bucket, String key, String region, String endpointoverhide) throws IOException;
+    private static native long cpOpenAWS(String bucket, String key, String region, String endPointOverride, String accessKeyId, String secretKey,
+                                         String sessionToken, String expiration,
+                                         String logFilenamePrefix, String loglevel, int connectionTimeoutMs, int requestTimeoutMs, boolean disableInitApi) throws IOException;
 
     private static native long cpOpenAzure(String pConnectionString, String pContainer, String pBlob,
                                            int pParallelismFactor, int pMaxExecutionTime) throws IOException;
@@ -50,7 +51,8 @@ public class OpenVDS extends VdsHandle {
                                              VolumeDataLayoutDescriptor ld, VolumeDataAxisDescriptor[] vda,
                                              VolumeDataChannelDescriptor[] vdc, MetadataReadAccess md, int compressionMethod, float compressionTolerance) throws IOException;
 
-    private static native long cpCreateAws(String bucket, String key, String region, String endpointoverhide, String accessKeyId, String secretKey, String sessionToken, String expiration,
+    private static native long cpCreateAws(String bucket, String key, String region, String endPointOverride, String accessKeyId, String secretKey, String sessionToken, String expiration,
+                                           String logFilenamePrefix, String loglevel, int connectionTimeoutMs, int requestTimeoutMs, boolean disableInitApi,
                                            VolumeDataLayoutDescriptor ld, VolumeDataAxisDescriptor[] vda,
                                            VolumeDataChannelDescriptor[] vdc, MetadataReadAccess md, int compressionMethod, float compressionTolerance) throws IOException;
     
@@ -79,7 +81,8 @@ public class OpenVDS extends VdsHandle {
 
     public static OpenVDS open(AWSOpenOptions o) throws IOException {
         if (o == null) throw new IllegalArgumentException("open option can't be null");
-        return new OpenVDS(cpOpenAWS(o.bucket, o.key, o.region, o.endpointoverhide), true);
+        return new OpenVDS(cpOpenAWS(o.bucket, o.key, o.region, o.endPointOverride, o.accessKeyId, o.secretKey, o.sessionToken, o.expiration,
+                o.logFilenamePrefix, o.logLevel, o.connectionTimeoutMs, o.requestTimeoutMs, o.disableInitApi), true);
     }
 
     public static OpenVDS open(AzureOpenOptions o) throws IOException {
@@ -101,7 +104,7 @@ public class OpenVDS extends VdsHandle {
         if (o == null) throw new IllegalArgumentException("open option can't be null");
         return new OpenVDS(cpOpenVDSFile(o.filePath), true);
     }
-    
+
     private static void validateCreateArguments(VolumeDataLayoutDescriptor ld,
                                  VolumeDataAxisDescriptor[] vda, VolumeDataChannelDescriptor[] vdc,
                                  MetadataReadAccess md) throws IllegalArgumentException {
@@ -176,7 +179,8 @@ public class OpenVDS extends VdsHandle {
                                  MetadataReadAccess md) throws IOException {
         validateCreateArguments(o, ld, vda, vdc, md);
 
-        return new OpenVDS(cpCreateAws(o.bucket, o.key, o.region, o.endpointoverhide, o.accessKeyId, o.secretKey, o.sessionToken, o.expiration,
+        return new OpenVDS(cpCreateAws(o.bucket, o.key, o.region, o.endPointOverride, o.accessKeyId, o.secretKey, o.sessionToken, o.expiration,
+                o.logFilenamePrefix, o.logLevel, o.connectionTimeoutMs, o.requestTimeoutMs, o.disableInitApi,
                                          ld, vda, vdc, md, 0, 0), true);
     }
 
@@ -185,8 +189,9 @@ public class OpenVDS extends VdsHandle {
                                  MetadataReadAccess md, CompressionMethod compressionMethod, float compressionTolerance) throws IOException {
         validateCreateArguments(o, ld, vda, vdc, md);
 
-        return new OpenVDS(cpCreateAws(o.bucket, o.key, o.region, o.endpointoverhide, o.accessKeyId, o.secretKey, o.sessionToken, o.expiration,
-                                         ld, vda, vdc, md, compressionMethod.ordinal(), compressionTolerance), true);
+        return new OpenVDS(cpCreateAws(o.bucket, o.key, o.region, o.endPointOverride, o.accessKeyId, o.secretKey, o.sessionToken, o.expiration,
+                o.logFilenamePrefix, o.logLevel, o.connectionTimeoutMs, o.requestTimeoutMs, o.disableInitApi,
+                ld, vda, vdc, md, compressionMethod.ordinal(), compressionTolerance), true);
     }
 
     public static OpenVDS create(GoogleOpenOptions o, VolumeDataLayoutDescriptor ld,
