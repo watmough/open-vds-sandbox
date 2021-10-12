@@ -119,9 +119,9 @@ for python_executable in "${python_executables[@]}"; do
  
   echo "Do $python_executable to $skbuild_dir"
   if [[ "$platform_name" == "win" ]]; then
-    cmake -DPython3_ROOT_DIR="$python_root_dir" -DCMAKE_INSTALL_PREFIX=$skbuild_dir/cmake-install $cmake_args -G"$cmake_generator" $toolset $openvds_path
-    cmake --build . --config Debug --target install
-    cmake --build . --config Release --target install
+    cmake -DPython3_ROOT_DIR="$python_root_dir" -DCMAKE_INSTALL_PREFIX=$skbuild_dir/cmake-install -DENABLE_MSVC_TOOLSET_DIR=OFF $cmake_args -G"$cmake_generator" $toolset $openvds_path
+    cmake --build . --config Debug --parallel --target install
+    cmake --build . --config Release --parallel --target install
   else
     cmake -DPython3_ROOT_DIR="$python_root_dir" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$skbuild_dir/cmake-install $cmake_args -G"$cmake_generator" $toolset $openvds_path
     cmake --build . --config Release --target install
@@ -132,8 +132,6 @@ for python_executable in "${python_executables[@]}"; do
   cp -r "$build_dir"/* "$skbuild_dir/cmake-build"
   
   "$python_executable" setup.py --skip-cmake bdist_wheel
-
-  cp -r $skbuild_dir/cmake-install/* binpackage/$name-$openvds_version
 
   if [[ "$auditwheels" == "yes" ]]; then
     old_dir=$PWD
@@ -173,6 +171,17 @@ for python_executable in "${python_executables[@]}"; do
     cp $openvds_path/dist/* $openvds_path/binpackage/$name-$openvds_version/
     mv $openvds_path/dist/* $openvds_path/binpackage/python/$distribution/
   fi
+
+  if [[ "$platform_name" == "win" ]]; then
+    cd "$build_dir"
+    rm -rf $skbuild_dir/cmake-install
+    cmake -DPython3_ROOT_DIR="$python_root_dir" -DCMAKE_INSTALL_PREFIX=$skbuild_dir/cmake-install -DENABLE_MSVC_TOOLSET_DIR=ON $cmake_args -G"$cmake_generator" $toolset $openvds_path
+    cmake --build . --config Debug --parallel --target install
+    cmake --build . --config Release --parallel --target install
+  fi
+  cd "$openvds_path"
+  cp -r $skbuild_dir/cmake-install/* binpackage/$name-$openvds_version
+
   rm -rf $openvds_path/dist
 done
 

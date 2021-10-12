@@ -22,10 +22,6 @@ if(WIN32)
   endif()
 endif()
 
-if (${MSVC_TOOLSET_VERSION_LOCAL})
-  set(LIB_TOOLSET_DIR "/msvc_${MSVC_TOOLSET_VERSION_LOCAL}")
-endif()
-
 include(GNUInstallDirs)
 
 set (TEST_DATA_PATH "" CACHE PATH "Test data path")
@@ -117,6 +113,7 @@ endif()
 option(BUILD_PYTHON "Build python bindings" ${BUILD_PYTHON_DEFAULT})
 option(BUILD_JAVA "Build java bindings" ${BUILD_JAVA_DEFAULT})
 option(ENABLE_OPENMP "Enable the OpenMP codepath" ON)
+option(ENABLE_MSVC_TOOLSET_DIR "Enable adding a subdir for the MSVC toolset" ON)
 option(BUILD_SHARED_LIBS "Build OpenVDS as a shared library" ON)
 option(BUILD_EXAMPLES "Build OpenVDS example projects" ON)
 option(BUILD_TESTS "Build OpenVDS tests" ON)
@@ -163,6 +160,10 @@ define_property(GLOBAL PROPERTY OPENVDS_LINK_LIBRARIES_RELEASE BRIEF_DOCS "OpenV
 define_property(GLOBAL PROPERTY OPENVDS_LINK_LIBRARIES_DEBUG   BRIEF_DOCS "OpenVDS link libraries" FULL_DOCS "Files OpenVDS will link with")
 define_property(GLOBAL PROPERTY OPENVDS_INCLUDE_LIBRARIES BRIEF_DOCS "OpenVDS include libraries" FULL_DOCS "Include paths for 3rdparty")
 define_property(GLOBAL PROPERTY OPENVDS_DEPENDENCY_TARGETS BRIEF_DOCS "Dependency targets for OpenVDS" FULL_DOCS "Targets that OpenVDS needs to build first")
+
+if (ENABLE_MSVC_TOOLSET_DIR AND "${MSVC_TOOLSET_VERSION_LOCAL}")
+  set(LIB_TOOLSET_DIR "/msvc_${MSVC_TOOLSET_VERSION_LOCAL}")
+endif()
 
 set(LIB_TOOLSET_DIR "${LIB_TOOLSET_DIR}$<$<NOT:$<CONFIG:Release>>:/$<CONFIG>>")
 
