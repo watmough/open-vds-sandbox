@@ -113,6 +113,7 @@ add_test_executable(openvds_integration_tests
   OpenVDS/VolumeIndexerSymbols.cpp
   OpenVDS/RequestVolumeError.cpp
   OpenVDS/IJKCoordinateTransformerTest.cpp
+  OpenVDS/MultiComponent.cpp
   )
 
 add_test_executable(multithreaded_requests
