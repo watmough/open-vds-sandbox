@@ -47,17 +47,30 @@ jlong openVDSOrThrowJavaIOException(JNIEnv *env, const OpenVDS::OpenOptions &ope
 /*
  * Class:     org_opengroup_openvds_OpenVDS
  * Method:    cpOpenAWS
- * Signature: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)J
+ * Signature: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;IIZ)J
  */
-jlong JNICALL Java_org_opengroup_openvds_OpenVDS_cpOpenAWS
-        (JNIEnv *env, jclass, jstring jbucket, jstring jkey, jstring jregion, jstring jEndPointOverride)
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_cpOpenAWS
+        (JNIEnv * env, jclass,
+         jstring jBucket, jstring jKey, jstring jRegion, jstring jEndpointOverride,
+         jstring jAccessKeyID, jstring jSecretKeyID,
+         jstring jSessionToken, jstring jExpiration, jstring jLogFilenamePrefix, jstring jLogLevel,
+         jint jConnectionTimeOutMs, jint jRequestTimeOutMs, jboolean jDisableInitAPI)
 {
     OpenVDS::AWSOpenOptions openOptions;
 
-    openOptions.key = JStringToString(env, jkey);
-    openOptions.bucket = JStringToString(env, jbucket);
-    openOptions.region = JStringToString(env, jregion);
-    openOptions.endpointOverride = JStringToString(env, jEndPointOverride);
+    openOptions.key = JStringToString(env, jKey);
+    openOptions.bucket = JStringToString(env, jBucket);
+    openOptions.region = JStringToString(env, jRegion);
+    openOptions.endpointOverride = JStringToString(env, jEndpointOverride);
+    openOptions.accessKeyId = JStringToString(env, jAccessKeyID);
+    openOptions.secretKey = JStringToString(env, jSecretKeyID);
+    openOptions.sessionToken = JStringToString(env, jSessionToken);
+    openOptions.expiration = JStringToString(env, jExpiration);
+    openOptions.logFilenamePrefix = JStringToString(env, jLogFilenamePrefix);
+    openOptions.loglevel = JStringToString(env, jLogLevel);
+    openOptions.connectionTimeoutMs = jConnectionTimeOutMs;
+    openOptions.requestTimeoutMs = jRequestTimeOutMs;
+    openOptions.disableInitApi = jDisableInitAPI;
 
     return openVDSOrThrowJavaIOException(env, openOptions);
 }
@@ -382,23 +395,35 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_cpCreateVDSFile
     return createVDSOrThrowJavaIOException(env, openOptions, ld, vda, vdc, md, compressionMethod, compressionTolerance);
 }
 
-jlong JNICALL
-Java_org_opengroup_openvds_OpenVDS_cpCreateAws(JNIEnv *env, jclass,
-  jstring jbucket, jstring jkey, jstring jregion, jstring jendpointoverhide, jstring jaccessKeyId, jstring jsecretKey, jstring jsessionToken, jstring jexpiration,
-  jobject ld, jobjectArray vda, jobjectArray vdc, jobject md, jint compressionMethod, jfloat compressionTolerance)
+/*
+ * Class:     org_opengroup_openvds_OpenVDS
+ * Method:    cpCreateAws
+ * Signature: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;IIZLorg/opengroup/openvds/VolumeDataLayoutDescriptor;[Lorg/opengroup/openvds/VolumeDataAxisDescriptor;[Lorg/opengroup/openvds/VolumeDataChannelDescriptor;Lorg/opengroup/openvds/MetadataReadAccess;IF)J
+ */
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_cpCreateAws
+        (JNIEnv * env, jclass,
+         jstring jBucket, jstring jKey, jstring jRegion, jstring jEndpointOverride,
+         jstring jAccessKeyId, jstring jSecretKey, jstring jSessionToken, jstring jExpiration,
+         jstring jLogFilenamePrefix, jstring jLogLevel, jint jConnectionTimeOutMs, jint jRequestTimeOutMs, jboolean jDisableInitAPI,
+         jobject ld, jobjectArray vda, jobjectArray vdc, jobject md, jint compressionMethod, jfloat compressionTolerance)
 {
-  OpenVDS::AWSOpenOptions openOptions;
+    OpenVDS::AWSOpenOptions openOptions;
 
-  openOptions.bucket = JStringToString(env, jbucket);
-  openOptions.key = JStringToString(env, jkey);
-  openOptions.region = JStringToString(env, jregion);
-  openOptions.endpointOverride = JStringToString(env, jendpointoverhide);
-  openOptions.accessKeyId = JStringToString(env, jaccessKeyId);
-  openOptions.secretKey = JStringToString(env, jsecretKey);
-  openOptions.sessionToken = JStringToString(env, jsessionToken);
-  openOptions.expiration = JStringToString(env, jexpiration);
+    openOptions.bucket = JStringToString(env, jBucket);
+    openOptions.key = JStringToString(env, jKey);
+    openOptions.region = JStringToString(env, jRegion);
+    openOptions.endpointOverride = JStringToString(env, jEndpointOverride);
+    openOptions.accessKeyId = JStringToString(env, jAccessKeyId);
+    openOptions.secretKey = JStringToString(env, jSecretKey);
+    openOptions.sessionToken = JStringToString(env, jSessionToken);
+    openOptions.expiration = JStringToString(env, jExpiration);
+    openOptions.logFilenamePrefix = JStringToString(env, jLogFilenamePrefix);
+    openOptions.loglevel = JStringToString(env, jLogLevel);
+    openOptions.connectionTimeoutMs = jConnectionTimeOutMs;
+    openOptions.requestTimeoutMs = jRequestTimeOutMs;
+    openOptions.disableInitApi = jDisableInitAPI;
 
-  return createVDSOrThrowJavaIOException(env, openOptions, ld, vda, vdc, md, compressionMethod, compressionTolerance);
+    return createVDSOrThrowJavaIOException(env, openOptions, ld, vda, vdc, md, compressionMethod, compressionTolerance);
 }
 
 jlong JNICALL

@@ -23,7 +23,19 @@ package org.opengroup.openvds;
  */
 public class AWSOpenOptions extends OpenOptions {
 
-    public String bucket, key, region, endpointoverhide, accessKeyId, secretKey, sessionToken, expiration;
+    public String bucket;
+    public String key;
+    public String region;
+    public String endPointOverride;
+    public String accessKeyId;
+    public String secretKey;
+    public String sessionToken;
+    public String expiration;
+    public String logFilenamePrefix;
+    public String logLevel;
+    public int connectionTimeoutMs = 3000;
+    public int requestTimeoutMs = 6000;
+    public boolean disableInitApi = false;
 
     /**
      * Default constructor.
@@ -45,7 +57,7 @@ public class AWSOpenOptions extends OpenOptions {
         bucket = pBucket;
         key = pKey;
         region = pRegion;
-        endpointoverhide = pEndpointOverride;
+        endPointOverride = pEndpointOverride;
     }
 
     /**
@@ -59,3 +71,4 @@ public class AWSOpenOptions extends OpenOptions {
         this(pBucket, pKey, pRegion, null);
     }
 }
+
