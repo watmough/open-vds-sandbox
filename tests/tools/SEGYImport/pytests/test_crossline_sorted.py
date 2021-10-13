@@ -99,10 +99,10 @@ def test_coordinate_system(teleport_crossline_executor):
 
         assert origin[0] == pytest.approx(431990.979266)
         assert origin[1] == pytest.approx(6348549.7101)
-        assert inline_spacing[0] == pytest.approx(3.021094)
-        assert inline_spacing[1] == pytest.approx(12.125)
-        assert crossline_spacing[0] == pytest.approx(-12.128862)
-        assert crossline_spacing[1] == pytest.approx(3.022056)
+        assert inline_spacing[0] == pytest.approx(3.02145)
+        assert inline_spacing[1] == pytest.approx(12.13037)
+        assert crossline_spacing[0] == pytest.approx(-12.12871)
+        assert crossline_spacing[1] == pytest.approx(3.024143)
 
 
 def test_coordinate_system_comparison(teleport_crossline_executor, teleport_conventional_executor):
@@ -180,6 +180,9 @@ def test_samples_comparison(teleport_crossline_executor, teleport_conventional_e
                                                                    format=openvds.VolumeDataChannelDescriptor.Format.Format_R32,
                                                                    dimensionsND=openvds.DimensionsND.Dimensions_012)
 
+            assert len(request.data) == num_z * num_crossline
+            assert len(request_conv.data) == num_z * num_crossline
+
             sample_data = request.data.reshape(num_crossline, num_z)
             sample_data_conv = request_conv.data.reshape(num_crossline, num_z)
 
@@ -236,6 +239,8 @@ def test_dimensions_and_produce_status(crossline_output_vds,
     ]
     if dimensions == 4:
         additional_args.append("--prestack")
+        # Prestack file has lots of empty traces? Need to ignore it.
+        additional_args.append("--ignore-warnings")
 
     ex = construct_crossline_executor(segy_filename, crossline_output_vds, additional_args)
 
