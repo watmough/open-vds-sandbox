@@ -5,7 +5,8 @@ import os
 import subprocess
 import tempfile
 import weakref
-from typing import List, Union, Any
+import pytest
+from typing import List
 
 test_data_dir = "c:\\temp\\SEGY\\RegressionTestData"
 
@@ -60,3 +61,17 @@ class TempVDSGuard(TempFileGuard):
 class TempScanFileGuard(TempFileGuard):
     def __init__(self, base_name="scan_test"):
         super().__init__(base_name, ".scan.json")
+
+
+@pytest.fixture
+def teleport_test_data_dir() -> str:
+    return os.path.join(test_data_dir, "HeadwavePlatform", "PlatformIntegration", "Teleport")
+
+
+@pytest.fixture
+def segyimport_test_data_dir() -> str:
+    return os.path.join(test_data_dir, "Plugins", "ImportPlugins", "SEGYUnittest")
+
+
+def platform_integration_test_data_dir() -> str:
+    return os.path.join(test_data_dir, "HeadwavePlatform", "PlatformIntegration")
