@@ -240,7 +240,7 @@ SEGYFileInfo::Scan(const std::vector<DataProvider>& dataProviders, OpenVDS::Erro
 
     SEGYBinInfo outsideBinInfo;
 
-    int primaryKey = ReadFieldFromHeader(traceHeader, primaryKeyHeaderField, m_headerEndianness), nextPrimaryKey = 0;
+    int primaryKey = Is2D() ? 0 : ReadFieldFromHeader(traceHeader, primaryKeyHeaderField, m_headerEndianness), nextPrimaryKey = 0;
 
     SEGYSegmentInfo segmentInfo(primaryKey, 0, readBinInfoFromHeader(traceHeader, binInfoHeaderFields, m_headerEndianness, 1));
 
@@ -262,7 +262,7 @@ SEGYFileInfo::Scan(const std::vector<DataProvider>& dataProviders, OpenVDS::Erro
       }
       readCount++;
 
-      primaryKey = ReadFieldFromHeader(traceHeader, primaryKeyHeaderField, m_headerEndianness);
+      primaryKey = Is2D() ? 0 : ReadFieldFromHeader(traceHeader, primaryKeyHeaderField, m_headerEndianness);
       testOffset = readOffset(traceHeader);
 
       if (primaryKey == segmentInfo.m_primaryKey && (!IsOffsetSorted() || testOffset == currentOffset)) // expand current segment if the primary key matches
