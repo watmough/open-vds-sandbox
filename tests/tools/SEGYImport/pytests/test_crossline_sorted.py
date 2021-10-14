@@ -233,14 +233,12 @@ def test_dimensions_and_produce_status(crossline_output_vds,
 
     additional_args = [
         "--header-field", "InlineNumber=17:4",
-        "--header-field", "CrosslineNumber=17:4",
+        "--header-field", "CrosslineNumber=21:4",
         "--header-field", "EnsembleXCoordinateByteLocation=73:4",
         "--header-field", "EnsembleYCoordinateByteLocation=77:4"
     ]
     if dimensions == 4:
         additional_args.append("--prestack")
-        # Prestack file has lots of empty traces? Need to ignore it.
-        additional_args.append("--ignore-warnings")
 
     ex = construct_crossline_executor(segy_filename, crossline_output_vds, additional_args)
 
@@ -252,8 +250,6 @@ def test_dimensions_and_produce_status(crossline_output_vds,
     with openvds.open(crossline_output_vds.filename, "") as handle:
         layout = openvds.getLayout(handle)
         access_manager = openvds.getAccessManager(handle)
-
-        sample_channel_name = layout.getChannelName(0)
 
         # check produce status
 
