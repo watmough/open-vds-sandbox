@@ -207,15 +207,15 @@ prestack_axes = [
 ]
 
 poststack_survey_vectors = [
-    (76290.81610169, 949398.18641265),
-    (-15.5, 19.609375),
-    (19.60459195, 15.49621929)
+    (76276.3367, 949408.127),
+    (-15.496337, 19.612673),
+    (19.610, 15.48960)
 ]
 
 prestack_survey_vectors = [
-    (530620.06457521, 5789005.97294581),
-    (-15.51, 19.625),
-    (19.63167672, 15.51527674)
+    (530768.667, 5788901.760),
+    (-15.5040, 19.611520),
+    (19.555556, 15.573333)
 ]
 
 poststack_segy_filename = os.path.join(platform_integration_test_data_dir(), "ImporterTests",
@@ -234,8 +234,8 @@ def test_dimensions_and_produce_status(crossline_output_vds,
     additional_args = [
         "--header-field", "InlineNumber=17:4",
         "--header-field", "CrosslineNumber=21:4",
-        "--header-field", "EnsembleXCoordinateByteLocation=73:4",
-        "--header-field", "EnsembleYCoordinateByteLocation=77:4"
+        "--header-field", "EnsembleXCoordinate=73:4",
+        "--header-field", "EnsembleYCoordinate=77:4"
     ]
     if dimensions == 4:
         additional_args.append("--prestack")
@@ -288,9 +288,9 @@ def test_dimensions_and_produce_status(crossline_output_vds,
         # check survey coordinate system vectors
 
         origin, inline_spacing, crossline_spacing = get_scs_metadata_vectors(layout)
-        assert origin[0] == scs_vectors[0][0]
-        assert origin[1] == scs_vectors[0][1]
-        assert inline_spacing[0] == scs_vectors[1][0]
-        assert inline_spacing[1] == scs_vectors[1][1]
-        assert crossline_spacing[0] == scs_vectors[2][0]
-        assert crossline_spacing[1] == scs_vectors[2][1]
+        assert origin[0] == pytest.approx(scs_vectors[0][0])
+        assert origin[1] == pytest.approx(scs_vectors[0][1])
+        assert inline_spacing[0] == pytest.approx(scs_vectors[1][0])
+        assert inline_spacing[1] == pytest.approx(scs_vectors[1][1])
+        assert crossline_spacing[0] == pytest.approx(scs_vectors[2][0])
+        assert crossline_spacing[1] == pytest.approx(scs_vectors[2][1])
