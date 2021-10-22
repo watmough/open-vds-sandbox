@@ -99,6 +99,9 @@ It is the access_token member of the return that will be used as the sdtoken unt
 NOTE: Key values for `sd` can use `snake_case` instead of `CammelCase` to match the
 look and feel of the response from the token provider.
 
+If the seismic dms service is targeting AWS, please make sure to set the
+AWS_REGION environment variable to the correct region.
+
 ``azureSAS`` will accept the following keys
 
   - Suffix
