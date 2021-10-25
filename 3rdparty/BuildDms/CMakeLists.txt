@@ -8,12 +8,13 @@ set (CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include_directories(${dmsCMakeDir}/src/core)
 include_directories(${dmsCMakeDir}/src/lib)
+include_directories(${dmsCMakeDir}/src/lib/cloud)
 include_directories(${dmsCMakeDir}/src/lib/cloud/providers)
+include_directories(${dmsCMakeDir}/src/lib/cloud/providers/gcs-accessor)
 
 # retrieve sources
 file(GLOB SRC_CORE ${dmsCMakeDir}/src/core/*.cc)
-file(GLOB SRC_LIB_ACCESSORS ${dmsCMakeDir}/src/lib/accessors/*.cc)
-file(GLOB SRC_LIB_PROVIDERS ${dmsCMakeDir}/src/lib/cloud/providers/*.cc)
+file(GLOB SRC_LIB_PROVIDERS ${dmsCMakeDir}/src/lib/cloud/*.cc ${dmsCMakeDir}/src/lib/cloud/providers/gcs-accessor/*.cc)
 file(GLOB SRC_LIB_HTTP ${dmsCMakeDir}/src/lib/http/*.cc)
 file(GLOB SRC_LIB_JSON ${dmsCMakeDir}/src/lib/json/*.cpp)
 file(GLOB SRC_LIB_AUTH ${dmsCMakeDir}/src/lib/auth/*.cc)
