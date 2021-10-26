@@ -35,7 +35,6 @@ def azimuth_from_azimuth_executor(azimuth_degrees_segy, output_vds) -> Tuple[Imp
     ex.add_args(["--azimuth-type", "azimuth"])
     ex.add_args(["--azimuth-unit", "degrees"])
     ex.add_arg("--prestack")
-    ex.add_arg("--order-by-offset=false")
     ex.add_args(["--vdsfile", output_vds.filename])
 
     # Need to ignore warnings because this data is only one segment
@@ -56,7 +55,6 @@ def azimuth_from_offset_xy_executor(azimuth_offset_xy_segy, output_vds) -> Tuple
     ex.add_arg("--azimuth")
     ex.add_args(["--azimuth-type", "offsetxy"])
     ex.add_arg("--prestack")
-    ex.add_arg("--order-by-offset=false")
     ex.add_args(["--vdsfile", output_vds.filename])
 
     ex.add_arg(azimuth_offset_xy_segy)
