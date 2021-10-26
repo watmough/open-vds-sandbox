@@ -75,3 +75,8 @@ def segyimport_test_data_dir() -> str:
 
 def platform_integration_test_data_dir() -> str:
     return os.path.join(test_data_dir, "HeadwavePlatform", "PlatformIntegration")
+
+
+@pytest.fixture
+def volve_data_dir() -> str:
+    return "D:\\SEGY\\Equinor\\Volve"

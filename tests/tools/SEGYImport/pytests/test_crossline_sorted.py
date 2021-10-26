@@ -6,7 +6,7 @@ import pytest
 import os
 
 from segyimport_test_config import ImportExecutor, TempVDSGuard, segyimport_test_data_dir, teleport_test_data_dir, \
-    platform_integration_test_data_dir
+    platform_integration_test_data_dir, volve_data_dir
 
 
 def construct_crossline_executor(segy_filename: str, output_vds: TempVDSGuard,
@@ -41,6 +41,11 @@ def teleport_conventional_segy(teleport_test_data_dir) -> str:
 @pytest.fixture
 def teleport_crossline_sorted_segy(segyimport_test_data_dir) -> str:
     return os.path.join(segyimport_test_data_dir, "CrosslineSorted", "ST0202R08_TIME_crossline_sorted.segy")
+
+
+@pytest.fixture
+def volve_crossline_sorted_segy(volve_data_dir) -> str:
+    return os.path.join(volve_data_dir, "ST0202", "Stacks", "ST0202R08_PS_PSDM_FULL_OFFSET_PP_TIME.MIG_FIN.POST_STACK.3D.JS-017534_crossline_sorted.segy")
 
 
 @pytest.fixture
@@ -142,6 +147,7 @@ def test_samples_comparison(teleport_crossline_executor, teleport_conventional_e
 
     result = xl_ex.run()
 
+    s = xl_ex.command_line()
     assert result == 0, xl_ex.output()
     assert Path(xl_output_vds.filename).exists()
 
@@ -294,3 +300,23 @@ def test_dimensions_and_produce_status(crossline_output_vds,
         assert inline_spacing[1] == pytest.approx(scs_vectors[1][1])
         assert crossline_spacing[0] == pytest.approx(scs_vectors[2][0])
         assert crossline_spacing[1] == pytest.approx(scs_vectors[2][1])
+
+
+@pytest.mark.parametrize("disable_crossline_ordering", [False, True])
+def test_volve_crossline_sorted(volve_crossline_sorted_segy, crossline_output_vds, disable_crossline_ordering: bool):
+    """
+    Executes SEGYImport on a large-ish crossline-sorted poststack SEGY from Volve.
+
+    This test is mostly meant to compare execution time with and without the crossline input
+    re-ordering, so the test itself does minimal checks.
+    """
+    additional_args = []
+    if disable_crossline_ordering:
+        additional_args.append("--disable-crossline-input-reorder")
+
+    ex = construct_crossline_executor(volve_crossline_sorted_segy, crossline_output_vds, additional_args)
+
+    result = ex.run()
+
+    assert result == 0, ex.output()
+    assert Path(crossline_output_vds.filename).exists()
