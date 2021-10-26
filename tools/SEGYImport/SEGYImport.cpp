@@ -56,6 +56,7 @@
 #include <chrono>
 #include <numeric>
 #include <set>
+#include <array>
 
 #if defined(WIN32)
 #undef WIN32_LEAN_AND_MEAN // avoid warnings if defined on command line
@@ -2458,7 +2459,7 @@ main(int argc, char* argv[])
   bool is_tty = isatty(fileno(stdout));
 #endif
   //auto start_time = std::chrono::high_resolution_clock::now();
-  cxxopts::Options options("SEGYImport", "SEGYImport - A tool to scan and import a SEG-Y file to a volume data store (VDS)\n\nUse -H or see online documentation for connection string paramters:\nhttp://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/seismic/open-vds/connection.html\n");
+  cxxopts::Options options("SEGYImport", "SEGYImport - A tool to scan and import a SEG-Y file to a volume data store (VDS)\n\nUse -H or see online documentation for connection string parameters:\nhttp://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/seismic/open-vds/connection.html\n");
   options.positional_help("<input file>");
 
   std::string headerFormatFileName;
@@ -2512,6 +2513,7 @@ main(int argc, char* argv[])
 
   TraceSpacingByOffset traceSpacingByOffset = TraceSpacingByOffset::Auto;
   std::string traceSpacingByOffsetString;
+  bool isDisableCrosslineReordering = false;
 
   PrimaryKeyValue primaryKeyValue = PrimaryKeyValue::InlineNumber;
 
@@ -2572,10 +2574,7 @@ main(int argc, char* argv[])
   options.add_option("", "", "azimuth-unit", std::string("Azimuth unit. Supported azimuth units are: ") + supportedAzimuthUnits + ".", cxxopts::value<std::string>(azimuthUnitString), "<string>");
   options.add_option("", "", "azimuth-scale", "Azimuth scale factor. Trace header field Azimuth values will be multiplied by this factor.", cxxopts::value<float>(azimuthScaleFactor), "<value>");
   options.add_option("", "", "respace-gathers", std::string("Respace traces in prestack gathers by Offset trace header field. Supported options are: ") + supportedTraceSpacingTypes + ".", cxxopts::value<std::string>(traceSpacingByOffsetString), "<string>");
-
-  // TODO remove traceOrderByOffset option
-  options.add_option("", "", "order-by-offset", "Order traces within a gather by offset.", cxxopts::value<bool>(traceOrderByOffset), "");
-
+  options.add_option("", "", "disable-crossline-input-reorder", "Disable VDS chunk reordering for crossline-sorted SEGY. This option will probably reduce performance.", cxxopts::value<bool>(isDisableCrosslineReordering), "");
   options.add_option("", "q", "quiet", "Disable info level output.", cxxopts::value<bool>(disableInfo), "");
   options.add_option("", "Q", "very-quiet", "Disable warning level output.", cxxopts::value<bool>(disableWarning), "");
   options.add_option("", "h", "help", "Print this help information", cxxopts::value<bool>(help), "");
@@ -3426,6 +3425,13 @@ main(int argc, char* argv[])
       lowerUpperSegmentIndices;
   };
 
+  // chunk information for iterating crossline-sorted data in input order (instead of default chunk order)
+  std::array<int64_t, 4>
+    dimChunkCounts = { 0, 0, 0, 0 },
+    dimChunkPitches = { 1, 1, 1, 1 };
+  const auto
+    dimensionality = axisDescriptors.size();
+
   // limit DataViewManager's memory use to 1.5 sets of brick inlines
   const int64_t dvmMemoryLimit = 3LL * (writeDimensionGroup == OpenVDS::DimensionsND::Dimensions_01 ? 1 : brickSize) * axisDescriptors[1].GetNumSamples() * fileInfo.TraceByteSize() / 2LL;
 
@@ -3457,6 +3463,25 @@ main(int argc, char* argv[])
   {
     auto &chunkInfo = chunkInfos[chunk];
     amplitudeAccessor->GetChunkMinMax(chunk, chunkInfo.min, chunkInfo.max);
+
+    if (primaryKeyValue == PrimaryKeyValue::CrosslineNumber)
+    {
+      for (auto i = 0; i < dimChunkCounts.size(); ++i)
+      {
+        bool isZero = true;
+        for (auto j = 0; isZero && j < dimChunkCounts.size(); ++j)
+        {
+          if (j != i)
+          {
+            isZero = chunkInfo.min[j] == 0;
+          }
+        }
+        if (isZero)
+        {
+          ++dimChunkCounts[i];
+        }
+      }
+    }
 
     chunkInfo.sampleStart = chunkInfo.min[0];
     chunkInfo.sampleCount = chunkInfo.max[0] - chunkInfo.min[0];
@@ -3551,9 +3576,14 @@ main(int argc, char* argv[])
     }
   }
 
-  for (int64_t chunk = 0; chunk < amplitudeAccessor->GetChunkCount() && error.code == 0; chunk++)
+  for (size_t i = 1; i < dimChunkCounts.size(); ++i)
   {
-    int new_percentage = int(double(chunk) / amplitudeAccessor->GetChunkCount() * 100);
+    dimChunkPitches[i] = dimChunkPitches[i - 1] * dimChunkCounts[i - 1];
+  }
+
+  for (int64_t chunkSequence = 0; chunkSequence < amplitudeAccessor->GetChunkCount() && error.code == 0; chunkSequence++)
+  {
+    int new_percentage = int(double(chunkSequence) / amplitudeAccessor->GetChunkCount() * 100);
     if (OpenVDS::isInfo(printConfig) && !OpenVDS::isJson(printConfig) && is_tty && percentage != new_percentage)
     {
       percentage = new_percentage;
@@ -3574,13 +3604,47 @@ main(int argc, char* argv[])
       }
     }
 
+    auto
+      chunk = chunkSequence;
+
+    if (primaryKeyValue == PrimaryKeyValue::CrosslineNumber && (dimensionality == 3 || dimensionality == 4) && !isDisableCrosslineReordering)
+    {
+      // recompute the chunk number for the crossline-sorted chunk corresponding to the current sequence number
+
+      std::array<int64_t, 4> chunkCoords = { 0, 0, 0, 0 };
+      if (dimensionality == 3)
+      {
+        auto dv = std::div(chunkSequence, dimChunkCounts[0]);
+        chunkCoords[0] = dv.rem;
+        dv = std::div(dv.quot, dimChunkCounts[2]);  // 2 not 1 because we're working in crossline-major space
+        chunkCoords[1] = dv.quot;
+        chunkCoords[2] = dv.rem;
+      }
+      else
+      {
+        auto dv = std::div(chunkSequence, dimChunkCounts[0]);
+        chunkCoords[0] = dv.rem;
+        dv = std::div(dv.quot, dimChunkCounts[1]);
+        chunkCoords[1] = dv.rem;
+        dv = std::div(dv.quot, dimChunkCounts[3]);  // 3 not 2 because we're working in crossline-major space
+        chunkCoords[2] = dv.quot;
+        chunkCoords[3] = dv.rem;
+      }
+
+      chunk = 0;
+      for (size_t i = 0; i < chunkCoords.size(); ++i)
+      {
+        chunk += chunkCoords[i] * dimChunkPitches[i];
+      }
+    }
+
     auto &chunkInfo = chunkInfos[chunk];
 
     // if we've crossed to a new inline then trim the trace page cache
     if (chunk > 0)
     {
 
-      // TODO alternate version for offset sorted
+      // TODO alternate versions for offset sorted and crossline sorted
 
       const auto& previousChunkInfo = chunkInfos[chunk - 1];
 
@@ -3693,7 +3757,7 @@ main(int argc, char* argv[])
         {
           // For unbinned gathers the secondary key is the 1-based index of the trace, so to get the
           // first trace we convert the index to 0-based and add that to the segment's start trace.
-          firstTrace = segment->m_traceStart + (chunkInfo.secondaryKeyStart - 1);
+          firstTrace = segment->m_traceStart + (chunkInfo.secondaryKeyStart - 1L);
         }
         else
         {
