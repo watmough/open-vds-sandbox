@@ -63,7 +63,7 @@ int TraceInfo2DManagerStore::GetIndexOfEnsembleNumber(int ensembleNumber)
 void TraceInfo2DManagerStore::BuildEnsembleNumberMap()
 {
   m_ensembleToIndex.clear();
-  for (int index = 0; index < m_traceInfo.size(); ++index)
+  for (int index = 0; index < static_cast<int>(m_traceInfo.size()); ++index)
   {
     m_ensembleToIndex.insert(std::make_pair(m_traceInfo[index].ensembleNumber, index));
   }

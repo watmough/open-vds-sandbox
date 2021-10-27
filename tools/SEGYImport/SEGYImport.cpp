@@ -65,22 +65,6 @@
 #include <io.h>
 #include <windows.h>
 
-constexpr double METERS_PER_FOOT = 0.3048;
-
-enum class TraceSpacingByOffset
-{
-  Off = 0,
-  On = 1,
-  Auto = 2
-};
-
-enum class PrimaryKeyValue
-{
-  Other = 0,
-  InlineNumber = 1,
-  CrosslineNumber = 2
-};
-
 int64_t GetTotalSystemMemory()
 {
     MEMORYSTATUSEX status;
@@ -98,7 +82,25 @@ int64_t GetTotalSystemMemory()
     long page_size = sysconf(_SC_PAGE_SIZE);
     return int64_t(pages) * int64_t(page_size);
 }
+
+#include <cfloat>
 #endif
+
+constexpr double METERS_PER_FOOT = 0.3048;
+
+enum class TraceSpacingByOffset
+{
+  Off = 0,
+  On = 1,
+  Auto = 2
+};
+
+enum class PrimaryKeyValue
+{
+  Other = 0,
+  InlineNumber = 1,
+  CrosslineNumber = 2
+};
 
 inline char asciitolower(char in) {
   if (in <= 'Z' && in >= 'A')
@@ -222,7 +224,7 @@ SerializeSEGYHeaderField(SEGY::HeaderField const& headerField)
 }
 
 Json::Value
-SerializeSEGYFileInfo(SEGYFileInfo const& fileInfo, const int fileIndex)
+SerializeSEGYFileInfo(SEGYFileInfo const& fileInfo, const size_t fileIndex)
 {
   Json::Value
     jsonFileInfo;
@@ -618,7 +620,7 @@ getOrderedSegmentListIndices(SEGYFileInfo const& fileInfo, size_t& globalTotalSe
 
   if (fileInfo.IsOffsetSorted())
   {
-    for (int i = 0; i < fileInfo.m_segmentInfoListsByOffset.size(); ++i)
+    for (int i = 0; i < static_cast<int>(fileInfo.m_segmentInfoListsByOffset.size()); ++i)
     {
       orderedListIndices.push_back(i);
       for (const auto& entry : fileInfo.m_segmentInfoListsByOffset[i])
@@ -1031,8 +1033,6 @@ analyzeSegment(DataProvider &dataProvider, SEGYFileInfo const& fileInfo, SEGYSeg
     if (traceSpacingByOffset != TraceSpacingByOffset::Off)
     {
       // Determine if offset values are suitable for computed respacing:  Values are monotonically increasing
-      bool
-        isSane = false;
       size_t
         numSorted = 0;
 
@@ -1160,7 +1160,7 @@ analyzePrimaryKey(const std::vector<DataProvider>& dataProviders, SEGYFileInfo c
     providerSegments;
   int64_t
     primaryKeyTraceCount = 0;
-  for (int fileIndex = 0; fileIndex < fileInfo.m_segmentInfoListsByOffset.size(); ++fileIndex)
+  for (size_t fileIndex = 0; fileIndex < fileInfo.m_segmentInfoListsByOffset.size(); ++fileIndex)
   {
     const auto&
       offsetSegments = fileInfo.m_segmentInfoListsByOffset[fileIndex];
@@ -2295,7 +2295,7 @@ PrimaryKeyDimension(const SEGYFileInfo& fileInfo, PrimaryKeyValue primaryKey)
 int
 findChannelDescriptorIndex(const std::string& channelName, const std::vector<OpenVDS::VolumeDataChannelDescriptor>& channelDescriptors)
 {
-  for (int index = 0; index < channelDescriptors.size(); ++index)
+  for (int index = 0; index < static_cast<int>(channelDescriptors.size()); ++index)
   {
     if (channelName == channelDescriptors[index].GetName())
     {
@@ -2357,8 +2357,6 @@ CalculateGatherSpacing(const SEGYFileInfo& fileInfo, const int fold, const std::
     gatherOffsets.push_back(SEGY::ReadFieldFromHeader(header, g_traceHeaderFields["offset"], fileInfo.m_headerEndianness));
 
     // read traces and stuff offset into a vector while primaryKey/secondaryKey match
-    int64_t
-      trace = firstTrace + 1;
     for (int64_t trace = firstTrace + 1; trace < traceDataManager.fileTraceCount() && trace < firstTrace + fold; ++trace)
     {
       header = traceDataManager.getTraceData(trace, error);
@@ -2397,12 +2395,12 @@ CalculateGatherSpacing(const SEGYFileInfo& fileInfo, const int fold, const std::
     }
 
     // map traces to tertiary indices while we have room for dead traces and we have more input traces
-    while (hasRoom() && gatherIndex < gatherOffsets.size())
+    while (hasRoom() && gatherIndex < static_cast<int>(gatherOffsets.size()))
     {
       // process all the traces whose offset matches the current offset
       const auto
         currentOffset = offsetAtIndex(offsetIndex);
-      while (hasRoom() && gatherIndex < gatherOffsets.size() && gatherOffsets[gatherIndex] == currentOffset)
+      while (hasRoom() && gatherIndex < static_cast<int>(gatherOffsets.size()) && gatherOffsets[gatherIndex] == currentOffset)
       {
         traceIndices[firstTrace + gatherIndex] = tertiaryIndex;
         ++gatherIndex;
@@ -2413,7 +2411,7 @@ CalculateGatherSpacing(const SEGYFileInfo& fileInfo, const int fold, const std::
       ++offsetIndex;
 
       // try to advance to tertiary index so that the next trace's offset is placed near-ish to where it might be expected
-      if (gatherIndex < gatherOffsets.size() && tertiaryIndex <= offsetIndex)
+      if (gatherIndex < static_cast<int>(gatherOffsets.size()) && tertiaryIndex <= offsetIndex)
       {
         while (hasRoom() && gatherOffsets[gatherIndex] != offsetAtIndex(offsetIndex))
         {
@@ -2436,7 +2434,7 @@ CalculateGatherSpacing(const SEGYFileInfo& fileInfo, const int fold, const std::
     }
 
     // map remaining traces to remaining indices
-    while (gatherIndex < gatherOffsets.size())
+    while (gatherIndex < static_cast<int>(gatherOffsets.size()))
     {
       traceIndices[firstTrace + gatherIndex] = tertiaryIndex;
       ++gatherIndex;
@@ -2492,8 +2490,6 @@ main(int argc, char* argv[])
   bool prestack = false;
   bool is2D = false;
   bool isOffsetSorted = false;
-  // TODO remove traceOrderByOffset
-  bool traceOrderByOffset = true;
   bool useJsonOutput = false;
   bool disablePrintSegyTextHeader = false;
   bool help = false;
@@ -2975,7 +2971,7 @@ main(int argc, char* argv[])
     // If we are in scan mode we serialize the result of the file scan either to a fileInfo file (if specified) or to stdout and exit
     if (scan)
     {
-      for (int fileIndex = 0; fileIndex < fileNames.size(); ++fileIndex)
+      for (size_t fileIndex = 0; fileIndex < fileNames.size(); ++fileIndex)
       {
         Json::Value jsonFileInfo = SerializeSEGYFileInfo(fileInfo, fileIndex);
 
@@ -3053,7 +3049,7 @@ main(int argc, char* argv[])
     OpenVDS::Error
       error;
 
-    for (int fileIndex = 0; fileIndex < fileInfoFileNames.size(); ++fileIndex)
+    for (size_t fileIndex = 0; fileIndex < fileInfoFileNames.size(); ++fileIndex)
     {
       const auto
         & fileInfoFileName = fileInfoFileNames[fileIndex];
@@ -3466,10 +3462,10 @@ main(int argc, char* argv[])
 
     if (primaryKeyValue == PrimaryKeyValue::CrosslineNumber)
     {
-      for (auto i = 0; i < dimChunkCounts.size(); ++i)
+      for (size_t i = 0; i < dimChunkCounts.size(); ++i)
       {
         bool isZero = true;
-        for (auto j = 0; isZero && j < dimChunkCounts.size(); ++j)
+        for (size_t j = 0; isZero && j < dimChunkCounts.size(); ++j)
         {
           if (j != i)
           {
@@ -3712,13 +3708,12 @@ main(int argc, char* argv[])
     void* azimuthBuffer = azimuthPage ? azimuthPage->GetWritableBuffer(azimuthPitch) : nullptr;
     void* muteBuffer = mutePage ? mutePage->GetWritableBuffer(mutePitch) : nullptr;
 
-    const int pitchCheckDimension = fileInfo.IsOffsetSorted() ? 2 : 1;
     assert(amplitudePitch[0] == 1);
-    assert(!traceFlagBuffer || traceFlagPitch[pitchCheckDimension] == 1);
-    assert(!segyTraceHeaderBuffer || segyTraceHeaderPitch[pitchCheckDimension] == SEGY::TraceHeaderSize);
-    assert(!offsetBuffer || offsetPitch[pitchCheckDimension] == 1);
-    assert(!azimuthBuffer || azimuthPitch[pitchCheckDimension] == 1);
-    assert(!muteBuffer || mutePitch[pitchCheckDimension] == 1);
+    assert(!traceFlagBuffer || traceFlagPitch[fileInfo.IsOffsetSorted() ? 2 : 1] == 1);
+    assert(!segyTraceHeaderBuffer || segyTraceHeaderPitch[fileInfo.IsOffsetSorted() ? 2 : 1] == SEGY::TraceHeaderSize);
+    assert(!offsetBuffer || offsetPitch[fileInfo.IsOffsetSorted() ? 2 : 1] == 1);
+    assert(!azimuthBuffer || azimuthPitch[fileInfo.IsOffsetSorted() ? 2 : 1] == 1);
+    assert(!muteBuffer || mutePitch[fileInfo.IsOffsetSorted() ? 2 : 1] == 1);
     
     const auto segmentInfoListsSize = fileInfo.IsOffsetSorted() ? fileInfo.m_segmentInfoListsByOffset.size() : fileInfo.m_segmentInfoLists.size();
 
