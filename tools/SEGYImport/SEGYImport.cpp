@@ -1156,7 +1156,7 @@ analyzePrimaryKey(const std::vector<DataProvider>& dataProviders, SEGYFileInfo c
 
   // 1. Find all the segments in all files that match the primary key
   // 2. Get a total trace count of all the segments; pass trace count to value range estimator
-  std::map<int, std::vector<std::reference_wrapper<const SEGYSegmentInfo>>>
+  std::map<size_t, std::vector<std::reference_wrapper<const SEGYSegmentInfo>>>
     providerSegments;
   int64_t
     primaryKeyTraceCount = 0;
