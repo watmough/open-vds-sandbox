@@ -3640,12 +3640,9 @@ main(int argc, char* argv[])
 
     auto &chunkInfo = chunkInfos[chunk];
 
-    // if we've crossed to a new inline then trim the trace page cache
+    // if we've crossed to a new primary key range then trim the trace page cache
     if (chunk > 0)
     {
-
-      // TODO alternate versions for offset sorted and crossline sorted
-
       const auto& previousChunkInfo = chunkInfos[chunk - 1];
 
       for (size_t chunkFileIndex = 0; chunkFileIndex < dataProviders.size(); ++chunkFileIndex)
@@ -3656,12 +3653,12 @@ main(int argc, char* argv[])
           auto currentIndexIter = chunkInfo.lowerUpperSegmentIndices.find(chunkFileIndex);
           if (currentIndexIter != chunkInfo.lowerUpperSegmentIndices.end())
           {
-            // This file is active in both the current and previous chunks. Check to see if we've progressed to a new set of inlines.
+            // This file is active in both the current and previous chunks. Check to see if we've progressed to a new set of primary keys.
             auto previousLowerSegmentIndex = std::get<0>(prevIndexIter->second);
             auto currentLowerSegmentIndex = std::get<0>(currentIndexIter->second);
             if (currentLowerSegmentIndex > previousLowerSegmentIndex)
             {
-              // we've progressed to a new set of inlines; remove earlier pages from the cache
+              // we've progressed to a new set of primary keys; remove earlier pages from the cache
               traceDataManagers[chunkFileIndex].retirePagesBefore(fileInfo.m_segmentInfoLists[chunkFileIndex][currentLowerSegmentIndex].m_traceStart);
             }
           }
