@@ -49,6 +49,13 @@ if (NOT DISABLE_AWS_IOMANAGER)
   file(GLOB SRC_LIB_PROVIDERS_IBM  ${dmsCMakeDir}/src/lib/cloud/providers/ibm/*.cc)
   set_source_files_properties(${dmsCMakeDir}/src/lib/cloud/providers/ibm/IbmStorage.cc PROPERTIES COMPILE_FLAGS ${DISABLE_WARNING_FLAG})
   set(SOURCES ${SOURCES} ${SRC_LIB_PROVIDERS_IBM})
+
+  #to work around Aws::String problem
+  #https://github.com/aws/aws-sdk-cpp/blob/266d7682c3d07d41618c41a3521811e1219c1bc7/aws-cpp-sdk-core/include/aws/core/utils/memory/stl/AWSString.h#L21
+  if (NOT MSVC)
+    set_property(SOURCE ${dmsCMakeDir}/src/lib/cloud/providers/aws/AwsStorage.cc APPEND_STRING PROPERTY COMPILE_FLAGS " -fvisibility=default")
+    set_property(SOURCE ${dmsCMakeDir}/src/lib/cloud/providers/ibm/IbmStorage.cc APPEND_STRING PROPERTY COMPILE_FLAGS " -fvisibility=default")
+  endif()
 endif()
 
 # set major library versions
