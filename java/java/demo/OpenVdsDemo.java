@@ -33,6 +33,15 @@ public class OpenVdsDemo {
     }
 
     static void process(String[] args) throws Exception {
+        String url = null;
+        String connection = null;
+        for (int i = 1; i < args.length; i+=2)
+        {
+            if (args[i].equals("--url"))
+                url = args[i+1];
+            if (args[i].equals("--connection"))
+                connection = args[i+1];
+        }
         int output_width = 1000;
         int output_height = 1000;
         int axis_position = Integer.MIN_VALUE;
@@ -41,13 +50,22 @@ public class OpenVdsDemo {
         int nXSamples = 64, nYSamples = 64, nZSamples = 64;
         VolumeDataChannelDescriptor.Format format = VolumeDataChannelDescriptor.Format.FORMAT_U8;
 
-        System.out.println("Create MemoryVdsGenerator...");
-        MemoryVdsGenerator generator = new MemoryVdsGenerator(nXSamples, nYSamples, nZSamples, format);
+        VdsHandle vds;
+        if (url != null && !url.isEmpty())
+        {
+            System.out.println("Open existing VDS with: " + url);
+            vds = OpenVDS.open(url, connection);
+        } 
+        else
+        {
+            System.out.println("Create MemoryVdsGenerator...");
+            vds = new MemoryVdsGenerator(nXSamples, nYSamples, nZSamples, format);
+        }
 
-        VolumeDataLayout layout = generator.getLayout();
+        VolumeDataLayout layout = vds.getLayout();
         printLayout(layout);
 
-        VolumeDataAccessManager accessManager = generator.getAccessManager();
+        VolumeDataAccessManager accessManager = vds.getAccessManager();
 
         int[] axis_mapper = {0, 1, 2};
         int[] sampleCount = new int[3];
@@ -105,7 +123,7 @@ public class OpenVdsDemo {
         // Test of finalization. Normally manual call of release() is not needed:
         // it is called from JniPointer.finalize()
         System.out.println("Release objects...");
-        generator.release();
+        vds.release();
         System.out.println("Finished");
     }
 
