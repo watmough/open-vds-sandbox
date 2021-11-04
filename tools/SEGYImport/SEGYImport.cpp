@@ -2490,6 +2490,7 @@ main(int argc, char* argv[])
   bool prestack = false;
   bool is2D = false;
   bool isOffsetSorted = false;
+  bool isOffsetSortedDupeKeyWarned = false;
   bool useJsonOutput = false;
   bool disablePrintSegyTextHeader = false;
   bool help = false;
@@ -3792,6 +3793,18 @@ main(int argc, char* argv[])
           if (primaryTest == segment->m_primaryKey && secondaryTest > chunkInfo.secondaryKeyStop)
           {
             break;
+          }
+
+          if (fileInfo.IsOffsetSorted() && !isOffsetSortedDupeKeyWarned && trace > firstTrace && secondaryTest == currentSecondaryKey)
+          {
+            if (!OpenVDS::isJson(printConfig) && is_tty)
+            {
+              std::cout << std::endl;
+            }
+            auto
+              message = "This offset-sorted SEGY has traces with duplicate key combinations of Offset, Inline, and Crossline. Only one of the traces with duplicate key values will be written to the output VDS.";
+            OpenVDS::printWarning(printConfig, "SEGY", message);
+            isOffsetSortedDupeKeyWarned = true;
           }
 
           if (secondaryTest != currentSecondaryKey)

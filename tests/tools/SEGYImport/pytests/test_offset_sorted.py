@@ -20,18 +20,24 @@ def output_scan() -> TempScanFileGuard:
 
 @pytest.fixture
 def offset_sorted_segy() -> str:
-    return os.path.join(test_data_dir, "Plugins", "ImportPlugins", "SEGYUnittest", "CrosslineSorted", "ST0202.segy")
+    return os.path.join(test_data_dir, "Plugins", "ImportPlugins", "SEGYUnittest", "OffsetSorted", "ST0202.segy")
+
+
+@pytest.fixture
+def offset_sorted_deduped_segy() -> str:
+    return os.path.join(test_data_dir, "Plugins", "ImportPlugins", "SEGYUnittest", "OffsetSorted",
+                        "ST0202_deduped.segy")
 
 
 @pytest.fixture
 def offset_sorted_scan() -> str:
-    return os.path.join(test_data_dir, "Plugins", "ImportPlugins", "SEGYUnittest", "CrosslineSorted",
+    return os.path.join(test_data_dir, "Plugins", "ImportPlugins", "SEGYUnittest", "OffsetSorted",
                         "ST0202.segy.scan.json")
 
 
 @pytest.fixture
 def conventional_sorted_segy() -> str:
-    return os.path.join(test_data_dir, "Plugins", "ImportPlugins", "SEGYUnittest", "CrosslineSorted",
+    return os.path.join(test_data_dir, "Plugins", "ImportPlugins", "SEGYUnittest", "OffsetSorted",
                         "ST0202_conventional.segy")
 
 
@@ -51,6 +57,21 @@ def offset_sorted_executor(offset_sorted_segy, output_vds) -> Tuple[ImportExecut
     ex.add_args(["--vdsfile", output_vds.filename])
 
     ex.add_arg(offset_sorted_segy)
+
+    return ex, output_vds
+
+
+@pytest.fixture
+def offset_sorted_deduped_executor(offset_sorted_deduped_segy, output_vds) -> Tuple[ImportExecutor, TempVDSGuard]:
+    """Fixture to setup an ImportExecutor with common options for de-duped version of offset-sorted SEGY"""
+    ex = ImportExecutor()
+
+    ex.add_args(["--header-field", "offset=177:4"])
+
+    ex.add_arg("--offset-sorted")
+    ex.add_args(["--vdsfile", output_vds.filename])
+
+    ex.add_arg(offset_sorted_deduped_segy)
 
     return ex, output_vds
 
@@ -343,3 +364,28 @@ def test_with_scan_file(offset_sorted_segy, offset_sorted_scan, output_vds):
         access_manager = openvds.getAccessManager(handle)
 
         assert access_manager.getVDSProduceStatus(openvds.DimensionsND.Dimensions_023) != openvds.VDSProduceStatus.Unavailable
+
+
+def test_dupe_warning(offset_sorted_executor):
+    ex, output_vds = offset_sorted_executor
+
+    s = ex.command_line()
+    result = ex.run()
+
+    assert result == 0, ex.output()
+    assert Path(output_vds.filename).exists()
+
+    # check that the output contains the warning message for traces with duplicate offset, inline, crossline key combos
+    assert "duplicate key combinations" in ex.output()
+
+
+def test_dupe_no_warning(offset_sorted_deduped_executor):
+    ex, output_vds = offset_sorted_deduped_executor
+
+    result = ex.run()
+
+    assert result == 0, ex.output()
+    assert Path(output_vds.filename).exists()
+
+    # check that the output contains the warning message for traces with duplicate offset, inline, crossline key combos
+    assert "duplicate key combinations" not in ex.output()
