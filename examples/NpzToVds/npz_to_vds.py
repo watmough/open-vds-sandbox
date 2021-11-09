@@ -53,7 +53,7 @@ if openvds.isCompressionMethodSupported(openvds.CompressionMethod.WaveletLossles
                                                           2, 2, 4,
                                                           openvds.VolumeDataLayoutDescriptor.LODLevels.LODLevels_None,
                                                           openvds.VolumeDataLayoutDescriptor.Options.Options_None)
-    compressionMethod = openvds.CompresionMethod.WaveletLossless
+    compressionMethod = openvds.CompressionMethod.WaveletLossless
         
 axisDescriptors = [ openvds.VolumeDataAxisDescriptor(x_samples, openvds.KnownAxisNames.x(), openvds.KnownUnitNames.meter(), 0.0, 2000.0),
                     openvds.VolumeDataAxisDescriptor(y_samples, openvds.KnownAxisNames.y(), openvds.KnownUnitNames.meter(), 0.0, 2000.0),
