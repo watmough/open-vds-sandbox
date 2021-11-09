@@ -15,6 +15,10 @@
 ** limitations under the License.
 ****************************************************************************/
 
+#if defined(_MSC_VER) && _MSC_VER > 1929
+#include <corecrt.h> // fix visual studio 2022 compile complaining about _invalid_parameter
+#endif
+
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <pybind11/numpy.h>
