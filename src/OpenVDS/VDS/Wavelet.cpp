@@ -827,6 +827,14 @@ bool Wavelet::DeCompress(bool isTransform, int32_t decompressInfo, float decompr
 
   createTransformData(transformData, m_bandSize, m_transformMask, m_transformIterations);
 
+  DecompressAdaptiveMode
+    decompressAdaptiveMode = DecompressAdaptiveMode::AssumeNoOverwrite;
+
+  if(WaveletAdaptiveLL_IsWaveletStreamEncodedWithBug(transformData, m_transformIterations, m_transformMask))
+  {
+    decompressAdaptiveMode = isLossless ? DecompressAdaptiveMode::AllowOverwrite : DecompressAdaptiveMode::PreventOverwrite;
+  }
+
   int cpuTempDecodeSizeNeeded = CalculateBufferSizeNeeded(m_allocatedSizeX * m_allocatedSizeY * m_allocatedSizeZ, m_allocatedHalfSizeX * m_allocatedHalfSizeY * m_allocatedHalfSizeZ);
 
   std::vector<uint8_t> cpuTempData;
@@ -837,7 +845,7 @@ bool Wavelet::DeCompress(bool isTransform, int32_t decompressInfo, float decompr
       m_pixelSetChildren.get(), m_pixelSetChildrenCount, m_pixelSetPixelInSignificant.get(), m_pixelSetPixelInSignificantCount,
       m_allocatedHalfSizeX, m_allocatedHalfSizeX * m_allocatedHalfSizeY, cpuTempData.data(), m_allocatedHalfSizeX * m_allocatedHalfSizeY * m_allocatedHalfSizeZ, m_allocatedSizeX * m_allocatedSizeY * m_allocatedSizeZ, decompressLevel, isInteger);
 
-  int size = WaveletAdaptiveLL_DecompressAdaptive(decodeIterator);
+  int size = WaveletAdaptiveLL_DecompressAdaptive(decodeIterator, decompressAdaptiveMode);
   (void)size;
 
   if (isLossless)

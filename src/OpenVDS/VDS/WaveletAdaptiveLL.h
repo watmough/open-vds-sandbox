@@ -25,6 +25,13 @@
 namespace OpenVDS
 {
 
+enum class DecompressAdaptiveMode
+{
+  AssumeNoOverwrite,
+  AllowOverwrite,
+  PreventOverwrite
+};
+
 struct WaveletAdaptiveLL_DecodeIterator
 {
   Wavelet_FastDecodeInsig *insig;
@@ -87,8 +94,9 @@ WaveletAdaptiveLL_DecodeIterator WaveletAdaptiveLL_CreateDecodeIterator(uint8_t 
                                                                         Wavelet_PixelSetChildren *pixelSetChildren, int pixelSetChildrenCount, Wavelet_PixelSetPixel *pixelSetPixelInSignificant, int pixelSetPixelInsignificantCount,
                                                                         int maxSizeX, int maxSizeXY, uint8_t *tempBufferCPU, int maxChildren, int maxPixels, int decompressLevel, bool isInteger);
 
-int32_t WaveletAdaptiveLL_DecompressAdaptive(WaveletAdaptiveLL_DecodeIterator decodeIterator);
+int32_t WaveletAdaptiveLL_DecompressAdaptive(WaveletAdaptiveLL_DecodeIterator decodeIterator, DecompressAdaptiveMode decompressAdaptiveMode);
 int32_t WaveletAdaptiveLL_DecompressLossless(uint8_t *in, float *pic, int32_t sizeX, int32_t sizeY, int32_t sizeZ, int32_t allocatedSizeX, int32_t allocatedSizeXY);
+bool    WaveletAdaptiveLL_IsWaveletStreamEncodedWithBug(Wavelet_TransformData *transformData, int transformDataCount, int *transformMask);
 }
 
 #endif
