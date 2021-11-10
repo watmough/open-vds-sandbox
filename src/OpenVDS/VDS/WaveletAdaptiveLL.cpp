@@ -921,8 +921,8 @@ static inline void ReadWriteStartValues(const WaveletAdaptiveLL_DecodeIterator& 
   }
 }
 
-template<bool isMultiple, bool isAllNormal, int multiple>
-static void DecodeAllBits(const WaveletAdaptiveLL_DecodeIterator& decodeIterator, float threshold, const int* valueEncoding, const int* valuesAtLevel, const int values, const int startDecodeBits, const int maxDecodeLevel)
+template<bool isMultiple, bool isAllNormal, int multiple, bool isPreventOverwrite>
+static void DecodeAllBits(const WaveletAdaptiveLL_DecodeIterator& decodeIterator, float threshold, const int* valueEncoding, const int* valuesAtLevel, const int values, const int startDecodeBits, const int maxDecodeLevel, int threads)
 {
   const float minLevelThreshold = threshold * powf(2.0f, (float)maxDecodeLevel);
 
@@ -934,15 +934,6 @@ static void DecodeAllBits(const WaveletAdaptiveLL_DecodeIterator& decodeIterator
   {
     positions += decodeIterator.maxChildren;
   }
-
-  // The limit value 8 seems to provide good performance across
-  // different hardware configurations. This OMP block originally
-  // had no thread limit, which resulted in poor performance on
-  // some hardware.
-  // Alternatively, we want to use fewer than 8 threads if OMP
-  // max threads is less than that.
-  int threads = std::min(8, omp_get_max_threads());
-  (void)threads;
 
   float startValue = 0.0f;
 
@@ -1017,22 +1008,31 @@ static void DecodeAllBits(const WaveletAdaptiveLL_DecodeIterator& decodeIterator
 
         if (isAllNormal)
         {
-          decodeIterator.picture[currentPos + decodeIterator.screenDisplacementAllNormal[child]] = rvalue;
+          if(!isPreventOverwrite || decodeIterator.picture[currentPos + decodeIterator.screenDisplacementAllNormal[child]] == 0.0f)
+          {
+            decodeIterator.picture[currentPos + decodeIterator.screenDisplacementAllNormal[child]] = rvalue;
+          }
         }
         else
         {
-          decodeIterator.picture[currentPos + decodeIterator.screenDisplacement[child]] = rvalue;
+          if(!isPreventOverwrite || decodeIterator.picture[currentPos + decodeIterator.screenDisplacement[child]] == 0.0f)
+          {
+            decodeIterator.picture[currentPos + decodeIterator.screenDisplacement[child]] = rvalue;
+          }
         }
       }
       else
       {
-        decodeIterator.picture[positions[parentValue]] = rvalue;
+        if(!isPreventOverwrite || decodeIterator.picture[positions[parentValue]] == 0.0f)
+        {
+          decodeIterator.picture[positions[parentValue]] = rvalue;
+        }
       }
     }
   }
 }
 
-int32_t WaveletAdaptiveLL_DecompressAdaptive(WaveletAdaptiveLL_DecodeIterator decodeIterator)
+int32_t WaveletAdaptiveLL_DecompressAdaptive(WaveletAdaptiveLL_DecodeIterator decodeIterator, DecompressAdaptiveMode decompressAdaptiveMode)
 {
   int streamSize = 0;
 
@@ -1067,15 +1067,17 @@ int32_t WaveletAdaptiveLL_DecompressAdaptive(WaveletAdaptiveLL_DecodeIterator de
     }
   }
 
-
-  if (decodeIterator.decompressLevel > decodeIterator.decodeBits)
-  {
-    ;
-  }
-
   memset(decodeIterator.picture, 0, size_t(decodeIterator.sizeX) * size_t(decodeIterator.sizeY) * size_t(decodeIterator.sizeZ) * sizeof(float));
 
   ReadWriteStartValues(decodeIterator, decodeIterator.pixelSetPixelInSignificant, decodeIterator.pixelSetPixelInsignificantCount, decodeIterator.pixelSetChildren, decodeIterator.pixelSetChildrenCount);
+
+  // The limit value 8 seems to provide good performance across
+  // different hardware configurations. This OMP block originally
+  // had no thread limit, which resulted in poor performance on
+  // some hardware.
+  // Alternatively, we want to use fewer than 8 threads if OMP
+  // max threads is less than that.
+  int threads = (decompressAdaptiveMode == DecompressAdaptiveMode::AssumeNoOverwrite) ? std::min(8, omp_get_max_threads()) : 1;
 
   if (decodeIterator.decompressLevel <= decodeIterator.decodeBits)
   {
@@ -1087,17 +1089,37 @@ int32_t WaveletAdaptiveLL_DecompressAdaptive(WaveletAdaptiveLL_DecodeIterator de
     {
       if (decodeIterator.isAllNormal)
       {
-        if (multiple == 1)      DecodeAllBits<true, true, 1>(decodeIterator, decodeIterator.threshold, decodeIterator.valueEncodingMultiple, decodeIterator.valuesAtLevelMultiple, valuesMultiple, decodeIterator.decodeBits, decodeIterator.decompressLevel);
-        else if (multiple == 2) DecodeAllBits<true, true, 2>(decodeIterator, decodeIterator.threshold, decodeIterator.valueEncodingMultiple, decodeIterator.valuesAtLevelMultiple, valuesMultiple, decodeIterator.decodeBits, decodeIterator.decompressLevel);
-        else if (multiple == 4) DecodeAllBits<true, true, 4>(decodeIterator, decodeIterator.threshold, decodeIterator.valueEncodingMultiple, decodeIterator.valuesAtLevelMultiple, valuesMultiple, decodeIterator.decodeBits, decodeIterator.decompressLevel);
-        else if (multiple == 8) DecodeAllBits<true, true, 8>(decodeIterator, decodeIterator.threshold, decodeIterator.valueEncodingMultiple, decodeIterator.valuesAtLevelMultiple, valuesMultiple, decodeIterator.decodeBits, decodeIterator.decompressLevel);
+        if(decompressAdaptiveMode != DecompressAdaptiveMode::PreventOverwrite)
+        {
+          if (multiple == 1)      DecodeAllBits<true, true, 1, false>(decodeIterator, decodeIterator.threshold, decodeIterator.valueEncodingMultiple, decodeIterator.valuesAtLevelMultiple, valuesMultiple, decodeIterator.decodeBits, decodeIterator.decompressLevel, threads);
+          else if (multiple == 2) DecodeAllBits<true, true, 2, false>(decodeIterator, decodeIterator.threshold, decodeIterator.valueEncodingMultiple, decodeIterator.valuesAtLevelMultiple, valuesMultiple, decodeIterator.decodeBits, decodeIterator.decompressLevel, threads);
+          else if (multiple == 4) DecodeAllBits<true, true, 4, false>(decodeIterator, decodeIterator.threshold, decodeIterator.valueEncodingMultiple, decodeIterator.valuesAtLevelMultiple, valuesMultiple, decodeIterator.decodeBits, decodeIterator.decompressLevel, threads);
+          else if (multiple == 8) DecodeAllBits<true, true, 8, false>(decodeIterator, decodeIterator.threshold, decodeIterator.valueEncodingMultiple, decodeIterator.valuesAtLevelMultiple, valuesMultiple, decodeIterator.decodeBits, decodeIterator.decompressLevel, threads);
+        }
+        else
+        {
+          if (multiple == 1)      DecodeAllBits<true, true, 1, true>(decodeIterator, decodeIterator.threshold, decodeIterator.valueEncodingMultiple, decodeIterator.valuesAtLevelMultiple, valuesMultiple, decodeIterator.decodeBits, decodeIterator.decompressLevel, threads);
+          else if (multiple == 2) DecodeAllBits<true, true, 2, true>(decodeIterator, decodeIterator.threshold, decodeIterator.valueEncodingMultiple, decodeIterator.valuesAtLevelMultiple, valuesMultiple, decodeIterator.decodeBits, decodeIterator.decompressLevel, threads);
+          else if (multiple == 4) DecodeAllBits<true, true, 4, true>(decodeIterator, decodeIterator.threshold, decodeIterator.valueEncodingMultiple, decodeIterator.valuesAtLevelMultiple, valuesMultiple, decodeIterator.decodeBits, decodeIterator.decompressLevel, threads);
+          else if (multiple == 8) DecodeAllBits<true, true, 8, true>(decodeIterator, decodeIterator.threshold, decodeIterator.valueEncodingMultiple, decodeIterator.valuesAtLevelMultiple, valuesMultiple, decodeIterator.decodeBits, decodeIterator.decompressLevel, threads);
+        }
       }
       else
       {
-        // multiple can't be one if using 1 << nDimensions
-        if (multiple == 2)      DecodeAllBits<true, false, 2>(decodeIterator, decodeIterator.threshold, decodeIterator.valueEncodingMultiple, decodeIterator.valuesAtLevelMultiple, valuesMultiple, decodeIterator.decodeBits, decodeIterator.decompressLevel);
-        else if (multiple == 4) DecodeAllBits<true, false, 4>(decodeIterator, decodeIterator.threshold, decodeIterator.valueEncodingMultiple, decodeIterator.valuesAtLevelMultiple, valuesMultiple, decodeIterator.decodeBits, decodeIterator.decompressLevel);
-        else if (multiple == 8) DecodeAllBits<true, false, 8>(decodeIterator, decodeIterator.threshold, decodeIterator.valueEncodingMultiple, decodeIterator.valuesAtLevelMultiple, valuesMultiple, decodeIterator.decodeBits, decodeIterator.decompressLevel);
+        if(decompressAdaptiveMode != DecompressAdaptiveMode::PreventOverwrite)
+        {
+          // multiple can't be one if using 1 << nDimensions
+          if (multiple == 2)      DecodeAllBits<true, false, 2, false>(decodeIterator, decodeIterator.threshold, decodeIterator.valueEncodingMultiple, decodeIterator.valuesAtLevelMultiple, valuesMultiple, decodeIterator.decodeBits, decodeIterator.decompressLevel, threads);
+          else if (multiple == 4) DecodeAllBits<true, false, 4, false>(decodeIterator, decodeIterator.threshold, decodeIterator.valueEncodingMultiple, decodeIterator.valuesAtLevelMultiple, valuesMultiple, decodeIterator.decodeBits, decodeIterator.decompressLevel, threads);
+          else if (multiple == 8) DecodeAllBits<true, false, 8, false>(decodeIterator, decodeIterator.threshold, decodeIterator.valueEncodingMultiple, decodeIterator.valuesAtLevelMultiple, valuesMultiple, decodeIterator.decodeBits, decodeIterator.decompressLevel, threads);
+        }
+        else
+        {
+          // multiple can't be one if using 1 << nDimensions
+          if (multiple == 2)      DecodeAllBits<true, false, 2, true>(decodeIterator, decodeIterator.threshold, decodeIterator.valueEncodingMultiple, decodeIterator.valuesAtLevelMultiple, valuesMultiple, decodeIterator.decodeBits, decodeIterator.decompressLevel, threads);
+          else if (multiple == 4) DecodeAllBits<true, false, 4, true>(decodeIterator, decodeIterator.threshold, decodeIterator.valueEncodingMultiple, decodeIterator.valuesAtLevelMultiple, valuesMultiple, decodeIterator.decodeBits, decodeIterator.decompressLevel, threads);
+          else if (multiple == 8) DecodeAllBits<true, false, 8, true>(decodeIterator, decodeIterator.threshold, decodeIterator.valueEncodingMultiple, decodeIterator.valuesAtLevelMultiple, valuesMultiple, decodeIterator.decodeBits, decodeIterator.decompressLevel, threads);
+        }
       }
     }
 
@@ -1107,7 +1129,14 @@ int32_t WaveletAdaptiveLL_DecompressAdaptive(WaveletAdaptiveLL_DecodeIterator de
 
       if (valuesSingle)
       {
-        DecodeAllBits<false, false, 1>(decodeIterator, decodeIterator.threshold, decodeIterator.valueEncodingSingle, decodeIterator.valuesAtLevelSingle, valuesSingle, decodeIterator.decodeBits, decodeIterator.decompressLevel);
+        if(decompressAdaptiveMode != DecompressAdaptiveMode::PreventOverwrite)
+        {
+          DecodeAllBits<false, false, 1, false>(decodeIterator, decodeIterator.threshold, decodeIterator.valueEncodingSingle, decodeIterator.valuesAtLevelSingle, valuesSingle, decodeIterator.decodeBits, decodeIterator.decompressLevel, threads);
+        }
+        else
+        {
+          DecodeAllBits<false, false, 1, true>(decodeIterator, decodeIterator.threshold, decodeIterator.valueEncodingSingle, decodeIterator.valuesAtLevelSingle, valuesSingle, decodeIterator.decodeBits, decodeIterator.decompressLevel, threads);
+        }
       }
     }
   }
@@ -1207,6 +1236,66 @@ int32_t WaveletAdaptiveLL_DecompressLossless(uint8_t *in, float *pic, int32_t si
   free(count[3]);
 
   return (int)(in + totalSize - start);
+}
+
+bool CheckIfWaveletSectorHasStreamBug(Wavelet_TransformData * transformData, int transformIndex, int iSector)
+{
+  if (transformData[transformIndex].isNormal)
+  {
+    return false;
+  }
+
+  // check if this band is actually normal!
+  if (transformData[transformIndex].subBandInfo[iSector].childSubBand == 1)
+  {
+    // any extra children?
+    if (transformData[transformIndex].subBandInfo[iSector].extraChildEdge[0][0] == -1 &&
+      transformData[transformIndex].subBandInfo[iSector].extraChildEdge[0][1] == -1 &&
+      transformData[transformIndex].subBandInfo[iSector].extraChildEdge[0][2] == -1)
+    {
+      // all dividable by two?
+      if (!(transformData[transformIndex].subBandInfo[iSector].legalChildEdge[0][0] & 1) &&
+        !(transformData[transformIndex].subBandInfo[iSector].legalChildEdge[0][1] & 1) &&
+        (!(transformData[transformIndex].subBandInfo[iSector].legalChildEdge[0][2] & 1) || transformData[transformIndex].child == 4))
+      {
+        // Are we in the case of 4 children
+        if (transformData[transformIndex].child == 4)
+        {
+          // Are we odd numbered
+          if (transformData[transformIndex].subBandInfo[iSector].legalChildEdge[0][2] & 1)
+          {
+            // And do we have children
+            if (transformData[transformIndex].childCount[2] > 1)
+            {
+              return true;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  return false;
+}
+
+bool WaveletAdaptiveLL_IsWaveletStreamEncodedWithBug(Wavelet_TransformData *transformData, int transformDataCount, int *transformMask)
+{
+  for (int transformIndex = 1; transformIndex < transformDataCount; transformIndex++)
+  {
+    // go through sectors
+    for (int iSector = 1; iSector < 8; iSector++)
+    {
+      if ((iSector & transformMask[transformIndex]) == iSector)
+      {
+        if (CheckIfWaveletSectorHasStreamBug(transformData, transformIndex, iSector))
+        {
+          return true;
+        }
+      }
+    }
+  }
+
+  return false;
 }
 
 }
