@@ -6,10 +6,12 @@ import sys
 import math
 
 parser = argparse.ArgumentParser(description="Converter converting numpy array file to VDS.")
-parser.add_argument("--url", help="The url for where to put the VDS")
+parser.add_argument("--url", help="The url for where to put the VDS", required=True)
 parser.add_argument("--connection", default="", help="The connection string for the url.")
 parser.add_argument("--value-range-min", default=0, help="The lower bounds of the value range for the data.")
 parser.add_argument("--value-range-max", default=0, help="The upper bounds of the value range for the data.")
+parser.add_argument("--npz-array-name", default="data", help="The npz array name.")
+parser.add_argument("--npy", default=False, help="The input file is npy and not npz.")
 parser.add_argument("npz_file", metavar="file", help="The npz file")
 
 if len(sys.argv) == 1:
@@ -19,7 +21,8 @@ if len(sys.argv) == 1:
 args = parser.parse_args()
 
 print("Opening file {}:".format(args.npz_file))
-data = np.load(args.npz_file,mmap_mode='r')['data']
+np_file = np.load(args.npz_file,mmap_mode='r')
+data = np_file[args.npz_array_name] if isinstance(np_file, np.lib.npyio.NpzFile) else np_file
 data=  data.transpose()
 print("Done reading file {}".format(args.npz_file))
 
