@@ -28,6 +28,7 @@
 
 #define WAVELET_DATA_VERSION_1_4 (671) // progressive wavelet transform
 #define WAVELET_DATA_VERSION_1_5 (672) // U8, U16 and U32 native/lossless compression
+#define WAVELET_DATA_VERSION_1_6 (673) // Fixed stream encoding case for rare cases
 
 #define WAVELET_MIN_COMPRESSED_HEADER (6 * 4)
 
