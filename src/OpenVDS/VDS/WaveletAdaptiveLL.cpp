@@ -59,7 +59,7 @@ static uint8_t* AssignPtrAndIncrementOffset(int nSize, uint8_t*& workBuffer)
   return returnBuffer;
 }
 
-int32_t AddSubBand(uint8_t* out, Wavelet_TransformData* transformData, int32_t transformIndex, int32_t iSector, int32_t subBandOffset[][8], bool* isAllNormal)
+int32_t AddSubBand(bool isStreamFix, uint8_t* out, Wavelet_TransformData* transformData, int32_t transformIndex, int32_t iSector, int32_t subBandOffset[][8], bool* isAllNormal)
 {
   Wavelet_Compiled_SubBandInfo* band = (Wavelet_Compiled_SubBandInfo*)out;
 
@@ -77,17 +77,30 @@ int32_t AddSubBand(uint8_t* out, Wavelet_TransformData* transformData, int32_t t
   // check if this band is actually normal!
   if (!isNormal && transformData[transformIndex].subBandInfo[iSector].childSubBand == 1)
   {
-    // any extra childs?
+    // any extra children?
     if (transformData[transformIndex].subBandInfo[iSector].extraChildEdge[0][0] == -1 &&
       transformData[transformIndex].subBandInfo[iSector].extraChildEdge[0][1] == -1 &&
       transformData[transformIndex].subBandInfo[iSector].extraChildEdge[0][2] == -1)
     {
-      // all dividable by two?
-      if (!(transformData[transformIndex].subBandInfo[iSector].legalChildEdge[0][0] & 1) &&
-        !(transformData[transformIndex].subBandInfo[iSector].legalChildEdge[0][1] & 1) &&
-        (!(transformData[transformIndex].subBandInfo[iSector].legalChildEdge[0][2] & 1) || transformData[transformIndex].child == 4))
+      if (!isStreamFix)
       {
-        isNormal = true;
+        // all divisible by two?
+        if (!(transformData[transformIndex].subBandInfo[iSector].legalChildEdge[0][0] & 1) &&
+            !(transformData[transformIndex].subBandInfo[iSector].legalChildEdge[0][1] & 1) &&
+           (!(transformData[transformIndex].subBandInfo[iSector].legalChildEdge[0][2] & 1) || transformData[transformIndex].child == 4))
+        {
+          isNormal = true;
+        }
+      }
+      else
+      {
+        // all divisible by two or no children?
+        if ( (!(transformData[transformIndex].subBandInfo[iSector].legalChildEdge[0][0] & 1) || (transformData[transformIndex].childCount[0] == 1)) &&
+             (!(transformData[transformIndex].subBandInfo[iSector].legalChildEdge[0][1] & 1) || (transformData[transformIndex].childCount[1] == 1)) &&
+             (!(transformData[transformIndex].subBandInfo[iSector].legalChildEdge[0][2] & 1) || (transformData[transformIndex].childCount[2] == 1)))
+        {
+          isNormal = true;
+        }
       }
     }
   }
@@ -148,7 +161,7 @@ int32_t AddSubBand(uint8_t* out, Wavelet_TransformData* transformData, int32_t t
   return size;
 }
 
-static int32_t CompileTransformData(uint8_t* compiledTransformData, int32_t* firstSubBand, const Wavelet_PixelSetChildren* pixelSetChildren, int32_t pixelSetChildrenCount, Wavelet_TransformData* transformData, int32_t transformDataCount, int32_t* transformMask, bool* isAllNormal)
+static int32_t CompileTransformData(bool isStreamFix, uint8_t* compiledTransformData, int32_t* firstSubBand, const Wavelet_PixelSetChildren* pixelSetChildren, int32_t pixelSetChildrenCount, Wavelet_TransformData* transformData, int32_t transformDataCount, int32_t* transformMask, bool* isAllNormal)
 {
   int subBand[32][8];
 
@@ -162,7 +175,7 @@ static int32_t CompileTransformData(uint8_t* compiledTransformData, int32_t* fir
     {
       if ((iSector & transformMask[iTransform]) == iSector)
       {
-        int size = AddSubBand(compiledTransformData + writePos, transformData, iTransform, iSector, subBand, isAllNormal);
+        int size = AddSubBand(isStreamFix, compiledTransformData + writePos, transformData, iTransform, iSector, subBand, isAllNormal);
 
         if (size == 0)
         {
@@ -204,7 +217,7 @@ static int32_t CompileTransformData(uint8_t* compiledTransformData, int32_t* fir
   return writePos;
 }
 
-WaveletAdaptiveLL_DecodeIterator WaveletAdaptiveLL_CreateDecodeIterator(uint8_t* stream, float* picture, int dimensions, int sizeX, int sizeY, int sizeZ,
+WaveletAdaptiveLL_DecodeIterator WaveletAdaptiveLL_CreateDecodeIterator(int dataVersion, uint8_t* stream, float* picture, int dimensions, int sizeX, int sizeY, int sizeZ,
   const float threshold, const float startThreshold, int* transformMask, Wavelet_TransformData* transformData, int transformDataCount,
   Wavelet_PixelSetChildren* pixelSetChildren, int pixelSetChildrenCount, Wavelet_PixelSetPixel* pixelSetPixelInSignificant, int pixelSetPixelInsignificantCount,
   int maxSizeX, int maxSizeXY, uint8_t* tempBufferCPU, int maxChildren, int maxPixels, int decompressLevel, bool isInteger)
@@ -213,6 +226,7 @@ WaveletAdaptiveLL_DecodeIterator WaveletAdaptiveLL_CreateDecodeIterator(uint8_t*
 
   WaveletAdaptiveLL_DecodeIterator decodeIterator;
 
+  decodeIterator.dataVersion = dataVersion;
   decodeIterator.isInteger = isInteger;
   decodeIterator.sizeX = sizeX;
   decodeIterator.sizeY = sizeY;
@@ -303,7 +317,10 @@ WaveletAdaptiveLL_DecodeIterator WaveletAdaptiveLL_CreateDecodeIterator(uint8_t*
   // And compile tree traversal data based on wavelet tranfsform for this item
   bool isAllNormal = true;
 
-  int compiledTransformData = CompileTransformData((uint8_t*)decodeIterator.compiledTransformData, decodeIterator.firstSubBand, pixelSetChildren, pixelSetChildrenCount, transformData, transformDataCount, transformMask, &isAllNormal);
+  bool
+    isStreamFix = decodeIterator.dataVersion >= WAVELET_DATA_VERSION_1_6 ? true : false;
+
+  int compiledTransformData = CompileTransformData(isStreamFix, (uint8_t*)decodeIterator.compiledTransformData, decodeIterator.firstSubBand, pixelSetChildren, pixelSetChildrenCount, transformData, transformDataCount, transformMask, &isAllNormal);
   (void) compiledTransformData;
 
 
@@ -1034,6 +1051,11 @@ static void DecodeAllBits(const WaveletAdaptiveLL_DecodeIterator& decodeIterator
 
 int32_t WaveletAdaptiveLL_DecompressAdaptive(WaveletAdaptiveLL_DecodeIterator decodeIterator, DecompressAdaptiveMode decompressAdaptiveMode)
 {
+  if (decodeIterator.dataVersion >= WAVELET_DATA_VERSION_1_6)
+  {
+    assert(decompressAdaptiveMode == DecompressAdaptiveMode::AssumeNoOverwrite);
+  }
+
   int streamSize = 0;
 
   if (decodeIterator.isAllNormal)
@@ -1253,7 +1275,7 @@ bool CheckIfWaveletSectorHasStreamBug(Wavelet_TransformData * transformData, int
       transformData[transformIndex].subBandInfo[iSector].extraChildEdge[0][1] == -1 &&
       transformData[transformIndex].subBandInfo[iSector].extraChildEdge[0][2] == -1)
     {
-      // all dividable by two?
+      // all divisible by two?
       if (!(transformData[transformIndex].subBandInfo[iSector].legalChildEdge[0][0] & 1) &&
         !(transformData[transformIndex].subBandInfo[iSector].legalChildEdge[0][1] & 1) &&
         (!(transformData[transformIndex].subBandInfo[iSector].legalChildEdge[0][2] & 1) || transformData[transformIndex].child == 4))

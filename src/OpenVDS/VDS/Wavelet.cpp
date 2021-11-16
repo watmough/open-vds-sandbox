@@ -88,7 +88,7 @@ bool Wavelet_Decompress(const void *compressedData, int nCompressedAdaptiveDataS
   uint32_t integerInfo = (intHeaderPtr[5] >> 8) & 0xff;
 
   if (dataVersion < WAVELET_DATA_VERSION_1_4 ||
-    dataVersion > WAVELET_DATA_VERSION_1_5 ||
+    dataVersion > WAVELET_DATA_VERSION_1_6 ||
     dimensions < 1 ||
     dimensions > 3 ||
     createSize[0] < 0 ||
@@ -758,7 +758,7 @@ static void DecompressZerosAlongX(const uint8_t *in, void *pic, int elementSize,
 
 bool Wavelet::DeCompress(bool isTransform, int32_t decompressInfo, float decompressSlice, int32_t decompressFlip, float* startThreshold, float* threshold, VolumeDataChannelDescriptor::Format dataBlockFormat, const FloatRange& valueRange, float integerScale, float integerOffset, bool isUseNoValue, float noValue, bool* isAnyNoValue, float* waveletNoValue, bool isNormalize, int decompressLevel, bool isLossless, int compressedAdaptiveDataSize, DataBlock& dataBlock, std::vector<uint8_t>& target, Error& error)
 {
-  assert(m_dataVersion >= WAVELET_DATA_VERSION_1_4 && m_dataVersion <= WAVELET_DATA_VERSION_1_5);
+  assert(m_dataVersion >= WAVELET_DATA_VERSION_1_4 && m_dataVersion <= WAVELET_DATA_VERSION_1_6);
   InitCoder();
 
   int32_t *startOfCompressedData = (int32_t *)m_readCompressedData;
@@ -830,7 +830,8 @@ bool Wavelet::DeCompress(bool isTransform, int32_t decompressInfo, float decompr
   DecompressAdaptiveMode
     decompressAdaptiveMode = DecompressAdaptiveMode::AssumeNoOverwrite;
 
-  if(WaveletAdaptiveLL_IsWaveletStreamEncodedWithBug(transformData, m_transformIterations, m_transformMask))
+  if(m_dataVersion < WAVELET_DATA_VERSION_1_6 &&
+     WaveletAdaptiveLL_IsWaveletStreamEncodedWithBug(transformData, m_transformIterations, m_transformMask))
   {
     decompressAdaptiveMode = isLossless ? DecompressAdaptiveMode::AllowOverwrite : DecompressAdaptiveMode::PreventOverwrite;
   }
@@ -841,7 +842,7 @@ bool Wavelet::DeCompress(bool isTransform, int32_t decompressInfo, float decompr
   cpuTempData.resize(cpuTempDecodeSizeNeeded);
 
   bool isInteger = m_integerInfo & WAVELET_INTEGERINFO_ISINTEGER;
-  WaveletAdaptiveLL_DecodeIterator decodeIterator = WaveletAdaptiveLL_CreateDecodeIterator((uint8_t*)m_readCompressedData, floatReadWriteData, m_dimensions, m_allocatedSizeX, m_allocatedSizeY, m_allocatedSizeZ, *threshold, *startThreshold, m_transformMask, transformData, m_transformIterations,
+  WaveletAdaptiveLL_DecodeIterator decodeIterator = WaveletAdaptiveLL_CreateDecodeIterator(m_dataVersion, (uint8_t*)m_readCompressedData, floatReadWriteData, m_dimensions, m_allocatedSizeX, m_allocatedSizeY, m_allocatedSizeZ, *threshold, *startThreshold, m_transformMask, transformData, m_transformIterations,
       m_pixelSetChildren.get(), m_pixelSetChildrenCount, m_pixelSetPixelInSignificant.get(), m_pixelSetPixelInSignificantCount,
       m_allocatedHalfSizeX, m_allocatedHalfSizeX * m_allocatedHalfSizeY, cpuTempData.data(), m_allocatedHalfSizeX * m_allocatedHalfSizeY * m_allocatedHalfSizeZ, m_allocatedSizeX * m_allocatedSizeY * m_allocatedSizeZ, decompressLevel, isInteger);
 
