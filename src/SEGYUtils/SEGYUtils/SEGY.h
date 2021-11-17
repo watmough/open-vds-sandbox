@@ -323,6 +323,9 @@ OPENVDS_EXPORT bool IsSEGYTypeUnbinned(SEGYType segyType);
 
 OPENVDS_EXPORT bool IsSEGYTypeWithGatherOffset(SEGYType segyType);
 
+OPENVDS_EXPORT bool autoDetectSEGYTextHeaderIsEBCDIC(const void* buffer, size_t bufferSize);
+OPENVDS_EXPORT size_t convertSEGYEBCDICHeaderToASCII(const void* inputBuffer, size_t inputBufferSize, char* outputBuffer, size_t outputBufferSize, int columnWidth = 80);
+
 } // end namespace SEGY
 
 #endif
