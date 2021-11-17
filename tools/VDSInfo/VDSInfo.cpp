@@ -3,6 +3,7 @@
 
 #include <OpenVDS/OpenVDS.h>
 #include <OpenVDS/VolumeDataLayout.h>
+#include <SEGYUtils/SEGY.h>
 
 #include <Base64/Base64.h>
 
@@ -16,42 +17,6 @@ namespace OpenVDS
   extern Json::Value SerializeAxisDescriptors(VolumeDataLayout const &volumeDataLayout);
   extern Json::Value SerializeChannelDescriptors(VolumeDataLayout const &volumeDataLayout);
 }
-
-const char ebcdic_to_ascii[256] =
-{
-  /*   0*/ 0, 0, 0, 0, 0, 0, 0, 0,
-  /*   8*/ 0, 0, 0, 0, 0, '\r', 0, 0,
-  /*  16*/ 0, 0, 0, 0, 0, 0, 0, 0,
-  /*  24*/ 0, 0, 0, 0, 0, 0, 0, 0,
-  /*  32*/ 0, 0, 0, 0, 0, '\n', 0, 0,
-  /*  40*/ 0, 0, 0, 0, 0, 0, 0, 0,
-  /*  48*/ 0, 0, 0, 0, 0, 0, 0, 0,
-  /*  56*/ 0, 0, 0, 0, 0, 0, 0, 0,
-  /*  64*/ ' ', 0, 0, 0, 0, 0, 0, 0,
-  /*  72*/ 0, 0, 0, '.', '<', '(', '+', 0,
-  /*  80*/ '&', 0, 0, 0, 0, 0, 0, 0,
-  /*  88*/ 0, 0, '!', '$', '*', ')', ';', 0,
-  /*  96*/ '-', '/', 0, 0, 0, 0, 0, 0,
-  /* 104*/ 0, 0, '|', ',', '%', '_', '>', '?',
-  /* 112*/ 0, 0, 0, 0, 0, 0, 0, 0,
-  /* 120*/ 0, 0, ':', '#', '@', '\'', '=', '"',
-  /* 128*/ 0, 'a', 'b', 'c', 'd', 'e', 'f', 'g',
-  /* 136*/ 'h', 'i', 0, 0, 0, 0, 0, 0,
-  /* 144*/ 0, 'j', 'k', 'l', 'm', 'n', 'o', 'p',
-  /* 152*/ 'q', 'r', 0, 0, 0, 0, 0, 0,
-  /* 160*/ 0, '~', 's', 't', 'u', 'v', 'w', 'x',
-  /* 168*/ 'y', 'z', 0, 0, 0, 0, 0, 0,
-  /* 176*/ 0, 0, 0, 0, 0, 0, 0, 0,
-  /* 184*/ 0, '`', 0, 0, 0, 0, 0, 0,
-  /* 192*/ '{', 'A', 'B', 'C', 'D', 'E', 'F', 'G',
-  /* 200*/ 'H', 'I', 0, 0, 0, 0, 0, 0,
-  /* 208*/ '}', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
-  /* 216*/ 'Q', 'R', 0, 0, 0, 0, 0, 0,
-  /* 224*/ '\\', 0, 'S', 'T', 'U', 'V', 'W', 'X',
-  /* 232*/ 'Y', 'Z', 0, 0, 0, 0, 0, 0,
-  /* 240*/ '0', '1', '2', '3', '4', '5', '6', '7',
-  /* 248*/ '8', '9', 0, 0, 0, 0, 0, 0,
-};
 
 std::string compressionStringForCompressionMethod(OpenVDS::CompressionMethod method)
 {
@@ -184,29 +149,18 @@ static std::string convertToString(const Json::Value &value)
   return stream.str();
 }
 
-static bool autodetectDecode(const std::vector<uint8_t> &blob)
-{
-  int countEbcidicSpace = 0;
-  int valuesGT127 = 0;
-  for (auto c : blob)
-  {
-    if (c > 127)
-      valuesGT127++;
-    else if (c == '@')
-      countEbcidicSpace++;
-  }
-
-  return countEbcidicSpace > blob.size() * 0.20 && valuesGT127 > blob.size() * 0.3;
-}
-
-static void decodedEbcdic(std::vector<uint8_t> &ebcdic)
-{
-  std::transform(ebcdic.begin(), ebcdic.end(), ebcdic.begin(), [](const uint8_t &d) { return ebcdic_to_ascii[d]; });
-}
 
 int main(int argc, char **argv)
 {
-  cxxopts::Options options("VDSInfo", "VDSInfo - A tool for extracting info from a VDS\n\nUse -H or see online documentation for connection string paramters:\nhttp://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/seismic/open-vds/connection.html\n");
+  std::string help_info = R"info(VDSInfo - A tool for extracting info from a VDS
+
+Use -H or see online documentation for connection string paramters:
+http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/seismic/open-vds/connection.html
+
+Example for getting the TextHeader from the imported SEGY file autodecoded EBCDIC to ASCII:
+VDSInfo --metadata-name TextHeader -b -e -w 80 s3://bluware-jorgen-dev/volve
+)info";
+  cxxopts::Options options("VDSInfo", help_info);
   options.positional_help("<url>");
 
   std::vector<std::string> urlarg;
@@ -403,20 +357,26 @@ int main(int argc, char **argv)
         bool decodeEBCDIC = false;
         if (metadataAutoDecodeEBCDIC)
         {
-          decodeEBCDIC = autodetectDecode(vector);
+          decodeEBCDIC = SEGY::autoDetectSEGYTextHeaderIsEBCDIC(vector.data(), vector.size());
         }
+        std::string output;
+
+        auto outputSize = 3200;
+        if (textDecodeWidth > 0)
+          outputSize += 3200 / textDecodeWidth + 1;
+        output.resize(outputSize);
         if (decodeEBCDIC)
         {
-          decodedEbcdic(vector);
+          auto filled = SEGY::convertSEGYEBCDICHeaderToASCII(vector.data(), vector.size(), &output[0], output.size(), textDecodeWidth);
+          output.resize(filled);
         }
-        int i = 0;
-        while(i < int(vector.size()))
+        else
         {
-          int to_copy = std::min(textDecodeWidth, int(vector.size() - i));
-          fwrite(vector.data() + i, 1, to_copy, stdout);
-          fwrite("\n", 1, 1, stdout);
-          i += to_copy;
+          output.resize(std::min(vector.size(), output.size()));
+          memcpy(&output[0], vector.data(), output.size());
         }
+        fwrite(output.data(), 1, output.size(), stdout);
+        fprintf(stderr, "\n");
       }
     }
     else

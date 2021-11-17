@@ -1,5 +1,5 @@
 add_executable(VDSInfo VDSInfo.cpp ${COMMON_DIR}/Base64/Base64.cpp)
 
-target_link_libraries(VDSInfo PUBLIC openvds fmt::fmt jsoncpp_lib_static)
+target_link_libraries(VDSInfo PUBLIC openvds segyutils fmt::fmt jsoncpp_lib_static)
 
 setCompilerFlagsForTools(VDSInfo)

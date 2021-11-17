@@ -22,6 +22,9 @@
 #include <string.h>
 #include <assert.h>
 
+#include <algorithm>
+#include <string>
+
 namespace SEGY
 {
 
@@ -312,6 +315,96 @@ IsSEGYTypeWithGatherOffset(const SEGYType segyType)
 {
   // TODO what other SEGY types have offsets?
   return segyType == SEGY::SEGYType::Prestack || IsSEGYTypeUnbinned(segyType);
+}
+
+bool autoDetectSEGYTextHeaderIsEBCDIC(const void* buffer, size_t bufferSize)
+{
+  int toScan = int(std::min(bufferSize, size_t(3200)));
+  int ASCIISpace = 0;
+  int EBCDICSpace = 0;
+
+  const char* textHeader = static_cast<const char*>(buffer);
+
+  for(int i = 0; i < toScan; i++)
+  {
+    if(textHeader[i] == 0x20) ASCIISpace++;
+    if(textHeader[i] == 0x40) EBCDICSpace++;
+  }
+
+  return EBCDICSpace > ASCIISpace;
+}
+
+size_t convertSEGYEBCDICHeaderToASCII(const void* inputBuffer, size_t inputBufferSize, char* outputBuffer, size_t outputBufferSize, int columnWidth)
+{
+  static const char ebcdicToAscii[256] =
+  {
+    /*   0*/ 0, 0, 0, 0, 0, 0, 0, 0,
+    /*   8*/ 0, 0, 0, 0, 0, '\r', 0, 0,
+    /*  16*/ 0, 0, 0, 0, 0, 0, 0, 0,
+    /*  24*/ 0, 0, 0, 0, 0, 0, 0, 0,
+    /*  32*/ 0, 0, 0, 0, 0, '\n', 0, 0,
+    /*  40*/ 0, 0, 0, 0, 0, 0, 0, 0,
+    /*  48*/ 0, 0, 0, 0, 0, 0, 0, 0,
+    /*  56*/ 0, 0, 0, 0, 0, 0, 0, 0,
+    /*  64*/ ' ', 0, 0, 0, 0, 0, 0, 0,
+    /*  72*/ 0, 0, 0, '.', '<', '(', '+', 0,
+    /*  80*/ '&', 0, 0, 0, 0, 0, 0, 0,
+    /*  88*/ 0, 0, '!', '$', '*', ')', ';', 0,
+    /*  96*/ '-', '/', 0, 0, 0, 0, 0, 0,
+    /* 104*/ 0, 0, '|', ',', '%', '_', '>', '?',
+    /* 112*/ 0, 0, 0, 0, 0, 0, 0, 0,
+    /* 120*/ 0, 0, ':', '#', '@', '\'', '=', '"',
+    /* 128*/ 0, 'a', 'b', 'c', 'd', 'e', 'f', 'g',
+    /* 136*/ 'h', 'i', 0, 0, 0, 0, 0, 0,
+    /* 144*/ 0, 'j', 'k', 'l', 'm', 'n', 'o', 'p',
+    /* 152*/ 'q', 'r', 0, 0, 0, 0, 0, 0,
+    /* 160*/ 0, '~', 's', 't', 'u', 'v', 'w', 'x',
+    /* 168*/ 'y', 'z', 0, 0, 0, 0, 0, 0,
+    /* 176*/ 0, 0, 0, 0, 0, 0, 0, 0,
+    /* 184*/ 0, '`', 0, 0, 0, 0, 0, 0,
+    /* 192*/ '{', 'A', 'B', 'C', 'D', 'E', 'F', 'G',
+    /* 200*/ 'H', 'I', 0, 0, 0, 0, 0, 0,
+    /* 208*/ '}', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+    /* 216*/ 'Q', 'R', 0, 0, 0, 0, 0, 0,
+    /* 224*/ '\\', 0, 'S', 'T', 'U', 'V', 'W', 'X',
+    /* 232*/ 'Y', 'Z', 0, 0, 0, 0, 0, 0,
+    /* 240*/ '0', '1', '2', '3', '4', '5', '6', '7',
+    /* 248*/ '8', '9', 0, 0, 0, 0, 0, 0,
+  };
+  if (outputBuffer >= inputBuffer && outputBuffer < ((const char*)inputBuffer) + inputBufferSize)
+  {
+    fprintf(stderr, "Overlapping input and output buffer.");
+    abort();
+  }
+
+  size_t toCopy = std::min(inputBufferSize, std::min(outputBufferSize, size_t(3200)));
+  size_t copied = 0;
+  size_t filled = 0;
+  if (columnWidth > 0)
+  {
+    while (copied < toCopy && filled < outputBufferSize)
+    {
+      size_t copyLineSize = std::min(size_t(columnWidth), toCopy - copied);
+      memcpy(outputBuffer + filled, static_cast<const char*>(inputBuffer) + copied, copyLineSize);
+      copied += copyLineSize;
+      filled += copyLineSize;
+      if (filled < outputBufferSize)
+      {
+        outputBuffer[filled] = 0x25;
+        filled++;
+      }
+    }
+  }
+  else
+  {
+    memcpy(outputBuffer, inputBuffer, toCopy);
+    copied = toCopy;
+    filled = toCopy;
+  }
+  
+  std::transform(outputBuffer, outputBuffer + filled, outputBuffer, [](const uint8_t &d) { return ebcdicToAscii[d]; });
+
+  return filled;
 }
 
 } // end namespace SEGY
