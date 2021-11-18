@@ -1516,7 +1516,7 @@ main(int argc, char* argv[])
   options.add_option("", "", "uniqueID", "Generate a new globally unique ID when scanning the input SEG-Y file.", cxxopts::value<bool>(uniqueID), "");
   options.add_option("", "", "disable-persistentID", "Disable the persistentID usage, placing the VDS directly into the url location.", cxxopts::value<bool>(disablePersistentID), "");
   options.add_option("", "", "json-output", "Enable json output.", cxxopts::value<bool>(jsonOutput), "");
-  options.add_option("", "", "print-text-header", "Print the text header of the input segy file and exit.", cxxopts::value<bool>(printSegyTextHeader), "");
+  options.add_option("", "", "print-text-header", "Print the text header of the input segy file.", cxxopts::value<bool>(printSegyTextHeader), "");
   // TODO add option for turning off traceOrderByOffset
 
   options.add_option("", "h", "help", "Print this help information", cxxopts::value<bool>(help), "");
@@ -1753,8 +1753,9 @@ main(int argc, char* argv[])
       memcpy(&output[0], inputData.get(), 3200);
     }
     fwrite(output.data(), 1, output.size(), stdout);
-    fprintf(stderr, "\n");
-    return EXIT_SUCCESS;
+
+    if (url.empty())
+      return EXIT_SUCCESS;
   }
 
   SEGYFileInfo
