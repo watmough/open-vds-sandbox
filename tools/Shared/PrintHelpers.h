@@ -7,10 +7,52 @@
 
 namespace OpenVDS
 {
-void
-printInfo(bool jsonOutput, const std::string title, const std::string &str)
+
+enum class PrintConfig
 {
-  if (jsonOutput)
+  NoOutput = 0,
+  Error = 1 << 1,
+  Warning = 1 << 2,
+  Info = 1 << 3,
+  Json = 1 << 4
+};
+
+inline bool isNoOutput(PrintConfig config) { return (int)config & (int)PrintConfig::NoOutput; }
+inline bool isInfo(PrintConfig config) { return (int)config & (int)PrintConfig::Info; }
+inline bool isWarning(PrintConfig config) { return (int)config & (int)PrintConfig::Warning; }
+inline bool isError(PrintConfig config) { return (int)config & (int)PrintConfig::Error; }
+inline bool isJson(PrintConfig config) { return (int)config & (int)PrintConfig::Json; }
+
+PrintConfig getOutputLevel(bool disableInfo, bool disableWarning)
+{
+  OpenVDS::PrintConfig outputLevel = OpenVDS::PrintConfig::Info;
+  if (disableInfo)
+    outputLevel = OpenVDS::PrintConfig::Warning;
+  if (disableWarning)
+    outputLevel = OpenVDS::PrintConfig::Error;
+  return outputLevel;
+}
+
+PrintConfig createPrintConfig(bool json, PrintConfig minSeverity)
+{
+  int n = 0;
+  if (json)
+    n |= (int)PrintConfig::Json;
+  n |= (int(minSeverity) << 1) - 1;
+  return (PrintConfig)n;
+}
+
+PrintConfig createPrintConfig(bool json, bool disableInfo, bool disableWarning)
+{
+  return createPrintConfig(json, getOutputLevel(disableInfo, disableWarning));
+}
+
+void
+printInfo(PrintConfig config, const std::string title, const std::string &str)
+{
+  if (isNoOutput(config) || !isInfo(config))
+    return;
+  if (isJson(config))
   {
     Json::Value valueObj;
     valueObj["message"] = str;
@@ -29,9 +71,11 @@ printInfo(bool jsonOutput, const std::string title, const std::string &str)
 }
 
 void
-printInfo(bool jsonOutput, const std::string title, const std::string &str, const std::string &value)
+printInfo(PrintConfig config, const std::string title, const std::string &str, const std::string &value)
 {
-  if (jsonOutput)
+  if (isNoOutput(config) || !isInfo(config))
+    return;
+  if (isJson(config))
   {
     Json::Value valueObj;
     valueObj["value"] = value;
@@ -51,9 +95,11 @@ printInfo(bool jsonOutput, const std::string title, const std::string &str, cons
 }
 
 void
-printVersion(bool jsonOutput, const std::string &name)
+printVersion(PrintConfig config, const std::string &name)
 {
-  if (jsonOutput)
+  if (isNoOutput(config) || !isInfo(config))
+    return;
+  if (isJson(config))
   {
     Json::Value version;
     version["name"] = name;
@@ -86,9 +132,11 @@ printVersion(bool jsonOutput, const std::string &name)
 }
 
 void
-printWarning(bool jsonOutput, const std::string &title, const std::string& str)
+printWarning(PrintConfig config, const std::string &title, const std::string& str)
 {
-  if (jsonOutput)
+  if (isNoOutput(config) || !isWarning(config))
+    return;
+  if (isJson(config))
   {
     Json::Value valueObj;
     valueObj["message"] = str;
@@ -107,9 +155,11 @@ printWarning(bool jsonOutput, const std::string &title, const std::string& str)
 }
 
 void
-printWarning(bool jsonOutput, const std::string& title, const std::string& message, const std::string& value, const std::string &systemError)
+printWarning(PrintConfig config, const std::string& title, const std::string& message, const std::string& value, const std::string &systemError)
 {
-  if (jsonOutput)
+  if (isNoOutput(config) || !isWarning(config))
+    return;
+  if (isJson(config))
   {
     Json::Value valueObj;
     valueObj["message"] = message;
@@ -130,9 +180,11 @@ printWarning(bool jsonOutput, const std::string& title, const std::string& messa
 }
 
 void
-printError(bool jsonOutput, const std::string &title, const std::string& str)
+printError(PrintConfig config, const std::string &title, const std::string& str)
 {
-  if (jsonOutput)
+  if (isNoOutput(config) || !isError(config))
+    return;
+  if (isJson(config))
   {
     Json::Value valueObj;
     valueObj["message"] = str;
@@ -151,9 +203,11 @@ printError(bool jsonOutput, const std::string &title, const std::string& str)
 }
 
 void
-printError(bool jsonOutput, const std::string& title, const std::string& message, const std::string& value)
+printError(PrintConfig config, const std::string& title, const std::string& message, const std::string& value)
 {
-  if (jsonOutput)
+  if (isNoOutput(config) || !isError(config))
+    return;
+  if (isJson(config))
   {
     Json::Value valueObj;
     valueObj["message"] = message;
@@ -173,9 +227,11 @@ printError(bool jsonOutput, const std::string& title, const std::string& message
 }
 
 void
-printError(bool jsonOutput, const std::string& title, const std::string& message, const std::string& value, const std::string &systemError)
+printError(PrintConfig config, const std::string& title, const std::string& message, const std::string& value, const std::string &systemError)
 {
-  if (jsonOutput)
+  if (isNoOutput(config) || !isError(config))
+    return;
+  if (isJson(config))
   {
     Json::Value valueObj;
     valueObj["message"] = message;
@@ -196,31 +252,35 @@ printError(bool jsonOutput, const std::string& title, const std::string& message
 }
 
 void
-printWarning_with_condition_fatal(bool jsonOutput, bool fatal, const std::string title, const std::string& value, const std::string& fatal_value)
+printWarning_with_condition_fatal(PrintConfig config, bool fatal, const std::string title, const std::string& value, const std::string& fatal_value)
 {
-  if (jsonOutput)
+  if (isNoOutput(config))
+    return;
+  if (isJson(config))
   {
     Json::Value valueObj;
     valueObj["message"] = value;
     valueObj["title"] = title;
-    if (fatal)
+    if (fatal & isError(config))
       valueObj["info"] = fatal_value;
     Json::Value root;
-    if (fatal)
+    if (fatal & isError(config))
       root["error"] = valueObj;
-    else
+    else if (isWarning(config))
       root["warning"] = valueObj;
     Json::StreamWriterBuilder wbuilder;
     wbuilder["indentation"] = "  ";
     std::string document = Json::writeString(wbuilder, root);
-    fmt::print(stdout, "{}\n", document);
+    if (isError(config) || isWarning(config))
+      fmt::print(stdout, "{}\n", document);
   }
   else
   {
-    printWarning(jsonOutput, title, value);
-    if(fatal)
+    if (isWarning(config))
+      printWarning(config, title, value);
+    if(fatal && isError(config))
     {
-      printError(jsonOutput, title, fatal_value);
+      printError(config, title, fatal_value);
     }
   }
   if (fatal)
@@ -232,38 +292,41 @@ struct PrintWarningContext
   Json::Value arrayAcc;
   std::string title;
   std::string fatalMsg;
-  bool jsonOutput;
+  PrintConfig config;
   bool fatal;
-  PrintWarningContext(bool jsonOutput, const std::string& title, bool fatal, const std::string fatalMsg)
+  PrintWarningContext(PrintConfig config, const std::string& title, bool fatal, const std::string fatalMsg)
     : title(title)
-    , jsonOutput(jsonOutput)
+    , config(config)
     , fatal(fatal)
   {
 
   }
   ~PrintWarningContext()
   {
-    if (jsonOutput)
+    if (isNoOutput(config))
+      return;
+    if (isJson(config))
     {
       Json::Value root;
-      if (fatal)
+      if (fatal && isError(config))
       {
         root["error"] = arrayAcc;
         root["info"] = fatalMsg;
       }
-      else
+      else if (isWarning(config))
       {
         root["warning"] = arrayAcc;
       }
       Json::StreamWriterBuilder wbuilder;
       wbuilder["indentation"] = "  ";
       std::string document = Json::writeString(wbuilder, root);
-      fmt::print(stdout, "{}\n", document);
+      if (isError(config) || isWarning(config))
+        fmt::print(stdout, "{}\n", document);
     }
     else
     {
       if (fatal)
-        printError(jsonOutput, "VDS", fatalMsg);
+        printError(config, "VDS", fatalMsg);
     }
     if (fatal)
     {
@@ -273,7 +336,7 @@ struct PrintWarningContext
 
   void addWarning(const std::string& message, const std::string& value, const std::string& systemError)
   {
-    if (jsonOutput)
+    if (isJson(config))
     {
       Json::Value obj;
       obj["message"] = message;
@@ -284,7 +347,8 @@ struct PrintWarningContext
     }
     else
     {
-      fmt::print(stderr, "[{}] {}: {}\n", message, value, systemError);
+      if (isWarning(config))
+        fmt::print(stderr, "[{}] {}: {}\n", message, value, systemError);
     }
   }
 };
