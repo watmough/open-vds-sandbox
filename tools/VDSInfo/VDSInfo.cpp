@@ -177,7 +177,7 @@ VDSInfo --metadata-name TextHeader -b -e -w 80 s3://bluware-jorgen-dev/volve
   bool metadataAutoDecodeEBCDIC = false;
   bool metadataAll = false;
   int  textDecodeWidth = std::numeric_limits<int>::max();
-  bool jsonOutput = false;
+  bool useJsonOutput = false;
   bool help = false;
   bool helpConnection = false;
   bool version = false;
@@ -202,16 +202,18 @@ VDSInfo --metadata-name TextHeader -b -e -w 80 s3://bluware-jorgen-dev/volve
   
   options.add_option("", "", "url", "Url with vendor specific protocol or VDS file. (Available as positional argument as well).", cxxopts::value<std::vector<std::string>>(urlarg), "<string>");
 
-  options.add_option("", "", "json-output", "Enable json output.", cxxopts::value<bool>(jsonOutput), "");
+  options.add_option("", "", "json-output", "Enable json output.", cxxopts::value<bool>(useJsonOutput), "");
   options.add_option("", "h", "help", "Print this help information", cxxopts::value<bool>(help), "");
   options.add_option("", "H", "help-connection", "Print help information about the connection string", cxxopts::value<bool>(helpConnection), "");
   options.add_option("", "", "version", "Print version information.", cxxopts::value<bool>(version), "");
 
   options.parse_positional("urlpos");
 
+  OpenVDS::PrintConfig printConfig = OpenVDS::createPrintConfig(false, OpenVDS::PrintConfig::Info);
+
   if(argc == 1)
   {
-    OpenVDS::printInfo(jsonOutput, "Args", options.help());
+    OpenVDS::printInfo(printConfig, "Args", options.help());
     return EXIT_SUCCESS;
   }
 
@@ -221,30 +223,32 @@ VDSInfo --metadata-name TextHeader -b -e -w 80 s3://bluware-jorgen-dev/volve
   }
   catch(cxxopts::OptionParseException &e)
   {
-    OpenVDS::printError(jsonOutput, "Args", e.what());
+    OpenVDS::printError(printConfig, "Args", e.what());
     return EXIT_FAILURE;
   }
 
+  printConfig = OpenVDS::createPrintConfig(useJsonOutput, OpenVDS::PrintConfig::Info);
+
   if (help)
   {
-    OpenVDS::printInfo(jsonOutput, "Args", options.help());
+    OpenVDS::printInfo(printConfig, "Args", options.help());
     return EXIT_SUCCESS;
   }
   if (helpConnection)
   {
-    OpenVDS::printInfo(jsonOutput, "Args", GetConnectionHelpString());
+    OpenVDS::printInfo(printConfig, "Args", GetConnectionHelpString());
     return EXIT_SUCCESS;
   }
 
   if (version)
   {
-    OpenVDS::printVersion(jsonOutput, "VDSInfo");
+    OpenVDS::printVersion(printConfig, "VDSInfo");
     return EXIT_SUCCESS;
   }
 
   if (urlarg.empty())
   {
-    OpenVDS::printError(jsonOutput, "Args", "Failed - missing url/vdsfile argument");
+    OpenVDS::printError(printConfig, "Args", "Failed - missing url/vdsfile argument");
     return EXIT_FAILURE;
   }
   
@@ -275,7 +279,7 @@ VDSInfo --metadata-name TextHeader -b -e -w 80 s3://bluware-jorgen-dev/volve
 
   if(openError.code != 0)
   {
-    OpenVDS::printError(jsonOutput, "VDS", "Could not open VDS", openError.string);
+    OpenVDS::printError(printConfig, "VDS", "Could not open VDS", openError.string);
     return EXIT_FAILURE;
   }
 
@@ -285,7 +289,7 @@ VDSInfo --metadata-name TextHeader -b -e -w 80 s3://bluware-jorgen-dev/volve
   auto layout = OpenVDS::GetLayout(handle);
   if (!layout)
   {
-    OpenVDS::printError(jsonOutput, "VDS", "Internal error, no layout");
+    OpenVDS::printError(printConfig, "VDS", "Internal error, no layout");
     return EXIT_FAILURE;
   }
   

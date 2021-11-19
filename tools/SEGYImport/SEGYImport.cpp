@@ -701,7 +701,7 @@ copySamples(const void* data, SEGY::BinaryHeader::DataSampleFormatCode dataSampl
 }
 
 bool
-analyzeSegment(DataProvider &dataProvider, SEGYFileInfo const& fileInfo, SEGYSegmentInfo const& segmentInfo, float valueRangePercentile, OpenVDS::FloatRange& valueRange, int& fold, int& secondaryStep, const SEGY::SEGYType segyType, int& offsetStart, int& offsetEnd, int& offsetStep, bool jsonOutput, OpenVDS::Error& error)
+analyzeSegment(DataProvider &dataProvider, SEGYFileInfo const& fileInfo, SEGYSegmentInfo const& segmentInfo, float valueRangePercentile, OpenVDS::FloatRange& valueRange, int& fold, int& secondaryStep, const SEGY::SEGYType segyType, int& offsetStart, int& offsetEnd, int& offsetStep, OpenVDS::PrintConfig printConfig, OpenVDS::Error& error)
 {
   assert(segmentInfo.m_traceStop >= segmentInfo.m_traceStart && "A valid segment info should always have a stop trace greater or equal to the start trace");
 
@@ -765,7 +765,7 @@ analyzeSegment(DataProvider &dataProvider, SEGYFileInfo const& fileInfo, SEGYSeg
 
     if(tracePrimaryKey != segmentInfo.m_primaryKey)
     {
-      OpenVDS::printWarning(jsonOutput, "SEGY", fmt::format("trace {} has a primary key that doesn't match with the segment. This trace will be ignored.", segmentInfo.m_traceStart + trace));
+      OpenVDS::printWarning(printConfig, "SEGY", fmt::format("trace {} has a primary key that doesn't match with the segment. This trace will be ignored.", segmentInfo.m_traceStart + trace));
       continue;
     }
 
@@ -1473,11 +1473,13 @@ main(int argc, char* argv[])
   bool disablePersistentID = false;
   bool prestack = false;
   bool traceOrderByOffset = true;
-  bool jsonOutput = false;
-  bool printSegyTextHeader = false;
+  bool useJsonOutput = false;
+  bool disablePrintSegyTextHeader = false;
   bool help = false;
   bool helpConnection = false;
   bool version = false;
+  bool disableInfo = false;
+  bool disableWarning = false;
 
   std::string supportedCompressionMethods = "None";
   if(OpenVDS::IsCompressionMethodSupported(OpenVDS::CompressionMethod::Wavelet)) supportedCompressionMethods += ", Wavelet";
@@ -1515,10 +1517,12 @@ main(int argc, char* argv[])
   options.add_option("", "", "persistentID", "A globally unique ID for the VDS, usually an 8-digit hexadecimal number.", cxxopts::value<std::string>(persistentID), "<ID>");
   options.add_option("", "", "uniqueID", "Generate a new globally unique ID when scanning the input SEG-Y file.", cxxopts::value<bool>(uniqueID), "");
   options.add_option("", "", "disable-persistentID", "Disable the persistentID usage, placing the VDS directly into the url location.", cxxopts::value<bool>(disablePersistentID), "");
-  options.add_option("", "", "json-output", "Enable json output.", cxxopts::value<bool>(jsonOutput), "");
-  options.add_option("", "", "print-text-header", "Print the text header of the input segy file.", cxxopts::value<bool>(printSegyTextHeader), "");
+  options.add_option("", "", "json-output", "Enable json output.", cxxopts::value<bool>(useJsonOutput), "");
+  options.add_option("", "", "disable-print-text-header", "Print the text header of the input segy file.", cxxopts::value<bool>(disablePrintSegyTextHeader), "");
   // TODO add option for turning off traceOrderByOffset
 
+  options.add_option("", "q", "quiet", "Disable info level output.", cxxopts::value<bool>(disableInfo), "");
+  options.add_option("", "Q", "very-quiet", "Disable warning level output.", cxxopts::value<bool>(disableWarning), "");
   options.add_option("", "h", "help", "Print this help information", cxxopts::value<bool>(help), "");
   options.add_option("", "H", "help-connection", "Print help information about the connection string", cxxopts::value<bool>(helpConnection), "");
   options.add_option("", "", "version", "Print version information.", cxxopts::value<bool>(version), "");
@@ -1526,9 +1530,10 @@ main(int argc, char* argv[])
   options.add_option("", "", "input", "", cxxopts::value<std::vector<std::string>>(fileNames), "");
   options.parse_positional("input");
 
+  OpenVDS::PrintConfig printConfig = OpenVDS::createPrintConfig(false, OpenVDS::PrintConfig::Info);
   if (argc == 1)
   {
-    OpenVDS::printInfo(jsonOutput, "Args", options.help());
+    OpenVDS::printInfo(printConfig, "Args", options.help());
     return EXIT_SUCCESS;
   }
 
@@ -1541,24 +1546,26 @@ main(int argc, char* argv[])
   }
   catch (cxxopts::OptionParseException &e)
   {
-    OpenVDS::printError(jsonOutput, "Args", e.what());
+    OpenVDS::printError(printConfig, "Args", e.what());
     return EXIT_FAILURE;
   }
 
+  printConfig = OpenVDS::createPrintConfig(useJsonOutput, disableInfo, disableWarning);
+
   if (help)
   {
-    OpenVDS::printInfo(jsonOutput, "Args", options.help());
+    OpenVDS::printInfo(printConfig, "Args", options.help());
     return EXIT_SUCCESS;
   }
   if (helpConnection)
   {
-    OpenVDS::printInfo(jsonOutput, "Args", GetConnectionHelpString());
+    OpenVDS::printInfo(printConfig, "Args", GetConnectionHelpString());
     return EXIT_SUCCESS;
   }
 
   if (version)
   {
-    OpenVDS::printVersion(jsonOutput, "SEGYImport");
+    OpenVDS::printVersion(printConfig, "SEGYImport");
     return EXIT_SUCCESS;
   }
 
@@ -1577,13 +1584,13 @@ main(int argc, char* argv[])
   else if(compressionMethodString == "waveletnormalizeblocklossless") compressionMethod = OpenVDS::CompressionMethod::WaveletNormalizeBlockLossless;
   else
   {
-    OpenVDS::printError(jsonOutput, "CompressionMethod", "Unknown compression method", compressionMethodString);
+    OpenVDS::printError(printConfig, "CompressionMethod", "Unknown compression method", compressionMethodString);
     return EXIT_FAILURE;
   }
 
   if(!OpenVDS::IsCompressionMethodSupported(compressionMethod))
   {
-    OpenVDS::printError(jsonOutput, "CompressionMethod", "Unsupported compression method", compressionMethodString);
+    OpenVDS::printError(printConfig, "CompressionMethod", "Unsupported compression method", compressionMethodString);
     return EXIT_FAILURE;
   }
 
@@ -1626,25 +1633,25 @@ main(int argc, char* argv[])
   }
   else
   {
-    OpenVDS::printError(jsonOutput, "SEGY", "Primary key does not match a known SEG-Y type");
+    OpenVDS::printError(printConfig, "SEGY", "Primary key does not match a known SEG-Y type");
     return EXIT_FAILURE;
   }
 
   if (fileNames.empty())
   {
-    OpenVDS::printError(jsonOutput, "SEGY", "No input SEG-Y file specified");
+    OpenVDS::printError(printConfig, "SEGY", "No input SEG-Y file specified");
     return EXIT_FAILURE;
   }
 
   if (fileNames.size() > 1 && segyType != SEGY::SEGYType::Prestack)
   {
-    OpenVDS::printError(jsonOutput, "SEGY", "Only one input SEG-Y file may be specified");
+    OpenVDS::printError(printConfig, "SEGY", "Only one input SEG-Y file may be specified");
     return EXIT_FAILURE;
   }
 
   if (singleConnection && inputConnection.size())
   {
-    OpenVDS::printError(jsonOutput, "Args", "Both --single-connection and --input-connection specified.");
+    OpenVDS::printError(printConfig, "Args", "Both --single-connection and --input-connection specified.");
       return EXIT_FAILURE;
   }
   if (singleConnection)
@@ -1652,13 +1659,13 @@ main(int argc, char* argv[])
 
   if(uniqueID && !persistentID.empty())
   {
-    OpenVDS::printError(jsonOutput, "Args", "--uniqueID does not make sense when the persistentID is specified");
+    OpenVDS::printError(printConfig, "Args", "--uniqueID does not make sense when the persistentID is specified");
     return EXIT_FAILURE;
   }
   
   if(disablePersistentID && !persistentID.empty())
   {
-    OpenVDS::printError(jsonOutput, "Args", "--disable-PersistentID does not make sense when the persistentID is specified");
+    OpenVDS::printError(printConfig, "Args", "--disable-PersistentID does not make sense when the persistentID is specified");
     return EXIT_FAILURE;
   }
 
@@ -1672,7 +1679,7 @@ main(int argc, char* argv[])
 
     if (error.code != 0)
     {
-      OpenVDS::printError(jsonOutput, "File", "Could not open header format file", headerFormatFileName);
+      OpenVDS::printError(printConfig, "File", "Could not open header format file", headerFormatFileName);
       return EXIT_FAILURE;
     }
 
@@ -1680,7 +1687,7 @@ main(int argc, char* argv[])
 
     if (error.code != 0)
     {
-      OpenVDS::printError(jsonOutput, "File", "Could not read header format file", headerFormatFileName, error.string);
+      OpenVDS::printError(printConfig, "File", "Could not read header format file", headerFormatFileName, error.string);
       return EXIT_FAILURE;
     }
   }
@@ -1689,7 +1696,7 @@ main(int argc, char* argv[])
     OpenVDS::Error error;
     if (!ParseHeaderFieldArgs(headerFields, g_traceHeaderFields, headerEndianness, error))
     {
-      OpenVDS::printError(jsonOutput, "HeaderFields", "Could not parse header-fields", error.string);
+      OpenVDS::printError(printConfig, "HeaderFields", "Could not parse header-fields", error.string);
       return EXIT_FAILURE;
     }
   }
@@ -1704,7 +1711,7 @@ main(int argc, char* argv[])
   }
   else
   {
-    OpenVDS::printError(jsonOutput, "HeaderFields", "Unrecognized header field given for primary key", primaryKey);
+    OpenVDS::printError(printConfig, "HeaderFields", "Unrecognized header field given for primary key", primaryKey);
     return EXIT_FAILURE;
   }
 
@@ -1726,18 +1733,22 @@ main(int argc, char* argv[])
   if (error.code != 0)
   {
     // TODO need to name which file failed to open
-    OpenVDS::printError(jsonOutput, "IO", "Could not open input file", errorFileName, error.string);
+    OpenVDS::printError(printConfig, "IO", "Could not open input file", errorFileName, error.string);
     return EXIT_FAILURE;
   }
 
-  if (printSegyTextHeader)
+  OpenVDS::printVersion(printConfig, "SEGYImport");
+  if (!OpenVDS::isJson(printConfig) && OpenVDS::isInfo(printConfig))
+    fputc('\n', stdout);
+
+  if (!disablePrintSegyTextHeader)
   {
     auto& dataProvider = dataProviders.front();
     std::unique_ptr<uint8_t[]> inputData(new uint8_t[3200]);
 
     if (!dataProvider.Read(inputData.get(), 0, 3200, error))
     {
-      OpenVDS::printError(jsonOutput, "IO", "Could not read SEGY Text header", errorFileName, error.string);
+      OpenVDS::printError(printConfig, "IO", "Could not read SEGY Text header", errorFileName, error.string);
       return EXIT_FAILURE;
     }
     std::string output;
@@ -1752,10 +1763,13 @@ main(int argc, char* argv[])
       output.resize(3200);
       memcpy(&output[0], inputData.get(), 3200);
     }
-    fwrite(output.data(), 1, output.size(), stdout);
+    OpenVDS::printInfo(printConfig, "SEGY text header", output);
 
     if (url.empty())
       return EXIT_SUCCESS;
+  
+    if (!OpenVDS::isJson(printConfig) && OpenVDS::isInfo(printConfig))
+      fputc('\n', stdout);
   }
 
   SEGYFileInfo
@@ -1782,7 +1796,7 @@ main(int argc, char* argv[])
 
     if (!success)
     {
-      OpenVDS::printError(jsonOutput, "File", "Failed to scan file", fileNames[0], error.string);
+      OpenVDS::printError(printConfig, "File", "Failed to scan file", fileNames[0], error.string);
       return EXIT_FAILURE;
     }
 
@@ -1818,14 +1832,14 @@ main(int argc, char* argv[])
           splitUrl(fileInfoFileName, dirname, basename, parameters, error);
           if (error.code)
           {
-            OpenVDS::printError(jsonOutput, "IO", "Failed to creating IOManager for", fileInfoFileName, error.string);
+            OpenVDS::printError(printConfig, "IO", "Failed to creating IOManager for", fileInfoFileName, error.string);
             return EXIT_FAILURE;
           }
           std::string scanUrl = dirname + parameters;
           std::unique_ptr<OpenVDS::IOManager> ioManager(OpenVDS::IOManager::CreateIOManager(scanUrl, urlConnection, OpenVDS::IOManager::ReadWrite, error));
           if (error.code)
           {
-            OpenVDS::printError(jsonOutput, "IO", "Failed to creating IOManager for", fileInfoFileName, error.string);
+            OpenVDS::printError(printConfig, "IO", "Failed to creating IOManager for", fileInfoFileName, error.string);
             return EXIT_FAILURE;
           }
           auto shared_data = std::make_shared<std::vector<uint8_t>>();
@@ -1834,7 +1848,7 @@ main(int argc, char* argv[])
           req->WaitForFinish(error);
           if (error.code)
           {
-            OpenVDS::printError(jsonOutput, "IO", "Failed to write", fileInfoFileName, error.string);
+            OpenVDS::printError(printConfig, "IO", "Failed to write", fileInfoFileName, error.string);
             return EXIT_FAILURE;
           }
         }
@@ -1847,7 +1861,7 @@ main(int argc, char* argv[])
 
           if (error.code != 0)
           {
-            OpenVDS::printError(jsonOutput, "IO", "Could not create file info file", fileInfoFileName);
+            OpenVDS::printError(printConfig, "IO", "Could not create file info file", fileInfoFileName);
             return EXIT_FAILURE;
           }
 
@@ -1855,7 +1869,7 @@ main(int argc, char* argv[])
 
           if (error.code != 0)
           {
-            OpenVDS::printError(jsonOutput, "IO", "Could not write file info to file", fileInfoFileName);
+            OpenVDS::printError(printConfig, "IO", "Could not write file info to file", fileInfoFileName);
             return EXIT_FAILURE;
           }
         }
@@ -1873,7 +1887,7 @@ main(int argc, char* argv[])
 
     if (error.code != 0)
     {
-      OpenVDS::printError(jsonOutput, "IO", "Could not create data provider for", fileInfoFileName, error.string);
+      OpenVDS::printError(printConfig, "IO", "Could not create data provider for", fileInfoFileName, error.string);
       return EXIT_FAILURE;
     }
 
@@ -1881,7 +1895,7 @@ main(int argc, char* argv[])
 
     if (!success)
     {
-      OpenVDS::printError(jsonOutput, "FileInfo", "Parse SEGYFileInfo", fileInfoFileName, error.string);
+      OpenVDS::printError(printConfig, "FileInfo", "Parse SEGYFileInfo", fileInfoFileName, error.string);
       return EXIT_FAILURE;
     }
 
@@ -1892,7 +1906,7 @@ main(int argc, char* argv[])
   }
   else
   {
-    OpenVDS::printError(jsonOutput, "IO", "No SEG-Y file info file specified");
+    OpenVDS::printError(printConfig, "IO", "No SEG-Y file info file specified");
     return EXIT_FAILURE;
   }
 
@@ -1905,7 +1919,7 @@ main(int argc, char* argv[])
 
   if(fileInfo.m_segmentInfoLists.size() == 1 && fileInfo.m_segmentInfoLists[0].size() == 1)
   {
-    OpenVDS::printWarning_with_condition_fatal(jsonOutput, !ignoreWarnings, "SegmentInfoList", "Warning: There is only one segment, either this is (as of now unsupported) 2D data or this usually indicates using the wrong header format for the input dataset.", "Use --ignore-warnings to force the import to go ahead.");
+    OpenVDS::printWarning_with_condition_fatal(printConfig, !ignoreWarnings, "SegmentInfoList", "Warning: There is only one segment, either this is (as of now unsupported) 2D data or this usually indicates using the wrong header format for the input dataset.", "Use --ignore-warnings to force the import to go ahead.");
   }
 
   // Determine value range, fold and primary/secondary step
@@ -1918,11 +1932,11 @@ main(int argc, char* argv[])
 
   int fileIndex;
   auto representativeSegment = findRepresentativeSegment(fileInfo, primaryStep, fileIndex);
-  analyzeSegment(dataProviders[fileIndex], fileInfo, representativeSegment, valueRangePercentile, valueRange, fold, secondaryStep, segyType, offsetStart, offsetEnd, offsetStep, jsonOutput, error);
+  analyzeSegment(dataProviders[fileIndex], fileInfo, representativeSegment, valueRangePercentile, valueRange, fold, secondaryStep, segyType, offsetStart, offsetEnd, offsetStep, printConfig, error);
 
   if (error.code != 0)
   {
-    OpenVDS::printError(jsonOutput, "SEGY", error.string);
+    OpenVDS::printError(printConfig, "SEGY", error.string);
     return EXIT_FAILURE;
   }
 
@@ -1936,7 +1950,7 @@ main(int argc, char* argv[])
   {
     if(fold > 1)
     {
-      OpenVDS::printError(jsonOutput, "SEGY", fmt::format("Detected a fold of '{0}', this usually indicates using the wrong header format or primary key for the input dataset or that the input data is binned prestack data (PSTM/PSDM gathers) in which case the --prestack option should be used.", fold));
+      OpenVDS::printError(printConfig, "SEGY", fmt::format("Detected a fold of '{0}', this usually indicates using the wrong header format or primary key for the input dataset or that the input data is binned prestack data (PSTM/PSDM gathers) in which case the --prestack option should be used.", fold));
       return EXIT_FAILURE;
     }
   }
@@ -1944,7 +1958,7 @@ main(int argc, char* argv[])
   {
     if (fold <= 1)
     {
-      OpenVDS::printError(jsonOutput, "SEGY", fmt::format("Detected a fold of '{0}', this usually indicates using the wrong header format or primary key for the input dataset or that the input data is poststack in which case the --prestack option should not been used.", fold));
+      OpenVDS::printError(printConfig, "SEGY", fmt::format("Detected a fold of '{0}', this usually indicates using the wrong header format or primary key for the input dataset or that the input data is poststack in which case the --prestack option should not been used.", fold));
       return EXIT_FAILURE;
     }
   }
@@ -1960,7 +1974,7 @@ main(int argc, char* argv[])
   case 128: brickSizeEnum = OpenVDS::VolumeDataLayoutDescriptor::BrickSize_128; break;
   case 256: brickSizeEnum = OpenVDS::VolumeDataLayoutDescriptor::BrickSize_256; break;
   default:
-    OpenVDS::printError(jsonOutput, "Args", "Illegal brick size (must be 32, 64, 128 or 256)");
+    OpenVDS::printError(printConfig, "Args", "Illegal brick size (must be 32, 64, 128 or 256)");
     return EXIT_FAILURE;
   }
 
@@ -1990,7 +2004,7 @@ main(int argc, char* argv[])
   }
   else
   {
-    OpenVDS::printError(jsonOutput, "Args", "Unknown sample unit: {}, legal units are 'ms', 'm' or 'ft'\n", sampleUnit);
+    OpenVDS::printError(printConfig, "Args", "Unknown sample unit: {}, legal units are 'ms', 'm' or 'ft'\n", sampleUnit);
     return EXIT_FAILURE;
   }
 
@@ -2014,7 +2028,7 @@ main(int argc, char* argv[])
   {
     std::string msg = fmt::format("There is more than {:.1f}% empty traces in the VDS, this usually indicates using the wrong header format or primary key for the input dataset.\n", double(traceCountInVDS - totalTraceCount) * 100.0 / double(traceCountInVDS));
     std::string fatal_msg = "Use --ignore-warnings to force the import to go ahead.";
-    OpenVDS::printWarning_with_condition_fatal(jsonOutput, !ignoreWarnings, "SEGY", msg, fatal_msg);
+    OpenVDS::printWarning_with_condition_fatal(printConfig, !ignoreWarnings, "SEGY", msg, fatal_msg);
   }
 
   // Create channel descriptors
@@ -2028,7 +2042,7 @@ main(int argc, char* argv[])
 
   if (error.code != 0)
   {
-    OpenVDS::printError(jsonOutput, "Metadata", error.string);
+    OpenVDS::printError(printConfig, "Metadata", error.string);
     return EXIT_FAILURE;
   }
 
@@ -2040,7 +2054,7 @@ main(int argc, char* argv[])
 
   if (error.code != 0)
   {
-    OpenVDS::printError(jsonOutput, "Metadata", error.string);
+    OpenVDS::printError(printConfig, "Metadata", error.string);
     return EXIT_FAILURE;
   }
 
@@ -2076,7 +2090,7 @@ main(int argc, char* argv[])
 
   if (createError.code != 0)
   {
-    OpenVDS::printError(jsonOutput, "VDS", "Could not create VDS", createError.string);
+    OpenVDS::printError(printConfig, "VDS", "Could not create VDS", createError.string);
     return EXIT_FAILURE;
   }
 
@@ -2108,7 +2122,7 @@ main(int argc, char* argv[])
   std::shared_ptr<DataView> dataView;
 
   int percentage = -1;
-  OpenVDS::printInfo(jsonOutput, "ImportLocation", "Importing into", url);
+  OpenVDS::printInfo(printConfig, "ImportLocation", "Importing into", url);
 
   struct ChunkInfo
   {
@@ -2212,7 +2226,7 @@ main(int argc, char* argv[])
   for (int64_t chunk = 0; chunk < amplitudeAccessor->GetChunkCount() && error.code == 0; chunk++)
   {
     int new_percentage = int(double(chunk) / amplitudeAccessor->GetChunkCount() * 100);
-    if (!jsonOutput && is_tty && percentage != new_percentage)
+    if (OpenVDS::isInfo(printConfig) && !OpenVDS::isJson(printConfig) && is_tty && percentage != new_percentage)
     {
       percentage = new_percentage;
       fmt::print(stdout, "\r {:3}% Done. ", percentage);
@@ -2221,7 +2235,7 @@ main(int argc, char* argv[])
     int32_t errorCount = accessManager.UploadErrorCount();
     if (errorCount)
     {
-      OpenVDS::PrintWarningContext warningContext(jsonOutput, "VDS", !force, "Use -f/--force to continue uploading after upload errors");
+      OpenVDS::PrintWarningContext warningContext(printConfig, "VDS", !force, "Use -f/--force to continue uploading after upload errors");
       for (int i = 0; i < errorCount; i++)
       {
         const char* object_id;
@@ -2331,7 +2345,7 @@ main(int argc, char* argv[])
           firstTrace = findFirstTrace(traceDataManager, *segment, chunkInfo.secondaryKeyStart, fileInfo, error);
           if (error.code)
           {
-            OpenVDS::printWarning(jsonOutput, "IO", "Failed when reading data", fmt::format("{}", error.code), error.string);
+            OpenVDS::printWarning(printConfig, "IO", "Failed when reading data", fmt::format("{}", error.code), error.string);
             break;
           }
         }
@@ -2345,7 +2359,7 @@ main(int argc, char* argv[])
           const char* header = traceDataManager.getTraceData(trace, error);
           if (error.code)
           {
-            OpenVDS::printWarning(jsonOutput, "IO", "Failed when reading data", fmt::format("{}", error.code), error.string);
+            OpenVDS::printWarning(printConfig, "IO", "Failed when reading data", fmt::format("{}", error.code), error.string);
             break;
           }
 
@@ -2488,7 +2502,7 @@ main(int argc, char* argv[])
   {
     return EXIT_FAILURE;
   }
-  if (!jsonOutput)
+  if (OpenVDS::isInfo(printConfig) && !OpenVDS::isJson(printConfig))
   {
     fmt::print("\r100% done processing {}.\n", url);
   }
