@@ -8,7 +8,15 @@
 #ifdef _MSC_VER
 #pragma warning( disable : 4275 )
 #endif
+
+#ifndef _MSC_VER
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
 #include <SDException.h>
+#ifndef _MSC_VER
+#pragma GCC diagnostic pop
+#endif
 
 #include "IOManagerCurl.h"
 #include "IORefreshToken.h"
@@ -186,7 +194,7 @@ namespace OpenVDS
     return iomanager->m_tokenRefresher->newToken();
   }
 
-  IOManagerDms::IOManagerDms(const DMSOpenOptions& openOptions, IOManager::AccessPattern accessPatttern, Error& error)
+  IOManagerDms::IOManagerDms(const DMSOpenOptions& openOptions, IOManager::AccessPattern accessPattern, Error& error)
     : IOManager(openOptions.connectionType)
     , m_opened(false)
     , m_useFileNameForSingleFileDatasets(openOptions.useFileNameForSingleFileDatasets)
@@ -228,7 +236,7 @@ namespace OpenVDS
       m_dataset.reset(new seismicdrive::SDGenericDataset(m_sdManager.get(), openOptions.datasetPath, openOptions.logLevel != 0));
 
       seismicdrive::SDDatasetDisposition disposition = seismicdrive::SDDatasetDisposition::READ_ONLY;
-      switch (accessPatttern)
+      switch (accessPattern)
       {
       case IOManager::ReadOnly:
         disposition = seismicdrive::SDDatasetDisposition::READ_ONLY;

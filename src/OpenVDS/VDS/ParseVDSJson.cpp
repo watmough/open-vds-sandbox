@@ -22,7 +22,7 @@
 #include "CompilerDefines.h"
 #include <OpenVDS/Vector.h>
 
-#include <json/json.h>
+#include "json_cpp_include.h"
 
 #include "Bitmask.h"
 

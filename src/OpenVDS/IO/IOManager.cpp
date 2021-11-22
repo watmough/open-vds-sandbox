@@ -41,7 +41,7 @@
 #include "IOManagerHttp.h"
 #endif
 
-#include "IOManagerDms.h"
+#include "IOManagerDmsFactory.h"
 
 #include "VDS/Env.h"
 
@@ -90,7 +90,7 @@ IOManager* IOManager::CreateIOManager(const OpenOptions& options, IOManager::Acc
     return new IOManagerHttp(static_cast<const HttpOpenOptions &>(options), error);
 #endif
   case OpenOptions::DMS:
-    return new IOManagerDms(static_cast<const DMSOpenOptions&>(options), accessPattern, error);
+    return CreateDMSIOManager(static_cast<const DMSOpenOptions&>(options), accessPattern, error);
   case OpenOptions::InMemory:
     return IOManagerInMemory::CreateIOManagerInMemory(static_cast<const InMemoryOpenOptions &>(options), error);
   default:

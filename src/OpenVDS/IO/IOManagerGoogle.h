@@ -22,7 +22,8 @@
 #include "IOManagerCurl.h"
 
 #include <google/cloud/storage/client.h>
-#include <json/json.h>
+#include "json_cpp_include.h"
+
 namespace OpenVDS
 {
 
