@@ -13,6 +13,7 @@ set(SOURCE_FILES
   IO/IOManagerGoogle.cpp
   IO/IOManagerHttp.cpp
   IO/IOManagerDms.cpp
+  IO/IOManagerDmsFactory.cpp
   IO/IORefreshToken.cpp
   BulkDataStore/HueBulkDataStore.cpp
   BulkDataStore/ExtentAllocator.cpp
@@ -58,6 +59,8 @@ set (PRIVATE_HEADER_FILES
   IO/IOManagerAzurePresigned.h
   IO/IOManagerGoogle.h
   IO/IOManagerHttp.h
+  IO/IOManagerDms.h
+  IO/IOManagerDmsFactory.h
   IO/IOManagerRequestImpl.h
   IO/IOManagerTransformer.h
   IO/IORefreshToken.h
@@ -99,7 +102,8 @@ set (PRIVATE_HEADER_FILES
   VDS/GlobalStateImpl.h
   VDS/StringToDouble.h
   ${COMMON_DIR}/Base64/Base64.h
-  ${COMMON_DIR}/ThreadPool/ThreadPool.h)
+  ${COMMON_DIR}/ThreadPool/ThreadPool.h
+  json_cpp_include.h)
 
 file(GLOB EXPORTED_HEADER_FILES OpenVDS/*.h)
 
@@ -249,10 +253,10 @@ endif()
 
 if (DISABLE_DMS_IOMANAGER)
   target_compile_definitions(openvds_objects PRIVATE OPENVDS_NO_DMS_IOMANAGER)
-  set_source_files_properties(IO/IOManagerDms.cpp PROPERTIES HEADER_FILE_ONLY TRUE)
+  set_source_files_properties(IO/IOManagerDms.cpp IO/IOManagerDmsFactory.cpp PROPERTIES HEADER_FILE_ONLY TRUE)
 else()
   add_dependencies(openvds_objects sdapi)
-  target_include_directories(openvds_objects PRIVATE ${dms_SOURCE_DIR}/src/src/core ${dms_SOURCE_DIR}/src/src/lib)
+  target_include_directories(openvds_objects PRIVATE ${dms_SOURCE_DIR}/src/src/core)
   target_link_libraries(openvds_objects PRIVATE $<TARGET_LINKER_FILE:sdapi>)
 endif()
 

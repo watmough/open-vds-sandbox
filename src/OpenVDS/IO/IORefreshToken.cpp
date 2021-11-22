@@ -1,7 +1,7 @@
 #include "IORefreshToken.h"
 
 #include <fmt/format.h>
-#include <json/json.h>
+#include "json_cpp_include.h"
 
 namespace OpenVDS
 {
@@ -48,10 +48,23 @@ TokenRefresher::TokenRefresher(const std::string& authTokenUrl, const std::strin
     std::string respons_data;
     respons_data.insert(respons_data.end(), request->m_uploadHandler->responsData.begin(), request->m_uploadHandler->responsData.end());
     Json::Value value;
-    if (!Json::Reader().parse(respons_data, value))
+
+    Json::CharReaderBuilder rbuilder;
+    rbuilder["collectComments"] = false;
+
+    try
     {
+      std::unique_ptr<Json::CharReader> reader(rbuilder.newCharReader());
+      const char* json_begin = reinterpret_cast<const char*>(respons_data.data());
+      reader->parse(json_begin, json_begin + respons_data.size(), &value, &error.string);
+    }
+    catch (Json::Exception& e)
+    {
+      error.code = -1;
+      error.string = e.what() + std::string(" : ") + error.string;
       return "";
     }
+
     if (value.isMember("refresh_token"))
     {
       m_refreshToken = value["refresh_token"].asString();
