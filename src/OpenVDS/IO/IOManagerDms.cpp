@@ -9,15 +9,6 @@
 #pragma warning( disable : 4275 )
 #endif
 
-#ifndef _MSC_VER
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#endif
-#include <SDException.h>
-#ifndef _MSC_VER
-#pragma GCC diagnostic pop
-#endif
-
 #include "IOManagerCurl.h"
 #include "IORefreshToken.h"
 

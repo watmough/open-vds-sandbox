@@ -6,11 +6,18 @@
 #ifdef _MSC_VER
 #pragma warning(push)
 #pragma warning(disable : 4251)
+#else
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#pragma GCC diagnostic ignored "-Wpedantic"
 #endif
 #include <SDManager.h>
 #include <SDGenericDataset.h>
+#include <SDException.h>
 #ifdef _MSC_VER
 #pragma warning(pop)
+#else
+#pragma GCC diagnostic pop
 #endif
 
 #include <atomic>
