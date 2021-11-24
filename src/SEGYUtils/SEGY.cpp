@@ -15,6 +15,7 @@
 ** limitations under the License.
 ****************************************************************************/
 
+#define _SCL_SECURE_NO_WARNINGS 1
 #include <SEGYUtils/SEGY.h>
 
 #include <stdint.h>
