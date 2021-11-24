@@ -17,13 +17,13 @@ enum class PrintConfig
   Json = 1 << 4
 };
 
-inline bool isNoOutput(PrintConfig config) { return (int)config & (int)PrintConfig::NoOutput; }
-inline bool isInfo(PrintConfig config) { return (int)config & (int)PrintConfig::Info; }
-inline bool isWarning(PrintConfig config) { return (int)config & (int)PrintConfig::Warning; }
-inline bool isError(PrintConfig config) { return (int)config & (int)PrintConfig::Error; }
-inline bool isJson(PrintConfig config) { return (int)config & (int)PrintConfig::Json; }
+inline bool isNoOutput(PrintConfig config) { return ((int)config & (int)PrintConfig::NoOutput) != 0; }
+inline bool isInfo(PrintConfig config) { return ((int)config & (int)PrintConfig::Info) != 0; }
+inline bool isWarning(PrintConfig config) { return ((int)config & (int)PrintConfig::Warning) != 0; }
+inline bool isError(PrintConfig config) { return ((int)config & (int)PrintConfig::Error) != 0; }
+inline bool isJson(PrintConfig config) { return ((int)config & (int)PrintConfig::Json) != 0; }
 
-PrintConfig getOutputLevel(bool disableInfo, bool disableWarning)
+inline PrintConfig getOutputLevel(bool disableInfo, bool disableWarning)
 {
   OpenVDS::PrintConfig outputLevel = OpenVDS::PrintConfig::Info;
   if (disableInfo)
@@ -33,7 +33,7 @@ PrintConfig getOutputLevel(bool disableInfo, bool disableWarning)
   return outputLevel;
 }
 
-PrintConfig createPrintConfig(bool json, PrintConfig minSeverity)
+inline PrintConfig createPrintConfig(bool json, PrintConfig minSeverity)
 {
   int n = 0;
   if (json)
@@ -42,7 +42,7 @@ PrintConfig createPrintConfig(bool json, PrintConfig minSeverity)
   return (PrintConfig)n;
 }
 
-PrintConfig createPrintConfig(bool json, bool disableInfo, bool disableWarning)
+inline PrintConfig createPrintConfig(bool json, bool disableInfo, bool disableWarning)
 {
   return createPrintConfig(json, getOutputLevel(disableInfo, disableWarning));
 }
@@ -70,7 +70,7 @@ printInfo(PrintConfig config, const std::string title, const std::string &str)
   }
 }
 
-void
+inline void
 printInfo(PrintConfig config, const std::string title, const std::string &str, const std::string &value)
 {
   if (isNoOutput(config) || !isInfo(config))
@@ -94,7 +94,7 @@ printInfo(PrintConfig config, const std::string title, const std::string &str, c
   }
 }
 
-void
+inline void
 printVersion(PrintConfig config, const std::string &name)
 {
   if (isNoOutput(config) || !isInfo(config))
@@ -131,7 +131,7 @@ printVersion(PrintConfig config, const std::string &name)
   }
 }
 
-void
+inline void
 printWarning(PrintConfig config, const std::string &title, const std::string& str)
 {
   if (isNoOutput(config) || !isWarning(config))
@@ -154,7 +154,7 @@ printWarning(PrintConfig config, const std::string &title, const std::string& st
   }
 }
 
-void
+inline void
 printWarning(PrintConfig config, const std::string& title, const std::string& message, const std::string& value, const std::string &systemError)
 {
   if (isNoOutput(config) || !isWarning(config))
@@ -179,7 +179,7 @@ printWarning(PrintConfig config, const std::string& title, const std::string& me
   }
 }
 
-void
+inline void
 printError(PrintConfig config, const std::string &title, const std::string& str)
 {
   if (isNoOutput(config) || !isError(config))
@@ -202,7 +202,7 @@ printError(PrintConfig config, const std::string &title, const std::string& str)
   }
 }
 
-void
+inline void
 printError(PrintConfig config, const std::string& title, const std::string& message, const std::string& value)
 {
   if (isNoOutput(config) || !isError(config))
@@ -226,7 +226,7 @@ printError(PrintConfig config, const std::string& title, const std::string& mess
   }
 }
 
-void
+inline void
 printError(PrintConfig config, const std::string& title, const std::string& message, const std::string& value, const std::string &systemError)
 {
   if (isNoOutput(config) || !isError(config))
@@ -251,7 +251,7 @@ printError(PrintConfig config, const std::string& title, const std::string& mess
   }
 }
 
-void
+inline void
 printWarning_with_condition_fatal(PrintConfig config, bool fatal, const std::string title, const std::string& value, const std::string& fatal_value)
 {
   if (isNoOutput(config))
