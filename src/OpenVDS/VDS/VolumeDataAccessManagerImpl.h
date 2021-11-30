@@ -127,6 +127,10 @@ public:
   int64_t PrefetchVolumeChunk(DimensionsND dimensionsND, int LOD, int channel, int64_t chunkIndex) override;
 
   VolumeDataStore *GetVolumeDataStore();
+
+  void AddCopyPageJob(VolumeDataChunk& chunk, VolumeDataPageAccessorImpl& destination, VolumeDataPageAccessorImpl& source);
+  void FlushCopyPageJobs();
+
   void AddUploadError(Error const &error, const std::string &url);
 
   void FlushUploadQueue(bool writeUpdatedLayerStatus = true) override;
@@ -146,8 +150,10 @@ public:
 private:
   std::atomic<int> m_refCount;
   bool m_invalidated;
+  bool m_copyJobIndex;
   VDS &m_vds;
   std::unique_ptr<VolumeDataRequestProcessor> m_requestProcessor;
+  std::vector<std::pair<VolumeDataChunk, std::future<Error>>> m_copyJobs[2];
   IntrusiveList<VolumeDataPageAccessorImpl, &VolumeDataPageAccessorImpl::m_volumeDataPageAccessorListNode> m_volumeDataPageAccessorList;
   std::mutex m_mutex;
   std::vector<std::unique_ptr<UploadError>> m_uploadErrors;

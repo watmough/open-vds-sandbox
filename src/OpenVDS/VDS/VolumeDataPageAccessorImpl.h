@@ -27,6 +27,7 @@
 #include <vector>
 #include <atomic>
 #include <chrono>
+#include <functional>
 
 namespace OpenVDS
 {
@@ -91,6 +92,7 @@ public:
   void  SetMaxPages(int maxPages) override;
 
   VolumeDataPage *CreatePage(int64_t chunk) override;
+  void  CopyPage(int64_t chunkIndex, VolumeDataPageAccessor & source) override;
   VolumeDataPage *ReadPage(int64_t chunk) override;
   VolumeDataPage *ReadPageAtPosition(const int (&position)[Dimensionality_Max]) override;
  

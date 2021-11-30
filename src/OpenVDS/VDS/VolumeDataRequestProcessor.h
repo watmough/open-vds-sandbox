@@ -140,6 +140,8 @@ public:
   static int64_t StaticGetProjectedVolumeSubsetBufferSize(VolumeDataLayout const *volumeDataLayout, const int (&minVoxelCoordinates)[Dimensionality_Max], const int (&maxVoxelCoordinates)[Dimensionality_Max], DimensionGroup projectedDimensions, VolumeDataChannelDescriptor::Format format, int LOD, int channel);
   static int64_t StaticGetVolumeSamplesBufferSize(VolumeDataLayout const *volumeDataLayout, int sampleCount, int channel);
   static int64_t StaticGetVolumeTracesBufferSize(VolumeDataLayout const *volumeDataLayout, int traceCount, int traceDimension, int LOD, int channel);
+
+  ThreadPool& GetThreadPool() { return m_threadPool; }
 private:
   VolumeDataAccessManagerImpl &m_manager;
   std::map<PageAccessorKey, VolumeDataPageAccessorImpl *> m_pageAccessors;

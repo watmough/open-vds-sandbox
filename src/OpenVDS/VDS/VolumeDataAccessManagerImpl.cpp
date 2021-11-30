@@ -26,6 +26,7 @@
 #include "VolumeDataStore.h"
 #include "VolumeDataHash.h"
 #include "VolumeDataLayoutImpl.h"
+#include "VolumeDataPageAccessorImpl.h"
 
 #include <algorithm>
 #include <inttypes.h>
@@ -39,6 +40,7 @@ namespace OpenVDS
 VolumeDataAccessManagerImpl::VolumeDataAccessManagerImpl(VDS &vds)
   : m_refCount(0)
   , m_invalidated(false)
+  , m_copyJobIndex(false)
   , m_vds(vds)
   , m_requestProcessor(new VolumeDataRequestProcessor(*this))
   , m_currentErrorIndex(0)
@@ -623,6 +625,106 @@ IVolumeDataAccessor* VolumeDataAccessManagerImpl::CloneVolumeDataAccessor(IVolum
 void VolumeDataAccessManagerImpl::FlushUploadQueue(bool writeUpdatedLayerStatus)
 {
   GetVolumeDataStore()->Flush(writeUpdatedLayerStatus);
+}
+
+static bool isPureCopy(const VolumeDataChunk &a, const VolumeDataChunk &b)
+{
+  auto sourceCompressionMethod = a.layer->GetEffectiveCompressionMethod();
+  if (sourceCompressionMethod == b.layer->GetEffectiveCompressionMethod())
+  {
+    if (CompressionMethod_IsWavelet(sourceCompressionMethod))
+    {
+      return a.layer->GetEffectiveCompressionTolerance() == b.layer->GetEffectiveCompressionTolerance();
+    }
+    return true;
+  }
+  return false;
+}
+
+void VolumeDataAccessManagerImpl::AddCopyPageJob(VolumeDataChunk& chunk, VolumeDataPageAccessorImpl &destination, VolumeDataPageAccessorImpl &source)
+{
+  Error error;
+  VolumeDataChunk sourceChunk = { source.GetLayer(), chunk.index };
+  source.GetManager()->GetVolumeDataStore()->PrepareReadChunk(sourceChunk, sourceChunk.layer->GetEffectiveWaveletAdaptiveLoadLevel(), error);
+  std::unique_lock<std::mutex> lock(m_mutex);
+  if (error.code)
+  {
+    std::string url = fmt::format("Chunk: {}, Channel: {} LOD: {}", chunk.index, chunk.layer->GetChannelIndex(), chunk.layer->GetLOD());
+    AddUploadError(error, url);
+    return;
+  }
+  auto threadCount = m_requestProcessor->GetThreadPool().ThreadCount();
+  m_copyJobs[m_copyJobIndex].emplace_back(chunk, m_requestProcessor->GetThreadPool().Enqueue([this, chunk, sourceChunk, threadCount, &destination, &source]
+    {
+      Error error;
+      std::vector<uint8_t> serializedData;
+      std::vector<uint8_t> metadata;
+      CompressionInfo compressionInfo;
+
+      auto sourceDataStore = source.GetManager()->GetVolumeDataStore();
+      auto destDataStore = GetVolumeDataStore();
+      sourceDataStore->ReadChunk(sourceChunk, sourceChunk.layer->GetEffectiveWaveletAdaptiveLoadLevel(), serializedData, metadata, compressionInfo, error);
+      if (error.code)
+      {
+        return error;
+      }
+   
+      if (isPureCopy(chunk, sourceChunk))
+      {
+        destDataStore->WriteChunk(chunk, serializedData, metadata);
+      }
+      else
+      {
+        auto destFormat = PrivateGetLayout()->GetChannelFormat(chunk.layer->GetChannelIndex());
+        DataBlock destDataBlock;
+        std::vector<uint8_t> deserializedData;
+        sourceDataStore->DeserializeVolumeData(sourceChunk, serializedData, metadata, compressionInfo.GetCompressionMethod(), sourceChunk.layer->GetEffectiveWaveletAdaptiveLoadLevel(), destFormat, destDataBlock, deserializedData, error);
+        destination.RequestWritePage(chunk.index, destDataBlock, deserializedData);
+      }
+      destination.GetManager()->GetVolumeDataLayout()->CompletePendingWriteChunkRequests(int32_t(threadCount));
+      return error;
+    }));
+
+  if (m_copyJobs[m_copyJobIndex].size() == m_requestProcessor->GetThreadPool().ThreadCount())
+  {
+    auto& otherjobs = m_copyJobs[!m_copyJobIndex];
+    for (auto& job : otherjobs)
+    {
+      auto error = job.second.get();
+      if (error.code)
+      {
+        auto& jobChunk = job.first;
+        std::string url = fmt::format("Chunk: {}, Channel: {} LOD: {}", jobChunk.index, jobChunk.layer->GetChannelIndex(), jobChunk.layer->GetLOD());
+        lock.unlock();
+        AddUploadError(error, url);
+        lock.lock();
+      }
+    }
+    otherjobs.clear();
+    m_copyJobIndex = !m_copyJobIndex;
+  }
+}
+
+void VolumeDataAccessManagerImpl::FlushCopyPageJobs()
+{
+  std::unique_lock<std::mutex> lock(m_mutex);
+  for (auto& jobsMap : m_copyJobs)
+  {
+    for (auto& job : jobsMap)
+    {
+      auto error = job.second.get();
+      if (error.code)
+      {
+        auto& jobChunk = job.first;
+        std::string url = fmt::format("Chunk: {}, Channel: {} LOD: {}", jobChunk.index, jobChunk.layer->GetChannelIndex(), jobChunk.layer->GetLOD());
+        lock.unlock();
+        AddUploadError(error, url);
+        lock.lock();
+      }
+    }
+    jobsMap.clear();
+  }
+
 }
 
 void VolumeDataAccessManagerImpl::AddUploadError(Error const &error, const std::string &url)
