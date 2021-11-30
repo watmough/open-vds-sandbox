@@ -35,6 +35,7 @@ public:
     ->std::future<typename std::result_of<F()>::type>;
   ~ThreadPool();
 
+  size_t ThreadCount() const;
 private:
   std::vector<std::thread> workers;
   std::queue<std::function<void()>> tasks;
@@ -111,3 +112,7 @@ inline ThreadPool::~ThreadPool()
     worker.join();
 }
 
+inline size_t ThreadPool::ThreadCount() const
+{
+  return workers.size();
+}

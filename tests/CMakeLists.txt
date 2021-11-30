@@ -116,6 +116,10 @@ add_test_executable(openvds_integration_tests
   OpenVDS/MultiComponent.cpp
   )
 
+add_test_executable(read_write_page
+  OpenVDS/ReadWritePage.cpp
+  )
+
 add_test_executable(multithreaded_requests
   OpenVDS/MultiThreadedRequests.cpp
 )

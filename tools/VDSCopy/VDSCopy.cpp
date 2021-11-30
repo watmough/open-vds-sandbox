@@ -23,61 +23,24 @@ inline void printPercentage(float percentage)
   fflush(stdout);
 }
 
-inline int32_t GetVoxelFormatByteSize(OpenVDS::VolumeDataChannelDescriptor::Format format)
-{
-  int32_t iRetval = -1;
-  switch (format) {
-  case OpenVDS::VolumeDataChannelDescriptor::Format_R64:
-  case OpenVDS::VolumeDataChannelDescriptor::Format_U64:
-    iRetval = 8;
-    break;
-  case OpenVDS::VolumeDataChannelDescriptor::Format_R32:
-  case OpenVDS::VolumeDataChannelDescriptor::Format_U32:
-    iRetval = 4;
-    break;
-  case OpenVDS::VolumeDataChannelDescriptor::Format_U16:
-    iRetval = 2;
-    break;
-  case OpenVDS::VolumeDataChannelDescriptor::Format_U8:
-  case OpenVDS::VolumeDataChannelDescriptor::Format_1Bit:
-    iRetval =1;
-    break;
-  default:
-    fprintf(stderr, "Unknown voxel format");
-    abort();
-  }
-  return iRetval;
-}
-
 struct CopyError
 {
   int code = 0;
   std::string message;
 };
 
-bool flushFutureBufer(std::vector<std::future<CopyError>>& futures, OpenVDS::PrintConfig printConfig, int64_t totalChunks, int64_t &doneChunks, int &percentage, CopyError& copyError)
+static void printProgress(OpenVDS::PrintConfig printConfig, int64_t totalChunks, int64_t doneChunks, int& percentage)
 {
-  for (auto& future : futures)
+  int newPercentage = int(doneChunks * 10000 / totalChunks);
+  if (newPercentage != percentage)
   {
-    auto error = future.get();
-    if (error.code)
+    percentage = newPercentage;
+    if (!OpenVDS::isJson(printConfig) && OpenVDS::isInfo(printConfig))
     {
-      copyError = error;
-      return false;
-    }
-    int newPercentage = int(++doneChunks * 10000 / totalChunks);
-    if (newPercentage != percentage)
-    {
-      percentage = newPercentage;
-      if (!OpenVDS::isJson(printConfig) && OpenVDS::isInfo(printConfig))
-      {
-        float output_percentage = float(percentage) / 100;
-        printPercentage(output_percentage);
-      }
+      float output_percentage = float(percentage) / 100;
+      printPercentage(output_percentage);
     }
   }
-  futures.clear();
-  return true;
 }
 
 int main(int argc, char **argv)
@@ -226,8 +189,7 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
     OpenVDS::printError(printConfig, "CompressionMethod", "Unknown compression method", compressionMethodString);
     return EXIT_FAILURE;
   }
-
-  if(!OpenVDS::IsCompressionMethodSupported(compressionMethod))
+  if (!OpenVDS::IsCompressionMethodSupported(compressionMethod))
   {
     OpenVDS::printError(printConfig, "CompressionMethod", "Unsupported compression method", compressionMethodString);
     return EXIT_FAILURE;
@@ -301,10 +263,6 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
   OpenVDS::printInfo(printConfig, destinationUrl, fmt::format("Copying {} to {}. Total chunks to copy is {}", sourceUrl, destinationUrl, totalChunks));
   if (!OpenVDS::isJson(printConfig) && OpenVDS::isInfo(printConfig))
     fmt::print(stdout, "\n");
-  int threadCount = 16;
-  double bufferThreadScale = 8; 
-  ThreadPool threadPool(threadCount);
-
   for (int lod = 0; lod <= layoutDescriptor.GetLODLevels(); lod++)
   {
     for (int dim = 0; dim <= OpenVDS::DimensionsND::Dimensions_45; dim++)
@@ -330,71 +288,35 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
       if (!sourceAccessors[0])
         continue;
 
-      std::vector<std::future<CopyError>> futures[2];
-      futures[0].reserve(size_t(threadCount * bufferThreadScale));
-      futures[1].reserve(size_t(threadCount * bufferThreadScale));
-      bool futureBuffer = false;
       CopyError copyError;
-      for (int64_t chunk = 0; chunk < sourceAccessors[0]->GetChunkCount(); chunk++)
+      for (int64_t chunk = 0; chunk < sourceAccessors[0]->GetChunkCount() && copyError.code == 0; chunk++)
       {
-        for (int channel = 0; channel < channelCount; channel++)
+        for (int channel = 0; channel < channelCount && copyError.code == 0; channel++)
         {
           if (sourceAccessors[channel])
           {
             int64_t mappedChunk = sourceAccessors[channel]->GetMappedChunkIndex(chunk);
             if (sourceAccessors[channel]->GetPrimaryChannelChunkIndex(mappedChunk) == chunk)
             {
-              if (futures[futureBuffer].size() == futures[futureBuffer].capacity())
+              destinationAccessors[channel]->CopyPage(mappedChunk, *sourceAccessors[channel]);
+              doneChunks++;
+              printProgress(printConfig, totalChunks, doneChunks, percentage);
+              int errorCount = destinationAccessManager.UploadErrorCount();
+              for (int errorIndex = 0; errorIndex < errorCount; errorIndex++)
               {
-                futureBuffer = !futureBuffer;
-                if (!flushFutureBufer(futures[futureBuffer], printConfig, totalChunks, doneChunks, percentage, copyError))
+                const char* objectId;
+                int32_t errorCode;
+                const char* errorString;
+                destinationAccessManager.GetCurrentUploadError(&objectId, &errorCode, &errorString);
+                if (errorIndex == 0)
                 {
-                    if (!OpenVDS::isJson(printConfig) && OpenVDS::isInfo(printConfig))
-                      fprintf(stderr, "\n");
-                    OpenVDS::printError(printConfig, "Failed to copy chunk ", copyError.message);
-                    return copyError.code;
+                  copyError.message = fmt::format("{}: {}", objectId, errorString);
+                  copyError.code = errorCode;
+                  OpenVDS::printError(printConfig, "Failed to copy chunk ", copyError.message);
                 }
               }
-              futures[futureBuffer].emplace_back(threadPool.Enqueue([&sourceAccessors, channel, mappedChunk, &destinationAccessors, &channelDescriptors, lod, &layout]
-              {
-                CopyError retError;
-                auto sourcePage = sourceAccessors[channel]->ReadPage(mappedChunk);
-                auto error = sourcePage->GetError();
-                if (error.errorCode)
-                {
-                  retError.code = error.errorCode;
-                  retError.message = error.message;
-                  return retError;
-                }
-                auto destinationPage = destinationAccessors[channel]->CreatePage(mappedChunk);
-                int sourcePitch[6];
-                auto sourceBuffer = sourcePage->GetBuffer(sourcePitch);
-                int destinationPitch[6];
-                auto destinationBuffer = destinationPage->GetWritableBuffer(destinationPitch);
-                auto maxPitch = std::distance(sourcePitch, std::max_element(sourcePitch, &sourcePitch[6]));
-                int pageMin[6];
-                int pageMax[6];
-                sourcePage->GetMinMax(pageMin, pageMax);
-                int formatSize = GetVoxelFormatByteSize(channelDescriptors[channel].GetFormat());
-                int bufferSize = sourcePitch[maxPitch] * OpenVDS::GetLODSize(pageMin[maxPitch], pageMax[maxPitch], lod) * formatSize * layout->GetChannelComponents(channel);
-                assert(memcmp(sourcePitch, destinationPitch, sizeof(sourcePitch)) == 0);
-                memcpy(destinationBuffer, sourceBuffer, bufferSize);
-                sourcePage->Release();
-                destinationPage->Release();
-                return retError;
-              }));
             }
           }
-        }
-      }
-      for (auto& futuesInBuffer : futures)
-      {
-        if (!flushFutureBufer(futuesInBuffer, printConfig, totalChunks, doneChunks, percentage, copyError))
-        {
-          if (!OpenVDS::isJson(printConfig) && OpenVDS::isInfo(printConfig))
-            fprintf(stderr, "\n");
-          OpenVDS::printError(printConfig, "Failed to copy chunk ", copyError.message);
-          return copyError.code;
         }
       }
     }

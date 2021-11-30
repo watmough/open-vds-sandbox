@@ -459,14 +459,41 @@ static float GetConvertedConstantValue(VolumeDataChannelDescriptor const &volume
 }
 
 template <typename T>
-static void FillConstantValueBuffer(std::vector<uint8_t> &buffer, int32_t allocatedElements, float value)
+static void FillConstantValueBuffer(uint8_t *buffer, int32_t allocatedElements, float value)
 {
   T v = ConvertValue<T>(value);
-  T *b = reinterpret_cast<T *>(buffer.data());
+  T *b = reinterpret_cast<T *>(buffer);
   for(int32_t element = 0; element < allocatedElements; element++)
   {
     b[element] = v;
   }
+}
+
+static bool FillConstantValueBuffer(uint8_t* buffer, int32_t allocatedElements, VolumeDataChannelDescriptor::Format format, float value, Error &error)
+{
+  VolumeDataChannelDescriptor::Format effectiveFormat = format;
+
+  // Use U8 format fill methods for 1-bit
+  if(format == VolumeDataChannelDescriptor::Format_1Bit)
+  {
+    effectiveFormat = VolumeDataChannelDescriptor::Format_U8;
+    value = ConvertValue<bool>(value) ? 255.0f : 0.0f;
+  }
+
+  switch (effectiveFormat)
+  {
+  default:
+    error.code = -1;
+    error.string = "Invalid format in createConstantValuedataBlock";
+    return false;
+  case VolumeDataChannelDescriptor::Format_U8:  FillConstantValueBuffer<uint8_t>(buffer, allocatedElements, value); break;
+  case VolumeDataChannelDescriptor::Format_U16: FillConstantValueBuffer<uint16_t>(buffer, allocatedElements, value); break;
+  case VolumeDataChannelDescriptor::Format_R32: FillConstantValueBuffer<float>(buffer, allocatedElements, value); break;
+  case VolumeDataChannelDescriptor::Format_U32: FillConstantValueBuffer<uint32_t>(buffer, allocatedElements, value); break;
+  case VolumeDataChannelDescriptor::Format_R64: FillConstantValueBuffer<double>(buffer, allocatedElements, value); break;
+  case VolumeDataChannelDescriptor::Format_U64: FillConstantValueBuffer<uint64_t>(buffer, allocatedElements, value); break;
+  }
+  return true;
 }
 
 bool VolumeDataStore::CreateConstantValueDataBlock(VolumeDataChunk const &volumeDataChunk, VolumeDataChannelDescriptor::Format format, float noValue, VolumeDataChannelDescriptor::Components components, VolumeDataHash const &constantValueVolumeDataHash, DataBlock &dataBlock, std::vector<uint8_t> &buffer, Error &error)
@@ -487,30 +514,7 @@ bool VolumeDataStore::CreateConstantValueDataBlock(VolumeDataChunk const &volume
 
   assert(dataBlock.Format == format);
 
-  VolumeDataChannelDescriptor::Format effectiveFormat = format;
-
-  // Use U8 format fill methods for 1-bit
-  if(format == VolumeDataChannelDescriptor::Format_1Bit)
-  {
-    effectiveFormat = VolumeDataChannelDescriptor::Format_U8;
-    convertedConstantValue = ConvertValue<bool>(convertedConstantValue) ? 255.0f : 0.0f;
-  }
-
-  switch (effectiveFormat)
-  {
-  default:
-    error.code = -1;
-    error.string = "Invalid format in createConstantValuedataBlock";
-    return false;
-  case VolumeDataChannelDescriptor::Format_U8:  FillConstantValueBuffer<uint8_t>(buffer, allocatedElements, convertedConstantValue); break;
-  case VolumeDataChannelDescriptor::Format_U16: FillConstantValueBuffer<uint16_t>(buffer, allocatedElements, convertedConstantValue); break;
-  case VolumeDataChannelDescriptor::Format_R32: FillConstantValueBuffer<float>(buffer, allocatedElements, convertedConstantValue); break;
-  case VolumeDataChannelDescriptor::Format_U32: FillConstantValueBuffer<uint32_t>(buffer, allocatedElements, convertedConstantValue); break;
-  case VolumeDataChannelDescriptor::Format_R64: FillConstantValueBuffer<double>(buffer, allocatedElements, convertedConstantValue); break;
-  case VolumeDataChannelDescriptor::Format_U64: FillConstantValueBuffer<uint64_t>(buffer, allocatedElements, convertedConstantValue); break;
-  }
-
-  return true;
+  return FillConstantValueBuffer(buffer.data(), allocatedElements, format, convertedConstantValue, error);
 }
 
 bool VolumeDataStore::DeserializeVolumeData(const VolumeDataChunk& volumeDataChunk, const std::vector<uint8_t>& serializedData, const std::vector<uint8_t>& metadata, CompressionMethod compressionMethod, int32_t adaptiveLevel, VolumeDataChannelDescriptor::Format loadFormat, DataBlock& dataBlock, std::vector<uint8_t>& target, Error& error)

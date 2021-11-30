@@ -199,6 +199,17 @@ public:
   virtual void  SetMaxPages(int maxPages) = 0;
 
   virtual VolumeDataPage *CreatePage(int64_t chunkIndex) = 0;
+
+  /// <summary>
+  /// Copy a page of data from another VolumeDataPageAccessor with a compatible layout. This method is not blocking so if you want to access the copied data you need to call ReadPage which will block until the copy is done and return the copied data.
+  /// </summary>
+  /// <param name="chunkIndex">
+  /// The chunk index to copy
+  /// </param>
+  /// <param name="source">
+  /// The VolumeDataPageAccessor to copy data from
+  /// </param>
+  virtual void  CopyPage(int64_t chunkIndex, VolumeDataPageAccessor &source) = 0;
   virtual VolumeDataPage *ReadPage(int64_t chunkIndex) = 0;
   virtual VolumeDataPage *ReadPageAtPosition(const int (&position)[Dimensionality_Max]) = 0;
 

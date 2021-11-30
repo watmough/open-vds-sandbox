@@ -124,43 +124,64 @@ private:
 class SlowIOManager : public OpenVDS::IOManager
 {
 public:
-  SlowIOManager(int delayMs, OpenVDS::IOManager *target)
+  enum Operation
+  {
+    Read = 1 << 0,
+    Write = 1 << 1,
+    Both = Read | Write
+  };
+
+  SlowIOManager(int delayMs, OpenVDS::IOManager *target, Operation operation = Both)
     : IOManager(target->connectionType())
     , m_delayMs(delayMs)
     , m_target(target)
+    , m_operation(operation)
   {}
 
   std::shared_ptr<OpenVDS::Request> ReadObjectInfo(const std::string& objectName, std::shared_ptr<OpenVDS::TransferDownloadHandler> handler) override
   {
-    auto slowRequest = std::make_shared<SlowRequest>(objectName, m_delayMs);
-    auto slowTransfer = std::make_shared<SlowTransferDownloadHandler>(slowRequest->m_blockUntil, handler);
-    slowRequest->m_target = m_target->ReadObjectInfo(objectName, slowTransfer);
-    return slowRequest;
+    if (m_operation & Read)
+    {
+      auto slowRequest = std::make_shared<SlowRequest>(objectName, m_delayMs);
+      auto slowTransfer = std::make_shared<SlowTransferDownloadHandler>(slowRequest->m_blockUntil, handler);
+      slowRequest->m_target = m_target->ReadObjectInfo(objectName, slowTransfer);
+      return slowRequest;
+    }
+    return m_target->ReadObjectInfo(objectName, handler);
   }
   
   std::shared_ptr<OpenVDS::Request> ReadObject(const std::string& objectName, std::shared_ptr<OpenVDS::TransferDownloadHandler> handler, const OpenVDS::IORange& range = OpenVDS::IORange()) override
   {
-    auto slowRequest = std::make_shared<SlowRequest>(objectName, m_delayMs);
-    auto slowTransfer = std::make_shared<SlowTransferDownloadHandler>(slowRequest->m_blockUntil, handler);
-    slowRequest->m_target = m_target->ReadObject(objectName, slowTransfer, range);
-    return slowRequest;
+    if (m_operation & Read)
+    {
+      auto slowRequest = std::make_shared<SlowRequest>(objectName, m_delayMs);
+      auto slowTransfer = std::make_shared<SlowTransferDownloadHandler>(slowRequest->m_blockUntil, handler);
+      slowRequest->m_target = m_target->ReadObject(objectName, slowTransfer, range);
+      return slowRequest;
+    }
+    return m_target->ReadObject(objectName, handler, range);
   }
 
   std::shared_ptr<OpenVDS::Request> WriteObject(const std::string& objectName, const std::string& contentDispostionFilename, const std::string& contentType, const std::vector<std::pair<std::string, std::string>>& metadataHeader, std::shared_ptr<std::vector<uint8_t>> data, std::function<void(const OpenVDS::Request& request, const OpenVDS::Error& error)> completedCallback = nullptr) override
   {
-    auto slowRequest = std::make_shared<SlowRequest>(objectName, m_delayMs);
-    std::function<void(const OpenVDS::Request& request, const OpenVDS::Error& error)> slowCompletedCallback;
-    if (completedCallback)
+    if (m_operation & Write)
     {
-      slowCompletedCallback = [slowRequest, completedCallback](const OpenVDS::Request& request, const OpenVDS::Error& error) { slowRequest->m_blockUntil->block(); completedCallback(request, error); };
+      auto slowRequest = std::make_shared<SlowRequest>(objectName, m_delayMs);
+      std::function<void(const OpenVDS::Request& request, const OpenVDS::Error& error)> slowCompletedCallback;
+      if (completedCallback)
+      {
+        slowCompletedCallback = [slowRequest, completedCallback](const OpenVDS::Request& request, const OpenVDS::Error& error) { slowRequest->m_blockUntil->block(); completedCallback(request, error); };
+      }
+      slowRequest->m_target = m_target->WriteObject(objectName, contentDispostionFilename, contentType, metadataHeader, data, slowCompletedCallback);
+      return slowRequest;
     }
-    slowRequest->m_target = m_target->WriteObject(objectName, contentDispostionFilename, contentType, metadataHeader, data, slowCompletedCallback);
-    return slowRequest;
+    return m_target->WriteObject(objectName, contentDispostionFilename, contentType, metadataHeader, data, completedCallback);
   }
 
 private:
   int m_delayMs;
   OpenVDS::IOManager *m_target;
+  Operation m_operation;
 };
 
 #endif //SLOWIOMANAGER_H

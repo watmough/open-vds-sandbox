@@ -425,6 +425,47 @@ void VolumeDataPageAccessorImpl::CancelPreparedReadPage(VolumeDataPage* page)
   delete pageImpl;
   m_pageReadCondition.notify_all();
 }
+  
+void VolumeDataPageAccessorImpl::CopyPage(int64_t chunkIndex, VolumeDataPageAccessor &source)
+{
+  std::unique_lock<std::mutex> pageListMutexLock(m_pagesMutex);
+
+  if (!m_layer)
+  {
+    Error error;
+    error.code = -1;
+    error.string = "CopyPage missing layer";
+
+    m_accessManager->AddUploadError(error, fmt::format("Chunk: {}", chunkIndex));
+    return;
+  }
+
+  if (m_layer->GetProduceStatus() == VolumeDataLayer::ProduceStatus_Unavailable)
+  {
+    Error error;
+    error.code = -1;
+    error.string = "CopyPage The target dimension group or channel is unavailable (check produce status on VDS before accessing data)";
+    m_accessManager->AddUploadError(error, fmt::format("Chunk: {}, Channel: {} LOD: {}", chunkIndex, m_layer->GetChannelIndex(), m_layer->GetLOD()));
+    return;
+  }
+
+#ifndef NDEBUG
+  bool page_exists = false;
+  for (auto page_it = m_pages.begin(); page_it != m_pages.end(); ++page_it)
+  {
+    if ((*page_it)->GetChunkIndex() == chunkIndex)
+    {
+      page_exists = true;
+    }
+  }
+  if (page_exists)
+    fmt::print(stderr, "Warning: Copying chunk with existing Page instance.");
+#endif
+  auto sourceImpl = static_cast<VolumeDataPageAccessorImpl*>(&source);
+  VolumeDataChunk chunk = m_layer->GetChunkFromIndex(chunkIndex);
+  m_accessManager->AddCopyPageJob(chunk, *this, *sourceImpl);
+  m_pagesWritten++;
+}
 
 VolumeDataPage* VolumeDataPageAccessorImpl::ReadPage(int64_t chunk)
 {
@@ -549,7 +590,6 @@ int64_t VolumeDataPageAccessorImpl::RequestWritePage(int64_t chunk, const DataBl
   {
     hash = VolumeDataHash::GetUniqueHash();
   }
-
   std::vector<uint8_t> metadata(sizeof(hash));
   memcpy(metadata.data(), &hash, sizeof(hash));
 
@@ -612,6 +652,7 @@ void VolumeDataPageAccessorImpl::Commit()
   // which can happen during project unload in Headwave.
   if (m_isReadWrite && m_pagesWritten > 0 && m_layer)
   {
+    m_accessManager->FlushCopyPageJobs();
     // FIXME: Make sure *all* invalidates are received, this is just a stop-gap measure.
     pageListMutexLock.unlock();
     m_layer->GetLayout()->CompletePendingWriteChunkRequests(0);

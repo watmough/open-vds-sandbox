@@ -330,7 +330,7 @@ bool VolumeDataStoreIOManager::PrepareReadChunk(const VolumeDataChunk &chunk, in
   ParsedMetadata parsedMetadata;
   unsigned char const* metadataPageEntry;
 
-  IORange ioRange = IORange();
+  IORange ioRange;
   bool isConstantValue = false;
 
   std::string layerName = GetLayerName(*chunk.layer);
@@ -400,7 +400,8 @@ bool VolumeDataStoreIOManager::PrepareReadChunk(const VolumeDataChunk &chunk, in
     lock.lock();
   }
 
-  if (m_pendingDownloadRequests.find(chunk) == m_pendingDownloadRequests.end())
+  auto chunkId = m_pendingDownloadRequests.find(chunk);
+  if (chunkId == m_pendingDownloadRequests.end())
   {
     std::string url = CreateUrlForChunk(layerName, chunk.index);
     auto transferHandler = std::make_shared<ReadChunkTransfer>(compressionInfo, (metadataManager != nullptr) ? parsedMetadata.CreateChunkMetadata() : std::vector<uint8_t>());
@@ -415,8 +416,8 @@ bool VolumeDataStoreIOManager::PrepareReadChunk(const VolumeDataChunk &chunk, in
   }
   else
   {
-    m_pendingDownloadRequests[chunk].m_ref++;
-    m_pendingDownloadRequests[chunk].m_canMove = false;
+    chunkId->second.m_ref++;
+    chunkId->second.m_canMove = false;
   }
 
   return true;
