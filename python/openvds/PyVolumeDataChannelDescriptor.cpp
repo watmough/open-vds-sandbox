@@ -72,25 +72,6 @@ PyVolumeDataChannelDescriptor::initModule(py::module& m)
   VolumeDataChannelDescriptor_Flags_.value("NotRenderable"               , VolumeDataChannelDescriptor::Flags::NotRenderable, OPENVDS_DOCSTRING(VolumeDataChannelDescriptor_Flags_NotRenderable));
   VolumeDataChannelDescriptor_Flags_.value("NoLossyCompressionUseZip"    , VolumeDataChannelDescriptor::Flags::NoLossyCompressionUseZip, OPENVDS_DOCSTRING(VolumeDataChannelDescriptor_Flags_NoLossyCompressionUseZip));
 
-  py::enum_<VolumeDataChannelDescriptor::Format> 
-    VolumeDataChannelDescriptor_Format_(VolumeDataChannelDescriptor_,"Format", OPENVDS_DOCSTRING(VolumeDataChannelDescriptor_Format));
-
-  VolumeDataChannelDescriptor_Format_.value("Format_Any"                  , VolumeDataChannelDescriptor::Format::Format_Any, OPENVDS_DOCSTRING(VolumeDataChannelDescriptor_Format_Format_Any));
-  VolumeDataChannelDescriptor_Format_.value("Format_1Bit"                 , VolumeDataChannelDescriptor::Format::Format_1Bit, OPENVDS_DOCSTRING(VolumeDataChannelDescriptor_Format_Format_1Bit));
-  VolumeDataChannelDescriptor_Format_.value("Format_U8"                   , VolumeDataChannelDescriptor::Format::Format_U8, OPENVDS_DOCSTRING(VolumeDataChannelDescriptor_Format_Format_U8));
-  VolumeDataChannelDescriptor_Format_.value("Format_U16"                  , VolumeDataChannelDescriptor::Format::Format_U16, OPENVDS_DOCSTRING(VolumeDataChannelDescriptor_Format_Format_U16));
-  VolumeDataChannelDescriptor_Format_.value("Format_R32"                  , VolumeDataChannelDescriptor::Format::Format_R32, OPENVDS_DOCSTRING(VolumeDataChannelDescriptor_Format_Format_R32));
-  VolumeDataChannelDescriptor_Format_.value("Format_U32"                  , VolumeDataChannelDescriptor::Format::Format_U32, OPENVDS_DOCSTRING(VolumeDataChannelDescriptor_Format_Format_U32));
-  VolumeDataChannelDescriptor_Format_.value("Format_R64"                  , VolumeDataChannelDescriptor::Format::Format_R64, OPENVDS_DOCSTRING(VolumeDataChannelDescriptor_Format_Format_R64));
-  VolumeDataChannelDescriptor_Format_.value("Format_U64"                  , VolumeDataChannelDescriptor::Format::Format_U64, OPENVDS_DOCSTRING(VolumeDataChannelDescriptor_Format_Format_U64));
-
-  py::enum_<VolumeDataChannelDescriptor::Components> 
-    VolumeDataChannelDescriptor_Components_(VolumeDataChannelDescriptor_,"Components", OPENVDS_DOCSTRING(VolumeDataChannelDescriptor_Components));
-
-  VolumeDataChannelDescriptor_Components_.value("Components_1"                , VolumeDataChannelDescriptor::Components::Components_1, OPENVDS_DOCSTRING(VolumeDataChannelDescriptor_Components_Components_1));
-  VolumeDataChannelDescriptor_Components_.value("Components_2"                , VolumeDataChannelDescriptor::Components::Components_2, OPENVDS_DOCSTRING(VolumeDataChannelDescriptor_Components_Components_2));
-  VolumeDataChannelDescriptor_Components_.value("Components_4"                , VolumeDataChannelDescriptor::Components::Components_4, OPENVDS_DOCSTRING(VolumeDataChannelDescriptor_Components_Components_4));
-
   m.def("operator_bor"                , static_cast<VolumeDataChannelDescriptor::Flags(*)(VolumeDataChannelDescriptor::Flags, VolumeDataChannelDescriptor::Flags)>(&operator|), py::arg("lhs").none(false), py::arg("rhs").none(false), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(operator_bor));
 //AUTOGEN-END
 

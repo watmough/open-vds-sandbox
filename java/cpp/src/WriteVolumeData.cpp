@@ -119,26 +119,26 @@ template <typename T>
 using copy_fcn_t = std::function<void(OpenVDS::VolumeDataPageAccessor *, const T *, const OpenVDS::VolumeDataLayout *, int)>;
 
 template <typename T>
-static copy_fcn_t<T> getCopyFunction_2d(OpenVDS::VolumeDataChannelDescriptor::Format format)
+static copy_fcn_t<T> getCopyFunction_2d(OpenVDS::VolumeDataFormat format)
 {
-    using OpenVDS::VolumeDataChannelDescriptor;
+    using OpenVDS::VolumeDataFormat;
 
     switch(format) {
-        case VolumeDataChannelDescriptor::Format::Format_1Bit:
+        case VolumeDataFormat::Format_1Bit:
             // [[fallthrough]]
-        case VolumeDataChannelDescriptor::Format::Format_U8:
+        case VolumeDataFormat::Format_U8:
             return &copy_data_to_chunk_2d<T, std::uint8_t>;
-        case VolumeDataChannelDescriptor::Format::Format_U16:
+        case VolumeDataFormat::Format_U16:
             return &copy_data_to_chunk_2d<T, std::uint16_t>;
-        case VolumeDataChannelDescriptor::Format::Format_R32:
+        case VolumeDataFormat::Format_R32:
             return &copy_data_to_chunk_2d<T, float>;
-        case VolumeDataChannelDescriptor::Format::Format_U32:
+        case VolumeDataFormat::Format_U32:
             return &copy_data_to_chunk_2d<T, std::uint32_t>;
-        case VolumeDataChannelDescriptor::Format::Format_R64:
+        case VolumeDataFormat::Format_R64:
             return &copy_data_to_chunk_2d<T, double>;
-        case VolumeDataChannelDescriptor::Format::Format_U64:
+        case VolumeDataFormat::Format_U64:
             return &copy_data_to_chunk_2d<T, std::uint64_t>;
-        case VolumeDataChannelDescriptor::Format::Format_Any:
+        case VolumeDataFormat::Format_Any:
             // [[fallthrough]]
         default:
             throw std::runtime_error("Cannot process format 'any'");
@@ -146,26 +146,26 @@ static copy_fcn_t<T> getCopyFunction_2d(OpenVDS::VolumeDataChannelDescriptor::Fo
 }
 
 template <typename T>
-static copy_fcn_t<T> getCopyFunction_3d(OpenVDS::VolumeDataChannelDescriptor::Format format)
+static copy_fcn_t<T> getCopyFunction_3d(OpenVDS::VolumeDataFormat format)
 {
-    using OpenVDS::VolumeDataChannelDescriptor;
+    using OpenVDS::VolumeDataFormat;
 
     switch(format) {
-        case VolumeDataChannelDescriptor::Format::Format_1Bit:
+        case VolumeDataFormat::Format_1Bit:
             // [[fallthrough]]
-        case VolumeDataChannelDescriptor::Format::Format_U8:
+        case VolumeDataFormat::Format_U8:
             return &copy_data_to_chunk_3d<T, std::uint8_t>;
-        case VolumeDataChannelDescriptor::Format::Format_U16:
+        case VolumeDataFormat::Format_U16:
             return &copy_data_to_chunk_3d<T, std::uint16_t>;
-        case VolumeDataChannelDescriptor::Format::Format_R32:
+        case VolumeDataFormat::Format_R32:
             return &copy_data_to_chunk_3d<T, float>;
-        case VolumeDataChannelDescriptor::Format::Format_U32:
+        case VolumeDataFormat::Format_U32:
             return &copy_data_to_chunk_3d<T, std::uint32_t>;
-        case VolumeDataChannelDescriptor::Format::Format_R64:
+        case VolumeDataFormat::Format_R64:
             return &copy_data_to_chunk_3d<T, double>;
-        case VolumeDataChannelDescriptor::Format::Format_U64:
+        case VolumeDataFormat::Format_U64:
             return &copy_data_to_chunk_3d<T, std::uint64_t>;
-        case VolumeDataChannelDescriptor::Format::Format_Any:
+        case VolumeDataFormat::Format_Any:
             // [[fallthrough]]
         default:
             throw std::runtime_error("Cannot process format 'any'");

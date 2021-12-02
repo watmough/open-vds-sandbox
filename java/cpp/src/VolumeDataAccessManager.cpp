@@ -159,7 +159,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_cpGet
         std::vector<int> maxVoxel = JArrayToVector(env, maxVoxelCoordinates);
         return GetManager(managerHandle)->GetVolumeSubsetBufferSize((Voxel &) *minVoxel.data(),
                                                                     (Voxel &) *maxVoxel.data(),
-                                                                    (VolumeDataChannelDescriptor::Format) format, lod, channel);
+                                                                    (VolumeDataFormat) format, lod, channel);
     }
     CATCH_EXCEPTIONS_FOR_JAVA;
     return 0;
@@ -184,7 +184,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_cpReq
                                              lod, channel,
                                              (Voxel &) *minVoxel.data(),
                                              (Voxel &) *maxVoxel.data(),
-                                             (OpenVDS::VolumeDataChannelDescriptor::Format) formatCode);
+                                             (VolumeDataFormat) formatCode);
     }
     CATCH_EXCEPTIONS_FOR_JAVA;
     return 0;
@@ -209,7 +209,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_cpReq
                                              lod, channel,
                                              (Voxel &) *minVoxel.data(),
                                              (Voxel &) *maxVoxel.data(),
-                                             (OpenVDS::VolumeDataChannelDescriptor::Format) formatCode,
+                                             (VolumeDataFormat) formatCode,
                                              replacementValue);
     }
     CATCH_EXCEPTIONS_FOR_JAVA;
@@ -231,7 +231,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_cpGet
         return GetManager(managerHandle)->GetProjectedVolumeSubsetBufferSize((Voxel &) *minVoxelArray.data(),
                                                                              (Voxel &) *maxVoxelArray.data(),
                                                                              (DimensionsND) projectedDimensions,
-                                                                             (VolumeDataChannelDescriptor::Format) format,
+                                                                             (VolumeDataFormat) format,
                                                                              lod, channel);
     }
     CATCH_EXCEPTIONS_FOR_JAVA;
@@ -254,7 +254,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_cpReq
         Voxel &minVoxel = (Voxel &) *minVoxelArray.data();
         Voxel &maxVoxel = (Voxel &) *maxVoxelArray.data();
         DimensionsND dimensionsND = (DimensionsND) jDimensionsND;
-        VolumeDataChannelDescriptor::Format format = (VolumeDataChannelDescriptor::Format) jFormat;
+        VolumeDataFormat format = (VolumeDataFormat) jFormat;
         FloatVector4 voxelPlane(jVp0, jVp1, jVp2, jVp3);
         auto output = static_cast<float *>(env->GetDirectBufferAddress(jsampleBuffer));
         return manager->RequestProjectedVolumeSubset(
@@ -282,7 +282,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_cpReq
         Voxel &minVoxel = (Voxel &) *minVoxelArray.data();
         Voxel &maxVoxel = (Voxel &) *maxVoxelArray.data();
         DimensionsND dimensionsND = (DimensionsND) jDimensionsND;
-        VolumeDataChannelDescriptor::Format format = (VolumeDataChannelDescriptor::Format) jFormat;
+        VolumeDataFormat format = (VolumeDataFormat) jFormat;
         FloatVector4 voxelPlane(jVp0, jVp1, jVp2, jVp3);
         auto output = static_cast<float *>(env->GetDirectBufferAddress(jsampleBuffer));
         return manager->RequestProjectedVolumeSubset(

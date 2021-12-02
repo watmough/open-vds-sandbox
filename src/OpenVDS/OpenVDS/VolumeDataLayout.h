@@ -59,10 +59,10 @@ public:
                 GetAxisDescriptor(int dimension) const = 0; ///< Returns the axis descriptor for the given dimension
 
   // These convenience functions provide access to the individual elements of the value descriptor
-  virtual VolumeDataChannelDescriptor::Format
+  virtual VolumeDataFormat
                 GetChannelFormat(int channel) const = 0; ///< get the format for the given channel index
 
-  virtual VolumeDataChannelDescriptor::Components
+  virtual VolumeDataComponents
                 GetChannelComponents(int channel) const = 0; ///< get the vector count for the given channel index
 
   virtual const char *

@@ -17,4 +17,6 @@ google_nlohmann*
 libressl*
 dms*
 cmakerc*
+azure-sdk-for-cpp*
+libxml2*
 !dms-git

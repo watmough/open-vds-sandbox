@@ -178,12 +178,6 @@ static const char *__doc_OpenVDS_AzurePresignedOpenOptions_baseUrl = R"doc()doc"
 
 static const char *__doc_OpenVDS_AzurePresignedOpenOptions_urlSuffix = R"doc()doc";
 
-static const char *__doc_OpenVDS_CalculateNoise2D = R"doc()doc";
-
-static const char *__doc_OpenVDS_CalculateNoise3D = R"doc()doc";
-
-static const char *__doc_OpenVDS_CalculateNoise4D = R"doc()doc";
-
 static const char *__doc_OpenVDS_Clear = R"doc()doc";
 
 static const char *__doc_OpenVDS_Close =
@@ -803,10 +797,6 @@ static const char *__doc_OpenVDS_FatalException_FatalException = R"doc()doc";
 static const char *__doc_OpenVDS_FatalException_GetErrorMessage = R"doc()doc";
 
 static const char *__doc_OpenVDS_FatalException_m_errorMessage = R"doc()doc";
-
-static const char *__doc_OpenVDS_GenericDispatcher = R"doc()doc";
-
-static const char *__doc_OpenVDS_GenericDispatcher_1 = R"doc()doc";
 
 static const char *__doc_OpenVDS_GetAccessManager =
 R"doc(Get the VolumeDataAccessManager for a VDS
@@ -2726,10 +2716,6 @@ static const char *__doc_OpenVDS_MetadataWriteAccess_SetMetadataString_2 = R"doc
 
 static const char *__doc_OpenVDS_Multiply = R"doc()doc";
 
-static const char *__doc_OpenVDS_NoiseKernel = R"doc()doc";
-
-static const char *__doc_OpenVDS_NoiseKernel_Do = R"doc()doc";
-
 static const char *__doc_OpenVDS_Open =
 R"doc(Open an existing VDS
 
@@ -3021,8 +3007,6 @@ static const char *__doc_OpenVDS_ResultConverter_ConvertValueT = R"doc()doc";
 static const char *__doc_OpenVDS_ResultConverter_ReciprocalScale = R"doc()doc";
 
 static const char *__doc_OpenVDS_Scale = R"doc()doc";
-
-static const char *__doc_OpenVDS_SimplexNoise = R"doc()doc";
 
 static const char *__doc_OpenVDS_StringWrapper = R"doc()doc";
 
@@ -4277,14 +4261,6 @@ static const char *__doc_OpenVDS_VolumeDataChannelDescriptor = R"doc(\class Volu
 
 static const char *__doc_OpenVDS_VolumeDataChannelDescriptor_2 = R"doc(\class VolumeDataChannelDescriptor Describes a channel of a VDS)doc";
 
-static const char *__doc_OpenVDS_VolumeDataChannelDescriptor_Components = R"doc()doc";
-
-static const char *__doc_OpenVDS_VolumeDataChannelDescriptor_Components_Components_1 = R"doc()doc";
-
-static const char *__doc_OpenVDS_VolumeDataChannelDescriptor_Components_Components_2 = R"doc()doc";
-
-static const char *__doc_OpenVDS_VolumeDataChannelDescriptor_Components_Components_4 = R"doc()doc";
-
 static const char *__doc_OpenVDS_VolumeDataChannelDescriptor_Flags = R"doc(Flags for this channel)doc";
 
 static const char *__doc_OpenVDS_VolumeDataChannelDescriptor_Flags_Default = R"doc()doc";
@@ -4296,24 +4272,6 @@ static const char *__doc_OpenVDS_VolumeDataChannelDescriptor_Flags_NoLossyCompre
 static const char *__doc_OpenVDS_VolumeDataChannelDescriptor_Flags_NoLossyCompressionUseZip = R"doc(< Use Zip when compressing this channel)doc";
 
 static const char *__doc_OpenVDS_VolumeDataChannelDescriptor_Flags_NotRenderable = R"doc(< This channel is not renderable)doc";
-
-static const char *__doc_OpenVDS_VolumeDataChannelDescriptor_Format = R"doc()doc";
-
-static const char *__doc_OpenVDS_VolumeDataChannelDescriptor_Format_Format_1Bit = R"doc(< data is in packed 1-bit format)doc";
-
-static const char *__doc_OpenVDS_VolumeDataChannelDescriptor_Format_Format_Any = R"doc(< The DataBlock can be in any format)doc";
-
-static const char *__doc_OpenVDS_VolumeDataChannelDescriptor_Format_Format_R32 = R"doc(< data is in 32 bit float)doc";
-
-static const char *__doc_OpenVDS_VolumeDataChannelDescriptor_Format_Format_R64 = R"doc(< data is in 64 bit double)doc";
-
-static const char *__doc_OpenVDS_VolumeDataChannelDescriptor_Format_Format_U16 = R"doc(< data is in unsigned 16 bit)doc";
-
-static const char *__doc_OpenVDS_VolumeDataChannelDescriptor_Format_Format_U32 = R"doc(< data is in unsigned 32 bit)doc";
-
-static const char *__doc_OpenVDS_VolumeDataChannelDescriptor_Format_Format_U64 = R"doc(< data is in unsigned 64 bit)doc";
-
-static const char *__doc_OpenVDS_VolumeDataChannelDescriptor_Format_Format_U8 = R"doc(< data is in unsigned 8 bit)doc";
 
 static const char *__doc_OpenVDS_VolumeDataChannelDescriptor_GetComponents = R"doc()doc";
 
@@ -4685,6 +4643,32 @@ static const char *__doc_OpenVDS_VolumeDataChannelDescriptor_m_unit = R"doc()doc
 static const char *__doc_OpenVDS_VolumeDataChannelDescriptor_m_useNoValue = R"doc()doc";
 
 static const char *__doc_OpenVDS_VolumeDataChannelDescriptor_m_valueRange = R"doc()doc";
+
+static const char *__doc_OpenVDS_VolumeDataComponents = R"doc(Volume data components)doc";
+
+static const char *__doc_OpenVDS_VolumeDataComponents_Components_1 = R"doc(< Volume data is scalar)doc";
+
+static const char *__doc_OpenVDS_VolumeDataComponents_Components_2 = R"doc(< Volume data has 2-components)doc";
+
+static const char *__doc_OpenVDS_VolumeDataComponents_Components_4 = R"doc(< Volume data has 4-components)doc";
+
+static const char *__doc_OpenVDS_VolumeDataFormat = R"doc(Volume data format)doc";
+
+static const char *__doc_OpenVDS_VolumeDataFormat_Format_1Bit = R"doc(< Volume data is in packed 1-bit format)doc";
+
+static const char *__doc_OpenVDS_VolumeDataFormat_Format_Any = R"doc(< Volume data can be in any format)doc";
+
+static const char *__doc_OpenVDS_VolumeDataFormat_Format_R32 = R"doc(< Volume data is in 32 bit float)doc";
+
+static const char *__doc_OpenVDS_VolumeDataFormat_Format_R64 = R"doc(< Volume data is in 64 bit double)doc";
+
+static const char *__doc_OpenVDS_VolumeDataFormat_Format_U16 = R"doc(< Volume data is in unsigned 16 bit)doc";
+
+static const char *__doc_OpenVDS_VolumeDataFormat_Format_U32 = R"doc(< Volume data is in unsigned 32 bit)doc";
+
+static const char *__doc_OpenVDS_VolumeDataFormat_Format_U64 = R"doc(< Volume data is in unsigned 64 bit)doc";
+
+static const char *__doc_OpenVDS_VolumeDataFormat_Format_U8 = R"doc(< Volume data is in unsigned 8 bit)doc";
 
 static const char *__doc_OpenVDS_VolumeDataLayout =
 R"doc(\class VolumeDataLayout a class that contains axis and channel
@@ -5632,15 +5616,63 @@ static const char *__doc_OpenVDS_fastInvert = R"doc()doc";
 
 static const char *__doc_OpenVDS_operator_add = R"doc()doc";
 
+static const char *__doc_OpenVDS_operator_add_2 = R"doc()doc";
+
+static const char *__doc_OpenVDS_operator_add_3 = R"doc()doc";
+
 static const char *__doc_OpenVDS_operator_bor = R"doc()doc";
 
 static const char *__doc_OpenVDS_operator_bor_2 = R"doc()doc";
 
+static const char *__doc_OpenVDS_operator_div = R"doc()doc";
+
+static const char *__doc_OpenVDS_operator_div_2 = R"doc()doc";
+
 static const char *__doc_OpenVDS_operator_eq = R"doc()doc";
+
+static const char *__doc_OpenVDS_operator_eq_2 = R"doc()doc";
+
+static const char *__doc_OpenVDS_operator_eq_3 = R"doc()doc";
+
+static const char *__doc_OpenVDS_operator_ge = R"doc()doc";
+
+static const char *__doc_OpenVDS_operator_ge_2 = R"doc()doc";
+
+static const char *__doc_OpenVDS_operator_gt = R"doc()doc";
+
+static const char *__doc_OpenVDS_operator_gt_2 = R"doc()doc";
+
+static const char *__doc_OpenVDS_operator_iadd = R"doc()doc";
+
+static const char *__doc_OpenVDS_operator_idiv = R"doc()doc";
+
+static const char *__doc_OpenVDS_operator_imul = R"doc()doc";
+
+static const char *__doc_OpenVDS_operator_isub = R"doc()doc";
+
+static const char *__doc_OpenVDS_operator_le = R"doc()doc";
+
+static const char *__doc_OpenVDS_operator_le_2 = R"doc()doc";
+
+static const char *__doc_OpenVDS_operator_lt = R"doc()doc";
+
+static const char *__doc_OpenVDS_operator_lt_2 = R"doc()doc";
+
+static const char *__doc_OpenVDS_operator_mul = R"doc()doc";
+
+static const char *__doc_OpenVDS_operator_mul_2 = R"doc()doc";
 
 static const char *__doc_OpenVDS_operator_ne = R"doc()doc";
 
+static const char *__doc_OpenVDS_operator_ne_2 = R"doc()doc";
+
+static const char *__doc_OpenVDS_operator_ne_3 = R"doc()doc";
+
 static const char *__doc_OpenVDS_operator_sub = R"doc()doc";
+
+static const char *__doc_OpenVDS_operator_sub_2 = R"doc()doc";
+
+static const char *__doc_OpenVDS_operator_sub_3 = R"doc()doc";
 
 static const char *__doc_OpenVDS_optional = R"doc()doc";
 

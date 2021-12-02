@@ -23,6 +23,26 @@ openvds.core.IVolumeDataAccessManager.AccessMode = openvds.core.VolumeDataPageAc
 openvds.core.VolumeDataAccessManager.AccessMode = openvds.core.VolumeDataPageAccessor.AccessMode
 VolumeDataAccessManager.AccessMode = openvds.core.VolumeDataPageAccessor.AccessMode
 
+VolumeDataAccessManager.AccessMode = VolumeDataPageAccessor.AccessMode
+
+# Add global enums in local scope
+VolumeDataChannelDescriptor.Format     = VolumeDataFormat
+VolumeDataChannelDescriptor.Components = VolumeDataComponents
+
+# Add unscoped enum keys
+VolumeDataChannelDescriptor.Format_Any  = VolumeDataFormat.Format_Any
+VolumeDataChannelDescriptor.Format_1Bit = VolumeDataFormat.Format_1Bit
+VolumeDataChannelDescriptor.Format_U8   = VolumeDataFormat.Format_U8
+VolumeDataChannelDescriptor.Format_U16  = VolumeDataFormat.Format_U16
+VolumeDataChannelDescriptor.Format_R32  = VolumeDataFormat.Format_R32
+VolumeDataChannelDescriptor.Format_U32  = VolumeDataFormat.Format_U32
+VolumeDataChannelDescriptor.Format_R64  = VolumeDataFormat.Format_R64
+VolumeDataChannelDescriptor.Format_U64  = VolumeDataFormat.Format_U64
+
+VolumeDataChannelDescriptor.Components_1 = VolumeDataComponents.Components_1
+VolumeDataChannelDescriptor.Components_2 = VolumeDataComponents.Components_2
+VolumeDataChannelDescriptor.Components_4 = VolumeDataComponents.Components_4
+
 def getAccessManager(handle: int):
     """Get the VolumeDataAccessManager for a VDS
     

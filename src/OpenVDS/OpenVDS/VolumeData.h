@@ -23,6 +23,54 @@
 
 namespace OpenVDS
 {
+/// Volume data format
+enum class VolumeDataFormat
+{
+  Format_Any = -1, ///< Volume data can be in any format
+  Format_1Bit,     ///< Volume data is in packed 1-bit format
+  Format_U8,       ///< Volume data is in unsigned 8 bit
+  Format_U16,      ///< Volume data is in unsigned 16 bit
+  Format_R32,      ///< Volume data is in 32 bit float
+  Format_U32,      ///< Volume data is in unsigned 32 bit
+  Format_R64,      ///< Volume data is in 64 bit double
+  Format_U64,      ///< Volume data is in unsigned 64 bit
+};
+
+/// Volume data components
+enum class VolumeDataComponents
+{
+  Components_1 = 1, ///< Volume data is scalar
+  Components_2 = 2, ///< Volume data has 2-components
+  Components_4 = 4, ///< Volume data has 4-components
+};
+
+// Since there is no way to make an enum class implicitly convertible to int we instead have to define most arithmetic and logical operators between int and the enum class
+#ifndef PYTHON_WRAPPER_GENERATOR
+inline constexpr int  operator+ (int n, VolumeDataComponents components) { return n + int(components); }
+inline constexpr int  operator+ (VolumeDataComponents components, int n) { return int(components) + n; }
+inline           int &operator+=(int &n, VolumeDataComponents components) { return n += int(components); }
+inline constexpr int  operator- (int n, VolumeDataComponents components) { return n - int(components); }
+inline constexpr int  operator- (VolumeDataComponents components, int n) { return int(components) - n; }
+inline           int &operator-=(int &n, VolumeDataComponents components) { return n -= int(components); }
+inline constexpr int  operator* (int n, VolumeDataComponents components) { return n * int(components); }
+inline constexpr int  operator* (VolumeDataComponents components, int n) { return int(components) * n; }
+inline           int &operator*=(int &n, VolumeDataComponents components) { return n *= int(components); }
+inline constexpr int  operator/ (int n, VolumeDataComponents components) { return n / int(components); }
+inline constexpr int  operator/ (VolumeDataComponents components, int n) { return int(components) / n; }
+inline           int &operator/=(int &n, VolumeDataComponents components) { return n /= int(components); }
+inline constexpr bool operator==(int n, VolumeDataComponents components) { return n == int(components); }
+inline constexpr bool operator==(VolumeDataComponents components, int n) { return int(components) == n; }
+inline constexpr bool operator!=(int n, VolumeDataComponents components) { return n != int(components); }
+inline constexpr bool operator!=(VolumeDataComponents components, int n) { return int(components) != n; }
+inline constexpr bool operator< (int n, VolumeDataComponents components) { return n < int(components); }
+inline constexpr bool operator< (VolumeDataComponents components, int n) { return int(components) < n; }
+inline constexpr bool operator<=(int n, VolumeDataComponents components) { return n <= int(components); }
+inline constexpr bool operator<=(VolumeDataComponents components, int n) { return int(components) <= n; }
+inline constexpr bool operator> (int n, VolumeDataComponents components) { return n > int(components); }
+inline constexpr bool operator> (VolumeDataComponents components, int n) { return int(components) > n; }
+inline constexpr bool operator>=(int n, VolumeDataComponents components) { return n >= int(components); }
+inline constexpr bool operator>=(VolumeDataComponents components, int n) { return int(components) >= n; }
+#endif
 
 /// Interpolation method used for sampling
 enum class InterpolationMethod

@@ -20,7 +20,7 @@
 
 #include <OpenVDS/VolumeDataAccess.h>
 #include <OpenVDS/VolumeDataLayout.h>
-#include <OpenVDS/VolumeDataChannelDescriptor.h>
+#include <OpenVDS/VolumeData.h>
 #include <OpenVDS/Vector.h>
 #include <OpenVDS/Optional.h>
 #include <OpenVDS/Exceptions.h>
@@ -176,7 +176,7 @@ public:
   /// <returns>
   /// The buffer size needed.
   /// </returns>
-  virtual int64_t GetVolumeSubsetBufferSize(const int (&minVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], const int (&maxVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], VolumeDataChannelDescriptor::Format format, int LOD = 0, int channel = 0) = 0;
+  virtual int64_t GetVolumeSubsetBufferSize(const int (&minVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], const int (&maxVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], VolumeDataFormat format, int LOD = 0, int channel = 0) = 0;
 
   /// <summary>
   /// Request a subset of the input VDS.
@@ -211,7 +211,7 @@ public:
   /// <returns>
   /// The RequestID which can be used to query the status of the request, cancel the request or wait for the request to complete.
   /// </returns>
-  virtual int64_t RequestVolumeSubset(void *buffer, int64_t bufferByteSize, DimensionsND dimensionsND, int LOD, int channel, const int (&minVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], const int (&maxVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], VolumeDataChannelDescriptor::Format format, optional<float> replacementNoValue = optional<float>()) = 0;
+  virtual int64_t RequestVolumeSubset(void *buffer, int64_t bufferByteSize, DimensionsND dimensionsND, int LOD, int channel, const int (&minVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], const int (&maxVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], VolumeDataFormat format, optional<float> replacementNoValue = optional<float>()) = 0;
 
   /// <summary>
   /// Compute the buffer size (in bytes) for a projected volume subset request.
@@ -237,7 +237,7 @@ public:
   /// <returns>
   /// The buffer size needed.
   /// </returns>
-  virtual int64_t GetProjectedVolumeSubsetBufferSize(const int (&minVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], const int (&maxVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], DimensionsND projectedDimensions, VolumeDataChannelDescriptor::Format format, int LOD = 0, int channel = 0) = 0;
+  virtual int64_t GetProjectedVolumeSubsetBufferSize(const int (&minVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], const int (&maxVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], DimensionsND projectedDimensions, VolumeDataFormat format, int LOD = 0, int channel = 0) = 0;
 
   /// <summary>
   /// Request a subset projected from an arbitrary 3D plane through the subset onto one of the sides of the subset.
@@ -281,7 +281,7 @@ public:
   /// <returns>
   /// The RequestID which can be used to query the status of the request, cancel the request or wait for the request to complete.
   /// </returns>
-  virtual int64_t RequestProjectedVolumeSubset(void *buffer, int64_t bufferByteSize, DimensionsND dimensionsND, int LOD, int channel, const int (&minVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], const int (&maxVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], FloatVector4 const &voxelPlane, DimensionsND projectedDimensions, VolumeDataChannelDescriptor::Format format, InterpolationMethod interpolationMethod, optional<float> replacementNoValue = optional<float>()) = 0;
+  virtual int64_t RequestProjectedVolumeSubset(void *buffer, int64_t bufferByteSize, DimensionsND dimensionsND, int LOD, int channel, const int (&minVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], const int (&maxVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], FloatVector4 const &voxelPlane, DimensionsND projectedDimensions, VolumeDataFormat format, InterpolationMethod interpolationMethod, optional<float> replacementNoValue = optional<float>()) = 0;
 
   /// <summary>
   /// Compute the buffer size (in bytes) for a volume samples request.
@@ -512,7 +512,7 @@ protected:
                           m_Manager;
   void*                   m_Buffer;
   int64_t                 m_BufferByteSize;
-  VolumeDataChannelDescriptor::Format
+  VolumeDataFormat
                           m_BufferDataType;
   bool                    m_IsCompleted;
   bool                    m_IsCanceled;
@@ -548,21 +548,21 @@ protected:
   }
 
 public:
-  VolumeDataRequest() : m_Manager(nullptr), m_Buffer(nullptr), m_BufferByteSize(0), m_BufferDataType(VolumeDataChannelDescriptor::Format_U8), m_IsCompleted(false), m_IsCanceled(false), m_JobID(0)
+  VolumeDataRequest() : m_Manager(nullptr), m_Buffer(nullptr), m_BufferByteSize(0), m_BufferDataType(VolumeDataFormat::Format_U8), m_IsCompleted(false), m_IsCanceled(false), m_JobID(0)
   {
   }
 
-  VolumeDataRequest(IVolumeDataAccessManager* manager) : m_Manager(manager), m_Buffer(nullptr), m_BufferByteSize(0), m_BufferDataType(VolumeDataChannelDescriptor::Format_Any), m_IsCompleted(false), m_IsCanceled(false), m_JobID(0)
-  {
-    m_Manager->AddRef();
-  }
-
-  VolumeDataRequest(IVolumeDataAccessManager* manager, void* buffer, int64_t bufferByteSize, VolumeDataChannelDescriptor::Format bufferDataType) : m_Manager(manager), m_Buffer(buffer), m_BufferByteSize(bufferByteSize), m_BufferDataType(bufferDataType), m_IsCompleted(false), m_IsCanceled(false), m_JobID(0)
+  VolumeDataRequest(IVolumeDataAccessManager* manager) : m_Manager(manager), m_Buffer(nullptr), m_BufferByteSize(0), m_BufferDataType(VolumeDataFormat::Format_Any), m_IsCompleted(false), m_IsCanceled(false), m_JobID(0)
   {
     m_Manager->AddRef();
   }
 
-  VolumeDataRequest(IVolumeDataAccessManager* manager, int64_t bufferByteSize, VolumeDataChannelDescriptor::Format bufferDataType) : m_Manager(manager), m_Buffer(nullptr), m_BufferByteSize(bufferByteSize), m_BufferDataType(bufferDataType), m_IsCompleted(false), m_IsCanceled(false), m_JobID(0)
+  VolumeDataRequest(IVolumeDataAccessManager* manager, void* buffer, int64_t bufferByteSize, VolumeDataFormat bufferDataType) : m_Manager(manager), m_Buffer(buffer), m_BufferByteSize(bufferByteSize), m_BufferDataType(bufferDataType), m_IsCompleted(false), m_IsCanceled(false), m_JobID(0)
+  {
+    m_Manager->AddRef();
+  }
+
+  VolumeDataRequest(IVolumeDataAccessManager* manager, int64_t bufferByteSize, VolumeDataFormat bufferDataType) : m_Manager(manager), m_Buffer(nullptr), m_BufferByteSize(bufferByteSize), m_BufferDataType(bufferDataType), m_IsCompleted(false), m_IsCanceled(false), m_JobID(0)
   {
     m_Manager->AddRef();
     m_Data.resize(bufferByteSize);
@@ -735,19 +735,19 @@ public:
   /// <returns>
   /// The volume data format of the buffer the request is writing to.
   /// </returns>
-  VolumeDataChannelDescriptor::Format
+  VolumeDataFormat
   BufferDataType() const
   {
     return m_BufferDataType;
   }
 };
 
-template<> struct VolumeDataRequest::RequestFormat<uint8_t>  { static constexpr VolumeDataChannelDescriptor::Format format = VolumeDataChannelDescriptor::Format_U8;   };
-template<> struct VolumeDataRequest::RequestFormat<uint16_t> { static constexpr VolumeDataChannelDescriptor::Format format = VolumeDataChannelDescriptor::Format_U16;  };
-template<> struct VolumeDataRequest::RequestFormat<uint32_t> { static constexpr VolumeDataChannelDescriptor::Format format = VolumeDataChannelDescriptor::Format_U32;  };
-template<> struct VolumeDataRequest::RequestFormat<uint64_t> { static constexpr VolumeDataChannelDescriptor::Format format = VolumeDataChannelDescriptor::Format_U64;  };
-template<> struct VolumeDataRequest::RequestFormat<float>    { static constexpr VolumeDataChannelDescriptor::Format format = VolumeDataChannelDescriptor::Format_R32;  };
-template<> struct VolumeDataRequest::RequestFormat<double>   { static constexpr VolumeDataChannelDescriptor::Format format = VolumeDataChannelDescriptor::Format_R64;  };
+template<> struct VolumeDataRequest::RequestFormat<uint8_t>  { static constexpr VolumeDataFormat format = VolumeDataFormat::Format_U8;   };
+template<> struct VolumeDataRequest::RequestFormat<uint16_t> { static constexpr VolumeDataFormat format = VolumeDataFormat::Format_U16;  };
+template<> struct VolumeDataRequest::RequestFormat<uint32_t> { static constexpr VolumeDataFormat format = VolumeDataFormat::Format_U32;  };
+template<> struct VolumeDataRequest::RequestFormat<uint64_t> { static constexpr VolumeDataFormat format = VolumeDataFormat::Format_U64;  };
+template<> struct VolumeDataRequest::RequestFormat<float>    { static constexpr VolumeDataFormat format = VolumeDataFormat::Format_R32;  };
+template<> struct VolumeDataRequest::RequestFormat<double>   { static constexpr VolumeDataFormat format = VolumeDataFormat::Format_R64;  };
 
 template<typename VALUETYPE>
 class VolumeDataRequest_t : public VolumeDataRequest
@@ -851,7 +851,7 @@ private:
 
   template<class VOLUMEDATAREQUEST>
   std::shared_ptr<VOLUMEDATAREQUEST>
-  DoRequestVolumeSubset(VOLUMEDATAREQUEST* request, void *buffer, int64_t bufferByteSize, DimensionsND dimensionsND, int LOD, int channel, const int (&minVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], const int (&maxVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], VolumeDataChannelDescriptor::Format format, optional<float> const& replacementNoValue)
+  DoRequestVolumeSubset(VOLUMEDATAREQUEST* request, void *buffer, int64_t bufferByteSize, DimensionsND dimensionsND, int LOD, int channel, const int (&minVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], const int (&maxVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], VolumeDataFormat format, optional<float> const& replacementNoValue)
   {
     request->SetJobID(m_IVolumeDataAccessManager->RequestVolumeSubset(buffer, bufferByteSize, dimensionsND, LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, format, replacementNoValue));
     return std::shared_ptr<VOLUMEDATAREQUEST>(request, &VolumeDataRequest::Deleter);
@@ -859,7 +859,7 @@ private:
 
   template<class VOLUMEDATAREQUEST>
   std::shared_ptr<VOLUMEDATAREQUEST>
-  DoRequestProjectedVolumeSubset(VOLUMEDATAREQUEST* request, void *buffer, int64_t bufferByteSize, DimensionsND dimensionsND, int LOD, int channel, const int (&minVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], const int (&maxVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], FloatVector4 const &voxelPlane, DimensionsND projectedDimensions, VolumeDataChannelDescriptor::Format format, InterpolationMethod interpolationMethod, optional<float> const& replacementNoValue)
+  DoRequestProjectedVolumeSubset(VOLUMEDATAREQUEST* request, void *buffer, int64_t bufferByteSize, DimensionsND dimensionsND, int LOD, int channel, const int (&minVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], const int (&maxVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], FloatVector4 const &voxelPlane, DimensionsND projectedDimensions, VolumeDataFormat format, InterpolationMethod interpolationMethod, optional<float> const& replacementNoValue)
   {
     request->SetJobID(m_IVolumeDataAccessManager->RequestProjectedVolumeSubset(buffer, bufferByteSize, dimensionsND, LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, voxelPlane, projectedDimensions, format, interpolationMethod, replacementNoValue));
     return std::shared_ptr<VOLUMEDATAREQUEST>(request, &VolumeDataRequest::Deleter);
@@ -1647,7 +1647,7 @@ public:
   /// The buffer size needed.
   /// </returns>
   int64_t           
-  GetVolumeSubsetBufferSize(const int (&minVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], const int (&maxVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], VolumeDataChannelDescriptor::Format format, int LOD = 0, int channel = 0)
+  GetVolumeSubsetBufferSize(const int (&minVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], const int (&maxVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], VolumeDataFormat format, int LOD = 0, int channel = 0)
   {
     EnsureValid();
     return m_IVolumeDataAccessManager->GetVolumeSubsetBufferSize(minVoxelCoordinates, maxVoxelCoordinates, format, LOD, channel);
@@ -1696,7 +1696,7 @@ public:
   /// A VolumeDataRequest instance encapsulating the request status and buffer.
   /// </returns>
   std::shared_ptr<VolumeDataRequest>
-  RequestVolumeSubset(void *buffer, int64_t bufferByteSize, DimensionsND dimensionsND, int LOD, int channel, const int (&minVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], const int (&maxVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], VolumeDataChannelDescriptor::Format format, optional<float> replacementNoValue = optional<float>())
+  RequestVolumeSubset(void *buffer, int64_t bufferByteSize, DimensionsND dimensionsND, int LOD, int channel, const int (&minVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], const int (&maxVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], VolumeDataFormat format, optional<float> replacementNoValue = optional<float>())
   {
     EnsureValid();
     auto request = new VolumeDataRequest(m_IVolumeDataAccessManager, buffer, bufferByteSize, format);
@@ -1734,7 +1734,7 @@ public:
   RequestVolumeSubset1Bit(uint8_t *buffer, int64_t bufferByteSize, DimensionsND dimensionsND, int LOD, int channel, const int (&minVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], const int (&maxVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max])
   {
     EnsureValid();
-    VolumeDataChannelDescriptor::Format format = VolumeDataChannelDescriptor::Format::Format_1Bit;
+    VolumeDataFormat format = VolumeDataFormat::Format_1Bit;
     auto request = new VolumeDataRequest1Bit(m_IVolumeDataAccessManager, buffer, bufferByteSize);
     return DoRequestVolumeSubset(request, buffer, bufferByteSize, dimensionsND, LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, format, optional<float>());
   }
@@ -1807,7 +1807,7 @@ public:
   /// A VolumeDataRequest instance encapsulating the request status and buffer.
   /// </returns>
   std::shared_ptr<VolumeDataRequest>
-  RequestVolumeSubset(DimensionsND dimensionsND, int LOD, int channel, const int (&minVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], const int (&maxVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], VolumeDataChannelDescriptor::Format format, optional<float> replacementNoValue = optional<float>())
+  RequestVolumeSubset(DimensionsND dimensionsND, int LOD, int channel, const int (&minVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], const int (&maxVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], VolumeDataFormat format, optional<float> replacementNoValue = optional<float>())
   {
     EnsureValid();
     auto bufferByteSize = GetVolumeSubsetBufferSize(minVoxelCoordinates, maxVoxelCoordinates, format, LOD, channel);
@@ -1840,7 +1840,7 @@ public:
   RequestVolumeSubset1Bit(DimensionsND dimensionsND, int LOD, int channel, const int (&minVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], const int (&maxVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max])
   {
     EnsureValid();
-    VolumeDataChannelDescriptor::Format format = VolumeDataChannelDescriptor::Format::Format_1Bit;
+    VolumeDataFormat format = VolumeDataFormat::Format_1Bit;
     auto bufferByteSize = GetVolumeSubsetBufferSize(minVoxelCoordinates, maxVoxelCoordinates, format, LOD, channel);
     auto request = new VolumeDataRequest1Bit(m_IVolumeDataAccessManager, bufferByteSize);
     return DoRequestVolumeSubset(request, request->Buffer(), bufferByteSize, dimensionsND, LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, format, optional<float>());
@@ -1906,7 +1906,7 @@ public:
   /// The buffer size needed.
   /// </returns>
   int64_t           
-  GetProjectedVolumeSubsetBufferSize(const int (&minVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], const int (&maxVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], DimensionsND projectedDimensions, VolumeDataChannelDescriptor::Format format, int LOD = 0, int channel = 0)
+  GetProjectedVolumeSubsetBufferSize(const int (&minVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], const int (&maxVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], DimensionsND projectedDimensions, VolumeDataFormat format, int LOD = 0, int channel = 0)
   {
     EnsureValid();
     return m_IVolumeDataAccessManager->GetProjectedVolumeSubsetBufferSize(minVoxelCoordinates, maxVoxelCoordinates, projectedDimensions, format, LOD, channel);
@@ -1964,7 +1964,7 @@ public:
   /// A VolumeDataRequest instance encapsulating the request status and buffer.
   /// </returns>
   std::shared_ptr<VolumeDataRequest>
-  RequestProjectedVolumeSubset(void *buffer, int64_t bufferByteSize, DimensionsND dimensionsND, int LOD, int channel, const int (&minVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], const int (&maxVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], FloatVector4 const &voxelPlane, DimensionsND projectedDimensions, VolumeDataChannelDescriptor::Format format, InterpolationMethod interpolationMethod, optional<float> replacementNoValue = optional<float>())
+  RequestProjectedVolumeSubset(void *buffer, int64_t bufferByteSize, DimensionsND dimensionsND, int LOD, int channel, const int (&minVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], const int (&maxVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], FloatVector4 const &voxelPlane, DimensionsND projectedDimensions, VolumeDataFormat format, InterpolationMethod interpolationMethod, optional<float> replacementNoValue = optional<float>())
   {
     EnsureValid();
     auto request = new VolumeDataRequest(m_IVolumeDataAccessManager, buffer, bufferByteSize, format);
@@ -2008,7 +2008,7 @@ public:
   /// A VolumeDataRequest instance encapsulating the request status and buffer.
   /// </returns>
   std::shared_ptr<VolumeDataRequest>
-  RequestProjectedVolumeSubset(DimensionsND dimensionsND, int LOD, int channel, const int (&minVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], const int (&maxVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], FloatVector4 const &voxelPlane, DimensionsND projectedDimensions, VolumeDataChannelDescriptor::Format format, InterpolationMethod interpolationMethod, optional<float> replacementNoValue = optional<float>())
+  RequestProjectedVolumeSubset(DimensionsND dimensionsND, int LOD, int channel, const int (&minVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], const int (&maxVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], FloatVector4 const &voxelPlane, DimensionsND projectedDimensions, VolumeDataFormat format, InterpolationMethod interpolationMethod, optional<float> replacementNoValue = optional<float>())
   {
     EnsureValid();
     auto bufferByteSize = GetProjectedVolumeSubsetBufferSize(minVoxelCoordinates, maxVoxelCoordinates, projectedDimensions, format, LOD, channel);
