@@ -144,8 +144,8 @@ extern "C" {
             jclass cls = env->FindClass( "Lorg/opengroup/openvds/VolumeDataChannelDescriptor;" );
             jobject result = env->NewObject( cls, env->GetMethodID( cls, "<init>", "()V" ) );
 
-            env->SetIntField( result, env->GetFieldID( cls, "format", "I" ), descr.GetFormat() );
-            env->SetIntField( result, env->GetFieldID( cls, "components", "I" ), descr.GetComponents() );
+            env->SetIntField( result, env->GetFieldID( cls, "format", "I" ), (jint)descr.GetFormat() );
+            env->SetIntField( result, env->GetFieldID( cls, "components", "I" ), (jint)descr.GetComponents() );
             env->SetObjectField( result, env->GetFieldID( cls, "name", StringClassId ), NewJString( env, descr.GetName() ) );
             env->SetObjectField( result, env->GetFieldID( cls, "unit", StringClassId ), NewJString( env, descr.GetUnit() ) );
             env->SetFloatField( result, env->GetFieldID( cls, "valueRangeMin", "F" ), descr.GetValueRangeMin() );
@@ -204,7 +204,7 @@ extern "C" {
     ( JNIEnv *env, jclass, jlong handle, jint channel )
     {
         try {
-            return GetLayout( handle )->GetChannelFormat( channel );
+            return (jint)GetLayout( handle )->GetChannelFormat( channel );
         }
         CATCH_EXCEPTIONS_FOR_JAVA;
         return 0;
@@ -219,7 +219,7 @@ extern "C" {
     ( JNIEnv *env, jclass, jlong handle, jint channel )
     {
         try {
-            return GetLayout( handle )->GetChannelComponents( channel );
+            return (jint)GetLayout( handle )->GetChannelComponents( channel );
         }
         CATCH_EXCEPTIONS_FOR_JAVA;
         return 0;

@@ -708,7 +708,7 @@ class Parser(object):
                     func(n, self.nodes, self.output, '  ', 'm', context)
 
 def parse_args(args):
-    parameters = []
+    parameters = ["-DPYTHON_WRAPPER_GENERATOR"]
     filenames = []
     if "-x" not in args:
         parameters.extend(['-x', 'c++'])

@@ -40,24 +40,20 @@ public:
     NoLossyCompressionUseZip = NoLossyCompression | (1 << 3),     ///< Use Zip when compressing this channel
   };
   
-  enum Format
-  {
-    Format_Any = -1, ///< The DataBlock can be in any format
-    Format_1Bit,     ///< data is in packed 1-bit format
-    Format_U8,       ///< data is in unsigned 8 bit
-    Format_U16,      ///< data is in unsigned 16 bit
-    Format_R32,      ///< data is in 32 bit float
-    Format_U32,      ///< data is in unsigned 32 bit
-    Format_R64,      ///< data is in 64 bit double
-    Format_U64       ///< data is in unsigned 64 bit
-  };
+  typedef VolumeDataFormat Format;
+  static constexpr Format Format_Any  = VolumeDataFormat::Format_Any;      ///< data can be in any format
+  static constexpr Format Format_1Bit = VolumeDataFormat::Format_1Bit;     ///< data is in packed 1-bit format
+  static constexpr Format Format_U8   = VolumeDataFormat::Format_U8;       ///< data is in unsigned 8 bit
+  static constexpr Format Format_U16  = VolumeDataFormat::Format_U16;      ///< data is in unsigned 16 bit
+  static constexpr Format Format_R32  = VolumeDataFormat::Format_R32;      ///< data is in 32 bit float
+  static constexpr Format Format_U32  = VolumeDataFormat::Format_U32;      ///< data is in unsigned 32 bit
+  static constexpr Format Format_R64  = VolumeDataFormat::Format_R64;      ///< data is in 64 bit double
+  static constexpr Format Format_U64  = VolumeDataFormat::Format_U64;      ///< data is in unsigned 64 bit
 
-  enum Components
-  {
-    Components_1 = 1,
-    Components_2 = 2,
-    Components_4 = 4
-  };
+  typedef VolumeDataComponents Components;
+  static constexpr Components Components_1 = VolumeDataComponents::Components_1;
+  static constexpr Components Components_2 = VolumeDataComponents::Components_2;
+  static constexpr Components Components_4 = VolumeDataComponents::Components_4;
 
 private:
   Format m_format;

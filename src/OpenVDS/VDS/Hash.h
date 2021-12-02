@@ -53,7 +53,7 @@ struct InternalHasher
 {
 static uint64_t CalculateHash(const T &tValue)
 {
-  uint64_t uValue = tValue;
+  uint64_t uValue = uint64_t(tValue);
   uValue *= 0x87c37b91114253d5ULL;
   uValue = (uValue << 31) | (uValue >> (64 - 31)); // ROTL64(uValue,31);
   uValue *= 0x4cf5ad432745937fULL;

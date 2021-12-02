@@ -23,6 +23,25 @@ void
 PyVolumeData::initModule(py::module& m)
 {
 //AUTOGEN-BEGIN
+  py::enum_<VolumeDataFormat> 
+    VolumeDataFormat_(m,"VolumeDataFormat", OPENVDS_DOCSTRING(VolumeDataFormat));
+
+  VolumeDataFormat_.value("Format_Any"                  , VolumeDataFormat::Format_Any            , OPENVDS_DOCSTRING(VolumeDataFormat_Format_Any));
+  VolumeDataFormat_.value("Format_1Bit"                 , VolumeDataFormat::Format_1Bit           , OPENVDS_DOCSTRING(VolumeDataFormat_Format_1Bit));
+  VolumeDataFormat_.value("Format_U8"                   , VolumeDataFormat::Format_U8             , OPENVDS_DOCSTRING(VolumeDataFormat_Format_U8));
+  VolumeDataFormat_.value("Format_U16"                  , VolumeDataFormat::Format_U16            , OPENVDS_DOCSTRING(VolumeDataFormat_Format_U16));
+  VolumeDataFormat_.value("Format_R32"                  , VolumeDataFormat::Format_R32            , OPENVDS_DOCSTRING(VolumeDataFormat_Format_R32));
+  VolumeDataFormat_.value("Format_U32"                  , VolumeDataFormat::Format_U32            , OPENVDS_DOCSTRING(VolumeDataFormat_Format_U32));
+  VolumeDataFormat_.value("Format_R64"                  , VolumeDataFormat::Format_R64            , OPENVDS_DOCSTRING(VolumeDataFormat_Format_R64));
+  VolumeDataFormat_.value("Format_U64"                  , VolumeDataFormat::Format_U64            , OPENVDS_DOCSTRING(VolumeDataFormat_Format_U64));
+
+  py::enum_<VolumeDataComponents> 
+    VolumeDataComponents_(m,"VolumeDataComponents", OPENVDS_DOCSTRING(VolumeDataComponents));
+
+  VolumeDataComponents_.value("Components_1"                , VolumeDataComponents::Components_1      , OPENVDS_DOCSTRING(VolumeDataComponents_Components_1));
+  VolumeDataComponents_.value("Components_2"                , VolumeDataComponents::Components_2      , OPENVDS_DOCSTRING(VolumeDataComponents_Components_2));
+  VolumeDataComponents_.value("Components_4"                , VolumeDataComponents::Components_4      , OPENVDS_DOCSTRING(VolumeDataComponents_Components_4));
+
   py::enum_<InterpolationMethod> 
     InterpolationMethod_(m,"InterpolationMethod", OPENVDS_DOCSTRING(InterpolationMethod));
 

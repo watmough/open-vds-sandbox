@@ -25,7 +25,7 @@ from .volumedataaccessors import VolmeDataAccessorManager
 
 from typing import Dict, Tuple, Sequence, List
 
-VoxelFormat = openvds.core.VolumeDataChannelDescriptor.Format
+VoxelFormat = openvds.core.VolumeDataFormat
 DimensionsND = openvds.core.DimensionsND
 InterpolationMethod = openvds.core.InterpolationMethod
 
