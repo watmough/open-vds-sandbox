@@ -46,6 +46,15 @@ Licensed under [**Apache 2.0**](https://gitlab.opengroup.org/osdu/open-vds/blob/
 Latest build of the [**OpenVDS-Documentation**](http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/seismic/open-vds)
 
 ### Building
+OpenVDS uses the master branch as the main development branch. It should be in
+a working state, but might contain experimental features, or features targeting
+the next "major version". The stable branches are the branches with names such
+as 1.x, 2.x. They are the branches from where the release tags (1.x.y, 2.x.y
+etc) are made. Release tags are basis for OpenVDS releases found
+[here](https://community.opengroup.org/osdu/platform/domain-data-mgmt-services/seismic/open-vds/-/releases).
+OpenVDS is also available as a Python PyPi package as
+[openvds](https://pypi.org/project/openvds).
+
 If OpenVDS is built with the AWS integration then git needs to be in the PATH.
 
 NOTE: CMake will download 3rdparty dependencies the first time CMake is run on
