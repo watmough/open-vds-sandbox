@@ -91,6 +91,7 @@ IOManager* IOManager::CreateIOManager(const OpenOptions& options, IOManager::Acc
     error.string = "Unknown type for OpenOptions";
     return nullptr;
   }
+  return nullptr;
 }
 
 IOManager *IOManager::CreateIOManager(const StringWrapper &url, const StringWrapper &connectionString, IOManager::AccessPattern accessPattern, Error& error)
