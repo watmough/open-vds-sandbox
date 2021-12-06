@@ -14,9 +14,9 @@ RUN dnf -y module enable libuv
 RUN yum install -y libuv-devel
 RUN yum -y group install "Development Tools"
 
-RUN curl -OL https://github.com/Kitware/CMake/releases/download/v3.17.2/cmake-3.17.2-Linux-x86_64.tar.gz
-RUN tar xzvf cmake-3.17.2-Linux-x86_64.tar.gz -C /opt
-RUN ln -s /opt/cmake-3.17.2-Linux-x86_64/bin/* /usr/bin/
+RUN curl -OL https://github.com/Kitware/CMake/releases/download/v3.22.0/cmake-3.22.0-linux-x86_64.tar.gz
+RUN tar xzvf cmake-3.22.0-linux-x86_64.tar.gz -C /opt
+RUN ln -s /opt/cmake-3.22.0-linux-x86_64/bin/* /usr/bin/
 
 RUN python3 -m pip install scikit-build ninja
 
