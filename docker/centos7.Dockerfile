@@ -13,5 +13,8 @@ RUN ln -s /opt/cmake-3.22.0-linux-x86_64/bin/* /usr/bin/
 RUN pip install ninja scikit-build
 RUN yum install -y git doxygen java-1.8.0-openjdk-devel libxml2-devel zlib-devel boost169-devel openssl-devel libcurl-devel libuv-devel libuuid-devel
 
+COPY python/requirements-dev-with-docs.txt /tmp/requirements-dev.txt
+RUN pip install -r tmp/requirements-dev.txt
+
 COPY docker/build_scripts/centos7_build.sh /build_and_install_openvds.sh
 # cmake -DCMAKE_BUILD_TYPE=Debug -GNinja -DBOOST_INCLUDEDIR=/usr/include/boost169 -DBOOST_LIBRARYDIR=/usr/lib64/boost169 ..
