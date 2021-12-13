@@ -254,8 +254,10 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
 
   auto sourceCompressionMethod = OpenVDS::GetCompressionMethod(sourceHandle.get());
   auto destinationCompressionMethod = OpenVDS::GetCompressionMethod(destinationHandle.get());
+
   if ((sourceCompressionMethod == OpenVDS::CompressionMethod::Wavelet || sourceCompressionMethod == OpenVDS::CompressionMethod::WaveletNormalizeBlock)
-    && (destinationCompressionMethod == OpenVDS::CompressionMethod::Wavelet || destinationCompressionMethod == OpenVDS::CompressionMethod::WaveletNormalizeBlock))
+    && (destinationCompressionMethod == OpenVDS::CompressionMethod::Wavelet || destinationCompressionMethod == OpenVDS::CompressionMethod::WaveletNormalizeBlock)
+    && (OpenVDS::GetCompressionTolerance(sourceHandle.get()) != OpenVDS::GetCompressionTolerance(destinationHandle.get())))
   {
     OpenVDS::printInfo(printConfig, "Data degradation", "Copying between lossy compressed datasets will lead to a slight data degradation.");
   }
