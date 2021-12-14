@@ -11,30 +11,30 @@
 
 #include <random>
 
-inline void getScaleOffsetForFormat(float min, float max, bool novalue, OpenVDS::VolumeDataChannelDescriptor::Format format, float &scale, float &offset)
+inline void getScaleOffsetForFormat(float min, float max, bool novalue, OpenVDS::VolumeDataFormat format, float &scale, float &offset)
 {
   switch (format)
   {
-  case OpenVDS::VolumeDataChannelDescriptor::Format_U8:
+  case OpenVDS::VolumeDataFormat::Format_U8:
     scale = 1.f / (255.f - novalue) * (max - min);
     offset = min;
     break;
-  case OpenVDS::VolumeDataChannelDescriptor::Format_U16:
+  case OpenVDS::VolumeDataFormat::Format_U16:
     scale = 1.f/(65535.f - novalue) * (max - min);
     offset = min;
     break;
-  case OpenVDS::VolumeDataChannelDescriptor::Format_R32:
-  case OpenVDS::VolumeDataChannelDescriptor::Format_U32:
-  case OpenVDS::VolumeDataChannelDescriptor::Format_R64:
-  case OpenVDS::VolumeDataChannelDescriptor::Format_U64:
-  case OpenVDS::VolumeDataChannelDescriptor::Format_1Bit:
-  case OpenVDS::VolumeDataChannelDescriptor::Format_Any:
+  case OpenVDS::VolumeDataFormat::Format_R32:
+  case OpenVDS::VolumeDataFormat::Format_U32:
+  case OpenVDS::VolumeDataFormat::Format_R64:
+  case OpenVDS::VolumeDataFormat::Format_U64:
+  case OpenVDS::VolumeDataFormat::Format_1Bit:
+  case OpenVDS::VolumeDataFormat::Format_Any:
     scale = 1.0f;
     offset = 0.0f;
   }
 }
 
-inline OpenVDS::VDS *generateSimpleInMemory3DVDS(int32_t samplesX = 100, int32_t samplesY = 100, int32_t samplesZ = 100, OpenVDS::VolumeDataChannelDescriptor::Format format = OpenVDS::VolumeDataChannelDescriptor::Format_R32)
+inline OpenVDS::VDS *generateSimpleInMemory3DVDS(int32_t samplesX = 100, int32_t samplesY = 100, int32_t samplesZ = 100, OpenVDS::VolumeDataFormat format = OpenVDS::VolumeDataFormat::Format_R32)
 {
   auto brickSize = OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32;
   int negativeMargin = 4;
@@ -55,7 +55,7 @@ inline OpenVDS::VDS *generateSimpleInMemory3DVDS(int32_t samplesX = 100, int32_t
   float intScale = 1.f;
   float intOffset = 0.f;
   getScaleOffsetForFormat(rangeMin, rangeMax, true, format, intScale, intOffset);
-  channelDescriptors.emplace_back(format, OpenVDS::VolumeDataChannelDescriptor::Components_1, AMPLITUDE_ATTRIBUTE_NAME, "", rangeMin, rangeMax, OpenVDS::VolumeDataMapping::Direct, 1, OpenVDS::VolumeDataChannelDescriptor::Default, 0.f, intScale, intOffset);
+  channelDescriptors.emplace_back(format, OpenVDS::VolumeDataComponents::Components_1, AMPLITUDE_ATTRIBUTE_NAME, "", rangeMin, rangeMax, OpenVDS::VolumeDataMapping::Direct, 1, OpenVDS::VolumeDataChannelDescriptor::Default, 0.f, intScale, intOffset);
 
   OpenVDS::InMemoryOpenOptions options;
   OpenVDS::MetadataContainer metadataContainer;
@@ -74,7 +74,7 @@ inline void fill3DVDSWithNoise(OpenVDS::VDS *vds, int32_t channel = 0, const Ope
 
   int32_t chunkCount = int32_t(pageAccessor->GetChunkCount());
 
-  OpenVDS::VolumeDataChannelDescriptor::Format format = layout->GetChannelFormat(channel);
+  OpenVDS::VolumeDataFormat format = layout->GetChannelFormat(channel);
 
   for (int i = 0; i < chunkCount; i++)
   {

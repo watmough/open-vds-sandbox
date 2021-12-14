@@ -1275,25 +1275,25 @@ struct OffsetChannelInfo
   OffsetChannelInfo(bool has, int start, int end, int step) : offsetStart(start), offsetEnd(end), offsetStep(step), hasOffset(has) {}
 };
 
-std::vector<OpenVDS::VolumeDataChannelDescriptor>
+static std::vector<OpenVDS::VolumeDataChannelDescriptor>
 createChannelDescriptors(SEGYFileInfo const& fileInfo, OpenVDS::FloatRange const& valueRange, const OffsetChannelInfo& offsetInfo)
 {
   std::vector<OpenVDS::VolumeDataChannelDescriptor>
     channelDescriptors;
 
   // Primary channel
-  channelDescriptors.emplace_back(OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataChannelDescriptor::Components_1, AMPLITUDE_ATTRIBUTE_NAME, "", valueRange.Min, valueRange.Max);
+  channelDescriptors.emplace_back(OpenVDS::VolumeDataFormat::Format_R32, OpenVDS::VolumeDataComponents::Components_1, AMPLITUDE_ATTRIBUTE_NAME, "", valueRange.Min, valueRange.Max);
 
   // Trace defined flag
-  channelDescriptors.emplace_back(OpenVDS::VolumeDataChannelDescriptor::Format_U8, OpenVDS::VolumeDataChannelDescriptor::Components_1, "Trace", "", 0.0f, 1.0f, OpenVDS::VolumeDataMapping::PerTrace, OpenVDS::VolumeDataChannelDescriptor::DiscreteData);
+  channelDescriptors.emplace_back(OpenVDS::VolumeDataFormat::Format_U8, OpenVDS::VolumeDataComponents::Components_1, "Trace", "", 0.0f, 1.0f, OpenVDS::VolumeDataMapping::PerTrace, OpenVDS::VolumeDataChannelDescriptor::DiscreteData);
 
   // SEG-Y trace headers
-  channelDescriptors.emplace_back(OpenVDS::VolumeDataChannelDescriptor::Format_U8, OpenVDS::VolumeDataChannelDescriptor::Components_1, "SEGYTraceHeader", "", 0.0f, 255.0f, OpenVDS::VolumeDataMapping::PerTrace, SEGY::TraceHeaderSize, OpenVDS::VolumeDataChannelDescriptor::DiscreteData | OpenVDS::VolumeDataChannelDescriptor::NoLossyCompressionUseZip, 1.0f, 0.0f);
+  channelDescriptors.emplace_back(OpenVDS::VolumeDataFormat::Format_U8, OpenVDS::VolumeDataComponents::Components_1, "SEGYTraceHeader", "", 0.0f, 255.0f, OpenVDS::VolumeDataMapping::PerTrace, SEGY::TraceHeaderSize, OpenVDS::VolumeDataChannelDescriptor::DiscreteData | OpenVDS::VolumeDataChannelDescriptor::NoLossyCompressionUseZip, 1.0f, 0.0f);
 
   if (offsetInfo.hasOffset)
   {
     // offset channel
-    channelDescriptors.emplace_back(OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataChannelDescriptor::Components_1, "Offset", KNOWNMETADATA_UNIT_METER, static_cast<float>(offsetInfo.offsetStart), static_cast<float>(offsetInfo.offsetEnd),OpenVDS::VolumeDataMapping::PerTrace, OpenVDS::VolumeDataChannelDescriptor::NoLossyCompression);
+    channelDescriptors.emplace_back(OpenVDS::VolumeDataFormat::Format_R32, OpenVDS::VolumeDataComponents::Components_1, "Offset", KNOWNMETADATA_UNIT_METER, static_cast<float>(offsetInfo.offsetStart), static_cast<float>(offsetInfo.offsetEnd),OpenVDS::VolumeDataMapping::PerTrace, OpenVDS::VolumeDataChannelDescriptor::NoLossyCompression);
 
     // TODO channels for other gather types - "Angle", "Vrms", "Frequency"
   }
