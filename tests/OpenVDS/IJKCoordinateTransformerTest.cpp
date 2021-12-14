@@ -446,7 +446,7 @@ static OpenVDS::VDSHandle generateVDS(const std::string &vds_name, const char *(
   float rangeMax = 0.1234f;
   float intScale = 1.0f;
   float intOffset = 0.0f;
-  channelDescriptors.emplace_back(OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataChannelDescriptor::Components_1, AMPLITUDE_ATTRIBUTE_NAME, "", rangeMin, rangeMax, OpenVDS::VolumeDataMapping::Direct, 1, OpenVDS::VolumeDataChannelDescriptor::Default, 0.f, intScale, intOffset);
+  channelDescriptors.emplace_back(OpenVDS::VolumeDataFormat::Format_R32, OpenVDS::VolumeDataComponents::Components_1, AMPLITUDE_ATTRIBUTE_NAME, "", rangeMin, rangeMax, OpenVDS::VolumeDataMapping::Direct, 1, OpenVDS::VolumeDataChannelDescriptor::Default, 0.f, intScale, intOffset);
 
   OpenVDS::MetadataContainer metadataContainer;
   metadataContainer.SetMetadataDoubleVector2(KNOWNMETADATA_SURVEYCOORDINATESYSTEM, KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_ORIGIN, OpenVDS::DoubleVector2(0, 0));

@@ -54,7 +54,7 @@ static OpenVDS::VDS *generateSimpleInMemory3DVDS(int32_t samplesX = 100, int32_t
   float intScale = 1.0f;
   float intOffset = 0.0f;
   getScaleOffsetForFormat(rangeMin, rangeMax, true, format, intScale, intOffset);
-  channelDescriptors.emplace_back(format, OpenVDS::VolumeDataChannelDescriptor::Components_1, AMPLITUDE_ATTRIBUTE_NAME, "", rangeMin, rangeMax, OpenVDS::VolumeDataMapping::Direct, 1, OpenVDS::VolumeDataChannelDescriptor::Default, 0.f, intScale, intOffset);
+  channelDescriptors.push_back(OpenVDS::VolumeDataChannelDescriptor(format, OpenVDS::VolumeDataChannelDescriptor::Components_1, AMPLITUDE_ATTRIBUTE_NAME, "", rangeMin, rangeMax, OpenVDS::VolumeDataMapping::Direct, 1, OpenVDS::VolumeDataChannelDescriptor::Default, 0.f, intScale, intOffset));
 
   OpenVDS::MetadataContainer metadataContainer;
   OpenVDS::Error error;
