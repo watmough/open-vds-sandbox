@@ -30,8 +30,8 @@ TEST(OpenVDS_integration, MultiComponent)
   int32_t samplesX = 100;
   int32_t samplesY = 100;
   int32_t samplesZ = 100;
-  OpenVDS::VolumeDataChannelDescriptor::Format format = OpenVDS::VolumeDataChannelDescriptor::Format_R32;
-  OpenVDS::VolumeDataLayoutDescriptor::BrickSize brickSize = OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32;
+  auto format = OpenVDS::VolumeDataFormat::Format_R32;
+  auto brickSize = OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32;
   int negativeMargin = 4;
   int positiveMargin = 4;
   int brickSize2DMultiplier = 4;
@@ -49,7 +49,7 @@ TEST(OpenVDS_integration, MultiComponent)
   float rangeMax = 0.1234f;
   float intScale = 1.0f;
   float intOffset = 0.0f;
-  channelDescriptors.emplace_back(format, OpenVDS::VolumeDataChannelDescriptor::Components_2, AMPLITUDE_ATTRIBUTE_NAME, "", rangeMin, rangeMax, OpenVDS::VolumeDataMapping::Direct, 1, OpenVDS::VolumeDataChannelDescriptor::Default, 0.f, intScale, intOffset);
+  channelDescriptors.emplace_back(format, OpenVDS::VolumeDataComponents::Components_2, AMPLITUDE_ATTRIBUTE_NAME, "", rangeMin, rangeMax, OpenVDS::VolumeDataMapping::Direct, 1, OpenVDS::VolumeDataChannelDescriptor::Default, 0.f, intScale, intOffset);
 
   OpenVDS::MetadataContainer metadataContainer;
   OpenVDS::Error error;
