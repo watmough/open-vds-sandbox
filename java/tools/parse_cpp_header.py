@@ -700,7 +700,8 @@ if __name__ == '__main__':
         parameters, filenames = parse_args(args)
         if not filenames:
             filenames = [
-                f'{openvds_root_dir}/src/OpenVDS/OpenVDS/VolumeData.h',                
+#                f'{openvds_root_dir}/src/OpenVDS/OpenVDS/VolumeData.h',                
+                f'{openvds_root_dir}/src/OpenVDS/OpenVDS/MetadataKey.h',                
             ]
         for p in parameters:
             if p.startswith('-n'):

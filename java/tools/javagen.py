@@ -1052,10 +1052,11 @@ def create_java_enum(scope, template):
     values = scope.get_enum_values()
     is_remove_all_caps_enum_values = _is_any_not_all_caps_enum_value(values)
     unique = scope.get_unique_enum_values()
+    unique_names = [n for n,v,d in unique]
     class_docstring = format_docstring(scope)
     decls = []
     for n,v,d in values:
-        if is_remove_all_caps_enum_values and _is_all_caps_enum_value(n):
+        if is_remove_all_caps_enum_values and _is_all_caps_enum_value(n) and not n in unique_names:
             continue
         ev = ''
         if d:

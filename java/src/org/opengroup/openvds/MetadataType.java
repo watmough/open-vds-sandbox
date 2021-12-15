@@ -31,7 +31,8 @@ public enum MetadataType {
         DoubleVector2(9),
         DoubleVector3(10),
         DoubleVector4(11),
-        String(12);
+        String(12),
+        BLOB(13);
 
     private final int value;
 
