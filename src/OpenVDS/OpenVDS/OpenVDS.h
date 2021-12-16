@@ -170,7 +170,7 @@ struct AzureOpenOptions : OpenOptions
   /// <param name="max_execution_time">
   /// The max execution time setting for the Azure Blob Storage library
   /// </param>
-  AzureOpenOptions(std::string const& connectionString, std::string const& container, std::string const& blob, int& parallelism_factor, int& max_execution_time) : OpenOptions(Azure), connectionString(connectionString), container(container), blob(blob), parallelism_factor(parallelism_factor), max_execution_time(max_execution_time) {}
+  AzureOpenOptions(std::string const& connectionString, std::string const& container, std::string const& blob, int const& parallelism_factor, int const& max_execution_time) : OpenOptions(Azure), connectionString(connectionString), container(container), blob(blob), parallelism_factor(parallelism_factor), max_execution_time(max_execution_time) {}
  
 
   /// <summary>
