@@ -44,26 +44,26 @@ public class IntVector2 extends ByteBufferBackedObject {
     }
 
     public void set(int x, int y) {
-                this.getByteBufferProxy().putInteger(0 * Integer.BYTES, x);
-                this.getByteBufferProxy().putInteger(1 * Integer.BYTES, y);
+                this.getByteBufferProxy().putInt(0 * Integer.BYTES, x);
+                this.getByteBufferProxy().putInt(1 * Integer.BYTES, y);
     }
 
     public void setX(int value) {
-        this.getByteBufferProxy().putInteger(0 * Integer.BYTES, value);
+        this.getByteBufferProxy().putInt(0 * Integer.BYTES, value);
     }
 
 
     public void setY(int value) {
-        this.getByteBufferProxy().putInteger(1 * Integer.BYTES, value);
+        this.getByteBufferProxy().putInt(1 * Integer.BYTES, value);
     }
 
     public int getX() {
-        return this.getByteBufferProxy().getInteger(0 * Integer.BYTES);
+        return this.getByteBufferProxy().getInt(0 * Integer.BYTES);
     }
 
 
     public int getY() {
-        return this.getByteBufferProxy().getInteger(1 * Integer.BYTES);
+        return this.getByteBufferProxy().getInt(1 * Integer.BYTES);
     }
 
     public String toString() {
@@ -72,7 +72,7 @@ public class IntVector2 extends ByteBufferBackedObject {
         {
             if (i > 0)
                 value = value + ", ";
-            value = value + this.getByteBufferProxy().getInteger(i * Integer.BYTES);
+            value = value + this.getByteBufferProxy().getInt(i * Integer.BYTES);
         }
         value = value + ")";
         return value;

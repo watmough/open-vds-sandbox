@@ -82,7 +82,7 @@ def createEquals(typename: str, count: int) -> str:
     return contents + f"return ({compare});\n    }}\n"
 
 def createSetter(typename: str, count: int) -> str:
-    setters = "\n        ".join([f"        this.getByteBufferProxy().putJAVATYPE({c} * JAVATYPE.BYTES, {MEMBERS_lower[c]});" for c in range(0, count)])
+    setters = "\n        ".join([f"        this.getByteBufferProxy().putTYPENAME({c} * JAVATYPE.BYTES, {MEMBERS_lower[c]});" for c in range(0, count)])
     args = ", ".join([f"PRIMITIVETYPE {MEMBERS_lower[c]}" for c in range(0, count)])
     contents = """
     public void set(ARGS) {
@@ -94,14 +94,14 @@ def createSetter(typename: str, count: int) -> str:
 def createSetters(typename: str, count: int) -> str:
     contents = "\n".join([f"""
     public void set{MEMBERS[c]}(PRIMITIVETYPE value) {{
-        this.getByteBufferProxy().putJAVATYPE({c} * JAVATYPE.BYTES, value);
+        this.getByteBufferProxy().putTYPENAME({c} * JAVATYPE.BYTES, value);
     }}\n""" for c in range(0, count)])
     return transformTemplate(contents, typename, count)
 
 def createGetters(typename: str, count: int) -> str:
     contents = "\n".join([f"""
     public PRIMITIVETYPE get{MEMBERS[c]}() {{
-        return this.getByteBufferProxy().getJAVATYPE({c} * JAVATYPE.BYTES);
+        return this.getByteBufferProxy().getTYPENAME({c} * JAVATYPE.BYTES);
     }}\n""" for c in range(0, count)])
 
     return transformTemplate(contents, typename, count)
@@ -114,7 +114,7 @@ def createToString(typename: str, count: int) -> str:
         {{
             if (i > 0)
                 value = value + ", ";
-            value = value + this.getByteBufferProxy().getJAVATYPE(i * JAVATYPE.BYTES);
+            value = value + this.getByteBufferProxy().getTYPENAME(i * JAVATYPE.BYTES);
         }}
         value = value + ")";
         return value;
