@@ -17,7 +17,7 @@ import java.util.*;
 import java.nio.ByteBuffer;
 
 
-public class KnownAxisNames {
+public class KnownAxisNames extends ManagedBase {
 
     ///AUTOGEN-OK: CXX_METHOD Inline static const char *() FUNCTIONPROTO
     native private static String InlineImpl();
@@ -139,6 +139,22 @@ public class KnownAxisNames {
     public static String Z() {
         return ZImpl();
     }
+
+    KnownAxisNames(long nativeobject) {
+        super(nativeobject);
+    }
+    native private long dtorImpl(long nativeobject);
+
+    @Override
+    protected void onDisposing(long native_object) {
+        dtorImpl(native_object);
+    }
+
+    static KnownAxisNames fromNativeObject(long nativeobject) {
+        return new KnownAxisNames(nativeobject);
+    }
+
+
 
 
 }

@@ -208,12 +208,12 @@ class ScopeDoc:
                 for n in it:
                     if n.tag == 'param':
                         name = n.attrib['name']
-                        txt = n.text.strip()
+                        txt = n.text.strip() if n.text else ''
                         doc.add_param(name, txt)
                     else:
                         doc.fields[n.tag] = n.text.strip() if n.text else ''
                 return doc
-            except:
+            except Exception as e:
                 print(f'ERROR IN DOCSTRING: {xmlstring}')
                 return ScopeDoc()
         else:
@@ -696,6 +696,7 @@ if __name__ == '__main__':
     try:
         args = sys.argv[1:]
         args.append(f'-I{openvds_root_dir}/src/OpenVDS/OpenVDS')
+        args.append(f'-I{openvds_root_dir}/src/OpenVDS')
         args.append('-fparse-all-comments')
         parameters, filenames = parse_args(args)
         if not filenames:

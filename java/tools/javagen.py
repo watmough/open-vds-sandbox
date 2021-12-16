@@ -36,6 +36,8 @@ def print_callstack(exc):
         traceback.print_exc(file=sys.stderr)
 
 _ignore_types = [
+    "OpenVDS::Error",
+    "OpenVDS::StringWrapper",
 #    "Hue::HueSpaceLib::MetadataKeyRange",
 #    "Hue::HueSpaceLib::IHueObj",
 #    "Hue::HueSpaceLib::IVolumeDataAccess",
@@ -45,7 +47,7 @@ _ignore_types = [
 #    "Hue::HueSpaceLib::IVolumeDataReadAccessor",
 #    "Hue::HueSpaceLib::IVolumeDataReadWriteAccessor",
 #    "Hue::HueSpaceLib::IHasVolumeDataAccess",
-#    "Hue::Util::VDSIJKGridDefinition",
+#    "OpenVDS::VDSIJKGridDefinition",
 #    "Hue::HueSpaceLib::VolumeDataCacheItem",
 #    "Hue::HueSpaceLib::VolumeDataRequest::RequestFormat",
 #    "CUstream_st",
@@ -416,6 +418,7 @@ def _cpp_to_java_type(typename: str) -> str:
     elif is_optional_type(typename):
         assert False, "We should never get here"
     clean_type = typename if not 'const' in typename else typename.replace('&', '').replace('const', '').strip()
+    clean_type = clean_type if not '&&' in clean_type else clean_type.replace('&&', '').strip()
     if typename in _cppjava_typemap:
         return _cppjava_typemap[typename]
     elif clean_type in _cppjava_typemap:
@@ -487,6 +490,7 @@ def cpp_to_jni_type(typename: str) -> str:
         return _cppjni_typemap[typename]
     else:
         clean_type = typename if not 'const' in typename else typename.replace('&', '').replace('const', '').strip()
+        clean_type = clean_type if not '&&' in clean_type else clean_type.replace('&&', '').strip()
         if clean_type in _cppjni_typemap:
             return _cppjni_typemap[clean_type]
         else:
@@ -976,10 +980,14 @@ def transform_java_functioncall_args(class_name: str, args: List[Param], is_incl
     _epilogue = "\n".join(['        ' + e for e in epilogue])
     return _args, _prologue, _epilogue
 
-def create_java_ctor(scope: Scope, class_name: str, overload_name: str, has_baseclass: bool, extra_args: List[Param] = []) -> str:
+def create_java_ctor(scope: Scope, class_name: str, overload_name: str, has_baseclass: bool, overloads_created: List[str], extra_args: List[Param] = []) -> str:
     overload_name = overload_name.replace(scope.name, "ctor")
     native_arglist = create_native_arglist(class_name, extra_args, True, True)
     arglist = create_java_arglist(extra_args)
+    overload_signature = f'{class_name}({arglist})'
+    if overload_signature in overloads_created:
+        return ''
+    overloads_created.append(overload_signature)
     used_args = [] 
     fcall, prologue, epilogue = transform_java_functioncall_args(class_name, extra_args, True, True, used_arglist=used_args)
     docstring = format_docstring(scope, indent='    ', used_arglist=used_args)
@@ -999,7 +1007,7 @@ def create_java_ctor(scope: Scope, class_name: str, overload_name: str, has_base
     {function_docstring}
     public {class_name}({arglist}) {{
     {prologue}
-        this.native_object = {overload_name}Impl({fcall});
+        this.native_object = {overload_name}Impl({fcall});    
     {epilogue}
     }}"""
     return ctor
@@ -1018,7 +1026,7 @@ def create_java_equals(scope):
         if (getClass() != o.getClass())
             return false;
         {class_name} other = ({class_name})o;
-        return operatorEQImpl(getNativeObject(), other.native_object);
+        return operatorEQImpl(getNativeObject(), other.getNativeObject());
     }}"""
     return method
 
@@ -1277,7 +1285,7 @@ def create_java_class(scope: Scope, template: str, override_name: str = '', temp
                 check_ignore_args([result_param])
                 if child.is_constructor: 
                     if is_ctor_valid(child):
-                        print(create_java_ctor(child, class_name, jni_function_name, True if bases else False, args), file=methods)
+                        print(create_java_ctor(child, class_name, jni_function_name, True, overloads_created, args), file=methods)
                         has_ctor = True
                         has_instance_methods = True
                 elif function_name.startswith("operator"):
@@ -1360,7 +1368,6 @@ def create_java_class(scope: Scope, template: str, override_name: str = '', temp
     extra_overloadable_functions, extra_overloadable_function_docstrings, template = get_overloadable_functions_from_template(template)
     for function, docstring in zip(extra_overloadable_functions, extra_overloadable_function_docstrings):
         create_defaulted_overloads(overload_functions, overload_default_args, function, docstring, methods)
-    super_txt = ''
     if bases:
         assert len(bases) == 1
         b,t = bases[0]
@@ -1373,6 +1380,9 @@ def create_java_class(scope: Scope, template: str, override_name: str = '', temp
                 class_extends_txt = f' extends {basename}'
             else:
                 class_extends_txt = f' extends {b.name}'
+    else:
+        bases = [ 'ManagedBase' ]
+        class_extends_txt = ' extends ManagedBase'
     is_raii = False
     for raii_class in raii_classes:
         if re.match(raii_class, class_name):
@@ -1384,10 +1394,7 @@ def create_java_class(scope: Scope, template: str, override_name: str = '', temp
         class_implements_txt = ' implements AutoCloseable'
         # create dtor : close() method from AutoCloseable
         dtor    =  f'    public void close() {{\n'
-        dtor    += f'        if (this.native_object != 0) {{\n'
-        dtor    += f'            dtorImpl(this.native_object);\n'
-        dtor    += f'            this.native_object = 0;\n'
-        dtor    += f'         }}\n'
+        dtor    += f'        dispose();\n'
         dtor    += f'    }}'
     else:
         dtor = ""
@@ -1400,7 +1407,7 @@ def create_java_class(scope: Scope, template: str, override_name: str = '', temp
             print('    private long native_object;', file=output)
 
             # create package private ctor used by fromNativeObject()
-            ctor    =  f'    {class_name}(long nativeobject) {{{super_txt}\n'
+            ctor    =  f'    {class_name}(long nativeobject) {{\n'
             ctor    += f'        if (nativeobject == 0)\n'
             ctor    += f'            throw new NullPointerException("nativeobject");\n'
             ctor    += f'        this.native_object = nativeobject;\n'
@@ -1420,8 +1427,12 @@ def create_java_class(scope: Scope, template: str, override_name: str = '', temp
             factory += f'    }}'
         
         print(f"\n{ctor}", file=methods)
+        print('    native private long dtorImpl(long nativeobject);\n', file=methods)
+        print('    @Override', file=methods)
+        print('    protected void onDisposing(long native_object) {', file=methods)
+        print('        dtorImpl(native_object);', file=methods)
+        print('    }', file=methods)
         if dtor:
-            print('    native private long dtorImpl(long nativeobject);', file=methods)
             print(f"\n{dtor}", file=methods)
         print(f"\n{factory}", file=methods)
     print(methods.getvalue(), file=output)
@@ -1665,7 +1676,7 @@ def parse_and_generate(input_header, jni_dir, java_dir):
         assert 'long long' not in cppfile.getvalue(), 'The parser should always substitute [u]int64_t for [unsigned] long long.'
         jni_file.write(cppfile.getvalue())
 
-include_dirs = [ '../../src/OpenVDS/OpenVDS' ]
+include_dirs = [ '../../src/OpenVDS/OpenVDS', '../../src/OpenVDS' ]
 
 include_classes = [
 #    'KnownAxisNames',
@@ -1689,6 +1700,8 @@ header_list = [
     'KnownMetadata.h',
 #    'MetadataAccess.h',
     'MetadataKey.h',
+    'GlobalState.h',
+    'OpenVDS.h',
 #    'ProcessorPreference.h',
 #    'VolumeDataAccess.h',
 #    'IJKCoordinateTransformer.h',

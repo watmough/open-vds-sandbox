@@ -17,7 +17,7 @@ import java.util.*;
 import java.nio.ByteBuffer;
 
 
-public class KnownUnitNames {
+public class KnownUnitNames extends ManagedBase {
 
     ///AUTOGEN-OK: CXX_METHOD Meter static const char *() FUNCTIONPROTO
     native private static String MeterImpl();
@@ -117,6 +117,22 @@ public class KnownUnitNames {
     public static String unitless() {
         return UnitlessImpl();
     }
+
+    KnownUnitNames(long nativeobject) {
+        super(nativeobject);
+    }
+    native private long dtorImpl(long nativeobject);
+
+    @Override
+    protected void onDisposing(long native_object) {
+        dtorImpl(native_object);
+    }
+
+    static KnownUnitNames fromNativeObject(long nativeobject) {
+        return new KnownUnitNames(nativeobject);
+    }
+
+
 
 
 }

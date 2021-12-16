@@ -17,7 +17,7 @@ import java.util.*;
 import java.nio.ByteBuffer;
 
 
-public class KnownMetadata {
+public class KnownMetadata extends ManagedBase {
 
     ///AUTOGEN-OK: CXX_METHOD CategorySurveyCoordinateSystem static const char *() FUNCTIONPROTO
     native private static String CategorySurveyCoordinateSystemImpl();
@@ -486,6 +486,22 @@ public class KnownMetadata {
     public static MetadataKey SEGYPrimaryKey() {
         return MetadataKey.fromNativeObject(SEGYPrimaryKeyImpl());
     }
+
+    KnownMetadata(long nativeobject) {
+        super(nativeobject);
+    }
+    native private long dtorImpl(long nativeobject);
+
+    @Override
+    protected void onDisposing(long native_object) {
+        dtorImpl(native_object);
+    }
+
+    static KnownMetadata fromNativeObject(long nativeobject) {
+        return new KnownMetadata(nativeobject);
+    }
+
+
 
 
 }

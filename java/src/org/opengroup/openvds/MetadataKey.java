@@ -20,8 +20,7 @@ import java.nio.ByteBuffer;
  * A metadata key uniquely identifies a metadata item
  * 
  */
-public class MetadataKey {
-    private long native_object;
+public class MetadataKey extends ManagedBase {
 
     native private static long ctorImpl();
     
@@ -31,7 +30,7 @@ public class MetadataKey {
      */
     public MetadataKey() {
     
-        this.native_object = ctorImpl();
+        super(ctorImpl());
     
     }
 
@@ -46,7 +45,7 @@ public class MetadataKey {
      */
     public MetadataKey(MetadataType type, String category, String name) {
     
-        this.native_object = ctor2Impl(type.value(), category, name);
+        super(ctor2Impl(type.value(), category, name));
     
     }
 
@@ -97,24 +96,24 @@ public class MetadataKey {
         if (getClass() != o.getClass())
             return false;
         MetadataKey other = (MetadataKey)o;
-        return operatorEQImpl(getNativeObject(), other.native_object);
+        return operatorEQImpl(getNativeObject(), other.getNativeObject());
     }
 
     MetadataKey(long nativeobject) {
-        if (nativeobject == 0)
-            throw new NullPointerException("nativeobject");
-        this.native_object = nativeobject;
+        super(nativeobject);
+    }
+    native private long dtorImpl(long nativeobject);
+
+    @Override
+    protected void onDisposing(long native_object) {
+        dtorImpl(native_object);
     }
 
     static MetadataKey fromNativeObject(long nativeobject) {
         return new MetadataKey(nativeobject);
     }
 
-    long getNativeObject() {
-        if (this.native_object == 0)
-           throw new RuntimeException("Accessing disposed object");
-        return this.native_object;
-    }
+
 
 
 }
