@@ -178,3 +178,94 @@ TEST(OpenVDS_integration, CopyPage)
     ASSERT_TRUE(memcmp(sourceBuffer, targetBuffer, sourceBufferSize) == 0);
   }
 }
+
+TEST(OpenVDS_integration, ReadWriteVDSFile)
+{
+  const OpenVDS::VDSFileOpenOptions openOptions("readwritevdsfile.vds");
+  remove(openOptions.fileName.c_str());
+
+  OpenVDS::Error error;
+
+  OpenVDS::VolumeDataLayoutDescriptor
+    layoutDescriptor = OpenVDS::VolumeDataLayoutDescriptor(OpenVDS::VolumeDataLayoutDescriptor::BrickSize_64, 0, 0, 4,
+                                                           OpenVDS::VolumeDataLayoutDescriptor::LODLevels_None,
+                                                           OpenVDS::VolumeDataLayoutDescriptor::Options_None);
+
+  std::vector<OpenVDS::VolumeDataAxisDescriptor>
+    axisDescriptors = { OpenVDS::VolumeDataAxisDescriptor(100, "X", "m", 0.0, 2000.0),
+                        OpenVDS::VolumeDataAxisDescriptor(100, "Y", "m", 0.0, 2000.0),
+                        OpenVDS::VolumeDataAxisDescriptor(100, "Z", "m", 0.0, 2000.0) };
+
+  std::vector<OpenVDS::VolumeDataChannelDescriptor>
+    channelDescriptors = { OpenVDS::VolumeDataChannelDescriptor(OpenVDS::VolumeDataFormat::Format_R32, OpenVDS::VolumeDataComponents::Components_1, "Value", "", 0.0, 300.0) };
+
+  OpenVDS::MetadataContainer
+    metadataContainer;
+
+  auto handle = OpenVDS::Create(openOptions, layoutDescriptor, axisDescriptors, channelDescriptors, metadataContainer, error);
+  ASSERT_EQ(error.code, 0);
+  std::unique_ptr<OpenVDS::VDS, decltype(&OpenVDS::Close)> vdsGuard(handle, &OpenVDS::Close);
+
+  auto accessManager = OpenVDS::GetAccessManager(handle);
+  auto layout = accessManager.GetVolumeDataLayout();
+  const int channel = 0;
+
+  OpenVDS::VolumeDataPageAccessor *pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, channel, 0, 100, OpenVDS::VolumeDataAccessManager::AccessMode_Create);
+  OpenVDS::VolumeDataFormat expectedFormat = OpenVDS::VolumeDataFormat::Format_R32;
+  EXPECT_EQ(layout->GetChannelFormat(channel), expectedFormat);
+  EXPECT_EQ(layout->GetChannelFormat(channel), pageAccessor->GetChannelDescriptor().GetFormat());
+
+  int32_t chunkCount = int32_t(pageAccessor->GetChunkCount());
+
+  for (int i = 0; i < chunkCount; i++)
+  {
+    OpenVDS::VolumeDataPage *page =  pageAccessor->CreatePage(i);
+    int pitch[OpenVDS::VolumeDataLayout::Dimensionality_Max];
+    auto buffer = reinterpret_cast<float *>(page->GetWritableBuffer(pitch));
+    int min[OpenVDS::VolumeDataLayout::Dimensionality_Max], max[OpenVDS::VolumeDataLayout::Dimensionality_Max];
+    page->GetMinMax(min, max);
+    for(int i = min[2]; i < max[2]; i++)
+    for(int j = min[1]; j < max[1]; j++)
+    for(int k = min[0]; k < max[0]; k++)
+    {
+      size_t offset = (i - min[2]) * pitch[2] + (j - min[1]) * pitch[1] + (k - min[0]) * pitch[0];
+      buffer[offset] = float(i + j + k);
+    }
+    page->Release();
+  }
+  pageAccessor->Commit();
+  accessManager.DestroyVolumeDataPageAccessor(pageAccessor);
+
+  const char *object = "";
+  int         errorCode = 0;
+  const char *errorString = "";
+
+  accessManager.GetCurrentUploadError(&object, &errorCode, &errorString);
+  EXPECT_EQ(errorCode, 0) << "Error " << errorCode << " writing " << object << ": " << errorString;
+
+  vdsGuard.reset();
+
+  // Modify dataset
+  handle = OpenVDS::Open(openOptions, error);
+  ASSERT_EQ(error.code, 0);
+  vdsGuard.reset(handle);
+  accessManager = OpenVDS::GetAccessManager(handle);
+  layout = accessManager.GetVolumeDataLayout();
+
+  {
+    auto accessor = accessManager.CreateVolumeData3DReadWriteAccessorR32(OpenVDS::DimensionsND::Dimensions_012, 0, channel, 100);
+    for(int i = 0; i < 16; i++)
+    for(int j = 0; j < 16; j++)
+    for(int k = 0; k < 16; k++)
+    {
+      accessor.SetValue(OpenVDS::IntVector3(i, j, k), 13);
+    }
+  }
+
+  accessManager.GetCurrentUploadError(&object, &errorCode, &errorString);
+  EXPECT_EQ(errorCode, 0) << "Error " << errorCode << " writing " << object << ": " << errorString;
+
+  // Close VDS and remove file
+  vdsGuard.reset();
+  remove(openOptions.fileName.c_str());
+}
