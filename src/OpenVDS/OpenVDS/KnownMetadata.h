@@ -36,13 +36,10 @@
    <ul>
    <li>Survey coordinate metadata:
 
-   The VDS system does not deal directly with spatial coordinate systems, it only defines an N-dimensional array 
-   of voxels. Although the spatial coordinate system is not a property of the VDS object itself, there is some 
-   support on the VolumeBox, SeismicLine and Horizon objects for setting up the position from VDSMetadata that 
-   follow a specific pattern. In order to position these objects according to the VDSMetadata of the VDS that is 
-   connected, the client application must call GetVDSCoordinateSystem() on the VolumeBox/Horizon or 
-   GetVDSTraceCoordinates() on the SeismicLine that should be positioned. It's also possible to get an 
-   IJKGridDefinition derived from the VDSMetadata from the VDS object by calling GetIJKGridDefinitionFromVDSMetadata().
+   The VDS system does not deal directly with spatial coordinate systems, it only defines an N-dimensional array  of
+   voxels. It's possible to get an IJKGridDefinition derived from the
+   VolumeDataLayout::GetIJKGridDefinitionFromVDSMetadata(), or create a IJKCoordinateTransformer using a VolumeDataLayout
+   as a constructor argument.
 
    The VDS metadata provides the position of the first voxel (origin) in a [3D] world coordinate system. It also 
    provides the step vectors that define in which direction and how far the other voxels are positioned relative to 
