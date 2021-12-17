@@ -84,7 +84,7 @@
 
 // SurveyCoordinateSystem category of global metadata that contains information for locating the seismic in XY space.
 #define LATTICE_CATEGORY                            KNOWNMETADATA_SURVEYCOORDINATESYSTEM
-// Display lattice information for use in GetVDSCoordinateSystem
+// Display lattice information for use in VolumeDataLayout::GetVDSIJKGridDefinitionFromMetadata
 #define LATTICE_ORIGIN                              KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_ORIGIN
 #define LATTICE_INLINE_SPACING                      KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_INLINESPACING
 #define LATTICE_CROSSLINE_SPACING                   KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_CROSSLINESPACING
