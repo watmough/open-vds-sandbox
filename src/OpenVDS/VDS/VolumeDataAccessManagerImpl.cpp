@@ -368,14 +368,14 @@ VolumeDataAccessManagerImpl::CreateVolumeDataPageAccessor(DimensionsND dimension
 
   VolumeDataLayer *volumeDataLayer = const_cast<VolumeDataLayer *>(PrivateGetLayer(dimensionsND, channel, LOD));
 
-  if(accessMode == VolumeDataAccessManager::AccessMode_Create)
+  if(accessMode != VolumeDataAccessManager::AccessMode_ReadOnly)
   {
-    volumeDataLayer->SetProduceStatus(VolumeDataLayer::ProduceStatus_Normal);
     bool success = GetVolumeDataStore()->AddLayer(volumeDataLayer, chunkMetadataPageSize);
     if(!success)
     {
       throw InvalidOperation("Failed to create layer");
     }
+    volumeDataLayer->SetProduceStatus(VolumeDataLayer::ProduceStatus_Normal);
   }
 
   VolumeDataPageAccessorImpl *pageAccessor = new VolumeDataPageAccessorImpl(this, ValidateProduceStatus(volumeDataLayer), maxPages, accessMode != VolumeDataAccessManager::AccessMode_ReadOnly);

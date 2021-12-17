@@ -169,6 +169,14 @@ bool VolumeDataStoreVDSFile::WriteChunk(const VolumeDataChunk& chunk, const std:
   std::unique_lock<std::mutex> lock(m_mutex);
   HueBulkDataStore::FileInterface *fileInterface = layerFile->fileInterface;
 
+  if(!m_dataStore->EnableWriting())
+  {
+    error.code = -1;
+    error.string = m_dataStore->GetErrorMessage();
+    m_vds.accessManager->AddUploadError(error, fmt::format("{}/{}", GetLayerName(*chunk.layer), chunk.index));
+    return false;
+  }
+
   if((int)metadata.size() != fileInterface->GetChunkMetadataLength())
   {
     throw std::runtime_error("Wrong metadata size for chunk");
@@ -408,7 +416,7 @@ bool VolumeDataStoreVDSFile::AddLayer(VolumeDataLayer* volumeDataLayer, int chun
     return false;
   }
 
-  if(m_dataStore->IsReadOnly())
+  if(!m_dataStore->EnableWriting())
   {
     return false;
   }
