@@ -422,6 +422,12 @@ FileInterfaceImpl::WriteIndexEntry(int chunk, const IndexEntry &indexEntry, cons
 {
   assert(chunk >= 0 && chunk < m_chunkCount);
 
+  if(m_dataStore.IsReadOnly())
+  {
+    m_dataStore.SetErrorMessage("Write error: The datastore is read-only");
+    return false;
+  }
+
   int indexPage = chunk / m_fileDescriptor.m_fileHeader.m_indexPageEntryCount;
   int entryIndex = chunk % m_fileDescriptor.m_fileHeader.m_indexPageEntryCount;
 
@@ -718,6 +724,12 @@ bool
 HueBulkDataStoreImpl::WriteBuffer(DataStoreBuffer const &buffer)
 {
   if (!buffer.IsDirty()) return true;
+
+  if(m_readOnly)
+  {
+    SetErrorMessage("Write error: The datastore is read-only");
+    return false;
+  }
 
   assert(buffer.Offset() >= 0 && buffer.Size() > 0);
 
@@ -1187,8 +1199,13 @@ HueBulkDataStoreImpl::EnableWriting()
     return false;
   }
 
+  if(!BuildExtentAllocator())
+  {
+    return false;
+  }
+
   m_readOnly = false;
-  return BuildExtentAllocator();
+  return true;
 }
 
 int
