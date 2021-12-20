@@ -199,14 +199,16 @@ VolumeDataStoreIOManager::~VolumeDataStoreIOManager()
       }
     }
   }
-  for (auto& uploadRequest : m_pendingUploadRequests)
+  while(true)
   {
-    if (uploadRequest.second.request)
+    std::unique_lock<std::mutex> lock(m_mutex);
+    if(m_pendingUploadRequests.empty()) break;
+    std::shared_ptr<Request> request = m_pendingUploadRequests.begin()->second.request;
+    lock.unlock();
+    Error error;
+    if (!request->WaitForFinish(error))
     {
-      if (!uploadRequest.second.request->WaitForFinish(error))
-      {
-        m_vds.accessManager->AddUploadError(error, uploadRequest.second.request->GetObjectName());
-      }
+      m_vds.accessManager->AddUploadError(error, request->GetObjectName());
     }
   }
 }
@@ -324,7 +326,7 @@ static inline std::string CreateUrlForChunk(const std::string &layerName, uint64
   return fmt::format("{}/{}", layerName, chunk);
 }
 
-bool VolumeDataStoreIOManager::PrepareReadChunk(const VolumeDataChunk &chunk, int adaptiveLevel, Error &error)
+bool VolumeDataStoreIOManager::PrepareReadChunkImpl(const VolumeDataChunk &chunk, int adaptiveLevel, Error &error)
 {
   CompressionInfo compressionInfo;
   ParsedMetadata parsedMetadata;
@@ -423,7 +425,7 @@ bool VolumeDataStoreIOManager::PrepareReadChunk(const VolumeDataChunk &chunk, in
   return true;
 }
 
-bool VolumeDataStoreIOManager::ReadChunk(const VolumeDataChunk &chunk, int adaptiveLevel, std::vector<uint8_t> &serializedData, std::vector<uint8_t> &metadata, CompressionInfo &compressionInfo, Error &error)
+bool VolumeDataStoreIOManager::ReadChunkImpl(const VolumeDataChunk &chunk, int adaptiveLevel, std::vector<uint8_t> &serializedData, std::vector<uint8_t> &metadata, CompressionInfo &compressionInfo, Error &error)
 {
   std::unique_lock<std::mutex> lock(m_mutex);
 
@@ -549,7 +551,7 @@ bool VolumeDataStoreIOManager::ReadChunk(const VolumeDataChunk &chunk, int adapt
   return true;
 }
 
-bool VolumeDataStoreIOManager::CancelReadChunk(const VolumeDataChunk& chunk, Error& error)
+bool VolumeDataStoreIOManager::CancelReadChunkImpl(const VolumeDataChunk& chunk, Error& error)
 {
   std::unique_lock<std::mutex> lock(m_mutex);
 
@@ -715,13 +717,12 @@ CompressionInfo VolumeDataStoreIOManager::GetEffectiveAdaptiveLevel(VolumeDataLa
   return CompressionInfo(compressionMethod, compressionTolerance, adaptiveLevel);
 }
 
-bool VolumeDataStoreIOManager::WriteChunk(const VolumeDataChunk& chunk, const std::vector<uint8_t>& serializedData, const std::vector<uint8_t>& metadata)
+bool VolumeDataStoreIOManager::WriteChunkImpl(const VolumeDataChunk& chunk, std::shared_ptr<std::vector<uint8_t>>& serializedData, const std::vector<uint8_t>& metadata, std::function<void(const Error &error)> completed)
 {
   Error error;
   std::string layerName = GetLayerName(*chunk.layer);
   std::string url = CreateUrlForChunk(layerName, chunk.index);
   std::string contentDispositionName = layerName + "_" + std::to_string(chunk.index);
-  std::shared_ptr<std::vector<uint8_t>> to_write = std::make_shared<std::vector<uint8_t>>(serializedData);
 
   auto metadataManager = GetMetadataMangerForLayer(layerName);
   MetadataStatus metadataStatus = metadataManager->GetMetadataStatus();
@@ -735,7 +736,7 @@ bool VolumeDataStoreIOManager::WriteChunk(const VolumeDataChunk& chunk, const st
   if(metadataStatus.m_chunkMetadataByteSize == sizeof(uint32_t) + sizeof(VDSWaveletAdaptiveLevelsChunkMetadata))
   {
     uint32_t
-      serializedSize = (uint32_t)serializedData.size();
+      serializedSize = (uint32_t)serializedData->size();
     indexEntry[0] = (serializedSize >>  0) & 0xff;
     indexEntry[1] = (serializedSize >>  8) & 0xff;
     indexEntry[2] = (serializedSize >> 16) & 0xff;
@@ -759,7 +760,7 @@ bool VolumeDataStoreIOManager::WriteChunk(const VolumeDataChunk& chunk, const st
 
   int64_t jobId = CreateUploadJobId();
 
-  auto completedCallback = [this, chunk, indexEntry, metadataManager, lockedMetadataPage, entryIndex, jobId](const Request &request, const Error &error)
+  auto completedCallback = [this, chunk, indexEntry, metadataManager, lockedMetadataPage, entryIndex, jobId, completed](const Request &request, const Error &error)
   {
     std::unique_lock<std::mutex> lock(m_mutex);
 
@@ -813,6 +814,9 @@ bool VolumeDataStoreIOManager::WriteChunk(const VolumeDataChunk& chunk, const st
     m_pendingUploadRequests.erase(jobId);
 
     lockedMetadataPage->GetManager()->UnlockPage(lockedMetadataPage);
+
+    if (completed)
+      completed(error);
   };
 
   std::vector<char> base64Hash;
@@ -822,7 +826,7 @@ bool VolumeDataStoreIOManager::WriteChunk(const VolumeDataChunk& chunk, const st
   // add new pending upload request
   m_vds.volumeDataLayout->ChangePendingWriteRequestCount(1);
   std::unique_lock<std::mutex> lock(m_mutex);
-  m_pendingUploadRequests[jobId].StartNewUpload(*m_ioManager, url, contentDispositionName, meta_map, to_write, completedCallback);
+  m_pendingUploadRequests[jobId].StartNewUpload(*m_ioManager, url, contentDispositionName, meta_map, serializedData, completedCallback);
   return true;
 }
 

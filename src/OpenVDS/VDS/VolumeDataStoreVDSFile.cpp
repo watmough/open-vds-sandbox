@@ -76,12 +76,12 @@ VolumeDataStoreVDSFile::LayerFile *VolumeDataStoreVDSFile::GetLayerFile(std::str
   return (layerFileIterator != m_layerFiles.end()) ? const_cast<VolumeDataStoreVDSFile::LayerFile *>(&layerFileIterator->second) : nullptr;
 }
 
-bool VolumeDataStoreVDSFile::PrepareReadChunk(const VolumeDataChunk &volumeDataChunk, int adaptiveLevel, Error &error)
+bool VolumeDataStoreVDSFile::PrepareReadChunkImpl(const VolumeDataChunk &volumeDataChunk, int adaptiveLevel, Error &error)
 {
   return true;
 }
 
-bool VolumeDataStoreVDSFile::ReadChunk(const VolumeDataChunk& chunk, int adaptiveLevel, std::vector<uint8_t>& serializedData, std::vector<uint8_t>& metadata, CompressionInfo& compressionInfo, Error& error)
+bool VolumeDataStoreVDSFile::ReadChunkImpl(const VolumeDataChunk& chunk, int adaptiveLevel, std::vector<uint8_t>& serializedData, std::vector<uint8_t>& metadata, CompressionInfo& compressionInfo, Error& error)
 {
   error = Error();
 
@@ -146,12 +146,12 @@ bool VolumeDataStoreVDSFile::ReadChunk(const VolumeDataChunk& chunk, int adaptiv
   return success;
 }
 
-bool VolumeDataStoreVDSFile::CancelReadChunk(const VolumeDataChunk& chunk, Error& error)
+bool VolumeDataStoreVDSFile::CancelReadChunkImpl(const VolumeDataChunk& chunk, Error& error)
 {
   return true;
 }
 
-bool VolumeDataStoreVDSFile::WriteChunk(const VolumeDataChunk& chunk, const std::vector<uint8_t>& serializedData, const std::vector<uint8_t>& metadata)
+bool VolumeDataStoreVDSFile::WriteChunkImpl(const VolumeDataChunk& chunk, std::shared_ptr<std::vector<uint8_t>>& serializedData, const std::vector<uint8_t>& metadata, std::function<void(const Error &error)> completed)
 {
   Error error = Error();
 
@@ -163,6 +163,8 @@ bool VolumeDataStoreVDSFile::WriteChunk(const VolumeDataChunk& chunk, const std:
     error.code = -1;
     error.string = "Trying to write to a layer that has not been added";
     m_vds.accessManager->AddUploadError(error, fmt::format("{}/{}", GetLayerName(*chunk.layer), chunk.index));
+    if (completed)
+      completed(error);
     return false;
   }
 
@@ -174,6 +176,8 @@ bool VolumeDataStoreVDSFile::WriteChunk(const VolumeDataChunk& chunk, const std:
     error.code = -1;
     error.string = m_dataStore->GetErrorMessage();
     m_vds.accessManager->AddUploadError(error, fmt::format("{}/{}", GetLayerName(*chunk.layer), chunk.index));
+    if (completed)
+      completed(error);
     return false;
   }
 
@@ -187,11 +191,11 @@ bool VolumeDataStoreVDSFile::WriteChunk(const VolumeDataChunk& chunk, const std:
 
   IndexEntry indexEntry = IndexEntry();
 
-  if(!serializedData.empty())
+  if(!serializedData->empty())
   {
-    m_dataStore->CreateChunkDataIndexEntry(indexEntry, (int)serializedData.size());
+    m_dataStore->CreateChunkDataIndexEntry(indexEntry, (int)serializedData->size());
     lock.unlock();
-    m_dataStore->WriteChunkData(indexEntry, serializedData.data(), (int)serializedData.size());
+    m_dataStore->WriteChunkData(indexEntry, serializedData->data(), (int)serializedData->size());
     lock.lock();
   }
 
@@ -204,6 +208,8 @@ bool VolumeDataStoreVDSFile::WriteChunk(const VolumeDataChunk& chunk, const std:
     error.code = -1;
     error.string = m_dataStore->GetErrorMessage();
     m_vds.accessManager->AddUploadError(error, fmt::format("{}/{}", GetLayerName(*chunk.layer), chunk.index));
+    if (completed)
+      completed(error);
     return false;
   }
 
@@ -245,6 +251,8 @@ bool VolumeDataStoreVDSFile::WriteChunk(const VolumeDataChunk& chunk, const std:
   }
 
   assert(layerFile->layerMetadata.m_validChunkCount <= layerFile->fileInterface->GetChunkCount());
+  if (completed)
+    completed(error);
   return true;
 }
 

@@ -46,6 +46,182 @@ VolumeDataStore::VolumeDataStore(OpenOptions::ConnectionType connectionType)
 {
 }
 
+VolumeDataStore::~VolumeDataStore()
+{
+  if (m_requests.size())
+    fmt::print(stderr, "VolumeDataStore request cache is not empty {}\n", m_requests.size());
+}
+
+bool
+VolumeDataStore::PrepareReadChunk(const VolumeDataChunk& volumeDataChunk, int adaptiveLevel, Error& error)
+{
+  std::unique_lock<std::mutex> lock(m_mutex);
+  auto it = std::find_if(m_requests.begin(), m_requests.end(), [volumeDataChunk, adaptiveLevel](const std::unique_ptr<StorageRequest>& request)
+    {
+      return request->chunk == volumeDataChunk && request->adaptiveLevel <= adaptiveLevel;
+    });
+  if (it == m_requests.end())
+  {
+    m_requests.emplace_back(new StorageRequest());
+    auto& r = m_requests.back();
+    r->chunk = volumeDataChunk;
+    r->adaptiveLevel = adaptiveLevel;
+    auto ret = PrepareReadChunkImpl(volumeDataChunk, adaptiveLevel, error);
+    r->data = std::make_shared<std::vector<uint8_t>>();
+    r->error = error;
+    r->hasData = false;
+    r->settingData = false;
+    r->refCount++;
+    return ret;
+  }
+  auto r = it->get();
+  r->refCount++;
+  error = r->error;
+  return r->error.code == 0;
+}
+          
+bool
+VolumeDataStore::ReadChunk(const VolumeDataChunk& chunk, int adaptiveLevel, std::vector<uint8_t>& serializedData, std::vector<uint8_t>& metadata, CompressionInfo& compressionInfo, Error& error)
+{
+  std::unique_lock<std::mutex> lock(m_mutex);
+  auto it = std::find_if(m_requests.begin(), m_requests.end(), [chunk, adaptiveLevel](const std::unique_ptr<StorageRequest>& request)
+    {
+      return request->chunk == chunk && request->adaptiveLevel <= adaptiveLevel;
+    });
+  if (it == m_requests.end())
+  {
+    error.string = fmt::format("Unexpected error in ReadChunk. No prepare request was found for chunk {}", chunk.index);
+    error.code = 1;
+    return false;
+  }
+  auto r = it->get();
+  if (!r->hasData)
+  {
+    if (!r->settingData)
+    {
+      r->settingData = true;
+      lock.unlock();
+      ReadChunkImpl(chunk, r->adaptiveLevel, *r->data, r->metadata, r->compressionInfo, r->error);
+      lock.lock();
+      r->hasData = true;
+    }
+    else
+    {
+      m_wait.wait(lock, [r] { return r->hasData; });
+    }
+  }
+  r->refCount--;
+  if (r->refCount == 0)
+  {
+    serializedData = std::move(*r->data);
+    metadata = std::move(r->metadata);
+    compressionInfo = std::move(r->compressionInfo);
+    error = std::move(r->error);
+    auto it = std::find_if(m_requests.begin(), m_requests.end(), [chunk, adaptiveLevel](const std::unique_ptr<StorageRequest>& request)
+      {
+        return request->chunk == chunk && request->adaptiveLevel <= adaptiveLevel;
+      });
+    m_requests.erase(it);
+  }
+  else
+  {
+    m_wait.notify_all();
+    serializedData = *r->data;
+    metadata = r->metadata;
+    compressionInfo = r->compressionInfo;
+    error = r->error;
+  }
+  return error.code == 0;
+}
+          
+bool
+VolumeDataStore::CancelReadChunk(const VolumeDataChunk& chunk, Error& error)
+{
+  //there is a leak in the api that adaptive level is not specified.
+  std::unique_lock<std::mutex> lock(m_mutex);
+  auto it = std::find_if(m_requests.begin(), m_requests.end(), [chunk](const std::unique_ptr<StorageRequest>& request)
+    {
+      return request->chunk == chunk;
+    });
+  if (it == m_requests.end())
+  {
+    error.string = fmt::format("Unexpected error in CancelReadChunk. No prepare request was found for chunk {}", chunk.index);
+    error.code = 1;
+    return false;
+  }
+  auto r = it->get();
+  r->refCount--;
+  if (r->refCount == 0)
+  {
+    if (!r->hasData && !r->settingData)
+    {
+      CancelReadChunkImpl(chunk, error);
+    }
+    m_requests.erase(it);
+    return error.code == 0;
+  }
+  else
+  {
+    m_wait.notify_all();
+  }
+  return true;
+}
+
+bool
+VolumeDataStore::WriteChunk(const VolumeDataChunk& chunk, const std::vector<uint8_t>& serializedData, const std::vector<uint8_t>& metadata)
+{
+  std::unique_lock<std::mutex> lock(m_mutex);
+  auto it = std::find_if(m_requests.begin(), m_requests.end(), [chunk](const std::unique_ptr<StorageRequest>& request)
+    {
+      return request->chunk == chunk;
+    });
+  StorageRequest* r = nullptr;;
+  if (it == m_requests.end())
+  {
+    m_requests.emplace_back(new StorageRequest());
+    r = m_requests.back().get();
+    r->refCount = 1;
+  }
+  else
+  {
+    r = it->get();
+    r->refCount++;
+    m_wait.wait(lock, [r] {return r->refCount == 1; });
+  }
+
+  r->chunk = chunk;
+  r->adaptiveLevel = -1;
+  r->error = Error();
+  r->hasData = true;
+  r->settingData = false;
+  r->data = std::make_shared<std::vector<uint8_t>>(serializedData);
+  r->metadata = metadata;
+  r->compressionInfo = CompressionInfo(CompressionMethod(chunk.layer->GetEffectiveCompressionMethod()), chunk.layer->GetEffectiveCompressionTolerance(), 0);
+
+  lock.unlock();
+  return WriteChunkImpl(chunk, r->data, r->metadata, [this, chunk](const Error& error)
+    {
+      std::unique_lock<std::mutex> lock(m_mutex);
+      auto it = std::find_if(m_requests.begin(), m_requests.end(), [chunk](const std::unique_ptr<StorageRequest>& request)
+        {
+          return request->chunk == chunk;
+        });
+      if (it == m_requests.end())
+        throw std::runtime_error("Missing chunk in write completed callback");
+
+      auto r = it->get();
+      r->refCount--;
+      if (r->refCount == 0)
+      {
+        m_requests.erase(it);
+      }
+      else
+      {
+        m_wait.notify_all();
+      }
+    });
+}
+
 static uint32_t GetByteSize(const DataBlockDescriptor &descriptor)
 {
   int32_t size[DataBlock::Dimensionality_Max];

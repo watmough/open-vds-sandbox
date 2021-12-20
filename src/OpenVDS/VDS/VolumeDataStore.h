@@ -30,6 +30,8 @@
 #include "GlobalStateImpl.h"
 
 #include <vector>
+#include <map>
+#include <condition_variable>
 
 namespace OpenVDS
 {
@@ -52,14 +54,18 @@ class VolumeDataStore
 {
 public:
            VolumeDataStore(OpenOptions::ConnectionType connectionType);
-  virtual ~VolumeDataStore() {};
+  virtual ~VolumeDataStore();
 
   virtual CompressionInfo
                         GetEffectiveAdaptiveLevel(VolumeDataLayer* volumeDataLayer, WaveletAdaptiveMode waveletAdaptiveMode, float tolerance, float ratio) = 0;
-  virtual bool          PrepareReadChunk(const VolumeDataChunk &volumeDataChunk, int adaptiveLevel, Error &error) = 0;
-  virtual bool          ReadChunk(const VolumeDataChunk& chunk, int adaptiveLevel, std::vector<uint8_t>& serializedData, std::vector<uint8_t>& metadata, CompressionInfo& compressionInfo, Error& error) = 0;
-  virtual bool          CancelReadChunk(const VolumeDataChunk& chunk, Error& error) = 0;
-  virtual bool          WriteChunk(const VolumeDataChunk& chunk, const std::vector<uint8_t>& serializedData, const std::vector<uint8_t>& metadata) = 0;
+          bool          PrepareReadChunk(const VolumeDataChunk &volumeDataChunk, int adaptiveLevel, Error &error);
+  virtual bool          PrepareReadChunkImpl(const VolumeDataChunk &volumeDataChunk, int adaptiveLevel, Error &error) = 0;
+          bool          ReadChunk(const VolumeDataChunk& chunk, int adaptiveLevel, std::vector<uint8_t>& serializedData, std::vector<uint8_t>& metadata, CompressionInfo& compressionInfo, Error& error);
+  virtual bool          ReadChunkImpl(const VolumeDataChunk& chunk, int adaptiveLevel, std::vector<uint8_t>& serializedData, std::vector<uint8_t>& metadata, CompressionInfo& compressionInfo, Error& error) = 0;
+          bool          CancelReadChunk(const VolumeDataChunk& chunk, Error& error);
+  virtual bool          CancelReadChunkImpl(const VolumeDataChunk& chunk, Error& error) = 0;
+          bool          WriteChunk(const VolumeDataChunk& chunk, const std::vector<uint8_t>& serializedData, const std::vector<uint8_t>& metadata);
+  virtual bool          WriteChunkImpl(const VolumeDataChunk& chunk, std::shared_ptr<std::vector<uint8_t>> &serializedData, const std::vector<uint8_t>& metadata, std::function<void(const Error &error)> completed) = 0;
   virtual bool          Flush(bool writeUpdatedLayerStatus) = 0;
   virtual bool          ReadSerializedVolumeDataLayout(std::vector<uint8_t>& serializedVolumeDataLayout, Error &error) = 0;
   virtual bool          WriteSerializedVolumeDataLayout(const std::vector<uint8_t>& serializedVolumeDataLayout, Error &error) = 0;
@@ -75,7 +81,22 @@ public:
   static bool IsCompressionMethodSupported(CompressionMethod compressionMethod);
 
 protected:
-  GlobalStateVds        m_globalStateVds; 
+  GlobalStateVds        m_globalStateVds;
+  struct StorageRequest
+  {
+    VolumeDataChunk chunk;
+    int adaptiveLevel;
+    int refCount;
+    bool hasData;
+    bool settingData;
+    std::shared_ptr<std::vector<uint8_t>> data;
+    std::vector<uint8_t> metadata;
+    CompressionInfo compressionInfo;
+    Error error;
+  };
+  std::mutex m_mutex;
+  std::condition_variable m_wait;
+  std::vector<std::unique_ptr<StorageRequest>> m_requests;
 };
 
 }
