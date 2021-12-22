@@ -371,16 +371,8 @@ bool VolumeDataStoreIOManager::PrepareReadChunkImpl(const VolumeDataChunk &chunk
     // Check if the page is not valid and we need to add the request later when the metadata page transfer completes
     if (!metadataPage->IsValid())
     {
-      auto it = m_pendingDownloadRequests.find(chunk);
-      if (it == m_pendingDownloadRequests.end())
-      {
-        it = m_pendingDownloadRequests.emplace(chunk, PendingDownloadRequest(metadataPage, adaptiveLevel)).first;
-      }
-      else
-      {
-        it->second.m_ref++;
-        it->second.m_canMove = false;
-      }
+      assert(m_pendingDownloadRequests.find(chunk) == m_pendingDownloadRequests.end());
+      auto it = m_pendingDownloadRequests.emplace(chunk, PendingDownloadRequest(metadataPage, adaptiveLevel)).first;
       return it->second.m_metadataPageRequestError.code == 0;
     }
 
@@ -402,24 +394,17 @@ bool VolumeDataStoreIOManager::PrepareReadChunkImpl(const VolumeDataChunk &chunk
     lock.lock();
   }
 
-  auto chunkId = m_pendingDownloadRequests.find(chunk);
-  if (chunkId == m_pendingDownloadRequests.end())
+  assert(m_pendingDownloadRequests.find(chunk) == m_pendingDownloadRequests.end());
+
+  std::string url = CreateUrlForChunk(layerName, chunk.index);
+  auto transferHandler = std::make_shared<ReadChunkTransfer>(compressionInfo, (metadataManager != nullptr) ? parsedMetadata.CreateChunkMetadata() : std::vector<uint8_t>());
+  if (isConstantValue)
   {
-    std::string url = CreateUrlForChunk(layerName, chunk.index);
-    auto transferHandler = std::make_shared<ReadChunkTransfer>(compressionInfo, (metadataManager != nullptr) ? parsedMetadata.CreateChunkMetadata() : std::vector<uint8_t>());
-    if (isConstantValue)
-    {
-      m_pendingDownloadRequests[chunk] = PendingDownloadRequest(transferHandler);
-    }
-    else
-    {
-      m_pendingDownloadRequests[chunk] = PendingDownloadRequest(m_ioManager->ReadObject(url, transferHandler, ioRange), transferHandler);
-    }
+    m_pendingDownloadRequests[chunk] = PendingDownloadRequest(transferHandler);
   }
   else
   {
-    chunkId->second.m_ref++;
-    chunkId->second.m_canMove = false;
+    m_pendingDownloadRequests[chunk] = PendingDownloadRequest(m_ioManager->ReadObject(url, transferHandler, ioRange), transferHandler);
   }
 
   return true;
@@ -453,10 +438,7 @@ bool VolumeDataStoreIOManager::ReadChunkImpl(const VolumeDataChunk &chunk, int a
   {
     error = pendingRequest.m_metadataPageRequestError;
     compressionInfo = CompressionInfo();
-    if (--pendingRequest.m_ref == 0)
-    {
-      m_pendingDownloadRequests.erase(pendingRequestIterator);
-    }
+    m_pendingDownloadRequests.erase(pendingRequestIterator);
     return false;
   }
 
@@ -465,10 +447,7 @@ bool VolumeDataStoreIOManager::ReadChunkImpl(const VolumeDataChunk &chunk, int a
     error.code = -1;
     error.string = "Failed to read metadata for chunk: " + std::to_string(chunk.index);
     compressionInfo = CompressionInfo();
-    if (--pendingRequest.m_ref == 0)
-    {
-      m_pendingDownloadRequests.erase(pendingRequestIterator);
-    }
+    m_pendingDownloadRequests.erase(pendingRequestIterator);
     return false;
   }
 
@@ -483,11 +462,7 @@ bool VolumeDataStoreIOManager::ReadChunkImpl(const VolumeDataChunk &chunk, int a
 
   }
 
-  bool moveData = pendingRequestIterator->second.m_canMove;
-  if (--pendingRequestIterator->second.m_ref == 0)
-  {
-    m_pendingDownloadRequests.erase(pendingRequestIterator);
-  }
+  m_pendingDownloadRequests.erase(pendingRequestIterator);
 
   lock.unlock();
 
@@ -500,10 +475,7 @@ bool VolumeDataStoreIOManager::ReadChunkImpl(const VolumeDataChunk &chunk, int a
   if (transferHandler->m_data.size())
   {
     m_globalStateVds.addDownload(transferHandler->m_data.size());
-    if (moveData)
-      serializedData = std::move(transferHandler->m_data);
-    else
-      serializedData = transferHandler->m_data;
+    serializedData = std::move(transferHandler->m_data);
   }
 
   if(!transferHandler->m_metadataFromHeader.empty() && !isConstantValue)
@@ -516,10 +488,7 @@ bool VolumeDataStoreIOManager::ReadChunkImpl(const VolumeDataChunk &chunk, int a
       return false;
     }
 
-    if (moveData)
-      metadata = std::move(transferHandler->m_metadataFromHeader);
-    else
-      metadata = transferHandler->m_metadataFromHeader;
+    metadata = std::move(transferHandler->m_metadataFromHeader);
   }
   else if(!transferHandler->m_metadataFromPage.empty())
   {
@@ -534,10 +503,7 @@ bool VolumeDataStoreIOManager::ReadChunkImpl(const VolumeDataChunk &chunk, int a
       lock.unlock();
     }
 
-    if (moveData)
-      metadata = std::move(transferHandler->m_metadataFromPage);
-    else
-      metadata = transferHandler->m_metadataFromPage;
+    metadata = std::move(transferHandler->m_metadataFromPage);
   }
   else
   {
@@ -566,23 +532,20 @@ bool VolumeDataStoreIOManager::CancelReadChunkImpl(const VolumeDataChunk& chunk,
 
   PendingDownloadRequest& pendingRequest = pendingRequestIterator->second;
 
-  if (--pendingRequest.m_ref == 0)
+  if (pendingRequest.m_activeTransfer)
   {
-    if(pendingRequest.m_activeTransfer)
-    {
-      pendingRequest.m_activeTransfer->Cancel();
-    }
+    pendingRequest.m_activeTransfer->Cancel();
+  }
 
-    auto lockedMetadataPage = pendingRequest.m_lockedMetadataPage;
+  auto lockedMetadataPage = pendingRequest.m_lockedMetadataPage;
 
-    m_pendingDownloadRequests.erase(pendingRequestIterator);
+  m_pendingDownloadRequests.erase(pendingRequestIterator);
 
-    lock.unlock();
+  lock.unlock();
 
-    if (lockedMetadataPage)
-    {
-      lockedMetadataPage->GetManager()->UnlockPage(lockedMetadataPage);
-    }
+  if (lockedMetadataPage)
+  {
+    lockedMetadataPage->GetManager()->UnlockPage(lockedMetadataPage);
   }
 
   return true;
