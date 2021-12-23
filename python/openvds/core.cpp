@@ -19,10 +19,6 @@
 #include <corecrt.h> // fix visual studio 2022 compile complaining about _invalid_parameter
 #endif
 
-#include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
-#include <pybind11/numpy.h>
-
 #include "PyGlobal.h"
 #include "PyMetadataKey.h"
 #include "PyKnownMetadata.h"

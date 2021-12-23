@@ -68,11 +68,19 @@ private:
 
 }
 
+#if defined(_MSC_VER) && _MSC_VER <= 1900
+#pragma warning( push )
+#pragma warning( disable : 4800 )
+#endif
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <pybind11/numpy.h>
 #include <pybind11/attr.h>
 #include <pybind11/operators.h>
+
+#if defined(_MSC_VER) && _MSC_VER <= 1900
+#pragma warning( pop )
+#endif
 
 namespace py = pybind11;
 namespace native = OpenVDS;
