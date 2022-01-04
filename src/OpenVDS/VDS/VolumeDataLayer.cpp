@@ -46,7 +46,7 @@ VolumeDataLayer::VolumeDataLayer(VolumeDataPartition const &volumeDataPartition,
   , m_nextChannelLayer(nullptr)
   , m_lowerLOD(lowerLOD)
   , m_higherLOD(nullptr)
-  , m_remapFromLayer(this)
+  , m_remapFromLayer(nullptr)
   , m_produceStatus(ProduceStatus_Unavailable)
 {
   assert(volumeDataLayout);
@@ -138,26 +138,30 @@ void VolumeDataLayer::GetChunksOverlappingChunk(VolumeDataChunk const &cVolumeDa
 
 const VolumeDataLayer * VolumeDataLayer::GetLayerToRemapFrom() const
 {
+  std::unique_lock<std::mutex>
+    lock(m_volumeDataLayout->m_remapInfoMutex);
+
+  if(!m_remapFromLayer)
+  {
+    m_remapFromLayer = m_volumeDataLayout->FindLayerToRemapFrom(this);
+    m_volumeDataLayout->m_hasRemapInfo = true;
+    assert(m_remapFromLayer);
+  }
+
   return m_remapFromLayer;
 }
 
-//VolumeDataLayer::ProduceMethod VolumeDataLayer::getProduceMethod() const
-//{
-//  if(m_channel != 0)
-//  {
-//    return m_primaryChannelLayer->m_produceMethod;
-//  }
-//  else
-//  {
-//    return m_produceMethod;
-//  }
-//}
-
 VolumeDataLayer::ProduceStatus VolumeDataLayer::GetProduceStatus() const
 {
-  return m_produceStatus;
+  if(m_produceStatus == ProduceStatus::ProduceStatus_Unavailable && m_remapFromLayer->m_produceStatus == ProduceStatus_Normal)
+  {
+    return ProduceStatus_Remapped;
+  }
+  else
+  {
+    return m_produceStatus;
+  }
 }
-
 
 const VolumeDataChannelDescriptor & VolumeDataLayer::GetVolumeDataChannelDescriptor() const
 {
@@ -328,7 +332,14 @@ float VolumeDataLayer::GetIntegerOffset() const
 
 void VolumeDataLayer::SetProduceStatus(ProduceStatus produceStatus)
 {
-  m_produceStatus = produceStatus;
+  if(m_produceStatus != produceStatus)
+  {
+    std::unique_lock<std::mutex>
+      lock(m_volumeDataLayout->m_remapInfoMutex);
+
+    m_produceStatus = produceStatus;
+    m_volumeDataLayout->InvalidateRemapInfoNoLock();
+  }
 }
 
 }

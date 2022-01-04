@@ -280,6 +280,7 @@ VolumeDataLayoutImpl::VolumeDataLayoutImpl(VDS &vds,
   , m_isZipLosslessChannels(isZipLosslessChannels)
   , m_waveletAdaptiveLoadLevel(waveletAdaptiveLoadLevel)
   , m_fullResolutionDimension(layoutDescriptor.IsForceFullResolutionDimension() ? layoutDescriptor.GetFullResolutionDimension() : -1)
+  , m_hasRemapInfo(false)
 {
 
   for(int32_t dimension = 0; dimension < ArraySize(m_dimensionNumSamples); dimension++)
@@ -309,7 +310,7 @@ VolumeDataLayoutImpl::~VolumeDataLayoutImpl()
 
 VolumeDataLayer::VolumeDataLayerID VolumeDataLayoutImpl::AddDataLayer(VolumeDataLayer *layer)
 {
-  m_volumeDataLayers.emplace_back(layer, &deleteLayer);
+  m_volumeDataLayers.emplace_back(layer, [](VolumeDataLayer *layer) { delete layer; });
   return VolumeDataLayer::VolumeDataLayerID(m_volumeDataLayers.size() - 1);
 }
 
@@ -640,6 +641,141 @@ void VolumeDataLayoutImpl::CreateLayers(DimensionGroup dimensionGroup, int32_t b
       }
     }
   }
+}
+
+VolumeDataLayer const *
+VolumeDataLayoutImpl::FindLayerToRemapFrom(VolumeDataLayer const *volumeDataLayer) const
+{
+  assert(volumeDataLayer);
+
+  if(volumeDataLayer->GetLayerType() == VolumeDataLayer::Virtual)
+  {
+    return volumeDataLayer;
+  }
+
+  int channel = volumeDataLayer->GetChannelIndex();
+
+  int LOD = volumeDataLayer->GetLOD();
+
+  DimensionGroup
+    dimensionGroup = volumeDataLayer->GetOriginalDimensionGroup();
+
+  VolumeDataLayer const *
+    candidateLayer = volumeDataLayer;
+
+  bool
+    candidateIsSameLOD = false,
+    candidateIsSameDimensionGroup = false;
+
+  for(int layerID = 0; layerID < GetLayerCount(); layerID++)
+  {
+    VolumeDataLayer const *sourceLayer = GetVolumeDataLayerFromID(VolumeDataLayer::VolumeDataLayerID(layerID));
+
+    if (!sourceLayer || sourceLayer->GetLayerType() == VolumeDataLayer::Virtual || sourceLayer->GetChannelIndex() != channel) continue;
+
+    // Do not consider remapping from a layer we always have to remap to produce data in
+    if(sourceLayer->GetProduceStatus() == VolumeDataLayer::ProduceStatus_Remapped)
+    {
+      continue;
+    }
+
+    DimensionGroup
+      sourceDimensionGroup = sourceLayer->GetOriginalDimensionGroup();
+
+    // Check if remapping is possible (dimension groups are sharing 2 dimensions)
+    if((LOD == 0 && !DimensionGroupUtil::IsRemappingPossible(sourceDimensionGroup, dimensionGroup)) || (LOD > 0 && sourceDimensionGroup != dimensionGroup))
+    {
+      continue;
+    }
+
+    // Check if LOD generation is possible
+    if(sourceLayer->GetLOD() != LOD)
+    {
+      // Can only generate LOD from the LOD directly below
+      if(sourceLayer->GetLOD() != LOD - 1)
+      {
+        continue;
+      }
+
+      // Can only generate LOD with renderable layers
+      if(volumeDataLayer->GetLayerType() != VolumeDataLayer::Renderable || sourceLayer->GetLayerType() != VolumeDataLayer::Renderable)
+      {
+        continue;
+      }
+    }
+
+    bool preferSourceLayer = false;
+
+    // 1) It is better to remap from a layer in the same LOD
+    if (!candidateIsSameLOD && sourceLayer->GetLOD() == LOD)
+    {
+      preferSourceLayer = true;
+    }
+    else if (candidateIsSameLOD == (sourceLayer->GetLOD() == LOD))
+    {
+      // 2) It is better to remap from a layer in the same dimension group
+      if (!candidateIsSameDimensionGroup && sourceDimensionGroup == dimensionGroup)
+      {
+        preferSourceLayer = true;
+      }
+      else if (candidateIsSameDimensionGroup == (sourceDimensionGroup == dimensionGroup))
+      {
+        // 3) All things being equal, it's better not to remap
+        if(volumeDataLayer == sourceLayer)
+        {
+          preferSourceLayer = true;
+        }
+      }
+    }
+
+    if (preferSourceLayer)
+    {
+      candidateIsSameLOD = (sourceLayer->GetLOD() == LOD);
+      candidateIsSameDimensionGroup = (sourceDimensionGroup == dimensionGroup);
+      candidateLayer = sourceLayer;
+    }
+  }
+
+  // If the base layer of the source for remapping is cached, we want to remap through the base layer
+  VolumeDataLayer *
+    baseLayer = candidateLayer->GetLayout()->GetBaseLayer(candidateLayer->GetOriginalDimensionGroup(), candidateLayer->GetChannelIndex());
+
+  while(baseLayer && baseLayer->GetLOD() < candidateLayer->GetLOD())
+  {
+    baseLayer = baseLayer->GetParentLayer();
+  }
+
+  if(baseLayer && baseLayer->GetProduceStatus() == VolumeDataLayer::ProduceStatus_Normal)
+  {
+    candidateLayer = baseLayer;
+  }
+
+  assert((candidateLayer == volumeDataLayer || candidateLayer->m_remapFromLayer != volumeDataLayer) && "We can't remap from a layer which remaps from this layer!");
+  return candidateLayer;
+}
+
+void
+VolumeDataLayoutImpl::InvalidateRemapInfoNoLock() const
+{
+  if(m_hasRemapInfo)
+  {
+    for(int layerID = 0; layerID < GetLayerCount(); layerID++)
+    {
+      VolumeDataLayer *volumeDataLayer = GetVolumeDataLayerFromID(VolumeDataLayer::VolumeDataLayerID(layerID));
+      volumeDataLayer->m_remapFromLayer = nullptr;
+    }
+
+    m_hasRemapInfo = false;
+  }
+}
+
+void
+VolumeDataLayoutImpl::InvalidateRemapInfo() const
+{
+  std::unique_lock<std::mutex>
+    lock(m_remapInfoMutex);
+
+  InvalidateRemapInfoNoLock();
 }
 
 bool        VolumeDataLayoutImpl::IsMetadataIntAvailable(const char* category, const char* name) const           { return m_vds.metadataContainer.IsMetadataIntAvailable(category, name); }

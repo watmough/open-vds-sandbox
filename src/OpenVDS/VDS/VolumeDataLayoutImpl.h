@@ -36,15 +36,13 @@ struct VDS;
 class VolumeDataLayoutDescriptor;
 class VolumeDataLayoutImpl : public VolumeDataLayout
 {
-private:
-  static void deleteLayer(VolumeDataLayer *layer)
-  {
-    delete layer;
-  }
+  friend class VolumeDataLayer;
 
-  VDS     &m_vds;
-  std::vector<std::unique_ptr<VolumeDataLayer, decltype(&deleteLayer)>> m_volumeDataLayers;
-  std::vector<VolumeDataChannelDescriptor> m_volumeDataChannelDescriptor;
+  VDS           &m_vds;
+  std::vector<std::unique_ptr<VolumeDataLayer, void (*)(VolumeDataLayer *)>> 
+                 m_volumeDataLayers;
+  std::vector<VolumeDataChannelDescriptor>
+                 m_volumeDataChannelDescriptor;
   bool           m_isReadOnly;
   VolumeDataHash m_contentsHash; 
   int32_t        m_dimensionality;
@@ -72,6 +70,13 @@ private:
   float m_dimensionCoordinateMin[Dimensionality_Max];
   float m_dimensionCoordinateMax[Dimensionality_Max];
   int32_t m_fullResolutionDimension;
+
+  mutable std::mutex
+                 m_remapInfoMutex;
+  mutable bool   m_hasRemapInfo;
+
+  VolumeDataLayer const *FindLayerToRemapFrom(VolumeDataLayer const *volumeDataLayer) const;
+  void             InvalidateRemapInfoNoLock() const;
 
 public:
   VolumeDataLayoutImpl(VDS &vds,
@@ -182,6 +187,7 @@ public:
   void SetWaveletAdaptiveLoadLevel(int waveletAdaptiveLoadLevel) { m_waveletAdaptiveLoadLevel = waveletAdaptiveLoadLevel; }
 
   void CreateLayers(DimensionGroup dimensionGroup, int32_t brickSize, int32_t physicalLODLevels, VolumeDataLayer::ProduceStatus produceStatus);
+  void InvalidateRemapInfo() const;
 
   bool IsDimensionLODDecimated(int32_t dimension) const { return dimension != m_fullResolutionDimension; }
   int32_t GetFullResolutionDimension() const { return m_fullResolutionDimension; }

@@ -48,14 +48,6 @@ public:
     Virtual
   };
 
-  enum ProduceMethod
-  {
-    // These are ordered, so greater values mean easier to produce
-    AlwaysRemap,
-    RemapFromCachedIfPossible,
-    NeverRemap
-  };
-
   enum ProduceStatus
   {
     // These are ordered, so greater values mean easier to produce
@@ -80,7 +72,6 @@ private:
   VolumeDataLayer * m_higherLOD;
 
  mutable const VolumeDataLayer * m_remapFromLayer;
- //bool m_isAllowRemapFromRemap;
 
   ProduceStatus m_produceStatus;
 
