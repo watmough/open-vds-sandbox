@@ -211,7 +211,11 @@ namespace OpenVDS
 
     try {
       m_sdManager.reset(new seismicdrive::SDManager(openOptions.sdAuthorityUrl, openOptions.sdApiKey, openOptions.logLevel));
-      if (openOptions.authTokenUrl.size() && openOptions.clientId.size() && openOptions.refreshToken.size())
+      if (openOptions.authProviderCallback)
+      {
+        m_sdManager->setAuthProviderCallback(openOptions.authProviderCallback, openOptions.authProviderCallbackData);
+      }
+      else if (openOptions.authTokenUrl.size() && openOptions.clientId.size() && openOptions.refreshToken.size())
       {
         m_curlHandler.reset(new CurlHandler(error));
         if (error.code != 0)

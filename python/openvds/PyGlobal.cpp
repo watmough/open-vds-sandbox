@@ -321,3 +321,6 @@ PyGlobal::initModule(py::module& m)
 // IMPLEMENTED : m.def_property_readonly("openVDSVersion", &GetOpenVDSVersion, OPENVDS_DOCSTRING(GetOpenVDSVersion));
 // IMPLEMENTED : m.def_property_readonly("openVDSRevision", &GetOpenVDSRevision, OPENVDS_DOCSTRING(GetOpenVDSRevision));
 
+// IMPLEMENTED : DMSOpenOptions_.def(py::init<const std::string &, const std::string &, const std::string &, std::string (*)(const void *), const void *, int, bool>(), py::arg("sdAuthorityUrl").none(false), py::arg("sdApiKey").none(false), py::arg("datasetPath").none(false), py::arg("authProviderCallback").none(false), py::arg("authProviderCallbackData").none(false), py::arg("logLevel") = 0, py::arg("useFileNameForSingleFileDatasets") = false, OPENVDS_DOCSTRING(DMSOpenOptions_DMSOpenOptions_3));
+// IMPLEMENTED : DMSOpenOptions_.def_readwrite("authProviderCallback"        , &DMSOpenOptions::authProviderCallback, OPENVDS_DOCSTRING(DMSOpenOptions_authProviderCallback));
+// IMPLEMENTED : DMSOpenOptions_.def_readwrite("authProviderCallbackData"    , &DMSOpenOptions::authProviderCallbackData, OPENVDS_DOCSTRING(DMSOpenOptions_authProviderCallbackData));

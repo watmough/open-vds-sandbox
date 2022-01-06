@@ -457,7 +457,7 @@ struct GoogleOpenOptions : OpenOptions
 
 struct DMSOpenOptions : OpenOptions
 {
-  DMSOpenOptions() : OpenOptions(DMS), logLevel(0), useFileNameForSingleFileDatasets(false) {}
+  DMSOpenOptions() : OpenOptions(DMS), logLevel(0), useFileNameForSingleFileDatasets(false) , authProviderCallback(nullptr) , authProviderCallbackData(nullptr) {}
 
   DMSOpenOptions(std::string const& sdAuthorityUrl, std::string const& sdApiKey, std::string const &sdToken, std::string const &datasetPath, int logLevel, std::string const &authTokenUrl = std::string(), std::string const &refreshToken = std::string(), std::string const &clientId = std::string(), std::string const &clientSecret = std::string(), std::string const &scopes = std::string(), bool useFileNameForSingleFileDatasets = false)
     : OpenOptions(DMS)
@@ -472,6 +472,19 @@ struct DMSOpenOptions : OpenOptions
     , clientSecret(clientSecret)
     , scopes(scopes)
     , useFileNameForSingleFileDatasets(useFileNameForSingleFileDatasets)
+    , authProviderCallback(nullptr)
+    , authProviderCallbackData(nullptr)
+  {}
+
+  DMSOpenOptions(std::string const& sdAuthorityUrl, std::string const& sdApiKey, std::string const &datasetPath, std::string (*authProviderCallback)(const void*), const void *authProviderCallbackData, int logLevel = 0, bool useFileNameForSingleFileDatasets = false)
+    : OpenOptions(DMS)
+    , sdAuthorityUrl(sdAuthorityUrl)
+    , sdApiKey(sdApiKey)
+    , datasetPath(datasetPath)
+    , logLevel(logLevel)
+    , useFileNameForSingleFileDatasets(useFileNameForSingleFileDatasets)
+    , authProviderCallback(authProviderCallback)
+    , authProviderCallbackData(authProviderCallbackData)
   {}
 
   std::string sdAuthorityUrl;
@@ -485,6 +498,8 @@ struct DMSOpenOptions : OpenOptions
   std::string clientSecret;
   std::string scopes;
   bool useFileNameForSingleFileDatasets;
+  std::string (*authProviderCallback)(const void*);
+  const void *authProviderCallbackData;
 };
 
 /// <summary>
