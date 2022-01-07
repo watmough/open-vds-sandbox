@@ -206,7 +206,8 @@ VolumeDataPage* VolumeDataPageAccessorImpl::CreatePage(int64_t chunk)
 
   std::vector<uint8_t> page_data;
   DataBlock dataBlock;
-  if (!VolumeDataStore::CreateConstantValueDataBlock(volumeDataChunk, m_layer->GetFormat(), m_layer->GetNoValue(), m_layer->GetComponents(), m_layer->IsUseNoValue() ? VolumeDataHash::NOVALUE : VolumeDataHash(0.0f), dataBlock, page_data, error))
+  VolumeDataHash volumeDataHash = m_layer->IsUseNoValue() ? VolumeDataHash::NOVALUE : VolumeDataHash(0.0f);
+  if (!VolumeDataStore::CreateConstantValueDataBlock(volumeDataChunk, m_layer->GetFormat(), m_layer->GetNoValue(), m_layer->GetComponents(), volumeDataHash, dataBlock, page_data, error))
   {
     pageListMutexLock.lock();
     page->UnPin();
@@ -236,7 +237,7 @@ VolumeDataPage* VolumeDataPageAccessorImpl::CreatePage(int64_t chunk)
   }
 
   pageListMutexLock.lock();
-  page->SetBufferData(dataBlock, pitchND, std::move(page_data));
+  page->SetBufferData(dataBlock, pitchND, std::move(page_data), uint64_t(volumeDataHash));
   page->MakeDirty();
 
   m_pageReadCondition.notify_all();
@@ -347,8 +348,9 @@ bool VolumeDataPageAccessorImpl::ReadPreparedPaged(VolumeDataPage* page)
     }
 
     std::vector<uint8_t> page_data;
+    uint64_t page_hash = VolumeDataHash::UNKNOWN;
     DataBlock dataBlock;
-    if (!m_accessManager->GetVolumeDataStore()->DeserializeVolumeData(volumeDataChunk, serialized_data, metadata, compressionInfo.GetCompressionMethod(), compressionInfo.GetAdaptiveLevel(), m_layer->GetFormat(), dataBlock, page_data, error))
+    if (!m_accessManager->GetVolumeDataStore()->DeserializeVolumeData(volumeDataChunk, serialized_data, metadata, compressionInfo.GetCompressionMethod(), compressionInfo.GetAdaptiveLevel(), m_layer->GetFormat(), dataBlock, page_data, page_hash, error))
     {
       pageListMutexLock.lock();
       pageImpl->SetError(error);
@@ -370,7 +372,7 @@ bool VolumeDataPageAccessorImpl::ReadPreparedPaged(VolumeDataPage* page)
     }
 
     pageListMutexLock.lock();
-    pageImpl->SetBufferData(dataBlock, pitch, std::move(page_data));
+    pageImpl->SetBufferData(dataBlock, pitch, std::move(page_data), page_hash);
     m_pagesRead++;
     pageImpl->SetRequestPrepared(false);
     pageImpl->LeaveSettingData();
@@ -579,17 +581,18 @@ void VolumeDataPageAccessorImpl::LimitPageListSize(int maxPages, std::unique_loc
   }
 }
 
-int64_t VolumeDataPageAccessorImpl::RequestWritePage(int64_t chunk, const DataBlock& dataBlock, const std::vector<uint8_t>& data)
+int64_t VolumeDataPageAccessorImpl::RequestWritePage(int64_t chunk, const DataBlock& dataBlock, const std::vector<uint8_t>& data, uint64_t hash)
 {
   std::vector<uint8_t> serializedData;
-  uint64_t hash;
+  uint64_t serializedHash = VolumeDataStore::SerializeVolumeData({ m_layer, chunk }, dataBlock, data, m_layer->GetEffectiveCompressionMethod(), m_layer->GetEffectiveCompressionTolerance(), serializedData);
 
-  hash = VolumeDataStore::SerializeVolumeData({ m_layer, chunk }, dataBlock, data, m_layer->GetEffectiveCompressionMethod(), m_layer->GetEffectiveCompressionTolerance(), serializedData);
-
-  if (hash == VolumeDataHash::UNKNOWN)
+  if(serializedHash != VolumeDataHash::UNKNOWN)
   {
-    hash = VolumeDataHash::GetUniqueHash();
+    hash = serializedHash;
   }
+
+  assert(hash != VolumeDataHash::UNKNOWN);
+
   std::vector<uint8_t> metadata(sizeof(hash));
   memcpy(metadata.data(), &hash, sizeof(hash));
 

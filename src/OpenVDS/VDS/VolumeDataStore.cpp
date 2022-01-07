@@ -471,7 +471,7 @@ static bool CopyDataBlockIntoLinearBuffer(const DataBlock &dataBlock, const void
   switch(dataBlock.Format)
   {
   default:
-    fprintf(stderr, "Illegal format\n");
+    assert(0 && "Illegal format");
     return true;
   case VolumeDataChannelDescriptor::Format_1Bit:
     isConstant = (reinterpret_cast<const uint8_t*>(sourceBuffer)[0] == 0x00 || reinterpret_cast<const uint8_t*>(sourceBuffer)[0] == 0xff);
@@ -698,9 +698,9 @@ bool VolumeDataStore::CreateConstantValueDataBlock(VolumeDataChunk const &volume
   return FillConstantValueBuffer(buffer.data(), allocatedElements, format, convertedConstantValue, error);
 }
 
-bool VolumeDataStore::DeserializeVolumeData(const VolumeDataChunk& volumeDataChunk, const std::vector<uint8_t>& serializedData, const std::vector<uint8_t>& metadata, CompressionMethod compressionMethod, int32_t adaptiveLevel, VolumeDataChannelDescriptor::Format loadFormat, DataBlock& dataBlock, std::vector<uint8_t>& target, Error& error)
+bool VolumeDataStore::DeserializeVolumeData(const VolumeDataChunk& volumeDataChunk, const std::vector<uint8_t>& serializedData, const std::vector<uint8_t>& metadata, CompressionMethod compressionMethod, int32_t adaptiveLevel, VolumeDataChannelDescriptor::Format loadFormat, DataBlock& dataBlock, std::vector<uint8_t>& target, uint64_t& targetHash, Error& error)
 {
-  uint64_t volumeDataHashValue = VolumeDataHash::UNKNOWN;
+  targetHash = VolumeDataHash::UNKNOWN;
 
   bool waveletAdaptive = CompressionMethod_IsWavelet(compressionMethod) && metadata.size() == sizeof(uint64_t) + sizeof(uint8_t[WAVELET_ADAPTIVE_LEVELS]);
   if (!waveletAdaptive && metadata.size() != sizeof(uint64_t))
@@ -710,9 +710,9 @@ bool VolumeDataStore::DeserializeVolumeData(const VolumeDataChunk& volumeDataChu
     return false;
   }
 
-  memcpy(&volumeDataHashValue, metadata.data(), sizeof(uint64_t));
+  memcpy(&targetHash, metadata.data(), sizeof(uint64_t));
 
-  VolumeDataHash volumeDataHash(volumeDataHashValue);
+  VolumeDataHash volumeDataHash(targetHash);
 
   VolumeDataLayer const *volumeDataLayer = volumeDataChunk.layer;
 
@@ -734,7 +734,7 @@ bool VolumeDataStore::DeserializeVolumeData(const VolumeDataChunk& volumeDataChu
     return false;
   }
 
-  volumeDataHash = uint64_t(volumeDataHash) ^ (uint64_t(adaptiveLevel) + 1) * 0x4068934683409867ULL; // It is intentional that an iAdaptiveLevel of -1 produces the original hash
+  targetHash = uint64_t(volumeDataHash) ^ (uint64_t(adaptiveLevel) + 1) * 0x4068934683409867ULL; // It is intentional that an iAdaptiveLevel of -1 produces the original hash
 
   //create a value range from scale and offset so that conversion to 8 or 16 bit is done correctly inside deserialization
   FloatRange deserializeValueRange = volumeDataLayer->GetValueRange();

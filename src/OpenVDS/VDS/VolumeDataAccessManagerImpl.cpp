@@ -678,8 +678,9 @@ void VolumeDataAccessManagerImpl::AddCopyPageJob(VolumeDataChunk& chunk, VolumeD
         auto destFormat = PrivateGetLayout()->GetChannelFormat(chunk.layer->GetChannelIndex());
         DataBlock destDataBlock;
         std::vector<uint8_t> deserializedData;
-        sourceDataStore->DeserializeVolumeData(sourceChunk, serializedData, metadata, compressionInfo.GetCompressionMethod(), sourceChunk.layer->GetEffectiveWaveletAdaptiveLoadLevel(), destFormat, destDataBlock, deserializedData, error);
-        destination.RequestWritePage(chunk.index, destDataBlock, deserializedData);
+        uint64_t hash = VolumeDataHash::UNKNOWN;
+        sourceDataStore->DeserializeVolumeData(sourceChunk, serializedData, metadata, compressionInfo.GetCompressionMethod(), sourceChunk.layer->GetEffectiveWaveletAdaptiveLoadLevel(), destFormat, destDataBlock, deserializedData, hash, error);
+        destination.RequestWritePage(chunk.index, destDataBlock, deserializedData, hash);
       }
       destination.GetManager()->GetVolumeDataLayout()->CompletePendingWriteChunkRequests(int32_t(threadCount));
       return error;

@@ -95,6 +95,7 @@ VolumeDataPageImpl::VolumeDataPageImpl(VolumeDataPageAccessorImpl* volumeDataPag
   : m_volumeDataPageAccessor(volumeDataPageAccessor)
   , m_chunk(chunk)
   , m_blob()
+  , m_hash(VolumeDataHash::UNKNOWN)
   , m_pins(1)
   , m_settingData(0)
   , m_isReadWrite(false)
@@ -156,19 +157,20 @@ void VolumeDataPageImpl::MakeDirty()
   m_isDirty = true;
 }
 
-void VolumeDataPageImpl::SetBufferData(const DataBlock &dataBlock, int32_t (&pitchND)[Dimensionality_Max], std::vector<uint8_t>&& blob)
+void VolumeDataPageImpl::SetBufferData(const DataBlock &dataBlock, int32_t (&pitchND)[Dimensionality_Max], std::vector<uint8_t>&& blob, uint64_t hash)
 {
   //assert(m_volumeDataPageAccessor->m_pageListMutex.isLockedByCurrentThread());
   m_dataBlock = dataBlock;
   static_assert(sizeof(pitchND) == sizeof(m_pitchND), "Pitch of different size");
   memcpy(m_pitchND, pitchND, sizeof(m_pitchND));
   m_blob = std::move(blob);
+  m_hash = hash;
 }
 
 void VolumeDataPageImpl::WriteBack(VolumeDataLayer const* volumeDataLayer, std::unique_lock<std::mutex>& pageListMutexLock)
 {
   assert(m_isDirty);
-  m_volumeDataPageAccessor->RequestWritePage(m_chunk, m_dataBlock, m_blob);
+  m_volumeDataPageAccessor->RequestWritePage(m_chunk, m_dataBlock, m_blob, m_hash);
   auto layout = const_cast<VolumeDataLayoutImpl*>(static_cast<VolumeDataLayoutImpl const*>(m_volumeDataPageAccessor->GetLayout()));
   m_isDirty = false;
   layout->CompletePendingWriteChunkRequests(16);
@@ -394,9 +396,14 @@ void VolumeDataPageImpl::UpdateWrittenRegion(const int(&writtenMin)[Dimensionali
 
   MakeDirty();
 }
+
 void VolumeDataPageImpl::Release()
 {
  std::unique_lock<std::mutex>  pageListMutexLock(const_cast<VolumeDataPageAccessorImpl *>(m_volumeDataPageAccessor)->m_pagesMutex);
+ if(m_isDirty)
+ {
+   m_hash = VolumeDataHash::GetUniqueHash();
+ }
  UnPin();
 }
 

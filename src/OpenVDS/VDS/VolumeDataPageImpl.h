@@ -40,6 +40,7 @@ private:
   DataBlock m_dataBlock;
   int32_t m_pitchND[Dimensionality_Max];
   std::vector<uint8_t> m_blob;
+  uint64_t  m_hash;
 
   std::atomic_int m_pins;
 
@@ -79,7 +80,7 @@ public:
   bool          IsWritten();
   void          MakeDirty();
 
-  void          SetBufferData(const DataBlock& dataBlock, int32_t(&pitch)[Dimensionality_Max], std::vector<uint8_t>&& blob);
+  void          SetBufferData(const DataBlock& dataBlock, int32_t(&pitch)[Dimensionality_Max], std::vector<uint8_t>&& blob, uint64_t hash);
   void          WriteBack(VolumeDataLayer const *volumeDataLayer, std::unique_lock<std::mutex> &pageListMutexLock);
   void *        GetBufferInternal(int (&anPitch)[Dimensionality_Max], bool isReadWrite);
   void *        GetRawBufferInternal() { return m_blob.data(); }
