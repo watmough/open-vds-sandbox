@@ -674,7 +674,7 @@ VolumeDataLayoutImpl::FindLayerToRemapFrom(VolumeDataLayer const *volumeDataLaye
     if (!sourceLayer || sourceLayer->GetLayerType() == VolumeDataLayer::Virtual || sourceLayer->GetChannelIndex() != channel) continue;
 
     // Do not consider remapping from a layer we always have to remap to produce data in
-    if(sourceLayer->GetProduceStatus() == VolumeDataLayer::ProduceStatus_Remapped)
+    if(sourceLayer->m_produceStatus != VolumeDataLayer::ProduceStatus_Normal)
     {
       continue;
     }
@@ -745,7 +745,7 @@ VolumeDataLayoutImpl::FindLayerToRemapFrom(VolumeDataLayer const *volumeDataLaye
     baseLayer = baseLayer->GetParentLayer();
   }
 
-  if(baseLayer && baseLayer->GetProduceStatus() == VolumeDataLayer::ProduceStatus_Normal)
+  if(baseLayer && baseLayer->m_produceStatus == VolumeDataLayer::ProduceStatus_Normal)
   {
     candidateLayer = baseLayer;
   }

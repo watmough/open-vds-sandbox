@@ -153,7 +153,7 @@ const VolumeDataLayer * VolumeDataLayer::GetLayerToRemapFrom() const
 
 VolumeDataLayer::ProduceStatus VolumeDataLayer::GetProduceStatus() const
 {
-  if(m_produceStatus == ProduceStatus::ProduceStatus_Unavailable && m_remapFromLayer->m_produceStatus == ProduceStatus_Normal)
+  if(m_produceStatus == ProduceStatus::ProduceStatus_Unavailable && GetLayerToRemapFrom()->m_produceStatus == ProduceStatus_Normal)
   {
     return ProduceStatus_Remapped;
   }
