@@ -170,7 +170,8 @@ bool DeserializeVolumeData(const std::vector<uint8_t> &serializedData, VolumeDat
 
     if (status != Z_OK)
     {
-      fprintf(stderr, "zlib uncompress failed (status %d) in VolumeDataStore_c::DeSerialize\n", status);
+      error.code = -1;
+      error.string = fmt::format("zlib uncompress failed (status {})", status);
       return false;
     }
 
@@ -733,7 +734,7 @@ bool VolumeDataStore::DeserializeVolumeData(const VolumeDataChunk& volumeDataChu
     return false;
   }
 
-  volumeDataHash = uint64_t(volumeDataHash) ^ (uint64_t(adaptiveLevel) + 1) * 0x4068934683409867ULL;
+  volumeDataHash = uint64_t(volumeDataHash) ^ (uint64_t(adaptiveLevel) + 1) * 0x4068934683409867ULL; // It is intentional that an iAdaptiveLevel of -1 produces the original hash
 
   //create a value range from scale and offset so that conversion to 8 or 16 bit is done correctly inside deserialization
   FloatRange deserializeValueRange = volumeDataLayer->GetValueRange();
