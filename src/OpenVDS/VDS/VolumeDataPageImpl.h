@@ -69,6 +69,7 @@ public:
 
   int64_t GetChunkIndex() const { return m_chunk; }
   const DataBlock &GetDataBlock() const { return m_dataBlock;}
+  uint64_t GetVolumeDataHash() const { return m_hash; }
 
   // All these methods require the caller to hold a lock
   bool          IsPinned();
