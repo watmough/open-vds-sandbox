@@ -1404,6 +1404,8 @@ void Wavelet::DeCompressNoValues(float *noValue, std::vector<uint32_t> &buffer)
     return;
   }
 
+  m_noValueData++; // Skip byte size.
+
   // Create a union for type punning that works with strict aliasing
   union { float fValue; int32_t iValue; } convert;
 
