@@ -2585,6 +2585,8 @@ main(int argc, char* argv[])
   std::string sampleUnit;
   std::string crsWkt;
   double scale = 0;
+  std::string overrideSampleFormatString;
+  SEGY::BinaryHeader::DataSampleFormatCode overrideSampleFormat;
   bool overrideSampleStart = false;
   bool overrideBrickSize = false;
   bool overrideMargin = false;
@@ -2659,6 +2661,7 @@ main(int argc, char* argv[])
   options.add_option("", "", "scale", "If a scale override (floating point) is given, it is used to scale the coordinates in the header instead of determining the scale factor from the coordinate scale trace header field.", cxxopts::value<double>(scale), "<value>");
   options.add_option("", "", "sample-unit", "A sample unit of 'ms' is used for datasets in the time domain (default), while a sample unit of 'm' or 'ft' is used for datasets in the depth domain", cxxopts::value<std::string>(sampleUnit), "<string>");
   options.add_option("", "", "sample-start", "The start time/depth/frequency (depending on the domain) of the sampling", cxxopts::value<double>(sampleStart), "<value>");
+  options.add_option("", "", "sample-format", "Override the data format used when reading sample data from SEGY file. Possible values are: IBMFloat, IEEEFloat, UInt32, Int32, UInt16, Int16, UInt8, Int8.", cxxopts::value<std::string>(overrideSampleFormatString), "<string>");
   options.add_option("", "", "crs-wkt", "A coordinate reference system in well-known text format can optionally be provided", cxxopts::value<std::string>(crsWkt), "<string>");
   options.add_option("", "l", "little-endian", "Force little-endian trace headers.", cxxopts::value<bool>(littleEndian), "");
   options.add_option("", "", "scan", "Generate a JSON file containing information about the input SEG-Y file.", cxxopts::value<bool>(scan), "");
@@ -2765,6 +2768,12 @@ main(int argc, char* argv[])
   if (!OpenVDS::IsCompressionMethodSupported(compressionMethod))
   {
     OpenVDS::printError(printConfig, "CompressionMethod", "Unsupported compression method", compressionMethodString);
+    return EXIT_FAILURE;
+  }
+
+  if (overrideSampleFormatString.size() && !SEGY::DataSampleFormatCodeFromString(overrideSampleFormatString.c_str(), overrideSampleFormat))
+  {
+    OpenVDS::printError(printConfig, "Override sample format", fmt::format("Unable to recognize input data sample format override: {}", overrideSampleFormatString));
     return EXIT_FAILURE;
   }
 
@@ -3086,6 +3095,11 @@ main(int argc, char* argv[])
       fileInfo.m_startTimeMilliseconds = sampleStart;
     }
 
+    if (overrideSampleFormatString.size())
+    {
+      fileInfo.m_dataSampleFormatCode = overrideSampleFormat;
+    }
+
     // If we are in scan mode we serialize the result of the file scan either to a fileInfo file (if specified) or to stdout and exit
     if (scan)
     {
@@ -3192,6 +3206,10 @@ main(int argc, char* argv[])
     if (overrideSampleStart)
     {
       fileInfo.m_startTimeMilliseconds = sampleStart;
+    }
+    if (overrideSampleFormatString.size())
+    {
+      fileInfo.m_dataSampleFormatCode = overrideSampleFormat;
     }
   }
   else

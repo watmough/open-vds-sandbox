@@ -318,6 +318,7 @@ OPENVDS_EXPORT int ReadFieldFromHeader(const void *header, HeaderField const &he
 
 OPENVDS_EXPORT int FormatSize(BinaryHeader::DataSampleFormatCode dataSampleFormatCode);
 OPENVDS_EXPORT const char* DataSampleFormatCodeToString(BinaryHeader::DataSampleFormatCode dataSampleFormatCode);
+OPENVDS_EXPORT bool DataSampleFormatCodeFromString(const char *codeString, BinaryHeader::DataSampleFormatCode& code);
 
 enum class SampleUnits
 {

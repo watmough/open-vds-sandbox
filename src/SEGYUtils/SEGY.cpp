@@ -328,6 +328,50 @@ const char* DataSampleFormatCodeToString(BinaryHeader::DataSampleFormatCode data
   return "";
 }
 
+bool DataSampleFormatCodeFromString(const char *codeString, BinaryHeader::DataSampleFormatCode& code)
+{
+  std::string lowercase = codeString;
+
+  std::transform(lowercase.begin(), lowercase.end(), lowercase.begin(), [](char in) {
+    if (in <= 'Z' && in >= 'A')
+      return char(in - ('Z' - 'z'));
+    return in;
+    });
+
+  if (lowercase == "unknown")
+    code = BinaryHeader::DataSampleFormatCode::Unknown;
+  else if (lowercase == "ibmfloat")
+    code = BinaryHeader::DataSampleFormatCode::IBMFloat;
+  else if (lowercase == "int32")
+    code = BinaryHeader::DataSampleFormatCode::Int32;
+  else if (lowercase == "int16")
+    code = BinaryHeader::DataSampleFormatCode::Int16;
+  else if (lowercase == "fixedpoint")
+    code = BinaryHeader::DataSampleFormatCode::FixedPoint;
+  else if (lowercase == "ieeefloat")
+    code = BinaryHeader::DataSampleFormatCode::IEEEFloat;
+  else if (lowercase == "ieeedouble")
+    code = BinaryHeader::DataSampleFormatCode::IEEEDouble;
+  else if (lowercase == "int24")
+    code = BinaryHeader::DataSampleFormatCode::Int24;
+  else if (lowercase == "int8")
+    code = BinaryHeader::DataSampleFormatCode::Int8;
+  else if (lowercase == "int64")
+    code = BinaryHeader::DataSampleFormatCode::Int64;
+  else if (lowercase == "uint32")
+    code = BinaryHeader::DataSampleFormatCode::UInt32;
+  else if (lowercase == "uint16")
+    code = BinaryHeader::DataSampleFormatCode::UInt16;
+  else if (lowercase == "uint64")
+    code = BinaryHeader::DataSampleFormatCode::UInt64;
+  else if (lowercase == "uint24")
+    code = BinaryHeader::DataSampleFormatCode::UInt24;
+  else if (lowercase == "uint8")
+    code = BinaryHeader::DataSampleFormatCode::UInt8;
+  else
+    return false;
+  return true;
+}
 bool
 IsSEGYTypeUnbinned(SEGYType segyType)
 {

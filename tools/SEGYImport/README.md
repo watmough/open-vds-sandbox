@@ -17,6 +17,7 @@ SEGYImport [OPTION...] <input file>
 |     --scale \<value>              | If a scale override (floating point) is given, it is used to scale the coordinates in the header instead of determining the scale factor from the coordinate scale trace header field. |
 |     --sample-unit \<string>       | A sample unit of 'ms' is used for datasets in the time domain (default), while a sample unit of 'm' or 'ft' is used for datasets in the depth domain. |
 |     --sample-start \<value>       | The start time/depth/frequency (depending on the domain) of the sampling. |
+|     --sample-format \<string>     | Override the data format used when reading sample data from SEGY file. Possible values are: IBMFloat, IEEEFloat, UInt32, Int32, UInt16, Int16, UInt8, Int8. |
 |     --crs-wkt \<string>           | A coordinate reference system in well-known text format can optionally be provided. |
 | -l, --little-endian               | Force little-endian trace headers. |
 |     --scan                        | Generate a JSON file containing information about the input SEG-Y file. |
