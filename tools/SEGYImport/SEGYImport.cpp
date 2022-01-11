@@ -33,6 +33,7 @@
 #include <OpenVDS/VolumeDataLayout.h>
 #include <OpenVDS/KnownMetadata.h>
 #include <OpenVDS/GlobalMetadataCommon.h>
+#include <OpenVDS/ValueRangeEstimator.h>
 
 #include "IO/IOManager.h"
 
@@ -101,6 +102,41 @@ enum class PrimaryKeyValue
   InlineNumber = 1,
   CrosslineNumber = 2
 };
+
+static OpenVDS::VolumeDataFormat convertSegyFormat(SEGY::BinaryHeader::DataSampleFormatCode dataSampleFormatCode, OpenVDS::Error &error)
+{
+  switch (dataSampleFormatCode)
+  {
+  case SEGY::BinaryHeader::DataSampleFormatCode::IEEEDouble:
+  case SEGY::BinaryHeader::DataSampleFormatCode::UInt64:
+  case SEGY::BinaryHeader::DataSampleFormatCode::Int64:
+    return OpenVDS::VolumeDataFormat::Format_R64;
+
+  case SEGY::BinaryHeader::DataSampleFormatCode::IBMFloat:
+  case SEGY::BinaryHeader::DataSampleFormatCode::IEEEFloat:
+  case SEGY::BinaryHeader::DataSampleFormatCode::UInt32:
+  case SEGY::BinaryHeader::DataSampleFormatCode::Int32:
+    return OpenVDS::VolumeDataFormat::Format_R32;
+
+  case SEGY::BinaryHeader::DataSampleFormatCode::UInt16:
+  case SEGY::BinaryHeader::DataSampleFormatCode::Int16:
+    return OpenVDS::VolumeDataFormat::Format_U16;
+
+  case SEGY::BinaryHeader::DataSampleFormatCode::UInt8:
+  case SEGY::BinaryHeader::DataSampleFormatCode::Int8:
+    return OpenVDS::VolumeDataFormat::Format_U8;
+
+  case SEGY::BinaryHeader::DataSampleFormatCode::Unknown:
+  case SEGY::BinaryHeader::DataSampleFormatCode::UInt24:
+  case SEGY::BinaryHeader::DataSampleFormatCode::Int24:
+  case SEGY::BinaryHeader::DataSampleFormatCode::FixedPoint:
+  default:
+    error.code = -1;
+    error.string = "Unknown data sample format";
+    break;
+  }
+  return OpenVDS::VolumeDataFormat::Format_Any;
+}
 
 inline char asciitolower(char in) {
   if (in <= 'Z' && in >= 'A')
@@ -832,83 +868,195 @@ findRepresentativePrimaryKey(SEGYFileInfo const& fileInfo, int& primaryStep)
   return bestPrimaryKey;
 }
 
-void
-copySamples(const void* data, SEGY::BinaryHeader::DataSampleFormatCode dataSampleFormatCode, SEGY::Endianness endianness, float* target, int sampleStart, int sampleCount)
+template<SEGY::BinaryHeader::DataSampleFormatCode dataSampleFormatCode>
+int32_t
+GetIntegerOffsetForDataSampleFormat()
 {
-  if (dataSampleFormatCode == SEGY::BinaryHeader::DataSampleFormatCode::IBMFloat)
+  switch (dataSampleFormatCode)
   {
-    if(endianness == SEGY::Endianness::LittleEndian)
-    {
-      // Reverse endianness since Ibm2ieee expects big endian data
-      const char * source = reinterpret_cast<const char*>((intptr_t)data + (size_t)sampleStart * 4);
-      std::unique_ptr<char[]> temp(new char[sampleCount * 4]);
-      for(int sample = 0; sample < sampleCount; sample++)
-      {
-        temp[sample * 4 + 0] = source[sample * 4 + 3];
-        temp[sample * 4 + 1] = source[sample * 4 + 2];
-        temp[sample * 4 + 2] = source[sample * 4 + 1];
-        temp[sample * 4 + 3] = source[sample * 4 + 0];
-      }
-      SEGY::Ibm2ieee(target, temp.get(), sampleCount);
-    }
-    else
-    {
-      assert(endianness == SEGY::Endianness::BigEndian);
-      SEGY::Ibm2ieee(target, reinterpret_cast<const uint32_t*>((intptr_t)data + (size_t)sampleStart * 4), sampleCount);
-    }
+    // VDS does not support IntegerOffset for Int32 and Int64 so updating this function
+    // is not enough to properly handle Int32 types without converting them to float.
+  case SEGY::BinaryHeader::DataSampleFormatCode::Int16:
+    return 32768;
+  case SEGY::BinaryHeader::DataSampleFormatCode::Int8:
+    return 128;
+  default:
+    return 0;
   }
-  else
+}
+int32_t
+GetIntegerOffsetForDataSampleFormat(SEGY::BinaryHeader::DataSampleFormatCode dataSampleFormatCode)
+{
+  switch (dataSampleFormatCode)
   {
-    assert(dataSampleFormatCode == SEGY::BinaryHeader::DataSampleFormatCode::IEEEFloat);
-    if(endianness == SEGY::Endianness::LittleEndian)
+    // VDS does not support IntegerOffset for Int32 and Int64 so updating this function
+    // is not enough to properly handle Int32 types without converting them to float.
+  case SEGY::BinaryHeader::DataSampleFormatCode::Int16:
+    return 32768;
+  case SEGY::BinaryHeader::DataSampleFormatCode::Int8:
+    return 128;
+  default:
+    return 0;
+  }
+}
+
+inline float
+IntToFloat(int fconv)
+{
+  union
+  {
+    int i;
+    float f;
+  } conv;
+  conv.i = fconv;
+  return conv.f;
+}
+
+template <SEGY::Endianness ENDIANNESS, SEGY::BinaryHeader::DataSampleFormatCode FORMAT>
+void
+copySamples(float* prTarget, const unsigned char* puSource, int iSampleMin, int iSampleMax)
+{
+  if (FORMAT == SEGY::BinaryHeader::DataSampleFormatCode::IBMFloat)
+  {
+    SEGY::Ibm2ieee(prTarget, puSource + iSampleMin * 4, iSampleMax - iSampleMin);
+    return;
+  }
+
+  int
+    nValue;
+
+  for (int iSample = iSampleMin; iSample < iSampleMax; iSample++)
+  {
+    if (ENDIANNESS == SEGY::Endianness::BigEndian)
     {
-      SEGY::ConvertFromEndianness<SEGY::Endianness::LittleEndian>(target, reinterpret_cast<const char*>((intptr_t)data + (size_t)sampleStart * 4), sampleCount);
+      nValue = (int)(puSource[iSample * 4 + 0] << 24 | puSource[iSample * 4 + 1] << 16 | puSource[iSample * 4 + 2] << 8 | puSource[iSample * 4 + 3]);
     }
     else
     {
-      assert(endianness == SEGY::Endianness::BigEndian);
-      SEGY::ConvertFromEndianness<SEGY::Endianness::BigEndian>(target, reinterpret_cast<const char*>((intptr_t)data + (size_t)sampleStart * 4), sampleCount);
+      nValue = (int)(puSource[iSample * 4 + 3] << 24 | puSource[iSample * 4 + 2] << 16 | puSource[iSample * 4 + 1] << 8 | puSource[iSample * 4 + 0]);
+    }
+
+    if (FORMAT == SEGY::BinaryHeader::DataSampleFormatCode::IEEEFloat)
+    {
+      *prTarget++ = IntToFloat(nValue);
+    }
+    else if (FORMAT == SEGY::BinaryHeader::DataSampleFormatCode::Int32)
+    {
+      *prTarget++ = (float)nValue; // Intentionally lose precision
+    }
+    else if (FORMAT == SEGY::BinaryHeader::DataSampleFormatCode::UInt32)
+    {
+      *prTarget++ = (float)(unsigned int)nValue; // Intentionally lose precision
+    }
+    else
+    {
+      assert(0 && "Bad data sample format");
+    }
+
+  }
+}
+
+template <SEGY::Endianness ENDIANNESS, SEGY::BinaryHeader::DataSampleFormatCode FORMAT>
+void
+copySamples(uint8_t* puTarget, const unsigned char* puSource, int iSampleMin, int iSampleMax)
+{
+  int8_t
+    nValue;
+
+  for (int iSample = iSampleMin; iSample < iSampleMax; iSample++)
+  {
+    nValue = (int8_t)(puSource[iSample * 1 + 0]);
+
+    if (FORMAT == SEGY::BinaryHeader::DataSampleFormatCode::Int8)
+    {
+      *puTarget++ = nValue + GetIntegerOffsetForDataSampleFormat<FORMAT>();
+    }
+    else if (FORMAT == SEGY::BinaryHeader::DataSampleFormatCode::UInt8)
+    {
+      *puTarget++ = (uint8_t)nValue;
+    }
+    else
+    {
+      assert(0 && "Bad data sample format");
     }
   }
 }
 
+template <SEGY::Endianness ENDIANNESS, SEGY::BinaryHeader::DataSampleFormatCode FORMAT>
 void
-updateValueRangeHeaps(const SEGYFileInfo& fileInfo, const int heapSizeMax, std::vector<float>& minHeap, std::vector<float>& maxHeap, const void * data, std::vector<float>& sampleBuffer)
+copySamples(uint16_t* puTarget, const unsigned char* puSource, int iSampleMin, int iSampleMax)
 {
-  if (fileInfo.m_dataSampleFormatCode == SEGY::BinaryHeader::DataSampleFormatCode::IBMFloat || fileInfo.m_dataSampleFormatCode == SEGY::BinaryHeader::DataSampleFormatCode::IEEEFloat)
+  int16_t
+    nValue;
+
+  for (int iSample = iSampleMin; iSample < iSampleMax; iSample++)
   {
-    sampleBuffer.resize(fileInfo.m_sampleCount);
-    copySamples(data, fileInfo.m_dataSampleFormatCode, fileInfo.m_headerEndianness, sampleBuffer.data(), 0, fileInfo.m_sampleCount);
-
-    for (int sample = 0; sample < fileInfo.m_sampleCount; sample++)
+    if (ENDIANNESS == SEGY::Endianness::BigEndian)
     {
-      if (int(minHeap.size()) < heapSizeMax)
-      {
-        minHeap.push_back(sampleBuffer[sample]);
-        std::push_heap(minHeap.begin(), minHeap.end(), std::less<float>());
-      }
-      else if (sampleBuffer[sample] < minHeap[0])
-      {
-        std::pop_heap(minHeap.begin(), minHeap.end(), std::less<float>());
-        minHeap.back() = sampleBuffer[sample];
-        std::push_heap(minHeap.begin(), minHeap.end(), std::less<float>());
-      }
+      nValue = (int16_t)(puSource[iSample * 2 + 0] << 8 | puSource[iSample * 2 + 1]);
+    }
+    else
+    {
+      nValue = (int16_t)(puSource[iSample * 2 + 1] << 8 | puSource[iSample * 2 + 0]);
+    }
 
-      if (int(maxHeap.size()) < heapSizeMax)
-      {
-        maxHeap.push_back(sampleBuffer[sample]);
-        std::push_heap(maxHeap.begin(), maxHeap.end(), std::greater<float>());
-      }
-      else if (sampleBuffer[sample] > maxHeap[0])
-      {
-        std::pop_heap(maxHeap.begin(), maxHeap.end(), std::greater<float>());
-        maxHeap.back() = sampleBuffer[sample];
-        std::push_heap(maxHeap.begin(), maxHeap.end(), std::greater<float>());
-      }
+    if (FORMAT == SEGY::BinaryHeader::DataSampleFormatCode::Int16)
+    {
+      *puTarget++ = nValue + GetIntegerOffsetForDataSampleFormat<FORMAT>();
+    }
+    else if (FORMAT == SEGY::BinaryHeader::DataSampleFormatCode::UInt16)
+    {
+      *puTarget++ = (uint16_t)nValue;
+    }
+    else
+    {
+      assert(0 && "Bad data sample format");
     }
   }
 }
 
+template<typename T, SEGY::Endianness ENDIANNESS>
+void
+copySamples(SEGY::BinaryHeader::DataSampleFormatCode dataSampleFormatCode, T* target, const unsigned char* puSource, int iSampleMin, int iSampleMax)
+{
+  switch (dataSampleFormatCode)
+  {
+  case SEGY::BinaryHeader::DataSampleFormatCode::IBMFloat:
+    return copySamples<ENDIANNESS, SEGY::BinaryHeader::DataSampleFormatCode::IBMFloat>(target, puSource, iSampleMin, iSampleMax);
+  case SEGY::BinaryHeader::DataSampleFormatCode::IEEEFloat:
+    return copySamples<ENDIANNESS, SEGY::BinaryHeader::DataSampleFormatCode::IEEEFloat>(target, puSource, iSampleMin, iSampleMax);
+  case SEGY::BinaryHeader::DataSampleFormatCode::UInt32:
+    return copySamples<ENDIANNESS, SEGY::BinaryHeader::DataSampleFormatCode::UInt32>(target, puSource, iSampleMin, iSampleMax);
+  case SEGY::BinaryHeader::DataSampleFormatCode::Int32:
+    return copySamples<ENDIANNESS, SEGY::BinaryHeader::DataSampleFormatCode::Int32>(target, puSource, iSampleMin, iSampleMax);
+  case SEGY::BinaryHeader::DataSampleFormatCode::UInt16:
+    return copySamples<ENDIANNESS, SEGY::BinaryHeader::DataSampleFormatCode::UInt16>(target, puSource, iSampleMin, iSampleMax);
+  case SEGY::BinaryHeader::DataSampleFormatCode::Int16:
+    return copySamples<ENDIANNESS, SEGY::BinaryHeader::DataSampleFormatCode::Int16>(target, puSource, iSampleMin, iSampleMax);
+  case SEGY::BinaryHeader::DataSampleFormatCode::UInt8:
+    return copySamples<ENDIANNESS, SEGY::BinaryHeader::DataSampleFormatCode::UInt8>(target, puSource, iSampleMin, iSampleMax);
+  case SEGY::BinaryHeader::DataSampleFormatCode::Int8:
+    return copySamples<ENDIANNESS, SEGY::BinaryHeader::DataSampleFormatCode::Int8>(target, puSource, iSampleMin, iSampleMax);
+  default:
+    assert(false && "Unsupported data sample format");
+  }
+}
+
+template<typename T>
+void
+copySamples(SEGY::Endianness endianess, SEGY::BinaryHeader::DataSampleFormatCode dataSampleFormatCode, T* target, const unsigned char* puSource, int iSampleMin, int iSampleMax)
+{
+  switch (endianess)
+  {
+  case SEGY::Endianness::BigEndian:
+    return copySamples<T, SEGY::Endianness::BigEndian>(dataSampleFormatCode, target, puSource, iSampleMin, iSampleMax);
+  case SEGY::Endianness::LittleEndian:
+    return copySamples<T, SEGY::Endianness::LittleEndian>(dataSampleFormatCode, target, puSource, iSampleMin, iSampleMax);
+  }
+}
+
+
+template<typename T>
 bool
 analyzeSegment(DataProvider &dataProvider, SEGYFileInfo const& fileInfo, SEGYSegmentInfo const& segmentInfo, float valueRangePercentile, OpenVDS::FloatRange& valueRange, int& fold, int& secondaryStep, const SEGY::SEGYType segyType, TraceInfo2DManager * pTraceInfo2DManager, TraceSpacingByOffset& traceSpacingByOffset, std::vector<int>& offsetValues, OpenVDS::PrintConfig printConfig, OpenVDS::Error& error)
 {
@@ -930,16 +1078,10 @@ analyzeSegment(DataProvider &dataProvider, SEGYFileInfo const& fileInfo, SEGYSeg
   int traceBufferSize = 0;
   std::unique_ptr<char[]> buffer;
 
-  // Create min/max heaps for determining value range
-  int heapSizeMax = int(((100.0f - valueRangePercentile) / 100.0f) * (segmentInfo.m_traceStop - segmentInfo.m_traceStart + 1) * fileInfo.m_sampleCount / 2) + 1;
-
-  std::vector<float> minHeap, maxHeap;
-
-  minHeap.reserve(heapSizeMax);
-  maxHeap.reserve(heapSizeMax);
+  OpenVDS::HeapBasedValueRangeEstimator<T> valueRangeEstimator(valueRangePercentile, (segmentInfo.m_traceStop - segmentInfo.m_traceStart + 1) * fileInfo.m_sampleCount);
 
   // Allocate sample buffer for converting samples to float
-  std::vector<float> sampleBuffer(fileInfo.m_sampleCount);
+  std::unique_ptr<T[]> sampleBuffer(new T[fileInfo.m_sampleCount]);
 
   // Determine fold and secondary step
   int gatherSecondaryKey = 0, gatherFold = 0, gatherSecondaryStep = 0;
@@ -1005,8 +1147,8 @@ analyzeSegment(DataProvider &dataProvider, SEGYFileInfo const& fileInfo, SEGYSeg
       gatherOffsetValues[gatherSecondaryKey].push_back(thisOffset);
     }
 
-    // Update value range
-    updateValueRangeHeaps(fileInfo, heapSizeMax, minHeap, maxHeap, data, sampleBuffer);
+    copySamples<T>(fileInfo.m_headerEndianness, fileInfo.m_dataSampleFormatCode, sampleBuffer.get(), (const unsigned char*)data, 0, fileInfo.m_sampleCount);
+    valueRangeEstimator.UpdateValueRange(sampleBuffer.get(), sampleBuffer.get() + fileInfo.m_sampleCount);
   }
 
   if (fileInfo.HasGatherOffset() && !fileInfo.IsUnbinned() && !gatherOffsetValues.empty())
@@ -1084,24 +1226,13 @@ analyzeSegment(DataProvider &dataProvider, SEGYFileInfo const& fileInfo, SEGYSeg
   secondaryStep = secondaryStep ? secondaryStep : std::max(gatherSecondaryStep, 1);
 
   // Set value range
-  if (!minHeap.empty())
-  {
-    assert(!maxHeap.empty());
-
-    if (minHeap[0] != maxHeap[0])
-    {
-      valueRange = OpenVDS::FloatRange(minHeap[0], maxHeap[0]);
-    }
-    else
-    {
-      valueRange = OpenVDS::FloatRange(minHeap[0], minHeap[0] + 1.0f);
-    }
-  }
+  valueRangeEstimator.GetValueRange(valueRange.Min, valueRange.Max);
 
   return success;
 }
 
 // Analog of analyzeSegment for offset-sorted SEGY
+template<typename T>
 bool
 analyzePrimaryKey(const std::vector<DataProvider>& dataProviders, SEGYFileInfo const& fileInfo, const int primaryKey, float valueRangePercentile, OpenVDS::FloatRange& valueRange, int& fold, int& secondaryStep, std::vector<int>& offsetValues, OpenVDS::PrintConfig printConfig, OpenVDS::Error& error)
 {
@@ -1178,15 +1309,9 @@ analyzePrimaryKey(const std::vector<DataProvider>& dataProviders, SEGYFileInfo c
   }
 
   // Create min/max heaps for determining value range
-  int heapSizeMax = int(((100.0f - valueRangePercentile) / 100.0f) * primaryKeyTraceCount * fileInfo.m_sampleCount / 2) + 1;
+  OpenVDS::HeapBasedValueRangeEstimator<T> valueRangeEstimator(valueRangePercentile, primaryKeyTraceCount * fileInfo.m_sampleCount);
 
-  std::vector<float> minHeap, maxHeap;
-
-  minHeap.reserve(heapSizeMax);
-  maxHeap.reserve(heapSizeMax);
-
-  // Allocate sample buffer for converting samples to float
-  std::vector<float> sampleBuffer(fileInfo.m_sampleCount);
+  std::unique_ptr<T[]> sampleBuffer(new T[fileInfo.m_sampleCount]);
 
   // For secondary step need to scan all traces in all segments to get a complete (hopefully) list of secondary keys, then figure out start/end/step.
   // We need to get all secondary keys before doing any analysis because we may not encounter them in least-to-greatest order in the offset-sorted segments.
@@ -1247,7 +1372,8 @@ analyzePrimaryKey(const std::vector<DataProvider>& dataProviders, SEGYFileInfo c
         }
 
         // Update value range
-        updateValueRangeHeaps(fileInfo, heapSizeMax, minHeap, maxHeap, data, sampleBuffer);
+        copySamples<T>(fileInfo.m_headerEndianness, fileInfo.m_dataSampleFormatCode, sampleBuffer.get(), (const unsigned char*)data, 0, fileInfo.m_sampleCount);
+        valueRangeEstimator.UpdateValueRange(sampleBuffer.get(), sampleBuffer.get() + fileInfo.m_sampleCount);
       }
     }
   }
@@ -1287,19 +1413,7 @@ analyzePrimaryKey(const std::vector<DataProvider>& dataProviders, SEGYFileInfo c
   }
 
   // Set value range
-  if (!minHeap.empty())
-  {
-    assert(!maxHeap.empty());
-
-    if (minHeap[0] != maxHeap[0])
-    {
-      valueRange = OpenVDS::FloatRange(minHeap[0], maxHeap[0]);
-    }
-    else
-    {
-      valueRange = OpenVDS::FloatRange(minHeap[0], minHeap[0] + 1.0f);
-    }
-  }
+  valueRangeEstimator.GetValueRange(valueRange.Min, valueRange.Max);
 
   return success;
 }
@@ -2055,13 +2169,17 @@ struct OffsetChannelInfo
 };
 
 static std::vector<OpenVDS::VolumeDataChannelDescriptor>
-createChannelDescriptors(SEGYFileInfo const& fileInfo, OpenVDS::FloatRange const& valueRange, const OffsetChannelInfo& offsetInfo, const std::string& attributeName, const std::string& attributeUnit, bool isAzimuthEnabled, bool isMuteEnabled)
+createChannelDescriptors(SEGYFileInfo const& fileInfo, OpenVDS::FloatRange const& valueRange, const OffsetChannelInfo& offsetInfo, const std::string& attributeName, const std::string& attributeUnit, bool isAzimuthEnabled, bool isMuteEnabled, OpenVDS::Error &error)
 {
   std::vector<OpenVDS::VolumeDataChannelDescriptor>
     channelDescriptors;
 
   // Primary channel
-  channelDescriptors.emplace_back(OpenVDS::VolumeDataFormat::Format_R32, OpenVDS::VolumeDataComponents::Components_1, attributeName.c_str(), attributeUnit.c_str(), valueRange.Min, valueRange.Max);
+  auto format = convertSegyFormat(fileInfo.m_dataSampleFormatCode, error);
+  if (error.code)
+    return channelDescriptors;
+  float channel_offset = float(GetIntegerOffsetForDataSampleFormat(fileInfo.m_dataSampleFormatCode));
+  channelDescriptors.emplace_back(format, OpenVDS::VolumeDataComponents::Components_1, attributeName.c_str(), attributeUnit.c_str(), valueRange.Min, valueRange.Max, OpenVDS::VolumeDataMapping::Direct, 1, OpenVDS::VolumeDataChannelDescriptor::Default, 1.0f, channel_offset);
 
   // Trace defined flag
   channelDescriptors.emplace_back(OpenVDS::VolumeDataFormat::Format_U8, OpenVDS::VolumeDataComponents::Components_1, "Trace", "", 0.0f, 1.0f, OpenVDS::VolumeDataMapping::PerTrace, OpenVDS::VolumeDataChannelDescriptor::DiscreteData);
@@ -3123,14 +3241,52 @@ main(int argc, char* argv[])
   {
     const auto
       primaryKey = findRepresentativePrimaryKey(fileInfo, primaryStep);
-    analyzeResult = analyzePrimaryKey(dataProviders, fileInfo, primaryKey, valueRangePercentile, valueRange, fold, secondaryStep, gatherOffsetValues, printConfig, error);
+    switch (fileInfo.m_dataSampleFormatCode)
+    {
+    case SEGY::BinaryHeader::DataSampleFormatCode::IBMFloat:
+    case SEGY::BinaryHeader::DataSampleFormatCode::IEEEFloat:
+    case SEGY::BinaryHeader::DataSampleFormatCode::UInt32:
+    case SEGY::BinaryHeader::DataSampleFormatCode::Int32:
+      analyzeResult = analyzePrimaryKey<float>(dataProviders, fileInfo, primaryKey, valueRangePercentile, valueRange, fold, secondaryStep, gatherOffsetValues, printConfig, error);
+      break;
+    case SEGY::BinaryHeader::DataSampleFormatCode::UInt16:
+    case SEGY::BinaryHeader::DataSampleFormatCode::Int16:
+      analyzeResult = analyzePrimaryKey<uint16_t>(dataProviders, fileInfo, primaryKey, valueRangePercentile, valueRange, fold, secondaryStep, gatherOffsetValues, printConfig, error);
+      break;
+    case SEGY::BinaryHeader::DataSampleFormatCode::UInt8:
+    case SEGY::BinaryHeader::DataSampleFormatCode::Int8:
+      analyzeResult = analyzePrimaryKey<uint8_t>(dataProviders, fileInfo, primaryKey, valueRangePercentile, valueRange, fold, secondaryStep, gatherOffsetValues, printConfig, error);
+      break;
+    default:
+      error.code = -1;
+      error.string = fmt::format("Unknown input format {}.", SEGY::DataSampleFormatCodeToString(fileInfo.m_dataSampleFormatCode));
+    }
   }
   else
   {
     int fileIndex;
     const auto& representativeSegment = findRepresentativeSegment(fileInfo, primaryStep, fileIndex);
     assert(fileIndex < dataProviders.size());
-    analyzeResult = analyzeSegment(dataProviders[fileIndex], fileInfo, representativeSegment, valueRangePercentile, valueRange, fold, secondaryStep, segyType, traceInfo2DManager.get(), traceSpacingByOffset, gatherOffsetValues, printConfig, error);
+    switch (fileInfo.m_dataSampleFormatCode)
+    {
+    case SEGY::BinaryHeader::DataSampleFormatCode::IBMFloat:
+    case SEGY::BinaryHeader::DataSampleFormatCode::IEEEFloat:
+    case SEGY::BinaryHeader::DataSampleFormatCode::UInt32:
+    case SEGY::BinaryHeader::DataSampleFormatCode::Int32:
+      analyzeResult = analyzeSegment<float>(dataProviders[fileIndex], fileInfo, representativeSegment, valueRangePercentile, valueRange, fold, secondaryStep, segyType, traceInfo2DManager.get(), traceSpacingByOffset, gatherOffsetValues, printConfig, error);
+      break;
+    case SEGY::BinaryHeader::DataSampleFormatCode::UInt16:
+    case SEGY::BinaryHeader::DataSampleFormatCode::Int16:
+      analyzeResult = analyzeSegment<uint16_t>(dataProviders[fileIndex], fileInfo, representativeSegment, valueRangePercentile, valueRange, fold, secondaryStep, segyType, traceInfo2DManager.get(), traceSpacingByOffset, gatherOffsetValues, printConfig, error);
+      break;
+    case SEGY::BinaryHeader::DataSampleFormatCode::UInt8:
+    case SEGY::BinaryHeader::DataSampleFormatCode::Int8:
+      analyzeResult = analyzeSegment<uint8_t>(dataProviders[fileIndex], fileInfo, representativeSegment, valueRangePercentile, valueRange, fold, secondaryStep, segyType, traceInfo2DManager.get(), traceSpacingByOffset, gatherOffsetValues, printConfig, error);
+      break;
+    default:
+      error.code = -1;
+      error.string = fmt::format("Unknown input format {}.", SEGY::DataSampleFormatCodeToString(fileInfo.m_dataSampleFormatCode));
+    }
   }
 
   if (!analyzeResult || error.code != 0)
@@ -3291,7 +3447,13 @@ main(int argc, char* argv[])
     offsetInfo(fileInfo.HasGatherOffset(), ConvertDistance(segyMeasurementSystem, static_cast<float>(offsetStart)), ConvertDistance(segyMeasurementSystem, static_cast<float>(offsetEnd)), ConvertDistance(segyMeasurementSystem, 1.0f));
 
   // Create channel descriptors
-  std::vector<OpenVDS::VolumeDataChannelDescriptor> channelDescriptors = createChannelDescriptors(fileInfo, valueRange, offsetInfo, attributeName, attributeUnit, isAzimuth, isMutes);
+  std::vector<OpenVDS::VolumeDataChannelDescriptor> channelDescriptors = createChannelDescriptors(fileInfo, valueRange, offsetInfo, attributeName, attributeUnit, isAzimuth, isMutes, error);
+
+  if (error.code)
+  {
+    OpenVDS::printError(printConfig, "Failed creating channel descriptors", error.string);
+    return EXIT_FAILURE;
+  }
 
   if (primaryKeyValue == PrimaryKeyValue::InlineNumber || primaryKeyValue == PrimaryKeyValue::CrosslineNumber)
   {
@@ -3717,7 +3879,7 @@ main(int argc, char* argv[])
     
     const auto segmentInfoListsSize = fileInfo.IsOffsetSorted() ? fileInfo.m_segmentInfoListsByOffset.size() : fileInfo.m_segmentInfoLists.size();
 
-    for (size_t fileIndex = 0; fileIndex < segmentInfoListsSize; ++fileIndex)
+    for (size_t fileIndex = 0; fileIndex < segmentInfoListsSize && error.code == 0; ++fileIndex)
     {
       auto result = chunkInfo.lowerUpperSegmentIndices.find(fileIndex);
       if (result == chunkInfo.lowerUpperSegmentIndices.end())
@@ -3742,7 +3904,7 @@ main(int argc, char* argv[])
       auto lower = segmentInfo.begin() + lowerSegmentIndex;
       auto upper = segmentInfo.begin() + upperSegmentIndex;
 
-      for (auto segment = lower; segment != upper; ++segment)
+      for (auto segment = lower; segment != upper && error.code == 0; ++segment)
       {
         int64_t firstTrace;
         if (fileInfo.IsUnbinned())
@@ -3767,7 +3929,7 @@ main(int argc, char* argv[])
 
         std::unique_ptr<GatherSpacing> gatherSpacing;
 
-        for (int64_t trace = firstTrace; trace <= segment->m_traceStop; trace++, tertiaryIndex++)
+        for (int64_t trace = firstTrace; trace <= segment->m_traceStop && error.code == 0; trace++, tertiaryIndex++)
         {
           if (!static_cast<bool>(gatherSpacing))
           {
@@ -3877,8 +4039,27 @@ main(int argc, char* argv[])
 
           {
             const int targetOffset = VoxelIndexToDataIndex(fileInfo, targetPrimaryIndex, targetSecondaryIndex, tertiaryIndex, chunkInfo.min, amplitudePitch);
-
-            copySamples(data, fileInfo.m_dataSampleFormatCode, fileInfo.m_headerEndianness, &reinterpret_cast<float*>(amplitudeBuffer)[targetOffset], chunkInfo.sampleStart, chunkInfo.sampleCount);
+            switch (fileInfo.m_dataSampleFormatCode)
+            {
+            case SEGY::BinaryHeader::DataSampleFormatCode::IBMFloat:
+            case SEGY::BinaryHeader::DataSampleFormatCode::IEEEFloat:
+            case SEGY::BinaryHeader::DataSampleFormatCode::UInt32:
+            case SEGY::BinaryHeader::DataSampleFormatCode::Int32:
+              copySamples<float>(fileInfo.m_headerEndianness, fileInfo.m_dataSampleFormatCode, &reinterpret_cast<float*>(amplitudeBuffer)[targetOffset], (const unsigned char*)data, chunkInfo.sampleStart, chunkInfo.sampleStart + chunkInfo.sampleCount);
+              break;
+            case SEGY::BinaryHeader::DataSampleFormatCode::UInt16:
+            case SEGY::BinaryHeader::DataSampleFormatCode::Int16:
+              copySamples<uint16_t>(fileInfo.m_headerEndianness, fileInfo.m_dataSampleFormatCode, &reinterpret_cast<uint16_t*>(amplitudeBuffer)[targetOffset], (const unsigned char*)data, chunkInfo.sampleStart, chunkInfo.sampleStart + chunkInfo.sampleCount);
+              break;
+            case SEGY::BinaryHeader::DataSampleFormatCode::UInt8:
+            case SEGY::BinaryHeader::DataSampleFormatCode::Int8:
+              copySamples<uint8_t>(fileInfo.m_headerEndianness, fileInfo.m_dataSampleFormatCode, &reinterpret_cast<uint8_t*>(amplitudeBuffer)[targetOffset], (const unsigned char*)data, chunkInfo.sampleStart, chunkInfo.sampleStart + chunkInfo.sampleCount);
+              break;
+            default:
+              error.code = -1;
+              error.string = fmt::format("Unknown input format {}.", SEGY::DataSampleFormatCodeToString(fileInfo.m_dataSampleFormatCode));
+              continue;
+            }
           }
 
           if (traceFlagBuffer)

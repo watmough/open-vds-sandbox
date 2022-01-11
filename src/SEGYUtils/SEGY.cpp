@@ -305,6 +305,29 @@ int FormatSize(BinaryHeader::DataSampleFormatCode dataSampleFormatCode)
   return 0;
 }
 
+const char* DataSampleFormatCodeToString(BinaryHeader::DataSampleFormatCode dataSampleFormatCode)
+{
+  switch (dataSampleFormatCode)
+  {
+  case BinaryHeader::DataSampleFormatCode::Unknown: return "Unknown";
+  case BinaryHeader::DataSampleFormatCode::IBMFloat: return "IBMFloat";
+  case BinaryHeader::DataSampleFormatCode::Int32: return "Int32";
+  case BinaryHeader::DataSampleFormatCode::Int16: return "Int16";
+  case BinaryHeader::DataSampleFormatCode::FixedPoint: return "FixedPoint";
+  case BinaryHeader::DataSampleFormatCode::IEEEFloat: return "IEEEFloat";
+  case BinaryHeader::DataSampleFormatCode::IEEEDouble: return "IEEEDouble";
+  case BinaryHeader::DataSampleFormatCode::Int24: return "Int24";
+  case BinaryHeader::DataSampleFormatCode::Int8: return "Int8";
+  case BinaryHeader::DataSampleFormatCode::Int64: return "Int64";
+  case BinaryHeader::DataSampleFormatCode::UInt32: return "UInt32";
+  case BinaryHeader::DataSampleFormatCode::UInt16: return "UInt16";
+  case BinaryHeader::DataSampleFormatCode::UInt64: return "UInt64";
+  case BinaryHeader::DataSampleFormatCode::UInt24: return "UInt24";
+  case BinaryHeader::DataSampleFormatCode::UInt8: return "UInt8";
+  }
+  return "";
+}
+
 bool
 IsSEGYTypeUnbinned(SEGYType segyType)
 {

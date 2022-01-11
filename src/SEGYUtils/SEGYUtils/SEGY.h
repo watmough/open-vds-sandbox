@@ -88,6 +88,8 @@ enum class DataSampleFormatCode
   UInt8      = 16  // 1-byte, unsigned integer
 };
 
+const char* DataSampleFormatCodeToString(DataSampleFormatCode code);
+
 enum class SortCode
 {
   Other                          = -1, // Other (should be explained in a user Extended Textual File Header stanza)
@@ -315,6 +317,7 @@ OPENVDS_EXPORT int ReadFieldFromHeader(const void *header, HeaderField const &he
 // Byte size of sample, returns 0 for invalid format
 
 OPENVDS_EXPORT int FormatSize(BinaryHeader::DataSampleFormatCode dataSampleFormatCode);
+OPENVDS_EXPORT const char* DataSampleFormatCodeToString(BinaryHeader::DataSampleFormatCode dataSampleFormatCode);
 
 enum class SampleUnits
 {
