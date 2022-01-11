@@ -302,6 +302,7 @@ def test_dimensions_and_produce_status(crossline_output_vds,
         assert crossline_spacing[1] == pytest.approx(scs_vectors[2][1])
 
 
+@pytest.mark.skip("--disable-crossline-input-reorder option was removed to minimize user confusion")
 @pytest.mark.parametrize("disable_crossline_ordering", [False, True])
 def test_volve_crossline_sorted(volve_crossline_sorted_segy, crossline_output_vds, disable_crossline_ordering: bool):
     """

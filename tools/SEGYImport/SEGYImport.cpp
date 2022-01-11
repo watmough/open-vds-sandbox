@@ -2079,7 +2079,7 @@ createChannelDescriptors(SEGYFileInfo const& fileInfo, OpenVDS::FloatRange const
 
   if (isAzimuthEnabled)
   {
-    channelDescriptors.emplace_back(OpenVDS::VolumeDataFormat::Format_R32, OpenVDS::VolumeDataComponents::Components_1, "Azimuth", "deg", FLT_MIN, FLT_MAX, OpenVDS::VolumeDataMapping::PerTrace, OpenVDS::VolumeDataChannelDescriptor::NoLossyCompression);
+    channelDescriptors.emplace_back(OpenVDS::VolumeDataFormat::Format_R32, OpenVDS::VolumeDataComponents::Components_1, "Azimuth", "deg", 0.0f, 360.0f, OpenVDS::VolumeDataMapping::PerTrace, OpenVDS::VolumeDataChannelDescriptor::NoLossyCompression);
   }
 
   if (isMuteEnabled)
@@ -2571,7 +2571,6 @@ main(int argc, char* argv[])
   options.add_option("", "", "azimuth-unit", std::string("Azimuth unit. Supported azimuth units are: ") + supportedAzimuthUnits + ".", cxxopts::value<std::string>(azimuthUnitString), "<string>");
   options.add_option("", "", "azimuth-scale", "Azimuth scale factor. Trace header field Azimuth values will be multiplied by this factor.", cxxopts::value<float>(azimuthScaleFactor), "<value>");
   options.add_option("", "", "respace-gathers", std::string("Respace traces in prestack gathers by Offset trace header field. Supported options are: ") + supportedTraceSpacingTypes + ".", cxxopts::value<std::string>(traceSpacingByOffsetString), "<string>");
-  options.add_option("", "", "disable-crossline-input-reorder", "Disable VDS chunk reordering for crossline-sorted SEGY. This option will probably reduce performance.", cxxopts::value<bool>(isDisableCrosslineReordering), "");
   options.add_option("", "q", "quiet", "Disable info level output.", cxxopts::value<bool>(disableInfo), "");
   options.add_option("", "Q", "very-quiet", "Disable warning level output.", cxxopts::value<bool>(disableWarning), "");
   options.add_option("", "h", "help", "Print this help information", cxxopts::value<bool>(help), "");
