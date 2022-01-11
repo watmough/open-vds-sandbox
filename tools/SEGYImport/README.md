@@ -34,6 +34,16 @@ SEGYImport [OPTION...] <input file>
 |     --persistentID \<ID>          | A globally unique ID for the VDS, usually an 8-digit hexadecimal number. |
 |     --uniqueID                    | Generate a new globally unique ID when scanning the input SEG-Y file. |
 |     --disable-persistentID        | Disable the persistentID usage, placing the VDS directly into the url location. |
+|     --attribute-name              | The name of the primary VDS channel. The name may be Amplitude (default), Attribute, Depth, Probability, Time, Vavg, Vint, or Vrms. |
+|     --attribute-unit              | The units of the primary VDS channel. The unit name may be blank (default), ft, ft/s, Hz, m, m/s, ms, or s. |
+|     --2d                          | Import 2D data. |
+|     --offset-sorted               | Import prestack data sorted by trace header Offset value. |
+|     --mute                        | Enable Mutes channel in output VDS. |
+|     --azimuth                     | Enable Azimuth channel in output VDS. |
+|     --azimuth-type                | Azimuth type. Supported types: Azimuth (from trace header field) (default), OffsetXY (computed from OffsetX and OffsetY header fields). |
+|     --azimuth-unit                | Azimuth unit. Supported azimuth units are: Radians, Degrees (default). |
+|     --azimuth-scale               | Azimuth scale factor. Trace header field Azimuth values will be multiplied by this factor. |
+|     --respace-gathers             | Respace sparse traces in prestack gathers by Offset trace header field. Supported options are: Off, On, Auto (default). |
 | -h, --help                        | Print this help information. |
 
 For more information about the ``--url`` and ``--url-connection`` parameter please see:
@@ -117,6 +127,11 @@ The default trace header fields (that can be overridden with a header format JSO
 | GroupXCoordinate        | Group-X, ReceiverXCoordinate, Receiver-X |  81    | 4     |
 | GroupYCoordinate        | Group-Y, ReceiverYCoordinate, Receiver-Y |  85    | 4     |
 | CoordinateScale         | Scalar                                   |  71    | 2     |
+| OffsetX                 |                                          |  97    | 2     |
+| OffsetY                 |                                          |  95    | 2     |
+| Azimuth                 |                                          |  61    | 4     |
+| MuteStartTime           |                                          | 111    | 2     |
+| MuteEndTime             |                                          | 113    | 2     |
 
 A valid ``--url`` an optional ``--connection`` argument and an
 input SEG-Y file must be specified.
