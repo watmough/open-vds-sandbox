@@ -2430,7 +2430,7 @@ class GatherSpacing
 public:
   GatherSpacing(int64_t firstTrace) : m_isRespace(false), m_firstTrace(firstTrace) {}
 
-  GatherSpacing(int64_t firstTrace, std::map<int64_t, int> traceIndices) : m_isRespace(true), m_firstTrace(firstTrace), m_traceIndices(std::move(traceIndices)) {}
+  GatherSpacing(int64_t firstTrace, std::unordered_map<int64_t, int> traceIndices) : m_isRespace(true), m_firstTrace(firstTrace), m_traceIndices(std::move(traceIndices)) {}
 
   int GetTertiaryIndex(int64_t traceNumber)
   {
@@ -2447,7 +2447,7 @@ public:
 private:
   bool       m_isRespace;
   int64_t    m_firstTrace;
-  std::map<int64_t, int>
+  std::unordered_map<int64_t, int>
     m_traceIndices;
 };
 
@@ -2498,10 +2498,10 @@ CalculateGatherSpacing(const SEGYFileInfo& fileInfo, const int fold, const std::
       gatherIndex = 0,
       offsetIndex = 0,
       tertiaryIndex = 0;
-    std::map<int64_t, int>
+    std::unordered_map<int64_t, int>
       traceIndices;
     auto
-      hasRoom = [&fold, &tertiaryIndex, &gatherOffsets, &gatherIndex]() { return (fold - tertiaryIndex) - (gatherOffsets.size() - gatherIndex) > 0; };
+      hasRoom = [&fold, &tertiaryIndex, &gatherOffsets, &gatherIndex]() { return (fold - tertiaryIndex) - (static_cast<int>(gatherOffsets.size()) - gatherIndex) > 0; };
     auto
       offsetAtIndex = [&globalOffsetValues](int index) { return globalOffsetValues[index]; };
 
@@ -3949,7 +3949,7 @@ main(int argc, char* argv[])
 
         for (int64_t trace = firstTrace; trace <= segment->m_traceStop && error.code == 0; trace++, tertiaryIndex++)
         {
-          if (!static_cast<bool>(gatherSpacing))
+          if (fileInfo.Is4D() && !static_cast<bool>(gatherSpacing))
           {
             // get the first GatherSpacing
             // (do it here instead of before the loop to handle the case where 'firstTrace' is past the segment)
@@ -3993,7 +3993,10 @@ main(int argc, char* argv[])
             tertiaryIndex = 0;
 
             // then get respace info for the next gather
-            gatherSpacing = CalculateGatherSpacing(fileInfo, fold, gatherOffsetValues, traceDataManager, traceSpacingByOffset, trace, printConfig);
+            if (fileInfo.Is4D())
+            {
+              gatherSpacing = CalculateGatherSpacing(fileInfo, fold, gatherOffsetValues, traceDataManager, traceSpacingByOffset, trace, printConfig);
+            }
           }
 
           int
@@ -4029,6 +4032,7 @@ main(int argc, char* argv[])
             }
             else
             {
+              assert(static_cast<bool>(gatherSpacing));
               tertiaryIndex = gatherSpacing->GetTertiaryIndex(trace);
 
               // sanity check the new index
