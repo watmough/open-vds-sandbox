@@ -47,6 +47,18 @@ def invalid_executor(prestack_segy, output_vds) -> Tuple[ImportExecutor, TempVDS
     return ex, output_vds
 
 
+@pytest.fixture
+def prestack_vds_baseline() -> str:
+    return "C:/temp/SEGY/t/ST0202R08_Gather_Time_baseline.vds"
+
+
+@pytest.fixture
+def auto_executor(prestack_segy, output_vds) -> Tuple[ImportExecutor, TempVDSGuard]:
+    """Setup an ImportExecutor with default respacing"""
+    ex = construct_respace_executor(output_vds, prestack_segy, None)
+    return ex, output_vds
+
+
 def get_gathers_stats(vds_filename: str) -> Tuple[int, int, int, int, int, int, int]:
     """
     Read all the gathers in a single inline and return stats on how many gathers have dead traces in various
@@ -196,3 +208,90 @@ def test_gather_spacing_off(off_executor):
 
     # There traces with duplicate offsets in this data, and the importer must preserve all those traces
     assert duplicate_offsets == 40
+
+
+@pytest.skip("Intended for cross-version validation; not useful for auto tests")
+def test_compare_to_prestack_baseline(auto_executor, prestack_vds_baseline):
+    ex, output_vds = auto_executor
+
+    result = ex.run()
+
+    assert result == 0, ex.output()
+    assert Path(output_vds.filename).exists()
+
+    with openvds.open(prestack_vds_baseline, "") as handle_baseline:
+        with openvds.open(output_vds.filename, "") as handle:
+            access_manager = openvds.getAccessManager(handle)
+            layout = openvds.getLayout(handle)
+
+            access_manager_baseline = openvds.getAccessManager(handle_baseline)
+            layout_baseline = openvds.getLayout(handle_baseline)
+
+            num_z = layout.getDimensionNumSamples(0)
+            fold = layout.getDimensionNumSamples(1)
+            num_crossline = layout.getDimensionNumSamples(2)
+            num_inline = layout.getDimensionNumSamples(3)
+
+            assert num_z == layout_baseline.getDimensionNumSamples(0)
+            assert fold == layout_baseline.getDimensionNumSamples(1)
+            assert num_crossline == layout_baseline.getDimensionNumSamples(2)
+            assert num_inline == layout_baseline.getDimensionNumSamples(3)
+
+            trace_channel = layout.getChannelIndex("Trace")
+            trace_channel_baseline = layout_baseline.getChannelIndex("Trace")
+            offset_channel = layout.getChannelIndex("Offset")
+            offset_channel_baseline = layout_baseline.getChannelIndex("Offset")
+
+            assert trace_channel > 0
+            assert trace_channel_baseline > 0
+            assert offset_channel > 0
+            assert offset_channel_baseline > 0
+
+            for inline_index in range(num_inline):
+                for crossline_index in range(num_crossline):
+                    voxel_min = (0, 0, crossline_index, inline_index, 0, 0)
+                    voxel_max = (num_z, fold, crossline_index + 1, inline_index + 1, 1, 1)
+                    trace_voxel_max = (1, fold, crossline_index + 1, inline_index + 1, 1, 1)
+
+                    request = access_manager.requestVolumeSubset(voxel_min, voxel_max,
+                                                                 channel=0,
+                                                                 format=openvds.VolumeDataChannelDescriptor.Format.Format_R32,
+                                                                 dimensionsND=openvds.DimensionsND.Dimensions_012)
+                    request_baseline = access_manager_baseline.requestVolumeSubset(voxel_min, voxel_max,
+                                                                                   channel=0,
+                                                                                   format=openvds.VolumeDataChannelDescriptor.Format.Format_R32,
+                                                                                   dimensionsND=openvds.DimensionsND.Dimensions_012)
+
+                    trace_flag_request = access_manager.requestVolumeSubset(voxel_min, trace_voxel_max,
+                                                                            channel=trace_channel,
+                                                                            format=openvds.VolumeDataChannelDescriptor.Format.Format_U8,
+                                                                            dimensionsND=openvds.DimensionsND.Dimensions_012)
+                    trace_flag_request_baseline = access_manager_baseline.requestVolumeSubset(voxel_min,
+                                                                                              trace_voxel_max,
+                                                                                              channel=trace_channel_baseline,
+                                                                                              format=openvds.VolumeDataChannelDescriptor.Format.Format_U8,
+                                                                                              dimensionsND=openvds.DimensionsND.Dimensions_012)
+
+                    offset_request = access_manager.requestVolumeSubset(voxel_min, trace_voxel_max,
+                                                                        channel=offset_channel,
+                                                                        format=openvds.VolumeDataChannelDescriptor.Format.Format_R32,
+                                                                        dimensionsND=openvds.DimensionsND.Dimensions_012)
+                    offset_request_baseline = access_manager_baseline.requestVolumeSubset(voxel_min, trace_voxel_max,
+                                                                                          channel=offset_channel_baseline,
+                                                                                          format=openvds.VolumeDataChannelDescriptor.Format.Format_R32,
+                                                                                          dimensionsND=openvds.DimensionsND.Dimensions_012)
+
+                    sample_data = request.data.reshape(fold, num_z)
+                    sample_data_baseline = request_baseline.data.reshape(fold, num_z)
+
+                    for trace_index in range(fold):
+                        assert trace_flag_request.data[trace_index] == trace_flag_request_baseline.data[trace_index], \
+                            f"trace index {trace_index}  xl index {crossline_index}  il index {inline_index}"
+                        assert offset_request.data[trace_index] == offset_request_baseline.data[trace_index], \
+                            f"trace index {trace_index}  xl index {crossline_index}  il index {inline_index}"
+
+                        if trace_flag_request.data[trace_index] != 0:
+                            for sample_index in range(num_z):
+                                assert sample_data[trace_index, sample_index] == sample_data_baseline[
+                                    trace_index, sample_index], \
+                                    f"sample index {sample_index}  trace index {trace_index}  xl index {crossline_index}  il index {inline_index}"
