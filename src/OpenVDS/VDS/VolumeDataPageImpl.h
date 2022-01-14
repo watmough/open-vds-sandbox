@@ -21,10 +21,12 @@
 #include <OpenVDS/VolumeDataAccess.h>
 
 #include "DataBlock.h"
+#include "DimensionGroup.h"
 
 #include <mutex>
 #include <vector>
 #include <atomic>
+#include <assert.h>
 
 namespace OpenVDS
 {
@@ -49,6 +51,7 @@ private:
   bool    m_isReadWrite;
   bool    m_isDirty;
   bool    m_requestPrepared;
+  int64_t m_jobID;
 
   mutable std::mutex
           m_mutex;
@@ -81,7 +84,7 @@ public:
   bool          IsWritten();
   void          MakeDirty();
 
-  void          SetBufferData(const DataBlock& dataBlock, int32_t(&pitch)[Dimensionality_Max], std::vector<uint8_t>&& blob, uint64_t hash);
+  void          SetBufferData(const DataBlock &dataBlock, DimensionGroup chunkDimensionGroup, bool is1Bit, std::vector<uint8_t>&& blob, uint64_t hash);
   void          WriteBack(VolumeDataLayer const *volumeDataLayer, std::unique_lock<std::mutex> &pageListMutexLock);
   void *        GetBufferInternal(int (&anPitch)[Dimensionality_Max], bool isReadWrite);
   void *        GetRawBufferInternal() { return m_blob.data(); }
@@ -90,6 +93,9 @@ public:
 
   void          SetRequestPrepared(bool prepared) { std::unique_lock<std::mutex> lock(m_mutex); m_requestPrepared = prepared; }
   bool          RequestPrepared() const { std::unique_lock<std::mutex> lock(m_mutex); return m_requestPrepared; }
+
+  void          SetJobID(int64_t jobID) { std::unique_lock<std::mutex> lock(m_mutex); assert(m_jobID == -1); m_jobID = jobID; }
+  int64_t       JobID() const { std::unique_lock<std::mutex> lock(m_mutex); return m_jobID; }
 
   bool          EnterSettingData() { std::unique_lock<std::mutex> lock(m_mutex); m_settingData++; return m_settingData == 1; }
   void          LeaveSettingData() { std::unique_lock<std::mutex> lock(m_mutex); m_settingData--; }

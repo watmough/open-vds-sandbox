@@ -49,6 +49,7 @@ VolumeDataPageAccessorImpl::VolumeDataPageAccessorImpl(VolumeDataAccessManagerIm
   , m_lastUsed(std::chrono::steady_clock::now())
 {
 }
+
 VolumeDataPageAccessorImpl::~VolumeDataPageAccessorImpl()
 {
   for (auto& page : m_pages)
@@ -215,29 +216,8 @@ VolumeDataPage* VolumeDataPageAccessorImpl::CreatePage(int64_t chunk)
     return nullptr;
   }
 
-  int pitchND[Dimensionality_Max] = {};
-
-  for(int chunkDimension = 0; chunkDimension < m_layer->GetChunkDimensionality(); chunkDimension++)
-  {
-    int dimension = DimensionGroupUtil::GetDimension(m_layer->GetChunkDimensionGroup(), chunkDimension);
-
-    assert(dimension >= 0 && dimension < Dimensionality_Max);
-    pitchND[dimension] = dataBlock.Pitch[chunkDimension];
-
-    // Convert pitch to bitpitch for 1-bit data
-    if(m_layer->GetFormat() == VolumeDataChannelDescriptor::Format_1Bit)
-    {
-      assert(chunkDimension > 0 || pitchND[dimension] == 1);
-
-      if(chunkDimension > 0)
-      {
-        pitchND[chunkDimension] *= 8;
-      }
-    }
-  }
-
   pageListMutexLock.lock();
-  page->SetBufferData(dataBlock, pitchND, std::move(page_data), uint64_t(volumeDataHash));
+  page->SetBufferData(dataBlock, m_layer->GetChunkDimensionGroup(), m_layer->GetFormat() == VolumeDataFormat::Format_1Bit, std::move(page_data), uint64_t(volumeDataHash));
   page->MakeDirty();
 
   m_pageReadCondition.notify_all();
@@ -298,7 +278,7 @@ VolumeDataPage* VolumeDataPageAccessorImpl::PrepareReadPage(int64_t chunk, Error
     }
   }
 
-  // Not found, we need to create a new page
+  // Not found, we need to create a new page,0
   VolumeDataPageImpl *page = new VolumeDataPageImpl(this, chunk);
 
   m_pages.push_front(page);
@@ -306,9 +286,21 @@ VolumeDataPage* VolumeDataPageAccessorImpl::PrepareReadPage(int64_t chunk, Error
   assert(page->IsPinned());
 
   VolumeDataChunk volumeDataChunk = m_layer->GetChunkFromIndex(chunk);
-  if (!m_accessManager->GetVolumeDataStore()->PrepareReadChunk(volumeDataChunk, m_layer->GetEffectiveWaveletAdaptiveLoadLevel(), error))
+
+  VolumeDataLayer const *remapFromLayer = m_layer->GetLayerToRemapFrom();
+
+  if(remapFromLayer != m_layer)
   {
-    page->SetError(error);
+    std::vector<VolumeDataChunk> volumeDataChunkRead;
+    remapFromLayer->GetChunksOverlappingChunk(volumeDataChunk, &volumeDataChunkRead);
+    page->SetJobID(m_accessManager->AddRemapJob(*page, volumeDataChunkRead));
+  }
+  else
+  {
+    if (!m_accessManager->GetVolumeDataStore()->PrepareReadChunk(volumeDataChunk, m_layer->GetEffectiveWaveletAdaptiveLoadLevel(), error))
+    {
+      page->SetError(error);
+    }
   }
 
   return page;
@@ -330,49 +322,71 @@ bool VolumeDataPageAccessorImpl::ReadPreparedPaged(VolumeDataPage* page)
       pageImpl->LeaveSettingData();
       return true;
     }
+
     Error error;
-    VolumeDataChunk volumeDataChunk = m_layer->GetChunkFromIndex(pageImpl->GetChunkIndex());
-    std::vector<uint8_t> serialized_data;
-    std::vector<uint8_t> metadata;
-    CompressionInfo compressionInfo;
+    bool success = false;
 
-    if (!m_accessManager->GetVolumeDataStore()->ReadChunk(volumeDataChunk, m_layer->GetEffectiveWaveletAdaptiveLoadLevel(), serialized_data, metadata, compressionInfo, error))
+    int64_t jobID = pageImpl->JobID();
+    if(jobID != -1)
     {
+      success = m_accessManager->WaitForCompletion(jobID);
+
+      if(!success)
+      {
+        bool canceled = m_accessManager->IsCanceled(jobID);
+        assert(canceled);
+
+        int errorCode = 0;
+        const char* errorString = nullptr;
+        m_accessManager->GetCurrentDownloadError(&errorCode, &errorString);
+        error.code = errorCode;
+        error.string = errorString ? errorString : "";
+
+        pageListMutexLock.lock();
+        pageImpl->SetError(error);
+        pageImpl->SetRequestPrepared(false);
+        pageImpl->LeaveSettingData();
+        m_pageReadCondition.notify_all();
+        //fprintf(stderr, "Failed when waiting for chunk: %s\n", error.string.c_str());
+        return false;
+      }
+    }
+    else
+    {
+      VolumeDataChunk volumeDataChunk = m_layer->GetChunkFromIndex(pageImpl->GetChunkIndex());
+      std::vector<uint8_t> serialized_data;
+      std::vector<uint8_t> metadata;
+      CompressionInfo compressionInfo;
+
+      if (!m_accessManager->GetVolumeDataStore()->ReadChunk(volumeDataChunk, m_layer->GetEffectiveWaveletAdaptiveLoadLevel(), serialized_data, metadata, compressionInfo, error))
+      {
+        pageListMutexLock.lock();
+        pageImpl->SetError(error);
+        pageImpl->SetRequestPrepared(false);
+        pageImpl->LeaveSettingData();
+        m_pageReadCondition.notify_all();
+        //fprintf(stderr, "Failed when waiting for chunk: %s\n", error.string.c_str());
+        return false;
+      }
+
+      std::vector<uint8_t> page_data;
+      uint64_t page_hash = VolumeDataHash::UNKNOWN;
+      DataBlock dataBlock;
+      if (!m_accessManager->GetVolumeDataStore()->DeserializeVolumeData(volumeDataChunk, serialized_data, metadata, compressionInfo.GetCompressionMethod(), compressionInfo.GetAdaptiveLevel(), m_layer->GetFormat(), dataBlock, page_data, page_hash, error))
+      {
+        pageListMutexLock.lock();
+        pageImpl->SetError(error);
+        pageImpl->SetRequestPrepared(false);
+        pageImpl->LeaveSettingData();
+        m_pageReadCondition.notify_all();
+        //fprintf(stderr, "Failed when deserializing chunk: %s\n", error.string.c_str());
+        return false;
+      }
+
       pageListMutexLock.lock();
-      pageImpl->SetError(error);
-      pageImpl->SetRequestPrepared(false);
-      pageImpl->LeaveSettingData();
-      m_pageReadCondition.notify_all();
-      //fprintf(stderr, "Failed when waiting for chunk: %s\n", error.string.c_str());
-      return false;
+      pageImpl->SetBufferData(dataBlock, m_layer->GetChunkDimensionGroup(), m_layer->GetFormat() == VolumeDataFormat::Format_1Bit, std::move(page_data), page_hash);
     }
 
-    std::vector<uint8_t> page_data;
-    uint64_t page_hash = VolumeDataHash::UNKNOWN;
-    DataBlock dataBlock;
-    if (!m_accessManager->GetVolumeDataStore()->DeserializeVolumeData(volumeDataChunk, serialized_data, metadata, compressionInfo.GetCompressionMethod(), compressionInfo.GetAdaptiveLevel(), m_layer->GetFormat(), dataBlock, page_data, page_hash, error))
-    {
-      pageListMutexLock.lock();
-      pageImpl->SetError(error);
-      pageImpl->SetRequestPrepared(false);
-      pageImpl->LeaveSettingData();
-      m_pageReadCondition.notify_all();
-      //fprintf(stderr, "Failed when deserializing chunk: %s\n", error.string.c_str());
-      return false;
-    }
-
-    int pitch[Dimensionality_Max] = {};
-
-    for (int chunkDimension = 0; chunkDimension < m_layer->GetChunkDimensionality(); chunkDimension++)
-    {
-      int dimension = DimensionGroupUtil::GetDimension(m_layer->GetChunkDimensionGroup(), chunkDimension);
-
-      assert(dimension >= 0 && dimension < Dimensionality_Max);
-      pitch[dimension] = dataBlock.Pitch[chunkDimension];
-    }
-
-    pageListMutexLock.lock();
-    pageImpl->SetBufferData(dataBlock, pitch, std::move(page_data), page_hash);
     m_pagesRead++;
     pageImpl->SetRequestPrepared(false);
     pageImpl->LeaveSettingData();
@@ -414,15 +428,23 @@ void VolumeDataPageAccessorImpl::CancelPreparedReadPage(VolumeDataPage* page)
 
   if (pageImpl->RequestPrepared())
   {
-    VolumeDataChunk volumeDataChunk = m_layer->GetChunkFromIndex(pageImpl->GetChunkIndex());
-    Error error;
-    m_accessManager->GetVolumeDataStore()->CancelReadChunk(volumeDataChunk, error);
-    if (error.code)
+    if(pageImpl->JobID() != -1)
     {
-      pageImpl->SetError(error);
+      m_accessManager->CancelAndWaitForCompletion(pageImpl->JobID());
     }
+    else
+    {
+      VolumeDataChunk volumeDataChunk = m_layer->GetChunkFromIndex(pageImpl->GetChunkIndex());
+      Error error;
+      m_accessManager->GetVolumeDataStore()->CancelReadChunk(volumeDataChunk, error);
+      if (error.code)
+      {
+        pageImpl->SetError(error);
+      }
+    }
+    pageImpl->SetRequestPrepared(false);
   }
-  pageImpl->SetRequestPrepared(false);
+
   pageImpl->LeaveSettingData();
   delete pageImpl;
   m_pageReadCondition.notify_all();

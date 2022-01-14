@@ -101,6 +101,7 @@ VolumeDataPageImpl::VolumeDataPageImpl(VolumeDataPageAccessorImpl* volumeDataPag
   , m_isReadWrite(false)
   , m_isDirty(false)
   , m_requestPrepared(true)
+  , m_jobID(-1)
   , m_chunksCopiedTo(0)
 {
   for (int32_t iDimension = 0; iDimension < Dimensionality_Max; iDimension++)
@@ -120,6 +121,7 @@ bool VolumeDataPageImpl::IsPinned()
   assert(m_pins >= 0);
   return m_pins > 0;
 }
+
 void VolumeDataPageImpl::Pin()
 {
   //assert(m_volumeDataPageAccessor->m_pageListMutex.isLockedByCurrentThread());
@@ -157,12 +159,31 @@ void VolumeDataPageImpl::MakeDirty()
   m_isDirty = true;
 }
 
-void VolumeDataPageImpl::SetBufferData(const DataBlock &dataBlock, int32_t (&pitchND)[Dimensionality_Max], std::vector<uint8_t>&& blob, uint64_t hash)
+void VolumeDataPageImpl::SetBufferData(const DataBlock &dataBlock, DimensionGroup chunkDimensionGroup, bool is1Bit, std::vector<uint8_t>&& blob, uint64_t hash)
 {
   //assert(m_volumeDataPageAccessor->m_pageListMutex.isLockedByCurrentThread());
   m_dataBlock = dataBlock;
-  static_assert(sizeof(pitchND) == sizeof(m_pitchND), "Pitch of different size");
-  memcpy(m_pitchND, pitchND, sizeof(m_pitchND));
+
+  memset(m_pitchND, 0, sizeof(m_pitchND));
+
+  const int chunkDimensionality =  DimensionGroupUtil::GetDimensionality(chunkDimensionGroup);
+
+  for(int chunkDimension = 0; chunkDimension < chunkDimensionality; chunkDimension++)
+  {
+    int dimension = DimensionGroupUtil::GetDimension(chunkDimensionGroup, chunkDimension);
+
+    assert(dimension >= 0 && dimension < Dimensionality_Max);
+    if(is1Bit && chunkDimension > 0)
+    {
+      // Convert pitch to bitpitch for 1-bit data
+      m_pitchND[dimension] = dataBlock.Pitch[chunkDimension] * 8;
+    }
+    else
+    {
+      m_pitchND[dimension] = dataBlock.Pitch[chunkDimension];
+    }
+  }
+
   m_blob = std::move(blob);
   m_hash = hash;
 }

@@ -131,6 +131,8 @@ public:
   void AddCopyPageJob(VolumeDataChunk& chunk, VolumeDataPageAccessorImpl& destination, VolumeDataPageAccessorImpl& source);
   void FlushCopyPageJobs();
 
+  int64_t AddRemapJob(VolumeDataPageImpl &targetPage, std::vector<VolumeDataChunk> const &sourceChunks);
+
   void AddUploadError(Error const &error, const std::string &url);
 
   void FlushUploadQueue(bool writeUpdatedLayerStatus = true) override;

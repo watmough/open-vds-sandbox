@@ -107,21 +107,21 @@ static int32_t CombineAndReduceDimensions (int32_t (&sourceSize  )[DataBlock::Di
     }
   }
 
-  assert(
-    (tmpOverlapSize[0] + tmpSourceOffset[0] <= tmpSourceSize[0]) &&
-    (tmpOverlapSize[1] + tmpSourceOffset[1] <= tmpSourceSize[1]) &&
-    (tmpOverlapSize[2] + tmpSourceOffset[2] <= tmpSourceSize[2]) &&
-    (tmpOverlapSize[3] + tmpSourceOffset[3] <= tmpSourceSize[3]) &&
-    (tmpOverlapSize[4] + tmpSourceOffset[4] <= tmpSourceSize[4]) &&
-    (tmpOverlapSize[5] + tmpSourceOffset[5] <= tmpSourceSize[5]) &&
-    (tmpOverlapSize[0] + tmpTargetOffset[0] <= tmpTargetSize[0]) &&
-    (tmpOverlapSize[1] + tmpTargetOffset[1] <= tmpTargetSize[1]) &&
-    (tmpOverlapSize[2] + tmpTargetOffset[2] <= tmpTargetSize[2]) &&
-    (tmpOverlapSize[3] + tmpTargetOffset[3] <= tmpTargetSize[3]) &&
-    (tmpOverlapSize[4] + tmpTargetOffset[4] <= tmpTargetSize[4]) &&
-    (tmpOverlapSize[5] + tmpTargetOffset[5] <= tmpTargetSize[5]) &&
-    "Invalid Copy Parameters #1"
-  );
+  if((tmpOverlapSize[0] + tmpSourceOffset[0] > tmpSourceSize[0]) ||
+     (tmpOverlapSize[1] + tmpSourceOffset[1] > tmpSourceSize[1]) ||
+     (tmpOverlapSize[2] + tmpSourceOffset[2] > tmpSourceSize[2]) ||
+     (tmpOverlapSize[3] + tmpSourceOffset[3] > tmpSourceSize[3]) ||
+     (tmpOverlapSize[4] + tmpSourceOffset[4] > tmpSourceSize[4]) ||
+     (tmpOverlapSize[5] + tmpSourceOffset[5] > tmpSourceSize[5]) ||
+     (tmpOverlapSize[0] + tmpTargetOffset[0] > tmpTargetSize[0]) ||
+     (tmpOverlapSize[1] + tmpTargetOffset[1] > tmpTargetSize[1]) ||
+     (tmpOverlapSize[2] + tmpTargetOffset[2] > tmpTargetSize[2]) ||
+     (tmpOverlapSize[3] + tmpTargetOffset[3] > tmpTargetSize[3]) ||
+     (tmpOverlapSize[4] + tmpTargetOffset[4] > tmpTargetSize[4]) ||
+     (tmpOverlapSize[5] + tmpTargetOffset[5] > tmpTargetSize[5]))
+  {
+    assert(0 && "Invalid Copy Parameters #1");
+  }
 
   int32_t nCopyDimensions = 0;
 
@@ -473,6 +473,300 @@ static void DispatchBlockCopy(VolumeDataChannelDescriptor::Format destinationFor
   }
 }
 
+template <typename T>
+inline void ClearElement(T *buffer, size_t element) { buffer[element] = 0; }
+template <typename T, int N>
+inline void ClearElement(Vector<T, N> *buffer, size_t element) { buffer[element] = Vector<T, N>(); }
+template <>
+inline void ClearElement(bool *buffer, size_t element) { reinterpret_cast<unsigned char *>(buffer)[element / 8] &= ~(1 << (element % 8)); }
+
+template <class TYPE>
+void
+FixupBorder(TYPE * buffer, int offset, const int (&pitch)[DataBlock::Dimensionality_Max], BorderMode borderMode, const int (&borderMin)[DataBlock::Dimensionality_Max], const int (&borderSize)[DataBlock::Dimensionality_Max], const int (&fixupSize)[DataBlock::Dimensionality_Max])
+{
+  for (int dim3 = 0; dim3 < borderSize[3]; dim3++)
+  {
+    for (int dim2 = 0; dim2 < borderSize[2]; dim2++)
+    {
+      for (int dim1 = 0; dim1 < borderSize[1]; dim1++)
+      {
+        for (int dim0 = 0; dim0 < borderSize[0]; dim0++)
+        {
+          int
+            writePos[DataBlock::Dimensionality_Max],
+            readPos[DataBlock::Dimensionality_Max];
+
+          writePos[0] = borderMin[0] + dim0;
+          writePos[1] = borderMin[1] + dim1;
+          writePos[2] = borderMin[2] + dim2;
+          writePos[3] = borderMin[3] + dim3;
+
+          int
+            writeOffset = dim0 * pitch[0] +
+                          dim1 * pitch[1] + 
+                          dim2 * pitch[2] + 
+                          dim3 * pitch[3] + offset;
+
+          if(borderMode == BorderMode::Clear)
+          {
+            ClearElement(buffer, writeOffset);
+            continue;
+          }
+          else if(borderMode == BorderMode::Mirror)
+          {
+            for (int i = 0; i < DataBlock::Dimensionality_Max; i++)
+            {
+              int
+                newPos = abs(writePos[i]) % (2 * fixupSize[i]);
+
+              if (newPos >= fixupSize[i])
+              {
+                newPos = 2 * fixupSize[i] - newPos - 1;
+              }
+
+              readPos[i] = newPos;
+            }
+          }
+          else if(borderMode == BorderMode::Repeat)
+          {
+            for (int i = 0; i < DataBlock::Dimensionality_Max; i++)
+            {
+              int
+                newPos = writePos[i];
+
+              if (newPos >= fixupSize[i])
+              {
+                newPos = fixupSize[i] - 1;
+              }
+              else if (newPos < 0)
+              {
+                newPos = 0;
+              }
+
+              readPos[i] = newPos;
+            }
+          }
+
+          int
+            readOffset = (readPos[0] - borderMin[0]) * pitch[0] +
+                         (readPos[1] - borderMin[1]) * pitch[1] + 
+                         (readPos[2] - borderMin[2]) * pitch[2] + 
+                         (readPos[3] - borderMin[3]) * pitch[3] + offset;
+
+          WriteElement(buffer, writeOffset, ReadElement(buffer, readOffset));
+        }
+      }
+    }
+  }
+}
+
+static void
+FixupBorder(DataBlock const &dataBlock, void *buffer, VolumeDataFormat format, VolumeDataComponents components, BorderMode borderMode, const int (&borderNegativeRadius)[6], const int (&borderPositiveRadius)[6], const int (&layoutMin)[6], const int (&layoutSize)[6], const int (&layoutDimension)[DataBlock::Dimensionality_Max])
+{
+  int validOffset = 0; // Offset in elements of valid area inside datablock
+
+  int pitch[DataBlock::Dimensionality_Max];
+  int fixupMin[DataBlock::Dimensionality_Max];
+  int fixupSize[DataBlock::Dimensionality_Max];
+  int validMin[DataBlock::Dimensionality_Max];
+  int validSize[DataBlock::Dimensionality_Max];
+
+  for(int dataBlockDimension = 0; dataBlockDimension < DataBlock::Dimensionality_Max; dataBlockDimension++)
+  {
+    pitch[dataBlockDimension] = dataBlock.Pitch[dataBlockDimension];
+    if(format == VolumeDataFormat::Format_1Bit && dataBlockDimension > 0)
+    {
+      pitch[dataBlockDimension] *= 8;
+    }
+
+    // Get fixup min/size
+    if(layoutDimension[dataBlockDimension] >= 0)
+    {
+      assert(layoutDimension[dataBlockDimension] < 6);
+      fixupMin[dataBlockDimension] = layoutMin[layoutDimension[dataBlockDimension]];
+      fixupSize[dataBlockDimension] = layoutSize[layoutDimension[dataBlockDimension]];
+    }
+    else
+    {
+      fixupMin[dataBlockDimension] = 0;
+      fixupSize[dataBlockDimension] = 1;
+    }
+
+    // Calculate valid min/size
+    if(fixupMin[dataBlockDimension] < 0)
+    {
+      validMin[dataBlockDimension] = 0;
+      validOffset += -layoutMin[layoutDimension[dataBlockDimension]] * pitch[dataBlockDimension];
+    }
+    else
+    {
+      validMin[dataBlockDimension] = fixupMin[dataBlockDimension];
+    }
+
+    validSize[dataBlockDimension] = std::min(fixupSize[dataBlockDimension], fixupMin[dataBlockDimension] + dataBlock.Size[dataBlockDimension]) - validMin[dataBlockDimension];
+  }
+
+  for(int fixupDimension = 0; fixupDimension < DataBlock::Dimensionality_Max; /* fixupDimension is increased at the end if no fixup was needed for this dimension */)
+  {
+    bool
+      needsFixup = false;
+
+    int borderMin[DataBlock::Dimensionality_Max];
+    int borderSize[DataBlock::Dimensionality_Max];
+
+    if(fixupMin[fixupDimension] < validMin[fixupDimension])
+    {
+      for(int dimension = 0; dimension < DataBlock::Dimensionality_Max; dimension++)
+      {
+        if(dimension == fixupDimension)
+        {
+          borderMin[dimension] = fixupMin[dimension];
+          borderSize[dimension] = validMin[dimension] - fixupMin[dimension];
+        }
+        else
+        {
+          borderMin[dimension] = validMin[dimension];
+          borderSize[dimension] = validSize[dimension];
+        }
+      }
+
+      needsFixup = true;
+    }
+    else if(dataBlock.Size[fixupDimension] > validSize[fixupDimension])
+    {
+      assert(fixupMin[fixupDimension] == validMin[fixupDimension] && "We should already have fixed up the negative side");
+      for(int dimension = 0; dimension < DataBlock::Dimensionality_Max; dimension++)
+      {
+        if(dimension == fixupDimension)
+        {
+          borderMin[dimension] = fixupSize[fixupDimension];
+          borderSize[dimension] = dataBlock.Size[fixupDimension] - validSize[fixupDimension];
+        }
+        else
+        {
+          borderMin[dimension] = validMin[dimension];
+          borderSize[dimension] = validSize[dimension];
+        }
+      }
+
+      needsFixup = true;
+    }
+
+    if(needsFixup)
+    {
+      int borderOffset = validOffset + (borderMin[fixupDimension] - validMin[fixupDimension]) * pitch[fixupDimension];
+
+      switch(components)
+      {
+      case VolumeDataComponents::Components_1:
+        switch(format)
+        {
+        case VolumeDataFormat::Format_1Bit:
+          FixupBorder((bool *)buffer, borderOffset, pitch, borderMode, borderMin, borderSize, fixupSize);
+          break;
+        case VolumeDataFormat::Format_U8:
+          FixupBorder((uint8_t *)buffer, borderOffset, pitch, borderMode, borderMin, borderSize, fixupSize);
+          break;
+        case VolumeDataFormat::Format_U16:
+          FixupBorder((uint16_t *)buffer, borderOffset, pitch, borderMode, borderMin, borderSize, fixupSize);
+          break;
+        case VolumeDataFormat::Format_R32:
+          FixupBorder((float *)buffer, borderOffset, pitch, borderMode, borderMin, borderSize, fixupSize);
+          break;
+        case VolumeDataFormat::Format_U32:
+          FixupBorder((uint32_t *)buffer, borderOffset, pitch, borderMode, borderMin, borderSize, fixupSize);
+          break;
+        case VolumeDataFormat::Format_R64:
+          FixupBorder((double *)buffer, borderOffset, pitch, borderMode, borderMin, borderSize, fixupSize);
+          break;
+        case VolumeDataFormat::Format_U64:
+          FixupBorder((uint64_t *)buffer, borderOffset, pitch, borderMode, borderMin, borderSize, fixupSize);
+          break;
+        default:
+          throw std::runtime_error("Illegal datablock format");
+        }
+        break;
+
+      case VolumeDataComponents::Components_2:
+        switch(format)
+        {
+        case VolumeDataFormat::Format_1Bit:
+          assert(0 && "Fixup is not implemented for multi-component 1-bit data");
+          break;
+        case VolumeDataFormat::Format_U8:
+          FixupBorder((Vector<uint8_t,2> *)buffer, borderOffset, pitch, borderMode, borderMin, borderSize, fixupSize);
+          break;
+        case VolumeDataFormat::Format_U16:
+          FixupBorder((Vector<uint16_t,2> *)buffer, borderOffset, pitch, borderMode, borderMin, borderSize, fixupSize);
+          break;
+        case VolumeDataFormat::Format_R32:
+          FixupBorder((Vector<float,2> *)buffer, borderOffset, pitch, borderMode, borderMin, borderSize, fixupSize);
+          break;
+        case VolumeDataFormat::Format_U32:
+          FixupBorder((Vector<uint32_t,2> *)buffer, borderOffset, pitch, borderMode, borderMin, borderSize, fixupSize);
+          break;
+        case VolumeDataFormat::Format_R64:
+          FixupBorder((Vector<double,2> *)buffer, borderOffset, pitch, borderMode, borderMin, borderSize, fixupSize);
+          break;
+        case VolumeDataFormat::Format_U64:
+          FixupBorder((Vector<uint64_t,2> *)buffer, borderOffset, pitch, borderMode, borderMin, borderSize, fixupSize);
+          break;
+        default:
+          throw std::runtime_error("Illegal datablock format");
+        }
+        break;
+
+      case VolumeDataComponents::Components_4:
+        switch(format)
+        {
+        case VolumeDataFormat::Format_1Bit:
+          assert(0 && "Fixup is not implemented for multi-component 1-bit data");
+          break;
+        case VolumeDataFormat::Format_U8:
+          FixupBorder((Vector<uint8_t,4> *)buffer, borderOffset, pitch, borderMode, borderMin, borderSize, fixupSize);
+          break;
+        case VolumeDataFormat::Format_U16:
+          FixupBorder((Vector<uint16_t,4> *)buffer, borderOffset, pitch, borderMode, borderMin, borderSize, fixupSize);
+          break;
+        case VolumeDataFormat::Format_R32:
+          FixupBorder((Vector<float,4> *)buffer, borderOffset, pitch, borderMode, borderMin, borderSize, fixupSize);
+          break;
+        case VolumeDataFormat::Format_U32:
+          FixupBorder((Vector<uint32_t,4> *)buffer, borderOffset, pitch, borderMode, borderMin, borderSize, fixupSize);
+          break;
+        case VolumeDataFormat::Format_R64:
+          FixupBorder((Vector<double,4> *)buffer, borderOffset, pitch, borderMode, borderMin, borderSize, fixupSize);
+          break;
+        case VolumeDataFormat::Format_U64:
+          FixupBorder((Vector<uint64_t,4> *)buffer, borderOffset, pitch, borderMode, borderMin, borderSize, fixupSize);
+          break;
+        default:
+          throw std::runtime_error("Illegal datablock format");
+        }
+        break;
+
+      default:
+        throw std::runtime_error("Illegal number of datablock components");
+      }
+
+      // Increase valid size
+      if(validMin[fixupDimension] > borderMin[fixupDimension])
+      {
+        assert(validMin[fixupDimension] - borderMin[fixupDimension] == borderSize[fixupDimension]);
+        validMin[fixupDimension] = borderMin[fixupDimension];
+        validOffset -= borderSize[fixupDimension] * pitch[fixupDimension];
+      }
+      validSize[fixupDimension] += borderSize[fixupDimension];
+    }
+    else
+    {
+      // This dimension is valid, go to next dimension
+      assert(validSize[fixupDimension] == dataBlock.Size[fixupDimension]);
+      fixupDimension++;
+    }
+  }
+}
+
 static bool RequestSubsetProcessPage(VolumeDataPageImpl* page, const VolumeDataChunk &chunk, const int32_t (&destMin)[Dimensionality_Max], const int32_t (&destMax)[Dimensionality_Max], VolumeDataChannelDescriptor::Format destinationFormat, const ConversionParameters &conversionParameters, void *destBuffer, Error &error)
 {
   int32_t sourceMin[Dimensionality_Max];
@@ -608,6 +902,344 @@ int64_t VolumeDataRequestProcessor::RequestVolumeSubset(void *buffer, VolumeData
   ConversionParameters conversionParameters = makeConversionParameters(volumeDataLayer, isReplaceNoValue, replacementNoValue);
 
   return AddJob(chunksInRegion, [boxRequested, buffer, format, conversionParameters](VolumeDataPageImpl* page, VolumeDataChunk dataChunk, Error &error) {return RequestSubsetProcessPage(page, dataChunk, boxRequested.min, boxRequested.max, format, conversionParameters, buffer, error);}, format == VolumeDataChannelDescriptor::Format_1Bit);
+}
+
+int64_t VolumeDataRequestProcessor::RequestRemap(VolumeDataPageImpl& targetPage, std::vector<VolumeDataChunk> const &sourceChunks)
+{
+  class SharedData
+  {
+  public:
+    std::mutex m_mutex;
+    uint64_t   m_volumeDataHash;
+    uint64_t   m_constantValueHash;
+    int        m_chunksProcessed;
+    const int  m_totalChunks;
+    std::vector<uint8_t>
+               m_buffer;
+    SharedData(int totalChunks) : m_volumeDataHash(VolumeDataHash::UNKNOWN), m_constantValueHash(VolumeDataHash::UNKNOWN), m_chunksProcessed(0), m_totalChunks(totalChunks) {}
+  };
+
+  VolumeDataChunk targetDataChunk = static_cast<VolumeDataPageAccessorImpl&>(targetPage.GetVolumeDataPageAccessor()).GetLayer()->GetChunkFromIndex(targetPage.GetChunkIndex());
+
+  int32_t size[4];
+  targetDataChunk.layer->GetChunkVoxelSize(targetDataChunk.index, size);
+  DataBlock targetDataBlock;
+  Error error;
+
+  if (!InitializeDataBlock(targetDataChunk.layer->GetFormat(), targetDataChunk.layer->GetComponents(), (enum DataBlock::Dimensionality)(targetDataChunk.layer->GetChunkDimensionality()), size, targetDataBlock, error))
+  {
+    throw std::runtime_error(error.string);
+  }
+
+  int32_t allocatedSize = GetAllocatedByteSize(targetDataBlock);
+  auto sharedData = std::make_shared<SharedData>(int(sourceChunks.size()));
+  sharedData->m_buffer.resize(allocatedSize);
+
+  return AddJob(sourceChunks, [&targetPage, targetDataChunk, targetDataBlock, sharedData](VolumeDataPageImpl* sourcePage, VolumeDataChunk sourceDataChunk, Error &error) -> bool
+  {
+    VolumeDataLayer const *sourceLayer = sourceDataChunk.layer;
+    VolumeDataLayer const *targetLayer = targetDataChunk.layer;
+    assert(sourceLayer->GetFormat() == targetLayer->GetFormat() && "Cannot remap between layers with different format");
+    assert(sourceLayer->GetComponents() == targetLayer->GetComponents() && "Cannot remap between layers with different number of components");
+    assert(sourceLayer->GetVolumeDataChannelMapping() == targetLayer->GetVolumeDataChannelMapping() && "Cannot remap between layers with different mappings");
+
+    ConversionParameters conversionParameters = makeConversionParameters(sourceLayer, false, 0.0f);
+
+    int LOD = targetLayer->GetLOD();
+
+    int targetMin[Dimensionality_Max];
+    int targetMax[Dimensionality_Max];
+    int targetMinExcludingMargin[Dimensionality_Max];
+    int targetMaxExcludingMargin[Dimensionality_Max];
+
+    targetPage.GetMinMax(targetMin, targetMax);
+    targetPage.GetMinMaxExcludingMargin(targetMinExcludingMargin, targetMaxExcludingMargin);
+
+    // Determine the region required to cover the target including margin
+    int regionMin[Dimensionality_Max];
+    int regionMax[Dimensionality_Max];
+
+    for(int dimension = 0; dimension < Dimensionality_Max; dimension++)
+    {
+      int neededExtraValidVoxelsNegative = 0;
+      int neededExtraValidVoxelsPositive = 0;
+
+      // Do we have a render margin in this dimension?
+      if(DimensionGroupUtil::IsDimensionInGroup(targetLayer->GetOriginalDimensionGroup(), dimension))
+      {
+        // Can we copy from source's render margin in this dimension?
+        if(DimensionGroupUtil::IsDimensionInGroup(sourceLayer->GetOriginalDimensionGroup(), dimension))
+        {
+          neededExtraValidVoxelsNegative = std::max(0, targetLayer->GetNegativeRenderMargin() - sourceLayer->GetNegativeRenderMargin());
+          neededExtraValidVoxelsPositive = std::max(0, targetLayer->GetPositiveRenderMargin() - sourceLayer->GetPositiveRenderMargin());
+        }
+        else
+        {
+          neededExtraValidVoxelsNegative = targetLayer->GetNegativeRenderMargin();
+          neededExtraValidVoxelsPositive = targetLayer->GetPositiveRenderMargin();
+        }
+      }
+
+      neededExtraValidVoxelsNegative += targetLayer->GetNegativeMargin(dimension) - sourceLayer->GetNegativeMargin(dimension),
+      neededExtraValidVoxelsPositive += targetLayer->GetPositiveMargin(dimension) - sourceLayer->GetPositiveMargin(dimension);
+
+      regionMin[dimension] = targetMinExcludingMargin[dimension] - std::max(0, neededExtraValidVoxelsNegative),
+      regionMax[dimension] = targetMaxExcludingMargin[dimension] + std::max(0, neededExtraValidVoxelsPositive);
+
+      // Limit the valid area so it doesn't extend into the border
+      regionMin[dimension] = std::max(regionMin[dimension], targetLayer->GetDimensionFirstSample(dimension));
+      regionMax[dimension] = std::min(regionMax[dimension], targetLayer->GetDimensionFirstSample(dimension) + targetLayer->GetDimensionNumSamples(dimension));
+    }
+
+    // Calculate overlapping region
+    int sourceMin[Dimensionality_Max];
+    int sourceMax[Dimensionality_Max];
+    int sourceMinExcludingMargin[Dimensionality_Max];
+    int sourceMaxExcludingMargin[Dimensionality_Max];
+
+    int overlapMin[Dimensionality_Max];
+    int overlapMax[Dimensionality_Max];
+
+    sourcePage->GetMinMax(sourceMin, sourceMax);
+    sourcePage->GetMinMaxExcludingMargin(sourceMinExcludingMargin, sourceMaxExcludingMargin);
+
+    bool valid = true;
+
+    for(int dimension = 0; dimension < Dimensionality_Max; dimension++)
+    {
+      int sourceMinOverlap = sourceMin[dimension];
+      int sourceMaxOverlap = sourceMax[dimension];
+
+      // Only copy margins from source at TARGETS margins
+      if (sourceMinExcludingMargin[dimension] > regionMin[dimension])
+      {
+        sourceMinOverlap = sourceMinExcludingMargin[dimension];
+      }
+
+      if (sourceMaxExcludingMargin[dimension] < regionMax[dimension])
+      {
+        sourceMaxOverlap = sourceMaxExcludingMargin[dimension];
+      }
+
+      overlapMin[dimension] = std::max(targetMin[dimension], sourceMinOverlap);
+      overlapMax[dimension] = std::min(targetMax[dimension], sourceMaxOverlap);
+
+      if(overlapMin[dimension] >= overlapMax[dimension])
+      {
+        valid = false;
+      }
+    }
+
+    int offsetTarget[Dimensionality_Max];
+    int offsetSource[Dimensionality_Max];
+    int globalOverlapSize[Dimensionality_Max];
+
+    for(int dimension = 0; dimension < Dimensionality_Max; dimension++)
+    {
+      if (targetLayer->IsDimensionLODDecimated(dimension))
+      {
+        bool
+          includePartialUpperVoxel = (sourceMaxExcludingMargin[dimension] >= regionMax[dimension]);
+
+        offsetTarget[dimension] = (overlapMin[dimension] - targetMin[dimension]) >> LOD;
+        offsetSource[dimension] = (overlapMin[dimension] - sourceMin[dimension]) >> LOD;
+        globalOverlapSize[dimension]  = GetLODSize(overlapMin[dimension], overlapMax[dimension], LOD, includePartialUpperVoxel);
+      }
+      else
+      {
+        offsetTarget[dimension] = (overlapMin[dimension] - targetMin[dimension]);
+        offsetSource[dimension] = (overlapMin[dimension] - sourceMin[dimension]);
+        globalOverlapSize[dimension]  = (overlapMax[dimension] - overlapMin[dimension]);
+      }
+      assert(offsetTarget[dimension] >= 0);
+      assert(offsetSource[dimension] >= 0);
+      assert(globalOverlapSize[dimension] > 0 && "If there is no overlap it should have been caught earlier");
+    }
+
+    assert(valid && "Don't try to copy datablock area if there is no overlap");
+    if(!valid) return true;
+
+    // Update hash
+    VolumeDataHash sourceHash(sourcePage->GetVolumeDataHash());
+    HashCombiner hashCombiner(sourceHash);
+
+    for(int dimension = 0; dimension < Dimensionality_Max; dimension++)
+    {
+      hashCombiner.Add(offsetSource[dimension]);
+      hashCombiner.Add(offsetTarget[dimension]);
+      hashCombiner.Add(globalOverlapSize[dimension]);
+    }
+
+    std::unique_lock<std::mutex> sharedDataLock(sharedData->m_mutex);
+
+    sharedData->m_volumeDataHash ^= hashCombiner.GetCombinedHash();
+
+    // Check if all items are constant
+    if(sourceHash.IsConstant() && sharedData->m_chunksProcessed == 0)
+    {
+      sharedData->m_constantValueHash = uint64_t(sourceHash);
+    }
+    else if(!sourceHash.IsConstant() || sharedData->m_constantValueHash != uint64_t(sourceHash))
+    {
+      sharedData->m_constantValueHash = VolumeDataHash::UNKNOWN;
+      sharedDataLock.unlock();
+    }
+
+    DimensionGroup sourceDimensionGroup = sourceLayer->GetChunkDimensionGroup();
+    DimensionGroup targetDimensionGroup = targetLayer->GetChunkDimensionGroup();
+
+    int globalSourceSize[Dimensionality_Max];
+
+    for(int dimension = 0, chunkDimension = 0; dimension < Dimensionality_Max; dimension++)
+    {
+      if(dimension == DimensionGroupUtil::GetDimension(sourceLayer->GetChunkDimensionGroup(), chunkDimension))
+      {
+        globalSourceSize[dimension] = sourcePage->GetDataBlock().AllocatedSize[chunkDimension++];
+      }
+      else
+      {
+        globalSourceSize[dimension] = 1;
+      }
+    }
+
+    int globalTargetSize[Dimensionality_Max];
+
+    for(int dimension = 0, chunkDimension = 0; dimension < Dimensionality_Max; dimension++)
+    {
+      if(dimension == DimensionGroupUtil::GetDimension(targetLayer->GetChunkDimensionGroup(), chunkDimension))
+      {
+        globalTargetSize[dimension] = targetDataBlock.AllocatedSize[chunkDimension++];
+      }
+      else
+      {
+        globalTargetSize[dimension] = 1;
+      }
+    }
+
+    // Convert byte size to bitsize for 1-bit data
+    if(sourceLayer->GetFormat() == VolumeDataChannelDescriptor::Format_1Bit)
+    {
+      globalSourceSize[0] *= 8;
+      globalTargetSize[0] *= 8;
+    }
+
+    int32_t sourceSize[DataBlock::Dimensionality_Max];
+    int32_t sourceOffset[DataBlock::Dimensionality_Max];
+    int32_t targetSize[DataBlock::Dimensionality_Max];
+    int32_t targetOffset[DataBlock::Dimensionality_Max];
+    int32_t overlapSize[DataBlock::Dimensionality_Max];
+
+    int32_t copyDimensions = CombineAndReduceDimensions(sourceSize, sourceOffset, targetSize, targetOffset, overlapSize, globalSourceSize, offsetSource, globalTargetSize, offsetTarget, globalOverlapSize);
+    (void) copyDimensions;
+
+    // Multiply sizes and offsets by number of components since BlockCopy is not component-aware
+    if(sourceLayer->GetComponents() > 1)
+    {
+      sourceSize  [0] *= int(targetLayer->GetComponents());
+      sourceOffset[0] *= int(targetLayer->GetComponents());
+      targetSize  [0] *= int(targetLayer->GetComponents());
+      targetOffset[0] *= int(targetLayer->GetComponents());
+      overlapSize [0] *= int(targetLayer->GetComponents());
+    }
+
+    DispatchBlockCopy(targetLayer->GetFormat(), sharedData->m_buffer.data(), targetOffset, targetSize,
+                      sourceLayer->GetFormat(), sourcePage->GetRawBufferInternal(), sourceOffset, sourceSize,
+                      overlapSize, conversionParameters);
+
+    sharedDataLock.lock();
+    if(++sharedData->m_chunksProcessed == sharedData->m_totalChunks)
+    {
+      sharedDataLock.unlock(); // At this point we have exclusive access to the sharedData since this is the last page
+
+      bool
+        needsBorderFixup = false;
+
+      HashCombiner
+        borderHashCombiner;
+
+      if(targetLayer->GetBorderMode() != BorderMode::None)
+      {
+        borderHashCombiner.Add(targetLayer->GetBorderMode());
+        for (int i = 0; i < Dimensionality_Max; i++)
+        {
+          int firstSample = targetLayer->GetDimensionFirstSample(i);
+
+          if(targetMin[i] - firstSample < 0)
+          {
+            borderHashCombiner.Add(targetMin[i] - firstSample);
+            needsBorderFixup = true;
+          }
+          if(targetMax[i] - firstSample > targetLayer->GetDimensionNumSamples(i))
+          {
+            borderHashCombiner.Add(targetMax[i] - firstSample - targetLayer->GetDimensionNumSamples(i));
+            needsBorderFixup = true;
+          }
+          borderHashCombiner.Add(i);
+        }
+      }
+
+      if(needsBorderFixup)
+      {
+        sharedData->m_volumeDataHash = sharedData->m_volumeDataHash ^ borderHashCombiner.GetCombinedHash();
+
+        int subsetTargetMin[Dimensionality_Max];
+        int subsetTargetMax[Dimensionality_Max];
+
+        for (int i = 0; i < Dimensionality_Max; i++)
+        {
+          int firstSample = targetLayer->GetDimensionFirstSample(i);
+
+          subsetTargetMin[i] = targetMin[i] - firstSample;
+          subsetTargetMax[i] = targetMax[i] - firstSample;
+        }
+
+        int layoutDimension[DataBlock::Dimensionality_Max];
+
+        int borderNegativeRadius[Dimensionality_Max];
+        int borderPositiveRadius[Dimensionality_Max];
+        int layoutMin[Dimensionality_Max];
+        int layoutSize[Dimensionality_Max];
+
+        for (int i = 0; i < DataBlock::Dimensionality_Max; i++)
+        {
+          layoutDimension[i] = targetLayer->GetChunkDimension(i);
+        }
+
+        // get correct values based on LOD to send to the datablock, because datablock doesn't know about LOD
+        for (int i = 0; i < Dimensionality_Max; i++)
+        {
+          int windowLODFactor = 1;
+
+          if (targetLayer->IsDimensionLODDecimated(i))
+          {
+            windowLODFactor = 1 << LOD;
+          }
+
+          borderNegativeRadius[i] = targetLayer->GetNegativeBorder(i) / windowLODFactor;
+          borderPositiveRadius[i] = targetLayer->GetPositiveBorder(i) / windowLODFactor;
+
+          int minWithoutBorder = subsetTargetMin[i] + targetLayer->GetNegativeBorder(i);
+          assert(minWithoutBorder >= 0);
+
+          if (targetLayer->GetLayout()->IsDimensionLODDecimated(i))
+          {
+            layoutMin[i] = (minWithoutBorder >> LOD) - borderNegativeRadius[i];
+            layoutSize[i] = (targetLayer->GetDimensionNumSamples(i) + (1 << LOD) - 1) >> LOD;
+          }
+          else
+          {
+            layoutMin[i] = minWithoutBorder - borderNegativeRadius[i];
+            layoutSize[i] = targetLayer->GetDimensionNumSamples(i);
+          }
+        }
+
+        FixupBorder(targetDataBlock, sharedData->m_buffer.data(), targetLayer->GetFormat(), targetLayer->GetComponents(), targetLayer->GetBorderMode(), borderNegativeRadius, borderPositiveRadius, layoutMin, layoutSize, layoutDimension);
+      }
+
+      targetPage.SetBufferData(targetDataBlock, targetLayer->GetChunkDimensionGroup(), targetLayer->GetFormat() == VolumeDataFormat::Format_1Bit, std::move(sharedData->m_buffer), VolumeDataHash(sharedData->m_constantValueHash).IsConstant() ? sharedData->m_constantValueHash : sharedData->m_volumeDataHash);
+    }
+    return true;
+  });
 }
 
 struct ProjectVars
@@ -1872,21 +2504,31 @@ int64_t VolumeDataRequestProcessor::AddJob(const std::vector<VolumeDataChunk>& c
 
   pageAccessor->AddReference();
 
-  m_jobs.emplace_back(new Job(GenJobId(), m_pageAccessorNotifier, *pageAccessor, int(chunks.size())));
-  auto &job = m_jobs.back();
+  // AddJob can become re-entrant when calling PrepareReadPage so we release the lock while preparing the pages
+  lock.unlock();
+  std::vector<JobPage> pages;
+  pages.reserve(chunks.size());
+  Error completedError;
+  bool cancelled = false;
 
-  job->pages.reserve(chunks.size());
-  job->future.reserve(chunks.size());
   for (const auto &c : chunks)
   {
-    job->pages.emplace_back(static_cast<VolumeDataPageImpl *>(pageAccessor->PrepareReadPage(c.index, job->completedError)), c);
-    if (!job->pages.back().page)
+    pages.emplace_back(static_cast<VolumeDataPageImpl *>(pageAccessor->PrepareReadPage(c.index, completedError)), c);
+    if (!pages.back().page)
     {
-      job->cancelled = true;
+      cancelled = true;
       break;
     }
   }
-  job->pagesCount = int(job->pages.size());
+  lock.lock();
+
+  Job *job = new Job(GenJobId(), m_pageAccessorNotifier, *pageAccessor, int(chunks.size()));
+  m_jobs.emplace_back(job);
+
+  job->pagesCount = int(pages.size());
+  job->pages = std::move(pages);
+  job->completedError = completedError;
+  job->cancelled = cancelled;
 
   if (job->cancelled)
   {
@@ -1903,29 +2545,29 @@ int64_t VolumeDataRequestProcessor::AddJob(const std::vector<VolumeDataChunk>& c
     return job->jobId;
   }
 
+  job->future.reserve(chunks.size());
   if (singleThread)
   {
-    auto job_ptr = job.get();
-    job->future.push_back(m_threadPool.Enqueue([job_ptr, pageAccessor, processor]
+    job->future.push_back(m_threadPool.Enqueue([job, pageAccessor, processor]
     {
       Error error;
-      int pages_size = int(job_ptr->pages.size());
+      int pages_size = int(job->pages.size());
       for (int i = 0; i < pages_size; i++)
       {
         if (error.code == 0)
         {
-          error = ProcessPageInJob(job_ptr, i, pageAccessor, processor);
+          error = ProcessPageInJob(job, i, pageAccessor, processor);
           if (error.code)
           {
-            job_ptr->cancelled = true;
+            job->cancelled = true;
           }
         }
         else
         {
-          if (job_ptr->pages[i].page)
+          if (job->pages[i].page)
           {
-            pageAccessor->CancelPreparedReadPage(job_ptr->pages[i].page);
-            job_ptr->pages[i].page = nullptr; 
+            pageAccessor->CancelPreparedReadPage(job->pages[i].page);
+            job->pages[i].page = nullptr; 
           }
         }
       }
@@ -1934,12 +2576,11 @@ int64_t VolumeDataRequestProcessor::AddJob(const std::vector<VolumeDataChunk>& c
   } 
   else
   {
-    auto job_ptr = job.get();
     for (int i = 0; i < int(job->pages.size()); i++)
     {
-      job->future.push_back(m_threadPool.Enqueue([job_ptr, i, pageAccessor, processor]
+      job->future.push_back(m_threadPool.Enqueue([job, i, pageAccessor, processor]
         {
-          return ProcessPageInJob(job_ptr, i, pageAccessor, processor);
+          return ProcessPageInJob(job, i, pageAccessor, processor);
         }));
     }
   }

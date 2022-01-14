@@ -728,6 +728,11 @@ void VolumeDataAccessManagerImpl::FlushCopyPageJobs()
 
 }
 
+int64_t VolumeDataAccessManagerImpl::AddRemapJob(VolumeDataPageImpl &targetPage, std::vector<VolumeDataChunk> const &sourceChunks)
+{
+  return m_requestProcessor->RequestRemap(targetPage, sourceChunks);
+}
+
 void VolumeDataAccessManagerImpl::AddUploadError(Error const &error, const std::string &url)
 {
   std::unique_lock<std::mutex> lock(m_mutex);
