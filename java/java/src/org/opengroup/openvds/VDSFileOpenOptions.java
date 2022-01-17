@@ -38,7 +38,19 @@ public class VDSFileOpenOptions extends OpenOptions {
      */
     public VDSFileOpenOptions(String pFilePath) {
         super(ConnectionType.File);
+        this.filePath = pFilePath;
+    }
 
+    /**
+     * Constructor with wavelet adaptive parameters
+     *
+     * @param pFilePath the file path the VDS
+     * @apram wam wavelet adaptive method
+     * @param wat wavelet adaptive tolerance
+     * @param war wavelet adaptive ratio
+     */
+    public VDSFileOpenOptions(String pFilePath, WaveletAdaptiveMode wam, float wat, float war) {
+        super(ConnectionType.File, wam, wat, war);
         this.filePath = pFilePath;
     }
 }

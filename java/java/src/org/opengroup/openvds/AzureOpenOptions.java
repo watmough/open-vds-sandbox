@@ -48,6 +48,23 @@ public class AzureOpenOptions extends OpenOptions {
     }
 
     /**
+     * Constructor with wavelet adaptive parameters
+     *
+     * @param pConnectionString the connectionString for the VDS
+     * @param pContainer the container of the VDS
+     * @param pBlob the blob prefix of the VDS
+     * @apram wam wavelet adaptive method
+     * @param wat wavelet adaptive tolerance
+     * @param war wavelet adaptive ratio
+     */
+    public AzureOpenOptions(String pConnectionString, String pContainer, String pBlob, WaveletAdaptiveMode wam, float wat, float war) {
+        super(ConnectionType.Azure, wam, wat, war);
+        connectionString = pConnectionString;
+        container = pContainer;
+        blob = pBlob;
+    }
+
+    /**
      * Constructor.
      *
      * @param pConnectionString the connectionString for the VDS
@@ -58,9 +75,32 @@ public class AzureOpenOptions extends OpenOptions {
      * @param pMaxExecutionTime the max execution time setting for the Azure
      * Blob Storage library
      */
-    public AzureOpenOptions(String pConnectionString, String pContainer, String pBlob,
-            int pParallelismFactor, int pMaxExecutionTime) {
+    public AzureOpenOptions(String pConnectionString, String pContainer, String pBlob, int pParallelismFactor, int pMaxExecutionTime) {
         super(ConnectionType.Azure);
+        connectionString = pConnectionString;
+        container = pContainer;
+        blob = pBlob;
+        parallelism_factor = pParallelismFactor;
+        max_execution_time = pMaxExecutionTime;
+    }
+
+    /**
+     * Constructor with wavelet adaptive parameters
+     *
+     * @param pConnectionString the connectionString for the VDS
+     * @param pContainer the container of the VDS
+     * @param pBlob the blob prefix of the VDS
+     * @param pParallelismFactor the parallelism factor setting for the Azure
+     * Blob Storage library
+     * @param pMaxExecutionTime the max execution time setting for the Azure
+     * Blob Storage library
+     * @apram wam wavelet adaptive method
+     * @param wat wavelet adaptive tolerance
+     * @param war wavelet adaptive ratio
+     */
+    public AzureOpenOptions(String pConnectionString, String pContainer, String pBlob, int pParallelismFactor, int pMaxExecutionTime,
+                            WaveletAdaptiveMode wam, float wat, float war) {
+        super(ConnectionType.Azure, wam, wat, war);
         connectionString = pConnectionString;
         container = pContainer;
         blob = pBlob;

@@ -43,4 +43,19 @@ public class AzurePresignedOpenOptions extends OpenOptions {
         this.baseUrl = baseUrl;
         this.urlSuffix = urlSuffix;
     }
+
+    /**
+     * Constructor with wavelet adaptive parameters
+     *
+     * @param baseUrl the connectionString for the VDS
+     * @param urlSuffix the container of the VDS
+     * @apram wam wavelet adaptive method
+     * @param wat wavelet adaptive tolerance
+     * @param war wavelet adaptive ratio
+     */
+    public AzurePresignedOpenOptions(String baseUrl, String urlSuffix, WaveletAdaptiveMode wam, float wat, float war) {
+        super(ConnectionType.AzurePresigned, wam, wat, war);
+        this.baseUrl = baseUrl;
+        this.urlSuffix = urlSuffix;
+    }
 }

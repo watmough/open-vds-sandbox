@@ -22,16 +22,22 @@ import java.io.IOException;
 public class OpenVDS extends VdsHandle {
     private static native long cpOpenAWS(String bucket, String key, String region, String endPointOverride, String accessKeyId, String secretKey,
                                          String sessionToken, String expiration,
-                                         String logFilenamePrefix, String loglevel, int connectionTimeoutMs, int requestTimeoutMs, boolean disableInitApi) throws IOException;
+                                         String logFilenamePrefix, String loglevel, int connectionTimeoutMs, int requestTimeoutMs, boolean disableInitApi,
+                                         int waveletAdaptiveMode, float waveletAdaptiveTolerance, float waveletAdaptiveRatio) throws IOException;
 
     private static native long cpOpenAzure(String pConnectionString, String pContainer, String pBlob,
-                                           int pParallelismFactor, int pMaxExecutionTime) throws IOException;
+                                           int pParallelismFactor, int pMaxExecutionTime,
+                                           int waveletAdaptiveMode, float waveletAdaptiveTolerance, float waveletAdaptiveRatio) throws IOException;
 
-    private static native long cpOpenGoogle(String bucket, String pathPrefix) throws IOException;
+    private static native long cpOpenGoogle(String bucket, String pathPrefix, int waveletAdaptiveMode, float waveletAdaptiveTolerance, float waveletAdaptiveRatio) throws IOException;
 
-    private static native long cpOpenAzurePresigned(String baseUrl, String urlSuffix) throws IOException;
+    private static native long cpOpenAzurePresigned(String baseUrl, String urlSuffix, int waveletAdaptiveMode, float waveletAdaptiveTolerance, float waveletAdaptiveRatio) throws IOException;
 
     private static native long cpOpenConnection(String url, String connectionString) throws IOException;
+
+    private static native long cpOpenConnectionWithAdaptiveRatio(String url, String connectionString, float adaptiveRatio) throws IOException;
+
+    private static native long cpOpenConnectionWithAdaptiveTolerance(String url, String connectionString, float adaptiveTolerance) throws IOException;
 
     private static native boolean cpIsCompressionMethodSupported(int compressionMethod);
 
@@ -82,22 +88,39 @@ public class OpenVDS extends VdsHandle {
     public static OpenVDS open(AWSOpenOptions o) throws IOException {
         if (o == null) throw new IllegalArgumentException("open option can't be null");
         return new OpenVDS(cpOpenAWS(o.bucket, o.key, o.region, o.endPointOverride, o.accessKeyId, o.secretKey, o.sessionToken, o.expiration,
-                o.logFilenamePrefix, o.logLevel, o.connectionTimeoutMs, o.requestTimeoutMs, o.disableInitApi), true);
+                o.logFilenamePrefix, o.logLevel, o.connectionTimeoutMs, o.requestTimeoutMs, o.disableInitApi,
+                o.waveletAdaptiveMode.ordinal(), o.waveletAdaptiveTolerance, o.waveletAdaptiveRatio), true);
     }
 
     public static OpenVDS open(AzureOpenOptions o) throws IOException {
         if (o == null) throw new IllegalArgumentException("open option can't be null");
-        return new OpenVDS(cpOpenAzure(o.connectionString, o.container, o.blob, o.parallelism_factor, o.max_execution_time), true);
+        return new OpenVDS(cpOpenAzure(o.connectionString, o.container, o.blob, o.parallelism_factor, o.max_execution_time,
+                o.waveletAdaptiveMode.ordinal(), o.waveletAdaptiveTolerance, o.waveletAdaptiveRatio), true);
     }
 
     public static OpenVDS open(AzurePresignedOpenOptions o) throws IOException {
         if (o == null) throw new IllegalArgumentException("open option can't be null");
-        return new OpenVDS(cpOpenAzurePresigned(o.baseUrl, o.urlSuffix), true);
+        return new OpenVDS(cpOpenAzurePresigned(o.baseUrl, o.urlSuffix, o.waveletAdaptiveMode.ordinal(), o.waveletAdaptiveTolerance, o.waveletAdaptiveRatio), true);
+    }
+
+    public static OpenVDS open(GoogleOpenOptions o) throws IOException {
+        if (o == null) throw new IllegalArgumentException("open option can't be null");
+        return new OpenVDS(cpOpenGoogle(o.bucket, o.pathPrefix, o.waveletAdaptiveMode.ordinal(), o.waveletAdaptiveTolerance, o.waveletAdaptiveRatio), true);
     }
 
     public static OpenVDS open(String url, String connectionString) throws IOException {
         if ("".equals(url)) throw new IllegalArgumentException("url can't be empty");
         return new OpenVDS(cpOpenConnection(url, connectionString), true);
+    }
+
+    public static OpenVDS openWithAdaptiveRatio(String url, String connectionString, float adaptiveRatio) throws IOException {
+        if ("".equals(url)) throw new IllegalArgumentException("url can't be empty");
+        return new OpenVDS(cpOpenConnectionWithAdaptiveRatio(url, connectionString, adaptiveRatio), true);
+    }
+
+    public static OpenVDS openWithAdaptiveTolerance(String url, String connectionString, float adaptiveTolerance) throws IOException {
+        if ("".equals(url)) throw new IllegalArgumentException("url can't be empty");
+        return new OpenVDS(cpOpenConnectionWithAdaptiveTolerance(url, connectionString, adaptiveTolerance), true);
     }
 
     public static OpenVDS open(VDSFileOpenOptions o) throws IOException {

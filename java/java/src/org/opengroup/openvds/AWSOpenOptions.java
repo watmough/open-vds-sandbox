@@ -63,12 +63,45 @@ public class AWSOpenOptions extends OpenOptions {
     /**
      * Constructor.
      *
+     * @param pBucket           the bucket of the VDS
+     * @param pKey              the key prefix of the VDS
+     * @param pRegion           the region of the bucket of the VDS
+     * @param pEndpointOverride This parameter allows to override the endpoint url
+     * @apram wam wavelet adaptive method
+     * @param wat wavelet adaptive tolerance
+     * @param war wavelet adaptive ratio
+     */
+    public AWSOpenOptions(String pBucket, String pKey, String pRegion, String pEndpointOverride, WaveletAdaptiveMode wam, float wat, float war) {
+        super(ConnectionType.AWS, wam, wat, war);
+        bucket = pBucket;
+        key = pKey;
+        region = pRegion;
+        endPointOverride = pEndpointOverride;
+    }
+
+    /**
+     * Constructor.
+     *
      * @param pBucket the bucket of the VDS
      * @param pKey    the key prefix of the VDS
      * @param pRegion the region of the bucket of the VDS
      */
     public AWSOpenOptions(String pBucket, String pKey, String pRegion) {
         this(pBucket, pKey, pRegion, null);
+    }
+
+    /**
+     * Constructor with adaptive wavelet parameters
+     *
+     * @param pBucket the bucket of the VDS
+     * @param pKey    the key prefix of the VDS
+     * @param pRegion the region of the bucket of the VDS
+     * @apram wam wavelet adaptive method
+     * @param wat wavelet adaptive tolerance
+     * @param war wavelet adaptive ratio
+     */
+    public AWSOpenOptions(String pBucket, String pKey, String pRegion, WaveletAdaptiveMode wam, float wat, float war) {
+        this(pBucket, pKey, pRegion, null, wam, wat, war);
     }
 }
 

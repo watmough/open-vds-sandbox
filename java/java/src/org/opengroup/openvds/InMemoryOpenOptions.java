@@ -28,4 +28,16 @@ public class InMemoryOpenOptions extends OpenOptions {
     public InMemoryOpenOptions() {
         super(ConnectionType.InMemory);
     }
+
+    /**
+     * Constructor with wavelet adaptive parameters
+     *
+     * @apram wam wavelet adaptive method
+     * @param wat wavelet adaptive tolerance
+     * @param war wavelet adaptive ratio
+     */
+    public InMemoryOpenOptions(WaveletAdaptiveMode wam, float wat, float war) {
+
+        super(ConnectionType.InMemory, wam, wat, war);
+    }
 }

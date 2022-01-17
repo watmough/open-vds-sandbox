@@ -41,7 +41,23 @@ public class GoogleOpenOptions extends OpenOptions {
     public GoogleOpenOptions(String pBucket, String pathPrefix) {
         super(ConnectionType.Google);
         bucket = pBucket;
-        pathPrefix = pathPrefix;
+        this.pathPrefix = pathPrefix;
     }
+
+    /**
+     * Constructor with wavelet adaptive paramters
+     *
+     * @param pBucket           the bucket of the VDS
+     * @param pathPrefix        the prefix of the VDS
+     * @apram wam wavelet adaptive method
+     * @param wat wavelet adaptive tolerance
+     * @param war wavelet adaptive ratio
+     */
+    public GoogleOpenOptions(String pBucket, String pathPrefix, WaveletAdaptiveMode wam, float wat, float war) {
+        super(ConnectionType.Google, wam, wat, war);
+        bucket = pBucket;
+        this.pathPrefix = pathPrefix;
+    }
+
 
 }

@@ -21,6 +21,7 @@ package org.opengroup.openvds;
  * Base class for options for opening a VDS
  */
 public class OpenOptions {
+
     public enum ConnectionType {
         AWS,
         Azure,
@@ -32,12 +33,31 @@ public class OpenOptions {
 
     public int connectionType;
 
+    public WaveletAdaptiveMode waveletAdaptiveMode = WaveletAdaptiveMode.BestQuality;
+    public float waveletAdaptiveTolerance = 0.01f;
+    public float waveletAdaptiveRatio = 1.0f;
+
     /**
      * Constructor.
      *
-     * @param ctype the connection type (see static members of this class)
+     * @param cType the connection type (see static members of this class)
      */
-    protected OpenOptions(ConnectionType ctype) {
-        connectionType = ctype.ordinal();
+    protected OpenOptions(ConnectionType cType) {
+        connectionType = cType.ordinal();
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param cType the connection type (see static members of this class)
+     * @apram wam wavelet adaptive method
+     * @param wat wavelet adaptive tolerance
+     * @param war wavelet adaptive ratio
+     */
+    protected OpenOptions(ConnectionType cType, WaveletAdaptiveMode wam, float wat, float war) {
+        connectionType = cType.ordinal();
+        waveletAdaptiveMode = wam;
+        waveletAdaptiveTolerance = wat;
+        waveletAdaptiveRatio = war;
     }
 }
