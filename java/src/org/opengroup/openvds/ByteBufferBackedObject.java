@@ -19,6 +19,12 @@ import java.nio.*;
 
 public class ByteBufferBackedObject {
 
+	private static ByteBuffer _createByteBuffer(int capacity) {
+		ByteBuffer buffer = ByteBuffer.allocateDirect(capacity);
+		buffer.order(ByteOrder.nativeOrder());
+		return buffer;
+	}
+
 	private ByteBufferProxy bytebufferproxy;
 	
 	public ByteBufferBackedObject() {
@@ -42,6 +48,6 @@ public class ByteBufferBackedObject {
 	}
 	
 	protected void createByteBuffer(int capacity) {
-		this.bytebufferproxy = new ByteBufferProxy(ByteBuffer.allocateDirect(capacity), 0);
+		this.bytebufferproxy = new ByteBufferProxy(_createByteBuffer(capacity), 0);
 	}
 }
