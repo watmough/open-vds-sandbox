@@ -47,7 +47,7 @@ _ignore_types = [
 #    "Hue::HueSpaceLib::IVolumeDataReadAccessor",
 #    "Hue::HueSpaceLib::IVolumeDataReadWriteAccessor",
 #    "Hue::HueSpaceLib::IHasVolumeDataAccess",
-#    "OpenVDS::VDSIJKGridDefinition",
+    "OpenVDS::VDSIJKGridDefinition",
 #    "Hue::HueSpaceLib::VolumeDataCacheItem",
 #    "Hue::HueSpaceLib::VolumeDataRequest::RequestFormat",
 #    "CUstream_st",
@@ -58,7 +58,7 @@ _marshaled_value_types = [
 #    "Hue::HueSpaceLib::VolumeDataChannelDescriptor",
 #    "Hue::HueSpaceLib::VolumeDataLayoutDescriptor",
 #    "Hue::HueSpaceLib::VolumeDataAxisDescriptor",
-#    "Hue::Util::IJKGridDefinition",
+    "OpenVDS::IJKGridDefinition",
 ]
 
 _prefixes = [ "OpenVDS" ]
@@ -70,7 +70,7 @@ _explicit_add_get_prefix = {
 }
 
 _cppjava_typemap = {
-    "std::basic_string<char, std::char_traits<char>, std::allocator<char>>": "String",
+#    "std::basic_string<char, std::char_traits<char>, std::allocator<char>>": "String",
     "const char *":                                 "String",
     "std::string":                                  "String",
 #    "Hue::HueSpaceLib::ProxyBLOB":                  "byte[]",
@@ -205,7 +205,8 @@ def is_licenseapi(class_name: str) -> bool:
 def is_marshaled_valuetype(typename: str) -> bool:
     return clean_typename(typename) in _marshaled_value_types
 
-def is_bytebuffer_backed(typename: str) -> bool:
+def is_bytebuffer_backed(typename: str, alias: str = '') -> bool:
+    typename = resolve_typealias(typename, alias)
     return clean_typename(typename) in _bytebuffer_backed
 
 def is_smartptr_type(typename: str) -> bool:
@@ -383,7 +384,13 @@ def param_to_real_type(param: Param, template_args: List[str]) -> str:
         return param.typename
     return param.canonical_type
 
-def _cpp_to_java_type(typename: str) -> str:
+def resolve_typealias(typename: str, alias: str) -> str:
+    if alias and '<' in typename:
+        typename = alias
+    return typename
+
+def _cpp_to_java_type(typename: str, alias: str) -> str:
+    typename = resolve_typealias(typename, alias)
     if find_enum_type(typename):
         if typename in _cppjava_typemap:
             return _cppjava_typemap[typename]
@@ -426,14 +433,15 @@ def _cpp_to_java_type(typename: str) -> str:
     else:
         raise NotImplementedError(f'Unhandled type: {typename}')
 
-def cpp_to_java_type(typename: str) -> str:
-    j = _cpp_to_java_type(typename)
+def cpp_to_java_type(typename: str, alias: str = '') -> str:
+    j = _cpp_to_java_type(typename, alias)
     if '::' in j:
         return strip_prefixes(clean_typename(j)).replace('::', '.')
     else:
         return j
 
-def cpp_to_native_type(typename: str) -> str:
+def cpp_to_native_type(typename: str, alias: str = '') -> str:
+    typename = resolve_typealias(typename, alias)
     assert typename != 'jlong'
     if find_enum_type(typename):
         return "int"
@@ -460,8 +468,9 @@ def cpp_to_native_type(typename: str) -> str:
     else:
         return cpp_to_java_type(typename)
         
-def cpp_to_jni_type(typename: str) -> str:
+def cpp_to_jni_type(typename: str, alias: str = '') -> str:
     assert typename != 'jlong'
+    typename = resolve_typealias(typename, alias)
     if is_array(typename):
         element_type = get_array_element(typename)
         if not element_type in _cppjni_array_typemap:
@@ -511,8 +520,8 @@ def create_jni_arglist(class_name: str, args: List[Param], is_include_proxyinter
         arglist.append('jlong native_handle')
     p = peekable(args)
     for arg in p:
-        type_, name = arg.canonical_type, arg.name
-        if is_bytebuffer_backed(type_):
+        type_, alias_, name = arg.canonical_type, arg.typename, arg.name
+        if is_bytebuffer_backed(type_, alias_):
             # bytebuffer objects are passed as 2 separate parameters: the bytebuffer object itself and a byteoffset into the buffer
             arglist.append(f"jobject {name}bytebuffer, jlong {name}byteoffset")
         elif is_optional_type(type_):
@@ -529,7 +538,7 @@ def create_jni_arglist(class_name: str, args: List[Param], is_include_proxyinter
             arglist.append(f"jobject {name}")
             next(p) # consume buffer size parameter
         else:
-            jnitype_ = cpp_to_jni_type(type_)
+            jnitype_ = cpp_to_jni_type(type_, alias_)
             arglist.append(jnitype_ + " " + name)
     return ", ".join(arglist)        
 
@@ -542,7 +551,7 @@ def transform_jni_functioncall_args(args: List[Param], is_static_method: bool=Fa
         result: Param = next(p)
         typename = clean_typename(result.typename)
         name = result.name
-        assert is_bytebuffer_backed(result.canonical_type) # This is the only way we should get here.
+        assert is_bytebuffer_backed(result.canonical_type, result.typename) # This is the only way we should get here.
         epilogue.append(f'*({typename}*)((char*)env->GetDirectBufferAddress({name}bytebuffer) + {name}byteoffset) = result;')
     for arg in p:
         type_, name = arg.canonical_type, arg.name
@@ -727,10 +736,10 @@ def create_jni_methods(scope: Scope, template: str, override_name: str = '', tem
                 if template_args:
                     result_param = param_subsitute_template_args(result_param, template_args)
                     args = arglist_substitute_template_args(args, template_args)
-                if is_bytebuffer_backed(result_param.canonical_type):
+                if is_bytebuffer_backed(result_param.canonical_type, result_param.typename):
                     args.insert(0, result_param)
                     result_param = Param(typename='void', is_out=True)
-                    real_return_type = result_param.canonical_type
+                    real_return_type =  resolve_typealias(result_param.canonical_type, result_param.typename)
                 check_ignore_args(args)
                 check_ignore_args([result_param])
                 real_return_type = result_param.canonical_type
@@ -896,17 +905,17 @@ def create_native_arglist(class_name:str, args: List[Param], is_include_proxyint
         arglist.append('long native_object')
     p = peekable(args)
     for arg in p:
-        type_, name_ = arg.canonical_type, arg.name
+        type_, alias_, name_ = arg.canonical_type, arg.typename, arg.name
         if use_buffer_protocol([arg, p.peek(None)]):
             arglist.append(f'ByteBuffer {name_}')
             next(p)
         elif is_optional_type(type_):
             otype = get_template_arg0(type_)
             arglist.append(f'{otype} {name_}, boolean use_{name_}')
-        elif is_bytebuffer_backed(type_):
+        elif is_bytebuffer_backed(type_, alias_):
             arglist.append(f'ByteBuffer {name_}, long {name_}_byteoffset')
         else:
-            nativetype_ = cpp_to_native_type(type_)
+            nativetype_ = cpp_to_native_type(type_, alias_)
             arglist.append(nativetype_ + " " + name_)
     return ", ".join(arglist)        
 
@@ -914,7 +923,7 @@ def create_java_arglist(args: List[Param]) -> str:
     arglist = []
     p = peekable(args)
     for arg in p:
-        type_, name_ = arg.canonical_type, arg.name
+        type_, alias_, name_ = arg.canonical_type, arg.typename, arg.name
         if use_buffer_protocol([arg, p.peek(None)]):
             arglist.append(f'ByteBuffer {name_}')
             next(p)
@@ -925,7 +934,7 @@ def create_java_arglist(args: List[Param]) -> str:
             objtype = _optional_types[otype]
             arglist.append(f'{objtype} {name_}')
         else:
-            nativetype_ = cpp_to_java_type(type_)
+            nativetype_ = cpp_to_java_type(type_, alias_)
             arglist.append(f'{nativetype_} {name_}')
     return ", ".join(arglist)        
 
@@ -950,14 +959,17 @@ def transform_java_functioncall_args(class_name: str, args: List[Param], is_incl
     p = peekable(args)
     if args and p.peek().is_out:
         result: Param = next(p)
-        typename = cpp_to_java_type(result.typename)  #clean_typename(result.typename)
+        typename = cpp_to_java_type(result.typename, result.typename)  #clean_typename(result.typename)
+        if 'Vector<' in typename:
+            debug = 0
         name_ = result.name
-        assert is_bytebuffer_backed(result.canonical_type) # This is the only way we should get here.
+        assert is_bytebuffer_backed(result.canonical_type, result.typename) # This is the only way we should get here.
         prologue.append(f'{typename} {name_} = new {typename}();')
         arglist.append(f'{name_}.getBackingByteBuffer(), {name_}.getByteBufferOffset()')
         epilogue.append(f'return {name_};')
     for arg in p:
-        type_, name_ = arg.canonical_type, arg.name
+        type_, alias_, name_ = arg.canonical_type, arg.typename, arg.name
+        type_ = resolve_typealias(type_, alias_)
         used_arglist.append(name_)
         if is_enum_type(arg):
             arglist.append(f'{name_}.value()')
@@ -1283,6 +1295,8 @@ def create_java_class(scope: Scope, template: str, override_name: str = '', temp
                 nativeargs = list(args)
                 check_ignore_args(args)
                 check_ignore_args([result_param])
+                if function_name == 'IJKSize':
+                    debug = 0
                 if child.is_constructor: 
                     if is_ctor_valid(child):
                         print(create_java_ctor(child, class_name, jni_function_name, True, overloads_created, args), file=methods)
@@ -1293,7 +1307,7 @@ def create_java_class(scope: Scope, template: str, override_name: str = '', temp
                         print(create_java_equals(scope), file=methods)
                         has_instance_methods = True
                 else:
-                    if is_bytebuffer_backed(result_param.canonical_type):
+                    if is_bytebuffer_backed(result_param.canonical_type, result_param.typename):
                         nativeargs.insert(0, result_param)
                         native_result_param = Param('void')
                     else:
@@ -1697,14 +1711,14 @@ header_dir = '../../src/OpenVDS/OpenVDS'
 dont_output_list = []
 
 header_list = [ 
-    'KnownMetadata.h',
+#    'KnownMetadata.h',
 #    'MetadataAccess.h',
-    'MetadataKey.h',
-    'GlobalState.h',
-    'OpenVDS.h',
+#    'MetadataKey.h',
+#    'GlobalState.h',
+#    'OpenVDS.h',
 #    'ProcessorPreference.h',
 #    'VolumeDataAccess.h',
-#    'IJKCoordinateTransformer.h',
+    'IJKCoordinateTransformer.h',
 #    'VolumeData.h',
 #    'ErrorCode.h',
 #    'VolumeDataAccessManager.h',
