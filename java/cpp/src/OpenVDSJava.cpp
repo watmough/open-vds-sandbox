@@ -47,14 +47,15 @@ jlong openVDSOrThrowJavaIOException(JNIEnv *env, const OpenVDS::OpenOptions &ope
 /*
  * Class:     org_opengroup_openvds_OpenVDS
  * Method:    cpOpenAWS
- * Signature: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;IIZ)J
+ * Signature: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;IIZIFF)J
  */
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_cpOpenAWS
         (JNIEnv * env, jclass,
          jstring jBucket, jstring jKey, jstring jRegion, jstring jEndpointOverride,
          jstring jAccessKeyID, jstring jSecretKeyID,
          jstring jSessionToken, jstring jExpiration, jstring jLogFilenamePrefix, jstring jLogLevel,
-         jint jConnectionTimeOutMs, jint jRequestTimeOutMs, jboolean jDisableInitAPI)
+         jint jConnectionTimeOutMs, jint jRequestTimeOutMs, jboolean jDisableInitAPI,
+         jint jWaveletAdaptiveMode, jfloat jWaveletAdaptiveTolerance, jfloat jWaveletAdaptiveRatio)
 {
     OpenVDS::AWSOpenOptions openOptions;
 
@@ -72,12 +73,22 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_cpOpenAWS
     openOptions.requestTimeoutMs = jRequestTimeOutMs;
     openOptions.disableInitApi = jDisableInitAPI;
 
+    // wavelet adaptive parameters
+    openOptions.waveletAdaptiveMode = OpenVDS::WaveletAdaptiveMode(jWaveletAdaptiveMode);
+    openOptions.waveletAdaptiveTolerance = jWaveletAdaptiveTolerance;
+    openOptions.waveletAdaptiveRatio = jWaveletAdaptiveRatio;
+
     return openVDSOrThrowJavaIOException(env, openOptions);
 }
 
-jlong JNICALL Java_org_opengroup_openvds_OpenVDS_cpOpenAzure
+/*
+ * Class:     org_opengroup_openvds_OpenVDS
+ * Method:    cpOpenAzure
+ * Signature: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;IIIFF)J
+ */
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_cpOpenAzure
         (JNIEnv *env, jclass, jstring jConnectionString, jstring jContainer, jstring jBlob, jint jParallelismFactor,
-         jint jMaxExecutionTime) {
+         jint jMaxExecutionTime, jint jWaveletAdaptiveMode, jfloat jWaveletAdaptiveTolerance, jfloat jWaveletAdaptiveRatio) {
 
     OpenVDS::AzureOpenOptions openOptions;
 
@@ -87,15 +98,31 @@ jlong JNICALL Java_org_opengroup_openvds_OpenVDS_cpOpenAzure
     openOptions.parallelism_factor = jParallelismFactor;
     openOptions.max_execution_time = jMaxExecutionTime;
 
+    // wavelet adaptive parameters
+    openOptions.waveletAdaptiveMode = OpenVDS::WaveletAdaptiveMode(jWaveletAdaptiveMode);
+    openOptions.waveletAdaptiveTolerance = jWaveletAdaptiveTolerance;
+    openOptions.waveletAdaptiveRatio = jWaveletAdaptiveRatio;
+
     return openVDSOrThrowJavaIOException(env, openOptions);
 }
 
-jlong JNICALL Java_org_opengroup_openvds_OpenVDS_cpOpenGoogle
-        (JNIEnv *env, jclass, jstring jbucket, jstring jpathPrefix) {
+/*
+ * Class:     org_opengroup_openvds_OpenVDS
+ * Method:    cpOpenGoogle
+ * Signature: (Ljava/lang/String;Ljava/lang/String;IFF)J
+ */
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_cpOpenGoogle
+        (JNIEnv *env, jclass, jstring jbucket, jstring jpathPrefix,
+         jint jWaveletAdaptiveMode, jfloat jWaveletAdaptiveTolerance, jfloat jWaveletAdaptiveRatio) {
     OpenVDS::GoogleOpenOptions openOptions;
 
     openOptions.bucket = JStringToString(env, jbucket);
     openOptions.pathPrefix= JStringToString(env, jpathPrefix);
+
+    // wavelet adaptive parameters
+    openOptions.waveletAdaptiveMode = OpenVDS::WaveletAdaptiveMode(jWaveletAdaptiveMode);
+    openOptions.waveletAdaptiveTolerance = jWaveletAdaptiveTolerance;
+    openOptions.waveletAdaptiveRatio = jWaveletAdaptiveRatio;
 
     return openVDSOrThrowJavaIOException(env, openOptions);
 }
@@ -103,13 +130,18 @@ jlong JNICALL Java_org_opengroup_openvds_OpenVDS_cpOpenGoogle
 /*
  * Class:     org_opengroup_openvds_OpenVDS
  * Method:    cpOpenVDSFile
- * Signature: (Ljava/lang/String;)J
+ * Signature: (Ljava/lang/String;IFF)J
  */
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_cpOpenVDSFile
-        (JNIEnv *env, jclass, jstring jfilepath) {
+        (JNIEnv *env, jclass, jstring jfilepath, jint jWaveletAdaptiveMode, jfloat jWaveletAdaptiveTolerance, jfloat jWaveletAdaptiveRatio) {
     OpenVDS::VDSFileOpenOptions openOptions;
 
     openOptions.fileName = JStringToString(env, jfilepath);
+
+    // wavelet adaptive parameters
+    openOptions.waveletAdaptiveMode = OpenVDS::WaveletAdaptiveMode(jWaveletAdaptiveMode);
+    openOptions.waveletAdaptiveTolerance = jWaveletAdaptiveTolerance;
+    openOptions.waveletAdaptiveRatio = jWaveletAdaptiveRatio;
 
     return openVDSOrThrowJavaIOException(env, openOptions);
 }
@@ -117,14 +149,20 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_cpOpenVDSFile
 /*
  * Class:     org_opengroup_openvds_OpenVDS
  * Method:    cpOpenAzurePresigned
- * Signature: (Ljava/lang/String;Ljava/lang/String;)J
+ * Signature: (Ljava/lang/String;Ljava/lang/String;IFF)J
  */
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_cpOpenAzurePresigned
-        (JNIEnv *env, jclass, jstring baseUrl, jstring urlSuffix) {
+        (JNIEnv *env, jclass, jstring baseUrl, jstring urlSuffix,
+         jint jWaveletAdaptiveMode, jfloat jWaveletAdaptiveTolerance, jfloat jWaveletAdaptiveRatio) {
     OpenVDS::AzureOpenOptions openOptions;
 
     openOptions.connectionString = JStringToString(env, baseUrl);
     openOptions.container = JStringToString(env, urlSuffix);
+
+    // wavelet adaptive parameters
+    openOptions.waveletAdaptiveMode = OpenVDS::WaveletAdaptiveMode(jWaveletAdaptiveMode);
+    openOptions.waveletAdaptiveTolerance = jWaveletAdaptiveTolerance;
+    openOptions.waveletAdaptiveRatio = jWaveletAdaptiveRatio;
 
     return openVDSOrThrowJavaIOException(env, openOptions);
 }
@@ -138,6 +176,36 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_cpOpenConnection
         (JNIEnv *env, jclass, jstring url, jstring connectionString) {
     OpenVDS::Error error;
     OpenVDS::VDSHandle pVds = OpenVDS::Open(JStringToString(env, url), JStringToString(env, connectionString), error);
+    if (pVds == nullptr) {
+        throwJavaIOException(env, error);
+    }
+    return (jlong) pVds;
+}
+
+/*
+ * Class:     org_opengroup_openvds_OpenVDS
+ * Method:    cpOpenConnectionWithAdaptiveCompressionRatio
+ * Signature: (Ljava/lang/String;Ljava/lang/String;F)J
+ */
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_cpOpenConnectionWithAdaptiveCompressionRatio
+        (JNIEnv * env, jclass, jstring url, jstring connectionString, jfloat jWaveletAdaptiveRatio) {
+    OpenVDS::Error error;
+    OpenVDS::VDSHandle pVds = OpenVDS::OpenWithAdaptiveCompressionRatio(JStringToString(env, url), JStringToString(env, connectionString), jWaveletAdaptiveRatio, error);
+    if (pVds == nullptr) {
+        throwJavaIOException(env, error);
+    }
+    return (jlong) pVds;
+}
+
+/*
+ * Class:     org_opengroup_openvds_OpenVDS
+ * Method:    cpOpenConnectionWithAdaptiveCompressionTolerance
+ * Signature: (Ljava/lang/String;Ljava/lang/String;F)J
+ */
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_cpOpenConnectionWithAdaptiveCompressionTolerance
+        (JNIEnv * env, jclass, jstring url, jstring connectionString, jfloat jWaveletAdaptiveTolerance) {
+    OpenVDS::Error error;
+    OpenVDS::VDSHandle pVds = OpenVDS::OpenWithAdaptiveCompressionTolerance(JStringToString(env, url), JStringToString(env, connectionString), jWaveletAdaptiveTolerance, error);
     if (pVds == nullptr) {
         throwJavaIOException(env, error);
     }

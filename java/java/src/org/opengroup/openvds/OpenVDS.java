@@ -35,13 +35,13 @@ public class OpenVDS extends VdsHandle {
 
     private static native long cpOpenConnection(String url, String connectionString) throws IOException;
 
-    private static native long cpOpenConnectionWithAdaptiveRatio(String url, String connectionString, float adaptiveRatio) throws IOException;
+    private static native long cpOpenConnectionWithAdaptiveCompressionRatio(String url, String connectionString, float adaptiveRatio) throws IOException;
 
-    private static native long cpOpenConnectionWithAdaptiveTolerance(String url, String connectionString, float adaptiveTolerance) throws IOException;
+    private static native long cpOpenConnectionWithAdaptiveCompressionTolerance(String url, String connectionString, float adaptiveTolerance) throws IOException;
 
     private static native boolean cpIsCompressionMethodSupported(int compressionMethod);
 
-    private static native long cpOpenVDSFile(String filePath) throws IOException;
+    private static native long cpOpenVDSFile(String filePath, int waveletAdaptiveMode, float waveletAdaptiveTolerance, float waveletAdaptiveRatio) throws IOException;
 
     private static native long cpCreate(OpenOptions options, VolumeDataLayoutDescriptor layoutDescriptor,
                                         VolumeDataAxisDescriptor[] axisDescriptors,
@@ -113,19 +113,19 @@ public class OpenVDS extends VdsHandle {
         return new OpenVDS(cpOpenConnection(url, connectionString), true);
     }
 
-    public static OpenVDS openWithAdaptiveRatio(String url, String connectionString, float adaptiveRatio) throws IOException {
+    public static OpenVDS openWithAdaptiveCompressionRatio(String url, String connectionString, float adaptiveRatio) throws IOException {
         if ("".equals(url)) throw new IllegalArgumentException("url can't be empty");
-        return new OpenVDS(cpOpenConnectionWithAdaptiveRatio(url, connectionString, adaptiveRatio), true);
+        return new OpenVDS(cpOpenConnectionWithAdaptiveCompressionRatio(url, connectionString, adaptiveRatio), true);
     }
 
-    public static OpenVDS openWithAdaptiveTolerance(String url, String connectionString, float adaptiveTolerance) throws IOException {
+    public static OpenVDS openWithAdaptiveCompressionTolerance(String url, String connectionString, float adaptiveTolerance) throws IOException {
         if ("".equals(url)) throw new IllegalArgumentException("url can't be empty");
-        return new OpenVDS(cpOpenConnectionWithAdaptiveTolerance(url, connectionString, adaptiveTolerance), true);
+        return new OpenVDS(cpOpenConnectionWithAdaptiveCompressionTolerance(url, connectionString, adaptiveTolerance), true);
     }
 
     public static OpenVDS open(VDSFileOpenOptions o) throws IOException {
         if (o == null) throw new IllegalArgumentException("open option can't be null");
-        return new OpenVDS(cpOpenVDSFile(o.filePath), true);
+        return new OpenVDS(cpOpenVDSFile(o.filePath, o.waveletAdaptiveMode.ordinal(), o.waveletAdaptiveTolerance, o.waveletAdaptiveRatio), true);
     }
 
     private static void validateCreateArguments(VolumeDataLayoutDescriptor ld,

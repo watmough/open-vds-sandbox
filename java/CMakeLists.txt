@@ -57,10 +57,12 @@ set(JAVA_SOURCE_FILES
   java/src/org/opengroup/openvds/VolumeIndexer4D.java
   java/src/org/opengroup/openvds/VolumeIndexer5D.java
   java/src/org/opengroup/openvds/VolumeIndexer6D.java
+  java/src/org/opengroup/openvds/WaveletAdaptiveMode.java
 
   java/demo/AWSSliceDumpDemo.java
   java/demo/CreateVDS.java
   java/demo/OpenVdsDemo.java
+  java/demo/SliceDump.java
 
   #java/experimental/OpenVdsDemoWithArrayIntoBuffers.java
   #java/experimental/OpenVdsDemoWithBuffers.java
