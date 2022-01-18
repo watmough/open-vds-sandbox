@@ -70,7 +70,7 @@ static OpenVDS::VDS *generate(const OpenVDS::AzureOpenOptions& opts, int32_t sam
     float intOffset = 0.f;
 
     for (int i = 0; i < channels.size(); i++) {
-        channelDescriptors.emplace_back(format, OpenVDS::VolumeDataChannelDescriptor::Components_1,
+        channelDescriptors.emplace_back(format, OpenVDS::VolumeDataComponents::Components_1,
             channels[i].c_str(), units[i].c_str(), rangeMin, rangeMax, OpenVDS::VolumeDataMapping::Direct, 1,
             OpenVDS::VolumeDataChannelDescriptor::Default, std::numeric_limits<float>::lowest(), intScale, intOffset);
     }

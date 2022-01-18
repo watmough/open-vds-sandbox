@@ -242,14 +242,14 @@ getVolumeDataChannelDescriptor(JNIEnv *env, jobjectArray obj, std::multiset<std:
 
         if (isusenovalue) {
             OpenVDS::VolumeDataChannelDescriptor tmp(static_cast<OpenVDS::VolumeDataChannelDescriptor::Format>(format),
-                                                 static_cast<OpenVDS::VolumeDataChannelDescriptor::Components>(components), name->c_str(), unit->c_str(),
+                                                 static_cast<OpenVDS::VolumeDataComponents>(components), name->c_str(), unit->c_str(),
                                                  valuerangemin, valuerangemax, static_cast<OpenVDS::VolumeDataMapping>(mapping), mappedvaluecount,
                                                  static_cast<OpenVDS::VolumeDataChannelDescriptor::Flags>(flags), novalue, integerscale, integeroffset);
             result.emplace_back(tmp);
         }
         else {
             OpenVDS::VolumeDataChannelDescriptor tmp(static_cast<OpenVDS::VolumeDataChannelDescriptor::Format>(format),
-                                                     static_cast<OpenVDS::VolumeDataChannelDescriptor::Components>(components), name->c_str(), unit->c_str(),
+                                                     static_cast<OpenVDS::VolumeDataComponents>(components), name->c_str(), unit->c_str(),
                                                      valuerangemin, valuerangemax, static_cast<OpenVDS::VolumeDataMapping>(mapping), mappedvaluecount,
                                                      static_cast<OpenVDS::VolumeDataChannelDescriptor::Flags>(flags), integerscale, integeroffset);
             result.emplace_back(tmp);

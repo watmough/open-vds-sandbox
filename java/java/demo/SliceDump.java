@@ -8,7 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.util.Arrays;
-import java.util.Optional;
+import java.util.DoubleSummaryStatistics;
 import java.util.stream.IntStream;
 
 public class SliceDump {
@@ -22,43 +22,52 @@ public class SliceDump {
         }
     }
 
-    public static SliceDumpParameters parseParameters(String[] args) throws IllegalArgumentException, ArrayIndexOutOfBoundsException {
+    public static SliceDumpParameters parseParameters(String[] args) throws IllegalArgumentException {
         SliceDumpParameters params = new SliceDumpParameters();
         for (int idx = 0 ; idx < args.length ; ++idx) {
             if (args[idx].startsWith("--url")) {
+                checkParameter(args[idx]);
                 String[] split = args[idx].split("=");
                 params.url = split[1];
             }
             else if (args[idx].startsWith("--connection-string")) {
+                checkParameter(args[idx]);
                 String[] split = args[idx].split("=");
                 params.connectionString = split[1];
             }
             else if (args[idx].startsWith("--axis")) {
+                checkParameterAxis(args[idx]);
                 String[] split = args[idx].split("=");
                 params.axis = split[1];
             }
             else if (args[idx].startsWith("--position")) {
+                checkParameterInt(args[idx]);
                 String[] split = args[idx].split("=");
                 params.position = Integer.parseInt(split[1]);
             }
             else if (args[idx].startsWith("--o_width")) {
+                checkParameterInt(args[idx]);
                 String[] split = args[idx].split("=");
                 params.outputWidth = Integer.parseInt(split[1]);
             }
             else if (args[idx].startsWith("--o_height")) {
+                checkParameterInt(args[idx]);
                 String[] split = args[idx].split("=");
                 params.outputHeight = Integer.parseInt(split[1]);
             }
             else if (args[idx].startsWith("--output")) {
+                checkParameter(args[idx]);
                 String[] split = args[idx].split("=");
                 params.outputFilePath = split[1];
             }
             else if (args[idx].startsWith("--adaptive-tolerance")) {
+                checkParameterFloat(args[idx]);
                 String[] split = args[idx].split("=");
                 params.adaptiveTolerance = Float.parseFloat(split[1]);
                 params.adaptiveMode = WaveletAdaptiveMode.Tolerance;
             }
             else if (args[idx].startsWith("--adaptive-ratio")) {
+                checkParameterFloat(args[idx]);
                 String[] split = args[idx].split("=");
                 params.adaptiveRatio = Float.parseFloat(split[1]);
                 params.adaptiveMode = WaveletAdaptiveMode.Ratio;
@@ -71,9 +80,63 @@ public class SliceDump {
             throw new IllegalArgumentException("URL must be defined.");
         }
         if (params.outputFilePath == null) {
-            throw new IllegalArgumentException("Output BMP path must be defined.");
+            throw new IllegalArgumentException("Output file path must be defined.");
         }
         return params;
+    }
+
+    private static void checkParameter(String param) throws IllegalArgumentException {
+        if (!param.contains("=") || param.split("=").length != 2) {
+            throw new IllegalArgumentException("Bad parameter definition " + param + " : expected --param=value");
+        }
+    }
+
+    private static void checkParameterInt(String param) throws IllegalArgumentException {
+        if (!param.contains("=") || param.split("=").length != 2) {
+            throw new IllegalArgumentException("Bad parameter definition " + param + " : expected --param=value");
+        }
+        String[] split = param.split("=");
+        try {
+            Integer.parseInt(split[1]);
+        }
+        catch (NumberFormatException nfe) {
+            throw new IllegalArgumentException("Bad parameter value for " + param + " Integer value expected.");
+        }
+    }
+
+    private static void checkParameterFloat(String param) throws IllegalArgumentException {
+        if (!param.contains("=") || param.split("=").length != 2) {
+            throw new IllegalArgumentException("Bad parameter definition " + param + " : expected --param=value");
+        }
+        String[] split = param.split("=");
+        try {
+            Float.parseFloat(split[1]);
+        }
+        catch (NumberFormatException nfe) {
+            throw new IllegalArgumentException("Bad parameter value for " + param + " Float value expected.");
+        }
+    }
+
+    private static void checkParameterAxis(String param) throws IllegalArgumentException {
+        if (!param.contains("=") || param.split("=").length != 2) {
+            throw new IllegalArgumentException("Bad parameter definition " + param + " : expected --param=value");
+        }
+        String[] split = param.split("=");
+        try {
+            String[] axisStr = split[1].split(",");
+            if (axisStr == null || axisStr.length != 3) {
+                throw new IllegalArgumentException("Axis must be 3 values comma separated. ex : 0, 1, 2. Got " + param);
+            }
+            for (String valStr : axisStr) {
+                int val = Integer.parseInt(valStr);
+                if (val < 0 || val > 2) {
+                    throw new IllegalArgumentException("Axis values must be either 0, 1 or 2. Got " + param);
+                }
+            }
+        }
+        catch (NumberFormatException nfe) {
+            throw new IllegalArgumentException("Bad parameter value for axis " + param + " integer value expected.");
+        }
     }
 
     public static VdsHandle open(SliceDumpParameters parameters) throws IOException {
@@ -118,13 +181,11 @@ public class SliceDump {
             sampleCount[1] = layout.getDimensionNumSamples(axis_mapper[1]);
             sampleCount[2] = layout.getDimensionNumSamples(axis_mapper[2]);
 
-            int axis_position = parameters.position;
-            axis_position = Math.max(0, axis_position);
+            int axis_position = Math.max(0, parameters.position);
             axis_position = Math.min(sampleCount[0], axis_position);
 
             System.out.println("\nFound data set with sample count " + sampleCount[0] + "x" + sampleCount[1] + "x" + sampleCount[2]);
             System.out.println("\nCreate request for samples...");
-
 
             float x_sample_shift = (float) sampleCount[1] / parameters.outputWidth;
             float y_sample_shift = (float) sampleCount[2] / parameters.outputHeight;
@@ -164,9 +225,6 @@ public class SliceDump {
 
             System.out.println("Create bitmap " + parameters.outputWidth + "x" + parameters.outputHeight + " from samples...");
             String outFileName = parameters.outputFilePath;
-            if (!outFileName.endsWith(".bmp")) {
-                outFileName = outFileName + ".bmp";
-            }
             writeBitmap(outFileName, layout, BufferUtils.toArray(data), parameters.outputWidth, parameters.outputHeight);
             BufferUtils.release(data, samplePositions);
             System.out.println("Picture is written to file: " + outFileName);
@@ -181,14 +239,6 @@ public class SliceDump {
 
     private static int[] getAxisMapping(String axisString) throws IllegalArgumentException {
         int[] mapping = Arrays.stream(axisString.split(",")).mapToInt(Integer::parseInt).toArray();
-        if (mapping == null || mapping.length != 3) {
-            throw new IllegalArgumentException("Axis must be comma separated 3 values (either 0, 1, 2)");
-        }
-        for (Integer val : mapping) {
-            if (val < 0 || val > 2) {
-                throw new IllegalArgumentException("Axis must be comma separated 3 values (either 0, 1, 2)");
-            }
-        }
         return mapping;
     }
 
@@ -374,11 +424,9 @@ public class SliceDump {
     static void writeBitmap(String fileName, VolumeDataLayout layout,
                             float[] data, int output_width, int output_height) throws Exception {
 
-        final Optional<Float> min = IntStream.range(0, data.length).mapToObj(i -> data[i]).reduce((aFloat, aFloat2) -> Math.min(aFloat, aFloat2));
-        final Optional<Float> max = IntStream.range(0, data.length).mapToObj(i -> data[i]).reduce((aFloat, aFloat2) -> Math.max(aFloat, aFloat2));
-
-        final float channelValueRangeMax = layout.getChannelValueRangeMax(0);
-        final float channelValueRangeMin = layout.getChannelValueRangeMin(0);
+        DoubleSummaryStatistics dStats = IntStream.range(0, data.length).mapToDouble(i -> data[i]).summaryStatistics();
+        float min = (float)dStats.getMin();
+        float max = (float)dStats.getMax();
 
         final int colorComponentsCount = 3;
         int dataSize = output_width * output_height * colorComponentsCount;
@@ -388,7 +436,7 @@ public class SliceDump {
         for (int y = 0; y < output_height; y++) {
             for (int x = 0; x < output_width; x++) {
                 int inOffset = y * output_width + x;
-                final float ratio = (data[inOffset] - min.get()) / (max.get() - min.get());
+                final float ratio = (data[inOffset] - min) / (max - min);
                 byte value = (byte) interpolate(Byte.MIN_VALUE, Byte.MAX_VALUE, ratio);
                 int outOffset = inOffset * colorComponentsCount;
                 fileData[outOffset] = value;
@@ -398,9 +446,13 @@ public class SliceDump {
                 image.setRGB(x, y, new Color(ratio, ratio, ratio).getRGB());
             }
         }
-        final File imagefile = File.createTempFile("image", ".png");
-        System.out.println("Writing image : " + imagefile);
-        ImageIO.write(image, "png", imagefile);
+
+        int posDot = fileName.lastIndexOf(".");
+        String prefixImage = fileName.substring(0, posDot);
+
+        final File imageFile = File.createTempFile(prefixImage, ".png");
+        System.out.println("Writing image : " + imageFile.getPath());
+        ImageIO.write(image, "png", imageFile);
 
         long filesize = 54 + dataSize;
         byte[] bmpinfoheader = new byte[40];
