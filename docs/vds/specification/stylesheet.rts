@@ -1,0 +1,65 @@
+[STYLESHEET]
+name=My Style Sheet
+description=Small tweaks made to the Sphinx style sheet
+base=sphinx
+
+[VARIABLES]
+bw_darkblue=#222a41
+bw_blue=#1d566e
+bw_lightblue=#A0D7E5
+thin_blue_stroke=0.5pt,#A0D7E5
+
+[emphasis]
+font_color=#00a
+
+[default:Paragraph]
+# Use the sans_typeface for that modern look.
+typeface=$(sans_typeface)
+
+[strong]
+base=DEFAULT_STYLE
+font_color=#a00
+
+[header]
+base=header_footer
+padding_bottom=2pt
+border_bottom=5pt,#A0D7E5
+space_below=12pt
+
+[footer]
+border_top=2pt,#A0D7E5
+
+[index section label]
+typeface=$(sans_typeface)
+
+[admonition]
+inline_title=false
+space_above=9pt
+space_below=5pt
+padding_top=0
+padding_bottom=6pt
+border_top=$(thin_blue_stroke)
+border_bottom=$(thin_blue_stroke)
+
+# title page
+
+[title page rule]
+stroke=1pt,#ffffff
+
+[title page logo]
+horizontal_align=right
+padding_top=0pt
+space_above=0pt
+
+[title page title]
+font_color=$(bw_blue)
+text_align=left
+space_above=-120pt
+#font_size=48pt
+
+[title page author]
+text_align=left
+font_color=$(bw_blue)
+
+[title page date]
+text_align=left

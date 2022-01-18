@@ -1,0 +1,34 @@
+[TEMPLATE_CONFIGURATION]
+name = my article configuration
+template = article
+
+parts =
+    title
+    front_matter
+    contents
+stylesheet = stylesheet.rts
+abstract_location = title
+
+[SectionTitles]
+contents = 'Table of Contents'
+
+[AdmonitionTitles]
+caution = 'Careful!'
+warning = 'Please be warned'
+note = 'Note:'
+
+[VARIABLES]
+paper_size = A4
+
+[title]
+page_number_format = lowercase roman
+end_at_page = left
+
+[contents]
+page_number_format = number
+
+[title_page]
+top_margin = 0cm
+right_margin = 0cm
+
+
