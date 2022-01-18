@@ -1,0 +1,168 @@
+{
+  "axisDescriptors": [
+    {
+      "coordinateMax": 4500.0,
+      "coordinateMin": 0.0,
+      "name": "Sample",
+      "numSamples": 1126,
+      "unit": "ms"
+    },
+    {
+      "coordinateMax": 2536.0,
+      "coordinateMin": 1932.0,
+      "name": "Crossline",
+      "numSamples": 605,
+      "unit": "unitless"
+    },
+    {
+      "coordinateMax": 10369.0,
+      "coordinateMin": 9985.0,
+      "name": "Inline",
+      "numSamples": 385,
+      "unit": "unitless"
+    }
+  ],
+  "channelDescriptors": [
+    {
+      "allowLossyCompression": true,
+      "channelMapping": "Direct",
+      "components": "Components_1",
+      "discrete": false,
+      "format": "Format_R32",
+      "integerOffset": 0.0,
+      "integerScale": 1.0,
+      "mappedValues": 0,
+      "name": "Amplitude",
+      "noValue": 0.0,
+      "renderable": true,
+      "unit": "unitless",
+      "useNoValue": false,
+      "valueRange": [
+        -0.07938297837972641,
+        0.07938297837972641
+      ]
+    },
+    {
+      "allowLossyCompression": false,
+      "channelMapping": "PerTrace",
+      "components": "Components_1",
+      "discrete": false,
+      "format": "Format_U8",
+      "integerOffset": 0.0,
+      "integerScale": 1.0,
+      "mappedValues": 1,
+      "name": "Trace",
+      "noValue": 0.0,
+      "renderable": true,
+      "unit": "",
+      "useNoValue": false,
+      "valueRange": [
+        0.0,
+        256.0
+      ]
+    },
+    {
+      "allowLossyCompression": false,
+      "channelMapping": "PerTrace",
+      "components": "Components_1",
+      "discrete": false,
+      "format": "Format_U8",
+      "integerOffset": 0.0,
+      "integerScale": 1.0,
+      "mappedValues": 240,
+      "name": "SEGYTraceHeader",
+      "noValue": 0.0,
+      "renderable": true,
+      "unit": "",
+      "useNoValue": false,
+      "valueRange": [
+        0.0,
+        256.0
+      ]
+    }
+  ],
+  "layoutDescriptor": {
+    "brickSize": "BrickSize_128",
+    "brickSize2DMultiplier": 4,
+    "create2DLODs": true,
+    "forceFullResolutionDimension": false,
+    "fullResolutionDimension": -1,
+    "lodLevels": "LODLevels_2",
+    "negativeMargin": 4,
+    "positiveMargin": 4
+  },
+  "metadata": [
+    {
+      "category": "SurveyCoordinateSystem",
+      "name": "CRSWkt",
+      "type": "String",
+      "value": "PROJCS[\"ED50 / UTM zone 31N\",..."
+    },
+    {
+      "category": "SurveyCoordinateSystem",
+      "name": "Origin",
+      "type": "DoubleVector2",
+      "value": [
+        431953.90416783805,
+        6348552.886477016
+      ]
+    },
+    {
+      "category": "SurveyCoordinateSystem",
+      "name": "InlineSpacing",
+      "type": "DoubleVector2",
+      "value": [
+        3.0251294794220853,
+        12.129908201355414
+      ]
+    },
+    {
+      "category": "SurveyCoordinateSystem",
+      "name": "CrosslineSpacing",
+      "type": "DoubleVector2",
+      "value": [
+        -12.128725165562914,
+        3.024834437086093
+      ]
+    },
+    {
+      "category": "",
+      "name": "SEGYTextHeader",
+      "type": "BLOB",
+      "value": "QyAxIENMSU...CA="
+    },
+    {
+      "category": "SurveyCoordinateSystem",
+      "name": "OriginalOrigin",
+      "type": "DoubleVector2",
+      "value": [
+        431953.90416783805,
+        6348552.886477016
+      ]
+    },
+    {
+      "category": "SurveyCoordinateSystem",
+      "name": "OriginalInlineSpacing",
+      "type": "DoubleVector2",
+      "value": [
+        3.0251294794220853,
+        12.129908201355414
+      ]
+    },
+    {
+      "category": "SurveyCoordinateSystem",
+      "name": "OriginalCrosslineSpacing",
+      "type": "DoubleVector2",
+      "value": [
+        -12.128725165562914,
+        3.024834437086093
+      ]
+    },
+    {
+      "category": "SurveyCoordinateSystem",
+      "name": "Unit",
+      "type": "String",
+      "value": "m"
+    }
+  ]
+}

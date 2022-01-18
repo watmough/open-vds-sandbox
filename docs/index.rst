@@ -12,6 +12,7 @@ Welcome to OpenVDS's documentation!
 
   getting-started
   connection
+  vds/specification/index
 
   cppdoc/cpp-important-types-and-functions
   cppdoc/cpp-api
