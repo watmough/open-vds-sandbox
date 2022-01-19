@@ -8,6 +8,10 @@ target_link_libraries(SEGYImport PRIVATE Threads::Threads openvds segyutils json
 
 setCompilerFlagsForTools(SEGYImport)
 
+if(MSVC_VERSION LESS_EQUAL 1900)
+  set_source_files_properties(SEGYImport.cpp PROPERTIES COMPILE_FLAGS /bigobj)
+endif()
+
 if(WIN32)
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} setargv.obj")
 endif()
