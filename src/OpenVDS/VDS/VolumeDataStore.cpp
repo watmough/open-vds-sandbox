@@ -15,20 +15,23 @@
 ** limitations under the License.
 ****************************************************************************/
 
+#ifndef __EMSCRIPTEN__
 #include "VolumeDataStore.h"
 
 #include "VolumeDataLayoutImpl.h"
 
-#include "Wavelet.h"
 #include "VolumeDataHash.h"
-#include "Rle.h"
-#include "DataBlock.h"
 #include "ParsedMetadata.h"
 #include <OpenVDS/ValueConversion.h>
 #include <VDS/VDS.h>
 #include <VDS/GlobalStateImpl.h>
 
 #include <fmt/format.h>
+#endif
+
+#include "Wavelet.h"
+#include "Rle.h"
+#include "DataBlock.h"
 
 #include <stdlib.h>
 #include <assert.h>
@@ -38,6 +41,183 @@
 namespace OpenVDS
 {
 
+static uint32_t GetByteSize(const DataBlockDescriptor &descriptor)
+{
+  int32_t size[DataBlock::Dimensionality_Max];
+  size[0] = descriptor.SizeX;
+  size[1] = descriptor.SizeY;
+  size[2] = descriptor.SizeZ;
+  size[3] = 1;
+  return GetByteSize(size, descriptor.Format, descriptor.Components);
+}
+
+static void CopyLinearBufferIntoDataBlock(const void *sourceBuffer, const DataBlock &dataBlock, std::vector<uint8_t> &targetBuffer)
+{
+
+  int32_t sizeX = dataBlock.Size[0];
+  int32_t sizeY = dataBlock.Size[1];
+  int32_t sizeZ = dataBlock.Size[2];
+
+  int32_t allocatedSizeX = dataBlock.AllocatedSize[0];
+  int32_t allocatedSizeY = dataBlock.AllocatedSize[1];
+
+  if(dataBlock.Format == VolumeDataChannelDescriptor::Format_1Bit)
+  {
+    sizeX = ((sizeX * dataBlock.Components) + 7) / 8;
+  }
+
+  uint32_t elementSize = GetElementSize(dataBlock);
+
+  for(int32_t iZ = 0; iZ < sizeZ; iZ++)
+  {
+    for(int32_t iY = 0; iY < sizeY; iY++)
+    {
+      uint8_t *target = targetBuffer.data()                             +  (iZ * allocatedSizeY + iY) * allocatedSizeX * elementSize;
+      const uint8_t *source = static_cast<const uint8_t*>(sourceBuffer) +  (iZ * sizeY          + iY) * sizeX          * elementSize;
+      memcpy(target, source, size_t(sizeX) * elementSize);
+    }
+  }
+}
+
+bool DeserializeVolumeData(const std::vector<uint8_t> &serializedData, VolumeDataChannelDescriptor::Format format, CompressionMethod compressionMethod, const FloatRange &valueRange, float integerScale, float integerOffset, bool isUseNoValue, float noValue, int32_t adaptiveLevel, DataBlock &dataBlock, std::vector<uint8_t> &destination, Error &error)
+{
+  if(CompressionMethod_IsWavelet(compressionMethod))
+  {
+    const void *data = serializedData.data();
+
+    int32_t dataVersion = ((int32_t *)data)[0];
+    (void)dataVersion;
+    assert(dataVersion >= WAVELET_DATA_VERSION_1_4 && dataVersion <= WAVELET_DATA_VERSION_1_6);
+
+    bool isNormalize = false;
+    bool isLossless = false;
+
+    if((compressionMethod == CompressionMethod::WaveletNormalizeBlock) ||
+       (compressionMethod == CompressionMethod::WaveletNormalizeBlockLossless))
+    {
+      isNormalize = true;
+    }
+
+    if((compressionMethod == CompressionMethod::WaveletLossless) ||
+       (compressionMethod == CompressionMethod::WaveletNormalizeBlockLossless))
+    {
+      isLossless = true;
+    }
+
+    // if adaptive level is 0 or more, don't use lossless data
+    if (adaptiveLevel >= 0)
+    {
+      isLossless = false;
+    }
+    else
+    {
+      assert(adaptiveLevel == -1);
+      // Now we can use lossless if there is lossless data - set iAdaptivelevel to max adaptive.
+      adaptiveLevel = 0;
+    }
+
+    if (!Wavelet_Decompress(data, int32_t(serializedData.size()), format, valueRange, integerScale, integerOffset, isUseNoValue, noValue, isNormalize, adaptiveLevel, isLossless, dataBlock, destination, error))
+      return false;
+  }
+  else if(compressionMethod == CompressionMethod::RLE)
+  {
+    DataBlockDescriptor *dataBlockDescriptor = (DataBlockDescriptor *)serializedData.data();
+
+    if(!dataBlockDescriptor->IsValid())
+    {
+      error.code = -1;
+      error.string = "Failed to decode DataBlockDescriptor";
+      return false;
+    }
+
+    if (!InitializeDataBlock(*dataBlockDescriptor, dataBlock, error))
+      return false;
+
+    void * source = dataBlockDescriptor + 1;
+
+    int32_t byteSize = GetByteSize(*dataBlockDescriptor);
+    std::unique_ptr<uint8_t[]>buffer(new uint8_t[byteSize]);
+
+    int32_t decompressedSize = RleDecompress((uint8_t *)buffer.get(), byteSize, (uint8_t *)source);
+    (void)decompressedSize;
+    assert(decompressedSize == byteSize);
+
+    int allocatedSize = GetAllocatedByteSize(dataBlock);
+    destination.resize(allocatedSize);
+    CopyLinearBufferIntoDataBlock(buffer.get(), dataBlock, destination);
+  }
+  else if(compressionMethod == CompressionMethod::Zip)
+  {
+    DataBlockDescriptor *dataBlockDescriptor = (DataBlockDescriptor *)serializedData.data();
+
+    if(!dataBlockDescriptor->IsValid())
+    {
+      error.code = -1;
+      error.string = "Failed to decode DataBlockDescriptor";
+      return false;
+    }
+    if (!InitializeDataBlock(*dataBlockDescriptor, dataBlock, error))
+      return false;
+
+    void * source = dataBlockDescriptor + 1;
+
+    int32_t byteSize = GetByteSize(*dataBlockDescriptor);
+    std::unique_ptr<uint8_t[]> buffer(new uint8_t[byteSize]);
+
+    unsigned long destLen = byteSize;
+
+    int status = uncompress(buffer.get(), &destLen, (uint8_t *)source, uint32_t(serializedData.size() - sizeof(DataBlockDescriptor)));
+
+    if (status != Z_OK)
+    {
+      fprintf(stderr, "zlib uncompress failed (status %d) in VolumeDataStore_c::DeSerialize\n", status);
+      return false;
+    }
+
+    int allocatedSize = GetAllocatedByteSize(dataBlock);
+    destination.resize(allocatedSize);
+    CopyLinearBufferIntoDataBlock(buffer.get(), dataBlock, destination);
+  }
+  else if(compressionMethod == CompressionMethod::None)
+  {
+    DataBlockDescriptor *dataBlockDescriptor = (DataBlockDescriptor *)serializedData.data();
+
+    if(!dataBlockDescriptor->IsValid())
+    {
+      error.code = -1;
+      error.string = "Failed to decode DataBlockDescriptor";
+      return false;
+    }
+    if (!InitializeDataBlock(*dataBlockDescriptor, dataBlock, error))
+      return false;
+
+    void * source = dataBlockDescriptor + 1;
+
+    size_t sourceDataBlockSize = serializedData.size() - sizeof(*dataBlockDescriptor);
+    size_t requiredDataBlockSize = size_t(GetByteSize(*dataBlockDescriptor));
+
+    if (sourceDataBlockSize != requiredDataBlockSize)
+    {
+      error.string = "Required size of uncompressed chunk is not present. Possible data corruptions.";
+      error.code = -1;
+      return false;
+    }
+
+    int32_t byteSize = GetAllocatedByteSize(dataBlock);
+    destination.resize(byteSize);
+    CopyLinearBufferIntoDataBlock(source, dataBlock, destination);
+  }
+
+  if(dataBlock.Format != format)
+  {
+    error.string = "Formats doesn't match in deserialization\n";
+    error.code = -1;
+    return false;
+  }
+  return true;
+}
+
+#ifndef __EMSCRIPTEN__
 VolumeDataStore::VolumeDataStore(OpenOptions::ConnectionType connectionType)
   : m_globalStateVds(static_cast<GlobalStateImpl *>(GetGlobalState())->downloaded[connectionType],
                      static_cast<GlobalStateImpl *>(GetGlobalState())->downloadedChunks[connectionType],
@@ -222,16 +402,6 @@ VolumeDataStore::WriteChunk(const VolumeDataChunk& chunk, const std::vector<uint
     });
 }
 
-static uint32_t GetByteSize(const DataBlockDescriptor &descriptor)
-{
-  int32_t size[DataBlock::Dimensionality_Max];
-  size[0] = descriptor.SizeX;
-  size[1] = descriptor.SizeY;
-  size[2] = descriptor.SizeZ;
-  size[3] = 1;
-  return GetByteSize(size, descriptor.Format, descriptor.Components);
-}
-
 bool VolumeDataStore::Verify(const VolumeDataChunk &volumeDataChunk, const std::vector<uint8_t> &serializedData, CompressionMethod compressionMethod, bool isFullyRead)
 {
   bool isValid = false;
@@ -279,34 +449,6 @@ bool VolumeDataStore::Verify(const VolumeDataChunk &volumeDataChunk, const std::
   }
 
   return isValid;
-}
-
-static void CopyLinearBufferIntoDataBlock(const void *sourceBuffer, const DataBlock &dataBlock, std::vector<uint8_t> &targetBuffer)
-{
-
-  int32_t sizeX = dataBlock.Size[0];
-  int32_t sizeY = dataBlock.Size[1];
-  int32_t sizeZ = dataBlock.Size[2];
-
-  int32_t allocatedSizeX = dataBlock.AllocatedSize[0];
-  int32_t allocatedSizeY = dataBlock.AllocatedSize[1];
-
-  if(dataBlock.Format == VolumeDataChannelDescriptor::Format_1Bit)
-  {
-    sizeX = ((sizeX * dataBlock.Components) + 7) / 8;
-  }
-
-  uint32_t elementSize = GetElementSize(dataBlock);
-
-  for(int32_t iZ = 0; iZ < sizeZ; iZ++)
-  {
-    for(int32_t iY = 0; iY < sizeY; iY++)
-    {
-      uint8_t *target = targetBuffer.data()                             +  (iZ * allocatedSizeY + iY) * allocatedSizeX * elementSize;
-      const uint8_t *source = static_cast<const uint8_t*>(sourceBuffer) +  (iZ * sizeY          + iY) * sizeX          * elementSize;
-      memcpy(target, source, size_t(sizeX) * elementSize);
-    }
-  }
 }
 
 static bool CopyDataBlockIntoLinearBuffer(const DataBlock &dataBlock, const void *sourceBuffer, void *targetBuffer, int32_t bufferSize)
@@ -448,144 +590,6 @@ static int64_t GetSerializationTargetBufferSize(int64_t sourceSize, CompressionM
     assert(compressionMethod == CompressionMethod::None);
     return sizeof(DataBlockDescriptor) + sourceSize;
   }
-}
-
-bool DeserializeVolumeData(const std::vector<uint8_t> &serializedData, VolumeDataChannelDescriptor::Format format, CompressionMethod compressionMethod, const FloatRange &valueRange, float integerScale, float integerOffset, bool isUseNoValue, float noValue, int32_t adaptiveLevel, DataBlock &dataBlock, std::vector<uint8_t> &destination, Error &error)
-{
-  if(CompressionMethod_IsWavelet(compressionMethod))
-  {
-    const void *data = serializedData.data();
-
-    int32_t dataVersion = ((int32_t *)data)[0];
-    (void)dataVersion;
-    assert(dataVersion >= WAVELET_DATA_VERSION_1_4 && dataVersion <= WAVELET_DATA_VERSION_1_6);
-
-    bool isNormalize = false;
-    bool isLossless = false;
-
-    if((compressionMethod == CompressionMethod::WaveletNormalizeBlock) ||
-       (compressionMethod == CompressionMethod::WaveletNormalizeBlockLossless))
-    {
-      isNormalize = true;
-    }
-
-    if((compressionMethod == CompressionMethod::WaveletLossless) ||
-       (compressionMethod == CompressionMethod::WaveletNormalizeBlockLossless))
-    {
-      isLossless = true;
-    }
-
-    // if adaptive level is 0 or more, don't use lossless data
-    if (adaptiveLevel >= 0)
-    {
-      isLossless = false;
-    }
-    else
-    {
-      assert(adaptiveLevel == -1);
-      // Now we can use lossless if there is lossless data - set iAdaptivelevel to max adaptive.
-      adaptiveLevel = 0;
-    }
-
-    if (!Wavelet_Decompress(data, int32_t(serializedData.size()), format, valueRange, integerScale, integerOffset, isUseNoValue, noValue, isNormalize, adaptiveLevel, isLossless, dataBlock, destination, error))
-      return false;
-  }
-  else if(compressionMethod == CompressionMethod::RLE)
-  {
-    DataBlockDescriptor *dataBlockDescriptor = (DataBlockDescriptor *)serializedData.data();
-
-    if(!dataBlockDescriptor->IsValid())
-    {
-      error.code = -1;
-      error.string = "Failed to decode DataBlockDescriptor";
-      return false;
-    }
-
-    if (!InitializeDataBlock(*dataBlockDescriptor, dataBlock, error))
-      return false;
-
-    void * source = dataBlockDescriptor + 1;
-
-    int32_t byteSize = GetByteSize(*dataBlockDescriptor);
-    std::unique_ptr<uint8_t[]>buffer(new uint8_t[byteSize]);
-
-    int32_t decompressedSize = RleDecompress((uint8_t *)buffer.get(), byteSize, (uint8_t *)source);
-    (void)decompressedSize;
-    assert(decompressedSize == byteSize);
-
-    int allocatedSize = GetAllocatedByteSize(dataBlock);
-    destination.resize(allocatedSize);
-    CopyLinearBufferIntoDataBlock(buffer.get(), dataBlock, destination);
-  }
-  else if(compressionMethod == CompressionMethod::Zip)
-  {
-    DataBlockDescriptor *dataBlockDescriptor = (DataBlockDescriptor *)serializedData.data();
-
-    if(!dataBlockDescriptor->IsValid())
-    {
-      error.code = -1;
-      error.string = "Failed to decode DataBlockDescriptor";
-      return false;
-    }
-    if (!InitializeDataBlock(*dataBlockDescriptor, dataBlock, error))
-      return false;
-
-    void * source = dataBlockDescriptor + 1;
-
-    int32_t byteSize = GetByteSize(*dataBlockDescriptor);
-    std::unique_ptr<uint8_t[]> buffer(new uint8_t[byteSize]);
-
-    unsigned long destLen = byteSize;
-
-    int status = uncompress(buffer.get(), &destLen, (uint8_t *)source, uint32_t(serializedData.size() - sizeof(DataBlockDescriptor)));
-
-    if (status != Z_OK)
-    {
-      fprintf(stderr, "zlib uncompress failed (status %d) in VolumeDataStore_c::DeSerialize\n", status);
-      return false;
-    }
-
-    int allocatedSize = GetAllocatedByteSize(dataBlock);
-    destination.resize(allocatedSize);
-    CopyLinearBufferIntoDataBlock(buffer.get(), dataBlock, destination);
-  }
-  else if(compressionMethod == CompressionMethod::None)
-  {
-    DataBlockDescriptor *dataBlockDescriptor = (DataBlockDescriptor *)serializedData.data();
-
-    if(!dataBlockDescriptor->IsValid())
-    {
-      error.code = -1;
-      error.string = "Failed to decode DataBlockDescriptor";
-      return false;
-    }
-    if (!InitializeDataBlock(*dataBlockDescriptor, dataBlock, error))
-      return false;
-
-    void * source = dataBlockDescriptor + 1;
-
-    size_t sourceDataBlockSize = serializedData.size() - sizeof(*dataBlockDescriptor);
-    size_t requiredDataBlockSize = size_t(GetByteSize(*dataBlockDescriptor));
-
-    if (sourceDataBlockSize != requiredDataBlockSize)
-    {
-      error.string = "Required size of uncompressed chunk is not present. Possible data corruptions.";
-      error.code = -1;
-      return false;
-    }
-
-    int32_t byteSize = GetAllocatedByteSize(dataBlock);
-    destination.resize(byteSize);
-    CopyLinearBufferIntoDataBlock(source, dataBlock, destination);
-  }
-
-  if(dataBlock.Format != format)
-  {
-    error.string = "Formats doesn't match in deserialization\n";
-    error.code = -1;
-    return false;
-  }
-  return true;
 }
 
 static float GetConvertedConstantValue(VolumeDataChannelDescriptor const &volumeDataChannelDescriptor, VolumeDataChannelDescriptor::Format format, float noValue, VolumeDataHash const &constantValueVolumeDataHash)
@@ -870,5 +874,100 @@ VolumeDataStore::IsCompressionMethodSupported(CompressionMethod compressionMetho
 {
   return !CompressionMethod_IsWavelet(compressionMethod);
 }
+#endif
 
 }
+
+#ifdef __EMSCRIPTEN__
+
+#include <array>
+
+inline std::array<int32_t, 4> DataBlock_getArrayProperty(const int32_t (&values)[4])
+{
+  return std::array<int32_t, 4>{values[0], values[1], values[2], values[3]};
+}
+
+inline void DataBlock_setArrayProperty(int32_t (&destination)[4], const std::array<int32_t, 4> &source)
+{
+  std::copy(source.begin(), source.end(), destination);
+}
+
+std::array<int32_t, 4> DataBlock_getSize(const OpenVDS::DataBlock &dataBlock) { return DataBlock_getArrayProperty(dataBlock.Size); }
+void DataBlock_setSize(OpenVDS::DataBlock &dataBlock, const std::array<int32_t, 4> &size) { DataBlock_setArrayProperty(dataBlock.Size, size); }
+
+std::array<int32_t, 4> DataBlock_getAllocatedSize(const OpenVDS::DataBlock &dataBlock) { return DataBlock_getArrayProperty(dataBlock.AllocatedSize); }
+void DataBlock_setAllocatedSize(OpenVDS::DataBlock &dataBlock, const std::array<int32_t, 4> &size) { DataBlock_setArrayProperty(dataBlock.AllocatedSize, size); }
+
+std::array<int32_t, 4> DataBlock_getPitch(const OpenVDS::DataBlock &dataBlock) { return DataBlock_getArrayProperty(dataBlock.Pitch); }
+void DataBlock_setPitch(OpenVDS::DataBlock &dataBlock, const std::array<int32_t, 4> &pitch) { DataBlock_setArrayProperty(dataBlock.Pitch, pitch); }
+
+size_t vector_u8_data(std::vector<uint8_t> &vec)
+{
+  return (size_t)vec.data();
+}
+
+#include <emscripten/bind.h>
+EMSCRIPTEN_BINDINGS(module)
+{
+  emscripten::enum_<OpenVDS::VolumeDataChannelDescriptor::Format>("Format")
+    .value("Any",   OpenVDS::VolumeDataChannelDescriptor::Format_Any)
+    .value("_1Bit", OpenVDS::VolumeDataChannelDescriptor::Format_1Bit)
+    .value("U8",    OpenVDS::VolumeDataChannelDescriptor::Format_U8)
+    .value("U16",   OpenVDS::VolumeDataChannelDescriptor::Format_U16)
+    .value("R32",   OpenVDS::VolumeDataChannelDescriptor::Format_R32)
+    .value("U32",   OpenVDS::VolumeDataChannelDescriptor::Format_U32)
+    .value("R64",   OpenVDS::VolumeDataChannelDescriptor::Format_R64)
+    .value("U64",   OpenVDS::VolumeDataChannelDescriptor::Format_U64);
+
+  emscripten::enum_<OpenVDS::VolumeDataChannelDescriptor::Components>("Components")
+    .value("_1",    OpenVDS::VolumeDataChannelDescriptor::Components_1)
+    .value("_2",    OpenVDS::VolumeDataChannelDescriptor::Components_2)
+    .value("_4",    OpenVDS::VolumeDataChannelDescriptor::Components_4);
+
+  emscripten::enum_<enum OpenVDS::DataBlock::Dimensionality>("Dimensionality")
+    .value("_1",    OpenVDS::DataBlock::Dimensionality_1)
+    .value("_2",    OpenVDS::DataBlock::Dimensionality_2)
+    .value("_3",    OpenVDS::DataBlock::Dimensionality_3)
+    .value("_4",    OpenVDS::DataBlock::Dimensionality_4);
+
+  emscripten::enum_<OpenVDS::CompressionMethod>("CompressionMethod")
+    .value("None",                          OpenVDS::CompressionMethod::None)
+    .value("Wavelet",                       OpenVDS::CompressionMethod::Wavelet)
+    .value("RLE",                           OpenVDS::CompressionMethod::RLE)
+    .value("Zip",                           OpenVDS::CompressionMethod::Zip)
+    .value("WaveletNormalizeBlock",         OpenVDS::CompressionMethod::WaveletNormalizeBlock)
+    .value("WaveletLossless",               OpenVDS::CompressionMethod::WaveletLossless)
+    .value("WaveletNormalizeBlockLossless", OpenVDS::CompressionMethod::WaveletNormalizeBlockLossless);
+
+  emscripten::class_<OpenVDS::FloatRange>("FloatRange")
+    .constructor<>()
+    .constructor<float, float>()
+    .property("Min", &OpenVDS::FloatRange::Min)
+    .property("Max", &OpenVDS::FloatRange::Max);
+
+  emscripten::value_array<std::array<int32_t, 4>>("i32x4")
+    .element(emscripten::index<0>())
+    .element(emscripten::index<1>())
+    .element(emscripten::index<2>())
+    .element(emscripten::index<3>());
+
+  emscripten::class_<OpenVDS::DataBlock>("DataBlock")
+    .constructor<>()
+    .property("Format",          &OpenVDS::DataBlock::Format)
+    .property("Components",      &OpenVDS::DataBlock::Components)
+    .property("Dimensionality",  &OpenVDS::DataBlock::Dimensionality)
+    .property("Size",            &DataBlock_getSize,          &DataBlock_setSize)
+    .property("AllocatedSize",   &DataBlock_getAllocatedSize, &DataBlock_setAllocatedSize)
+    .property("Pitch",           &DataBlock_getPitch,         &DataBlock_setPitch);
+
+  emscripten::class_<OpenVDS::Error>("Error")
+    .constructor<>()
+    .property("code",   &OpenVDS::Error::code)
+    .property("string", &OpenVDS::Error::string);
+
+  emscripten::function("DeserializeVolumeData", &OpenVDS::DeserializeVolumeData);
+
+  emscripten::register_vector<uint8_t>("vector_u8")
+    .function("data", &vector_u8_data);
+}
+#endif

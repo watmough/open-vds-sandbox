@@ -122,6 +122,16 @@ folder:
 `$ cmake -P CMake/Fetch3rdParty.cmake`
 Then start like other cmake projects in Visual Studio
 
+#### Emscripten
+OpenVDS can be compiled with Emscripten to a javascript module. The module
+exports the DeserializeVolumeData() function.
+
+To build the module, the Emscripten SDK from https://github.com/emscripten-core
+is needed. Make sure cmake is in the path. Activate the Emscripten SDK
+environment, make a build folder, and run
+"emcmake cmake -DCMAKE_BUILD_TYPE=Release <path to open-vds>" and
+"cmake --build ." from the build folder.
+
 
 #### Build options
 - BUILD_PYTHON (ON|OFF)

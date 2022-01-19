@@ -26,11 +26,18 @@
 #include <cmath>
 #include <string.h>
 
-#include <mmintrin.h>
+#ifdef __EMSCRIPTEN__
+// Make the Emscripten SSE header file compile.
+#define __unaligned Unaligned
+#endif
+
 #include <xmmintrin.h>
 #include <emmintrin.h>
 #include <smmintrin.h>
 
+#ifdef __EMSCRIPTEN__
+#undef __unaligned
+#endif
 
 namespace OpenVDS
 {

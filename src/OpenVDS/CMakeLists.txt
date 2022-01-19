@@ -1,111 +1,136 @@
-set(SOURCE_FILES
-  OpenVDS.cpp
-  IO/File.cpp
-  IO/Linux_File.cpp
-  IO/Win_File.cpp
-  IO/IOManager.cpp
-  IO/IOManagerAWS.cpp
-  IO/IOManagerAWSCurl.cpp
-  IO/IOManagerAzure.cpp
-  IO/IOManagerAzureSdkForCpp.cpp
-  IO/IOManagerInMemory.cpp
-  IO/IOManagerCurl.cpp
-  IO/IOManagerAzurePresigned.cpp
-  IO/IOManagerGoogle.cpp
-  IO/IOManagerHttp.cpp
-  IO/IOManagerDms.cpp
-  IO/IOManagerDmsFactory.cpp
-  IO/IORefreshToken.cpp
-  BulkDataStore/HueBulkDataStore.cpp
-  BulkDataStore/ExtentAllocator.cpp
-  BulkDataStore/VDSObjectParser.cpp
-  VDS/VolumeDataPartition.cpp
-  VDS/VolumeDataChannelMapping.cpp
-  VDS/VolumeDataLayer.cpp
-  VDS/VolumeDataLayoutImpl.cpp
-  VDS/VolumeDataChunk.cpp
-  VDS/VolumeDataRegion.cpp
-  VDS/VolumeDataHash.cpp
-  VDS/VolumeDataPageAccessorImpl.cpp
-  VDS/VolumeDataAccessManagerImpl.cpp
-  VDS/VolumeDataPageImpl.cpp
-  VDS/VolumeDataAccessor.cpp
-  VDS/DimensionGroup.cpp
-  VDS/ParseVDSJson.cpp
-  VDS/MetadataManager.cpp
-  VDS/VolumeDataStore.cpp
-  VDS/VolumeDataStoreIOManager.cpp
-  VDS/VolumeDataStoreVDSFile.cpp
-  VDS/Wavelet.cpp
-  VDS/WaveletAdaptiveLL.cpp
-  VDS/DataBlock.cpp
-  VDS/FSE/entropy_common.cpp
-  VDS/FSE/fse_decompress.cpp
-  VDS/Rle.cpp
-  VDS/VolumeDataRequestProcessor.cpp
-  VDS/VolumeIndexer.cpp
-  VDS/Env.cpp
-  VDS/StringToDouble.cpp
-  ${CMAKE_CURRENT_BINARY_DIR}/VDS/GetGitRevision.cpp
-  ${COMMON_DIR}/Base64/Base64.cpp)
+if (EMSCRIPTEN)
+  set(SOURCE_FILES
+    VDS/VolumeDataStore.cpp
+    VDS/Wavelet.cpp
+    VDS/WaveletAdaptiveLL.cpp
+    VDS/DataBlock.cpp
+    VDS/FSE/entropy_common.cpp
+    VDS/FSE/fse_decompress.cpp
+    VDS/Rle.cpp
+    ${CMAKE_CURRENT_BINARY_DIR}/VDS/GetGitRevision.cpp)
 
-set (PRIVATE_HEADER_FILES
-  IO/File.h
-  IO/IOManager.h
-  IO/IOManagerAWS.h
-  IO/IOManagerAWSCurl.h
-  IO/IOManagerAzure.h
-  IO/IOManagerAzureSdkForCpp.h
-  IO/IOManagerInMemory.h
-  IO/IOManagerCurl.h
-  IO/IOManagerAzurePresigned.h
-  IO/IOManagerGoogle.h
-  IO/IOManagerHttp.h
-  IO/IOManagerDms.h
-  IO/IOManagerDmsFactory.h
-  IO/IOManagerRequestImpl.h
-  IO/IOManagerTransformer.h
-  IO/IORefreshToken.h
-  VDS/VDS.h
-  VDS/VolumeDataPartition.h
-  VDS/VolumeDataChannelMapping.h
-  VDS/VolumeDataLayer.h
-  VDS/VolumeDataLayoutImpl.h
-  VDS/VolumeDataChunk.h
-  VDS/VolumeDataRegion.h
-  VDS/VolumeDataHash.h
-  VDS/VolumeDataPageAccessorImpl.h
-  VDS/VolumeDataAccessManagerImpl.h
-  VDS/VolumeDataAccessor.h
-  VDS/VolumeDataPageImpl.h
-  VDS/DimensionGroup.h
-  VDS/Hash.h
-  VDS/Bitmask.h
-  VDS/ParseVDSJson.h
-  VDS/MetadataManager.h
-  VDS/IntrusiveList.h
-  VDS/VolumeDataStore.h
-  VDS/VolumeDataStoreIOManager.h
-  VDS/VolumeDataStoreVDSFile.h
-  VDS/Wavelet.h
-  VDS/WaveletAdaptiveLL.h
-  VDS/WaveletTypes.h
-  VDS/DataBlock.h
-  VDS/WaveletSSETransform.h
-  VDS/FSE/bitstream.h
-  VDS/FSE/error_private.h
-  VDS/FSE/error_public.h
-  VDS/FSE/mem.h
-  VDS/FSE/fse.h
-  VDS/Rle.h
-  VDS/VolumeDataRequestProcessor.h
-  VDS/Env.h
-  VDS/ConnectionStringParser.h
-  VDS/GlobalStateImpl.h
-  VDS/StringToDouble.h
-  ${COMMON_DIR}/Base64/Base64.h
-  ${COMMON_DIR}/ThreadPool/ThreadPool.h
-  json_cpp_include.h)
+  set (PRIVATE_HEADER_FILES
+    VDS/Wavelet.h
+    VDS/WaveletAdaptiveLL.h
+    VDS/WaveletTypes.h
+    VDS/DataBlock.h
+    VDS/WaveletSSETransform.h
+    VDS/FSE/bitstream.h
+    VDS/FSE/error_private.h
+    VDS/FSE/error_public.h
+    VDS/FSE/mem.h
+    VDS/FSE/fse.h
+    VDS/Rle.h)
+else()
+  set(SOURCE_FILES
+    OpenVDS.cpp
+    IO/File.cpp
+    IO/Linux_File.cpp
+    IO/Win_File.cpp
+    IO/IOManager.cpp
+    IO/IOManagerAWS.cpp
+    IO/IOManagerAWSCurl.cpp
+    IO/IOManagerAzure.cpp
+    IO/IOManagerAzureSdkForCpp.cpp
+    IO/IOManagerInMemory.cpp
+    IO/IOManagerCurl.cpp
+    IO/IOManagerAzurePresigned.cpp
+    IO/IOManagerGoogle.cpp
+    IO/IOManagerHttp.cpp
+    IO/IOManagerDms.cpp
+    IO/IOManagerDmsFactory.cpp
+    IO/IORefreshToken.cpp
+    BulkDataStore/HueBulkDataStore.cpp
+    BulkDataStore/ExtentAllocator.cpp
+    BulkDataStore/VDSObjectParser.cpp
+    VDS/VolumeDataPartition.cpp
+    VDS/VolumeDataChannelMapping.cpp
+    VDS/VolumeDataLayer.cpp
+    VDS/VolumeDataLayoutImpl.cpp
+    VDS/VolumeDataChunk.cpp
+    VDS/VolumeDataRegion.cpp
+    VDS/VolumeDataHash.cpp
+    VDS/VolumeDataPageAccessorImpl.cpp
+    VDS/VolumeDataAccessManagerImpl.cpp
+    VDS/VolumeDataPageImpl.cpp
+    VDS/VolumeDataAccessor.cpp
+    VDS/DimensionGroup.cpp
+    VDS/ParseVDSJson.cpp
+    VDS/MetadataManager.cpp
+    VDS/VolumeDataStore.cpp
+    VDS/VolumeDataStoreIOManager.cpp
+    VDS/VolumeDataStoreVDSFile.cpp
+    VDS/Wavelet.cpp
+    VDS/WaveletAdaptiveLL.cpp
+    VDS/DataBlock.cpp
+    VDS/FSE/entropy_common.cpp
+    VDS/FSE/fse_decompress.cpp
+    VDS/Rle.cpp
+    VDS/VolumeDataRequestProcessor.cpp
+    VDS/VolumeIndexer.cpp
+    VDS/Env.cpp
+    VDS/StringToDouble.cpp
+    ${CMAKE_CURRENT_BINARY_DIR}/VDS/GetGitRevision.cpp
+    ${COMMON_DIR}/Base64/Base64.cpp)
+
+  set (PRIVATE_HEADER_FILES
+    IO/File.h
+    IO/IOManager.h
+    IO/IOManagerAWS.h
+    IO/IOManagerAWSCurl.h
+    IO/IOManagerAzure.h
+    IO/IOManagerAzureSdkForCpp.h
+    IO/IOManagerInMemory.h
+    IO/IOManagerCurl.h
+    IO/IOManagerAzurePresigned.h
+    IO/IOManagerGoogle.h
+    IO/IOManagerHttp.h
+    IO/IOManagerDms.h
+    IO/IOManagerDmsFactory.h
+    IO/IOManagerRequestImpl.h
+    IO/IOManagerTransformer.h
+    IO/IORefreshToken.h
+    VDS/VDS.h
+    VDS/VolumeDataPartition.h
+    VDS/VolumeDataChannelMapping.h
+    VDS/VolumeDataLayer.h
+    VDS/VolumeDataLayoutImpl.h
+    VDS/VolumeDataChunk.h
+    VDS/VolumeDataRegion.h
+    VDS/VolumeDataHash.h
+    VDS/VolumeDataPageAccessorImpl.h
+    VDS/VolumeDataAccessManagerImpl.h
+    VDS/VolumeDataAccessor.h
+    VDS/VolumeDataPageImpl.h
+    VDS/DimensionGroup.h
+    VDS/Hash.h
+    VDS/Bitmask.h
+    VDS/ParseVDSJson.h
+    VDS/MetadataManager.h
+    VDS/IntrusiveList.h
+    VDS/VolumeDataStore.h
+    VDS/VolumeDataStoreIOManager.h
+    VDS/VolumeDataStoreVDSFile.h
+    VDS/Wavelet.h
+    VDS/WaveletAdaptiveLL.h
+    VDS/WaveletTypes.h
+    VDS/DataBlock.h
+    VDS/WaveletSSETransform.h
+    VDS/FSE/bitstream.h
+    VDS/FSE/error_private.h
+    VDS/FSE/error_public.h
+    VDS/FSE/mem.h
+    VDS/FSE/fse.h
+    VDS/Rle.h
+    VDS/VolumeDataRequestProcessor.h
+    VDS/Env.h
+    VDS/ConnectionStringParser.h
+    VDS/GlobalStateImpl.h
+    VDS/StringToDouble.h
+    ${COMMON_DIR}/Base64/Base64.h
+    ${COMMON_DIR}/ThreadPool/ThreadPool.h
+    json_cpp_include.h)
+endif()
 
 file(GLOB EXPORTED_HEADER_FILES OpenVDS/*.h)
 
@@ -120,7 +145,7 @@ set_source_files_properties(VDS/FSE/fse_decompress.cpp PROPERTIES COMPILE_FLAGS 
 
 #to work around Aws::String problem
 #https://github.com/aws/aws-sdk-cpp/blob/266d7682c3d07d41618c41a3521811e1219c1bc7/aws-cpp-sdk-core/include/aws/core/utils/memory/stl/AWSString.h#L21
-if (NOT MSVC)
+if (NOT MSVC AND NOT EMSCRIPTEN)
   set_source_files_properties(IO/IOManagerAWS.cpp PROPERTIES COMPILE_FLAGS -fvisibility=default)
   set_source_files_properties(IO/IOManagerAWSCurl.cpp PROPERTIES COMPILE_FLAGS -fvisibility=default)
 endif()
@@ -142,8 +167,10 @@ function(compileInTarget to_target source_target)
   addSystemHeadersToTarget(${to_target} "${src_include}")
 endfunction()
 
-compileInTarget(openvds_objects fmt::fmt)
-compileInTarget(openvds_objects jsoncpp_lib_static)
+if (NOT EMSCRIPTEN)
+  compileInTarget(openvds_objects fmt::fmt)
+  compileInTarget(openvds_objects jsoncpp_lib_static)
+endif()
 
 if(MSVC_VERSION)
   set_source_files_properties(VDS/VolumeDataAccessor.cpp PROPERTIES COMPILE_FLAGS /bigobj)
@@ -193,84 +220,86 @@ if (WIN32)
   target_compile_definitions(openvds_objects PRIVATE _CRT_SECURE_NO_WARNINGS)
 endif()
 
-if (DISABLE_AWS_IOMANAGER)
-  target_compile_definitions(openvds_objects PRIVATE OPENVDS_NO_AWS_IOMANAGER)
-  set_source_files_properties(IO/IOManagerAWS.cpp PROPERTIES HEADER_FILE_ONLY TRUE)
-  set_source_files_properties(IO/IOManagerAWSCurl.cpp PROPERTIES HEADER_FILE_ONLY TRUE)
-else()
-  if (aws-cpp-sdk_EXTERNAL_LIBS)
-    target_link_libraries(openvds_objects PRIVATE ${aws-cpp-sdk_EXTERNAL_LIBS})
+if (NOT EMSCRIPTEN)
+  if (DISABLE_AWS_IOMANAGER)
+    target_compile_definitions(openvds_objects PRIVATE OPENVDS_NO_AWS_IOMANAGER)
+    set_source_files_properties(IO/IOManagerAWS.cpp PROPERTIES HEADER_FILE_ONLY TRUE)
+    set_source_files_properties(IO/IOManagerAWSCurl.cpp PROPERTIES HEADER_FILE_ONLY TRUE)
+  else()
+    if (aws-cpp-sdk_EXTERNAL_LIBS)
+      target_link_libraries(openvds_objects PRIVATE ${aws-cpp-sdk_EXTERNAL_LIBS})
+    endif()
   endif()
-endif()
 
-if (DISABLE_AZURE_IOMANAGER)
-  target_compile_definitions(openvds_objects PRIVATE OPENVDS_NO_AZURE_IOMANAGER)
-  set_source_files_properties(IO/IOManagerAzure.cpp PROPERTIES HEADER_FILE_ONLY TRUE)
-else()
-  #Azure storage exposes boost_system on linux et al.
-  if (UNIX)
-    find_package(Boost REQUIRED COMPONENTS system date_time regex)
-    target_link_libraries(openvds_objects PRIVATE Boost::system)
+  if (DISABLE_AZURE_IOMANAGER)
+    target_compile_definitions(openvds_objects PRIVATE OPENVDS_NO_AZURE_IOMANAGER)
+    set_source_files_properties(IO/IOManagerAzure.cpp PROPERTIES HEADER_FILE_ONLY TRUE)
+  else()
+    #Azure storage exposes boost_system on linux et al.
+    if (UNIX)
+      find_package(Boost REQUIRED COMPONENTS system date_time regex)
+      target_link_libraries(openvds_objects PRIVATE Boost::system)
+    endif()
   endif()
-endif()
 
-if ((NOT BUILD_CURL) AND ((NOT DISABLE_AZURESDKFORCPP_IOMANAGER) OR (NOT DISABLE_CURL_IOMANAGER)))
-  find_package(CURL REQUIRED)
-  target_link_libraries(openvds_objects PRIVATE CURL::libcurl)
-endif()
-
-if (DISABLE_AZURESDKFORCPP_IOMANAGER)
-  target_compile_definitions(openvds_objects PRIVATE OPENVDS_NO_AZURE_SDK_FOR_CPP_IOMANAGER)
-  set_source_files_properties(IO/IOManagerAzureSdkForCpp.cpp PROPERTIES HEADER_FILE_ONLY TRUE)
-else()
-  if (UNIX)
-    find_package(LibXml2 REQUIRED)
-    target_link_libraries(openvds_objects PRIVATE LibXml2::LibXml2)
+  if ((NOT BUILD_CURL) AND ((NOT DISABLE_AZURESDKFORCPP_IOMANAGER) OR (NOT DISABLE_CURL_IOMANAGER)))
+    find_package(CURL REQUIRED)
+    target_link_libraries(openvds_objects PRIVATE CURL::libcurl)
   endif()
-endif()
-if (DISABLE_CURL_IOMANAGER)
-  set_source_files_properties(IO/IOManagerCurl.cpp PROPERTIES HEADER_FILE_ONLY TRUE)
-  set_source_files_properties(IO/IOManagerHttp.cpp PROPERTIES HEADER_FILE_ONLY TRUE)
-  target_compile_definitions(openvds_objects PRIVATE OPENVDS_NO_HTTP_IOMANAGER)
-else()
-  if (NOT BUILD_UV)
-    find_package(LibUV REQUIRED)
-    target_link_libraries(openvds_objects PRIVATE LibUV::LibUV)
+
+  if (DISABLE_AZURESDKFORCPP_IOMANAGER)
+    target_compile_definitions(openvds_objects PRIVATE OPENVDS_NO_AZURE_SDK_FOR_CPP_IOMANAGER)
+    set_source_files_properties(IO/IOManagerAzureSdkForCpp.cpp PROPERTIES HEADER_FILE_ONLY TRUE)
+  else()
+    if (UNIX)
+      find_package(LibXml2 REQUIRED)
+      target_link_libraries(openvds_objects PRIVATE LibXml2::LibXml2)
+    endif()
   endif()
-endif()
-
-if (DISABLE_AZURE_PRESIGNED_IOMANAGER)
-  target_compile_definitions(openvds_objects PRIVATE OPENVDS_NO_AZURE_PRESIGNED_IOMANAGER)
-  set_source_files_properties(IO/IOManagerAzurePresigned.cpp PROPERTIES HEADER_FILE_ONLY TRUE)
-endif()
-
-if (DISABLE_GCP_IOMANAGER)
-  target_compile_definitions(openvds_objects PRIVATE OPENVDS_NO_GCP_IOMANAGER)
-  set_source_files_properties(IO/IOManagerGoogle.cpp PROPERTIES HEADER_FILE_ONLY TRUE)
-else()
-  if (WIN32 AND NOT USE_LIBRESSL)
-    find_package(OpenSSL REQUIRED)
-    target_link_libraries(openvds_objects PRIVATE OpenSSL::SSL OpenSSL::Crypto)
+  if (DISABLE_CURL_IOMANAGER)
+    set_source_files_properties(IO/IOManagerCurl.cpp PROPERTIES HEADER_FILE_ONLY TRUE)
+    set_source_files_properties(IO/IOManagerHttp.cpp PROPERTIES HEADER_FILE_ONLY TRUE)
+    target_compile_definitions(openvds_objects PRIVATE OPENVDS_NO_HTTP_IOMANAGER)
+  else()
+    if (NOT BUILD_UV)
+      find_package(LibUV REQUIRED)
+      target_link_libraries(openvds_objects PRIVATE LibUV::LibUV)
+    endif()
   endif()
-  target_link_libraries(openvds_objects PRIVATE google_cloud_ovds)
-endif()
 
-if (DISABLE_DMS_IOMANAGER)
-  target_compile_definitions(openvds_objects PRIVATE OPENVDS_NO_DMS_IOMANAGER)
-  set_source_files_properties(IO/IOManagerDms.cpp IO/IOManagerDmsFactory.cpp PROPERTIES HEADER_FILE_ONLY TRUE)
-else()
-  add_dependencies(openvds_objects sdapi)
-  target_include_directories(openvds_objects PRIVATE ${dms_SOURCE_DIR}/src/src/core)
-  target_link_libraries(openvds_objects PRIVATE $<TARGET_LINKER_FILE:sdapi>)
-endif()
+  if (DISABLE_AZURE_PRESIGNED_IOMANAGER)
+    target_compile_definitions(openvds_objects PRIVATE OPENVDS_NO_AZURE_PRESIGNED_IOMANAGER)
+    set_source_files_properties(IO/IOManagerAzurePresigned.cpp PROPERTIES HEADER_FILE_ONLY TRUE)
+  endif()
 
-if (WIN32)
-  target_link_libraries(openvds_objects PRIVATE crypt32 wsock32 ws2_32)
-else()
-  target_link_libraries(openvds_objects PRIVATE ssl crypto)
-endif()
+  if (DISABLE_GCP_IOMANAGER)
+    target_compile_definitions(openvds_objects PRIVATE OPENVDS_NO_GCP_IOMANAGER)
+    set_source_files_properties(IO/IOManagerGoogle.cpp PROPERTIES HEADER_FILE_ONLY TRUE)
+  else()
+    if (WIN32 AND NOT USE_LIBRESSL)
+      find_package(OpenSSL REQUIRED)
+      target_link_libraries(openvds_objects PRIVATE OpenSSL::SSL OpenSSL::Crypto)
+    endif()
+    target_link_libraries(openvds_objects PRIVATE google_cloud_ovds)
+  endif()
 
-target_link_libraries(openvds_objects PRIVATE Threads::Threads)
+  if (DISABLE_DMS_IOMANAGER)
+    target_compile_definitions(openvds_objects PRIVATE OPENVDS_NO_DMS_IOMANAGER)
+    set_source_files_properties(IO/IOManagerDms.cpp IO/IOManagerDmsFactory.cpp PROPERTIES HEADER_FILE_ONLY TRUE)
+  else()
+    add_dependencies(openvds_objects sdapi)
+    target_include_directories(openvds_objects PRIVATE ${dms_SOURCE_DIR}/src/src/core)
+    target_link_libraries(openvds_objects PRIVATE $<TARGET_LINKER_FILE:sdapi>)
+  endif()
+
+  if (WIN32)
+    target_link_libraries(openvds_objects PRIVATE crypt32 wsock32 ws2_32)
+  else()
+    target_link_libraries(openvds_objects PRIVATE ssl crypto)
+  endif()
+
+  target_link_libraries(openvds_objects PRIVATE Threads::Threads)
+endif()
 
 if (OpenMP_CXX_FOUND)
     target_link_libraries(openvds_objects PRIVATE OpenMP::OpenMP_CXX)
@@ -278,25 +307,29 @@ endif()
 
 if (BUILD_ZLIB)
   add_dependencies(openvds_objects zlib)
+elseif (EMSCRIPTEN)
+  target_compile_options(openvds_objects PRIVATE -sUSE_ZLIB=1)
 else()
   find_package(ZLIB REQUIRED)
   target_link_libraries(openvds_objects PRIVATE ZLIB::ZLIB)
 endif()
 
-if (WIN32)
-  set_source_files_properties(IO/Linux_File.cpp PROPERTIES HEADER_FILE_ONLY TRUE)
-elseif (UNIX)
-  set_source_files_properties(IO/Win_File.cpp PROPERTIES HEADER_FILE_ONLY TRUE)
+if (NOT EMSCRIPTEN)
+  if (WIN32)
+    set_source_files_properties(IO/Linux_File.cpp PROPERTIES HEADER_FILE_ONLY TRUE)
+  elseif (UNIX)
+    set_source_files_properties(IO/Win_File.cpp PROPERTIES HEADER_FILE_ONLY TRUE)
 
-  set(CMAKE_REQUIRED_DEFINITIONS -D_GNU_SOURCE)
-  check_symbol_exists(syncfs "unistd.h" HAVE_SYNCFS)
-  set(CMAKE_REQUIRED_DEFINITIONS "")
+    set(CMAKE_REQUIRED_DEFINITIONS -D_GNU_SOURCE)
+    check_symbol_exists(syncfs "unistd.h" HAVE_SYNCFS)
+    set(CMAKE_REQUIRED_DEFINITIONS "")
 
-  if (HAVE_SYNCFS)
-    set_source_files_properties(IO/Linux_File.cpp
-      PROPERTIES COMPILE_DEFINITIONS
-      HAVE_SYNCFS
-    )
+    if (HAVE_SYNCFS)
+      set_source_files_properties(IO/Linux_File.cpp
+        PROPERTIES COMPILE_DEFINITIONS
+        HAVE_SYNCFS
+      )
+    endif()
   endif()
 endif()
 
@@ -304,8 +337,15 @@ if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
   set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR}/Dist/OpenVDS CACHE STRING "" FORCE)
 endif(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 
-add_library(openvds $<TARGET_OBJECTS:openvds_objects>)
-add_library(openvds::openvds ALIAS openvds)
+if (EMSCRIPTEN)
+  add_executable(openvds $<TARGET_OBJECTS:openvds_objects>)
+  add_executable(openvds::openvds ALIAS openvds)
+  target_compile_options(openvds_objects PRIVATE -msimd128)
+  target_link_options(openvds PRIVATE --bind -lz -sMODULARIZE=1 -sSINGLE_FILE=1 -sENVIRONMENT='web,worker' -sALLOW_MEMORY_GROWTH=1)
+else()
+  add_library(openvds $<TARGET_OBJECTS:openvds_objects>)
+  add_library(openvds::openvds ALIAS openvds)
+endif()
 target_link_libraries(openvds PRIVATE openvds_objects)
 
 setCommonTargetProperties(openvds_objects)

@@ -1,3 +1,5 @@
 add_subdirectory(OpenVDS)
 
-add_subdirectory(SEGYUtils)
+if (NOT EMSCRIPTEN)
+  add_subdirectory(SEGYUtils)
+endif()

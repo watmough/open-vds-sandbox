@@ -15,7 +15,9 @@
 ** limitations under the License.
 ****************************************************************************/
 
+#ifndef __EMSCRIPTEN__
 #include "VolumeDataStore.h"
+#endif
 #include "Wavelet.h"
 
 #include <assert.h>
