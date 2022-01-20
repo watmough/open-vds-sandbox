@@ -28,10 +28,10 @@ learning workloads.
 
 .. note::
 
-  While the VDS specification supports user-defined named metadata, :ref:`the Metadata chapter <vds_metadata>` describes the
-  set of predefined required and optional metadata, as defined and managed by the OpenVDS subcommittee, for VDS data to
-  be used in seismic applications. Additional named metadata types should be brought up with the OpenVDS subcommittee
-  for inclusion in the predefined list.
+  While the VDS specification supports user-defined named metadata, :ref:`the Metadata chapter <vds_metadata>` describes
+  the set of predefined required and optional metadata, as defined and managed by the OSDU Data Definitions
+  subcommittee, for VDS data to be used in seismic applications. Additional named metadata types should be brought up
+  with the OSDU Data Definitions subcommittee for inclusion in the predefined list.
 
 There are two different storage backends for VDSs:
 
