@@ -4,11 +4,13 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.FloatBuffer;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.DoubleSummaryStatistics;
+import java.util.Locale;
 import java.util.stream.IntStream;
 
 public class SliceDump {
@@ -56,7 +58,7 @@ public class SliceDump {
                 params.outputHeight = Integer.parseInt(split[1]);
             }
             else if (args[idx].startsWith("--output")) {
-                checkParameter(args[idx]);
+                checkParameterOutput(args[idx]);
                 String[] split = args[idx].split("=");
                 params.outputFilePath = split[1];
             }
@@ -88,6 +90,22 @@ public class SliceDump {
     private static void checkParameter(String param) throws IllegalArgumentException {
         if (!param.contains("=") || param.split("=").length != 2) {
             throw new IllegalArgumentException("Bad parameter definition " + param + " : expected --param=value");
+        }
+    }
+
+    private static void checkParameterOutput(String param) throws IllegalArgumentException {
+        if (!param.contains("=") || param.split("=").length != 2) {
+            throw new IllegalArgumentException("Bad parameter definition " + param + " : expected --param=value");
+        }
+        else {
+            String filePath = param.split("=")[1];
+            int posDot = filePath.lastIndexOf(".");
+            String suffix =  filePath.substring(posDot + 1);
+            String[] knownSuffixes = ImageIO.getReaderFileSuffixes();
+            boolean found = Arrays.stream(knownSuffixes).filter(s -> s.toLowerCase(Locale.ROOT).equals(suffix)).findAny().isPresent();
+            if (!found) {
+                throw new IllegalArgumentException("Bad parameter definition : unknown image suffix (" + suffix + ")");
+            }
         }
     }
 
@@ -208,6 +226,7 @@ public class SliceDump {
 
             System.out.println("Request samples from VolumeDataAccessManager...");
             FloatBuffer samplePositions = BufferUtils.toBuffer(samples);
+            Instant start = Instant.now();
             long request = accessManager.requestVolumeSamples(data, DimensionsND.DIMENSIONS_012, 0, 0, samplePositions, elemCount, InterpolationMethod.LINEAR, 0);
 
             System.out.println("Wait for request completion...");
@@ -222,6 +241,10 @@ public class SliceDump {
                     System.out.println("Completion : " + completionFactor * 100. + " %");
                 }
             }
+            Instant finish = Instant.now();
+            long millis = Duration.between(start, finish).toMillis();
+            long seconds = (millis / 1000);
+            System.out.println("Slice query done in " + seconds + "s" + (millis - (seconds*1000)) + "ms...");
 
             System.out.println("Create bitmap " + parameters.outputWidth + "x" + parameters.outputHeight + " from samples...");
             String outFileName = parameters.outputFilePath;
@@ -447,48 +470,12 @@ public class SliceDump {
             }
         }
 
+        // get suffix for format and write image
         int posDot = fileName.lastIndexOf(".");
-        String prefixImage = fileName.substring(0, posDot);
-
-        final File imageFile = File.createTempFile(prefixImage, ".png");
+        String suffix =  fileName.substring(posDot + 1);
+        final File imageFile = new File(fileName);
         System.out.println("Writing image : " + imageFile.getPath());
-        ImageIO.write(image, "png", imageFile);
-
-        long filesize = 54 + dataSize;
-        byte[] bmpinfoheader = new byte[40];
-        bmpinfoheader[0] = 40;
-        bmpinfoheader[12] = 1;
-        bmpinfoheader[14] = 24;
-        byte[] bmppad = {0, 0, 0};
-
-        byte[] bmpfileheader = {'B', 'M', 0, 0, 0, 0, 0, 0, 0, 0, 54, 0, 0, 0};
-        bmpfileheader[2] = (byte) (filesize);
-        bmpfileheader[3] = (byte) (filesize >> 8);
-        bmpfileheader[4] = (byte) (filesize >> 16);
-        bmpfileheader[5] = (byte) (filesize >> 24);
-
-        bmpinfoheader[4] = (byte) (output_width);
-        bmpinfoheader[5] = (byte) (output_width >> 8);
-        bmpinfoheader[6] = (byte) (output_width >> 16);
-        bmpinfoheader[7] = (byte) (output_width >> 24);
-        bmpinfoheader[8] = (byte) (output_height);
-        bmpinfoheader[9] = (byte) (output_height >> 8);
-        bmpinfoheader[10] = (byte) (output_height >> 16);
-        bmpinfoheader[11] = (byte) (output_height >> 24);
-
-        try (FileOutputStream file = new FileOutputStream(fileName)) {
-            file.write(bmpfileheader);
-            file.write(bmpinfoheader);
-
-            int scanLineSize = output_width * colorComponentsCount;
-
-            for (int i = 0; i < output_height; i++) {
-                // In bmp file, lines go from bottom to top
-                int offset = (output_height - i - 1) * scanLineSize;
-                file.write(fileData, offset, scanLineSize);
-                file.write(bmppad, 0, (-scanLineSize) & 3);
-            }
-        }
+        ImageIO.write(image, suffix, imageFile);
     }
 
 
