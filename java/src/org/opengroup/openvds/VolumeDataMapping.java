@@ -17,35 +17,31 @@ import java.util.*;
 import java.nio.ByteBuffer;
 
 
-public enum CompressionMethod {
+public enum VolumeDataMapping {
 
-        None(0),
-        Wavelet(1),
-        RLE(2),
-        Zip(3),
-        WaveletNormalizeBlock(4),
-        WaveletLossless(5),
-        WaveletNormalizeBlockLossless(6);
+    /**
+     * Each voxel in the volume has a value
+     */
+    Direct(-1L),
+    /**
+     * Each trace in the volume has a specified number of values. A trace is the entire length of dimension 0
+     */
+    PerTrace(1976800267773298824L);
 
-    private final int value;
+    private final long value;
 
-    CompressionMethod(int value) {
+    VolumeDataMapping(long value) {
         this.value = value;
     }
 
-    public int value() {
+    public long value() {
         return this.value;
     }
 
-    public static CompressionMethod fromInt(int value) {
-        if (value == 0) return None;
-        if (value == 1) return Wavelet;
-        if (value == 2) return RLE;
-        if (value == 3) return Zip;
-        if (value == 4) return WaveletNormalizeBlock;
-        if (value == 5) return WaveletLossless;
-        if (value == 6) return WaveletNormalizeBlockLossless;
-        return CompressionMethod.values()[0];
+    public static VolumeDataMapping fromInt(long value) {
+        if (value == -1L) return Direct;
+        if (value == 1976800267773298824L) return PerTrace;
+        return VolumeDataMapping.values()[0];
     }
 
 }

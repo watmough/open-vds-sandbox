@@ -423,6 +423,11 @@ class Scope(OrderedDict):
     @property
     def is_enum_value(self) -> bool:
         return self.nodetype == 'ENUM_CONSTANT_DECL'
+    
+    @property
+    def enum_integral_type(self) -> str:
+        assert self.is_enum
+        return self.node.enum_type.spelling
 
     def get_enum_values(self) -> List[Tuple[str, int, str]]: # name, value, docstring
         values = [(c.name, c.enum_value, str(c.get_doc())) for c in self.get_children() if c.is_enum_value]
@@ -701,8 +706,9 @@ if __name__ == '__main__':
         parameters, filenames = parse_args(args)
         if not filenames:
             filenames = [
+                'test.h'
 #                f'{openvds_root_dir}/src/OpenVDS/OpenVDS/VolumeData.h',                
-                f'{openvds_root_dir}/src/OpenVDS/OpenVDS/MetadataKey.h',                
+#                f'{openvds_root_dir}/src/OpenVDS/OpenVDS/MetadataKey.h',                
             ]
         for p in parameters:
             if p.startswith('-n'):

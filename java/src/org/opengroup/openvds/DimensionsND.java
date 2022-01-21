@@ -66,43 +66,41 @@ public enum DimensionsND {
     }
 
     public static DimensionsND fromInt(int value) {
-        switch(value) {
-        case 0: return Dimensions_012;
-        case 1: return Dimensions_013;
-        case 2: return Dimensions_014;
-        case 3: return Dimensions_015;
-        case 4: return Dimensions_023;
-        case 5: return Dimensions_024;
-        case 6: return Dimensions_025;
-        case 7: return Dimensions_034;
-        case 8: return Dimensions_035;
-        case 9: return Dimensions_045;
-        case 10: return Dimensions_123;
-        case 11: return Dimensions_124;
-        case 12: return Dimensions_125;
-        case 13: return Dimensions_134;
-        case 14: return Dimensions_135;
-        case 15: return Dimensions_145;
-        case 16: return Dimensions_234;
-        case 17: return Dimensions_235;
-        case 18: return Dimensions_245;
-        case 19: return Dimensions_345;
-        case 20: return Dimensions_01;
-        case 21: return Dimensions_02;
-        case 22: return Dimensions_03;
-        case 23: return Dimensions_04;
-        case 24: return Dimensions_05;
-        case 25: return Dimensions_12;
-        case 26: return Dimensions_13;
-        case 27: return Dimensions_14;
-        case 28: return Dimensions_15;
-        case 29: return Dimensions_23;
-        case 30: return Dimensions_24;
-        case 31: return Dimensions_25;
-        case 32: return Dimensions_34;
-        case 33: return Dimensions_35;
-        case 34: return Dimensions_45;
-        }
+        if (value == 0) return Dimensions_012;
+        if (value == 1) return Dimensions_013;
+        if (value == 2) return Dimensions_014;
+        if (value == 3) return Dimensions_015;
+        if (value == 4) return Dimensions_023;
+        if (value == 5) return Dimensions_024;
+        if (value == 6) return Dimensions_025;
+        if (value == 7) return Dimensions_034;
+        if (value == 8) return Dimensions_035;
+        if (value == 9) return Dimensions_045;
+        if (value == 10) return Dimensions_123;
+        if (value == 11) return Dimensions_124;
+        if (value == 12) return Dimensions_125;
+        if (value == 13) return Dimensions_134;
+        if (value == 14) return Dimensions_135;
+        if (value == 15) return Dimensions_145;
+        if (value == 16) return Dimensions_234;
+        if (value == 17) return Dimensions_235;
+        if (value == 18) return Dimensions_245;
+        if (value == 19) return Dimensions_345;
+        if (value == 20) return Dimensions_01;
+        if (value == 21) return Dimensions_02;
+        if (value == 22) return Dimensions_03;
+        if (value == 23) return Dimensions_04;
+        if (value == 24) return Dimensions_05;
+        if (value == 25) return Dimensions_12;
+        if (value == 26) return Dimensions_13;
+        if (value == 27) return Dimensions_14;
+        if (value == 28) return Dimensions_15;
+        if (value == 29) return Dimensions_23;
+        if (value == 30) return Dimensions_24;
+        if (value == 31) return Dimensions_25;
+        if (value == 32) return Dimensions_34;
+        if (value == 33) return Dimensions_35;
+        if (value == 34) return Dimensions_45;
         return DimensionsND.values()[0];
     }
 

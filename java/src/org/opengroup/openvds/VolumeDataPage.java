@@ -42,7 +42,7 @@ public class VolumeDataPage extends ManagedBase {
     }
 
     ///AUTOGEN-OK: CXX_METHOD GetError OpenVDS::VolumeDataPage::Error () const FUNCTIONPROTO
-//    native private long GetErrorImpl(long native_object);
+    native private long GetErrorImpl(long native_object);
 //    public VolumeDataPage.Error getError() {
 //        return VolumeDataPage.Error.fromNativeObject(GetErrorImpl(getNativeObject()));
 //    }

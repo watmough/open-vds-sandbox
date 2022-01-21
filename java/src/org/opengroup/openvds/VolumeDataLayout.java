@@ -113,25 +113,25 @@ public class VolumeDataLayout extends MetadataReadAccess {
     }
 
     ///AUTOGEN-OK: CXX_METHOD GetChannelFormat OpenVDS::VolumeDataChannelDescriptor::Format (int) const FUNCTIONPROTO
-    native private int GetChannelFormatImpl(long native_object, int channel);
+    native private long GetChannelFormatImpl(long native_object, int channel);
 
     /**
      * get the format for the given channel index
      * 
      */
     public VolumeDataChannelDescriptor.Format getChannelFormat(int channel) {
-        return VolumeDataChannelDescriptor.Format.fromInt(GetChannelFormatImpl(getNativeObject(), channel));
+        return VolumeDataChannelDescriptor.Format.fromInt((int)GetChannelFormatImpl(getNativeObject(), channel));
     }
 
     ///AUTOGEN-OK: CXX_METHOD GetChannelComponents OpenVDS::VolumeDataChannelDescriptor::Components (int) const FUNCTIONPROTO
-    native private int GetChannelComponentsImpl(long native_object, int channel);
+    native private long GetChannelComponentsImpl(long native_object, int channel);
 
     /**
      * get the vector count for the given channel index
      * 
      */
     public VolumeDataChannelDescriptor.Components getChannelComponents(int channel) {
-        return VolumeDataChannelDescriptor.Components.fromInt(GetChannelComponentsImpl(getNativeObject(), channel));
+        return VolumeDataChannelDescriptor.Components.fromInt((int)GetChannelComponentsImpl(getNativeObject(), channel));
     }
 
     ///AUTOGEN-OK: CXX_METHOD GetChannelName const char *(int) const FUNCTIONPROTO
@@ -220,6 +220,17 @@ public class VolumeDataLayout extends MetadataReadAccess {
      */
     public boolean isChannelUseZipForLosslessCompression(int channel) {
         return IsChannelUseZipForLosslessCompressionImpl(getNativeObject(), channel);
+    }
+
+    ///AUTOGEN-OK: CXX_METHOD GetChannelMapping OpenVDS::VolumeDataMapping (int) const FUNCTIONPROTO
+    native private long GetChannelMappingImpl(long native_object, int channel);
+
+    /**
+     * get the mapping for the given channel index
+     * 
+     */
+    public VolumeDataMapping getChannelMapping(int channel) {
+        return VolumeDataMapping.fromInt((long)GetChannelMappingImpl(getNativeObject(), channel));
     }
 
     ///AUTOGEN-OK: CXX_METHOD GetDimensionNumSamples int (int) const FUNCTIONPROTO

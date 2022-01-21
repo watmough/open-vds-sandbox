@@ -44,19 +44,17 @@ public class OpenOptions extends ManagedBase {
         }
     
         public static ConnectionType fromInt(int value) {
-            switch(value) {
-            case 0: return AWS;
-            case 1: return Azure;
-            case 2: return AzureSdkForCpp;
-            case 3: return AzurePresigned;
-            case 4: return GoogleStorage;
-            case 5: return DMS;
-            case 6: return Http;
-            case 7: return VDSFile;
-            case 8: return InMemory;
-            case 9: return Other;
-            case 10: return ConnectionTypeCount;
-            }
+            if (value == 0) return AWS;
+            if (value == 1) return Azure;
+            if (value == 2) return AzureSdkForCpp;
+            if (value == 3) return AzurePresigned;
+            if (value == 4) return GoogleStorage;
+            if (value == 5) return DMS;
+            if (value == 6) return Http;
+            if (value == 7) return VDSFile;
+            if (value == 8) return InMemory;
+            if (value == 9) return Other;
+            if (value == 10) return ConnectionTypeCount;
             return ConnectionType.values()[0];
         }
     

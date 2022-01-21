@@ -53,13 +53,11 @@ public class VolumeDataChannelDescriptor extends ManagedBase {
         }
     
         public static Flags fromInt(int value) {
-            switch(value) {
-            case 0: return Default;
-            case 1: return DiscreteData;
-            case 2: return NoLossyCompression;
-            case 4: return NotRenderable;
-            case 10: return NoLossyCompressionUseZip;
-            }
+            if (value == 0) return Default;
+            if (value == 1) return DiscreteData;
+            if (value == 2) return NoLossyCompression;
+            if (value == 4) return NotRenderable;
+            if (value == 10) return NoLossyCompressionUseZip;
             return Flags.values()[0];
         }
     
@@ -111,16 +109,14 @@ public class VolumeDataChannelDescriptor extends ManagedBase {
         }
     
         public static Format fromInt(int value) {
-            switch(value) {
-            case -1: return Format_Any;
-            case 0: return Format_1Bit;
-            case 1: return Format_U8;
-            case 2: return Format_U16;
-            case 3: return Format_R32;
-            case 4: return Format_U32;
-            case 5: return Format_R64;
-            case 6: return Format_U64;
-            }
+            if (value == -1) return Format_Any;
+            if (value == 0) return Format_1Bit;
+            if (value == 1) return Format_U8;
+            if (value == 2) return Format_U16;
+            if (value == 3) return Format_R32;
+            if (value == 4) return Format_U32;
+            if (value == 5) return Format_R64;
+            if (value == 6) return Format_U64;
             return Format.values()[0];
         }
     
@@ -143,11 +139,9 @@ public class VolumeDataChannelDescriptor extends ManagedBase {
         }
     
         public static Components fromInt(int value) {
-            switch(value) {
-            case 1: return Components_1;
-            case 2: return Components_2;
-            case 4: return Components_4;
-            }
+            if (value == 1) return Components_1;
+            if (value == 2) return Components_2;
+            if (value == 4) return Components_4;
             return Components.values()[0];
         }
     
@@ -161,7 +155,7 @@ public class VolumeDataChannelDescriptor extends ManagedBase {
     
     }
 
-    native private static long ctor2Impl(int format, int components, String name, String unit, float valueRangeMin, float valueRangeMax);
+    native private static long ctor2Impl(long format, long components, String name, String unit, float valueRangeMin, float valueRangeMax);
     
     public VolumeDataChannelDescriptor(VolumeDataChannelDescriptor.Format format, VolumeDataChannelDescriptor.Components components, String name, String unit, float valueRangeMin, float valueRangeMax) {
     
@@ -169,7 +163,24 @@ public class VolumeDataChannelDescriptor extends ManagedBase {
     
     }
 
-    native private static long ctor4Impl(int format, int components, String name, String unit, float valueRangeMin, float valueRangeMax, int flags);
+    native private static long ctor3Impl(long format, long components, String name, String unit, float valueRangeMin, float valueRangeMax, long mapping);
+    
+    /**
+     * @param format the data format for this channel
+     * @param components the vector count for this channel
+     * @param name the name of this channel
+     * @param unit the unit of this channel
+     * @param valueRangeMin the value range minimum of this channel
+     * @param valueRangeMax the value range maximum of this channel
+     * @param mapping the mapping for this channel
+     */
+    public VolumeDataChannelDescriptor(VolumeDataChannelDescriptor.Format format, VolumeDataChannelDescriptor.Components components, String name, String unit, float valueRangeMin, float valueRangeMax, VolumeDataMapping mapping) {
+    
+        super(ctor3Impl(format.value(), components.value(), name, unit, valueRangeMin, valueRangeMax, mapping.value()));
+    
+    }
+
+    native private static long ctor4Impl(long format, long components, String name, String unit, float valueRangeMin, float valueRangeMax, long flags);
     
     /**
      * @param format the data format for this channel
@@ -186,7 +197,46 @@ public class VolumeDataChannelDescriptor extends ManagedBase {
     
     }
 
-    native private static long ctor7Impl(int format, int components, String name, String unit, float valueRangeMin, float valueRangeMax, float noValue);
+    native private static long ctor5Impl(long format, long components, String name, String unit, float valueRangeMin, float valueRangeMax, long mapping, long flags);
+    
+    /**
+     * @param format the data format for this channel
+     * @param components the vector count for this channel
+     * @param name the name of this channel
+     * @param unit the unit of this channel
+     * @param valueRangeMin the value range minimum of this channel
+     * @param valueRangeMax the value range maximum of this channel
+     * @param mapping the mapping for this channel
+     * @param flags the flags for this channel
+     */
+    public VolumeDataChannelDescriptor(VolumeDataChannelDescriptor.Format format, VolumeDataChannelDescriptor.Components components, String name, String unit, float valueRangeMin, float valueRangeMax, VolumeDataMapping mapping, VolumeDataChannelDescriptor.Flags flags) {
+    
+        super(ctor5Impl(format.value(), components.value(), name, unit, valueRangeMin, valueRangeMax, mapping.value(), flags.value()));
+    
+    }
+
+    native private static long ctor6Impl(long format, long components, String name, String unit, float valueRangeMin, float valueRangeMax, long mapping, int mappedValueCount, long flags, float integerScale, float integerOffset);
+    
+    /**
+     * @param format the data format for this channel
+     * @param components the vector count for this channel
+     * @param name the name of this channel
+     * @param unit the unit of this channel
+     * @param valueRangeMin the value range minimum of this channel
+     * @param valueRangeMax the value range maximum of this channel
+     * @param mapping the mapping for this channel
+     * @param mappedValueCount When using per trace mapping, the number of values to store per trace
+     * @param flags the flags for this channel
+     * @param integerScale the scale to use for integer types
+     * @param integerOffset the offset to use for integer types
+     */
+    public VolumeDataChannelDescriptor(VolumeDataChannelDescriptor.Format format, VolumeDataChannelDescriptor.Components components, String name, String unit, float valueRangeMin, float valueRangeMax, VolumeDataMapping mapping, int mappedValueCount, VolumeDataChannelDescriptor.Flags flags, float integerScale, float integerOffset) {
+    
+        super(ctor6Impl(format.value(), components.value(), name, unit, valueRangeMin, valueRangeMax, mapping.value(), mappedValueCount, flags.value(), integerScale, integerOffset));
+    
+    }
+
+    native private static long ctor7Impl(long format, long components, String name, String unit, float valueRangeMin, float valueRangeMax, float noValue);
     
     /**
      * @param format the data format for this channel
@@ -203,16 +253,57 @@ public class VolumeDataChannelDescriptor extends ManagedBase {
     
     }
 
+    native private static long ctor8Impl(long format, long components, String name, String unit, float valueRangeMin, float valueRangeMax, float noValue, long mapping, long flags);
+    
+    /**
+     * @param format the data format for this channel
+     * @param components the vector count for this channel
+     * @param name the name of this channel
+     * @param unit the unit of this channel
+     * @param valueRangeMin the value range minimum of this channel
+     * @param valueRangeMax the value range maximum of this channel
+     * @param noValue the No Value for this channel
+     * @param mapping the mapping for this channel
+     * @param flags the flags for this channel
+     */
+    public VolumeDataChannelDescriptor(VolumeDataChannelDescriptor.Format format, VolumeDataChannelDescriptor.Components components, String name, String unit, float valueRangeMin, float valueRangeMax, float noValue, VolumeDataMapping mapping, VolumeDataChannelDescriptor.Flags flags) {
+    
+        super(ctor8Impl(format.value(), components.value(), name, unit, valueRangeMin, valueRangeMax, noValue, mapping.value(), flags.value()));
+    
+    }
+
+    native private static long ctor9Impl(long format, long components, String name, String unit, float valueRangeMin, float valueRangeMax, long mapping, int mappedValueCount, long flags, float noValue, float integerScale, float integerOffset);
+    
+    /**
+     * @param format the data format for this channel
+     * @param components the vector count for this channel
+     * @param name the name of this channel
+     * @param unit the unit of this channel
+     * @param valueRangeMin the value range minimum of this channel
+     * @param valueRangeMax the value range maximum of this channel
+     * @param mapping the mapping for this channel
+     * @param mappedValueCount When using per trace mapping, the number of values to store per trace
+     * @param flags the flags for this channel
+     * @param noValue the No Value for this channel
+     * @param integerScale the scale to use for integer types
+     * @param integerOffset the offset to use for integer types
+     */
+    public VolumeDataChannelDescriptor(VolumeDataChannelDescriptor.Format format, VolumeDataChannelDescriptor.Components components, String name, String unit, float valueRangeMin, float valueRangeMax, VolumeDataMapping mapping, int mappedValueCount, VolumeDataChannelDescriptor.Flags flags, float noValue, float integerScale, float integerOffset) {
+    
+        super(ctor9Impl(format.value(), components.value(), name, unit, valueRangeMin, valueRangeMax, mapping.value(), mappedValueCount, flags.value(), noValue, integerScale, integerOffset));
+    
+    }
+
     ///AUTOGEN-OK: CXX_METHOD GetFormat OpenVDS::VolumeDataChannelDescriptor::Format () const FUNCTIONPROTO
-    native private int GetFormatImpl(long native_object);
+    native private long GetFormatImpl(long native_object);
     public VolumeDataChannelDescriptor.Format getFormat() {
-        return VolumeDataChannelDescriptor.Format.fromInt(GetFormatImpl(getNativeObject()));
+        return VolumeDataChannelDescriptor.Format.fromInt((int)GetFormatImpl(getNativeObject()));
     }
 
     ///AUTOGEN-OK: CXX_METHOD GetComponents OpenVDS::VolumeDataChannelDescriptor::Components () const FUNCTIONPROTO
-    native private int GetComponentsImpl(long native_object);
+    native private long GetComponentsImpl(long native_object);
     public VolumeDataChannelDescriptor.Components getComponents() {
-        return VolumeDataChannelDescriptor.Components.fromInt(GetComponentsImpl(getNativeObject()));
+        return VolumeDataChannelDescriptor.Components.fromInt((int)GetComponentsImpl(getNativeObject()));
     }
 
     ///AUTOGEN-OK: CXX_METHOD IsDiscrete bool () const FUNCTIONPROTO
@@ -271,6 +362,12 @@ public class VolumeDataChannelDescriptor extends ManagedBase {
         return GetValueRangeMaxImpl(getNativeObject());
     }
 
+    ///AUTOGEN-OK: CXX_METHOD GetMapping OpenVDS::VolumeDataMapping () const FUNCTIONPROTO
+    native private long GetMappingImpl(long native_object);
+    public VolumeDataMapping getMapping() {
+        return VolumeDataMapping.fromInt((long)GetMappingImpl(getNativeObject()));
+    }
+
     ///AUTOGEN-OK: CXX_METHOD GetMappedValueCount int () const FUNCTIONPROTO
     native private int GetMappedValueCountImpl(long native_object);
     public int getMappedValueCount() {
@@ -302,13 +399,13 @@ public class VolumeDataChannelDescriptor extends ManagedBase {
     }
 
     ///AUTOGEN-OK: CXX_METHOD TraceMappedVolumeDataChannelDescriptor static OpenVDS::VolumeDataChannelDescriptor (OpenVDS::VolumeDataChannelDescriptor::Format, OpenVDS::VolumeDataChannelDescriptor::Components, const char *, const char *, float, float, int, OpenVDS::VolumeDataChannelDescriptor::Flags) FUNCTIONPROTO
-    native private static long TraceMappedVolumeDataChannelDescriptorImpl(int format, int components, String name, String unit, float valueRangeMin, float valueRangeMax, int mappedValueCount, int flags);
+    native private static long TraceMappedVolumeDataChannelDescriptorImpl(long format, long components, String name, String unit, float valueRangeMin, float valueRangeMax, int mappedValueCount, long flags);
     public static VolumeDataChannelDescriptor traceMappedVolumeDataChannelDescriptor(VolumeDataChannelDescriptor.Format format, VolumeDataChannelDescriptor.Components components, String name, String unit, float valueRangeMin, float valueRangeMax, int mappedValueCount, VolumeDataChannelDescriptor.Flags flags) {
         return VolumeDataChannelDescriptor.fromNativeObject(TraceMappedVolumeDataChannelDescriptorImpl(format.value(), components.value(), name, unit, valueRangeMin, valueRangeMax, mappedValueCount, flags.value()));
     }
 
     ///AUTOGEN-OK: CXX_METHOD TraceMappedVolumeDataChannelDescriptor static OpenVDS::VolumeDataChannelDescriptor (OpenVDS::VolumeDataChannelDescriptor::Format, OpenVDS::VolumeDataChannelDescriptor::Components, const char *, const char *, float, float, int, OpenVDS::VolumeDataChannelDescriptor::Flags, float) FUNCTIONPROTO
-    native private static long TraceMappedVolumeDataChannelDescriptor2Impl(int format, int components, String name, String unit, float valueRangeMin, float valueRangeMax, int mappedValueCount, int flags, float noValue);
+    native private static long TraceMappedVolumeDataChannelDescriptor2Impl(long format, long components, String name, String unit, float valueRangeMin, float valueRangeMax, int mappedValueCount, long flags, float noValue);
     public static VolumeDataChannelDescriptor traceMappedVolumeDataChannelDescriptor(VolumeDataChannelDescriptor.Format format, VolumeDataChannelDescriptor.Components components, String name, String unit, float valueRangeMin, float valueRangeMax, int mappedValueCount, VolumeDataChannelDescriptor.Flags flags, float noValue) {
         return VolumeDataChannelDescriptor.fromNativeObject(TraceMappedVolumeDataChannelDescriptor2Impl(format.value(), components.value(), name, unit, valueRangeMin, valueRangeMax, mappedValueCount, flags.value(), noValue));
     }

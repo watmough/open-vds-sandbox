@@ -41,16 +41,14 @@ public class VolumeDataLayoutDescriptor extends ManagedBase {
         }
     
         public static BrickSize fromInt(int value) {
-            switch(value) {
-            case 5: return BrickSize_32;
-            case 6: return BrickSize_64;
-            case 7: return BrickSize_128;
-            case 8: return BrickSize_256;
-            case 9: return BrickSize_512;
-            case 10: return BrickSize_1024;
-            case 11: return BrickSize_2048;
-            case 12: return BrickSize_4096;
-            }
+            if (value == 5) return BrickSize_32;
+            if (value == 6) return BrickSize_64;
+            if (value == 7) return BrickSize_128;
+            if (value == 8) return BrickSize_256;
+            if (value == 9) return BrickSize_512;
+            if (value == 10) return BrickSize_1024;
+            if (value == 11) return BrickSize_2048;
+            if (value == 12) return BrickSize_4096;
             return BrickSize.values()[0];
         }
     
@@ -83,21 +81,19 @@ public class VolumeDataLayoutDescriptor extends ManagedBase {
         }
     
         public static LODLevels fromInt(int value) {
-            switch(value) {
-            case 0: return LODLevels_None;
-            case 1: return LODLevels_1;
-            case 2: return LODLevels_2;
-            case 3: return LODLevels_3;
-            case 4: return LODLevels_4;
-            case 5: return LODLevels_5;
-            case 6: return LODLevels_6;
-            case 7: return LODLevels_7;
-            case 8: return LODLevels_8;
-            case 9: return LODLevels_9;
-            case 10: return LODLevels_10;
-            case 11: return LODLevels_11;
-            case 12: return LODLevels_12;
-            }
+            if (value == 0) return LODLevels_None;
+            if (value == 1) return LODLevels_1;
+            if (value == 2) return LODLevels_2;
+            if (value == 3) return LODLevels_3;
+            if (value == 4) return LODLevels_4;
+            if (value == 5) return LODLevels_5;
+            if (value == 6) return LODLevels_6;
+            if (value == 7) return LODLevels_7;
+            if (value == 8) return LODLevels_8;
+            if (value == 9) return LODLevels_9;
+            if (value == 10) return LODLevels_10;
+            if (value == 11) return LODLevels_11;
+            if (value == 12) return LODLevels_12;
             return LODLevels.values()[0];
         }
     
@@ -120,11 +116,9 @@ public class VolumeDataLayoutDescriptor extends ManagedBase {
         }
     
         public static Options fromInt(int value) {
-            switch(value) {
-            case 0: return Options_None;
-            case 1: return Options_Create2DLODs;
-            case 2: return Options_ForceFullResolutionDimension;
-            }
+            if (value == 0) return Options_None;
+            if (value == 1) return Options_Create2DLODs;
+            if (value == 2) return Options_ForceFullResolutionDimension;
             return Options.values()[0];
         }
     
@@ -138,7 +132,7 @@ public class VolumeDataLayoutDescriptor extends ManagedBase {
     
     }
 
-    native private static long ctor2Impl(int brickSize, int negativeMargin, int positiveMargin, int brickSize2DMultiplier, int lodLevels, int options, int fullResolutionDimension);
+    native private static long ctor2Impl(long brickSize, int negativeMargin, int positiveMargin, int brickSize2DMultiplier, long lodLevels, long options, int fullResolutionDimension);
     
     public VolumeDataLayoutDescriptor(VolumeDataLayoutDescriptor.BrickSize brickSize, int negativeMargin, int positiveMargin, int brickSize2DMultiplier, VolumeDataLayoutDescriptor.LODLevels lodLevels, VolumeDataLayoutDescriptor.Options options, int fullResolutionDimension) {
     
@@ -153,9 +147,9 @@ public class VolumeDataLayoutDescriptor extends ManagedBase {
     }
 
     ///AUTOGEN-OK: CXX_METHOD GetBrickSize OpenVDS::VolumeDataLayoutDescriptor::BrickSize () const FUNCTIONPROTO
-    native private int GetBrickSizeImpl(long native_object);
+    native private long GetBrickSizeImpl(long native_object);
     public VolumeDataLayoutDescriptor.BrickSize getBrickSize() {
-        return VolumeDataLayoutDescriptor.BrickSize.fromInt(GetBrickSizeImpl(getNativeObject()));
+        return VolumeDataLayoutDescriptor.BrickSize.fromInt((int)GetBrickSizeImpl(getNativeObject()));
     }
 
     ///AUTOGEN-OK: CXX_METHOD GetNegativeMargin int () const FUNCTIONPROTO
@@ -177,9 +171,9 @@ public class VolumeDataLayoutDescriptor extends ManagedBase {
     }
 
     ///AUTOGEN-OK: CXX_METHOD GetLODLevels OpenVDS::VolumeDataLayoutDescriptor::LODLevels () const FUNCTIONPROTO
-    native private int GetLODLevelsImpl(long native_object);
+    native private long GetLODLevelsImpl(long native_object);
     public VolumeDataLayoutDescriptor.LODLevels getLODLevels() {
-        return VolumeDataLayoutDescriptor.LODLevels.fromInt(GetLODLevelsImpl(getNativeObject()));
+        return VolumeDataLayoutDescriptor.LODLevels.fromInt((int)GetLODLevelsImpl(getNativeObject()));
     }
 
     ///AUTOGEN-OK: CXX_METHOD IsCreate2DLODs bool () const FUNCTIONPROTO

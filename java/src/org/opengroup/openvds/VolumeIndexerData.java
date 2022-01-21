@@ -27,7 +27,7 @@ public class VolumeIndexerData extends ManagedBase {
     
     }
 
-    native private static long ctor2Impl(long page, int channelIndex, int lod, int dimensions, long layout);
+    native private static long ctor2Impl(long page, int channelIndex, int lod, long dimensions, long layout);
     
     public VolumeIndexerData(VolumeDataPage page, int channelIndex, int lod, DimensionsND dimensions, VolumeDataLayout layout) {
     

@@ -34,11 +34,9 @@ public enum VDSProduceStatus {
     }
 
     public static VDSProduceStatus fromInt(int value) {
-        switch(value) {
-        case 0: return Normal;
-        case 1: return Remapped;
-        case 2: return Unavailable;
-        }
+        if (value == 0) return Normal;
+        if (value == 1) return Remapped;
+        if (value == 2) return Unavailable;
         return VDSProduceStatus.values()[0];
     }
 

@@ -36,11 +36,9 @@ public class VolumeDataPageAccessor extends ManagedBase {
         }
     
         public static AccessMode fromInt(int value) {
-            switch(value) {
-            case 0: return AccessMode_ReadOnly;
-            case 1: return AccessMode_ReadWrite;
-            case 2: return AccessMode_Create;
-            }
+            if (value == 0) return AccessMode_ReadOnly;
+            if (value == 1) return AccessMode_ReadWrite;
+            if (value == 2) return AccessMode_Create;
             return AccessMode.values()[0];
         }
     

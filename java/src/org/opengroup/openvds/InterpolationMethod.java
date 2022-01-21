@@ -51,13 +51,11 @@ public enum InterpolationMethod {
     }
 
     public static InterpolationMethod fromInt(int value) {
-        switch(value) {
-        case 0: return Nearest;
-        case 1: return Linear;
-        case 2: return Cubic;
-        case 3: return Angular;
-        case 4: return Triangular;
-        }
+        if (value == 0) return Nearest;
+        if (value == 1) return Linear;
+        if (value == 2) return Cubic;
+        if (value == 3) return Angular;
+        if (value == 4) return Triangular;
         return InterpolationMethod.values()[0];
     }
 

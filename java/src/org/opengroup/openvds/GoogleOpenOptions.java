@@ -21,41 +21,8 @@ import java.nio.ByteBuffer;
  * 
  */
 public class GoogleOpenOptions extends OpenOptions {
-    
-    public enum CredentialsType {
-    
-            Default(0),
-            AccessToken(1),
-            Path(2),
-            Json(3),
-            SignedUrl(16),
-            SignedUrlPath(18),
-            SignedUrlJson(19);
-    
-        private final int value;
-    
-        CredentialsType(int value) {
-            this.value = value;
-        }
-    
-        public int value() {
-            return this.value;
-        }
-    
-        public static CredentialsType fromInt(int value) {
-            switch(value) {
-            case 0: return Default;
-            case 1: return AccessToken;
-            case 2: return Path;
-            case 3: return Json;
-            case 16: return SignedUrl;
-            case 18: return SignedUrlPath;
-            case 19: return SignedUrlJson;
-            }
-            return CredentialsType.values()[0];
-        }
-    
-    }
+
+    ///AUTOGEN-FAIL: ENUM_DECL CredentialsType OpenVDS::GoogleOpenOptions::CredentialsType ENUM
 
     native private static long ctorImpl();
     

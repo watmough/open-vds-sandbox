@@ -23,7 +23,7 @@ import java.nio.ByteBuffer;
 public class GlobalState extends ManagedBase {
 
     ///AUTOGEN-OK: CXX_METHOD GetBytesDownloaded uint64_t (OpenVDS::OpenOptions::ConnectionType) FUNCTIONPROTO
-    native private long GetBytesDownloadedImpl(long native_object, int connectionType);
+    native private long GetBytesDownloadedImpl(long native_object, long connectionType);
 
     /**
      * Get the global amount of downloaded bytes from a cloud vendor.
@@ -36,7 +36,7 @@ public class GlobalState extends ManagedBase {
     }
 
     ///AUTOGEN-OK: CXX_METHOD GetChunksDownloaded uint64_t (OpenVDS::OpenOptions::ConnectionType) FUNCTIONPROTO
-    native private long GetChunksDownloadedImpl(long native_object, int connectionType);
+    native private long GetChunksDownloadedImpl(long native_object, long connectionType);
 
     /**
      * Get the global count of downloaded chunks.
@@ -49,7 +49,7 @@ public class GlobalState extends ManagedBase {
     }
 
     ///AUTOGEN-OK: CXX_METHOD GetBytesDecompressed uint64_t (OpenVDS::OpenOptions::ConnectionType) FUNCTIONPROTO
-    native private long GetBytesDecompressedImpl(long native_object, int connectionType);
+    native private long GetBytesDecompressedImpl(long native_object, long connectionType);
 
     /**
      * Get the global amount of decompressed bytes. This amount might
@@ -65,7 +65,7 @@ public class GlobalState extends ManagedBase {
     }
 
     ///AUTOGEN-OK: CXX_METHOD GetChunksDecompressed uint64_t (OpenVDS::OpenOptions::ConnectionType) FUNCTIONPROTO
-    native private long GetChunksDecompressedImpl(long native_object, int connectionType);
+    native private long GetChunksDecompressedImpl(long native_object, long connectionType);
 
     /**
      * Get the global count of decompressed chunks.

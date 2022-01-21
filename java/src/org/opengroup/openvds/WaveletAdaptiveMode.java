@@ -43,11 +43,9 @@ public enum WaveletAdaptiveMode {
     }
 
     public static WaveletAdaptiveMode fromInt(int value) {
-        switch(value) {
-        case 0: return BestQuality;
-        case 1: return Tolerance;
-        case 2: return Ratio;
-        }
+        if (value == 0) return BestQuality;
+        if (value == 1) return Tolerance;
+        if (value == 2) return Ratio;
         return WaveletAdaptiveMode.values()[0];
     }
 

@@ -45,22 +45,20 @@ public enum MetadataType {
     }
 
     public static MetadataType fromInt(int value) {
-        switch(value) {
-        case 0: return Int;
-        case 1: return IntVector2;
-        case 2: return IntVector3;
-        case 3: return IntVector4;
-        case 4: return Float;
-        case 5: return FloatVector2;
-        case 6: return FloatVector3;
-        case 7: return FloatVector4;
-        case 8: return Double;
-        case 9: return DoubleVector2;
-        case 10: return DoubleVector3;
-        case 11: return DoubleVector4;
-        case 12: return String;
-        case 13: return BLOB;
-        }
+        if (value == 0) return Int;
+        if (value == 1) return IntVector2;
+        if (value == 2) return IntVector3;
+        if (value == 3) return IntVector4;
+        if (value == 4) return Float;
+        if (value == 5) return FloatVector2;
+        if (value == 6) return FloatVector3;
+        if (value == 7) return FloatVector4;
+        if (value == 8) return Double;
+        if (value == 9) return DoubleVector2;
+        if (value == 10) return DoubleVector3;
+        if (value == 11) return DoubleVector4;
+        if (value == 12) return String;
+        if (value == 13) return BLOB;
         return MetadataType.values()[0];
     }
 

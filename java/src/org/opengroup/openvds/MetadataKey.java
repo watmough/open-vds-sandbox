@@ -34,7 +34,7 @@ public class MetadataKey extends ManagedBase {
     
     }
 
-    native private static long ctor2Impl(int type, String category, String name);
+    native private static long ctor2Impl(long type, String category, String name);
     
     /**
      * Constructor
@@ -50,7 +50,7 @@ public class MetadataKey extends ManagedBase {
     }
 
     ///AUTOGEN-OK: CXX_METHOD GetType OpenVDS::MetadataType () const FUNCTIONPROTO
-    native private int GetTypeImpl(long native_object);
+    native private long GetTypeImpl(long native_object);
 
     /**
      * Get the type of metadata that this key identifies
@@ -58,7 +58,7 @@ public class MetadataKey extends ManagedBase {
      * @return The type of the metadata that this key identifies
      */
     public MetadataType getType() {
-        return MetadataType.fromInt(GetTypeImpl(getNativeObject()));
+        return MetadataType.fromInt((int)GetTypeImpl(getNativeObject()));
     }
 
     ///AUTOGEN-OK: CXX_METHOD GetCategory const char *() const FUNCTIONPROTO

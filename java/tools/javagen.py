@@ -4,6 +4,7 @@ import os
 import traceback
 import re
 from typing import Tuple, List, Dict, Set
+from xmlrpc.client import boolean
 from clang.cindex import Cursor, Type
 from more_itertools import peekable
 from more_itertools.more import exactly_n
@@ -36,17 +37,17 @@ def print_callstack(exc):
         traceback.print_exc(file=sys.stderr)
 
 _ignore_types = [
+    "OpenVDS::M4", # Should not even be there
     "OpenVDS::Error",
     "OpenVDS::StringWrapper",
-#    "Hue::HueSpaceLib::MetadataKeyRange",
-#    "Hue::HueSpaceLib::IHueObj",
-#    "Hue::HueSpaceLib::IVolumeDataAccess",
-#    "Hue::HueSpaceLib::IVolumeDataAccessManager",
-#    "Hue::HueSpaceLib::IVolumeDataAccessor", 
-#    "Hue::HueSpaceLib::IVolumeDataReadWriteAccessor",
-#    "Hue::HueSpaceLib::IVolumeDataReadAccessor",
-#    "Hue::HueSpaceLib::IVolumeDataReadWriteAccessor",
-#    "Hue::HueSpaceLib::IHasVolumeDataAccess",
+    "OpenVDS::MetadataKeyRange",
+    "OpenVDS::IVolumeDataAccess",
+    "OpenVDS::IVolumeDataAccessManager",
+    "OpenVDS::IVolumeDataAccessor", 
+    "OpenVDS::IVolumeDataReadWriteAccessor",
+    "OpenVDS::IVolumeDataReadAccessor",
+    "OpenVDS::IVolumeDataReadWriteAccessor",
+    "OpenVDS::IHasVolumeDataAccess",
     "OpenVDS::VDSIJKGridDefinition",
 #    "Hue::HueSpaceLib::VolumeDataCacheItem",
 #    "Hue::HueSpaceLib::VolumeDataRequest::RequestFormat",
@@ -160,6 +161,9 @@ _cppjni_array_typemap = {
 }
 
 _bytebuffer_backed = {
+    "OpenVDS::FloatRange":    "FloatRange",
+    "OpenVDS::DoubleRange":   "DoubleRange",
+    "OpenVDS::IntRange":      "IntRange",
     "OpenVDS::IntVector4":    "IntVector4",
     "OpenVDS::IntVector3":    "IntVector3",
     "OpenVDS::IntVector2":    "IntVector2",
@@ -173,6 +177,11 @@ _bytebuffer_backed = {
     "OpenVDS::FloatMatrix4x4": "FloatMatrix4x4",
     "OpenVDS::DoubleMatrix3x3": "DoubleMatrix3x3",
     "OpenVDS::DoubleMatrix4x4": "DoubleMatrix4x4",
+}
+
+_interfaces = {
+#    "OpenVDS::MetadataReadAccess",
+    "OpenVDS::MetadataWriteAccess", 
 }
 
 _smart_ptr_types = [
@@ -444,7 +453,7 @@ def cpp_to_native_type(typename: str, alias: str = '') -> str:
     typename = resolve_typealias(typename, alias)
     assert typename != 'jlong'
     if find_enum_type(typename):
-        return "int"
+        return "long"
     elif is_marshaled_valuetype(typename):
         return cpp_to_java_type(typename)
     elif is_array(typename):
@@ -492,7 +501,7 @@ def cpp_to_jni_type(typename: str, alias: str = '') -> str:
     elif is_optional_type(typename):
         assert False, "We should never get here"
     elif find_enum_type(typename):
-        return "jint"
+        return "jlong"
     elif is_pass_by_handle(typename):
         return "jlong"
     elif typename in _cppjni_typemap:
@@ -788,7 +797,7 @@ def create_jni_methods(scope: Scope, template: str, override_name: str = '', tem
                         retval = f'HueJNIVectorAdapter<{element_type}>(env, result).toArray()'
                     elif is_pass_by_handle(real_return_type):
                         if is_enum_type(result_param):
-                            retval = '(jint)result'
+                            retval = '(jlong)result'
                         elif is_smartptr_type(real_return_type):
                             retval = 'HueJNI_createObjectContext(result)'.format(real_return_type)
                         elif is_ptr_type(real_return_type):
@@ -1067,8 +1076,18 @@ def _is_any_not_all_caps_enum_value(enum_values):
             return True
     return False
 
+_java_enum_integral_types = {
+              # (javatype, jnitype, suffix)
+    'int':      ('int',  'jint',  '' ),
+    'int64_t':  ('long', 'jlong', 'L' ),
+    'uint64_t': ('long', 'jlong', 'L' ),
+}
+
 def create_java_enum(scope, template):
     enum_name = scope.name
+    if scope.enum_integral_type not in _java_enum_integral_types:
+        raise NotImplementedError(f'enum integral type {scope.enum_integral_type} not supported')
+    int_type, jni_type, literal_suffix = _java_enum_integral_types[scope.enum_integral_type]
     values = scope.get_enum_values()
     is_remove_all_caps_enum_values = _is_any_not_all_caps_enum_value(values)
     unique = scope.get_unique_enum_values()
@@ -1081,27 +1100,25 @@ def create_java_enum(scope, template):
         ev = ''
         if d:
             ev = '/**\n     * ' + d + '\n     */\n'
-        ev += f'    {n}({v})'
+        ev += f'    {n}({v}{literal_suffix})'
         decls.append(ev)
     enum_values = ",\n    ".join(decls)
-    enum_cases = ";\n        ".join([f'case {v}: return {n}' for n,v,_ in unique])
+    enum_cases = ";\n        ".join([f'if (value == {v}{literal_suffix}) return {n}' for n,v,_ in unique])
     class_body = f"""
     {enum_values};
 
-    private final int value;
+    private final {int_type} value;
 
-    {enum_name}(int value) {{
+    {enum_name}({int_type} value) {{
         this.value = value;
     }}
 
-    public int value() {{
+    public {int_type} value() {{
         return this.value;
     }}
 
-    public static {enum_name} fromInt(int value) {{
-        switch(value) {{
+    public static {enum_name} fromInt({int_type} value) {{
         {enum_cases};
-        }}
         return {enum_name}.values()[0];
     }}
 """
@@ -1247,6 +1264,9 @@ def create_defaulted_overloads(overload_functions, overload_default_args, functi
             function    += f'    }}'
             print(f'\n{function}', file=methods)
 
+def is_interface_class(typename: str) -> boolean:
+    return typename in _interfaces
+
 def create_java_class(scope: Scope, template: str, override_name: str = '', template_args: List[str] = []):
     global g_root
     if scope.is_template:
@@ -1265,6 +1285,7 @@ def create_java_class(scope: Scope, template: str, override_name: str = '', temp
     ignored_nodes = get_ignored_nodes_from_template(template)
     failed_nodes = []
     explicit_add_get_prefix_functions = []
+    is_interface = is_interface_class(scope.fullname)
     for regex in _explicit_add_get_prefix:
         if re.match(regex, class_name) != None:
             explicit_add_get_prefix_functions = _explicit_add_get_prefix[regex]
@@ -1295,8 +1316,6 @@ def create_java_class(scope: Scope, template: str, override_name: str = '', temp
                 nativeargs = list(args)
                 check_ignore_args(args)
                 check_ignore_args([result_param])
-                if function_name == 'IJKSize':
-                    debug = 0
                 if child.is_constructor: 
                     if is_ctor_valid(child):
                         print(create_java_ctor(child, class_name, jni_function_name, True, overloads_created, args), file=methods)
@@ -1344,29 +1363,35 @@ def create_java_class(scope: Scope, template: str, override_name: str = '', temp
                     if overload_signature in overloads_created:
                         continue
                     overloads_created.append(overload_signature)
-                    print(f'\n    ///AUTOGEN-OK: {child}', file=methods)
-                    print(f'    native private {static}{native_return_type} {jni_function_name}Impl({native_arglist});', file=methods)
+                    if not is_interface:
+                        print(f'\n    ///AUTOGEN-OK: {child}', file=methods)
+                        print(f'    native private {static}{native_return_type} {jni_function_name}Impl({native_arglist});', file=methods)
                     function_docstring = format_docstring(child, indent='    ', used_arglist=used_args)
                     if function_docstring:
                         print(f'\n{function_docstring}', file=methods)
-                    print(f'    public {static}{return_type} {function_name}({java_arglist}) {{', file=methods)
-                    if prologue:
-                        print(f'{prologue}', file=methods)
-                    return_txt = '' if return_type == 'void' else 'return '
-                    if epilogue:
-                        print(f'        {jni_function_name}Impl({transformed_args});', file=methods)
-                        print(f'{epilogue}', file=methods)
+                    if is_interface:
+                        print(f'    public {static}{return_type} {function_name}({java_arglist});', file=methods)
                     else:
-                        if is_enum_type(result_param):
-                            print(f'        {return_txt}{return_type}.fromInt({jni_function_name}Impl({transformed_args}));', file=methods)
-                        elif is_pass_by_handle(real_return_type) and not is_marshaled_valuetype(real_return_type):
-                            print(f'        {return_txt}{return_type}.fromNativeObject({jni_function_name}Impl({transformed_args}));', file=methods)
+                        print(f'    public {static}{return_type} {function_name}({java_arglist}) {{', file=methods)
+                        if prologue:
+                            print(f'{prologue}', file=methods)
+                        return_txt = '' if return_type == 'void' else 'return '
+                        if epilogue:
+                            print(f'        {jni_function_name}Impl({transformed_args});', file=methods)
+                            print(f'{epilogue}', file=methods)
                         else:
-                            print(f'        {return_txt}{jni_function_name}Impl({transformed_args});', file=methods)
-                    if not child.is_static_method:
-                        has_instance_methods = True
-                    print('    }', file=methods)
-                    create_defaulted_overloads(overload_functions, overload_default_args, overload_signature, function_docstring, methods)
+                            if is_enum_type(result_param):
+                                _et = find_enum_type(result_param.canonical_type)
+                                enum_int_type,_,_ = _java_enum_integral_types[_et.enum_integral_type]
+                                print(f'        {return_txt}{return_type}.fromInt(({enum_int_type}){jni_function_name}Impl({transformed_args}));', file=methods)
+                            elif is_pass_by_handle(real_return_type) and not is_marshaled_valuetype(real_return_type):
+                                print(f'        {return_txt}{return_type}.fromNativeObject({jni_function_name}Impl({transformed_args}));', file=methods)
+                            else:
+                                print(f'        {return_txt}{jni_function_name}Impl({transformed_args});', file=methods)
+                        print('    }', file=methods)
+                        if not child.is_static_method:
+                            has_instance_methods = True
+                        create_defaulted_overloads(overload_functions, overload_default_args, overload_signature, function_docstring, methods)
         except NotImplementedError as e:
             print(f'\n    ///AUTOGEN-FAIL: {child}', file=methods)
             print(f'\nJava: While parsing {child}, the following exception occurred:', file=sys.stderr)
@@ -1382,6 +1407,14 @@ def create_java_class(scope: Scope, template: str, override_name: str = '', temp
     extra_overloadable_functions, extra_overloadable_function_docstrings, template = get_overloadable_functions_from_template(template)
     for function, docstring in zip(extra_overloadable_functions, extra_overloadable_function_docstrings):
         create_defaulted_overloads(overload_functions, overload_default_args, function, docstring, methods)
+    class_implements_interfaces = []   
+    _bases = []
+    for b, t in bases:
+        if is_interface_class(b.fullname):
+            class_implements_interfaces.append(b.name)
+        else:
+            _bases.append((b,t))
+    bases = _bases            
     if bases:
         assert len(bases) == 1
         b,t = bases[0]
@@ -1394,6 +1427,8 @@ def create_java_class(scope: Scope, template: str, override_name: str = '', temp
                 class_extends_txt = f' extends {basename}'
             else:
                 class_extends_txt = f' extends {b.name}'
+    elif is_interface:
+        pass
     else:
         bases = [ 'ManagedBase' ]
         class_extends_txt = ' extends ManagedBase'
@@ -1405,13 +1440,15 @@ def create_java_class(scope: Scope, template: str, override_name: str = '', temp
     is_raii = False if bases else is_raii
     if is_raii and has_instance_methods:
         # AutoCloseable interface can be used with the java try-with-resources pattern (RAAI)
-        class_implements_txt = ' implements AutoCloseable'
+        class_implements_interfaces.append('AutoCloseable')
         # create dtor : close() method from AutoCloseable
         dtor    =  f'    public void close() {{\n'
         dtor    += f'        dispose();\n'
         dtor    += f'    }}'
     else:
         dtor = ""
+#    if is_interface:
+#        print('\n    long getNativeObject();', file=methods)
     if has_instance_methods or bases:
         if bases:
             ctor    =  f'    {class_name}(long nativeobject) {{\n'
@@ -1419,27 +1456,23 @@ def create_java_class(scope: Scope, template: str, override_name: str = '', temp
             ctor    += f'    }}'
         else:
             print('    private long native_object;', file=output)
-
             # create package private ctor used by fromNativeObject()
             ctor    =  f'    {class_name}(long nativeobject) {{\n'
             ctor    += f'        if (nativeobject == 0)\n'
             ctor    += f'            throw new NullPointerException("nativeobject");\n'
             ctor    += f'        this.native_object = nativeobject;\n'
             ctor    += f'    }}'
-
         # construct instance from native object handle
         factory =  f'    static {class_name} fromNativeObject(long nativeobject) {{\n'
         factory += f'        return new {class_name}(nativeobject);\n'
         factory += f'    }}\n'
         factory += f'\n'
-
         if not bases:
             factory += f'    long getNativeObject() {{\n'
             factory += f'        if (this.native_object == 0)\n'
             factory += f'           throw new RuntimeException("Accessing disposed object");\n'
             factory += f'        return this.native_object;\n'
             factory += f'    }}'
-        
         print(f"\n{ctor}", file=methods)
         print('    native private long dtorImpl(long nativeobject);\n', file=methods)
         print('    @Override', file=methods)
@@ -1452,6 +1485,8 @@ def create_java_class(scope: Scope, template: str, override_name: str = '', temp
     print(methods.getvalue(), file=output)
     class_docstring = format_docstring(scope)
     class_body = output.getvalue()
+    class_type = 'interface' if is_interface else 'class'
+    class_implements_txt = '' if not class_implements_interfaces else ' implements ' + ', '.join(class_implements_interfaces)
     full_txt = _apply_template(template, class_body, **locals())
     if failed_nodes:
         print(f'Java: Failed nodes for {class_name}:', file=sys.stderr)
@@ -1711,17 +1746,27 @@ header_dir = '../../src/OpenVDS/OpenVDS'
 dont_output_list = []
 
 header_list = [ 
-#    'KnownMetadata.h',
-#    'MetadataAccess.h',
-#    'MetadataKey.h',
-#    'GlobalState.h',
-#    'OpenVDS.h',
-#    'ProcessorPreference.h',
-#    'VolumeDataAccess.h',
+    'CoordinateTransformer.h',
+    'Exceptions.h',
+    'GlobalMetadataCommon.h',
+    'GlobalState.h',
     'IJKCoordinateTransformer.h',
-#    'VolumeData.h',
-#    'ErrorCode.h',
-#    'VolumeDataAccessManager.h',
+    'KnownMetadata.h',
+    'MetadataAccess.h',
+    'MetadataContainer.h',
+    'MetadataKey.h',
+    'OpenVDS.h',
+    'Optional.h',
+    'ValueConversion.h',
+    'VolumeData.h',
+    'VolumeDataAccess.h',
+    'VolumeDataAccessManager.h',
+    'VolumeDataAxisDescriptor.h',
+    'VolumeDataChannelDescriptor.h',
+    'VolumeDataLayout.h',
+    'VolumeDataLayoutDescriptor.h',
+    'VolumeIndexer.h',
+    'VolumeSampler.h',
 ]
 
 template_dir = './javagen_templates'

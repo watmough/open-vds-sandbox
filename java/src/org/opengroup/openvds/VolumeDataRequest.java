@@ -141,7 +141,7 @@ Whenever WaitForCompletion returns false you need to call IsCanceled() to know i
     }
 
     ///AUTOGEN-OK: CXX_METHOD BufferDataType OpenVDS::VolumeDataChannelDescriptor::Format () const FUNCTIONPROTO
-    native private int BufferDataTypeImpl(long native_object);
+    native private long BufferDataTypeImpl(long native_object);
 
     /**
      * Get the volume data format of the buffer the request is writing to.
@@ -149,7 +149,7 @@ Whenever WaitForCompletion returns false you need to call IsCanceled() to know i
      * @return The volume data format of the buffer the request is writing to.
      */
     public VolumeDataChannelDescriptor.Format bufferDataType() {
-        return VolumeDataChannelDescriptor.Format.fromInt(BufferDataTypeImpl(getNativeObject()));
+        return VolumeDataChannelDescriptor.Format.fromInt((int)BufferDataTypeImpl(getNativeObject()));
     }
 
     VolumeDataRequest(long nativeobject) {
