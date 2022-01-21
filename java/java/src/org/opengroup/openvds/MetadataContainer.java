@@ -77,18 +77,28 @@ public class MetadataContainer extends MetadataReadAccess {
 
 
     /**
+     * Set int metadata
+     *
      * @param category
+     *          metadata category definition
      * @param name
+     *          metadata name
      * @param value
+     *          metadata value
      */
     public void setMetadataInt(String category, String name, int value) {
         cpSetMetadataInt(_handle, category, name, value);
     }
 
     /**
+     * Set int 2D array metadata
+     *
      * @param category
+     *          metadata category definition
      * @param name
+     *          metadata name
      * @param value
+     *          metadata value
      */
     public void setMetadataIntVector2(String category, String name, int[] value) {
         checkArrayArgument(value, 2);
@@ -96,9 +106,14 @@ public class MetadataContainer extends MetadataReadAccess {
     }
 
     /**
+     * Set int 3D array metadata
+     *
      * @param category
+     *          metadata category definition
      * @param name
+     *          metadata name
      * @param value
+     *          metadata value
      */
     public void setMetadataIntVector3(String category, String name, int[] value) {
         checkArrayArgument(value, 3);
@@ -106,9 +121,14 @@ public class MetadataContainer extends MetadataReadAccess {
     }
 
     /**
+     * Set int 4D array metadata
+     *
      * @param category
+     *          metadata category definition
      * @param name
+     *          metadata name
      * @param value
+     *          metadata value
      */
     public void setMetadataIntVector4(String category, String name, int[] value) {
         checkArrayArgument(value, 4);
@@ -116,18 +136,28 @@ public class MetadataContainer extends MetadataReadAccess {
     }
 
     /**
+     * Set float metadata
+     *
      * @param category
+     *          metadata category definition
      * @param name
+     *          metadata name
      * @param value
+     *          metadata value
      */
     public void setMetadataFloat(String category, String name, float value) {
         cpSetMetadataFloat(_handle, category, name, value);
     }
 
     /**
+     * Set float 2D array metadata
+     *
      * @param category
+     *          metadata category definition
      * @param name
+     *          metadata name
      * @param value
+     *          metadata value
      */
     public void setMetadataFloatVector2(String category, String name, float[] value) {
         checkArrayArgument(value, 2);
@@ -135,9 +165,14 @@ public class MetadataContainer extends MetadataReadAccess {
     }
 
     /**
+     * Set float 3D array metadata
+     *
      * @param category
+     *          metadata category definition
      * @param name
+     *          metadata name
      * @param value
+     *          metadata value
      */
     public void setMetadataFloatVector3(String category, String name, float[] value) {
         checkArrayArgument(value, 3);
@@ -145,9 +180,14 @@ public class MetadataContainer extends MetadataReadAccess {
     }
 
     /**
+     * Set float 4D array metadata
+     *
      * @param category
+     *          metadata category definition
      * @param name
+     *          metadata name
      * @param value
+     *          metadata value
      */
     public void setMetadataFloatVector4(String category, String name, float[] value) {
         checkArrayArgument(value, 4);
@@ -155,18 +195,28 @@ public class MetadataContainer extends MetadataReadAccess {
     }
 
     /**
+     * Set double metadata
+     *
      * @param category
+     *          metadata category definition
      * @param name
+     *          metadata name
      * @param value
+     *          metadata value
      */
     public void setMetadataDouble(String category, String name, double value) {
          cpSetMetadataDouble(_handle, category, name, value);
     }
 
     /**
+     * Set double 2D array metadata
+     *
      * @param category
+     *          metadata category definition
      * @param name
+     *          metadata name
      * @param value
+     *          metadata value
      */
     public void setMetadataDoubleVector2(String category, String name, double[] value) {
         checkArrayArgument(value, 2);
@@ -174,9 +224,14 @@ public class MetadataContainer extends MetadataReadAccess {
     }
 
     /**
+     * Set double 3D array metadata
+     *
      * @param category
+     *          metadata category definition
      * @param name
+     *          metadata name
      * @param value
+     *          metadata value
      */
     public void setMetadataDoubleVector3(String category, String name, double[] value) {
         checkArrayArgument(value, 3);
@@ -184,9 +239,14 @@ public class MetadataContainer extends MetadataReadAccess {
     }
 
     /**
+     * Set double 4D array metadata
+     *
      * @param category
+     *          metadata category definition
      * @param name
+     *          metadata name
      * @param value
+     *          metadata value
      */
     public void setMetadataDoubleVector4(String category, String name, double[] value) {
         checkArrayArgument(value, 4);
@@ -194,9 +254,14 @@ public class MetadataContainer extends MetadataReadAccess {
     }
 
     /**
+     * Set String metadata
+     *
      * @param category
+     *          metadata category definition
      * @param name
+     *          metadata name
      * @param value
+     *          metadata value
      */
     public void setMetadataString(String category, String name, String value) {
         if (value == null) {
@@ -206,10 +271,14 @@ public class MetadataContainer extends MetadataReadAccess {
     }
 
     /**
-     * set Meta data blob using a byte array
+     * Set metadata blob using a byte array
+     *
      * @param category
+     *          metadata category definition
      * @param name
+     *          metadata name
      * @param blobValues
+     *          metadata value as byte array
      */
     public void setMetadataBLOB(String category, String name, byte[] blobValues) {
         if (blobValues == null) {
@@ -219,10 +288,14 @@ public class MetadataContainer extends MetadataReadAccess {
     }
 
     /**
-     * set Meta data blob using a byte array
+     * Set metadata blob using a byte buffer
+     *
      * @param category
+     *          metadata category definition
      * @param name
+     *          metadata name
      * @param blobValues
+     *          metadata value as byte buffer
      */
     public void setMetadataBLOB(String category, String name, ByteBuffer blobValues) {
         if (blobValues == null) {
@@ -230,7 +303,6 @@ public class MetadataContainer extends MetadataReadAccess {
         }
         cpSetMetadataBLOB(_handle, category, name, blobValues.array());
     }
-
 
     private void checkArrayArgument(int[] array, int expectedSize) {
         if (array == null || array.length != expectedSize) {

@@ -45,7 +45,7 @@ public class VDSFileOpenOptions extends OpenOptions {
      * Constructor with wavelet adaptive parameters
      *
      * @param pFilePath the file path the VDS
-     * @apram wam wavelet adaptive method
+     * @param wam wavelet adaptive method
      * @param wat wavelet adaptive tolerance
      * @param war wavelet adaptive ratio
      */

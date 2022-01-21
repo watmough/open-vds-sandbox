@@ -49,7 +49,7 @@ public class GoogleOpenOptions extends OpenOptions {
      *
      * @param pBucket           the bucket of the VDS
      * @param pathPrefix        the prefix of the VDS
-     * @apram wam wavelet adaptive method
+     * @param wam wavelet adaptive method
      * @param wat wavelet adaptive tolerance
      * @param war wavelet adaptive ratio
      */

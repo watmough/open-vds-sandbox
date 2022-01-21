@@ -67,7 +67,7 @@ public class AWSOpenOptions extends OpenOptions {
      * @param pKey              the key prefix of the VDS
      * @param pRegion           the region of the bucket of the VDS
      * @param pEndpointOverride This parameter allows to override the endpoint url
-     * @apram wam wavelet adaptive method
+     * @param wam wavelet adaptive method
      * @param wat wavelet adaptive tolerance
      * @param war wavelet adaptive ratio
      */
@@ -96,7 +96,7 @@ public class AWSOpenOptions extends OpenOptions {
      * @param pBucket the bucket of the VDS
      * @param pKey    the key prefix of the VDS
      * @param pRegion the region of the bucket of the VDS
-     * @apram wam wavelet adaptive method
+     * @param wam wavelet adaptive method
      * @param wat wavelet adaptive tolerance
      * @param war wavelet adaptive ratio
      */

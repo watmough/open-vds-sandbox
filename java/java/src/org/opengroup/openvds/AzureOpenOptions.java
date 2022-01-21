@@ -53,7 +53,7 @@ public class AzureOpenOptions extends OpenOptions {
      * @param pConnectionString the connectionString for the VDS
      * @param pContainer the container of the VDS
      * @param pBlob the blob prefix of the VDS
-     * @apram wam wavelet adaptive method
+     * @param wam wavelet adaptive method
      * @param wat wavelet adaptive tolerance
      * @param war wavelet adaptive ratio
      */
@@ -94,7 +94,7 @@ public class AzureOpenOptions extends OpenOptions {
      * Blob Storage library
      * @param pMaxExecutionTime the max execution time setting for the Azure
      * Blob Storage library
-     * @apram wam wavelet adaptive method
+     * @param wam wavelet adaptive method
      * @param wat wavelet adaptive tolerance
      * @param war wavelet adaptive ratio
      */

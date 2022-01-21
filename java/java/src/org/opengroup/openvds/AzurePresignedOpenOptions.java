@@ -49,7 +49,7 @@ public class AzurePresignedOpenOptions extends OpenOptions {
      *
      * @param baseUrl the connectionString for the VDS
      * @param urlSuffix the container of the VDS
-     * @apram wam wavelet adaptive method
+     * @param wam wavelet adaptive method
      * @param wat wavelet adaptive tolerance
      * @param war wavelet adaptive ratio
      */

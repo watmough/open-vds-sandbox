@@ -32,7 +32,7 @@ public class InMemoryOpenOptions extends OpenOptions {
     /**
      * Constructor with wavelet adaptive parameters
      *
-     * @apram wam wavelet adaptive method
+     * @param wam wavelet adaptive method
      * @param wat wavelet adaptive tolerance
      * @param war wavelet adaptive ratio
      */

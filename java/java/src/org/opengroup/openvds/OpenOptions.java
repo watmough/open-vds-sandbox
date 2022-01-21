@@ -50,7 +50,7 @@ public class OpenOptions {
      * Constructor.
      *
      * @param cType the connection type (see static members of this class)
-     * @apram wam wavelet adaptive method
+     * @param wam wavelet adaptive method
      * @param wat wavelet adaptive tolerance
      * @param war wavelet adaptive ratio
      */

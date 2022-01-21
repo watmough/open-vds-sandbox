@@ -100,7 +100,14 @@ public abstract class BufferUtils {
     }
 
     /**
-     * @param samplesBuffer The buffer to be copied into a new array
+     * Get the input sample buffer as float array
+     *
+     * @param samplesBuffer
+     *              The buffer to be copied into a new array
+     * @param dst
+     *              Destination array. If null, a new array will be created.
+     * @param releaseBuffer
+     *              if true, samplesBuffer will be released after the copy.
      * @return An array copy of the given buffer
      */
     public static float[] toArray(FloatBuffer samplesBuffer, float[] dst, boolean releaseBuffer) {
@@ -112,7 +119,14 @@ public abstract class BufferUtils {
     }
 
     /**
-     * @param samplesBuffer The buffer to be copied into a new array
+     * Get the input sample buffer as int array
+     *
+     * @param samplesBuffer
+     *              The buffer to be copied into a new array
+     * @param dst
+     *              Destination array. If null a new array will be created.
+     * @param releaseBuffer
+     *              if true, samplesBuffer will be released after the copy.
      * @return An array copy of the given buffer
      */
     public static int[] toArray(IntBuffer samplesBuffer, int[] dst, boolean releaseBuffer) {
@@ -124,8 +138,14 @@ public abstract class BufferUtils {
     }
 
     /**
-     * @param samplesBuffer The buffer to be copied into a new array
-     * @param dst           The destination array
+     * Get the input sample buffer as byte array
+     *
+     * @param samplesBuffer
+     *              The buffer to be copied into a new array
+     * @param dst
+     *              Destination array. If null a new array will be created.
+     * @param releaseBuffer
+     *              if true, samplesBuffer will be released after the copy.
      * @return An array copy of the given buffer
      */
     public static byte[] toArray(ByteBuffer samplesBuffer, byte[] dst, boolean releaseBuffer) {
@@ -137,6 +157,8 @@ public abstract class BufferUtils {
     }
 
     /**
+     * Get the input sample buffer as float array
+     *
      * @param samplesBuffer The buffer to be copied into a new array
      * @return A new array filled with content of the given buffer
      */
@@ -145,6 +167,8 @@ public abstract class BufferUtils {
     }
 
     /**
+     * Get the input sample buffer as int array
+     *
      * @param samplesBuffer The buffer to be copied into a new array
      * @return A new array filled with content of the given buffer
      */
@@ -153,6 +177,8 @@ public abstract class BufferUtils {
     }
 
     /**
+     * Get the input sample buffer as byte array
+     *
      * @param samplesBuffer The buffer to be copied into a new array
      * @return A new array filled with content of the given buffer
      */
@@ -161,6 +187,8 @@ public abstract class BufferUtils {
     }
 
     /**
+     * Copy the input sample buffer as float array, then releases the input buffer.
+     *
      * @param samplesBuffer The buffer to be copied into a new array
      * @return A new array filled with content of the given buffer. Buffer is released afterward.
      * @see #release(Buffer)
@@ -170,6 +198,8 @@ public abstract class BufferUtils {
     }
 
     /**
+     * Copy the input sample buffer as int array, then releases the input buffer.
+     *
      * @param samplesBuffer The buffer to be copied into a new array
      * @return A new array filled with content of the given buffer. Buffer is released afterward.
      * @see #release(Buffer)
@@ -179,6 +209,8 @@ public abstract class BufferUtils {
     }
 
     /**
+     * Copy the input sample buffer as byte array, then releases the input buffer.
+     *
      * @param samplesBuffer The buffer to be copied into a new array
      * @return A new array filled with content of the given buffer. Buffer is released afterward.
      * @see #release(Buffer)
@@ -228,7 +260,9 @@ public abstract class BufferUtils {
     }
 
     /**
+     * Get the capacity of a buffer.
      * @param outBuf
+     *          buffer whose size is asked
      * @return The capacity in bytes of the provided buffer
      */
     public static int getCapacityInBytes(Buffer outBuf) {
