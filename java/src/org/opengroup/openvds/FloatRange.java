@@ -1,0 +1,81 @@
+
+/*
+ * Copyright 2021 The Open Group
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.opengroup.openvds;
+
+public class FloatRange extends ByteBufferBackedObject {
+
+    public FloatRange() {
+        this.createByteBuffer(Float.BYTES * 2);
+        this.set((float)0, (float)0);
+    }
+
+    public FloatRange(float min, float max) {
+        this.createByteBuffer(Float.BYTES * 2);
+        this.set(min, max);
+    }
+
+    public FloatRange(FloatRange rhs) {
+        this.createByteBuffer(Float.BYTES * 2);
+        this.set(rhs.getMin(), rhs.getMax());
+    }
+
+    public boolean equals(Object other) {
+        if (other == this) return true;
+        if (other == null) return false;
+        if (getClass() != other.getClass()) return false;
+        FloatRange real_other = (FloatRange)other;
+        return (this.getMin() == real_other.getMin() &&
+                this.getMax() == real_other.getMax());
+    }
+
+    public void set(float min, float max) {
+                this.getByteBufferProxy().putFloat(0 * Float.BYTES, min);
+                this.getByteBufferProxy().putFloat(1 * Float.BYTES, max);
+    }
+
+    public void setMin(float value) {
+        this.getByteBufferProxy().putFloat(0 * Float.BYTES, value);
+    }
+
+
+    public void setMax(float value) {
+        this.getByteBufferProxy().putFloat(1 * Float.BYTES, value);
+    }
+
+    public float getMin() {
+        return this.getByteBufferProxy().getFloat(0 * Float.BYTES);
+    }
+
+
+    public float getMax() {
+        return this.getByteBufferProxy().getFloat(1 * Float.BYTES);
+    }
+
+    public String toString() {
+        String value = "(";
+        for (int i = 0; i < 2; ++i)
+        {
+            if (i > 0)
+                value = value + ", ";
+            value = value + this.getByteBufferProxy().getFloat(i * Float.BYTES);
+        }
+        value = value + ")";
+        return value;
+    }
+}
+
