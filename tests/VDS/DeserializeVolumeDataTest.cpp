@@ -311,3 +311,24 @@ GTEST_TEST(VDS_integration, DeSerializeVolumeData1255)
   
   verify_lossless(valueRange, dataBlockNone, dataNone, "/chunk.1255.CompressionMethod_WaveletLossless", OpenVDS::CompressionMethod::WaveletLossless, OpenVDS::VolumeDataChannelDescriptor::Format_R32);
 }
+
+GTEST_TEST(VDS_integration, DeSerializeVolumeDataNoValue)
+{
+  OpenVDS::Error error;
+
+  OpenVDS::FloatRange valueRange(-0.1234f, 0.1234f);
+  std::vector<uint8_t> serializedNone = LoadTestFile("/chunk.Dimensions_012LOD0_0_CompressionMethod_None_no_value");
+  std::vector<uint8_t> dataNone;
+  OpenVDS::DataBlock dataBlockNone;
+  OpenVDS::DeserializeVolumeData(serializedNone, OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::CompressionMethod::None, valueRange, 1.0f, 0.0f, true, 44.50f, 0, dataBlockNone, dataNone, error);
+  EXPECT_EQ(error.code, 0);
+  
+  std::vector<uint8_t> serializedLossless = LoadTestFile("/chunk.Dimensions_012LOD0_0_CompressionMethod_WaveletLossless_no_value");
+  std::vector<uint8_t> deserializedData;
+  OpenVDS::DataBlock deserializedDataBlock;
+  OpenVDS::DeserializeVolumeData(serializedLossless, OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::CompressionMethod::WaveletLossless, valueRange, 1.0f, 0.0f, true, 44.50f, -1, deserializedDataBlock, deserializedData, error);
+  EXPECT_EQ(error.code, 0);
+
+  int comp_lossless = memcmp(dataNone.data(), deserializedData.data(), dataNone.size());
+  EXPECT_TRUE(comp_lossless == 0);
+}
