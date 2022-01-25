@@ -38,7 +38,7 @@ def print_callstack(exc):
 
 _ignore_types = [
     "OpenVDS::M4", # Should not even be there
-    "OpenVDS::Error",
+    "OpenVDS::VolumeDataPage::Error", # SteinFIXME add this
     "OpenVDS::StringWrapper",
     "OpenVDS::MetadataKeyRange",
     "OpenVDS::IVolumeDataAccess",
@@ -1279,7 +1279,6 @@ def create_java_class(scope: Scope, template: str, override_name: str = '', temp
     assert scope.is_record or scope.is_template
     has_instance_methods = False
     has_ctor = False
-    children = scope.get_children()
     overloads_created = []
     overload_functions, overload_default_args, template = get_overloads_from_template(template)
     ignored_nodes = get_ignored_nodes_from_template(template)
@@ -1289,121 +1288,129 @@ def create_java_class(scope: Scope, template: str, override_name: str = '', temp
     for regex in _explicit_add_get_prefix:
         if re.match(regex, class_name) != None:
             explicit_add_get_prefix_functions = _explicit_add_get_prefix[regex]
-    for child in children:
-        if str(child) in ignored_nodes:
-            continue
-        try:
-            if child.is_anonymous:
+    scopes = [scope]
+    if len(bases) > 1:
+        # Multiple inheritances is only indirectly supported. Members of base classes other than the first
+        # are inlined like normal class methods.
+        scopes.extend([b for b,t in bases[1:]])
+        bases = [bases[0]]
+    for _scope in scopes:
+        children = _scope.get_children()
+        for child in children:
+            if str(child) in ignored_nodes:
                 continue
-            if child.is_enum:
-                if dont_generate_wrapper_for(child):
+            try:
+                if child.is_anonymous:
                     continue
-                if child.get_enum_values():
-                    enum_contents = create_java_enum(child, template=load_java_template(child, is_inner_class=True))
-                    print(indent(enum_contents), file=methods)
-            elif child.is_function:
-                if child.nodetype == 'FUNCTION_TEMPLATE':
-                    continue
-                if child.is_destructor:
-                    continue
-                function_name = child.name
-                jni_function_name = child.overload_name
-                result_param: Param = child.result
-                args = child.get_args()
-                if template_args:
-                    result_param = param_subsitute_template_args(result_param, template_args)
-                    args = arglist_substitute_template_args(args, template_args)
-                nativeargs = list(args)
-                check_ignore_args(args)
-                check_ignore_args([result_param])
-                if child.is_constructor: 
-                    if is_ctor_valid(child):
-                        print(create_java_ctor(child, class_name, jni_function_name, True, overloads_created, args), file=methods)
-                        has_ctor = True
-                        has_instance_methods = True
-                elif function_name.startswith("operator"):
-                    if function_name == "operator==":
-                        print(create_java_equals(scope), file=methods)
-                        has_instance_methods = True
-                else:
-                    if is_bytebuffer_backed(result_param.canonical_type, result_param.typename):
-                        nativeargs.insert(0, result_param)
-                        native_result_param = Param('void')
-                    else:
-                        native_result_param = result_param
-                    real_return_type = param_to_real_type(result_param, template_args)
-                    return_type = cpp_to_java_type(real_return_type)
-                    native_return_type = cpp_to_native_type(native_result_param.canonical_type)
-                    if is_templated(return_type):
-                        raise NotImplementedError('Unhandled templated result type')
-                    is_function_already_renamed = False
-                    if result_param.canonical_type != "void" and not function_name.startswith("Get"):
-                        if function_name in explicit_add_get_prefix_functions:
-                            function_name = f"get{function_name}"
-                            is_function_already_renamed = True
-                    if not is_function_already_renamed:
-                        # Change function names to camelCase with the following exceptions:
-                        # (1) A function with a single letter (e.g. I, J, K, X, Y, Z, etc.)
-                        # (2) A function starting with multiple upper-case letters (e.g. IJK, VDS, URL, etc.)
-                        function_name_len = len(function_name)
-                        change_function_name_to_camel_case = function_name_len > 0
-                        if function_name_len == 1:
-                            change_function_name_to_camel_case = False
-                        elif function_name_len > 1:
-                            if function_name[0].isupper() and function_name[1].isupper():
-                                change_function_name_to_camel_case = False
-                        if change_function_name_to_camel_case:
-                            function_name = function_name[0].lower() + function_name[1:]
-                    static = "static " if child.is_static_method else ""
-                    native_arglist = create_native_arglist(class_name, nativeargs, True, child.is_static_method)
-                    java_arglist = create_java_arglist(args)
-                    used_args = []
-                    transformed_args, prologue, epilogue = transform_java_functioncall_args(class_name, nativeargs, True, child.is_static_method, used_arglist=used_args)
-                    overload_signature = f'{static}{return_type} {function_name}({java_arglist})'
-                    if overload_signature in overloads_created:
+                if child.is_enum:
+                    if dont_generate_wrapper_for(child):
                         continue
-                    overloads_created.append(overload_signature)
-                    if not is_interface:
-                        print(f'\n    ///AUTOGEN-OK: {child}', file=methods)
-                        print(f'    native private {static}{native_return_type} {jni_function_name}Impl({native_arglist});', file=methods)
-                    function_docstring = format_docstring(child, indent='    ', used_arglist=used_args)
-                    if function_docstring:
-                        print(f'\n{function_docstring}', file=methods)
-                    if is_interface:
-                        print(f'    public {static}{return_type} {function_name}({java_arglist});', file=methods)
-                    else:
-                        print(f'    public {static}{return_type} {function_name}({java_arglist}) {{', file=methods)
-                        if prologue:
-                            print(f'{prologue}', file=methods)
-                        return_txt = '' if return_type == 'void' else 'return '
-                        if epilogue:
-                            print(f'        {jni_function_name}Impl({transformed_args});', file=methods)
-                            print(f'{epilogue}', file=methods)
-                        else:
-                            if is_enum_type(result_param):
-                                _et = find_enum_type(result_param.canonical_type)
-                                enum_int_type,_,_ = _java_enum_integral_types[_et.enum_integral_type]
-                                print(f'        {return_txt}{return_type}.fromInt(({enum_int_type}){jni_function_name}Impl({transformed_args}));', file=methods)
-                            elif is_pass_by_handle(real_return_type) and not is_marshaled_valuetype(real_return_type):
-                                print(f'        {return_txt}{return_type}.fromNativeObject({jni_function_name}Impl({transformed_args}));', file=methods)
-                            else:
-                                print(f'        {return_txt}{jni_function_name}Impl({transformed_args});', file=methods)
-                        print('    }', file=methods)
-                        if not child.is_static_method:
+                    if child.get_enum_values():
+                        enum_contents = create_java_enum(child, template=load_java_template(child, is_inner_class=True))
+                        print(indent(enum_contents), file=methods)
+                elif child.is_function:
+                    if child.nodetype == 'FUNCTION_TEMPLATE':
+                        continue
+                    if child.is_destructor:
+                        continue
+                    function_name = child.name
+                    jni_function_name = child.overload_name
+                    result_param: Param = child.result
+                    args = child.get_args()
+                    if template_args:
+                        result_param = param_subsitute_template_args(result_param, template_args)
+                        args = arglist_substitute_template_args(args, template_args)
+                    nativeargs = list(args)
+                    check_ignore_args(args)
+                    check_ignore_args([result_param])
+                    if child.is_constructor: 
+                        if is_ctor_valid(child):
+                            print(create_java_ctor(child, class_name, jni_function_name, True, overloads_created, args), file=methods)
+                            has_ctor = True
                             has_instance_methods = True
-                        create_defaulted_overloads(overload_functions, overload_default_args, overload_signature, function_docstring, methods)
-        except NotImplementedError as e:
-            print(f'\n    ///AUTOGEN-FAIL: {child}', file=methods)
-            print(f'\nJava: While parsing {child}, the following exception occurred:', file=sys.stderr)
-            failed_nodes.append(child)
-            print(e, file=sys.stderr)
-            print_callstack(e)
-            pass
-        except TypeIgnored as e:
-#            print(f'\nWhile parsing {child}, the following exception occurred:', file=sys.stderr)
-#            print(e, file=sys.stderr)
-#            print_callstack(e)
-            pass
+                    elif function_name.startswith("operator") and _scope is scope:
+                        if function_name == "operator==":
+                            print(create_java_equals(scope), file=methods)
+                            has_instance_methods = True
+                    else:
+                        if is_bytebuffer_backed(result_param.canonical_type, result_param.typename):
+                            nativeargs.insert(0, result_param)
+                            native_result_param = Param('void')
+                        else:
+                            native_result_param = result_param
+                        real_return_type = param_to_real_type(result_param, template_args)
+                        return_type = cpp_to_java_type(real_return_type)
+                        native_return_type = cpp_to_native_type(native_result_param.canonical_type)
+                        if is_templated(return_type):
+                            raise NotImplementedError('Unhandled templated result type')
+                        is_function_already_renamed = False
+                        if result_param.canonical_type != "void" and not function_name.startswith("Get"):
+                            if function_name in explicit_add_get_prefix_functions:
+                                function_name = f"get{function_name}"
+                                is_function_already_renamed = True
+                        if not is_function_already_renamed:
+                            # Change function names to camelCase with the following exceptions:
+                            # (1) A function with a single letter (e.g. I, J, K, X, Y, Z, etc.)
+                            # (2) A function starting with multiple upper-case letters (e.g. IJK, VDS, URL, etc.)
+                            function_name_len = len(function_name)
+                            change_function_name_to_camel_case = function_name_len > 0
+                            if function_name_len == 1:
+                                change_function_name_to_camel_case = False
+                            elif function_name_len > 1:
+                                if function_name[0].isupper() and function_name[1].isupper():
+                                    change_function_name_to_camel_case = False
+                            if change_function_name_to_camel_case:
+                                function_name = function_name[0].lower() + function_name[1:]
+                        static = "static " if child.is_static_method else ""
+                        native_arglist = create_native_arglist(class_name, nativeargs, True, child.is_static_method)
+                        java_arglist = create_java_arglist(args)
+                        used_args = []
+                        transformed_args, prologue, epilogue = transform_java_functioncall_args(class_name, nativeargs, True, child.is_static_method, used_arglist=used_args)
+                        overload_signature = f'{static}{return_type} {function_name}({java_arglist})'
+                        if overload_signature in overloads_created:
+                            continue
+                        overloads_created.append(overload_signature)
+                        if not is_interface:
+                            print(f'\n    ///AUTOGEN-OK: {child}', file=methods)
+                            print(f'    native private {static}{native_return_type} {jni_function_name}Impl({native_arglist});', file=methods)
+                        function_docstring = format_docstring(child, indent='    ', used_arglist=used_args)
+                        if function_docstring:
+                            print(f'\n{function_docstring}', file=methods)
+                        if is_interface:
+                            print(f'    public {static}{return_type} {function_name}({java_arglist});', file=methods)
+                        else:
+                            print(f'    public {static}{return_type} {function_name}({java_arglist}) {{', file=methods)
+                            if prologue:
+                                print(f'{prologue}', file=methods)
+                            return_txt = '' if return_type == 'void' else 'return '
+                            if epilogue:
+                                print(f'        {jni_function_name}Impl({transformed_args});', file=methods)
+                                print(f'{epilogue}', file=methods)
+                            else:
+                                if is_enum_type(result_param):
+                                    _et = find_enum_type(result_param.canonical_type)
+                                    enum_int_type,_,_ = _java_enum_integral_types[_et.enum_integral_type]
+                                    print(f'        {return_txt}{return_type}.fromInt(({enum_int_type}){jni_function_name}Impl({transformed_args}));', file=methods)
+                                elif is_pass_by_handle(real_return_type) and not is_marshaled_valuetype(real_return_type):
+                                    print(f'        {return_txt}{return_type}.fromNativeObject({jni_function_name}Impl({transformed_args}));', file=methods)
+                                else:
+                                    print(f'        {return_txt}{jni_function_name}Impl({transformed_args});', file=methods)
+                            print('    }', file=methods)
+                            if not child.is_static_method:
+                                has_instance_methods = True
+                            create_defaulted_overloads(overload_functions, overload_default_args, overload_signature, function_docstring, methods)
+            except NotImplementedError as e:
+                print(f'\n    ///AUTOGEN-FAIL: {child}', file=methods)
+                print(f'\nJava: While parsing {child}, the following exception occurred:', file=sys.stderr)
+                failed_nodes.append(child)
+                print(e, file=sys.stderr)
+                print_callstack(e)
+                pass
+            except TypeIgnored as e:
+    #            print(f'\nWhile parsing {child}, the following exception occurred:', file=sys.stderr)
+    #            print(e, file=sys.stderr)
+    #            print_callstack(e)
+                pass
     extra_overloadable_functions, extra_overloadable_function_docstrings, template = get_overloadable_functions_from_template(template)
     for function, docstring in zip(extra_overloadable_functions, extra_overloadable_function_docstrings):
         create_defaulted_overloads(overload_functions, overload_default_args, function, docstring, methods)
@@ -1739,6 +1746,12 @@ raii_classes = [
 
 exclude_classes = [
     'MetadataKeyRange',
+    'Exception',
+    'FatalException',
+    'IndexOutOfRangeException',
+    'InvalidArgument',
+    'InvalidOperation',
+    'ReadErrorException',
 ]
 
 jni_output_dir = '../cpp'

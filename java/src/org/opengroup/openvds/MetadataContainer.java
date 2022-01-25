@@ -17,7 +17,7 @@ import java.util.*;
 import java.nio.ByteBuffer;
 
 
-public class MetadataContainer extends MetadataReadAccess implements MetadataWriteAccess {
+public class MetadataContainer extends MetadataReadAccess {
 
     ///AUTOGEN-OK: CXX_METHOD IsMetadataIntAvailable bool (const char *, const char *) const FUNCTIONPROTO
     native private boolean IsMetadataIntAvailableImpl(long native_object, String category, String name);

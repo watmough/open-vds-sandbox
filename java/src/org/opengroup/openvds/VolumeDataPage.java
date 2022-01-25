@@ -41,12 +41,6 @@ public class VolumeDataPage extends ManagedBase {
         GetMinMaxExcludingMarginImpl(getNativeObject(), minExcludingMargin, maxExcludingMargin);
     }
 
-    ///AUTOGEN-OK: CXX_METHOD GetError OpenVDS::VolumeDataPage::Error () const FUNCTIONPROTO
-    native private long GetErrorImpl(long native_object);
-//    public VolumeDataPage.Error getError() {
-//        return VolumeDataPage.Error.fromNativeObject(GetErrorImpl(getNativeObject()));
-//    }
-
     ///AUTOGEN-FAIL: CXX_METHOD GetBuffer const void *(int (&)[6]) FUNCTIONPROTO
 
     ///AUTOGEN-FAIL: CXX_METHOD GetWritableBuffer void *(int (&)[6]) FUNCTIONPROTO
