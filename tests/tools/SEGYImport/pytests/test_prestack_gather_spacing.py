@@ -210,7 +210,7 @@ def test_gather_spacing_off(off_executor):
     assert duplicate_offsets == 40
 
 
-@pytest.skip("Intended for cross-version validation; not useful for auto tests")
+@pytest.mark.skip("Intended for cross-version validation; not useful for auto tests")
 def test_compare_to_prestack_baseline(auto_executor, prestack_vds_baseline):
     ex, output_vds = auto_executor
 

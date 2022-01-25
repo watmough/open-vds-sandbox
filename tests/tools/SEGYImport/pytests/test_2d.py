@@ -190,8 +190,8 @@ def test_2d_prestack_volume_info(prestack_2d_segy, output_vds):
         assert descriptor.coordinateMax == 1977.0
         assert descriptor.coordinateStep == 1.0
 
-        assert layout.getChannelValueRangeMin(0) == -420799.125
-        assert layout.getChannelValueRangeMax(0) == 421478.375
+        assert layout.getChannelValueRangeMin(0) == -420798.9375
+        assert layout.getChannelValueRangeMax(0) == 421478.125
 
         # check lattice metadata is NOT there
         assert not layout.isMetadataDoubleVector2Available(

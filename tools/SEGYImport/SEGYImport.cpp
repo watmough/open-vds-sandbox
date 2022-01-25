@@ -2034,7 +2034,7 @@ createAxisDescriptors(SEGYFileInfo const& fileInfo, SEGY::SampleUnits sampleUnit
 
     // the secondary key axis will be 1..N
     const auto
-      secondaryKeyCount = segmentInfo.m_binInfoStop.m_crosslineNumber - segmentInfo.m_binInfoStart.m_crosslineNumber + 1;
+      secondaryKeyCount = (segmentInfo.m_binInfoStop.m_crosslineNumber - segmentInfo.m_binInfoStart.m_crosslineNumber) / crosslineStep + 1;
     axisDescriptors.emplace_back(secondaryKeyCount, VDS_DIMENSION_CDP_NAME, KNOWNMETADATA_UNIT_UNITLESS, 1.0f, static_cast<float>(secondaryKeyCount));
   }
   else if (fileInfo.IsUnbinned())
@@ -3047,7 +3047,7 @@ main(int argc, char* argv[])
     }
     OpenVDS::printInfo(printConfig, "SEGY text header", output);
 
-    if (url.empty())
+    if (url.empty() && !scan)
       return EXIT_SUCCESS;
   
     if (!OpenVDS::isJson(printConfig) && OpenVDS::isInfo(printConfig))
@@ -3250,7 +3250,7 @@ main(int argc, char* argv[])
     // will need to take the place of this piggybacking.
     //
   auto traceInfo2DManager = fileInfo.Is2D()
-    ? std::unique_ptr<TraceInfo2DManager>(new TraceInfo2DManagerImpl(fileInfo.m_headerEndianness, scale, g_traceHeaderFields["coordinatescale"], g_traceHeaderFields["sourcexcoordinate"], g_traceHeaderFields["sourceycoordinate"], g_traceHeaderFields["starttime"], g_traceHeaderFields["energysourcepointnumber"], g_traceHeaderFields["ensemblenumber"]))
+    ? std::unique_ptr<TraceInfo2DManager>(new TraceInfo2DManagerImpl(fileInfo.m_headerEndianness, scale, g_traceHeaderFields["coordinatescale"], g_traceHeaderFields["sourcexcoordinate"], g_traceHeaderFields["sourceycoordinate"], g_traceHeaderFields["starttime"], g_traceHeaderFields["energysourcepointnumber"], secondaryKeyHeaderField))
     : std::unique_ptr<TraceInfo2DManager>(new TraceInfo2DManager());
 
   bool
