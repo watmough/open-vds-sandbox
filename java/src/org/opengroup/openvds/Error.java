@@ -17,11 +17,9 @@ import java.util.*;
 import java.nio.ByteBuffer;
 
 
-public class VolumeDataRequestFloat extends VolumeDataRequest {
+public class Error extends ManagedBase {
 
-    ///AUTOGEN-FAIL: CXX_METHOD Data vector<type-parameter-0-0, allocator<type-parameter-0-0>> &() FUNCTIONPROTO
-
-    VolumeDataRequestFloat(long nativeobject) {
+    Error(long nativeobject) {
         super(nativeobject);
     }
     native private long dtorImpl(long nativeobject);
@@ -31,8 +29,8 @@ public class VolumeDataRequestFloat extends VolumeDataRequest {
         dtorImpl(native_object);
     }
 
-    static VolumeDataRequestFloat fromNativeObject(long nativeobject) {
-        return new VolumeDataRequestFloat(nativeobject);
+    static Error fromNativeObject(long nativeobject) {
+        return new Error(nativeobject);
     }
 
 

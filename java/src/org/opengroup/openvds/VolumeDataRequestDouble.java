@@ -19,11 +19,7 @@ import java.nio.ByteBuffer;
 
 public class VolumeDataRequestDouble extends VolumeDataRequest {
 
-    ///AUTOGEN-OK: CXX_METHOD Data vector<type-parameter-0-0, allocator<type-parameter-0-0>> &() FUNCTIONPROTO
-    native private double[] DataImpl(long native_object);
-    public double[] data() {
-        return DataImpl(getNativeObject());
-    }
+    ///AUTOGEN-FAIL: CXX_METHOD Data vector<type-parameter-0-0, allocator<type-parameter-0-0>> &() FUNCTIONPROTO
 
     VolumeDataRequestDouble(long nativeobject) {
         super(nativeobject);

@@ -17,11 +17,25 @@ import java.util.*;
 import java.nio.ByteBuffer;
 
 
-public class VolumeDataRequestFloat extends VolumeDataRequest {
+public class IndexRegionIntVector2 extends ManagedBase {
 
-    ///AUTOGEN-FAIL: CXX_METHOD Data vector<type-parameter-0-0, allocator<type-parameter-0-0>> &() FUNCTIONPROTO
+    native private static long ctorImpl();
+    
+    public IndexRegionIntVector2() {
+    
+        super(ctorImpl());
+    
+    }
 
-    VolumeDataRequestFloat(long nativeobject) {
+    native private static long ctor2Impl(ByteBuffer Min, long Min_byteoffset, ByteBuffer Max, long Max_byteoffset);
+    
+    public IndexRegionIntVector2(IntVector2 Min, IntVector2 Max) {
+    
+        super(ctor2Impl(Min.getBackingByteBuffer(), Min.getByteBufferOffset(), Max.getBackingByteBuffer(), Max.getByteBufferOffset()));
+    
+    }
+
+    IndexRegionIntVector2(long nativeobject) {
         super(nativeobject);
     }
     native private long dtorImpl(long nativeobject);
@@ -31,8 +45,8 @@ public class VolumeDataRequestFloat extends VolumeDataRequest {
         dtorImpl(native_object);
     }
 
-    static VolumeDataRequestFloat fromNativeObject(long nativeobject) {
-        return new VolumeDataRequestFloat(nativeobject);
+    static IndexRegionIntVector2 fromNativeObject(long nativeobject) {
+        return new IndexRegionIntVector2(nativeobject);
     }
 
 

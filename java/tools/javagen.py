@@ -336,6 +336,8 @@ def register_typealias(alias: str, canonical_type: str):
     else:
         g_alias_to_canonical[alias] = canonical_type
     if not already_generated(alias) and alias not in g_instantiate_nodes:
+        if 'Vector<' in canonical_type:
+            debug = 0
         g_instantiate_nodes[alias] = canonical_type
 
 def lookup_canonical_type(canonical_type: str) -> str:
@@ -356,6 +358,8 @@ def register_instantiate(node: Type, template_args: List[str]) -> str:
     global g_generated_classes
     typename = node.spelling
     if template_args:
+        if 'Vector<' in template_args[0]:
+            debug = 0
         name = node.get_canonical().spelling
         canonical = Scope.get_node_fullname(node, strip_prefixes(name))
         assert '<' in canonical
@@ -1678,7 +1682,16 @@ def parse_and_generate(input_header, jni_dir, java_dir):
             if item.is_record:
                 if item.is_typealias:
                     if item.is_explicit_instantiation:
-                        register_typealias(item.fullname, Scope.type_get_canonical_name(item.node.type))
+                        _children = list(item.node.get_children())
+                        if _children and str(_children[0].kind) == 'CursorKind.TEMPLATE_REF':
+                            _template_params = _children[1:]
+                            assert all([str(c.kind) == 'CursorKind.TYPE_REF' for c in _template_params])
+                            _template_class = Scope.get_node_fullname(_children[0].canonical)
+                            _template_param_list = ', '.join([p.spelling for p in _template_params])
+                            _alias_name = f'{_template_class}<{_template_param_list}>' 
+                            register_typealias(item.fullname, _alias_name)
+                        else:
+                            register_typealias(item.fullname, Scope.type_get_canonical_name(item.node.type))
         # Now process nodes
         for item in root.get_children():
             if not os.path.samefile(item.filename, input_header):
