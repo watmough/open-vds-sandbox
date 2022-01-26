@@ -21,6 +21,8 @@
 #include <OpenVDS/OpenVDS.h>
 #include <OpenVDS/VolumeDataChannelDescriptor.h>
 
+#include <stdexcept>
+
 namespace OpenVDS
 {
 
@@ -102,8 +104,7 @@ inline int32_t GetVoxelFormatByteSize(VolumeDataChannelDescriptor::Format format
     iRetval =1;
     break;
   default:
-    fprintf(stderr, "Unknown voxel format");
-    abort();
+    throw std::runtime_error("Unknown voxel format");
   }
 
   return iRetval;
@@ -114,8 +115,7 @@ static uint32_t GetElementSize(VolumeDataChannelDescriptor::Format format, Volum
   switch(format)
   {
   default:
-    fprintf(stderr, "Illegal format");
-    abort();
+    throw std::runtime_error("Illegal format");
   case VolumeDataChannelDescriptor::Format_1Bit:
     return 1;
   case VolumeDataChannelDescriptor::Format_U8:
