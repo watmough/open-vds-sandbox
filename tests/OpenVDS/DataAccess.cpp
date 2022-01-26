@@ -20,6 +20,10 @@
 #include <OpenVDS/VolumeDataLayout.h>
 #include <OpenVDS/VolumeData.h>
 
+#include <VDS/Hash.h>
+
+#include <IO/IOManagerInMemory.h>
+
 #include <cstdlib>
 
 #include <array>
@@ -286,4 +290,108 @@ GTEST_TEST(VolumeSubset, BadLOD)
     return;
   }
   ASSERT_TRUE(false);
+}
+
+template<typename T>
+uint64_t
+CalculateHash(const int (&index)[OpenVDS::VolumeDataLayout::Dimensionality_Max], int dimensionality, T value)
+{
+  OpenVDS::HashCombiner
+    hash;
+
+  for(int i = 0; i < dimensionality; i++)
+  {
+    hash.Add(index[i]);
+  }
+
+  hash.Add(value);
+
+  return hash.GetCombinedHash();
+}
+
+template <typename T>
+uint64_t
+ProcessBuffer(T *buffer, int dimensionality, const int (&voxelMin)[OpenVDS::VolumeDataLayout::Dimensionality_Max], const int (&voxelMax)[OpenVDS::VolumeDataLayout::Dimensionality_Max], int LOD)
+{
+  uint64_t
+    hash = 0;
+
+  int
+    voxelPos[OpenVDS::VolumeDataLayout::Dimensionality_Max] = { 0, 0, 0, 0, 0, 0};
+
+  int
+    dataIndex = 0;
+
+  for(voxelPos[5] = voxelMin[5]; voxelPos[5] < voxelMax[5]; voxelPos[5] += (1 << LOD))
+  for(voxelPos[4] = voxelMin[4]; voxelPos[4] < voxelMax[4]; voxelPos[4] += (1 << LOD))
+  for(voxelPos[3] = voxelMin[3]; voxelPos[3] < voxelMax[3]; voxelPos[3] += (1 << LOD))
+  for(voxelPos[2] = voxelMin[2]; voxelPos[2] < voxelMax[2]; voxelPos[2] += (1 << LOD))
+  for(voxelPos[1] = voxelMin[1]; voxelPos[1] < voxelMax[1]; voxelPos[1] += (1 << LOD))
+  for(voxelPos[0] = voxelMin[0]; voxelPos[0] < voxelMax[0]; voxelPos[0] += (1 << LOD))
+  {
+    T value = OpenVDS::ReadElement(buffer, dataIndex++);
+    hash ^= CalculateHash(voxelPos, dimensionality, value);
+  }
+
+  return hash;
+}
+
+GTEST_TEST(OpenVDS_integration, RequestVolumeSubsetWithDifferentFormatsAndDimensionGroups)
+{
+  int dim[3] = { 100, 100, 200 };
+
+  OpenVDS::Error error;
+  OpenVDS::IOManager *inMemory = OpenVDS::IOManagerInMemory::CreateIOManagerInMemory("", error);
+  EXPECT_EQ(error.code, 0);
+  EXPECT_EQ(error.string, "");
+
+  std::unique_ptr<OpenVDS::VDS, decltype(&OpenVDS::Close)> handle(generateSimpleInMemory3DVDS(dim[0], dim[1], dim[2], OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, inMemory), OpenVDS::Close);
+  ASSERT_TRUE(handle);
+  fill3DVDSWithNoise(handle.get());
+
+  OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle.get());
+  OpenVDS::VolumeDataLayout *layout = OpenVDS::GetLayout(handle.get());
+
+  int voxelMin[] = { 13, 13, 119,  0, 0, 0};
+  int voxelMax[] = { 23, 23, 129,  1, 1, 1};
+
+  const int LOD = 0;
+  const int channel = 0;
+
+  static const OpenVDS::DimensionsND
+    dimensionGroups[] = { OpenVDS::DimensionsND::Dimensions_01, OpenVDS::DimensionsND::Dimensions_02, OpenVDS::DimensionsND::Dimensions_12 };
+
+  static const OpenVDS::VolumeDataFormat
+    formats[] = { OpenVDS::VolumeDataFormat::Format_R32, OpenVDS::VolumeDataFormat::Format_U8, OpenVDS::VolumeDataFormat::Format_U16, OpenVDS::VolumeDataFormat::Format_R64, OpenVDS::VolumeDataFormat::Format_1Bit };
+
+  for(auto format : formats)
+  {
+    auto request012 = accessManager.RequestVolumeSubset(OpenVDS::DimensionsND::Dimensions_012, LOD, channel, voxelMin, voxelMax, format);
+    request012->WaitForCompletion();
+    uint64_t hash012 = 0;
+    switch(format)
+    {
+    case OpenVDS::VolumeDataFormat::Format_R32:  hash012 = ProcessBuffer(reinterpret_cast<float    *>(request012->Buffer()), 3, voxelMin, voxelMax, LOD); break;
+    case OpenVDS::VolumeDataFormat::Format_U8:   hash012 = ProcessBuffer(reinterpret_cast<uint8_t  *>(request012->Buffer()), 3, voxelMin, voxelMax, LOD); break;
+    case OpenVDS::VolumeDataFormat::Format_U16:  hash012 = ProcessBuffer(reinterpret_cast<uint16_t *>(request012->Buffer()), 3, voxelMin, voxelMax, LOD); break;
+    case OpenVDS::VolumeDataFormat::Format_R64:  hash012 = ProcessBuffer(reinterpret_cast<double   *>(request012->Buffer()), 3, voxelMin, voxelMax, LOD); break;
+    case OpenVDS::VolumeDataFormat::Format_1Bit: hash012 = ProcessBuffer(reinterpret_cast<bool     *>(request012->Buffer()), 3, voxelMin, voxelMax, LOD); break;
+    }
+
+    for(auto dimensiongroup : dimensionGroups)
+    {
+      auto request = accessManager.RequestVolumeSubset(dimensiongroup, LOD, channel, voxelMin, voxelMax, format);
+      request->WaitForCompletion();
+      uint64_t hash = 0;
+      switch(format)
+      {
+      case OpenVDS::VolumeDataFormat::Format_R32:  hash = ProcessBuffer(reinterpret_cast<float    *>(request->Buffer()), 3, voxelMin, voxelMax, LOD); break;
+      case OpenVDS::VolumeDataFormat::Format_U8:   hash = ProcessBuffer(reinterpret_cast<uint8_t  *>(request->Buffer()), 3, voxelMin, voxelMax, LOD); break;
+      case OpenVDS::VolumeDataFormat::Format_U16:  hash = ProcessBuffer(reinterpret_cast<uint16_t *>(request->Buffer()), 3, voxelMin, voxelMax, LOD); break;
+      case OpenVDS::VolumeDataFormat::Format_R64:  hash = ProcessBuffer(reinterpret_cast<double   *>(request->Buffer()), 3, voxelMin, voxelMax, LOD); break;
+      case OpenVDS::VolumeDataFormat::Format_1Bit: hash = ProcessBuffer(reinterpret_cast<bool     *>(request->Buffer()), 3, voxelMin, voxelMax, LOD); break;
+      }
+      EXPECT_EQ(hash012, hash);
+    }
+  }
 }
