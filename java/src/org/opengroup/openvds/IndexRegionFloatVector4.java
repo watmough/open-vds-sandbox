@@ -35,6 +35,22 @@ public class IndexRegionFloatVector4 extends ManagedBase {
     
     }
 
+    ///AUTOGEN-OK: CXX_METHOD GetMin const type-parameter-0-0 &() const FUNCTIONPROTO
+    native private void GetMinImpl(long native_object, ByteBuffer result, long result_byteoffset);
+    public FloatVector4 getMin() {
+        FloatVector4 result = new FloatVector4();
+        GetMinImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset());
+        return result;
+    }
+
+    ///AUTOGEN-OK: CXX_METHOD GetMax const type-parameter-0-0 &() const FUNCTIONPROTO
+    native private void GetMaxImpl(long native_object, ByteBuffer result, long result_byteoffset);
+    public FloatVector4 getMax() {
+        FloatVector4 result = new FloatVector4();
+        GetMaxImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset());
+        return result;
+    }
+
     IndexRegionFloatVector4(long nativeobject) {
         super(nativeobject);
     }

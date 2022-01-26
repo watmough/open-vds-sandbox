@@ -48,6 +48,10 @@ struct IndexRegion
 
     IndexRegion() {}
     IndexRegion(T Min, T Max) : Min(Min), Max(Max) {}
+#ifdef JAVA_WRAPPER_GENERATOR
+    T const&    GetMin() const { return Min; }
+    T const&    GetMax() const { return Max; }
+#endif
 };
 
 class IVolumeDataAccessor

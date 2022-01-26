@@ -35,6 +35,22 @@ public class IndexRegionIntVector3 extends ManagedBase {
     
     }
 
+    ///AUTOGEN-OK: CXX_METHOD GetMin const type-parameter-0-0 &() const FUNCTIONPROTO
+    native private void GetMinImpl(long native_object, ByteBuffer result, long result_byteoffset);
+    public IntVector3 getMin() {
+        IntVector3 result = new IntVector3();
+        GetMinImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset());
+        return result;
+    }
+
+    ///AUTOGEN-OK: CXX_METHOD GetMax const type-parameter-0-0 &() const FUNCTIONPROTO
+    native private void GetMaxImpl(long native_object, ByteBuffer result, long result_byteoffset);
+    public IntVector3 getMax() {
+        IntVector3 result = new IntVector3();
+        GetMaxImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset());
+        return result;
+    }
+
     IndexRegionIntVector3(long nativeobject) {
         super(nativeobject);
     }
