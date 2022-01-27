@@ -155,6 +155,11 @@ VolumeDataLayer::ProduceStatus VolumeDataLayer::GetProduceStatus() const
 {
   if(m_produceStatus == ProduceStatus::ProduceStatus_Unavailable && GetLayerToRemapFrom()->m_produceStatus == ProduceStatus_Normal)
   {
+    // Automatic LOD creation is not implemented yet, so we have to return Unavailable in this case
+    if(GetLayerToRemapFrom()->GetLOD() != GetLOD())
+    {
+      return ProduceStatus_Unavailable;
+    }
     return ProduceStatus_Remapped;
   }
   else
