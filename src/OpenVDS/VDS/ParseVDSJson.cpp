@@ -854,10 +854,10 @@ Json::Value SerializeLayerStatusArray(VolumeDataLayoutImpl const &volumeDataLayo
         if(volumeDataLayer->GetProduceStatus() != VolumeDataLayer::ProduceStatus_Unavailable)
         {
           std::string layerName = GetLayerName(*volumeDataLayer);
-          Json::Value layerStatusJson = SerializeLayerStatus(*volumeDataLayer, layerName);
           MetadataStatus metadataStatus;
           if(layerMetadataContainer.GetMetadataStatus(layerName, metadataStatus))
           {
+            Json::Value layerStatusJson = SerializeLayerStatus(*volumeDataLayer, layerName);
             Json::Value metadataStatusJson = SerializeMetadataStatus(metadataStatus);
 
             for (const auto& key : metadataStatusJson.getMemberNames())
@@ -866,8 +866,8 @@ Json::Value SerializeLayerStatusArray(VolumeDataLayoutImpl const &volumeDataLayo
             }
 
             layerStatusJson["hasChunkMetadataPages"] = true;
+            layerStatusArrayJson.append(layerStatusJson);
           }
-          layerStatusArrayJson.append(layerStatusJson);
         }
       }
     }
