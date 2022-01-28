@@ -729,125 +729,133 @@ def create_jni_methods(scope: Scope, template: str, override_name: str = '', tem
         class_canonical_name = f'{scope.fullname}<' + ', '.join(template_args) + '>'
     else:
         class_canonical_name = classname_full
-    children = scope.get_children()
     has_ctor = False
     has_instance_methods = False
     ignored_nodes = get_ignored_nodes_from_template(template)
     failed_nodes = []
-    for child in children:
-        if str(child) in ignored_nodes:
-            continue
-        local_output = io.StringIO()
-        try:
-            if child.is_function: # and not scope.is_abstract: 
-                if child.is_template:
-                    continue
-                if child.is_destructor:
-                    continue
-                result_param = child.result
-                args = child.get_args()
-                if template_args:
-                    result_param = param_subsitute_template_args(result_param, template_args)
-                    args = arglist_substitute_template_args(args, template_args)
-                if is_bytebuffer_backed(result_param.canonical_type, result_param.typename):
-                    args.insert(0, result_param)
-                    result_param = Param(typename='void', is_out=True)
-                    real_return_type =  resolve_typealias(result_param.canonical_type, result_param.typename)
-                check_ignore_args(args)
-                check_ignore_args([result_param])
-                real_return_type = result_param.canonical_type
-                return_type = cpp_to_jni_type(result_param.canonical_type)
-                method_name = child.name
-                overload_name = child.overload_name
-                if method_name.startswith("operator"):
-                    if method_name == "operator==":
-                        method = create_jni_equals(class_name, class_canonical_name)
-                        print(method, file=local_output)
-                        has_instance_methods = True
-                elif child.is_constructor:
-                    if is_ctor_valid(child):
-                        print(create_jni_ctor(scope, child, class_name, class_canonical_name, overload_name, args), file=local_output)
-                        has_instance_methods = True
-                        has_ctor = True
-                else:
-                    islicenseapi = class_name == 'HueLicenseAPIHelper'
-                    proto = create_jni_proto(result_param, class_name, overload_name, extra_args=args, is_include_proxyinterface_arg=True, is_static_method=child.is_static_method)
-                    print(proto, file=local_output)
-                    declare_result = 'auto result = ' if not child.result.canonical_type == 'void' else ''
-                    if is_ref_type(real_return_type) and is_pass_by_handle(real_return_type):
-                        declare_result = 'auto& result = '
-                    retval = ''
-                    print("{", file=local_output)
-                    if not islicenseapi:
-                        print("  JEnvPushPop\n    stackitem(env, jproxyinterface);\n", file=local_output)
-                        print("  HUE_JNI_TRY\n  {", file=local_output)
-                    invoke_args, prologue, epilogue = transform_jni_functioncall_args(args, is_static_method=child.is_static_method)
-                    if prologue:
-                        print(prologue, file=local_output)
-                    if child.is_static_method:
-                        print("    {}{}({});".format(declare_result, child.fullname, invoke_args), file=local_output)
+    bases = scope.get_base_classes()
+    scopes = [ scope ]
+    if len(bases) > 1:
+        # Multiple inheritances is only indirectly supported. Members of base classes other than the first
+        # are inlined like normal class methods.
+        scopes.extend([b for b,t in bases[1:]])
+        bases = [bases[0]]
+    for _scope in scopes:
+        children = _scope.get_children()
+        for child in children:
+            if str(child) in ignored_nodes:
+                continue
+            local_output = io.StringIO()
+            try:
+                if child.is_function: # and not scope.is_abstract: 
+                    if child.is_template:
+                        continue
+                    if child.is_destructor:
+                        continue
+                    result_param = child.result
+                    args = child.get_args()
+                    if template_args:
+                        result_param = param_subsitute_template_args(result_param, template_args)
+                        args = arglist_substitute_template_args(args, template_args)
+                    if is_bytebuffer_backed(result_param.canonical_type, result_param.typename):
+                        args.insert(0, result_param)
+                        result_param = Param(typename='void', is_out=True)
+                        real_return_type =  resolve_typealias(result_param.canonical_type, result_param.typename)
+                    check_ignore_args(args)
+                    check_ignore_args([result_param])
+                    real_return_type = result_param.canonical_type
+                    return_type = cpp_to_jni_type(result_param.canonical_type)
+                    method_name = child.name
+                    overload_name = child.overload_name
+                    if method_name.startswith("operator"):
+                        if method_name == "operator==":
+                            method = create_jni_equals(class_name, class_canonical_name)
+                            print(method, file=local_output)
+                            has_instance_methods = True
+                    elif child.is_constructor:
+                        if is_ctor_valid(child):
+                            print(create_jni_ctor(scope, child, class_name, class_canonical_name, overload_name, args), file=local_output)
+                            has_instance_methods = True
+                            has_ctor = True
                     else:
-                        print("    auto pInstance = HueJNI_cast<{}>(native_handle);".format(class_canonical_name), file=local_output)
-                        print("    {}pInstance->{}({});".format(declare_result, child.name, invoke_args), file=local_output)
-                    if return_type == 'jstring':
-                        retval = 'HueJNI_newString(env, result)'
-                    elif is_marshaled_valuetype(real_return_type):
-                        marshaled_type = cpp_to_jni_type(real_return_type)
-                        print(f'    {marshaled_type} real_result = {marshaled_type}();', file=local_output)
-                        print(f'    Marshaling::Convert(real_result, result);', file=local_output)
-                        retval = 'real_result'
-                    elif is_vector_type(real_return_type):
-                        element_type = get_template_arg0(real_return_type)
-                        retval = f'HueJNIVectorAdapter<{element_type}>(env, result).toArray()'
-                    elif is_pass_by_handle(real_return_type):
-                        if is_enum_type(result_param):
-                            retval = '(jlong)result'
-                        elif is_smartptr_type(real_return_type):
-                            retval = 'HueJNI_createObjectContext(result)'.format(real_return_type)
-                        elif is_ptr_type(real_return_type):
-                            # This handle will not destroy the backing object because it is not the owner:
-                            retval = 'HueJNI_createNonOwningObjectContext(result)'
-                        elif is_ref_type(real_return_type):
-                            # This handle will not destroy the backing object because it is not the owner:
-                            retval = 'HueJNI_createNonOwningObjectContext(&result)'
+                        islicenseapi = class_name == 'HueLicenseAPIHelper'
+                        proto = create_jni_proto(result_param, class_name, overload_name, extra_args=args, is_include_proxyinterface_arg=True, is_static_method=child.is_static_method)
+                        print(proto, file=local_output)
+                        declare_result = 'auto result = ' if not child.result.canonical_type == 'void' else ''
+                        if is_ref_type(real_return_type) and is_pass_by_handle(real_return_type):
+                            declare_result = 'auto& result = '
+                        retval = ''
+                        print("{", file=local_output)
+                        if not islicenseapi:
+                            print("  JEnvPushPop\n    stackitem(env, jproxyinterface);\n", file=local_output)
+                            print("  HUE_JNI_TRY\n  {", file=local_output)
+                        invoke_args, prologue, epilogue = transform_jni_functioncall_args(args, is_static_method=child.is_static_method)
+                        if prologue:
+                            print(prologue, file=local_output)
+                        if child.is_static_method:
+                            print("    {}{}({});".format(declare_result, child.fullname, invoke_args), file=local_output)
                         else:
-                            retval = 'HueJNI_createObjectContext(new {}(result))'.format(clean_typename(real_return_type))
-                    elif return_type == 'void':
-                        pass
-                    else:
-                        retval = 'result'
-                    if retval:
-                        if 'ObjectContext' in retval:
-                            print(f'    auto context = {retval};', file=local_output)
-                    if epilogue:
-                        print(epilogue, file=local_output)
-                    if retval:
-                        if 'ObjectContext' in retval:
-                            print('    return context->handle();', file=local_output)
+                            print("    auto pInstance = HueJNI_cast<{}>(native_handle);".format(class_canonical_name), file=local_output)
+                            print("    {}pInstance->{}({});".format(declare_result, child.name, invoke_args), file=local_output)
+                        if return_type == 'jstring':
+                            retval = 'HueJNI_newString(env, result)'
+                        elif is_marshaled_valuetype(real_return_type):
+                            marshaled_type = cpp_to_jni_type(real_return_type)
+                            print(f'    {marshaled_type} real_result = {marshaled_type}();', file=local_output)
+                            print(f'    Marshaling::Convert(real_result, result);', file=local_output)
+                            retval = 'real_result'
+                        elif is_vector_type(real_return_type):
+                            element_type = get_template_arg0(real_return_type)
+                            retval = f'HueJNIVectorAdapter<{element_type}>(env, result).toArray()'
+                        elif is_pass_by_handle(real_return_type):
+                            if is_enum_type(result_param):
+                                retval = '(jlong)result'
+                            elif is_smartptr_type(real_return_type):
+                                retval = 'HueJNI_createObjectContext(result)'.format(real_return_type)
+                            elif is_ptr_type(real_return_type):
+                                # This handle will not destroy the backing object because it is not the owner:
+                                retval = 'HueJNI_createNonOwningObjectContext(result)'
+                            elif is_ref_type(real_return_type):
+                                # This handle will not destroy the backing object because it is not the owner:
+                                retval = 'HueJNI_createNonOwningObjectContext(&result)'
+                            else:
+                                retval = 'HueJNI_createObjectContext(new {}(result))'.format(clean_typename(real_return_type))
+                        elif return_type == 'void':
+                            pass
                         else:
-                            print(f'    return {retval};', file=local_output)
-                    if 'context->' in epilogue and not 'ObjectContext' in retval:
-                        raise NotImplementedError(f'Protocol mismatch: No local context.')
-                    if not islicenseapi:
-                        print("  }\n  HUE_JNI_CATCH", file=local_output)
-                    if not return_type == "void" and not islicenseapi:
-                        print("  return 0;", file=local_output)
-                    print("}", file=local_output)
-                    if not child.is_static_method:
-                        has_instance_methods = True
-        except NotImplementedError as e:
-            print(f'///AUTOGEN-FAIL: {child}', file=output)
-            failed_nodes.append(child)
-            print("\nC++: While parsing {}, the following exception occurred:".format(child))
-            print(e, file=sys.stderr)
-            print_callstack(e)
-        except TypeIgnored as e:
-#            print(f'\nWhile parsing {child}, the following exception occurred:', file=sys.stderr)
-#            print(e, file=sys.stderr)
-#            print_callstack(e)
-            pass
-        else:
-            output.write(local_output.getvalue())
+                            retval = 'result'
+                        if retval:
+                            if 'ObjectContext' in retval:
+                                print(f'    auto context = {retval};', file=local_output)
+                        if epilogue:
+                            print(epilogue, file=local_output)
+                        if retval:
+                            if 'ObjectContext' in retval:
+                                print('    return context->handle();', file=local_output)
+                            else:
+                                print(f'    return {retval};', file=local_output)
+                        if 'context->' in epilogue and not 'ObjectContext' in retval:
+                            raise NotImplementedError(f'Protocol mismatch: No local context.')
+                        if not islicenseapi:
+                            print("  }\n  HUE_JNI_CATCH", file=local_output)
+                        if not return_type == "void" and not islicenseapi:
+                            print("  return 0;", file=local_output)
+                        print("}", file=local_output)
+                        if not child.is_static_method:
+                            has_instance_methods = True
+            except NotImplementedError as e:
+                print(f'///AUTOGEN-FAIL: {child}', file=output)
+                failed_nodes.append(child)
+                print("\nC++: While parsing {}, the following exception occurred:".format(child))
+                print(e, file=sys.stderr)
+                print_callstack(e)
+            except TypeIgnored as e:
+#                print(f'\nWhile parsing {child}, the following exception occurred:', file=sys.stderr)
+#                print(e, file=sys.stderr)
+#                print_callstack(e)
+                pass
+            else:
+                output.write(local_output.getvalue())
     if has_instance_methods:
         dtor = create_jni_dtor(scope, class_name, class_canonical_name)
         print(dtor, file=output)
