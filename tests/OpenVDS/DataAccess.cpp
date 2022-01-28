@@ -350,7 +350,6 @@ GTEST_TEST(OpenVDS_integration, RequestVolumeSubsetWithDifferentFormatsAndDimens
   fill3DVDSWithNoise(handle.get());
 
   OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle.get());
-  OpenVDS::VolumeDataLayout *layout = OpenVDS::GetLayout(handle.get());
 
   int voxelMin[] = { 13, 13, 119,  0, 0, 0};
   int voxelMax[] = { 23, 23, 129,  1, 1, 1};
@@ -376,6 +375,7 @@ GTEST_TEST(OpenVDS_integration, RequestVolumeSubsetWithDifferentFormatsAndDimens
     case OpenVDS::VolumeDataFormat::Format_U16:  hash012 = ProcessBuffer(reinterpret_cast<uint16_t *>(request012->Buffer()), 3, voxelMin, voxelMax, LOD); break;
     case OpenVDS::VolumeDataFormat::Format_R64:  hash012 = ProcessBuffer(reinterpret_cast<double   *>(request012->Buffer()), 3, voxelMin, voxelMax, LOD); break;
     case OpenVDS::VolumeDataFormat::Format_1Bit: hash012 = ProcessBuffer(reinterpret_cast<bool     *>(request012->Buffer()), 3, voxelMin, voxelMax, LOD); break;
+    default: throw std::runtime_error("Unexpected format");
     }
 
     for(auto dimensiongroup : dimensionGroups)
@@ -390,6 +390,7 @@ GTEST_TEST(OpenVDS_integration, RequestVolumeSubsetWithDifferentFormatsAndDimens
       case OpenVDS::VolumeDataFormat::Format_U16:  hash = ProcessBuffer(reinterpret_cast<uint16_t *>(request->Buffer()), 3, voxelMin, voxelMax, LOD); break;
       case OpenVDS::VolumeDataFormat::Format_R64:  hash = ProcessBuffer(reinterpret_cast<double   *>(request->Buffer()), 3, voxelMin, voxelMax, LOD); break;
       case OpenVDS::VolumeDataFormat::Format_1Bit: hash = ProcessBuffer(reinterpret_cast<bool     *>(request->Buffer()), 3, voxelMin, voxelMax, LOD); break;
+      default: throw std::runtime_error("Unexpected format");
       }
       EXPECT_EQ(hash012, hash);
     }
