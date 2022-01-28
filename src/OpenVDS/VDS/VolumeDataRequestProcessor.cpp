@@ -473,13 +473,6 @@ static void DispatchBlockCopy(VolumeDataChannelDescriptor::Format destinationFor
   }
 }
 
-template <typename T>
-inline void ClearElement(T *buffer, size_t element) { buffer[element] = 0; }
-template <typename T, int N>
-inline void ClearElement(Vector<T, N> *buffer, size_t element) { buffer[element] = Vector<T, N>(); }
-template <>
-inline void ClearElement(bool *buffer, size_t element) { reinterpret_cast<unsigned char *>(buffer)[element / 8] &= ~(1 << (element % 8)); }
-
 template <class TYPE>
 void
 FixupBorder(TYPE * buffer, int offset, const int (&pitch)[DataBlock::Dimensionality_Max], BorderMode borderMode, const int (&borderMin)[DataBlock::Dimensionality_Max], const int (&borderSize)[DataBlock::Dimensionality_Max], const int (&fixupSize)[DataBlock::Dimensionality_Max])
@@ -509,7 +502,7 @@ FixupBorder(TYPE * buffer, int offset, const int (&pitch)[DataBlock::Dimensional
 
           if(borderMode == BorderMode::Clear)
           {
-            ClearElement(buffer, writeOffset);
+            WriteElement(buffer, writeOffset, TYPE());
             continue;
           }
           else if(borderMode == BorderMode::Mirror)
@@ -1085,9 +1078,6 @@ int64_t VolumeDataRequestProcessor::RequestRemap(VolumeDataPageImpl& targetPage,
       sharedDataLock.unlock();
     }
 
-    DimensionGroup sourceDimensionGroup = sourceLayer->GetChunkDimensionGroup();
-    DimensionGroup targetDimensionGroup = targetLayer->GetChunkDimensionGroup();
-
     int globalSourceSize[Dimensionality_Max];
 
     for(int dimension = 0, chunkDimension = 0; dimension < Dimensionality_Max; dimension++)
@@ -1182,28 +1172,10 @@ int64_t VolumeDataRequestProcessor::RequestRemap(VolumeDataPageImpl& targetPage,
       {
         sharedData->m_volumeDataHash = sharedData->m_volumeDataHash ^ borderHashCombiner.GetCombinedHash();
 
-        int subsetTargetMin[Dimensionality_Max];
-        int subsetTargetMax[Dimensionality_Max];
-
-        for (int i = 0; i < Dimensionality_Max; i++)
-        {
-          int firstSample = targetLayer->GetDimensionFirstSample(i);
-
-          subsetTargetMin[i] = targetMin[i] - firstSample;
-          subsetTargetMax[i] = targetMax[i] - firstSample;
-        }
-
-        int layoutDimension[DataBlock::Dimensionality_Max];
-
         int borderNegativeRadius[Dimensionality_Max];
         int borderPositiveRadius[Dimensionality_Max];
         int layoutMin[Dimensionality_Max];
         int layoutSize[Dimensionality_Max];
-
-        for (int i = 0; i < DataBlock::Dimensionality_Max; i++)
-        {
-          layoutDimension[i] = targetLayer->GetChunkDimension(i);
-        }
 
         // get correct values based on LOD to send to the datablock, because datablock doesn't know about LOD
         for (int i = 0; i < Dimensionality_Max; i++)
@@ -1218,7 +1190,7 @@ int64_t VolumeDataRequestProcessor::RequestRemap(VolumeDataPageImpl& targetPage,
           borderNegativeRadius[i] = targetLayer->GetNegativeBorder(i) / windowLODFactor;
           borderPositiveRadius[i] = targetLayer->GetPositiveBorder(i) / windowLODFactor;
 
-          int minWithoutBorder = subsetTargetMin[i] + targetLayer->GetNegativeBorder(i);
+          int minWithoutBorder = targetMin[i] - targetLayer->GetDimensionFirstSample(i) + targetLayer->GetNegativeBorder(i);
           assert(minWithoutBorder >= 0);
 
           if (targetLayer->GetLayout()->IsDimensionLODDecimated(i))
@@ -1231,6 +1203,13 @@ int64_t VolumeDataRequestProcessor::RequestRemap(VolumeDataPageImpl& targetPage,
             layoutMin[i] = minWithoutBorder - borderNegativeRadius[i];
             layoutSize[i] = targetLayer->GetDimensionNumSamples(i);
           }
+        }
+
+        int layoutDimension[DataBlock::Dimensionality_Max];
+
+        for (int i = 0; i < DataBlock::Dimensionality_Max; i++)
+        {
+          layoutDimension[i] = targetLayer->GetChunkDimension(i);
         }
 
         FixupBorder(targetDataBlock, sharedData->m_buffer.data(), targetLayer->GetFormat(), targetLayer->GetComponents(), targetLayer->GetBorderMode(), borderNegativeRadius, borderPositiveRadius, layoutMin, layoutSize, layoutDimension);

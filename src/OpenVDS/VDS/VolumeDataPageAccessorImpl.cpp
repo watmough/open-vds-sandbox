@@ -334,6 +334,7 @@ bool VolumeDataPageAccessorImpl::ReadPreparedPaged(VolumeDataPage* page)
       if(!success)
       {
         bool canceled = m_accessManager->IsCanceled(jobID);
+        (void)canceled;
         assert(canceled);
 
         int errorCode = 0;
