@@ -1,31 +1,13 @@
 ## OpenVDS
-OpenVDS is a specification and an open source reference implementation of a
-storage format for fast random access to multi-dimensional (up to 6D)
-volumetric data stored in an object storage cloud service (e.g.
-Amazon S3, Azure Blob storage or Google Cloud Storage). The specification is
-based on, but not similar to, the existing Volume Data Store (VDS) file format.
-The VDS format is a Bluware Inc. proprietary format, which has seen extensive
-industrial deployments over the last two decades. The design of the VDS format
-is contributed by Bluware Inc. to the Open Group Open Subsurface Data Universe
-Forum (OSDU) (The Open Group, u.d.).
+Volume Data Store (VDS) is a storage format for fast random access to multi-dimensional (up to 6D) volumetric data. The VDS format has been developed by Bluware Inc. and has seen extensive industrial deployments over the last two decades. The format is contributed by Bluware Inc. to the Open Group Open Subsurface Data Universe Forum (OSDU) (The Open Group, u.d.).
 
-OpenVDS has been designed to handle extremely large volumes, up to petabytes in
-size, with variable sized compressed bricks. The OpenVDS format is very
-flexible and can store any kind data representable as arrays with
-key/value-pair metadata. In particular, data commonly used in seismic
-processing can be stored along with all necessary metadata. This makes it
-possible to go from legacy formats to OpenVDS and back, while retaining all
-metadata.
+An open-source reference software implementation which can read and write VDS has been contributed by Bluware Inc. to the OSDU. This implementation is named OpenVDS and supports several programming languages. It can be included in software products with no encumberments towards Bluware Inc.
 
-OpenVDS may be used to store E&P data types such as regularized single-Z
-horizons/height-maps (2D), seismic lines (2D), pre-stack volumes (3D-5D),
-post-stack volumes (3D), geobody volumes (3D-5D), and attribute volumes of any
-dimensionality up to 6D.
+VDS has been designed to handle extremely large volumes, up to petabytes in size, with variable sized compressed bricks. The VDS format is very flexible and can store any kind data representable as arrays with key/value-pair metadata. In particular, data commonly used in seismic processing can be stored along with all necessary metadata. This makes it possible to go from legacy formats to VDS and back, while retaining all metadata.
 
-The format has been designed primarily to support random access and on-demand
-fetching of data, this enables applications that are responsive and interactive
-as well as efficient I/O for high-performance computing or machine learning
-workloads.
+VDS files may be used to represent E&P data types such as regularized single-Z horizons/height-maps (2D), seismic lines (2D), pre-stack volumes (3D-5D), post-stack volumes (3D), geobody volumes (3D-5D), and attributes volumes of any dimensionality up to 6D.
+
+The format has been designed primarily to support random access and on-demand fetching of data, this enables applications that are responsive and interactive as well as efficient I/O for high-performance computing or machine learning workloads.
 
 The OpenVDS implementation is made up of the following components:
 - VolumeDataAccess C++ API for direct access to volume data stored in a VDS
@@ -34,6 +16,7 @@ The OpenVDS implementation is made up of the following components:
 - SEGYImport tool (import a SEG-Y file to a VDS)
 - SEGYExport tool (export a SEG-Y file from a VDS)
 - VDSInfo tool (transfer from object storage)
+- VDSCopy tool (copy to/from any VDS file or supported object store)
 
 In order to implement these components there are a number of internal components:
 - Decompression (Zip, Run-length encoding, Bluware Inc. proprietary Wavelet compression)
