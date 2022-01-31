@@ -770,9 +770,15 @@ public class MemoryVdsGeneratorTest {
                 for (DimensionsND dimGroup : DimensionsND.values()) {
                     VDSProduceStatus vdsProduceStatus = accessManager.getVDSProduceStatus(dimGroup, l.ordinal(), channel);
                     if (channel == 0 && LOD_LEVELS_NONE.equals(l) && DimensionsND.DIMENSIONS_012.equals(dimGroup))
-                        assertEquals(VDSProduceStatus.NORMAL, vdsProduceStatus);
+                        assertEquals(vdsProduceStatus, VDSProduceStatus.NORMAL);
+                    else if (channel == 0 && LOD_LEVELS_NONE.equals(l) && DimensionsND.DIMENSIONS_01.equals(dimGroup))
+                        assertEquals(vdsProduceStatus, VDSProduceStatus.REMAPPED);
+                    else if (channel == 0 && LOD_LEVELS_NONE.equals(l) && DimensionsND.DIMENSIONS_02.equals(dimGroup))
+                        assertEquals(vdsProduceStatus, VDSProduceStatus.REMAPPED);
+                    else if (channel == 0 && LOD_LEVELS_NONE.equals(l) && DimensionsND.DIMENSIONS_12.equals(dimGroup))
+                        assertEquals(vdsProduceStatus, VDSProduceStatus.REMAPPED);
                     else
-                        assertEquals(VDSProduceStatus.UNAVAILABLE, vdsProduceStatus);
+                        assertEquals(vdsProduceStatus, VDSProduceStatus.UNAVAILABLE);
                 }
             }
         }
