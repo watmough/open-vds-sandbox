@@ -190,8 +190,8 @@ def make_vector_classes(class_name: str, members: list, index_seq: range):
         for t in TYPEMAP:
             make_class(class_name, members, VECTOR_HANDLERS, t, n, 1)
 
-def make_composite_class(class_name: str, members: list, handlers: list, member_type: str, member_vector_count: int):
-    make_class(class_name, members, handlers, member_type, member_vector_count, len(members))
+def make_composite_class(class_name: str, members: list, handlers: list, member_type: str, member_vector_count: int, composite_count: int = 0):
+    make_class(class_name, members, handlers, member_type, member_vector_count, composite_count if composite_count > 0 else len(members))
     
 make_vector_classes("TYPENAMERange", RANGE_MEMBERS, range(2,3))
 make_vector_classes("TYPENAMEVectorVECTORCOUNT", VECTOR_MEMBERS, range(2,5))
@@ -254,4 +254,27 @@ IJKGRID_HANDLERS = [
 
 IJKGRID_MEMBERS = [ 'Origin', 'IUnitStep', 'JUnitStep', 'KUnitStep' ]
 
+def createMatrixDefaultCtor(class_name: str, typename: str, count: int, composite_count: int) -> str:
+    init = "\n".join([f'        getByteBufferProxy().put{typename}(this.getByteBufferOffset() + {typename}Vector{count}.BYTES * {c} + {typename}.BYTES * {str(c)}, 1.0);' for c in range(0, composite_count)])
+    contents = f"""
+    public CLASSNAME() {{
+        this.createByteBuffer(JAVATYPE.BYTES * VECTORCOUNT * COMPOSITECOUNT);
+{init}        
+    }}
+"""
+    return transformTemplate(contents, class_name, typename, count, composite_count)
+
+MATRIX_HANDLERS = [
+    createMatrixDefaultCtor,
+    createCompositeGetters,
+    createCompositeSetters,
+    createCompositeToString,
+    createCompositeEquals,
+    createDefaultBytesize,
+]
+
+MATRIX_MEMBERS = [ 'x', 'y', 'z', 't' ]
+
 make_composite_class('IJKGridDefinition', IJKGRID_MEMBERS, IJKGRID_HANDLERS, 'Double', 3)
+make_composite_class('TYPENAMEMatrix3x3', MATRIX_MEMBERS, MATRIX_HANDLERS, 'Double', 3, 3)
+make_composite_class('TYPENAMEMatrix4x4', MATRIX_MEMBERS, MATRIX_HANDLERS, 'Double', 4, 4)
