@@ -16,6 +16,7 @@
  */
 
 package org.opengroup.openvds;
+import java.nio.*;
 
 public class IntRange extends ByteBufferBackedObject {
 
@@ -27,6 +28,10 @@ public class IntRange extends ByteBufferBackedObject {
     public IntRange(int min, int max) {
         this.createByteBuffer(Integer.BYTES * 2);
         this.set(min, max);
+    }
+
+    public IntRange(java.nio.ByteBuffer bytebuffer, int byteoffset) {
+        super(bytebuffer, byteoffset, Integer.BYTES * 2);
     }
 
     public IntRange(IntRange rhs) {
@@ -44,8 +49,8 @@ public class IntRange extends ByteBufferBackedObject {
     }
 
     public void set(int min, int max) {
-                this.getByteBufferProxy().putInt(0 * Integer.BYTES, min);
-                this.getByteBufferProxy().putInt(1 * Integer.BYTES, max);
+        this.getByteBufferProxy().putInt(0 * Integer.BYTES, min);
+        this.getByteBufferProxy().putInt(1 * Integer.BYTES, max);
     }
 
     public void setMin(int value) {

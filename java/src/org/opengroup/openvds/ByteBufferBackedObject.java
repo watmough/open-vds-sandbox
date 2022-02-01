@@ -31,6 +31,16 @@ public class ByteBufferBackedObject {
 		this.bytebufferproxy = new ByteBufferProxy(null, 0);
 	}
 	
+	public ByteBufferBackedObject(ByteBuffer bytebuffer, int byteoffset, int bytesize) {
+		if (bytebuffer == null) {
+			throw new NullPointerException("bytebuffer");
+		}
+		if (bytebuffer.capacity() < byteoffset + bytesize) {
+			throw new IllegalArgumentException("Invalid byteoffset/bytesize for this ByteBuffer");
+		}
+		this.bytebufferproxy = new ByteBufferProxy(bytebuffer, byteoffset);
+	}
+	
 	public ByteBufferProxy getByteBufferProxy() {
 		return this.bytebufferproxy;
 	}

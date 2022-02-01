@@ -16,6 +16,7 @@
  */
 
 package org.opengroup.openvds;
+import java.nio.*;
 
 public class IntVector4 extends ByteBufferBackedObject {
 
@@ -27,6 +28,10 @@ public class IntVector4 extends ByteBufferBackedObject {
     public IntVector4(int x, int y, int z, int t) {
         this.createByteBuffer(Integer.BYTES * 4);
         this.set(x, y, z, t);
+    }
+
+    public IntVector4(java.nio.ByteBuffer bytebuffer, int byteoffset) {
+        super(bytebuffer, byteoffset, Integer.BYTES * 4);
     }
 
     public IntVector4(IntVector4 rhs) {
@@ -46,10 +51,10 @@ public class IntVector4 extends ByteBufferBackedObject {
     }
 
     public void set(int x, int y, int z, int t) {
-                this.getByteBufferProxy().putInt(0 * Integer.BYTES, x);
-                this.getByteBufferProxy().putInt(1 * Integer.BYTES, y);
-                this.getByteBufferProxy().putInt(2 * Integer.BYTES, z);
-                this.getByteBufferProxy().putInt(3 * Integer.BYTES, t);
+        this.getByteBufferProxy().putInt(0 * Integer.BYTES, x);
+        this.getByteBufferProxy().putInt(1 * Integer.BYTES, y);
+        this.getByteBufferProxy().putInt(2 * Integer.BYTES, z);
+        this.getByteBufferProxy().putInt(3 * Integer.BYTES, t);
     }
 
     public void setX(int value) {

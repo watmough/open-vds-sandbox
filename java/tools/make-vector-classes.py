@@ -63,6 +63,14 @@ def createFullCtor(class_name: str, typename: str, count: int) -> str:
 """.replace("INIT", init).replace("ARGS", args)
     return transformTemplate(contents, class_name, typename, count)
 
+def createByteBufferCtor(class_name: str, typename: str, count: int) -> str:
+    contents = """
+    public CLASSNAME(java.nio.ByteBuffer bytebuffer, int byteoffset) {
+        super(bytebuffer, byteoffset, JAVATYPE.BYTES * VECTORCOUNT);
+    }
+"""
+    return transformTemplate(contents, class_name, typename, count)
+
 def createCopyCtor(class_name: str, typename: str, count: int) -> str:
     init = ", ".join([ f"rhs.get{MEMBERS[c].capitalize()}()" for c in range(0, count) ])
     contents = """
@@ -86,11 +94,11 @@ def createEquals(class_name: str, typename: str, count: int) -> str:
     return contents + f"return ({compare});\n    }}\n"
 
 def createSetter(class_name: str, typename: str, count: int) -> str:
-    setters = "\n        ".join([f"        this.getByteBufferProxy().putTYPENAME({c} * JAVATYPE.BYTES, {MEMBERS[c]});" for c in range(0, count)])
+    setters = "\n    ".join([f"    this.getByteBufferProxy().putTYPENAME({c} * JAVATYPE.BYTES, {MEMBERS[c]});" for c in range(0, count)])
     args = ", ".join([f"PRIMITIVETYPE {MEMBERS[c]}" for c in range(0, count)])
     contents = """
     public void set(ARGS) {
-        SETTERS
+    SETTERS
     }
 """.replace("SETTERS", setters).replace("ARGS", args)
     return transformTemplate(contents, class_name, typename, count)
@@ -129,6 +137,7 @@ def createToString(class_name: str, typename: str, count: int) -> str:
 HANDLERS = [
     createDefaultCtor,
     createFullCtor,
+    createByteBufferCtor,
     createCopyCtor,
     createEquals,
     createSetter,
@@ -145,6 +154,7 @@ def make_classes(class_name: str, members: list, index_seq: range):
             valuetype = TYPEMAP[t]
             content = COPYRIGHT + """
 package org.opengroup.openvds;
+import java.nio.*;
 
 public class CLASSNAME extends ByteBufferBackedObject {
 """

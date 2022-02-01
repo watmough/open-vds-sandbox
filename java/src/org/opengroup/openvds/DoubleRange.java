@@ -16,6 +16,7 @@
  */
 
 package org.opengroup.openvds;
+import java.nio.*;
 
 public class DoubleRange extends ByteBufferBackedObject {
 
@@ -27,6 +28,10 @@ public class DoubleRange extends ByteBufferBackedObject {
     public DoubleRange(double min, double max) {
         this.createByteBuffer(Double.BYTES * 2);
         this.set(min, max);
+    }
+
+    public DoubleRange(java.nio.ByteBuffer bytebuffer, int byteoffset) {
+        super(bytebuffer, byteoffset, Double.BYTES * 2);
     }
 
     public DoubleRange(DoubleRange rhs) {
@@ -44,8 +49,8 @@ public class DoubleRange extends ByteBufferBackedObject {
     }
 
     public void set(double min, double max) {
-                this.getByteBufferProxy().putDouble(0 * Double.BYTES, min);
-                this.getByteBufferProxy().putDouble(1 * Double.BYTES, max);
+        this.getByteBufferProxy().putDouble(0 * Double.BYTES, min);
+        this.getByteBufferProxy().putDouble(1 * Double.BYTES, max);
     }
 
     public void setMin(double value) {

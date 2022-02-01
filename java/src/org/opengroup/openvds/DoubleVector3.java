@@ -16,6 +16,7 @@
  */
 
 package org.opengroup.openvds;
+import java.nio.*;
 
 public class DoubleVector3 extends ByteBufferBackedObject {
 
@@ -27,6 +28,10 @@ public class DoubleVector3 extends ByteBufferBackedObject {
     public DoubleVector3(double x, double y, double z) {
         this.createByteBuffer(Double.BYTES * 3);
         this.set(x, y, z);
+    }
+
+    public DoubleVector3(java.nio.ByteBuffer bytebuffer, int byteoffset) {
+        super(bytebuffer, byteoffset, Double.BYTES * 3);
     }
 
     public DoubleVector3(DoubleVector3 rhs) {
@@ -45,9 +50,9 @@ public class DoubleVector3 extends ByteBufferBackedObject {
     }
 
     public void set(double x, double y, double z) {
-                this.getByteBufferProxy().putDouble(0 * Double.BYTES, x);
-                this.getByteBufferProxy().putDouble(1 * Double.BYTES, y);
-                this.getByteBufferProxy().putDouble(2 * Double.BYTES, z);
+        this.getByteBufferProxy().putDouble(0 * Double.BYTES, x);
+        this.getByteBufferProxy().putDouble(1 * Double.BYTES, y);
+        this.getByteBufferProxy().putDouble(2 * Double.BYTES, z);
     }
 
     public void setX(double value) {

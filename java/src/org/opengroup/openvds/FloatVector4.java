@@ -16,6 +16,7 @@
  */
 
 package org.opengroup.openvds;
+import java.nio.*;
 
 public class FloatVector4 extends ByteBufferBackedObject {
 
@@ -27,6 +28,10 @@ public class FloatVector4 extends ByteBufferBackedObject {
     public FloatVector4(float x, float y, float z, float t) {
         this.createByteBuffer(Float.BYTES * 4);
         this.set(x, y, z, t);
+    }
+
+    public FloatVector4(java.nio.ByteBuffer bytebuffer, int byteoffset) {
+        super(bytebuffer, byteoffset, Float.BYTES * 4);
     }
 
     public FloatVector4(FloatVector4 rhs) {
@@ -46,10 +51,10 @@ public class FloatVector4 extends ByteBufferBackedObject {
     }
 
     public void set(float x, float y, float z, float t) {
-                this.getByteBufferProxy().putFloat(0 * Float.BYTES, x);
-                this.getByteBufferProxy().putFloat(1 * Float.BYTES, y);
-                this.getByteBufferProxy().putFloat(2 * Float.BYTES, z);
-                this.getByteBufferProxy().putFloat(3 * Float.BYTES, t);
+        this.getByteBufferProxy().putFloat(0 * Float.BYTES, x);
+        this.getByteBufferProxy().putFloat(1 * Float.BYTES, y);
+        this.getByteBufferProxy().putFloat(2 * Float.BYTES, z);
+        this.getByteBufferProxy().putFloat(3 * Float.BYTES, t);
     }
 
     public void setX(float value) {

@@ -16,6 +16,7 @@
  */
 
 package org.opengroup.openvds;
+import java.nio.*;
 
 public class FloatRange extends ByteBufferBackedObject {
 
@@ -27,6 +28,10 @@ public class FloatRange extends ByteBufferBackedObject {
     public FloatRange(float min, float max) {
         this.createByteBuffer(Float.BYTES * 2);
         this.set(min, max);
+    }
+
+    public FloatRange(java.nio.ByteBuffer bytebuffer, int byteoffset) {
+        super(bytebuffer, byteoffset, Float.BYTES * 2);
     }
 
     public FloatRange(FloatRange rhs) {
@@ -44,8 +49,8 @@ public class FloatRange extends ByteBufferBackedObject {
     }
 
     public void set(float min, float max) {
-                this.getByteBufferProxy().putFloat(0 * Float.BYTES, min);
-                this.getByteBufferProxy().putFloat(1 * Float.BYTES, max);
+        this.getByteBufferProxy().putFloat(0 * Float.BYTES, min);
+        this.getByteBufferProxy().putFloat(1 * Float.BYTES, max);
     }
 
     public void setMin(float value) {
