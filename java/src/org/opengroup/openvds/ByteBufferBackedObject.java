@@ -45,7 +45,7 @@ public class ByteBufferBackedObject {
 		return this.bytebufferproxy;
 	}
 	
-	public long getByteBufferOffset() {
+	public int getByteBufferOffset() {
 		return this.bytebufferproxy.getByteOffset();
 	}
 	
@@ -53,8 +53,8 @@ public class ByteBufferBackedObject {
 		return this.bytebufferproxy.getByteBuffer();
 	}
 	
-	protected void setByteBuffer(ByteBuffer bytebuffer, long byteoffset) {
-		this.bytebufferproxy = new ByteBufferProxy(bytebuffer, (int)byteoffset);
+	protected void setByteBuffer(ByteBuffer bytebuffer, int byteoffset) {
+		this.bytebufferproxy = new ByteBufferProxy(bytebuffer, byteoffset);
 	}
 	
 	protected void createByteBuffer(int capacity) {

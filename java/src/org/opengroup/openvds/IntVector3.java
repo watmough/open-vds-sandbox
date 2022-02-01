@@ -21,8 +21,7 @@ import java.nio.*;
 public class IntVector3 extends ByteBufferBackedObject {
 
     public IntVector3() {
-        this.createByteBuffer(Integer.BYTES * 3);
-        this.set((int)0, (int)0, (int)0);
+        this.createByteBuffer(Integer.BYTES * 3 * 1);
     }
 
     public IntVector3(int x, int y, int z) {
@@ -47,6 +46,12 @@ public class IntVector3 extends ByteBufferBackedObject {
         return (this.getX() == real_other.getX() &&
                 this.getY() == real_other.getY() &&
                 this.getZ() == real_other.getZ());
+    }
+
+    void put(ByteBufferProxy bytebufferproxy, int byteoffset) {
+        bytebufferproxy.putInt(0 * Integer.BYTES + byteoffset, this.getX());
+        bytebufferproxy.putInt(1 * Integer.BYTES + byteoffset, this.getY());
+        bytebufferproxy.putInt(2 * Integer.BYTES + byteoffset, this.getZ());
     }
 
     public void set(int x, int y, int z) {

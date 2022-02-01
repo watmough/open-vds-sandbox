@@ -1,76 +1,80 @@
-/////////////////////////////////////////////////////////////////////////////
-// <copyright>
-// Copyright (c) 2016 Bluware Inc. All rights reserved.
-//
-// All rights are reserved. Reproduction or transmission in whole or in part, in
-// any form or by any means, electronic, mechanical or otherwise, is prohibited
-// without the prior written permission of the copyright owner.
-// </copyright>
-/////////////////////////////////////////////////////////////////////////////
 
-// This file is auto-generated
-package org.opengroup.openvds;
-import org.opengroup.openvds.*;
-
-/**
- * Definition for a regular IJK grid
+/*
+ * Copyright 2021 The Open Group
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
-public final class IJKGridDefinition {
-    /**
-     * The XYZ origin of the IJK grid (i.e. the XYZ position of IJK coordinate 0,0,0)
-     */
+package org.opengroup.openvds;
+import java.nio.*;
 
-    DoubleVector3 Origin;
+public class IJKGridDefinition extends ByteBufferBackedObject {
 
-    /**
-     * The XYZ spacing of a single unit in the I direction
-     */
-
-    DoubleVector3 IUnitStep;
-
-    /**
-     * The XYZ spacing of a single unit in the J direction
-     */
-
-    DoubleVector3 JUnitStep;
-
-    /**
-     * The XYZ spacing of a single unit in the K direction
-     */
-
-    DoubleVector3 KUnitStep;
+    public IJKGridDefinition() {
+        this.createByteBuffer(Double.BYTES * 3 * 4);
+    }
 
     public DoubleVector3 getOrigin() {
-        return this.Origin;
+        return new DoubleVector3(this.getBackingByteBuffer(), this.getByteBufferOffset() + Double.BYTES * 3 * 0);
+    }
+
+
+    public DoubleVector3 getIUnitStep() {
+        return new DoubleVector3(this.getBackingByteBuffer(), this.getByteBufferOffset() + Double.BYTES * 3 * 1);
+    }
+
+
+    public DoubleVector3 getJUnitStep() {
+        return new DoubleVector3(this.getBackingByteBuffer(), this.getByteBufferOffset() + Double.BYTES * 3 * 2);
+    }
+
+
+    public DoubleVector3 getKUnitStep() {
+        return new DoubleVector3(this.getBackingByteBuffer(), this.getByteBufferOffset() + Double.BYTES * 3 * 3);
     }
 
     public void setOrigin(DoubleVector3 value) {
-        this.Origin = value;
+          this.getOrigin().put(this.getByteBufferProxy(), this.getByteBufferOffset() + Double.BYTES * 3 * 0);
     }
 
-    public DoubleVector3 getIUnitStep() {
-        return this.IUnitStep;
-    }
 
     public void setIUnitStep(DoubleVector3 value) {
-        this.IUnitStep = value;
+          this.getIUnitStep().put(this.getByteBufferProxy(), this.getByteBufferOffset() + Double.BYTES * 3 * 1);
     }
 
-    public DoubleVector3 getJUnitStep() {
-        return this.JUnitStep;
-    }
 
     public void setJUnitStep(DoubleVector3 value) {
-        this.JUnitStep = value;
+          this.getJUnitStep().put(this.getByteBufferProxy(), this.getByteBufferOffset() + Double.BYTES * 3 * 2);
     }
 
-    public DoubleVector3 getKUnitStep() {
-        return this.KUnitStep;
-    }
 
     public void setKUnitStep(DoubleVector3 value) {
-        this.KUnitStep = value;
+          this.getKUnitStep().put(this.getByteBufferProxy(), this.getByteBufferOffset() + Double.BYTES * 3 * 3);
+    }
+
+    public String toString() {
+        String value = "(";
+        for (int i = 0; i < 3; ++i)
+        {
+            if (i > 0)
+                value = value + ", ";
+            value = value + "Origin(" + this.getOrigin().toString() + ")";
+            value = value + "IUnitStep(" + this.getIUnitStep().toString() + ")";
+            value = value + "JUnitStep(" + this.getJUnitStep().toString() + ")";
+            value = value + "KUnitStep(" + this.getKUnitStep().toString() + ")";
+        }
+        value = value + ")";
+        return value;
     }
 
     public boolean equals(Object other) {
@@ -78,145 +82,10 @@ public final class IJKGridDefinition {
         if (other == null) return false;
         if (getClass() != other.getClass()) return false;
         IJKGridDefinition real_other = (IJKGridDefinition)other;
-        return (this.Origin.equals(real_other.Origin) &&
-            this.IUnitStep.equals(real_other.IUnitStep) &&
-            this.JUnitStep.equals(real_other.JUnitStep) &&
-            this.KUnitStep.equals(real_other.KUnitStep));
-
-    }
-
-    public double getOriginX() {
-        return this.getOrigin().getX();
-    }
-
-    public double getOriginY() {
-        return this.getOrigin().getY();
-    }
-
-    public double getOriginZ() {
-        return this.getOrigin().getZ();
-    }
-
-    public void setOriginX(double value) {
-        this.getOrigin().setX(value);
-    }
-
-    public void setOriginY(double value) {
-        this.getOrigin().setY(value);
-    }
-
-    public void setOriginZ(double value) {
-        this.getOrigin().setZ(value);
-    }
-
-    public double getIUnitStepX() {
-        return this.getIUnitStep().getX();
-    }
-
-    public double getIUnitStepY() {
-        return this.getIUnitStep().getY();
-    }
-
-    public double getIUnitStepZ() {
-        return this.getIUnitStep().getZ();
-    }
-
-    public void setIUnitStepX(double value) {
-        this.getIUnitStep().setX(value);
-    }
-
-    public void setIUnitStepY(double value) {
-        this.getIUnitStep().setY(value);
-    }
-
-    public void setIUnitStepZ(double value) {
-        this.getIUnitStep().setZ(value);
-    }
-
-    public double getJUnitStepX() {
-        return this.getJUnitStep().getX();
-    }
-
-    public double getJUnitStepY() {
-        return this.getJUnitStep().getY();
-    }
-
-    public double getJUnitStepZ() {
-        return this.getJUnitStep().getZ();
-    }
-
-    public void setJUnitStepX(double value) {
-        this.getJUnitStep().setX(value);
-    }
-
-    public void setJUnitStepY(double value) {
-        this.getJUnitStep().setY(value);
-    }
-
-    public void setJUnitStepZ(double value) {
-        this.getJUnitStep().setZ(value);
-    }
-
-    public double getKUnitStepX() {
-        return this.getKUnitStep().getX();
-    }
-
-    public double getKUnitStepY() {
-        return this.getKUnitStep().getY();
-    }
-
-    public double getKUnitStepZ() {
-        return this.getKUnitStep().getZ();
-    }
-
-    public void setKUnitStepX(double value) {
-        this.getKUnitStep().setX(value);
-    }
-
-    public void setKUnitStepY(double value) {
-        this.getKUnitStep().setY(value);
-    }
-
-    public void setKUnitStepZ(double value) {
-        this.getKUnitStep().setZ(value);
-    }
-
-    /**
-     * Create a new IJKGridDefinition.
-     */
-
-    public IJKGridDefinition() {
-        this.Origin = new DoubleVector3();
-        this.IUnitStep = new DoubleVector3();
-        this.JUnitStep = new DoubleVector3();
-        this.KUnitStep = new DoubleVector3();
-    }
-
-    /**
-     * Create a copy of a IJKGridDefinition.
-     *  
-     */
-
-    public IJKGridDefinition(IJKGridDefinition rhs) {
-        this.Origin = new DoubleVector3(rhs.Origin);
-        this.IUnitStep = new DoubleVector3(rhs.IUnitStep);
-        this.JUnitStep = new DoubleVector3(rhs.JUnitStep);
-        this.KUnitStep = new DoubleVector3(rhs.KUnitStep);
-    }
-
-    /**
-     * Create a new IJKGridDefinition.
-     * 
-     * @param origin The value of 'Origin' for the new IJKGridDefinition
-     * @param iunitStep The value of 'IUnitStep' for the new IJKGridDefinition
-     * @param junitStep The value of 'JUnitStep' for the new IJKGridDefinition
-     * @param kunitStep The value of 'KUnitStep' for the new IJKGridDefinition
-     */
-
-    public IJKGridDefinition(DoubleVector3 origin, DoubleVector3 iunitStep, DoubleVector3 junitStep, DoubleVector3 kunitStep) {
-        this.Origin = new DoubleVector3(origin);
-        this.IUnitStep = new DoubleVector3(iunitStep);
-        this.JUnitStep = new DoubleVector3(junitStep);
-        this.KUnitStep = new DoubleVector3(kunitStep);
+        return (this.getOrigin().equals(real_other.getOrigin()) &&
+                this.getIUnitStep().equals(real_other.getIUnitStep()) &&
+                this.getJUnitStep().equals(real_other.getJUnitStep()) &&
+                this.getKUnitStep().equals(real_other.getKUnitStep()));
     }
 }
+

@@ -39,20 +39,21 @@ VECTOR_MEMBERS = [
 
 MEMBERS = None
 
-def transformTemplate(text: str, class_name: str, typename: str, count: int) -> str:
-    return text.replace("CLASSNAME", class_name).replace("TYPENAME", typename).replace("VECTORCOUNT", str(count)).replace("JAVATYPE", JAVATYPES[typename]).replace("PRIMITIVETYPE", TYPEMAP[typename])
+def capfirst(value: str) -> str:
+    return value[0].upper() + value[1:]
+
+def transformTemplate(text: str, class_name: str, typename: str, count: int, composite_count: int) -> str:
+    return text.replace("CLASSNAME", class_name).replace("TYPENAME", typename).replace("VECTORCOUNT", str(count)).replace("JAVATYPE", JAVATYPES[typename]).replace("PRIMITIVETYPE", TYPEMAP[typename]).replace("COMPOSITECOUNT", str(composite_count))
              
-def createDefaultCtor(class_name: str, typename: str, count: int) -> str:
-    init = ", ".join(["(PRIMITIVETYPE)0" for i in range(count)])
+def createDefaultCtor(class_name: str, typename: str, count: int, composite_count: int) -> str:
     contents = """
     public CLASSNAME() {
-        this.createByteBuffer(JAVATYPE.BYTES * VECTORCOUNT);
-        this.set(INIT);
+        this.createByteBuffer(JAVATYPE.BYTES * VECTORCOUNT * COMPOSITECOUNT);
     }
-""".replace("INIT", init)
-    return transformTemplate(contents, class_name, typename, count)
+"""
+    return transformTemplate(contents, class_name, typename, count, composite_count)
 
-def createFullCtor(class_name: str, typename: str, count: int) -> str:
+def createFullCtor(class_name: str, typename: str, count: int, composite_count: int) -> str:
     args = ", ".join([ f"PRIMITIVETYPE {MEMBERS[c]}" for c in range(0, count) ])
     init = ", ".join([ f"{MEMBERS[c]}" for c in range(0, count) ])
     contents = """
@@ -61,27 +62,28 @@ def createFullCtor(class_name: str, typename: str, count: int) -> str:
         this.set(INIT);
     }
 """.replace("INIT", init).replace("ARGS", args)
-    return transformTemplate(contents, class_name, typename, count)
+    return transformTemplate(contents, class_name, typename, count, composite_count)
 
-def createByteBufferCtor(class_name: str, typename: str, count: int) -> str:
+def createByteBufferCtor(class_name: str, typename: str, count: int, composite_count: int) -> str:
     contents = """
     public CLASSNAME(java.nio.ByteBuffer bytebuffer, int byteoffset) {
         super(bytebuffer, byteoffset, JAVATYPE.BYTES * VECTORCOUNT);
     }
 """
-    return transformTemplate(contents, class_name, typename, count)
+    return transformTemplate(contents, class_name, typename, count, composite_count)
 
-def createCopyCtor(class_name: str, typename: str, count: int) -> str:
-    init = ", ".join([ f"rhs.get{MEMBERS[c].capitalize()}()" for c in range(0, count) ])
+def createCopyCtor(class_name: str, typename: str, count: int, composite_count: int) -> str:
+    init = ", ".join([ f"rhs.get{capfirst(MEMBERS[c])}()" for c in range(0, count) ])
     contents = """
     public CLASSNAME(CLASSNAME rhs) {
         this.createByteBuffer(JAVATYPE.BYTES * VECTORCOUNT);
         this.set(INIT);
     }
 """.replace("INIT", init)
-    return transformTemplate(contents, class_name, typename, count)
+    return transformTemplate(contents, class_name, typename, count, composite_count)
 
-def createEquals(class_name: str, typename: str, count: int) -> str:
+def createEquals(class_name: str, typename: str, count: int, composite_count: int) -> str:
+    assert composite_count == 1
     contents = """
     public boolean equals(Object other) {
         if (other == this) return true;
@@ -90,10 +92,10 @@ def createEquals(class_name: str, typename: str, count: int) -> str:
         CLASSNAME real_other = (CLASSNAME)other;
         """.replace("TYPENAME", typename).replace("VECTORCOUNT", str(count))
     compare = """ &&
-                """.join([ f"this.get{MEMBERS[c].capitalize()}() == real_other.get{MEMBERS[c].capitalize()}()" for c in range(0, count) ])
+                """.join([ f"this.get{capfirst(MEMBERS[c])}() == real_other.get{capfirst(MEMBERS[c])}()" for c in range(0, count) ])
     return contents + f"return ({compare});\n    }}\n"
 
-def createSetter(class_name: str, typename: str, count: int) -> str:
+def createSetter(class_name: str, typename: str, count: int, composite_count: int) -> str:
     setters = "\n    ".join([f"    this.getByteBufferProxy().putTYPENAME({c} * JAVATYPE.BYTES, {MEMBERS[c]});" for c in range(0, count)])
     args = ", ".join([f"PRIMITIVETYPE {MEMBERS[c]}" for c in range(0, count)])
     contents = """
@@ -101,24 +103,33 @@ def createSetter(class_name: str, typename: str, count: int) -> str:
     SETTERS
     }
 """.replace("SETTERS", setters).replace("ARGS", args)
-    return transformTemplate(contents, class_name, typename, count)
+    return transformTemplate(contents, class_name, typename, count, composite_count)
+
+def createPutter(class_name: str, typename: str, count: int, composite_count: int) -> str:
+    setters = "\n    ".join([f"    bytebufferproxy.putTYPENAME({c} * JAVATYPE.BYTES + byteoffset, this.get{capfirst(MEMBERS[c])}());" for c in range(0, count)])
+    contents = """
+    void put(ByteBufferProxy bytebufferproxy, int byteoffset) {
+    SETTERS
+    }
+""".replace("SETTERS", setters)
+    return transformTemplate(contents, class_name, typename, count, composite_count)
     
-def createSetters(class_name: str, typename: str, count: int) -> str:
+def createSetters(class_name: str, typename: str, count: int, composite_count) -> str:
     contents = "\n".join([f"""
-    public void set{MEMBERS[c].capitalize()}(PRIMITIVETYPE value) {{
+    public void set{capfirst(MEMBERS[c])}(PRIMITIVETYPE value) {{
         this.getByteBufferProxy().putTYPENAME({c} * JAVATYPE.BYTES, value);
     }}\n""" for c in range(0, count)])
-    return transformTemplate(contents, class_name, typename, count)
+    return transformTemplate(contents, class_name, typename, count, composite_count)
 
-def createGetters(class_name: str, typename: str, count: int) -> str:
+def createGetters(class_name: str, typename: str, count: int, composite_count: int) -> str:
     contents = "\n".join([f"""
-    public PRIMITIVETYPE get{MEMBERS[c].capitalize()}() {{
+    public PRIMITIVETYPE get{capfirst(MEMBERS[c])}() {{
         return this.getByteBufferProxy().getTYPENAME({c} * JAVATYPE.BYTES);
     }}\n""" for c in range(0, count)])
 
-    return transformTemplate(contents, class_name, typename, count)
+    return transformTemplate(contents, class_name, typename, count, composite_count)
 
-def createToString(class_name: str, typename: str, count: int) -> str:
+def createToString(class_name: str, typename: str, count: int, composite_count: int) -> str:
     contents = f"""
     public String toString() {{
         String value = "(";
@@ -132,39 +143,105 @@ def createToString(class_name: str, typename: str, count: int) -> str:
         return value;
     }}
 """   
-    return transformTemplate(contents, class_name, typename, count)
+    return transformTemplate(contents, class_name, typename, count, composite_count)
 
-HANDLERS = [
+VECTOR_HANDLERS = [
     createDefaultCtor,
     createFullCtor,
     createByteBufferCtor,
     createCopyCtor,
     createEquals,
+    createPutter,
     createSetter,
     createSetters,
     createGetters,
     createToString,
 ]
 
-def make_classes(class_name: str, members: list, index_seq: range):
+def make_class(class_name: str, members: list, handlers: list, t: str, n: int, composite_count: int):
     global MEMBERS 
     MEMBERS = members
-    for n in index_seq:
-        for t in TYPEMAP:
-            valuetype = TYPEMAP[t]
-            content = COPYRIGHT + """
+    valuetype = TYPEMAP[t]
+    content = COPYRIGHT + """
 package org.opengroup.openvds;
 import java.nio.*;
 
 public class CLASSNAME extends ByteBufferBackedObject {
 """
-            for handler in HANDLERS:
-                content += handler(class_name, t, n)
-            content += "}\n"
-            content = transformTemplate(content, class_name, t, n)
-            class_filename = transformTemplate("CLASSNAME.java", class_name, t, n)
-            with open(f'../src/org/opengroup/openvds/{class_filename}', 'w') as file:
-                print(content, file=file)
+    for handler in handlers:
+        content += handler(class_name, t, n, composite_count)
+    content += "}\n"
+    content = transformTemplate(content, class_name, t, n, composite_count)
+    class_filename = transformTemplate("CLASSNAME.java", class_name, t, n, composite_count)
+    with open(f'../src/org/opengroup/openvds/{class_filename}', 'w') as file:
+        print(content, file=file)
+
+def make_vector_classes(class_name: str, members: list, index_seq: range):
+    for n in index_seq:
+        for t in TYPEMAP:
+            make_class(class_name, members, VECTOR_HANDLERS, t, n, 1)
+
+def make_composite_class(class_name: str, members: list, handlers: list, member_type: str, member_vector_count: int):
+    make_class(class_name, members, handlers, member_type, member_vector_count, len(members))
     
-make_classes("TYPENAMERange", RANGE_MEMBERS, range(2,3))
-make_classes("TYPENAMEVectorVECTORCOUNT", VECTOR_MEMBERS, range(2,5))
+make_vector_classes("TYPENAMERange", RANGE_MEMBERS, range(2,3))
+make_vector_classes("TYPENAMEVectorVECTORCOUNT", VECTOR_MEMBERS, range(2,5))
+
+def createCompositeGetters(class_name: str, typename: str, count: int, composite_count: int) -> str:
+    vectortype = f'{typename}Vector{count}'
+    
+    contents = "\n".join([f"""
+    public PRIMITIVETYPE get{capfirst(MEMBERS[c])}() {{
+        return new PRIMITIVETYPE(this.getBackingByteBuffer(), this.getByteBufferOffset() + {typename}.BYTES * {count} * {c});
+    }}\n""".replace("PRIMITIVETYPE", vectortype) for c in range(0, composite_count)])
+    return transformTemplate(contents, class_name, typename, count, composite_count)
+
+def createCompositeSetters(class_name: str, typename: str, count: int, composite_count: int) -> str:
+    vectortype = f'{typename}Vector{count}'
+    
+    contents = "\n".join([f"""
+    public void set{capfirst(MEMBERS[c])}(PRIMITIVETYPE value) {{
+          this.get{capfirst(MEMBERS[c])}().put(this.getByteBufferProxy(), this.getByteBufferOffset() + {typename}.BYTES * {count} * {c});
+    }}\n""".replace("PRIMITIVETYPE", vectortype) for c in range(0, composite_count)])
+    return transformTemplate(contents, class_name, typename, count, composite_count)
+
+def createCompositeToString(class_name: str, typename: str, count: int, composite_count: int) -> str:
+    values = "\n".join([f'            value = value + "{capfirst(MEMBERS[c])}(" + this.get{capfirst(MEMBERS[c])}().toString() + ")";' for c in range(0, composite_count)])
+    contents = f"""
+    public String toString() {{
+        String value = "(";
+        for (int i = 0; i < {count}; ++i)
+        {{
+            if (i > 0)
+                value = value + ", ";
+{values}
+        }}
+        value = value + ")";
+        return value;
+    }}
+"""   
+    return transformTemplate(contents, class_name, typename, count, composite_count)
+
+def createCompositeEquals(class_name: str, typename: str, count: int, composite_count: int) -> str:
+    contents = """
+    public boolean equals(Object other) {
+        if (other == this) return true;
+        if (other == null) return false;
+        if (getClass() != other.getClass()) return false;
+        CLASSNAME real_other = (CLASSNAME)other;
+        """.replace("TYPENAME", typename).replace("VECTORCOUNT", str(count))
+    compare = """ &&
+                """.join([ f"this.get{capfirst(MEMBERS[c])}().equals(real_other.get{capfirst(MEMBERS[c])}())" for c in range(0, composite_count) ])
+    return contents + f"return ({compare});\n    }}\n"
+
+IJKGRID_HANDLERS = [
+    createDefaultCtor,
+    createCompositeGetters,
+    createCompositeSetters,
+    createCompositeToString,
+    createCompositeEquals,
+]
+
+IJKGRID_MEMBERS = [ 'Origin', 'IUnitStep', 'JUnitStep', 'KUnitStep' ]
+
+make_composite_class('IJKGridDefinition', IJKGRID_MEMBERS, IJKGRID_HANDLERS, 'Double', 3)

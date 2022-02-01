@@ -21,8 +21,7 @@ import java.nio.*;
 public class FloatRange extends ByteBufferBackedObject {
 
     public FloatRange() {
-        this.createByteBuffer(Float.BYTES * 2);
-        this.set((float)0, (float)0);
+        this.createByteBuffer(Float.BYTES * 2 * 1);
     }
 
     public FloatRange(float min, float max) {
@@ -46,6 +45,11 @@ public class FloatRange extends ByteBufferBackedObject {
         FloatRange real_other = (FloatRange)other;
         return (this.getMin() == real_other.getMin() &&
                 this.getMax() == real_other.getMax());
+    }
+
+    void put(ByteBufferProxy bytebufferproxy, int byteoffset) {
+        bytebufferproxy.putFloat(0 * Float.BYTES + byteoffset, this.getMin());
+        bytebufferproxy.putFloat(1 * Float.BYTES + byteoffset, this.getMax());
     }
 
     public void set(float min, float max) {

@@ -21,8 +21,7 @@ import java.nio.*;
 public class FloatVector4 extends ByteBufferBackedObject {
 
     public FloatVector4() {
-        this.createByteBuffer(Float.BYTES * 4);
-        this.set((float)0, (float)0, (float)0, (float)0);
+        this.createByteBuffer(Float.BYTES * 4 * 1);
     }
 
     public FloatVector4(float x, float y, float z, float t) {
@@ -48,6 +47,13 @@ public class FloatVector4 extends ByteBufferBackedObject {
                 this.getY() == real_other.getY() &&
                 this.getZ() == real_other.getZ() &&
                 this.getT() == real_other.getT());
+    }
+
+    void put(ByteBufferProxy bytebufferproxy, int byteoffset) {
+        bytebufferproxy.putFloat(0 * Float.BYTES + byteoffset, this.getX());
+        bytebufferproxy.putFloat(1 * Float.BYTES + byteoffset, this.getY());
+        bytebufferproxy.putFloat(2 * Float.BYTES + byteoffset, this.getZ());
+        bytebufferproxy.putFloat(3 * Float.BYTES + byteoffset, this.getT());
     }
 
     public void set(float x, float y, float z, float t) {

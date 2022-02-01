@@ -21,8 +21,7 @@ import java.nio.*;
 public class IntRange extends ByteBufferBackedObject {
 
     public IntRange() {
-        this.createByteBuffer(Integer.BYTES * 2);
-        this.set((int)0, (int)0);
+        this.createByteBuffer(Integer.BYTES * 2 * 1);
     }
 
     public IntRange(int min, int max) {
@@ -46,6 +45,11 @@ public class IntRange extends ByteBufferBackedObject {
         IntRange real_other = (IntRange)other;
         return (this.getMin() == real_other.getMin() &&
                 this.getMax() == real_other.getMax());
+    }
+
+    void put(ByteBufferProxy bytebufferproxy, int byteoffset) {
+        bytebufferproxy.putInt(0 * Integer.BYTES + byteoffset, this.getMin());
+        bytebufferproxy.putInt(1 * Integer.BYTES + byteoffset, this.getMax());
     }
 
     public void set(int min, int max) {

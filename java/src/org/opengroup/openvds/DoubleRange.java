@@ -21,8 +21,7 @@ import java.nio.*;
 public class DoubleRange extends ByteBufferBackedObject {
 
     public DoubleRange() {
-        this.createByteBuffer(Double.BYTES * 2);
-        this.set((double)0, (double)0);
+        this.createByteBuffer(Double.BYTES * 2 * 1);
     }
 
     public DoubleRange(double min, double max) {
@@ -46,6 +45,11 @@ public class DoubleRange extends ByteBufferBackedObject {
         DoubleRange real_other = (DoubleRange)other;
         return (this.getMin() == real_other.getMin() &&
                 this.getMax() == real_other.getMax());
+    }
+
+    void put(ByteBufferProxy bytebufferproxy, int byteoffset) {
+        bytebufferproxy.putDouble(0 * Double.BYTES + byteoffset, this.getMin());
+        bytebufferproxy.putDouble(1 * Double.BYTES + byteoffset, this.getMax());
     }
 
     public void set(double min, double max) {

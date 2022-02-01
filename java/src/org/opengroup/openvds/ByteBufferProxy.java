@@ -32,7 +32,7 @@ public class ByteBufferProxy {
 		return this.bytebuffer;
 	}
 	
-	public long getByteOffset() {
+	public int getByteOffset() {
 		return this.byteoffset;
 	}
 	

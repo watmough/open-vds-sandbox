@@ -21,8 +21,7 @@ import java.nio.*;
 public class DoubleVector4 extends ByteBufferBackedObject {
 
     public DoubleVector4() {
-        this.createByteBuffer(Double.BYTES * 4);
-        this.set((double)0, (double)0, (double)0, (double)0);
+        this.createByteBuffer(Double.BYTES * 4 * 1);
     }
 
     public DoubleVector4(double x, double y, double z, double t) {
@@ -48,6 +47,13 @@ public class DoubleVector4 extends ByteBufferBackedObject {
                 this.getY() == real_other.getY() &&
                 this.getZ() == real_other.getZ() &&
                 this.getT() == real_other.getT());
+    }
+
+    void put(ByteBufferProxy bytebufferproxy, int byteoffset) {
+        bytebufferproxy.putDouble(0 * Double.BYTES + byteoffset, this.getX());
+        bytebufferproxy.putDouble(1 * Double.BYTES + byteoffset, this.getY());
+        bytebufferproxy.putDouble(2 * Double.BYTES + byteoffset, this.getZ());
+        bytebufferproxy.putDouble(3 * Double.BYTES + byteoffset, this.getT());
     }
 
     public void set(double x, double y, double z, double t) {
