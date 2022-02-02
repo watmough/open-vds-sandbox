@@ -48,7 +48,7 @@ _ignore_types = [
     "OpenVDS::IVolumeDataReadAccessor",
     "OpenVDS::IVolumeDataReadWriteAccessor",
     "OpenVDS::IHasVolumeDataAccess",
-    "OpenVDS::VDSIJKGridDefinition",
+#    "OpenVDS::VDSIJKGridDefinition",
 #    "Hue::HueSpaceLib::VolumeDataCacheItem",
 #    "Hue::HueSpaceLib::VolumeDataRequest::RequestFormat",
 #    "CUstream_st",
@@ -59,7 +59,7 @@ _marshaled_value_types = [
 #    "Hue::HueSpaceLib::VolumeDataChannelDescriptor",
 #    "Hue::HueSpaceLib::VolumeDataLayoutDescriptor",
 #    "Hue::HueSpaceLib::VolumeDataAxisDescriptor",
-    "OpenVDS::IJKGridDefinition",
+#    "OpenVDS::IJKGridDefinition",
 ]
 
 _prefixes = [ "OpenVDS" ]
@@ -177,6 +177,8 @@ _bytebuffer_backed = {
     "OpenVDS::FloatMatrix4x4": "FloatMatrix4x4",
     "OpenVDS::DoubleMatrix3x3": "DoubleMatrix3x3",
     "OpenVDS::DoubleMatrix4x4": "DoubleMatrix4x4",
+    "OpenVDS::IJKGridDefinition": "IJKGridDefinition",
+    "OpenVDS::VDSIJKGridDefinition": "VDSIJKGridDefinition",
 }
 
 _interfaces = {
@@ -1652,6 +1654,8 @@ def dont_generate_wrapper_for(item: Scope) -> bool:
     elif item.fullname in _marshaled_value_types:
         return True
     elif item.fullname in _cppjava_typemap:
+        return True
+    elif item.fullname in _bytebuffer_backed:
         return True
     else:
         return False

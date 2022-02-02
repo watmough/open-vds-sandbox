@@ -56,47 +56,65 @@ public class IJKCoordinateTransformer extends ManagedBase {
     
     }
 
-    native private static long ctor2Impl(IJKGridDefinition ijkGridDefinition, ByteBuffer ijkSize, long ijkSize_byteoffset);
+    native private static long ctor2Impl(ByteBuffer ijkGridDefinition, long ijkGridDefinition_byteoffset, ByteBuffer ijkSize, long ijkSize_byteoffset);
     
     public IJKCoordinateTransformer(IJKGridDefinition ijkGridDefinition, IntVector3 ijkSize) {
     
-        super(ctor2Impl(ijkGridDefinition, ijkSize.getBackingByteBuffer(), ijkSize.getByteBufferOffset()));
+        super(ctor2Impl(ijkGridDefinition.getBackingByteBuffer(), ijkGridDefinition.getByteBufferOffset(), ijkSize.getBackingByteBuffer(), ijkSize.getByteBufferOffset()));
     
     }
 
-    native private static long ctor3Impl(IJKGridDefinition ijkGridDefinition, ByteBuffer ijkSize, long ijkSize_byteoffset, ByteBuffer ijkToVoxelDimensionMap, long ijkToVoxelDimensionMap_byteoffset);
+    native private static long ctor3Impl(ByteBuffer ijkGridDefinition, long ijkGridDefinition_byteoffset, ByteBuffer ijkSize, long ijkSize_byteoffset, ByteBuffer ijkToVoxelDimensionMap, long ijkToVoxelDimensionMap_byteoffset);
     
     public IJKCoordinateTransformer(IJKGridDefinition ijkGridDefinition, IntVector3 ijkSize, IntVector3 ijkToVoxelDimensionMap) {
     
-        super(ctor3Impl(ijkGridDefinition, ijkSize.getBackingByteBuffer(), ijkSize.getByteBufferOffset(), ijkToVoxelDimensionMap.getBackingByteBuffer(), ijkToVoxelDimensionMap.getByteBufferOffset()));
+        super(ctor3Impl(ijkGridDefinition.getBackingByteBuffer(), ijkGridDefinition.getByteBufferOffset(), ijkSize.getBackingByteBuffer(), ijkSize.getByteBufferOffset(), ijkToVoxelDimensionMap.getBackingByteBuffer(), ijkToVoxelDimensionMap.getByteBufferOffset()));
     
     }
 
-    native private static long ctor5Impl(IJKGridDefinition ijkGridDefinition, ByteBuffer ijkSize, long ijkSize_byteoffset, ByteBuffer ijkAnnotationStart, long ijkAnnotationStart_byteoffset, ByteBuffer ijkAnnotationEnd, long ijkAnnotationEnd_byteoffset);
+    native private static long ctor4Impl(ByteBuffer vdsIJKGridDefinition, long vdsIJKGridDefinition_byteoffset, ByteBuffer ijkSize, long ijkSize_byteoffset);
+    
+    public IJKCoordinateTransformer(VDSIJKGridDefinition vdsIJKGridDefinition, IntVector3 ijkSize) {
+    
+        super(ctor4Impl(vdsIJKGridDefinition.getBackingByteBuffer(), vdsIJKGridDefinition.getByteBufferOffset(), ijkSize.getBackingByteBuffer(), ijkSize.getByteBufferOffset()));
+    
+    }
+
+    native private static long ctor5Impl(ByteBuffer ijkGridDefinition, long ijkGridDefinition_byteoffset, ByteBuffer ijkSize, long ijkSize_byteoffset, ByteBuffer ijkAnnotationStart, long ijkAnnotationStart_byteoffset, ByteBuffer ijkAnnotationEnd, long ijkAnnotationEnd_byteoffset);
     
     public IJKCoordinateTransformer(IJKGridDefinition ijkGridDefinition, IntVector3 ijkSize, DoubleVector3 ijkAnnotationStart, DoubleVector3 ijkAnnotationEnd) {
     
-        super(ctor5Impl(ijkGridDefinition, ijkSize.getBackingByteBuffer(), ijkSize.getByteBufferOffset(), ijkAnnotationStart.getBackingByteBuffer(), ijkAnnotationStart.getByteBufferOffset(), ijkAnnotationEnd.getBackingByteBuffer(), ijkAnnotationEnd.getByteBufferOffset()));
+        super(ctor5Impl(ijkGridDefinition.getBackingByteBuffer(), ijkGridDefinition.getByteBufferOffset(), ijkSize.getBackingByteBuffer(), ijkSize.getByteBufferOffset(), ijkAnnotationStart.getBackingByteBuffer(), ijkAnnotationStart.getByteBufferOffset(), ijkAnnotationEnd.getBackingByteBuffer(), ijkAnnotationEnd.getByteBufferOffset()));
     
     }
 
-    native private static long ctor6Impl(IJKGridDefinition ijkGridDefinition, ByteBuffer ijkSize, long ijkSize_byteoffset, ByteBuffer ijkToVoxelDimensionMap, long ijkToVoxelDimensionMap_byteoffset, ByteBuffer ijkAnnotationStart, long ijkAnnotationStart_byteoffset, ByteBuffer ijkAnnotationEnd, long ijkAnnotationEnd_byteoffset);
+    native private static long ctor6Impl(ByteBuffer ijkGridDefinition, long ijkGridDefinition_byteoffset, ByteBuffer ijkSize, long ijkSize_byteoffset, ByteBuffer ijkToVoxelDimensionMap, long ijkToVoxelDimensionMap_byteoffset, ByteBuffer ijkAnnotationStart, long ijkAnnotationStart_byteoffset, ByteBuffer ijkAnnotationEnd, long ijkAnnotationEnd_byteoffset);
     
     public IJKCoordinateTransformer(IJKGridDefinition ijkGridDefinition, IntVector3 ijkSize, IntVector3 ijkToVoxelDimensionMap, DoubleVector3 ijkAnnotationStart, DoubleVector3 ijkAnnotationEnd) {
     
-        super(ctor6Impl(ijkGridDefinition, ijkSize.getBackingByteBuffer(), ijkSize.getByteBufferOffset(), ijkToVoxelDimensionMap.getBackingByteBuffer(), ijkToVoxelDimensionMap.getByteBufferOffset(), ijkAnnotationStart.getBackingByteBuffer(), ijkAnnotationStart.getByteBufferOffset(), ijkAnnotationEnd.getBackingByteBuffer(), ijkAnnotationEnd.getByteBufferOffset()));
+        super(ctor6Impl(ijkGridDefinition.getBackingByteBuffer(), ijkGridDefinition.getByteBufferOffset(), ijkSize.getBackingByteBuffer(), ijkSize.getByteBufferOffset(), ijkToVoxelDimensionMap.getBackingByteBuffer(), ijkToVoxelDimensionMap.getByteBufferOffset(), ijkAnnotationStart.getBackingByteBuffer(), ijkAnnotationStart.getByteBufferOffset(), ijkAnnotationEnd.getBackingByteBuffer(), ijkAnnotationEnd.getByteBufferOffset()));
+    
+    }
+
+    native private static long ctor7Impl(ByteBuffer vdsIJKGridDefinition, long vdsIJKGridDefinition_byteoffset, ByteBuffer ijkSize, long ijkSize_byteoffset, ByteBuffer ijkAnnotationStart, long ijkAnnotationStart_byteoffset, ByteBuffer ijkAnnotationEnd, long ijkAnnotationEnd_byteoffset);
+    
+    public IJKCoordinateTransformer(VDSIJKGridDefinition vdsIJKGridDefinition, IntVector3 ijkSize, DoubleVector3 ijkAnnotationStart, DoubleVector3 ijkAnnotationEnd) {
+    
+        super(ctor7Impl(vdsIJKGridDefinition.getBackingByteBuffer(), vdsIJKGridDefinition.getByteBufferOffset(), ijkSize.getBackingByteBuffer(), ijkSize.getByteBufferOffset(), ijkAnnotationStart.getBackingByteBuffer(), ijkAnnotationStart.getByteBufferOffset(), ijkAnnotationEnd.getBackingByteBuffer(), ijkAnnotationEnd.getByteBufferOffset()));
     
     }
 
     ///AUTOGEN-OK: CXX_METHOD IJKGrid const OpenVDS::IJKGridDefinition &() const FUNCTIONPROTO
-    native private IJKGridDefinition IJKGridImpl(long native_object);
+    native private void IJKGridImpl(long native_object, ByteBuffer result, long result_byteoffset);
 
     /**
      * The IJK grid definition relating IJK coordinates to world XYZ coordinates
      * 
      */
     public IJKGridDefinition IJKGrid() {
-        return IJKGridImpl(getNativeObject());
+        IJKGridDefinition result = new IJKGridDefinition();
+        IJKGridImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset());
+        return result;
     }
 
     ///AUTOGEN-OK: CXX_METHOD IJKSize const OpenVDS::Vector<int, 3> &() const FUNCTIONPROTO

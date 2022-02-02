@@ -288,6 +288,19 @@ public class VolumeDataLayout extends MetadataReadAccess {
         return GetDimensionMaxImpl(getNativeObject(), dimension);
     }
 
+    ///AUTOGEN-OK: CXX_METHOD GetVDSIJKGridDefinitionFromMetadata OpenVDS::VDSIJKGridDefinition () const FUNCTIONPROTO
+    native private void GetVDSIJKGridDefinitionFromMetadataImpl(long native_object, ByteBuffer result, long result_byteoffset);
+
+    /**
+     * get the VDSIJKGridDefinition from the metadata in this VDS
+     * 
+     */
+    public VDSIJKGridDefinition getVDSIJKGridDefinitionFromMetadata() {
+        VDSIJKGridDefinition result = new VDSIJKGridDefinition();
+        GetVDSIJKGridDefinitionFromMetadataImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset());
+        return result;
+    }
+
     ///AUTOGEN-OK: CXX_METHOD IsChannelUseNoValue bool (int) const FUNCTIONPROTO
     native private boolean IsChannelUseNoValueImpl(long native_object, int channel);
 
