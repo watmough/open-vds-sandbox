@@ -25,7 +25,11 @@ import java.nio.ByteBuffer;
 
 public class VolumeDataRequestFloat extends VolumeDataRequest {
 
-    ///AUTOGEN-FAIL: CXX_METHOD Data vector<type-parameter-0-0, allocator<type-parameter-0-0>> &() FUNCTIONPROTO
+    ///AUTOGEN-OK: CXX_METHOD Data vector<type-parameter-0-0, allocator<type-parameter-0-0>> &() FUNCTIONPROTO
+    native private float[] DataImpl(long native_object);
+    public float[] data() {
+        return DataImpl(getNativeObject());
+    }
 
     VolumeDataRequestFloat(long nativeobject) {
         super(nativeobject);

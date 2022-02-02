@@ -26,9 +26,13 @@ import java.nio.ByteBuffer;
  * A class that provides random read/write access to the voxel values of a VDS
  * 
  */
-public class VolumeData4DReadWriteAccessorR32 extends VolumeDataReadAccessorIntVector4 {
+public class VolumeData4DReadWriteAccessorR32 extends VolumeData4DReadAccessorR32 {
 
-    ///AUTOGEN-FAIL: CXX_METHOD SetValue void (type-parameter-0-0, type-parameter-0-1) FUNCTIONPROTO
+    ///AUTOGEN-OK: CXX_METHOD SetValue void (type-parameter-0-0, type-parameter-0-1) FUNCTIONPROTO
+    native private void SetValueImpl(long native_object, ByteBuffer index, long index_byteoffset, float value);
+    public void setValue(IntVector4 index, float value) {
+        SetValueImpl(getNativeObject(), index.getBackingByteBuffer(), index.getByteBufferOffset(), value);
+    }
 
     ///AUTOGEN-OK: CXX_METHOD Commit void () FUNCTIONPROTO
     native private void CommitImpl(long native_object);

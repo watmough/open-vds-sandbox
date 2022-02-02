@@ -44,7 +44,6 @@ public class InMemoryOpenOptions extends OpenOptions {
     
     }
 
-
     InMemoryOpenOptions(long nativeobject) {
         super(nativeobject);
     }

@@ -58,7 +58,11 @@ public class VolumeData4DInterpolatingAccessorR64 extends ManagedBase {
         return IndexRegionFloatVector4.fromNativeObject(CurrentRegionImpl(getNativeObject()));
     }
 
-    ///AUTOGEN-FAIL: CXX_METHOD GetValue type-parameter-0-1 (type-parameter-0-0) const FUNCTIONPROTO
+    ///AUTOGEN-OK: CXX_METHOD GetValue type-parameter-0-1 (type-parameter-0-0) const FUNCTIONPROTO
+    native private double GetValueImpl(long native_object, ByteBuffer index, long index_byteoffset);
+    public double getValue(FloatVector4 index) {
+        return GetValueImpl(getNativeObject(), index.getBackingByteBuffer(), index.getByteBufferOffset());
+    }
 
     native private static long ctorImpl();
     

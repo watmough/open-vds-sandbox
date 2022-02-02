@@ -7,7 +7,6 @@ from typing import Tuple, List, Dict, Set
 from xmlrpc.client import boolean
 from clang.cindex import Cursor, Type
 from more_itertools import peekable
-from more_itertools.more import exactly_n
 from parse_cpp_header import parse_header, Param, Scope, ScopeDoc
 
 _print_exception_call_stacks = False # For debugging
@@ -145,7 +144,7 @@ _cppjni_array_typemap = {
     "short":                "jshortArray",
     "unsigned short":       "jshortArray",
     "int16_t":              "jshortArray",
-    "uint16_t":             "jcharArray",
+    "uint16_t":             "jshortArray",
     "int":                  "jintArray",
     "unsigned int":         "jintArray",
     "long":                 "jintArray",
@@ -338,8 +337,6 @@ def register_typealias(alias: str, canonical_type: str):
     else:
         g_alias_to_canonical[alias] = canonical_type
     if not already_generated(alias) and alias not in g_instantiate_nodes:
-        if 'Vector<' in canonical_type:
-            debug = 0
         g_instantiate_nodes[alias] = canonical_type
 
 def lookup_canonical_type(canonical_type: str) -> str:
@@ -360,8 +357,6 @@ def register_instantiate(node: Type, template_args: List[str]) -> str:
     global g_generated_classes
     typename = node.spelling
     if template_args:
-        if 'Vector<' in template_args[0]:
-            debug = 0
         name = node.get_canonical().spelling
         canonical = Scope.get_node_fullname(node, strip_prefixes(name))
         assert '<' in canonical
@@ -569,7 +564,8 @@ def transform_jni_functioncall_args(args: List[Param], is_static_method: bool=Fa
         assert is_bytebuffer_backed(result.canonical_type, result.typename) # This is the only way we should get here.
         epilogue.append(f'*({typename}*)((char*)env->GetDirectBufferAddress({name}bytebuffer) + {name}byteoffset) = result;')
     for arg in p:
-        type_, name = arg.canonical_type, arg.name
+        name = arg.name
+        type_ = resolve_typealias(arg.canonical_type, arg.typename)
         if is_array(type_):
             arr_element_type = get_array_element(type_)
             arr_size = get_array_size(type_)
@@ -597,7 +593,7 @@ def transform_jni_functioncall_args(args: List[Param], is_static_method: bool=Fa
         elif is_optional_type(type_):
             # optional<T> values are passed as 2 separate parameters: the T value and whether the T value is valid.
             t = get_template_arg0(type_)
-            arglist.append(f"use_{name} ? Hue::HueSpaceLib::optional<{t}>({name}) : Hue::HueSpaceLib::optional<{t}>()")
+            arglist.append(f"use_{name} ? OpenVDS::optional<{t}>({name}) : OpenVDS::optional<{t}>()")
         elif use_buffer_protocol([arg, p.peek(None)]):
             # get size parameter from bytebuffer object
             elem_type = get_pointee(type_)
@@ -983,8 +979,6 @@ def transform_java_functioncall_args(class_name: str, args: List[Param], is_incl
     if args and p.peek().is_out:
         result: Param = next(p)
         typename = cpp_to_java_type(result.typename, result.typename)  #clean_typename(result.typename)
-        if 'Vector<' in typename:
-            debug = 0
         name_ = result.name
         assert is_bytebuffer_backed(result.canonical_type, result.typename) # This is the only way we should get here.
         prologue.append(f'{typename} {name_} = new {typename}();')
@@ -1694,16 +1688,14 @@ def parse_and_generate(input_header, jni_dir, java_dir):
             if item.is_record:
                 if item.is_typealias:
                     if item.is_explicit_instantiation:
-                        _children = list(item.node.get_children())
-                        if _children and str(_children[0].kind) == 'CursorKind.TEMPLATE_REF':
-                            _template_params = _children[1:]
-                            assert all([str(c.kind) == 'CursorKind.TYPE_REF' for c in _template_params])
-                            _template_class = Scope.get_node_fullname(_children[0].canonical)
-                            _template_param_list = ', '.join([p.spelling for p in _template_params])
-                            _alias_name = f'{_template_class}<{_template_param_list}>' 
-                            register_typealias(item.fullname, _alias_name)
-                        else:
-                            register_typealias(item.fullname, Scope.type_get_canonical_name(item.node.type))
+                        # this should be moved to parse_cpp_header.py
+                        assert hasattr(item.node, 'type')
+                        assert item.node.type.get_num_template_arguments() != -1
+                        _template_params = [item.node.type.get_template_argument_type(i) for i in range(0, item.node.type.get_num_template_arguments())]
+                        _template_class = Scope.get_node_fullname(next(item.node.get_children()).canonical)
+                        _template_param_list = ', '.join([p.spelling for p in _template_params])
+                        _alias_name = f'{_template_class}<{_template_param_list}>' 
+                        register_typealias(item.fullname, _alias_name)
         # Now process nodes
         for item in root.get_children():
             if not os.path.samefile(item.filename, input_header):
