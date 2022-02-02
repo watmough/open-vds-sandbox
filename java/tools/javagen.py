@@ -1317,7 +1317,7 @@ def create_java_class(scope: Scope, template: str, override_name: str = '', temp
                 if child.is_anonymous:
                     continue
                 if child.is_enum:
-                    if dont_generate_wrapper_for(child):
+                    if inhibit_generation(child):
                         continue
                     if child.get_enum_values():
                         enum_contents = create_java_enum(child, template=load_java_template(child, is_inner_class=True))
@@ -1439,7 +1439,7 @@ def create_java_class(scope: Scope, template: str, override_name: str = '', temp
     if bases:
         assert len(bases) == 1
         b,t = bases[0]
-        if dont_generate_wrapper_for(b):
+        if inhibit_generation(b):
             bases = []
         else:
             if b.is_template:
@@ -1648,7 +1648,7 @@ def load_template(cls: Scope, ext: str, alias_name: str = '') -> str:
             pass
     raise ValueError(f"No template found in '{template_dir}'")
 
-def dont_generate_wrapper_for(item: Scope) -> bool:
+def inhibit_generation(item: Scope) -> bool:
     if item.fullname in _ignore_types:
         return True
     elif item.fullname in _marshaled_value_types:
@@ -1715,7 +1715,7 @@ def parse_and_generate(input_header, jni_dir, java_dir):
             if item.is_record:
                 if item.is_typealias:
                     continue
-                if dont_generate_wrapper_for(item):
+                if inhibit_generation(item):
                     continue
                 javacontents = create_java_class(item, template=load_java_template(item, is_inner_class=False))
                 write_java_file(java_dir, item.name, javacontents)
@@ -1725,7 +1725,7 @@ def parse_and_generate(input_header, jni_dir, java_dir):
             elif item.is_function:
                 pass
             elif item.is_enum:
-                if dont_generate_wrapper_for(item):
+                if inhibit_generation(item):
                     continue
                 if item.get_enum_values():
                     javacontents = create_java_enum(item, template=load_java_template(item, is_inner_class=False))
