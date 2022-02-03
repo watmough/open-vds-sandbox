@@ -158,9 +158,7 @@
     <ClCompile Include="..\MetadataContainer.cpp" />
     <ClCompile Include="..\MetadataKey.cpp" />
     <ClCompile Include="..\OpenVDS.cpp" />
-    <ClCompile Include="..\openvds_export.cpp" />
     <ClCompile Include="..\Optional.cpp" />
-    <ClCompile Include="..\Range.cpp" />
     <ClCompile Include="..\ValueConversion.cpp" />
     <ClCompile Include="..\VolumeData.cpp" />
     <ClCompile Include="..\VolumeDataAccess.cpp" />

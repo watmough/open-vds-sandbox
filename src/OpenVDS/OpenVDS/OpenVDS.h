@@ -527,12 +527,10 @@ struct HttpOpenOptions : OpenOptions
 struct InMemoryOpenOptions : OpenOptions
 {
   InMemoryOpenOptions() : OpenOptions(InMemory) {}
-#ifndef JAVA_WRAPPER_GENERATOR
   InMemoryOpenOptions(const char *name)
     : OpenOptions(InMemory)
     , name(name)
   {}
-#endif
   InMemoryOpenOptions(const std::string &name)
     : OpenOptions(InMemory)
     , name(name)

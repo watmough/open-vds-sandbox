@@ -39,13 +39,7 @@
     <ClCompile Include="..\OpenVDS.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\openvds_export.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\Optional.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Range.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\ValueConversion.cpp">

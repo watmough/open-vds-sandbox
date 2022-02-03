@@ -611,9 +611,14 @@ def transform_jni_functioncall_args(args: List[Param], is_static_method: bool=Fa
             jnitype_ = cpp_to_jni_type(type_)
             if jnitype_ == "jstring":
                 if is_static_method:
-                    arglist.append(f"HueJNIStringWrapper(env, {name})")
+                    _wrapper = f"HueJNIStringWrapper(env, {name})"
                 else:
-                    arglist.append(f"HueJNIStringWrapper(env, native_handle, {name})")
+                    _wrapper = f"HueJNIStringWrapper(env, native_handle, {name})"
+                _clean_type = clean_typename(type_)
+                if not 'const char *' in type_:
+                    # we want to avoid overload ambiguities with regard to const char*/std::string etc
+                    _wrapper = f'{_clean_type}({_wrapper})'
+                arglist.append(_wrapper)
             elif jnitype_ == "jboolean":
                 arglist.append(f"{name} ? true : false")
             elif is_enum_type(arg):
@@ -649,10 +654,12 @@ def _override_fullname(scope: Scope, class_name: str) -> str:
     fullname = '::'.join([scope.prefix, class_name])
     return fullname
 
-def create_jni_ctor(scope: Scope, ctor: Scope, class_name: str, class_canonical_name: str, overload_name: str, extra_args: List[Param]=[]) -> str:
+def create_jni_ctor(scope: Scope, ctor: Scope, class_name: str, class_canonical_name: str, overload_name: str, overloads_created: List[str], extra_args: List[Param]=[]) -> str:
     class_fullname = _override_fullname(scope, class_name)
     overload_name = overload_name.replace(ctor.name, "ctor")
     proto = create_jni_proto(Param(class_fullname), class_name, overload_name, extra_args=extra_args, is_include_proxyinterface_arg=True, is_static_method=True)
+    if proto in overloads_created:
+        return ''
     args, prologue, epilogue = transform_jni_functioncall_args(extra_args, is_static_method=True)
     body = f"""
 {{
@@ -672,6 +679,7 @@ def create_jni_ctor(scope: Scope, ctor: Scope, class_name: str, class_canonical_
   return 0;
 }}
 """
+    overloads_created.append(proto)
     return proto + body
 
 def create_jni_dtor(scope: Scope, class_name: str, class_canonical_name: str) -> str:
@@ -731,6 +739,7 @@ def create_jni_methods(scope: Scope, template: str, override_name: str = '', tem
     has_instance_methods = False
     ignored_nodes = get_ignored_nodes_from_template(template)
     failed_nodes = []
+    overloads_created = []
     bases = scope.get_base_classes()
     scopes = [ scope ]
     if len(bases) > 1:
@@ -772,12 +781,16 @@ def create_jni_methods(scope: Scope, template: str, override_name: str = '', tem
                             has_instance_methods = True
                     elif child.is_constructor:
                         if is_ctor_valid(child):
-                            print(create_jni_ctor(scope, child, class_name, class_canonical_name, overload_name, args), file=local_output)
+                            print(create_jni_ctor(scope, child, class_name, class_canonical_name, overload_name, overloads_created, args), file=local_output)
                             has_instance_methods = True
                             has_ctor = True
                     else:
                         islicenseapi = class_name == 'HueLicenseAPIHelper'
                         proto = create_jni_proto(result_param, class_name, overload_name, extra_args=args, is_include_proxyinterface_arg=True, is_static_method=child.is_static_method)
+                        overload_signature = proto
+                        if overload_signature in overloads_created:
+                            continue
+                        overloads_created.append(overload_signature)
                         print(proto, file=local_output)
                         declare_result = 'auto result = ' if not child.result.canonical_type == 'void' else ''
                         if is_ref_type(real_return_type) and is_pass_by_handle(real_return_type):

@@ -19,13 +19,17 @@
 #include <mutex>
 #include <assert.h>
 #include <vector>
+#include <string>
 #include <stdexcept>
 #include <cstring>
 #include <cstdlib>
 #include <cstdint>
-#include "OpenVDS/Exceptions.h"
 
 #define JAVA_WRAPPER_GENERATOR // Needed for some otherwise invisible accessors
+
+#include "OpenVDS/Exceptions.h"
+#include "OpenVDS/VolumeDataLayout.h"
+#include "OpenVDS/VolumeDataAccess.h"
 
 #ifdef _MSC_VER
 #define strdup _strdup
@@ -635,7 +639,8 @@ struct HueJNIStringWrapper
     }
   }
 
-  operator const char* () const
+  const char*
+  utf8() const
   {
     if (m_PersistentUTF8 == nullptr)
     {
@@ -651,6 +656,11 @@ struct HueJNIStringWrapper
       }
     }
     return m_PersistentUTF8;
+  }
+
+  operator const char* () const
+  {
+    return utf8();
   }
 };
 
