@@ -66,9 +66,6 @@
     <ClCompile Include="..\VolumeDataLayoutDescriptor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\VolumeIndexer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\VolumeSampler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

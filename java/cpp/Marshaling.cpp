@@ -11,10 +11,6 @@
 #include "Marshaling.h"
 #include "OpenVDS/OpenVDS.h"
 #include "OpenVDS/VolumeData.h"
-//#include "OpenVDS/VolumeDataChannelDescriptorAccessor.h"
-//#include "OpenVDS/VolumeDataLayoutDescriptorAccessor.h"
-//#include "OpenVDS/VolumeDataAxisDescriptorAccessor.h"
-//#include "IJKGridDefinitionAccessor.h"
 #include <assert.h>
 
 static std::mutex
@@ -74,132 +70,17 @@ HueJNIFinalizerMutexGuard::~HueJNIFinalizerMutexGuard()
 {
 }
 
-//void 
-//Marshaling::Convert(jobject& to, OpenVDS::VolumeDataChannelDescriptor const& from)
-//{
-//  Hue::ProxyLib::VolumeDataChannelDescriptor 
-//    from_tmp((Hue::ProxyLib::VCVoxelFormat)(int)from.GetFormat(),
-//        (Hue::ProxyLib::VCVoxelComponents)(int)from.GetComponents(),
-//        from.GetName(),
-//        from.GetUnit(),
-//        OpenVDS::FloatRange(from.GetValueRangeMin(), from.GetValueRangeMax()),
-//        from.GetIntegerScale(),
-//        from.GetIntegerOffset(),
-//        from.IsUseNoValue(),
-//        from.GetNoValue(),
-//        from.IsDiscrete(),
-//        from.IsRenderable(),
-//        from.IsAllowLossyCompression(),
-//        from.IsUseZipForLosslessCompression(),
-//        (int64_t)from.GetMapping(),
-//        from.GetMappedValueCount());
-//  to = VolumeDataChannelDescriptorAccessor::CreateJavaObject(GetJNIEnv(), from_tmp);
-//}
-//void 
-//Marshaling::Convert(OpenVDS::VolumeDataChannelDescriptor& to, jobject from)
-//{
-//  Hue::ProxyLib::VolumeDataChannelDescriptor 
-//    tmp;
-//
-//  VolumeDataChannelDescriptorAccessor::FromJavaObject(GetJNIEnv(), tmp, from);
-//  auto 
-//    to_tmp = OpenVDS::VolumeDataChannelDescriptor::CreateFromExplicitParameters(
-//                (OpenVDS::VolumeDataFormat)(int)tmp.Format, 
-//                (OpenVDS::VolumeDataComponents)(int)tmp.Components,
-//                tmp.Name.c_str(),
-//                tmp.Unit.c_str(),
-//                tmp.ValueRange.Min,
-//                tmp.ValueRange.Max,
-//                tmp.IntegerScale, 
-//                tmp.IntegerOffset, 
-//                tmp.UseNoValue, 
-//                tmp.NoValue, 
-//                tmp.Discrete, 
-//                tmp.Renderable, 
-//                tmp.AllowLossyCompression, 
-//                tmp.UseZipForLosslessCompression, 
-//                (OpenVDS::VolumeDataMapping)(int)tmp.ChannelMapping, 
-//                tmp.MappedValues);
-//  to = to_tmp;
-//}
-//
-//void 
-//Marshaling::Convert(jobject& to, OpenVDS::VolumeDataLayoutDescriptor const& from)
-//{
-//  Hue::ProxyLib::VolumeDataLayoutDescriptor 
-//    tmp(
-//      (Hue::ProxyLib::VCSize)from.GetBrickSize(), 
-//      from.GetNegativeMargin(), 
-//      from.GetPositiveMargin(), 
-//      (Hue::ProxyLib::LODLevels)from.GetLODLevels(), 
-//      from.IsCreate2DLODs(), 
-//      from.IsForceFullResolutionDimension(), 
-//      from.GetFullResolutionDimension());
-//  to = VolumeDataLayoutDescriptorAccessor::CreateJavaObject(GetJNIEnv(), tmp);
-//}
-//
-//void 
-//Marshaling::Convert(OpenVDS::VolumeDataLayoutDescriptor& to, jobject from)
-//{
-//  Hue::ProxyLib::VolumeDataLayoutDescriptor 
-//    tmp;
-//
-//  VolumeDataLayoutDescriptorAccessor::FromJavaObject(GetJNIEnv(), tmp, from);
-//  OpenVDS::VolumeDataLayoutDescriptor::Options 
-//    options = (OpenVDS::VolumeDataLayoutDescriptor::Options)(
-//      (tmp.ForceFullResolutionDimension ? OpenVDS::VolumeDataLayoutDescriptor::Options_ForceFullResolutionDimension : 0) |
-//      (tmp.Create2DLODs ? OpenVDS::VolumeDataLayoutDescriptor::Options_Create2DLODs : 0)
-//    );
-//  OpenVDS::VolumeDataLayoutDescriptor 
-//    to_tmp(
-//      (enum OpenVDS::VolumeDataLayoutDescriptor::BrickSize)(int)tmp.FullVCSize, 
-//      tmp.NegativeMargin, 
-//      tmp.PositiveMargin, 
-//      (enum OpenVDS::VolumeDataLayoutDescriptor::LODLevels)(int)tmp.LODLevels, 
-//      options, 
-//      tmp.FullResolutionDimension);
-//  to = to_tmp;
-//}
-//
-//void
-//Marshaling::Convert(jobject& to, OpenVDS::VolumeDataAxisDescriptor const& from)
-//{
-//  Hue::ProxyLib::Dimension
-//    tmp(
-//      from.GetName(),
-//      from.GetUnit(),
-//      from.GetNumSamples(),
-//      OpenVDS::FloatRange(from.GetCoordinateMin(), from.GetCoordinateMax()));
-//  to = VolumeDataAxisDescriptorAccessor::CreateJavaObject(GetJNIEnv(), tmp);
-//}
-//
-//void
-//Marshaling::Convert(OpenVDS::VolumeDataAxisDescriptor& to, jobject from)
-//{
-//  Hue::ProxyLib::Dimension
-//    tmp;
-//
-//  VolumeDataAxisDescriptorAccessor::FromJavaObject(GetJNIEnv(), tmp, from);
-//  OpenVDS::VolumeDataAxisDescriptor
-//    to_tmp(
-//      tmp.Size,
-//      tmp.Name.c_str(),
-//      tmp.Unit.c_str(),
-//      tmp.Coordinate.Min,
-//      tmp.Coordinate.Max
-//      );
-//  to = to_tmp;
-//}
-//
-//void 
-//Marshaling::Convert(jobject& to, OpenVDS::IJKGridDefinition const& from)
-//{
-//  to = IJKGridDefinitionAccessor::CreateJavaObject(GetJNIEnv(), from);
-//}
-//
-//void 
-//Marshaling::Convert(OpenVDS::IJKGridDefinition& to, jobject from)
-//{
-//  IJKGridDefinitionAccessor::FromJavaObject(GetJNIEnv(), to, from);
-//}
-//
+void Hue_Handle_StdException(struct JNIEnv_ *,class std::exception &)
+{
+}
+
+void Hue_Handle_StdRuntimeError(struct JNIEnv_ *,class std::runtime_error &)
+{
+}
+
+void Hue_Handle_HueSpaceLibException(struct JNIEnv_ *,class OpenVDS::Exception &)
+{
+}
+
+
+

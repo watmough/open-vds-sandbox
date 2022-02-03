@@ -997,6 +997,26 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_InMemoryOpenOptions_ctor2Impl
     auto context = new HueJNIObjectContext_t<OpenVDS::InMemoryOpenOptions>();
 
     auto native_handle = context->handle();
+    context->setObject(new OpenVDS::InMemoryOpenOptions(HueJNIStringWrapper(env, name)));
+
+    return native_handle;
+  }
+  HUE_JNI_CATCH
+  return 0;
+}
+
+
+JNIEXPORT jlong JNICALL Java_com_hue_proxylib_InMemoryOpenOptions_ctor3Impl
+  (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring name)
+{
+  JEnvPushPop
+    stackitem(env, jproxyinterface);
+
+  HUE_JNI_TRY
+  {
+    auto context = new HueJNIObjectContext_t<OpenVDS::InMemoryOpenOptions>();
+
+    auto native_handle = context->handle();
     context->setObject(new OpenVDS::InMemoryOpenOptions(std::string(HueJNIStringWrapper(env, name))));
 
     return native_handle;
