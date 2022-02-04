@@ -30,6 +30,7 @@
 #include "OpenVDS/Exceptions.h"
 #include "OpenVDS/VolumeDataLayout.h"
 #include "OpenVDS/VolumeDataAccess.h"
+#include "OpenVDS/GlobalState.h"
 
 #ifdef _MSC_VER
 #define strdup _strdup
@@ -459,10 +460,6 @@ struct HueJNIObjectContext_t : public HueJNIObjectContext
   {
     auto object = (T*)m_OpaqueObject;
     m_OpaqueObject = nullptr;
-    if (m_IsOwner)
-    {
-      Destroyer<T, std::is_destructible<T>::value>::destroy(object);
-    }
   }
 
   void
@@ -487,10 +484,24 @@ struct HueJNIObjectContext_t : public HueJNIObjectContext
 };
 
 template<typename T>
+struct HueJNIOwningObjectContext_t : public HueJNIObjectContext_t<T> 
+{
+  HueJNIOwningObjectContext_t(T* object) : HueJNIObjectContext_t<T>(object, true)
+  {
+  }
+
+  ~HueJNIOwningObjectContext_t() override
+  {
+    auto object = (T*)this->getObject();
+    Destroyer<T, std::is_destructible<T>::value>::destroy(object);
+  }
+};
+
+template<typename T>
 HueJNIObjectContext_t<T>*
 HueJNI_createObjectContext(T* pNativeObject)
 {
-  return new HueJNIObjectContext_t<T>(pNativeObject);
+  return new HueJNIOwningObjectContext_t<T>(pNativeObject);
 }
 
 template<typename T>

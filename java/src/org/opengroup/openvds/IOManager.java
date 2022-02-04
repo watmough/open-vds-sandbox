@@ -22,30 +22,18 @@ import org.opengroup.openvds.*;
 import java.util.*;
 import java.nio.ByteBuffer;
 
-/**
- * Options for opening a VDS which is stored in memory (for testing)
- * 
- */
-public class InMemoryOpenOptions extends OpenOptions {
+
+public class IOManager extends ManagedBase {
 
     native private static long ctorImpl();
     
-    public InMemoryOpenOptions() {
+    public IOManager() {
     
         super(ctorImpl());
     
     }
 
-    native private static long ctor2Impl(String name);
-    
-    public InMemoryOpenOptions(String name) {
-    
-        super(ctor2Impl(name));
-    
-    }
-
-
-    InMemoryOpenOptions(long nativeobject) {
+    IOManager(long nativeobject) {
         super(nativeobject);
     }
     native private long dtorImpl(long nativeobject);
@@ -55,8 +43,8 @@ public class InMemoryOpenOptions extends OpenOptions {
         dtorImpl(native_object);
     }
 
-    static InMemoryOpenOptions fromNativeObject(long nativeobject) {
-        return new InMemoryOpenOptions(nativeobject);
+    static IOManager fromNativeObject(long nativeobject) {
+        return new IOManager(nativeobject);
     }
 
 

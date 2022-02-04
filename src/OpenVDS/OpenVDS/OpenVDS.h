@@ -40,6 +40,17 @@ class GlobalState;
 class IOManager;
 class IVolumeDataAccessManager;
 
+#ifdef JAVA_WRAPPER_GENERATOR
+#define JAVA_OPAQUE_CLASS(_name) class _name { public: _name() {} }
+#define JAVA_OPAQUE_STRUCT(_name) struct _name { _name() {} }
+#else
+#define JAVA_OPAQUE_CLASS(_name) 
+#define JAVA_OPAQUE_STRUCT(_name) 
+#endif
+
+JAVA_OPAQUE_STRUCT(VDS);
+JAVA_OPAQUE_CLASS(IOManager);
+
 enum class WaveletAdaptiveMode
 {
   BestQuality = 0, ///< The best quality available data is loaded (this is the only setting which will load lossless data).
@@ -595,6 +606,12 @@ struct StringWrapper
     : data(toWrap)
     , size(SIZE - 1)
   {}
+#ifdef JAVA_WRAPPER_GENERATOR
+  StringWrapper(const char* cstr)
+    : data(cstr)
+    , size(strlen(cstr))
+  {}
+#endif
 
   const char* data;
   size_t size;
@@ -615,6 +632,7 @@ class VolumeDataPageAccessor;
 /// <param name="connectionString">
 /// The cloud provider specific connection string
 /// Specifies additional arguments for the cloud provider
+/// </param>
 /// <param name="error">
 /// If an error occured, the error code and message will be written to this output parameter
 /// </param>

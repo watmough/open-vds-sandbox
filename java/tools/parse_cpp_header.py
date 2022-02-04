@@ -388,9 +388,9 @@ class Scope(OrderedDict):
     @staticmethod
     def get_node_prefix(node: Union[Cursor, Type]) -> str:
         if isinstance(node, Cursor):
-            node = node.get_definition()
+            node = node.get_definition() or node
         else:
-            node = node.get_declaration()
+            node = node.get_declaration() or node
         assert isinstance(node, Cursor)
         pr = []
         while node.semantic_parent and node.semantic_parent.semantic_parent: # Root is translation unit node, and we don't want that
@@ -455,11 +455,20 @@ class Scope(OrderedDict):
     def is_template(self) -> bool:
         return self.nodetype == 'CLASS_TEMPLATE' or self.nodetype == 'FUNCTION_TEMPLATE'
 
+    @property 
+    def is_class_method(self) -> bool:
+        return self.nodetype == 'CXX_METHOD'
+        
     @property
     def is_record(self) -> bool:
         "struct or class"
         return self.kind == 'RECORD'
 
+    @property
+    def is_namespace(self) -> bool:
+        "namespace"
+        return self.kind == "NAMESPACE"
+        
     @property 
     def is_constructor(self) -> bool:
         return self.nodetype == 'CONSTRUCTOR'
@@ -566,6 +575,13 @@ class Scope(OrderedDict):
             return Scope.type_get_canonical_name(self.node.result_type)
         else:
             return self.typename
+
+    @property
+    def is_operator(self) -> bool:
+        if self.name.startswith("operator"):
+            return True
+        else:
+            return False
 
     @property
     def is_typealias(self) -> bool:

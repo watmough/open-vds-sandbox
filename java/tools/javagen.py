@@ -38,7 +38,6 @@ def print_callstack(exc):
 _ignore_types = [
     "OpenVDS::M4", # Should not even be there
     "OpenVDS::VolumeDataPage::Error", # SteinFIXME add this
-    "OpenVDS::StringWrapper",
     "OpenVDS::MetadataKeyRange",
     "OpenVDS::IVolumeDataAccess",
     "OpenVDS::IVolumeDataAccessManager",
@@ -47,18 +46,9 @@ _ignore_types = [
     "OpenVDS::IVolumeDataReadAccessor",
     "OpenVDS::IVolumeDataReadWriteAccessor",
     "OpenVDS::IHasVolumeDataAccess",
-#    "OpenVDS::VDSIJKGridDefinition",
-#    "Hue::HueSpaceLib::VolumeDataCacheItem",
-#    "Hue::HueSpaceLib::VolumeDataRequest::RequestFormat",
-#    "CUstream_st",
 ]
 
 _marshaled_value_types = [
-#    "Hue::HueSpaceLib::ProxyBLOB",
-#    "Hue::HueSpaceLib::VolumeDataChannelDescriptor",
-#    "Hue::HueSpaceLib::VolumeDataLayoutDescriptor",
-#    "Hue::HueSpaceLib::VolumeDataAxisDescriptor",
-#    "OpenVDS::IJKGridDefinition",
 ]
 
 _prefixes = [ "OpenVDS" ]
@@ -73,6 +63,7 @@ _cppjava_typemap = {
 #    "std::basic_string<char, std::char_traits<char>, std::allocator<char>>": "String",
     "const char *":                                 "String",
     "std::string":                                  "String",
+    "OpenVDS::StringWrapper":                       "String",
 #    "Hue::HueSpaceLib::ProxyBLOB":                  "byte[]",
 #    "Hue::HueSpaceLib::VolumeDataFormat":           "VCVoxelFormat",
 #    "Hue::HueSpaceLib::VolumeDataComponents":       "VCVoxelComponents",
@@ -108,6 +99,7 @@ _cppjni_typemap = {
     "const char *":         "jstring",
     "std::string":          "jstring",
     "std::basic_string<char, std::char_traits<char>, std::allocator<char>>": "jstring",
+    "OpenVDS::StringWrapper": "jstring",
 #    "Hue::HueSpaceLib::ProxyBLOB": "jbyteArray",
     "void":                 "void",
     "bool":                 "jboolean",
@@ -227,6 +219,8 @@ def is_vector_type(typename: str) -> bool:
 
 def is_pass_by_handle(typename: str) -> bool:
     clean_name = clean_typename(typename)
+    if clean_name in _cppjava_typemap:
+        return False
     if any([clean_name.startswith(p) for p in _prefixes]):
         return True
     elif is_smartptr_type(typename):
@@ -322,7 +316,7 @@ def already_generated(class_name: str):
 
 def register_generated(class_name: str):
     global g_generated_classes
-    assert not already_generated(class_name)
+    assert not already_generated(class_name), f'{class_name}'
     g_generated_classes.append(class_name)
 
 def register_typealias(alias: str, canonical_type: str):
@@ -401,6 +395,8 @@ def resolve_typealias(typename: str, alias: str) -> str:
 
 def _cpp_to_java_type(typename: str, alias: str) -> str:
     typename = resolve_typealias(typename, alias)
+    if 'StringWrapper' in typename:
+        debug = 0
     if find_enum_type(typename):
         if typename in _cppjava_typemap:
             return _cppjava_typemap[typename]
@@ -651,7 +647,10 @@ def create_jni_proto(retval: Param, class_name: str, method_name: str, extra_arg
     return proto
 
 def _override_fullname(scope: Scope, class_name: str) -> str:
-    fullname = '::'.join([scope.prefix, class_name])
+    if scope.is_namespace:
+        fullname = f'{scope.fullname}::{class_name}'
+    else:
+        fullname = '::'.join([scope.prefix, class_name])
     return fullname
 
 def create_jni_ctor(scope: Scope, ctor: Scope, class_name: str, class_canonical_name: str, overload_name: str, overloads_created: List[str], extra_args: List[Param]=[]) -> str:
@@ -726,7 +725,7 @@ def is_scoped_enum_type(arg: Param) -> bool:
             return True
     return False
     
-def create_jni_methods(scope: Scope, template: str, override_name: str = '', template_args: List[str] = []):
+def create_jni_methods(scope: Scope, template: str, override_name: str = '', template_args: List[str] = [], explicit_children: List[Scope] = []):
     output = io.StringIO()
     class_name = override_name or scope.name
     classname_full = _override_fullname(scope, class_name)
@@ -745,10 +744,11 @@ def create_jni_methods(scope: Scope, template: str, override_name: str = '', tem
     if len(bases) > 1:
         # Multiple inheritances is only indirectly supported. Members of base classes other than the first
         # are inlined like normal class methods.
-        scopes.extend([b for b,t in bases[1:]])
-        bases = [bases[0]]
+        if not scope.is_namespace:
+            scopes.extend([b for b,t in bases[1:]])
+            bases = [bases[0]]
     for _scope in scopes:
-        children = _scope.get_children()
+        children = explicit_children or _scope.get_children()
         for child in children:
             if str(child) in ignored_nodes:
                 continue
@@ -774,6 +774,8 @@ def create_jni_methods(scope: Scope, template: str, override_name: str = '', tem
                     return_type = cpp_to_jni_type(result_param.canonical_type)
                     method_name = child.name
                     overload_name = child.overload_name
+                    if method_name == 'GetGlobalState':
+                        debug = 0
                     if method_name.startswith("operator"):
                         if method_name == "operator==":
                             method = create_jni_equals(class_name, class_canonical_name)
@@ -786,7 +788,8 @@ def create_jni_methods(scope: Scope, template: str, override_name: str = '', tem
                             has_ctor = True
                     else:
                         islicenseapi = class_name == 'HueLicenseAPIHelper'
-                        proto = create_jni_proto(result_param, class_name, overload_name, extra_args=args, is_include_proxyinterface_arg=True, is_static_method=child.is_static_method)
+                        is_static_method = child.is_static_method or scope.is_namespace
+                        proto = create_jni_proto(result_param, class_name, overload_name, extra_args=args, is_include_proxyinterface_arg=True, is_static_method=is_static_method)
                         overload_signature = proto
                         if overload_signature in overloads_created:
                             continue
@@ -800,10 +803,10 @@ def create_jni_methods(scope: Scope, template: str, override_name: str = '', tem
                         if not islicenseapi:
                             print("  JEnvPushPop\n    stackitem(env, jproxyinterface);\n", file=local_output)
                             print("  HUE_JNI_TRY\n  {", file=local_output)
-                        invoke_args, prologue, epilogue = transform_jni_functioncall_args(args, is_static_method=child.is_static_method)
+                        invoke_args, prologue, epilogue = transform_jni_functioncall_args(args, is_static_method=is_static_method)
                         if prologue:
                             print(prologue, file=local_output)
-                        if child.is_static_method:
+                        if is_static_method:
                             print("    {}{}({});".format(declare_result, child.fullname, invoke_args), file=local_output)
                         else:
                             print("    auto pInstance = HueJNI_cast<{}>(native_handle);".format(class_canonical_name), file=local_output)
@@ -852,7 +855,7 @@ def create_jni_methods(scope: Scope, template: str, override_name: str = '', tem
                         if not return_type == "void" and not islicenseapi:
                             print("  return 0;", file=local_output)
                         print("}", file=local_output)
-                        if not child.is_static_method:
+                        if not is_static_method:
                             has_instance_methods = True
             except NotImplementedError as e:
                 print(f'///AUTOGEN-FAIL: {child}', file=output)
@@ -1288,7 +1291,7 @@ def create_defaulted_overloads(overload_functions, overload_default_args, functi
 def is_interface_class(typename: str) -> boolean:
     return typename in _interfaces
 
-def create_java_class(scope: Scope, template: str, override_name: str = '', template_args: List[str] = []):
+def create_java_class(scope: Scope, template: str, override_name: str = '', template_args: List[str] = [], explicit_children: List[Scope] = []):
     global g_root
     if scope.is_template:
         assert override_name
@@ -1297,7 +1300,7 @@ def create_java_class(scope: Scope, template: str, override_name: str = '', temp
     methods = io.StringIO()
     class_name = override_name or scope.name
     bases = scope.get_base_classes()
-    assert scope.is_record or scope.is_template
+    assert scope.is_record or scope.is_template or scope.is_namespace
     has_instance_methods = False
     has_ctor = False
     overloads_created = []
@@ -1313,10 +1316,11 @@ def create_java_class(scope: Scope, template: str, override_name: str = '', temp
     if len(bases) > 1:
         # Multiple inheritances is only indirectly supported. Members of base classes other than the first
         # are inlined like normal class methods.
-        scopes.extend([b for b,t in bases[1:]])
-        bases = [bases[0]]
+        if not explicit_children:
+            scopes.extend([b for b,t in bases[1:]])
+            bases = [bases[0]]
     for _scope in scopes:
-        children = _scope.get_children()
+        children = explicit_children or _scope.get_children()
         for child in children:
             if str(child) in ignored_nodes:
                 continue
@@ -1382,11 +1386,12 @@ def create_java_class(scope: Scope, template: str, override_name: str = '', temp
                                     change_function_name_to_camel_case = False
                             if change_function_name_to_camel_case:
                                 function_name = function_name[0].lower() + function_name[1:]
-                        static = "static " if child.is_static_method else ""
-                        native_arglist = create_native_arglist(class_name, nativeargs, True, child.is_static_method)
+                        is_static_method = child.is_static_method or scope.is_namespace
+                        static = "static " if is_static_method else ""
+                        native_arglist = create_native_arglist(class_name, nativeargs, True, is_static_method)
                         java_arglist = create_java_arglist(args)
                         used_args = []
-                        transformed_args, prologue, epilogue = transform_java_functioncall_args(class_name, nativeargs, True, child.is_static_method, used_arglist=used_args)
+                        transformed_args, prologue, epilogue = transform_java_functioncall_args(class_name, nativeargs, True, is_static_method, used_arglist=used_args)
                         overload_signature = f'{static}{return_type} {function_name}({java_arglist})'
                         if overload_signature in overloads_created:
                             continue
@@ -1417,7 +1422,7 @@ def create_java_class(scope: Scope, template: str, override_name: str = '', temp
                                 else:
                                     print(f'        {return_txt}{jni_function_name}Impl({transformed_args});', file=methods)
                             print('    }', file=methods)
-                            if not child.is_static_method:
+                            if not is_static_method:
                                 has_instance_methods = True
                             create_defaulted_overloads(overload_functions, overload_default_args, overload_signature, function_docstring, methods)
             except NotImplementedError as e:
@@ -1456,6 +1461,8 @@ def create_java_class(scope: Scope, template: str, override_name: str = '', temp
             else:
                 class_extends_txt = f' extends {b.name}'
     elif is_interface:
+        pass
+    elif scope.is_namespace:
         pass
     else:
         bases = [ 'ManagedBase' ]
@@ -1685,6 +1692,7 @@ def parse_and_generate(input_header, jni_dir, java_dir):
     scope = parse_header(input_header, include_dirs)
     g_root = scope
     cppfile = io.StringIO()
+    header_free_functions = []
     print(f'{copyright_txt}', file=cppfile)
     print(f'{includes_txt}', file=cppfile)
     print(f'#include "{header_name}"\n', file=cppfile)
@@ -1728,7 +1736,8 @@ def parse_and_generate(input_header, jni_dir, java_dir):
                 if cppcontents:
                     print(cppcontents, file=cppfile)
             elif item.is_function:
-                pass
+                if not item.is_template and not item.is_class_method and not item.is_operator:
+                    header_free_functions.append(item)
             elif item.is_enum:
                 if inhibit_generation(item):
                     continue
@@ -1739,6 +1748,15 @@ def parse_and_generate(input_header, jni_dir, java_dir):
                 pass
             else:
                 raise NotImplementedError(f"{item.kind}")
+        if header_free_functions:
+            if header_name == 'OpenVDS.h': # SteinFIXME
+                ns_class_name,_ = os.path.splitext(header_name)
+                ns = root
+                javacontents = create_java_class(ns, template=load_java_template(ns, is_inner_class=False, alias_name=ns_class_name), explicit_children=header_free_functions)
+                write_java_file(java_dir, ns_class_name, javacontents)
+                cppcontents = create_jni_methods(ns, template=load_cpp_template(ns), explicit_children=header_free_functions)
+                if cppcontents:
+                    print(cppcontents, file=cppfile)
         while g_instantiate_nodes:
             instantiate_nodes = g_instantiate_nodes
             g_instantiate_nodes = {}
