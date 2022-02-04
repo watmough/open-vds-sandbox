@@ -2236,7 +2236,7 @@ findFirstTrace(TraceDataManager& traceDataManager, int primaryKey, int secondary
       return traceStart;
     }
 
-    int primaryTest = SEGY::ReadFieldFromHeader(header, fileInfo.m_primaryKey, fileInfo.m_headerEndianness),
+    int primaryTest = fileInfo.Is2D() ? 0 : SEGY::ReadFieldFromHeader(header, fileInfo.m_primaryKey, fileInfo.m_headerEndianness),
       secondaryTest = SEGY::ReadFieldFromHeader(header, fileInfo.m_secondaryKey, fileInfo.m_headerEndianness);
     int64_t traceDelta;
 
