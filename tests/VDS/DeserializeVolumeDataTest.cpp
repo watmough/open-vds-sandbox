@@ -273,14 +273,15 @@ GTEST_TEST(VDS_integration, DeSerializeVolumeData)
   verify_lossless(valueRange, dataBlockNone, dataNone, "/chunk.CompressionMethod_RLE", OpenVDS::CompressionMethod::RLE, OpenVDS::VolumeDataChannelDescriptor::Format_R32);
   verify_lossless(valueRange, dataBlockNone, dataNone, "/chunk.CompressionMethod_Zip", OpenVDS::CompressionMethod::Zip, OpenVDS::VolumeDataChannelDescriptor::Format_R32);
   verify_lossless(valueRange, dataBlockNone, dataNone, "/chunk.CompressionMethod_WaveletLossless", OpenVDS::CompressionMethod::WaveletLossless, OpenVDS::VolumeDataChannelDescriptor::Format_R32);
+  verify_lossless(valueRange, dataBlockNone, dataNone, "/chunk.CompressionMethod_WaveletLossless_1_6", OpenVDS::CompressionMethod::WaveletLossless, OpenVDS::VolumeDataChannelDescriptor::Format_R32);
   verify_lossless(valueRange, dataBlockNone, dataNone, "/chunk.U8.CompressionMethod_None", OpenVDS::CompressionMethod::None, OpenVDS::VolumeDataChannelDescriptor::Format_U8);
   verify_lossless(valueRange, dataBlockNone, dataNone, "/chunk.U16.CompressionMethod_None", OpenVDS::CompressionMethod::None, OpenVDS::VolumeDataChannelDescriptor::Format_U16);
-  verify_lossless(valueRange, dataBlockNone, dataNone, "/chunk.U8.CompressionMethod_WaveletLossless", OpenVDS::CompressionMethod::WaveletLossless, OpenVDS::VolumeDataChannelDescriptor::Format_U8);
-  verify_lossless(valueRange, dataBlockNone, dataNone, "/chunk.U16.CompressionMethod_WaveletLossless",OpenVDS::CompressionMethod::WaveletLossless, OpenVDS::VolumeDataChannelDescriptor::Format_U16);
+  verify_lossless(valueRange, dataBlockNone, dataNone, "/chunk.U8.CompressionMethod_WaveletLossless_1_6", OpenVDS::CompressionMethod::WaveletLossless, OpenVDS::VolumeDataChannelDescriptor::Format_U8);
+  verify_lossless(valueRange, dataBlockNone, dataNone, "/chunk.U16.CompressionMethod_WaveletLossless_1_6",OpenVDS::CompressionMethod::WaveletLossless, OpenVDS::VolumeDataChannelDescriptor::Format_U16);
 
-  verify_wavelet(valueRange, dataBlockNone, dataNone, "/chunk.CompressionMethod_Wavelet",  OpenVDS::VolumeDataChannelDescriptor::Format_R32);
-  verify_wavelet(valueRange, dataBlockNone, dataNone, "/chunk.U8.CompressionMethod_Wavelet", OpenVDS::VolumeDataChannelDescriptor::Format_U8);
-  verify_wavelet(valueRange, dataBlockNone, dataNone, "/chunk.U16.CompressionMethod_Wavelet", OpenVDS::VolumeDataChannelDescriptor::Format_U16);
+  verify_wavelet(valueRange, dataBlockNone, dataNone, "/chunk.CompressionMethod_Wavelet_1_6",  OpenVDS::VolumeDataChannelDescriptor::Format_R32);
+  verify_wavelet(valueRange, dataBlockNone, dataNone, "/chunk.U8.CompressionMethod_Wavelet_1_6", OpenVDS::VolumeDataChannelDescriptor::Format_U8);
+  verify_wavelet(valueRange, dataBlockNone, dataNone, "/chunk.U16.CompressionMethod_Wavelet_1_6", OpenVDS::VolumeDataChannelDescriptor::Format_U16);
 
 }
 
