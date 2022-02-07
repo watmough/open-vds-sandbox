@@ -1315,14 +1315,192 @@ JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_OpenVDS_IsCompressionMethodSupp
   HUE_JNI_CATCH
   return 0;
 }
-///AUTOGEN-FAIL: FUNCTION_DECL Create OpenVDS::VDS *(OpenVDS::StringWrapper, OpenVDS::StringWrapper, const OpenVDS::VolumeDataLayoutDescriptor &, OpenVDS::VectorWrapper<OpenVDS::VolumeDataAxisDescriptor>, OpenVDS::VectorWrapper<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::CompressionMethod, float, OpenVDS::Error &) FUNCTIONPROTO
-///AUTOGEN-FAIL: FUNCTION_DECL Create OpenVDS::VDS *(OpenVDS::StringWrapper, OpenVDS::StringWrapper, const OpenVDS::VolumeDataLayoutDescriptor &, OpenVDS::VectorWrapper<OpenVDS::VolumeDataAxisDescriptor>, OpenVDS::VectorWrapper<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::Error &) FUNCTIONPROTO
-///AUTOGEN-FAIL: FUNCTION_DECL Create OpenVDS::VDS *(OpenVDS::StringWrapper, const OpenVDS::VolumeDataLayoutDescriptor &, OpenVDS::VectorWrapper<OpenVDS::VolumeDataAxisDescriptor>, OpenVDS::VectorWrapper<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::CompressionMethod, float, OpenVDS::Error &) FUNCTIONPROTO
-///AUTOGEN-FAIL: FUNCTION_DECL Create OpenVDS::VDS *(OpenVDS::StringWrapper, const OpenVDS::VolumeDataLayoutDescriptor &, OpenVDS::VectorWrapper<OpenVDS::VolumeDataAxisDescriptor>, OpenVDS::VectorWrapper<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::Error &) FUNCTIONPROTO
-///AUTOGEN-FAIL: FUNCTION_DECL Create OpenVDS::VDS *(const OpenVDS::OpenOptions &, const OpenVDS::VolumeDataLayoutDescriptor &, OpenVDS::VectorWrapper<OpenVDS::VolumeDataAxisDescriptor>, OpenVDS::VectorWrapper<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::CompressionMethod, float, OpenVDS::Error &) FUNCTIONPROTO
-///AUTOGEN-FAIL: FUNCTION_DECL Create OpenVDS::VDS *(const OpenVDS::OpenOptions &, const OpenVDS::VolumeDataLayoutDescriptor &, OpenVDS::VectorWrapper<OpenVDS::VolumeDataAxisDescriptor>, OpenVDS::VectorWrapper<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::Error &) FUNCTIONPROTO
-///AUTOGEN-FAIL: FUNCTION_DECL Create OpenVDS::VDS *(OpenVDS::IOManager *, const OpenVDS::VolumeDataLayoutDescriptor &, OpenVDS::VectorWrapper<OpenVDS::VolumeDataAxisDescriptor>, OpenVDS::VectorWrapper<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::CompressionMethod, float, OpenVDS::Error &) FUNCTIONPROTO
-///AUTOGEN-FAIL: FUNCTION_DECL Create OpenVDS::VDS *(OpenVDS::IOManager *, const OpenVDS::VolumeDataLayoutDescriptor &, OpenVDS::VectorWrapper<OpenVDS::VolumeDataAxisDescriptor>, OpenVDS::VectorWrapper<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::Error &) FUNCTIONPROTO
+
+JNIEXPORT jlong JNICALL Java_com_hue_proxylib_OpenVDS_CreateImpl
+  (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring url, jstring connectionString, jlong layoutDescriptor, jlongArray axisDescriptors, jlongArray channelDescriptors, jlong metadata, jlong compressionMethod, jfloat compressionTolerance, jlong error)
+{
+  JEnvPushPop
+    stackitem(env, jproxyinterface);
+
+  HUE_JNI_TRY
+  {
+    auto result = OpenVDS::Create(
+                               OpenVDS::StringWrapper(HueJNIStringWrapper(env, url)), 
+                               OpenVDS::StringWrapper(HueJNIStringWrapper(env, connectionString)), 
+                               *HueJNI_cast<OpenVDS::VolumeDataLayoutDescriptor>(layoutDescriptor), 
+                               HueJNIVectorWrapperAdapter<OpenVDS::VolumeDataAxisDescriptor>(env, axisDescriptors).toVector(), 
+                               HueJNIVectorWrapperAdapter<OpenVDS::VolumeDataChannelDescriptor>(env, channelDescriptors).toVector(), 
+                               *HueJNI_cast<OpenVDS::MetadataReadAccess>(metadata), 
+                               (OpenVDS::CompressionMethod)compressionMethod, 
+                               compressionTolerance, 
+                               *HueJNI_cast<OpenVDS::Error>(error));
+    auto context = HueJNI_createNonOwningObjectContext(result);
+    return context->handle();
+  }
+  HUE_JNI_CATCH
+  return 0;
+}
+
+JNIEXPORT jlong JNICALL Java_com_hue_proxylib_OpenVDS_Create2Impl
+  (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring url, jstring connectionString, jlong layoutDescriptor, jlongArray axisDescriptors, jlongArray channelDescriptors, jlong metadata, jlong error)
+{
+  JEnvPushPop
+    stackitem(env, jproxyinterface);
+
+  HUE_JNI_TRY
+  {
+    auto result = OpenVDS::Create(
+                               OpenVDS::StringWrapper(HueJNIStringWrapper(env, url)), 
+                               OpenVDS::StringWrapper(HueJNIStringWrapper(env, connectionString)), 
+                               *HueJNI_cast<OpenVDS::VolumeDataLayoutDescriptor>(layoutDescriptor), 
+                               HueJNIVectorWrapperAdapter<OpenVDS::VolumeDataAxisDescriptor>(env, axisDescriptors).toVector(), 
+                               HueJNIVectorWrapperAdapter<OpenVDS::VolumeDataChannelDescriptor>(env, channelDescriptors).toVector(), 
+                               *HueJNI_cast<OpenVDS::MetadataReadAccess>(metadata), 
+                               *HueJNI_cast<OpenVDS::Error>(error));
+    auto context = HueJNI_createNonOwningObjectContext(result);
+    return context->handle();
+  }
+  HUE_JNI_CATCH
+  return 0;
+}
+
+JNIEXPORT jlong JNICALL Java_com_hue_proxylib_OpenVDS_Create3Impl
+  (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring url, jlong layoutDescriptor, jlongArray axisDescriptors, jlongArray channelDescriptors, jlong metadata, jlong compressionMethod, jfloat compressionTolerance, jlong error)
+{
+  JEnvPushPop
+    stackitem(env, jproxyinterface);
+
+  HUE_JNI_TRY
+  {
+    auto result = OpenVDS::Create(
+                               OpenVDS::StringWrapper(HueJNIStringWrapper(env, url)), 
+                               *HueJNI_cast<OpenVDS::VolumeDataLayoutDescriptor>(layoutDescriptor), 
+                               HueJNIVectorWrapperAdapter<OpenVDS::VolumeDataAxisDescriptor>(env, axisDescriptors).toVector(), 
+                               HueJNIVectorWrapperAdapter<OpenVDS::VolumeDataChannelDescriptor>(env, channelDescriptors).toVector(), 
+                               *HueJNI_cast<OpenVDS::MetadataReadAccess>(metadata), 
+                               (OpenVDS::CompressionMethod)compressionMethod, 
+                               compressionTolerance, 
+                               *HueJNI_cast<OpenVDS::Error>(error));
+    auto context = HueJNI_createNonOwningObjectContext(result);
+    return context->handle();
+  }
+  HUE_JNI_CATCH
+  return 0;
+}
+
+JNIEXPORT jlong JNICALL Java_com_hue_proxylib_OpenVDS_Create4Impl
+  (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring url, jlong layoutDescriptor, jlongArray axisDescriptors, jlongArray channelDescriptors, jlong metadata, jlong error)
+{
+  JEnvPushPop
+    stackitem(env, jproxyinterface);
+
+  HUE_JNI_TRY
+  {
+    auto result = OpenVDS::Create(
+                               OpenVDS::StringWrapper(HueJNIStringWrapper(env, url)), 
+                               *HueJNI_cast<OpenVDS::VolumeDataLayoutDescriptor>(layoutDescriptor), 
+                               HueJNIVectorWrapperAdapter<OpenVDS::VolumeDataAxisDescriptor>(env, axisDescriptors).toVector(), 
+                               HueJNIVectorWrapperAdapter<OpenVDS::VolumeDataChannelDescriptor>(env, channelDescriptors).toVector(), 
+                               *HueJNI_cast<OpenVDS::MetadataReadAccess>(metadata), 
+                               *HueJNI_cast<OpenVDS::Error>(error));
+    auto context = HueJNI_createNonOwningObjectContext(result);
+    return context->handle();
+  }
+  HUE_JNI_CATCH
+  return 0;
+}
+
+JNIEXPORT jlong JNICALL Java_com_hue_proxylib_OpenVDS_Create5Impl
+  (JNIEnv * env, jclass cls, jobject jproxyinterface, jlong options, jlong layoutDescriptor, jlongArray axisDescriptors, jlongArray channelDescriptors, jlong metadata, jlong compressionMethod, jfloat compressionTolerance, jlong error)
+{
+  JEnvPushPop
+    stackitem(env, jproxyinterface);
+
+  HUE_JNI_TRY
+  {
+    auto result = OpenVDS::Create(
+                               *HueJNI_cast<OpenVDS::OpenOptions>(options), 
+                               *HueJNI_cast<OpenVDS::VolumeDataLayoutDescriptor>(layoutDescriptor), 
+                               HueJNIVectorWrapperAdapter<OpenVDS::VolumeDataAxisDescriptor>(env, axisDescriptors).toVector(), 
+                               HueJNIVectorWrapperAdapter<OpenVDS::VolumeDataChannelDescriptor>(env, channelDescriptors).toVector(), 
+                               *HueJNI_cast<OpenVDS::MetadataReadAccess>(metadata), 
+                               (OpenVDS::CompressionMethod)compressionMethod, 
+                               compressionTolerance, 
+                               *HueJNI_cast<OpenVDS::Error>(error));
+    auto context = HueJNI_createNonOwningObjectContext(result);
+    return context->handle();
+  }
+  HUE_JNI_CATCH
+  return 0;
+}
+
+JNIEXPORT jlong JNICALL Java_com_hue_proxylib_OpenVDS_Create6Impl
+  (JNIEnv * env, jclass cls, jobject jproxyinterface, jlong options, jlong layoutDescriptor, jlongArray axisDescriptors, jlongArray channelDescriptors, jlong metadata, jlong error)
+{
+  JEnvPushPop
+    stackitem(env, jproxyinterface);
+
+  HUE_JNI_TRY
+  {
+    auto result = OpenVDS::Create(
+                               *HueJNI_cast<OpenVDS::OpenOptions>(options), 
+                               *HueJNI_cast<OpenVDS::VolumeDataLayoutDescriptor>(layoutDescriptor), 
+                               HueJNIVectorWrapperAdapter<OpenVDS::VolumeDataAxisDescriptor>(env, axisDescriptors).toVector(), 
+                               HueJNIVectorWrapperAdapter<OpenVDS::VolumeDataChannelDescriptor>(env, channelDescriptors).toVector(), 
+                               *HueJNI_cast<OpenVDS::MetadataReadAccess>(metadata), 
+                               *HueJNI_cast<OpenVDS::Error>(error));
+    auto context = HueJNI_createNonOwningObjectContext(result);
+    return context->handle();
+  }
+  HUE_JNI_CATCH
+  return 0;
+}
+
+JNIEXPORT jlong JNICALL Java_com_hue_proxylib_OpenVDS_Create7Impl
+  (JNIEnv * env, jclass cls, jobject jproxyinterface, jlong ioManager, jlong layoutDescriptor, jlongArray axisDescriptors, jlongArray channelDescriptors, jlong metadata, jlong compressionMethod, jfloat compressionTolerance, jlong error)
+{
+  JEnvPushPop
+    stackitem(env, jproxyinterface);
+
+  HUE_JNI_TRY
+  {
+    auto result = OpenVDS::Create(
+                               HueJNI_cast<OpenVDS::IOManager>(ioManager), 
+                               *HueJNI_cast<OpenVDS::VolumeDataLayoutDescriptor>(layoutDescriptor), 
+                               HueJNIVectorWrapperAdapter<OpenVDS::VolumeDataAxisDescriptor>(env, axisDescriptors).toVector(), 
+                               HueJNIVectorWrapperAdapter<OpenVDS::VolumeDataChannelDescriptor>(env, channelDescriptors).toVector(), 
+                               *HueJNI_cast<OpenVDS::MetadataReadAccess>(metadata), 
+                               (OpenVDS::CompressionMethod)compressionMethod, 
+                               compressionTolerance, 
+                               *HueJNI_cast<OpenVDS::Error>(error));
+    auto context = HueJNI_createNonOwningObjectContext(result);
+    return context->handle();
+  }
+  HUE_JNI_CATCH
+  return 0;
+}
+
+JNIEXPORT jlong JNICALL Java_com_hue_proxylib_OpenVDS_Create8Impl
+  (JNIEnv * env, jclass cls, jobject jproxyinterface, jlong ioManager, jlong layoutDescriptor, jlongArray axisDescriptors, jlongArray channelDescriptors, jlong metadata, jlong error)
+{
+  JEnvPushPop
+    stackitem(env, jproxyinterface);
+
+  HUE_JNI_TRY
+  {
+    auto result = OpenVDS::Create(
+                               HueJNI_cast<OpenVDS::IOManager>(ioManager), 
+                               *HueJNI_cast<OpenVDS::VolumeDataLayoutDescriptor>(layoutDescriptor), 
+                               HueJNIVectorWrapperAdapter<OpenVDS::VolumeDataAxisDescriptor>(env, axisDescriptors).toVector(), 
+                               HueJNIVectorWrapperAdapter<OpenVDS::VolumeDataChannelDescriptor>(env, channelDescriptors).toVector(), 
+                               *HueJNI_cast<OpenVDS::MetadataReadAccess>(metadata), 
+                               *HueJNI_cast<OpenVDS::Error>(error));
+    auto context = HueJNI_createNonOwningObjectContext(result);
+    return context->handle();
+  }
+  HUE_JNI_CATCH
+  return 0;
+}
 
 JNIEXPORT jlong JNICALL Java_com_hue_proxylib_OpenVDS_GetLayoutImpl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jlong handle)

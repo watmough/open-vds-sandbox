@@ -175,6 +175,36 @@ struct HueJNIVectorAdapter
   }
 };
 
+template<typename T> T* HueJNI_cast(jlong handle);
+
+template<typename T>
+struct HueJNIVectorWrapperAdapter
+{
+  JNIEnv*                 m_Env;
+  jlongArray              m_Array;
+  mutable std::vector<T>  m_Vector;
+
+  HueJNIVectorWrapperAdapter(JNIEnv* env, jlongArray arr) : m_Env(env), m_Array(arr)
+  {
+  }
+
+  OpenVDS::VectorWrapper<T>
+  toVector() const
+  {
+    if (m_Vector.empty())
+    {
+      jlong* elements = m_Env->GetLongArrayElements(m_Array, nullptr);
+      for (int i = 0; i < m_Env->GetArrayLength(m_Array); ++i)
+      {
+        auto item = HueJNI_cast<T>(elements[i]);
+        m_Vector.push_back(*item);
+      }
+      m_Env->ReleaseLongArrayElements(m_Array, elements, 0);
+    }
+    return OpenVDS::VectorWrapper<T>(m_Vector);
+  }
+};
+
 // Adapter class to check N-component java arrays
 template<typename T, int N, bool MUTABLE = false>
 struct HueJNIArrayAdapter;

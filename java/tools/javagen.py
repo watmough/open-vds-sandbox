@@ -60,15 +60,9 @@ _explicit_add_get_prefix = {
 }
 
 _cppjava_typemap = {
-#    "std::basic_string<char, std::char_traits<char>, std::allocator<char>>": "String",
     "const char *":                                 "String",
     "std::string":                                  "String",
     "OpenVDS::StringWrapper":                       "String",
-#    "Hue::HueSpaceLib::ProxyBLOB":                  "byte[]",
-#    "Hue::HueSpaceLib::VolumeDataFormat":           "VCVoxelFormat",
-#    "Hue::HueSpaceLib::VolumeDataComponents":       "VCVoxelComponents",
-#    "Hue::HueSpaceLib::VolumeDataAxisDescriptor":   "VolumeDataAxisDescriptor",
-#    "Hue::HueSpaceLib::ReadErrorException":         "ReadErrorException",
     "void":                                         "void",
     "bool":                                         "boolean",
     "char":                                         "byte",
@@ -100,7 +94,6 @@ _cppjni_typemap = {
     "std::string":          "jstring",
     "std::basic_string<char, std::char_traits<char>, std::allocator<char>>": "jstring",
     "OpenVDS::StringWrapper": "jstring",
-#    "Hue::HueSpaceLib::ProxyBLOB": "jbyteArray",
     "void":                 "void",
     "bool":                 "jboolean",
     "char":                 "jbyte",
@@ -184,6 +177,8 @@ _smart_ptr_types = [
 
 _vector_types = [
     'std::vector',
+    'OpenVDS::VectorWrapper',
+    'VectorWrapper',
 ]
 
 _optional_types = {
@@ -395,8 +390,6 @@ def resolve_typealias(typename: str, alias: str) -> str:
 
 def _cpp_to_java_type(typename: str, alias: str) -> str:
     typename = resolve_typealias(typename, alias)
-    if 'StringWrapper' in typename:
-        debug = 0
     if find_enum_type(typename):
         if typename in _cppjava_typemap:
             return _cppjava_typemap[typename]
@@ -416,10 +409,11 @@ def _cpp_to_java_type(typename: str, alias: str) -> str:
         return f"{java_element_type}[]"
     elif is_vector_type(typename):
         element_type = get_template_arg0(typename)
-        if not element_type in _cppjni_array_typemap:
+        if element_type in _cppjni_array_typemap or is_pass_by_handle(element_type):
+            java_element_type = cpp_to_java_type(element_type)
+            return f"{java_element_type}[]"
+        else:
             raise NotImplementedError(f"Unsupported vector type: {element_type}")
-        java_element_type = cpp_to_java_type(element_type)
-        return f"{java_element_type}[]"
     elif is_bytebuffer_backed(typename):
         return _bytebuffer_backed[clean_typename(typename)]
     elif is_smartptr_type(typename):
@@ -461,9 +455,12 @@ def cpp_to_native_type(typename: str, alias: str = '') -> str:
         return f"{java_element_type}[]"
     elif is_vector_type(typename):
         element_type = get_template_arg0(typename)
-        if not element_type in _cppjni_array_typemap:
+        if element_type in _cppjni_array_typemap:
+            java_element_type = cpp_to_native_type(element_type)
+        elif is_pass_by_handle(element_type):
+            java_element_type = 'long'
+        else:
             raise NotImplementedError(f"Unsupported vector type: {element_type}")
-        java_element_type = cpp_to_native_type(element_type)
         return f"{java_element_type}[]"
     elif is_bytebuffer_backed(typename):
         return "ByteBuffer"
@@ -490,9 +487,12 @@ def cpp_to_jni_type(typename: str, alias: str = '') -> str:
             return 'jobject'
     elif is_vector_type(typename):
         element_type = get_template_arg0(typename)
-        if not element_type in _cppjni_array_typemap:
+        if element_type in _cppjni_array_typemap:
+            return _cppjni_array_typemap[element_type]
+        elif is_pass_by_handle(element_type):
+            return _cppjni_array_typemap['int64_t']
+        else:
             raise NotImplementedError(f"Unsupported vector type: {element_type}")
-        return _cppjni_array_typemap[element_type]
     elif is_bytebuffer_backed(typename):
         assert False, "We should never get here"
     elif is_optional_type(typename):
@@ -603,6 +603,9 @@ def transform_jni_functioncall_args(args: List[Param], is_static_method: bool=Fa
                 # Keep it alive!
                 epilogue.append(f"context->registerGlobalRef(env, {name});")
             next(p) # consume buffer size parameter
+        elif  is_vector_type(type_) and is_pass_by_handle(clean_typename(get_template_arg0(type_))):
+            elem_type = get_template_arg0(type_)
+            arglist.append(f'HueJNIVectorWrapperAdapter<{elem_type}>(env, {name}).toVector()')
         else:
             jnitype_ = cpp_to_jni_type(type_)
             if jnitype_ == "jstring":
@@ -774,8 +777,6 @@ def create_jni_methods(scope: Scope, template: str, override_name: str = '', tem
                     return_type = cpp_to_jni_type(result_param.canonical_type)
                     method_name = child.name
                     overload_name = child.overload_name
-                    if method_name == 'GetGlobalState':
-                        debug = 0
                     if method_name.startswith("operator"):
                         if method_name == "operator==":
                             method = create_jni_equals(class_name, class_canonical_name)
@@ -820,7 +821,10 @@ def create_jni_methods(scope: Scope, template: str, override_name: str = '', tem
                             retval = 'real_result'
                         elif is_vector_type(real_return_type):
                             element_type = get_template_arg0(real_return_type)
-                            retval = f'HueJNIVectorAdapter<{element_type}>(env, result).toArray()'
+                            if is_pass_by_handle(element_type):
+                                raise NotImplementedError(f'Return values of type {element_type}as array.')
+                            else:
+                                retval = f'HueJNIVectorAdapter<{element_type}>(env, result).toArray()'
                         elif is_pass_by_handle(real_return_type):
                             if is_enum_type(result_param):
                                 retval = '(jlong)result'
@@ -990,7 +994,6 @@ def transform_java_functioncall_args(class_name: str, args: List[Param], is_incl
             array_size = get_array_size(type_)
             if array_size > 0:
                 prologue.append(f'if ({name_}.length != {array_size}) throw new IllegalArgumentException("Array \\"{name_}\\" must have length {array_size}");')
-
     p = peekable(args)
     if args and p.peek().is_out:
         result: Param = next(p)
@@ -1006,6 +1009,15 @@ def transform_java_functioncall_args(class_name: str, args: List[Param], is_incl
         used_arglist.append(name_)
         if is_enum_type(arg):
             arglist.append(f'{name_}.value()')
+        elif  is_vector_type(type_) and is_pass_by_handle(clean_typename(get_template_arg0(type_))):
+            prologue.append(f'if ({name_} == null) {{')
+            prologue.append(f'    throw new NullPointerException("{name_}");')
+            prologue.append(f'}}')
+            prologue.append(f'long[] {name_}tmp = new long[{name_}.length];')
+            prologue.append(f'for (int i = 0; i < {name_}.length; ++i) {{')
+            prologue.append(f'    {name_}tmp[i] = {name_}[i].getNativeObject();')
+            prologue.append(f'}}')
+            arglist.append(f'{name_}tmp')
         elif is_marshaled_valuetype(type_):
             arglist.append(name_)
         elif is_bytebuffer_backed(type_):

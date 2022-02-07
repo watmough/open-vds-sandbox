@@ -171,21 +171,247 @@ Available schemes are s3:// azure://
         return IsCompressionMethodSupportedImpl(compressionMethod.value());
     }
 
-    ///AUTOGEN-FAIL: FUNCTION_DECL Create OpenVDS::VDS *(OpenVDS::StringWrapper, OpenVDS::StringWrapper, const OpenVDS::VolumeDataLayoutDescriptor &, OpenVDS::VectorWrapper<OpenVDS::VolumeDataAxisDescriptor>, OpenVDS::VectorWrapper<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::CompressionMethod, float, OpenVDS::Error &) FUNCTIONPROTO
+    ///AUTOGEN-OK: FUNCTION_DECL Create OpenVDS::VDS *(OpenVDS::StringWrapper, OpenVDS::StringWrapper, const OpenVDS::VolumeDataLayoutDescriptor &, OpenVDS::VectorWrapper<OpenVDS::VolumeDataAxisDescriptor>, OpenVDS::VectorWrapper<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::CompressionMethod, float, OpenVDS::Error &) FUNCTIONPROTO
+    native private static long CreateImpl(String url, String connectionString, long layoutDescriptor, long[] axisDescriptors, long[] channelDescriptors, long metadata, long compressionMethod, float compressionTolerance, long error);
 
-    ///AUTOGEN-FAIL: FUNCTION_DECL Create OpenVDS::VDS *(OpenVDS::StringWrapper, OpenVDS::StringWrapper, const OpenVDS::VolumeDataLayoutDescriptor &, OpenVDS::VectorWrapper<OpenVDS::VolumeDataAxisDescriptor>, OpenVDS::VectorWrapper<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::Error &) FUNCTIONPROTO
+    /**
+     * Create a new VDS.
+     * 
+     * @param url The url scheme specific to each cloud provider
+Available schemes are s3:// azure://
+     * @param connectionString The cloud provider specific connection string
+Specifies additional arguments for the cloud provider
+     * @param compressionMethod The overall compression method to be used for the VDS. The channel descriptors can have additional options to control how a channel is compressed.
+     * @param compressionTolerance This property specifies the compression tolerance [1..255] when using the wavelet compression method. This value is the maximum deviation from the original data value when the data is converted to 8-bit using the value range. A value of 1 means the maximum allowable loss is the same as quantizing to 8-bit (but the average loss will be much much lower than quantizing to 8-bit). It is not a good idea to directly relate the tolerance to the quality of the compressed data, as the average loss will in general be an order of magnitude lower than the allowable loss.
+     * @param error If an error occured, the error code and message will be written to this output parameter
+     * @return The VDS handle that can be used to get the VolumeDataLayout and the VolumeDataAccessManager
+     */
+    public static VDS create(String url, String connectionString, VolumeDataLayoutDescriptor layoutDescriptor, VolumeDataAxisDescriptor[] axisDescriptors, VolumeDataChannelDescriptor[] channelDescriptors, MetadataReadAccess metadata, CompressionMethod compressionMethod, float compressionTolerance, Error error) {
+        if (axisDescriptors == null) {
+            throw new NullPointerException("axisDescriptors");
+        }
+        long[] axisDescriptorstmp = new long[axisDescriptors.length];
+        for (int i = 0; i < axisDescriptors.length; ++i) {
+            axisDescriptorstmp[i] = axisDescriptors[i].getNativeObject();
+        }
+        if (channelDescriptors == null) {
+            throw new NullPointerException("channelDescriptors");
+        }
+        long[] channelDescriptorstmp = new long[channelDescriptors.length];
+        for (int i = 0; i < channelDescriptors.length; ++i) {
+            channelDescriptorstmp[i] = channelDescriptors[i].getNativeObject();
+        }
+        return VDS.fromNativeObject(CreateImpl(url, connectionString, layoutDescriptor.getNativeObject(), axisDescriptorstmp, channelDescriptorstmp, metadata.getNativeObject(), compressionMethod.value(), compressionTolerance, error.getNativeObject()));
+    }
 
-    ///AUTOGEN-FAIL: FUNCTION_DECL Create OpenVDS::VDS *(OpenVDS::StringWrapper, const OpenVDS::VolumeDataLayoutDescriptor &, OpenVDS::VectorWrapper<OpenVDS::VolumeDataAxisDescriptor>, OpenVDS::VectorWrapper<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::CompressionMethod, float, OpenVDS::Error &) FUNCTIONPROTO
+    ///AUTOGEN-OK: FUNCTION_DECL Create OpenVDS::VDS *(OpenVDS::StringWrapper, OpenVDS::StringWrapper, const OpenVDS::VolumeDataLayoutDescriptor &, OpenVDS::VectorWrapper<OpenVDS::VolumeDataAxisDescriptor>, OpenVDS::VectorWrapper<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::Error &) FUNCTIONPROTO
+    native private static long Create2Impl(String url, String connectionString, long layoutDescriptor, long[] axisDescriptors, long[] channelDescriptors, long metadata, long error);
 
-    ///AUTOGEN-FAIL: FUNCTION_DECL Create OpenVDS::VDS *(OpenVDS::StringWrapper, const OpenVDS::VolumeDataLayoutDescriptor &, OpenVDS::VectorWrapper<OpenVDS::VolumeDataAxisDescriptor>, OpenVDS::VectorWrapper<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::Error &) FUNCTIONPROTO
+    /**
+     * Create a new VDS.
+     * 
+     * @param url The url scheme specific to each cloud provider
+Available schemes are s3:// azure://
+     * @param connectionString The cloud provider specific connection string
+Specifies additional arguments for the cloud provider
+     * @param error If an error occured, the error code and message will be written to this output parameter
+     * @return The VDS handle that can be used to get the VolumeDataLayout and the VolumeDataAccessManager
+     */
+    public static VDS create(String url, String connectionString, VolumeDataLayoutDescriptor layoutDescriptor, VolumeDataAxisDescriptor[] axisDescriptors, VolumeDataChannelDescriptor[] channelDescriptors, MetadataReadAccess metadata, Error error) {
+        if (axisDescriptors == null) {
+            throw new NullPointerException("axisDescriptors");
+        }
+        long[] axisDescriptorstmp = new long[axisDescriptors.length];
+        for (int i = 0; i < axisDescriptors.length; ++i) {
+            axisDescriptorstmp[i] = axisDescriptors[i].getNativeObject();
+        }
+        if (channelDescriptors == null) {
+            throw new NullPointerException("channelDescriptors");
+        }
+        long[] channelDescriptorstmp = new long[channelDescriptors.length];
+        for (int i = 0; i < channelDescriptors.length; ++i) {
+            channelDescriptorstmp[i] = channelDescriptors[i].getNativeObject();
+        }
+        return VDS.fromNativeObject(Create2Impl(url, connectionString, layoutDescriptor.getNativeObject(), axisDescriptorstmp, channelDescriptorstmp, metadata.getNativeObject(), error.getNativeObject()));
+    }
 
-    ///AUTOGEN-FAIL: FUNCTION_DECL Create OpenVDS::VDS *(const OpenVDS::OpenOptions &, const OpenVDS::VolumeDataLayoutDescriptor &, OpenVDS::VectorWrapper<OpenVDS::VolumeDataAxisDescriptor>, OpenVDS::VectorWrapper<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::CompressionMethod, float, OpenVDS::Error &) FUNCTIONPROTO
+    ///AUTOGEN-OK: FUNCTION_DECL Create OpenVDS::VDS *(OpenVDS::StringWrapper, const OpenVDS::VolumeDataLayoutDescriptor &, OpenVDS::VectorWrapper<OpenVDS::VolumeDataAxisDescriptor>, OpenVDS::VectorWrapper<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::CompressionMethod, float, OpenVDS::Error &) FUNCTIONPROTO
+    native private static long Create3Impl(String url, long layoutDescriptor, long[] axisDescriptors, long[] channelDescriptors, long metadata, long compressionMethod, float compressionTolerance, long error);
 
-    ///AUTOGEN-FAIL: FUNCTION_DECL Create OpenVDS::VDS *(const OpenVDS::OpenOptions &, const OpenVDS::VolumeDataLayoutDescriptor &, OpenVDS::VectorWrapper<OpenVDS::VolumeDataAxisDescriptor>, OpenVDS::VectorWrapper<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::Error &) FUNCTIONPROTO
+    /**
+     * Create a new VDS.
+     * This is a simple wrapper that uses an empty connectionString
+     * 
+     * @param url The url scheme specific to each cloud provider
+Available schemes are s3:// azure://
+     * @param compressionMethod The overall compression method to be used for the VDS. The channel descriptors can have additional options to control how a channel is compressed.
+     * @param compressionTolerance This property specifies the compression tolerance [1..255] when using the wavelet compression method. This value is the maximum deviation from the original data value when the data is converted to 8-bit using the value range. A value of 1 means the maximum allowable loss is the same as quantizing to 8-bit (but the average loss will be much much lower than quantizing to 8-bit). It is not a good idea to directly relate the tolerance to the quality of the compressed data, as the average loss will in general be an order of magnitude lower than the allowable loss.
+     * @param error If an error occured, the error code and message will be written to this output parameter
+     * @return The VDS handle that can be used to get the VolumeDataLayout and the VolumeDataAccessManager
+     */
+    public static VDS create(String url, VolumeDataLayoutDescriptor layoutDescriptor, VolumeDataAxisDescriptor[] axisDescriptors, VolumeDataChannelDescriptor[] channelDescriptors, MetadataReadAccess metadata, CompressionMethod compressionMethod, float compressionTolerance, Error error) {
+        if (axisDescriptors == null) {
+            throw new NullPointerException("axisDescriptors");
+        }
+        long[] axisDescriptorstmp = new long[axisDescriptors.length];
+        for (int i = 0; i < axisDescriptors.length; ++i) {
+            axisDescriptorstmp[i] = axisDescriptors[i].getNativeObject();
+        }
+        if (channelDescriptors == null) {
+            throw new NullPointerException("channelDescriptors");
+        }
+        long[] channelDescriptorstmp = new long[channelDescriptors.length];
+        for (int i = 0; i < channelDescriptors.length; ++i) {
+            channelDescriptorstmp[i] = channelDescriptors[i].getNativeObject();
+        }
+        return VDS.fromNativeObject(Create3Impl(url, layoutDescriptor.getNativeObject(), axisDescriptorstmp, channelDescriptorstmp, metadata.getNativeObject(), compressionMethod.value(), compressionTolerance, error.getNativeObject()));
+    }
 
-    ///AUTOGEN-FAIL: FUNCTION_DECL Create OpenVDS::VDS *(OpenVDS::IOManager *, const OpenVDS::VolumeDataLayoutDescriptor &, OpenVDS::VectorWrapper<OpenVDS::VolumeDataAxisDescriptor>, OpenVDS::VectorWrapper<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::CompressionMethod, float, OpenVDS::Error &) FUNCTIONPROTO
+    ///AUTOGEN-OK: FUNCTION_DECL Create OpenVDS::VDS *(OpenVDS::StringWrapper, const OpenVDS::VolumeDataLayoutDescriptor &, OpenVDS::VectorWrapper<OpenVDS::VolumeDataAxisDescriptor>, OpenVDS::VectorWrapper<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::Error &) FUNCTIONPROTO
+    native private static long Create4Impl(String url, long layoutDescriptor, long[] axisDescriptors, long[] channelDescriptors, long metadata, long error);
 
-    ///AUTOGEN-FAIL: FUNCTION_DECL Create OpenVDS::VDS *(OpenVDS::IOManager *, const OpenVDS::VolumeDataLayoutDescriptor &, OpenVDS::VectorWrapper<OpenVDS::VolumeDataAxisDescriptor>, OpenVDS::VectorWrapper<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::Error &) FUNCTIONPROTO
+    /**
+     * Create a new VDS.
+     * This is a simple wrapper that uses an empty connectionString
+     * 
+     * @param url The url scheme specific to each cloud provider
+Available schemes are s3:// azure://
+     * @param error If an error occured, the error code and message will be written to this output parameter
+     * @return The VDS handle that can be used to get the VolumeDataLayout and the VolumeDataAccessManager
+     */
+    public static VDS create(String url, VolumeDataLayoutDescriptor layoutDescriptor, VolumeDataAxisDescriptor[] axisDescriptors, VolumeDataChannelDescriptor[] channelDescriptors, MetadataReadAccess metadata, Error error) {
+        if (axisDescriptors == null) {
+            throw new NullPointerException("axisDescriptors");
+        }
+        long[] axisDescriptorstmp = new long[axisDescriptors.length];
+        for (int i = 0; i < axisDescriptors.length; ++i) {
+            axisDescriptorstmp[i] = axisDescriptors[i].getNativeObject();
+        }
+        if (channelDescriptors == null) {
+            throw new NullPointerException("channelDescriptors");
+        }
+        long[] channelDescriptorstmp = new long[channelDescriptors.length];
+        for (int i = 0; i < channelDescriptors.length; ++i) {
+            channelDescriptorstmp[i] = channelDescriptors[i].getNativeObject();
+        }
+        return VDS.fromNativeObject(Create4Impl(url, layoutDescriptor.getNativeObject(), axisDescriptorstmp, channelDescriptorstmp, metadata.getNativeObject(), error.getNativeObject()));
+    }
+
+    ///AUTOGEN-OK: FUNCTION_DECL Create OpenVDS::VDS *(const OpenVDS::OpenOptions &, const OpenVDS::VolumeDataLayoutDescriptor &, OpenVDS::VectorWrapper<OpenVDS::VolumeDataAxisDescriptor>, OpenVDS::VectorWrapper<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::CompressionMethod, float, OpenVDS::Error &) FUNCTIONPROTO
+    native private static long Create5Impl(long options, long layoutDescriptor, long[] axisDescriptors, long[] channelDescriptors, long metadata, long compressionMethod, float compressionTolerance, long error);
+
+    /**
+     * Create a new VDS.
+     * 
+     * @param options The options for the connection
+     * @param compressionMethod The overall compression method to be used for the VDS. The channel descriptors can have additional options to control how a channel is compressed.
+     * @param compressionTolerance This property specifies the compression tolerance [1..255] when using the wavelet compression method. This value is the maximum deviation from the original data value when the data is converted to 8-bit using the value range. A value of 1 means the maximum allowable loss is the same as quantizing to 8-bit (but the average loss will be much much lower than quantizing to 8-bit). It is not a good idea to directly relate the tolerance to the quality of the compressed data, as the average loss will in general be an order of magnitude lower than the allowable loss.
+     * @param error If an error occured, the error code and message will be written to this output parameter
+     * @return The VDS handle that can be used to get the VolumeDataLayout and the VolumeDataAccessManager
+     */
+    public static VDS create(OpenOptions options, VolumeDataLayoutDescriptor layoutDescriptor, VolumeDataAxisDescriptor[] axisDescriptors, VolumeDataChannelDescriptor[] channelDescriptors, MetadataReadAccess metadata, CompressionMethod compressionMethod, float compressionTolerance, Error error) {
+        if (axisDescriptors == null) {
+            throw new NullPointerException("axisDescriptors");
+        }
+        long[] axisDescriptorstmp = new long[axisDescriptors.length];
+        for (int i = 0; i < axisDescriptors.length; ++i) {
+            axisDescriptorstmp[i] = axisDescriptors[i].getNativeObject();
+        }
+        if (channelDescriptors == null) {
+            throw new NullPointerException("channelDescriptors");
+        }
+        long[] channelDescriptorstmp = new long[channelDescriptors.length];
+        for (int i = 0; i < channelDescriptors.length; ++i) {
+            channelDescriptorstmp[i] = channelDescriptors[i].getNativeObject();
+        }
+        return VDS.fromNativeObject(Create5Impl(options.getNativeObject(), layoutDescriptor.getNativeObject(), axisDescriptorstmp, channelDescriptorstmp, metadata.getNativeObject(), compressionMethod.value(), compressionTolerance, error.getNativeObject()));
+    }
+
+    ///AUTOGEN-OK: FUNCTION_DECL Create OpenVDS::VDS *(const OpenVDS::OpenOptions &, const OpenVDS::VolumeDataLayoutDescriptor &, OpenVDS::VectorWrapper<OpenVDS::VolumeDataAxisDescriptor>, OpenVDS::VectorWrapper<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::Error &) FUNCTIONPROTO
+    native private static long Create6Impl(long options, long layoutDescriptor, long[] axisDescriptors, long[] channelDescriptors, long metadata, long error);
+
+    /**
+     * Create a new VDS.
+     * 
+     * @param options The options for the connection
+     * @param error If an error occured, the error code and message will be written to this output parameter
+     * @return The VDS handle that can be used to get the VolumeDataLayout and the VolumeDataAccessManager
+     */
+    public static VDS create(OpenOptions options, VolumeDataLayoutDescriptor layoutDescriptor, VolumeDataAxisDescriptor[] axisDescriptors, VolumeDataChannelDescriptor[] channelDescriptors, MetadataReadAccess metadata, Error error) {
+        if (axisDescriptors == null) {
+            throw new NullPointerException("axisDescriptors");
+        }
+        long[] axisDescriptorstmp = new long[axisDescriptors.length];
+        for (int i = 0; i < axisDescriptors.length; ++i) {
+            axisDescriptorstmp[i] = axisDescriptors[i].getNativeObject();
+        }
+        if (channelDescriptors == null) {
+            throw new NullPointerException("channelDescriptors");
+        }
+        long[] channelDescriptorstmp = new long[channelDescriptors.length];
+        for (int i = 0; i < channelDescriptors.length; ++i) {
+            channelDescriptorstmp[i] = channelDescriptors[i].getNativeObject();
+        }
+        return VDS.fromNativeObject(Create6Impl(options.getNativeObject(), layoutDescriptor.getNativeObject(), axisDescriptorstmp, channelDescriptorstmp, metadata.getNativeObject(), error.getNativeObject()));
+    }
+
+    ///AUTOGEN-OK: FUNCTION_DECL Create OpenVDS::VDS *(OpenVDS::IOManager *, const OpenVDS::VolumeDataLayoutDescriptor &, OpenVDS::VectorWrapper<OpenVDS::VolumeDataAxisDescriptor>, OpenVDS::VectorWrapper<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::CompressionMethod, float, OpenVDS::Error &) FUNCTIONPROTO
+    native private static long Create7Impl(long ioManager, long layoutDescriptor, long[] axisDescriptors, long[] channelDescriptors, long metadata, long compressionMethod, float compressionTolerance, long error);
+
+    /**
+     * Create a new VDS.
+     * 
+     * @param ioManager The IOManager for the connection, it will be deleted automatically when the VDS handle is closed
+     * @param compressionMethod The overall compression method to be used for the VDS. The channel descriptors can have additional options to control how a channel is compressed.
+     * @param compressionTolerance This property specifies the compression tolerance [1..255] when using the wavelet compression method. This value is the maximum deviation from the original data value when the data is converted to 8-bit using the value range. A value of 1 means the maximum allowable loss is the same as quantizing to 8-bit (but the average loss will be much much lower than quantizing to 8-bit). It is not a good idea to directly relate the tolerance to the quality of the compressed data, as the average loss will in general be an order of magnitude lower than the allowable loss.
+     * @param error If an error occured, the error code and message will be written to this output parameter
+     * @return The VDS handle that can be used to get the VolumeDataLayout and the VolumeDataAccessManager
+     */
+    public static VDS create(IOManager ioManager, VolumeDataLayoutDescriptor layoutDescriptor, VolumeDataAxisDescriptor[] axisDescriptors, VolumeDataChannelDescriptor[] channelDescriptors, MetadataReadAccess metadata, CompressionMethod compressionMethod, float compressionTolerance, Error error) {
+        if (axisDescriptors == null) {
+            throw new NullPointerException("axisDescriptors");
+        }
+        long[] axisDescriptorstmp = new long[axisDescriptors.length];
+        for (int i = 0; i < axisDescriptors.length; ++i) {
+            axisDescriptorstmp[i] = axisDescriptors[i].getNativeObject();
+        }
+        if (channelDescriptors == null) {
+            throw new NullPointerException("channelDescriptors");
+        }
+        long[] channelDescriptorstmp = new long[channelDescriptors.length];
+        for (int i = 0; i < channelDescriptors.length; ++i) {
+            channelDescriptorstmp[i] = channelDescriptors[i].getNativeObject();
+        }
+        return VDS.fromNativeObject(Create7Impl(ioManager.getNativeObject(), layoutDescriptor.getNativeObject(), axisDescriptorstmp, channelDescriptorstmp, metadata.getNativeObject(), compressionMethod.value(), compressionTolerance, error.getNativeObject()));
+    }
+
+    ///AUTOGEN-OK: FUNCTION_DECL Create OpenVDS::VDS *(OpenVDS::IOManager *, const OpenVDS::VolumeDataLayoutDescriptor &, OpenVDS::VectorWrapper<OpenVDS::VolumeDataAxisDescriptor>, OpenVDS::VectorWrapper<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::Error &) FUNCTIONPROTO
+    native private static long Create8Impl(long ioManager, long layoutDescriptor, long[] axisDescriptors, long[] channelDescriptors, long metadata, long error);
+
+    /**
+     * Create a new VDS.
+     * 
+     * @param ioManager The IOManager for the connection, it will be deleted automatically when the VDS handle is closed
+     * @param error If an error occured, the error code and message will be written to this output parameter
+     * @return The VDS handle that can be used to get the VolumeDataLayout and the VolumeDataAccessManager
+     */
+    public static VDS create(IOManager ioManager, VolumeDataLayoutDescriptor layoutDescriptor, VolumeDataAxisDescriptor[] axisDescriptors, VolumeDataChannelDescriptor[] channelDescriptors, MetadataReadAccess metadata, Error error) {
+        if (axisDescriptors == null) {
+            throw new NullPointerException("axisDescriptors");
+        }
+        long[] axisDescriptorstmp = new long[axisDescriptors.length];
+        for (int i = 0; i < axisDescriptors.length; ++i) {
+            axisDescriptorstmp[i] = axisDescriptors[i].getNativeObject();
+        }
+        if (channelDescriptors == null) {
+            throw new NullPointerException("channelDescriptors");
+        }
+        long[] channelDescriptorstmp = new long[channelDescriptors.length];
+        for (int i = 0; i < channelDescriptors.length; ++i) {
+            channelDescriptorstmp[i] = channelDescriptors[i].getNativeObject();
+        }
+        return VDS.fromNativeObject(Create8Impl(ioManager.getNativeObject(), layoutDescriptor.getNativeObject(), axisDescriptorstmp, channelDescriptorstmp, metadata.getNativeObject(), error.getNativeObject()));
+    }
 
     ///AUTOGEN-OK: FUNCTION_DECL GetLayout OpenVDS::VolumeDataLayout *(OpenVDS::VDS *) FUNCTIONPROTO
     native private static long GetLayoutImpl(long handle);
