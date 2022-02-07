@@ -668,7 +668,18 @@ void VolumeDataAccessManagerImpl::AddCopyPageJob(VolumeDataChunk& chunk, VolumeD
       {
         return error;
       }
-   
+
+      uint64_t hash = VolumeDataHash::UNKNOWN;
+      if(metadata.size() >= sizeof(uint64_t))
+      {
+        memcpy(&hash, metadata.data(), sizeof(uint64_t));
+        if(hash == VolumeDataHash::UNKNOWN)
+        {
+          // We don't copy chunks that have not been written in the source
+          return error;
+        }
+      }
+
       if (isPureCopy(chunk, sourceChunk))
       {
         destDataStore->WriteChunk(chunk, serializedData, metadata);
@@ -680,6 +691,11 @@ void VolumeDataAccessManagerImpl::AddCopyPageJob(VolumeDataChunk& chunk, VolumeD
         std::vector<uint8_t> deserializedData;
         uint64_t hash = VolumeDataHash::UNKNOWN;
         sourceDataStore->DeserializeVolumeData(sourceChunk, serializedData, metadata, compressionInfo.GetCompressionMethod(), sourceChunk.layer->GetEffectiveWaveletAdaptiveLoadLevel(), destFormat, destDataBlock, deserializedData, hash, error);
+        if (error.code)
+        {
+          return error;
+        }
+
         destination.RequestWritePage(chunk.index, destDataBlock, deserializedData, hash);
       }
       destination.GetManager()->GetVolumeDataLayout()->CompletePendingWriteChunkRequests(int32_t(threadCount));
