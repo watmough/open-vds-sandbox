@@ -1115,6 +1115,7 @@ def _is_any_not_all_caps_enum_value(enum_values):
 _java_enum_integral_types = {
               # (javatype, jnitype, suffix)
     'int':      ('int',  'jint',  '' ),
+    'uint32_t': ('int',  'jint',  ''),
     'int64_t':  ('long', 'jlong', 'L' ),
     'uint64_t': ('long', 'jlong', 'L' ),
 }
@@ -1819,27 +1820,27 @@ header_dir = '../../src/OpenVDS/OpenVDS'
 dont_output_list = []
 
 header_list = [ 
-    'CoordinateTransformer.h',
-    'Exceptions.h',
-    'GlobalMetadataCommon.h',
-    'GlobalState.h',
-    'IJKCoordinateTransformer.h',
-    'KnownMetadata.h',
-    'MetadataAccess.h',
-    'MetadataContainer.h',
-    'MetadataKey.h',
+#    'CoordinateTransformer.h',
+#    'Exceptions.h',
+#    'GlobalMetadataCommon.h',
+#    'GlobalState.h',
+#    'IJKCoordinateTransformer.h',
+#    'KnownMetadata.h',
+#    'MetadataAccess.h',
+#    'MetadataContainer.h',
+#    'MetadataKey.h',
     'OpenVDS.h',
-    'Optional.h',
-    'ValueConversion.h',
-    'VolumeData.h',
-    'VolumeDataAccess.h',
-    'VolumeDataAccessManager.h',
-    'VolumeDataAxisDescriptor.h',
-    'VolumeDataChannelDescriptor.h',
-    'VolumeDataLayout.h',
-    'VolumeDataLayoutDescriptor.h',
-#    'VolumeIndexer.h',  Do we need this???
-    'VolumeSampler.h',
+#    'Optional.h',
+#    'ValueConversion.h',
+#    'VolumeData.h',
+#    'VolumeDataAccess.h',
+#    'VolumeDataAccessManager.h',
+#    'VolumeDataAxisDescriptor.h',
+#    'VolumeDataChannelDescriptor.h',
+#    'VolumeDataLayout.h',
+#    'VolumeDataLayoutDescriptor.h',
+##    'VolumeIndexer.h',  Do we need this???
+#    'VolumeSampler.h',
 ]
 
 template_dir = './javagen_templates'

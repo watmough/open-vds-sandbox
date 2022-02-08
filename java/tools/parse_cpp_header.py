@@ -41,6 +41,8 @@ _remap_canonical_types = {
     'long double':        'double',
     'unsigned long':      'uint32_t',
     'long':               'int32_t',
+    'unsigned int':       'uint32_t',
+#    'int':                'int32_t',
 }
 
 compiler_include_directories = []
@@ -427,7 +429,7 @@ class Scope(OrderedDict):
     @property
     def enum_integral_type(self) -> str:
         assert self.is_enum
-        return self.node.enum_type.spelling
+        return Scope.typename_get_canonical_name(self.node.enum_type.get_canonical().spelling)
 
     def get_enum_values(self) -> List[Tuple[str, int, str]]: # name, value, docstring
         values = [(c.name, c.enum_value, str(c.get_doc())) for c in self.get_children() if c.is_enum_value]
