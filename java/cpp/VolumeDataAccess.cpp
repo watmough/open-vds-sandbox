@@ -5656,36 +5656,6 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector2_ctor2
 }
 
 
-JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector2_GetMinImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
-{
-  JEnvPushPop
-    stackitem(env, jproxyinterface);
-
-  HUE_JNI_TRY
-  {
-    auto pInstance = HueJNI_cast<OpenVDS::IndexRegion<OpenVDS::FloatVector2>>(native_handle);
-    auto result = pInstance->GetMin();
-    *(OpenVDS::FloatVector2*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
-  }
-  HUE_JNI_CATCH
-}
-
-JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector2_GetMaxImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
-{
-  JEnvPushPop
-    stackitem(env, jproxyinterface);
-
-  HUE_JNI_TRY
-  {
-    auto pInstance = HueJNI_cast<OpenVDS::IndexRegion<OpenVDS::FloatVector2>>(native_handle);
-    auto result = pInstance->GetMax();
-    *(OpenVDS::FloatVector2*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
-  }
-  HUE_JNI_CATCH
-}
-
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector2_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
@@ -5768,36 +5738,6 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IndexRegionIntVector2_ctor2Im
   return 0;
 }
 
-
-JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionIntVector2_GetMinImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
-{
-  JEnvPushPop
-    stackitem(env, jproxyinterface);
-
-  HUE_JNI_TRY
-  {
-    auto pInstance = HueJNI_cast<OpenVDS::IndexRegion<OpenVDS::IntVector2>>(native_handle);
-    auto result = pInstance->GetMin();
-    *(OpenVDS::IntVector2*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
-  }
-  HUE_JNI_CATCH
-}
-
-JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionIntVector2_GetMaxImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
-{
-  JEnvPushPop
-    stackitem(env, jproxyinterface);
-
-  HUE_JNI_TRY
-  {
-    auto pInstance = HueJNI_cast<OpenVDS::IndexRegion<OpenVDS::IntVector2>>(native_handle);
-    auto result = pInstance->GetMax();
-    *(OpenVDS::IntVector2*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
-  }
-  HUE_JNI_CATCH
-}
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionIntVector2_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle)
@@ -5882,36 +5822,6 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector3_ctor2
 }
 
 
-JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector3_GetMinImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
-{
-  JEnvPushPop
-    stackitem(env, jproxyinterface);
-
-  HUE_JNI_TRY
-  {
-    auto pInstance = HueJNI_cast<OpenVDS::IndexRegion<OpenVDS::FloatVector3>>(native_handle);
-    auto result = pInstance->GetMin();
-    *(OpenVDS::FloatVector3*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
-  }
-  HUE_JNI_CATCH
-}
-
-JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector3_GetMaxImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
-{
-  JEnvPushPop
-    stackitem(env, jproxyinterface);
-
-  HUE_JNI_TRY
-  {
-    auto pInstance = HueJNI_cast<OpenVDS::IndexRegion<OpenVDS::FloatVector3>>(native_handle);
-    auto result = pInstance->GetMax();
-    *(OpenVDS::FloatVector3*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
-  }
-  HUE_JNI_CATCH
-}
-
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector3_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
@@ -5994,36 +5904,6 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IndexRegionIntVector3_ctor2Im
   return 0;
 }
 
-
-JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionIntVector3_GetMinImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
-{
-  JEnvPushPop
-    stackitem(env, jproxyinterface);
-
-  HUE_JNI_TRY
-  {
-    auto pInstance = HueJNI_cast<OpenVDS::IndexRegion<OpenVDS::IntVector3>>(native_handle);
-    auto result = pInstance->GetMin();
-    *(OpenVDS::IntVector3*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
-  }
-  HUE_JNI_CATCH
-}
-
-JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionIntVector3_GetMaxImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
-{
-  JEnvPushPop
-    stackitem(env, jproxyinterface);
-
-  HUE_JNI_TRY
-  {
-    auto pInstance = HueJNI_cast<OpenVDS::IndexRegion<OpenVDS::IntVector3>>(native_handle);
-    auto result = pInstance->GetMax();
-    *(OpenVDS::IntVector3*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
-  }
-  HUE_JNI_CATCH
-}
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionIntVector3_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle)
@@ -6108,36 +5988,6 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector4_ctor2
 }
 
 
-JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector4_GetMinImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
-{
-  JEnvPushPop
-    stackitem(env, jproxyinterface);
-
-  HUE_JNI_TRY
-  {
-    auto pInstance = HueJNI_cast<OpenVDS::IndexRegion<OpenVDS::FloatVector4>>(native_handle);
-    auto result = pInstance->GetMin();
-    *(OpenVDS::FloatVector4*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
-  }
-  HUE_JNI_CATCH
-}
-
-JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector4_GetMaxImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
-{
-  JEnvPushPop
-    stackitem(env, jproxyinterface);
-
-  HUE_JNI_TRY
-  {
-    auto pInstance = HueJNI_cast<OpenVDS::IndexRegion<OpenVDS::FloatVector4>>(native_handle);
-    auto result = pInstance->GetMax();
-    *(OpenVDS::FloatVector4*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
-  }
-  HUE_JNI_CATCH
-}
-
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector4_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
@@ -6220,36 +6070,6 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IndexRegionIntVector4_ctor2Im
   return 0;
 }
 
-
-JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionIntVector4_GetMinImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
-{
-  JEnvPushPop
-    stackitem(env, jproxyinterface);
-
-  HUE_JNI_TRY
-  {
-    auto pInstance = HueJNI_cast<OpenVDS::IndexRegion<OpenVDS::IntVector4>>(native_handle);
-    auto result = pInstance->GetMin();
-    *(OpenVDS::IntVector4*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
-  }
-  HUE_JNI_CATCH
-}
-
-JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionIntVector4_GetMaxImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
-{
-  JEnvPushPop
-    stackitem(env, jproxyinterface);
-
-  HUE_JNI_TRY
-  {
-    auto pInstance = HueJNI_cast<OpenVDS::IndexRegion<OpenVDS::IntVector4>>(native_handle);
-    auto result = pInstance->GetMax();
-    *(OpenVDS::IntVector4*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
-  }
-  HUE_JNI_CATCH
-}
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionIntVector4_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle)
