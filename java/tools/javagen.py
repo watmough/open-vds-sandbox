@@ -761,7 +761,7 @@ def create_jni_methods(scope: Scope, template: str, override_name: str = '', tem
                         continue
                     if child.is_destructor:
                         continue
-                    result_param = child.result or Param(child.typename, 'result')
+                    result_param = child.result or Param(child.typename, 'result', is_out=True)                    
                     args = child.get_args()
                     if template_args:
                         result_param = param_subsitute_template_args(result_param, template_args)
@@ -1357,10 +1357,10 @@ def create_java_class(scope: Scope, template: str, override_name: str = '', temp
                     if child.is_destructor:
                         continue
                     if child.is_data_member and template_args:
-                        continue # SteinFIXME
+                        debug = 0
                     function_name = child.name
                     jni_function_name = child.overload_name
-                    result_param = child.result or Param(child.typename, 'result')
+                    result_param = child.result or Param(child.typename, 'result', is_out=True)
                     if child.is_data_member:
                         function_name = f'get{capfirst(child.name)}'
                         jni_function_name = function_name

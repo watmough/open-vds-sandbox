@@ -25,6 +25,22 @@ import java.nio.ByteBuffer;
 
 public class IndexRegionFloatVector2 extends ManagedBase {
 
+    ///AUTOGEN-OK: FIELD_DECL Min type-parameter-0-0 UNEXPOSED
+    native private void getMinImpl(long native_object, ByteBuffer result, long result_byteoffset);
+    public FloatVector2 getMin() {
+        FloatVector2 result = new FloatVector2();
+        getMinImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset());
+        return result;
+    }
+
+    ///AUTOGEN-OK: FIELD_DECL Max type-parameter-0-0 UNEXPOSED
+    native private void getMaxImpl(long native_object, ByteBuffer result, long result_byteoffset);
+    public FloatVector2 getMax() {
+        FloatVector2 result = new FloatVector2();
+        getMaxImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset());
+        return result;
+    }
+
     native private static long ctorImpl();
     
     public IndexRegionFloatVector2() {
@@ -39,22 +55,6 @@ public class IndexRegionFloatVector2 extends ManagedBase {
     
         super(ctor2Impl(Min.getBackingByteBuffer(), Min.getByteBufferOffset(), Max.getBackingByteBuffer(), Max.getByteBufferOffset()));
     
-    }
-
-    ///AUTOGEN-OK: CXX_METHOD GetMin const type-parameter-0-0 &() const FUNCTIONPROTO
-    native private void GetMinImpl(long native_object, ByteBuffer result, long result_byteoffset);
-    public FloatVector2 getMin() {
-        FloatVector2 result = new FloatVector2();
-        GetMinImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset());
-        return result;
-    }
-
-    ///AUTOGEN-OK: CXX_METHOD GetMax const type-parameter-0-0 &() const FUNCTIONPROTO
-    native private void GetMaxImpl(long native_object, ByteBuffer result, long result_byteoffset);
-    public FloatVector2 getMax() {
-        FloatVector2 result = new FloatVector2();
-        GetMaxImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset());
-        return result;
     }
 
     IndexRegionFloatVector2(long nativeobject) {

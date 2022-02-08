@@ -5596,6 +5596,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector2_getMin
   {
     auto pInstance = HueJNI_cast<OpenVDS::IndexRegion<OpenVDS::FloatVector2>>(native_handle);
     auto result = pInstance->Min;
+    *(OpenVDS::FloatVector2*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
   HUE_JNI_CATCH
 }
@@ -5610,6 +5611,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector2_getMax
   {
     auto pInstance = HueJNI_cast<OpenVDS::IndexRegion<OpenVDS::FloatVector2>>(native_handle);
     auto result = pInstance->Max;
+    *(OpenVDS::FloatVector2*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
   HUE_JNI_CATCH
 }
@@ -5707,6 +5709,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionIntVector2_getMinIm
   {
     auto pInstance = HueJNI_cast<OpenVDS::IndexRegion<OpenVDS::IntVector2>>(native_handle);
     auto result = pInstance->Min;
+    *(OpenVDS::IntVector2*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
   HUE_JNI_CATCH
 }
@@ -5721,6 +5724,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionIntVector2_getMaxIm
   {
     auto pInstance = HueJNI_cast<OpenVDS::IndexRegion<OpenVDS::IntVector2>>(native_handle);
     auto result = pInstance->Max;
+    *(OpenVDS::IntVector2*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
   HUE_JNI_CATCH
 }
@@ -5818,6 +5822,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector3_getMin
   {
     auto pInstance = HueJNI_cast<OpenVDS::IndexRegion<OpenVDS::FloatVector3>>(native_handle);
     auto result = pInstance->Min;
+    *(OpenVDS::FloatVector3*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
   HUE_JNI_CATCH
 }
@@ -5832,6 +5837,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector3_getMax
   {
     auto pInstance = HueJNI_cast<OpenVDS::IndexRegion<OpenVDS::FloatVector3>>(native_handle);
     auto result = pInstance->Max;
+    *(OpenVDS::FloatVector3*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
   HUE_JNI_CATCH
 }
@@ -5929,6 +5935,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionIntVector3_getMinIm
   {
     auto pInstance = HueJNI_cast<OpenVDS::IndexRegion<OpenVDS::IntVector3>>(native_handle);
     auto result = pInstance->Min;
+    *(OpenVDS::IntVector3*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
   HUE_JNI_CATCH
 }
@@ -5943,6 +5950,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionIntVector3_getMaxIm
   {
     auto pInstance = HueJNI_cast<OpenVDS::IndexRegion<OpenVDS::IntVector3>>(native_handle);
     auto result = pInstance->Max;
+    *(OpenVDS::IntVector3*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
   HUE_JNI_CATCH
 }
@@ -6040,6 +6048,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector4_getMin
   {
     auto pInstance = HueJNI_cast<OpenVDS::IndexRegion<OpenVDS::FloatVector4>>(native_handle);
     auto result = pInstance->Min;
+    *(OpenVDS::FloatVector4*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
   HUE_JNI_CATCH
 }
@@ -6054,6 +6063,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector4_getMax
   {
     auto pInstance = HueJNI_cast<OpenVDS::IndexRegion<OpenVDS::FloatVector4>>(native_handle);
     auto result = pInstance->Max;
+    *(OpenVDS::FloatVector4*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
   HUE_JNI_CATCH
 }
@@ -6151,6 +6161,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionIntVector4_getMinIm
   {
     auto pInstance = HueJNI_cast<OpenVDS::IndexRegion<OpenVDS::IntVector4>>(native_handle);
     auto result = pInstance->Min;
+    *(OpenVDS::IntVector4*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
   HUE_JNI_CATCH
 }
@@ -6165,6 +6176,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionIntVector4_getMaxIm
   {
     auto pInstance = HueJNI_cast<OpenVDS::IndexRegion<OpenVDS::IntVector4>>(native_handle);
     auto result = pInstance->Max;
+    *(OpenVDS::IntVector4*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
   HUE_JNI_CATCH
 }
