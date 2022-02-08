@@ -756,12 +756,12 @@ def create_jni_methods(scope: Scope, template: str, override_name: str = '', tem
                 continue
             local_output = io.StringIO()
             try:
-                if child.is_function: # and not scope.is_abstract: 
+                if child.is_function or child.is_data_member:
                     if child.is_template:
                         continue
                     if child.is_destructor:
                         continue
-                    result_param = child.result
+                    result_param = child.result or Param(child.typename, 'result')
                     args = child.get_args()
                     if template_args:
                         result_param = param_subsitute_template_args(result_param, template_args)
@@ -776,6 +776,9 @@ def create_jni_methods(scope: Scope, template: str, override_name: str = '', tem
                     return_type = cpp_to_jni_type(result_param.canonical_type)
                     method_name = child.name
                     overload_name = child.overload_name
+                    if child.is_data_member:
+                        method_name = f'get{capfirst(child.name)}'
+                        overload_name = method_name
                     if method_name.startswith("operator"):
                         if method_name == "operator==":
                             method = create_jni_equals(class_name, class_canonical_name)
@@ -795,7 +798,7 @@ def create_jni_methods(scope: Scope, template: str, override_name: str = '', tem
                             continue
                         overloads_created.append(overload_signature)
                         print(proto, file=local_output)
-                        declare_result = 'auto result = ' if not child.result.canonical_type == 'void' else ''
+                        declare_result = 'auto result = ' if child.is_data_member or not child.result.canonical_type == 'void' else ''
                         if is_ref_type(real_return_type) and is_pass_by_handle(real_return_type):
                             declare_result = 'auto& result = '
                         retval = ''
@@ -810,7 +813,10 @@ def create_jni_methods(scope: Scope, template: str, override_name: str = '', tem
                             print("    {}{}({});".format(declare_result, child.fullname, invoke_args), file=local_output)
                         else:
                             print("    auto pInstance = HueJNI_cast<{}>(native_handle);".format(class_canonical_name), file=local_output)
-                            print("    {}pInstance->{}({});".format(declare_result, child.name, invoke_args), file=local_output)
+                            if child.is_data_member:
+                                print("    {}pInstance->{};".format(declare_result, child.name), file=local_output)
+                            else:
+                                print("    {}pInstance->{}({});".format(declare_result, child.name, invoke_args), file=local_output)
                         if return_type == 'jstring':
                             retval = 'HueJNI_newString(env, result)'
                         elif is_marshaled_valuetype(real_return_type):
@@ -1349,9 +1355,6 @@ def create_java_class(scope: Scope, template: str, override_name: str = '', temp
                 elif child.is_data_member:
                     if child.typename in _cppjava_typemap or find_enum_type(child.typename):
                         data_members.append(child)
-                    else:
-#                        print(f'UNHANDLED DATA MEMBER: {child.typename} {class_name}.{child.name}')
-                        pass
                 elif child.is_function:
                     if child.nodetype == 'FUNCTION_TEMPLATE':
                         continue

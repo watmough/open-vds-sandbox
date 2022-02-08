@@ -5586,6 +5586,34 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessor1
 
 
 
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector2_getMinImpl
+  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
+{
+  JEnvPushPop
+    stackitem(env, jproxyinterface);
+
+  HUE_JNI_TRY
+  {
+    auto pInstance = HueJNI_cast<OpenVDS::IndexRegion<OpenVDS::FloatVector2>>(native_handle);
+    auto result = pInstance->Min;
+  }
+  HUE_JNI_CATCH
+}
+
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector2_getMaxImpl
+  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
+{
+  JEnvPushPop
+    stackitem(env, jproxyinterface);
+
+  HUE_JNI_TRY
+  {
+    auto pInstance = HueJNI_cast<OpenVDS::IndexRegion<OpenVDS::FloatVector2>>(native_handle);
+    auto result = pInstance->Max;
+  }
+  HUE_JNI_CATCH
+}
+
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector2_ctorImpl
   (JNIEnv * env, jclass cls, jobject jproxyinterface)
 {
@@ -5668,6 +5696,34 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector2_dtorIm
 
 
 
+
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionIntVector2_getMinImpl
+  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
+{
+  JEnvPushPop
+    stackitem(env, jproxyinterface);
+
+  HUE_JNI_TRY
+  {
+    auto pInstance = HueJNI_cast<OpenVDS::IndexRegion<OpenVDS::IntVector2>>(native_handle);
+    auto result = pInstance->Min;
+  }
+  HUE_JNI_CATCH
+}
+
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionIntVector2_getMaxImpl
+  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
+{
+  JEnvPushPop
+    stackitem(env, jproxyinterface);
+
+  HUE_JNI_TRY
+  {
+    auto pInstance = HueJNI_cast<OpenVDS::IndexRegion<OpenVDS::IntVector2>>(native_handle);
+    auto result = pInstance->Max;
+  }
+  HUE_JNI_CATCH
+}
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IndexRegionIntVector2_ctorImpl
   (JNIEnv * env, jclass cls, jobject jproxyinterface)
@@ -5752,6 +5808,34 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionIntVector2_dtorImpl
 
 
 
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector3_getMinImpl
+  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
+{
+  JEnvPushPop
+    stackitem(env, jproxyinterface);
+
+  HUE_JNI_TRY
+  {
+    auto pInstance = HueJNI_cast<OpenVDS::IndexRegion<OpenVDS::FloatVector3>>(native_handle);
+    auto result = pInstance->Min;
+  }
+  HUE_JNI_CATCH
+}
+
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector3_getMaxImpl
+  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
+{
+  JEnvPushPop
+    stackitem(env, jproxyinterface);
+
+  HUE_JNI_TRY
+  {
+    auto pInstance = HueJNI_cast<OpenVDS::IndexRegion<OpenVDS::FloatVector3>>(native_handle);
+    auto result = pInstance->Max;
+  }
+  HUE_JNI_CATCH
+}
+
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector3_ctorImpl
   (JNIEnv * env, jclass cls, jobject jproxyinterface)
 {
@@ -5834,6 +5918,34 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector3_dtorIm
 
 
 
+
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionIntVector3_getMinImpl
+  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
+{
+  JEnvPushPop
+    stackitem(env, jproxyinterface);
+
+  HUE_JNI_TRY
+  {
+    auto pInstance = HueJNI_cast<OpenVDS::IndexRegion<OpenVDS::IntVector3>>(native_handle);
+    auto result = pInstance->Min;
+  }
+  HUE_JNI_CATCH
+}
+
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionIntVector3_getMaxImpl
+  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
+{
+  JEnvPushPop
+    stackitem(env, jproxyinterface);
+
+  HUE_JNI_TRY
+  {
+    auto pInstance = HueJNI_cast<OpenVDS::IndexRegion<OpenVDS::IntVector3>>(native_handle);
+    auto result = pInstance->Max;
+  }
+  HUE_JNI_CATCH
+}
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IndexRegionIntVector3_ctorImpl
   (JNIEnv * env, jclass cls, jobject jproxyinterface)
@@ -5918,6 +6030,34 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionIntVector3_dtorImpl
 
 
 
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector4_getMinImpl
+  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
+{
+  JEnvPushPop
+    stackitem(env, jproxyinterface);
+
+  HUE_JNI_TRY
+  {
+    auto pInstance = HueJNI_cast<OpenVDS::IndexRegion<OpenVDS::FloatVector4>>(native_handle);
+    auto result = pInstance->Min;
+  }
+  HUE_JNI_CATCH
+}
+
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector4_getMaxImpl
+  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
+{
+  JEnvPushPop
+    stackitem(env, jproxyinterface);
+
+  HUE_JNI_TRY
+  {
+    auto pInstance = HueJNI_cast<OpenVDS::IndexRegion<OpenVDS::FloatVector4>>(native_handle);
+    auto result = pInstance->Max;
+  }
+  HUE_JNI_CATCH
+}
+
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector4_ctorImpl
   (JNIEnv * env, jclass cls, jobject jproxyinterface)
 {
@@ -6000,6 +6140,34 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector4_dtorIm
 
 
 
+
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionIntVector4_getMinImpl
+  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
+{
+  JEnvPushPop
+    stackitem(env, jproxyinterface);
+
+  HUE_JNI_TRY
+  {
+    auto pInstance = HueJNI_cast<OpenVDS::IndexRegion<OpenVDS::IntVector4>>(native_handle);
+    auto result = pInstance->Min;
+  }
+  HUE_JNI_CATCH
+}
+
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionIntVector4_getMaxImpl
+  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
+{
+  JEnvPushPop
+    stackitem(env, jproxyinterface);
+
+  HUE_JNI_TRY
+  {
+    auto pInstance = HueJNI_cast<OpenVDS::IndexRegion<OpenVDS::IntVector4>>(native_handle);
+    auto result = pInstance->Max;
+  }
+  HUE_JNI_CATCH
+}
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IndexRegionIntVector4_ctorImpl
   (JNIEnv * env, jclass cls, jobject jproxyinterface)
