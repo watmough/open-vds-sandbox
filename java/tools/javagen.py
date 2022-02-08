@@ -1759,12 +1759,12 @@ def parse_and_generate(input_header, jni_dir, java_dir):
             else:
                 raise NotImplementedError(f"{item.kind}")
         if header_free_functions:
-            if header_name == 'OpenVDS.h': # SteinFIXME
+            if header_name in free_function_header_list:
                 ns_class_name,_ = os.path.splitext(header_name)
                 ns = root
-                javacontents = create_java_class(ns, template=load_java_template(ns, is_inner_class=False, alias_name=ns_class_name), explicit_children=header_free_functions)
+                javacontents = create_java_class(ns, template=load_java_template(ns, is_inner_class=False, alias_name=ns_class_name), override_name=ns_class_name, explicit_children=header_free_functions)
                 write_java_file(java_dir, ns_class_name, javacontents)
-                cppcontents = create_jni_methods(ns, template=load_cpp_template(ns), explicit_children=header_free_functions)
+                cppcontents = create_jni_methods(ns, template=load_cpp_template(ns), override_name=ns_class_name, explicit_children=header_free_functions)
                 if cppcontents:
                     print(cppcontents, file=cppfile)
         while g_instantiate_nodes:
@@ -1815,6 +1815,10 @@ exclude_classes = [
 jni_output_dir = '../cpp'
 header_dir = '../../src/OpenVDS/OpenVDS'
 dont_output_list = []
+
+free_function_header_list = [
+    'OpenVDS.h',
+]
 
 header_list = [ 
     'CoordinateTransformer.h',
