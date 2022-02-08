@@ -25,6 +25,18 @@ import java.nio.ByteBuffer;
 
 public class Error extends ManagedBase {
 
+
+    private native int getCodeImpl(long native_object);
+    public int getCode() {
+        return getCodeImpl(this.getNativeObject());
+    }
+
+
+    private native String getStringImpl(long native_object);
+    public String getString() {
+        return getStringImpl(this.getNativeObject());
+    }
+
     Error(long nativeobject) {
         super(nativeobject);
     }

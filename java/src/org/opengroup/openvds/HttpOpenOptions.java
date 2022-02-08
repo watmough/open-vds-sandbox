@@ -51,6 +51,12 @@ public class HttpOpenOptions extends OpenOptions {
     
     }
 
+
+    private native String getUrlImpl(long native_object);
+    public String getUrl() {
+        return getUrlImpl(this.getNativeObject());
+    }
+
     HttpOpenOptions(long nativeobject) {
         super(nativeobject);
     }

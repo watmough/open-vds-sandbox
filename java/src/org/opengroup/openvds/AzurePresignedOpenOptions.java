@@ -50,6 +50,18 @@ public class AzurePresignedOpenOptions extends OpenOptions {
     
     }
 
+
+    private native String getBaseUrlImpl(long native_object);
+    public String getBaseUrl() {
+        return getBaseUrlImpl(this.getNativeObject());
+    }
+
+
+    private native String getUrlSuffixImpl(long native_object);
+    public String getUrlSuffix() {
+        return getUrlSuffixImpl(this.getNativeObject());
+    }
+
     AzurePresignedOpenOptions(long nativeobject) {
         super(nativeobject);
     }

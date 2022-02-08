@@ -45,6 +45,12 @@ public class InMemoryOpenOptions extends OpenOptions {
     }
 
 
+
+    private native String getNameImpl(long native_object);
+    public String getName() {
+        return getNameImpl(this.getNativeObject());
+    }
+
     InMemoryOpenOptions(long nativeobject) {
         super(nativeobject);
     }

@@ -49,6 +49,12 @@ public class VDSFileOpenOptions extends OpenOptions {
     
     }
 
+
+    private native String getFileNameImpl(long native_object);
+    public String getFileName() {
+        return getFileNameImpl(this.getNativeObject());
+    }
+
     VDSFileOpenOptions(long nativeobject) {
         super(nativeobject);
     }

@@ -83,6 +83,48 @@ public class AzureOpenOptions extends OpenOptions {
         return AzureOpenOptions.fromNativeObject(AzureOpenOptionsBearerImpl(accountName, bearerToken, container, blob));
     }
 
+
+    private native String getConnectionStringImpl(long native_object);
+    public String getConnectionString() {
+        return getConnectionStringImpl(this.getNativeObject());
+    }
+
+
+    private native String getAccountNameImpl(long native_object);
+    public String getAccountName() {
+        return getAccountNameImpl(this.getNativeObject());
+    }
+
+
+    private native String getBearerTokenImpl(long native_object);
+    public String getBearerToken() {
+        return getBearerTokenImpl(this.getNativeObject());
+    }
+
+
+    private native String getContainerImpl(long native_object);
+    public String getContainer() {
+        return getContainerImpl(this.getNativeObject());
+    }
+
+
+    private native String getBlobImpl(long native_object);
+    public String getBlob() {
+        return getBlobImpl(this.getNativeObject());
+    }
+
+
+    private native int getParallelism_factorImpl(long native_object);
+    public int getParallelism_factor() {
+        return getParallelism_factorImpl(this.getNativeObject());
+    }
+
+
+    private native int getMax_execution_timeImpl(long native_object);
+    public int getMax_execution_time() {
+        return getMax_execution_timeImpl(this.getNativeObject());
+    }
+
     AzureOpenOptions(long nativeobject) {
         super(nativeobject);
     }

@@ -137,6 +137,42 @@ public class GoogleOpenOptions extends OpenOptions {
         return SetSignedUrlImpl(getNativeObject());
     }
 
+
+    private native long getCredentialsTypeImpl(long native_object);
+    public CredentialsType getCredentialsType() {
+        return CredentialsType.fromInt((int)getCredentialsTypeImpl(this.getNativeObject()));
+    }
+
+
+    private native String getBucketImpl(long native_object);
+    public String getBucket() {
+        return getBucketImpl(this.getNativeObject());
+    }
+
+
+    private native String getPathPrefixImpl(long native_object);
+    public String getPathPrefix() {
+        return getPathPrefixImpl(this.getNativeObject());
+    }
+
+
+    private native String getCredentialsImpl(long native_object);
+    public String getCredentials() {
+        return getCredentialsImpl(this.getNativeObject());
+    }
+
+
+    private native String getStorageClassImpl(long native_object);
+    public String getStorageClass() {
+        return getStorageClassImpl(this.getNativeObject());
+    }
+
+
+    private native String getRegionImpl(long native_object);
+    public String getRegion() {
+        return getRegionImpl(this.getNativeObject());
+    }
+
     GoogleOpenOptions(long nativeobject) {
         super(nativeobject);
     }

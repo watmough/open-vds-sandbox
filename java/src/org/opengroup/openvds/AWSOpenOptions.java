@@ -54,6 +54,84 @@ public class AWSOpenOptions extends OpenOptions {
     
     }
 
+
+    private native String getBucketImpl(long native_object);
+    public String getBucket() {
+        return getBucketImpl(this.getNativeObject());
+    }
+
+
+    private native String getKeyImpl(long native_object);
+    public String getKey() {
+        return getKeyImpl(this.getNativeObject());
+    }
+
+
+    private native String getRegionImpl(long native_object);
+    public String getRegion() {
+        return getRegionImpl(this.getNativeObject());
+    }
+
+
+    private native String getEndpointOverrideImpl(long native_object);
+    public String getEndpointOverride() {
+        return getEndpointOverrideImpl(this.getNativeObject());
+    }
+
+
+    private native String getAccessKeyIdImpl(long native_object);
+    public String getAccessKeyId() {
+        return getAccessKeyIdImpl(this.getNativeObject());
+    }
+
+
+    private native String getSecretKeyImpl(long native_object);
+    public String getSecretKey() {
+        return getSecretKeyImpl(this.getNativeObject());
+    }
+
+
+    private native String getSessionTokenImpl(long native_object);
+    public String getSessionToken() {
+        return getSessionTokenImpl(this.getNativeObject());
+    }
+
+
+    private native String getExpirationImpl(long native_object);
+    public String getExpiration() {
+        return getExpirationImpl(this.getNativeObject());
+    }
+
+
+    private native String getLogFilenamePrefixImpl(long native_object);
+    public String getLogFilenamePrefix() {
+        return getLogFilenamePrefixImpl(this.getNativeObject());
+    }
+
+
+    private native String getLoglevelImpl(long native_object);
+    public String getLoglevel() {
+        return getLoglevelImpl(this.getNativeObject());
+    }
+
+
+    private native int getConnectionTimeoutMsImpl(long native_object);
+    public int getConnectionTimeoutMs() {
+        return getConnectionTimeoutMsImpl(this.getNativeObject());
+    }
+
+
+    private native int getRequestTimeoutMsImpl(long native_object);
+    public int getRequestTimeoutMs() {
+        return getRequestTimeoutMsImpl(this.getNativeObject());
+    }
+
+
+    private native boolean getDisableInitApiImpl(long native_object);
+    public boolean getDisableInitApi() {
+        return getDisableInitApiImpl(this.getNativeObject());
+    }
+
     AWSOpenOptions(long nativeobject) {
         super(nativeobject);
     }

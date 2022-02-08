@@ -35,6 +35,9 @@ def print_callstack(exc):
     if _print_exception_call_stacks:
         traceback.print_exc(file=sys.stderr)
 
+def capfirst(value: str) -> str:
+    return value[0].upper() + value[1:]
+
 _ignore_types = [
     "OpenVDS::M4", # Should not even be there
     "OpenVDS::VolumeDataPage::Error", # SteinFIXME add this
@@ -1344,11 +1347,11 @@ def create_java_class(scope: Scope, template: str, override_name: str = '', temp
                         enum_contents = create_java_enum(child, template=load_java_template(child, is_inner_class=True))
                         print(indent(enum_contents), file=methods)
                 elif child.is_data_member:
-                    if child.typename in _cppjava_typemap:
-                        pass
+                    if child.typename in _cppjava_typemap or find_enum_type(child.typename):
+                        data_members.append(child)
                     else:
-                        print(f'UNHANDLED DATA MEMBER: {child.typename} {class_name}.{child.name}')
-                    pass
+#                        print(f'UNHANDLED DATA MEMBER: {child.typename} {class_name}.{child.name}')
+                        pass
                 elif child.is_function:
                     if child.nodetype == 'FUNCTION_TEMPLATE':
                         continue
@@ -1456,6 +1459,27 @@ def create_java_class(scope: Scope, template: str, override_name: str = '', temp
     extra_overloadable_functions, extra_overloadable_function_docstrings, template = get_overloadable_functions_from_template(template)
     for function, docstring in zip(extra_overloadable_functions, extra_overloadable_function_docstrings):
         create_defaulted_overloads(overload_functions, overload_default_args, function, docstring, methods)
+    for m in data_members:
+        typ = m.typename
+        et = find_enum_type(typ)
+        name = capfirst(m.name)
+        if any([f'get{name}' in o for o in overloads_created]):
+            continue
+        print('\n', file=methods)
+        if et:
+            jtype = et.name
+            ntype = cpp_to_native_type(et.enum_integral_type)
+            print(f'    private native long get{name}Impl(long native_object);', file=methods)
+            print(f'    public {jtype} get{name}() {{', file=methods)
+            print(f'        return {jtype}.fromInt(({ntype})get{name}Impl(this.getNativeObject()));', file=methods)
+            print(f'    }}', file=methods)
+        else:
+            jtype = cpp_to_java_type(typ)
+            ntype = cpp_to_native_type(typ)
+            print(f'    private native {ntype} get{name}Impl(long native_object);', file=methods)
+            print(f'    public {jtype} get{name}() {{', file=methods)
+            print(f'        return get{name}Impl(this.getNativeObject());', file=methods)
+            print(f'    }}', file=methods)
     class_implements_interfaces = []   
     _bases = []
     for b, t in bases:
@@ -1827,6 +1851,7 @@ free_function_header_list = [
 ]
 
 header_list = [ 
+    'OpenVDS.h',
     'CoordinateTransformer.h',
     'Exceptions.h',
     'GlobalMetadataCommon.h',
@@ -1836,7 +1861,6 @@ header_list = [
     'MetadataAccess.h',
     'MetadataContainer.h',
     'MetadataKey.h',
-    'OpenVDS.h',
     'Optional.h',
     'ValueConversion.h',
     'VolumeData.h',

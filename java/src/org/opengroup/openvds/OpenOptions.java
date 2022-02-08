@@ -66,6 +66,30 @@ public class OpenOptions extends ManagedBase {
     
     }
 
+
+    private native long getConnectionTypeImpl(long native_object);
+    public ConnectionType getConnectionType() {
+        return ConnectionType.fromInt((int)getConnectionTypeImpl(this.getNativeObject()));
+    }
+
+
+    private native long getWaveletAdaptiveModeImpl(long native_object);
+    public WaveletAdaptiveMode getWaveletAdaptiveMode() {
+        return WaveletAdaptiveMode.fromInt((int)getWaveletAdaptiveModeImpl(this.getNativeObject()));
+    }
+
+
+    private native float getWaveletAdaptiveToleranceImpl(long native_object);
+    public float getWaveletAdaptiveTolerance() {
+        return getWaveletAdaptiveToleranceImpl(this.getNativeObject());
+    }
+
+
+    private native float getWaveletAdaptiveRatioImpl(long native_object);
+    public float getWaveletAdaptiveRatio() {
+        return getWaveletAdaptiveRatioImpl(this.getNativeObject());
+    }
+
     OpenOptions(long nativeobject) {
         super(nativeobject);
     }

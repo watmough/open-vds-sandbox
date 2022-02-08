@@ -41,6 +41,72 @@ public class DMSOpenOptions extends OpenOptions {
     
     }
 
+
+    private native String getSdAuthorityUrlImpl(long native_object);
+    public String getSdAuthorityUrl() {
+        return getSdAuthorityUrlImpl(this.getNativeObject());
+    }
+
+
+    private native String getSdApiKeyImpl(long native_object);
+    public String getSdApiKey() {
+        return getSdApiKeyImpl(this.getNativeObject());
+    }
+
+
+    private native String getSdTokenImpl(long native_object);
+    public String getSdToken() {
+        return getSdTokenImpl(this.getNativeObject());
+    }
+
+
+    private native String getDatasetPathImpl(long native_object);
+    public String getDatasetPath() {
+        return getDatasetPathImpl(this.getNativeObject());
+    }
+
+
+    private native int getLogLevelImpl(long native_object);
+    public int getLogLevel() {
+        return getLogLevelImpl(this.getNativeObject());
+    }
+
+
+    private native String getAuthTokenUrlImpl(long native_object);
+    public String getAuthTokenUrl() {
+        return getAuthTokenUrlImpl(this.getNativeObject());
+    }
+
+
+    private native String getRefreshTokenImpl(long native_object);
+    public String getRefreshToken() {
+        return getRefreshTokenImpl(this.getNativeObject());
+    }
+
+
+    private native String getClientIdImpl(long native_object);
+    public String getClientId() {
+        return getClientIdImpl(this.getNativeObject());
+    }
+
+
+    private native String getClientSecretImpl(long native_object);
+    public String getClientSecret() {
+        return getClientSecretImpl(this.getNativeObject());
+    }
+
+
+    private native String getScopesImpl(long native_object);
+    public String getScopes() {
+        return getScopesImpl(this.getNativeObject());
+    }
+
+
+    private native boolean getUseFileNameForSingleFileDatasetsImpl(long native_object);
+    public boolean getUseFileNameForSingleFileDatasets() {
+        return getUseFileNameForSingleFileDatasetsImpl(this.getNativeObject());
+    }
+
     DMSOpenOptions(long nativeobject) {
         super(nativeobject);
     }
