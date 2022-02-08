@@ -68,7 +68,7 @@ public class AzureOpenOptions extends OpenOptions {
     
     }
 
-    ///AUTOGEN-OK: CXX_METHOD AzureOpenOptionsBearer static OpenVDS::AzureOpenOptions (const std::basic_string<char, std::char_traits<char>, std::allocator<char>> &, const std::basic_string<char, std::char_traits<char>, std::allocator<char>> &, const std::basic_string<char, std::char_traits<char>, std::allocator<char>> &, const std::basic_string<char, std::char_traits<char>, std::allocator<char>> &) FUNCTIONPROTO
+    ///AUTOGEN-OK: CXX_METHOD AzureOpenOptionsBearer static OpenVDS::AzureOpenOptions (const std::string &, const std::string &, const std::string &, const std::string &) FUNCTIONPROTO
     native private static long AzureOpenOptionsBearerImpl(String accountName, String bearerToken, String container, String blob);
 
     /**

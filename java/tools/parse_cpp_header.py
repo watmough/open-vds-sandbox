@@ -41,6 +41,7 @@ _remap_canonical_types = {
     'long double':        'double',
     'unsigned long':      'uint32_t',
     'long':               'int32_t',
+    'std::basic_string<char, std::char_traits<char>, std::allocator<char>>': 'std::string',
 #    'unsigned int':       'uint32_t',
 #    'int':                'int32_t',
 }
@@ -596,6 +597,13 @@ class Scope(OrderedDict):
             if c[0].nodetype == 'TEMPLATE_REF':
                 return True
         return False
+
+    @property
+    def is_data_member(self):
+        if self.node and self.node.kind == CursorKind.FIELD_DECL:
+            return True
+        else:
+            return False
 
     def create_overload_name(self, node) -> str:
         name = d(node.spelling)

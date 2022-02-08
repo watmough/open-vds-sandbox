@@ -92,7 +92,6 @@ _cppjava_typemap = {
 _cppjni_typemap = {
     "const char *":         "jstring",
     "std::string":          "jstring",
-    "std::basic_string<char, std::char_traits<char>, std::allocator<char>>": "jstring",
     "OpenVDS::StringWrapper": "jstring",
     "void":                 "void",
     "bool":                 "jboolean",
@@ -1323,6 +1322,7 @@ def create_java_class(scope: Scope, template: str, override_name: str = '', temp
         if re.match(regex, class_name) != None:
             explicit_add_get_prefix_functions = _explicit_add_get_prefix[regex]
     scopes = [scope]
+    data_members = []
     if len(bases) > 1:
         # Multiple inheritances is only indirectly supported. Members of base classes other than the first
         # are inlined like normal class methods.
@@ -1343,6 +1343,12 @@ def create_java_class(scope: Scope, template: str, override_name: str = '', temp
                     if child.get_enum_values():
                         enum_contents = create_java_enum(child, template=load_java_template(child, is_inner_class=True))
                         print(indent(enum_contents), file=methods)
+                elif child.is_data_member:
+                    if child.typename in _cppjava_typemap:
+                        pass
+                    else:
+                        print(f'UNHANDLED DATA MEMBER: {child.typename} {class_name}.{child.name}')
+                    pass
                 elif child.is_function:
                     if child.nodetype == 'FUNCTION_TEMPLATE':
                         continue
