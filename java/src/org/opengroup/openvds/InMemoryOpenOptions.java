@@ -45,10 +45,10 @@ public class InMemoryOpenOptions extends OpenOptions {
     }
 
 
-
-    private native String getNameImpl(long native_object);
+    ///AUTOGEN-OK: FIELD_DECL name std::string RECORD
+    native private String getNameImpl(long native_object);
     public String getName() {
-        return getNameImpl(this.getNativeObject());
+        return getNameImpl(getNativeObject());
     }
 
     InMemoryOpenOptions(long nativeobject) {

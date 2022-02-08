@@ -28,6 +28,84 @@ import java.nio.ByteBuffer;
  */
 public class AWSOpenOptions extends OpenOptions {
 
+    ///AUTOGEN-OK: FIELD_DECL bucket std::string RECORD
+    native private String getBucketImpl(long native_object);
+    public String getBucket() {
+        return getBucketImpl(getNativeObject());
+    }
+
+    ///AUTOGEN-OK: FIELD_DECL key std::string RECORD
+    native private String getKeyImpl(long native_object);
+    public String getKey() {
+        return getKeyImpl(getNativeObject());
+    }
+
+    ///AUTOGEN-OK: FIELD_DECL region std::string RECORD
+    native private String getRegionImpl(long native_object);
+    public String getRegion() {
+        return getRegionImpl(getNativeObject());
+    }
+
+    ///AUTOGEN-OK: FIELD_DECL endpointOverride std::string RECORD
+    native private String getEndpointOverrideImpl(long native_object);
+    public String getEndpointOverride() {
+        return getEndpointOverrideImpl(getNativeObject());
+    }
+
+    ///AUTOGEN-OK: FIELD_DECL accessKeyId std::string RECORD
+    native private String getAccessKeyIdImpl(long native_object);
+    public String getAccessKeyId() {
+        return getAccessKeyIdImpl(getNativeObject());
+    }
+
+    ///AUTOGEN-OK: FIELD_DECL secretKey std::string RECORD
+    native private String getSecretKeyImpl(long native_object);
+    public String getSecretKey() {
+        return getSecretKeyImpl(getNativeObject());
+    }
+
+    ///AUTOGEN-OK: FIELD_DECL sessionToken std::string RECORD
+    native private String getSessionTokenImpl(long native_object);
+    public String getSessionToken() {
+        return getSessionTokenImpl(getNativeObject());
+    }
+
+    ///AUTOGEN-OK: FIELD_DECL expiration std::string RECORD
+    native private String getExpirationImpl(long native_object);
+    public String getExpiration() {
+        return getExpirationImpl(getNativeObject());
+    }
+
+    ///AUTOGEN-OK: FIELD_DECL logFilenamePrefix std::string RECORD
+    native private String getLogFilenamePrefixImpl(long native_object);
+    public String getLogFilenamePrefix() {
+        return getLogFilenamePrefixImpl(getNativeObject());
+    }
+
+    ///AUTOGEN-OK: FIELD_DECL loglevel std::string RECORD
+    native private String getLoglevelImpl(long native_object);
+    public String getLoglevel() {
+        return getLoglevelImpl(getNativeObject());
+    }
+
+    ///AUTOGEN-OK: FIELD_DECL connectionTimeoutMs int INT
+    native private int getConnectionTimeoutMsImpl(long native_object);
+    public int getConnectionTimeoutMs() {
+        return getConnectionTimeoutMsImpl(getNativeObject());
+    }
+
+    ///AUTOGEN-OK: FIELD_DECL requestTimeoutMs int INT
+    native private int getRequestTimeoutMsImpl(long native_object);
+    public int getRequestTimeoutMs() {
+        return getRequestTimeoutMsImpl(getNativeObject());
+    }
+
+    ///AUTOGEN-OK: FIELD_DECL disableInitApi bool BOOL
+    native private boolean getDisableInitApiImpl(long native_object);
+    public boolean getDisableInitApi() {
+        return getDisableInitApiImpl(getNativeObject());
+    }
+
     native private static long ctorImpl();
     
     public AWSOpenOptions() {
@@ -52,84 +130,6 @@ public class AWSOpenOptions extends OpenOptions {
     
         super(ctor2Impl(bucket, key, region, endpointOverride, connectionTimeoutMs, requestTimeoutMs, disableInitApi));
     
-    }
-
-
-    private native String getBucketImpl(long native_object);
-    public String getBucket() {
-        return getBucketImpl(this.getNativeObject());
-    }
-
-
-    private native String getKeyImpl(long native_object);
-    public String getKey() {
-        return getKeyImpl(this.getNativeObject());
-    }
-
-
-    private native String getRegionImpl(long native_object);
-    public String getRegion() {
-        return getRegionImpl(this.getNativeObject());
-    }
-
-
-    private native String getEndpointOverrideImpl(long native_object);
-    public String getEndpointOverride() {
-        return getEndpointOverrideImpl(this.getNativeObject());
-    }
-
-
-    private native String getAccessKeyIdImpl(long native_object);
-    public String getAccessKeyId() {
-        return getAccessKeyIdImpl(this.getNativeObject());
-    }
-
-
-    private native String getSecretKeyImpl(long native_object);
-    public String getSecretKey() {
-        return getSecretKeyImpl(this.getNativeObject());
-    }
-
-
-    private native String getSessionTokenImpl(long native_object);
-    public String getSessionToken() {
-        return getSessionTokenImpl(this.getNativeObject());
-    }
-
-
-    private native String getExpirationImpl(long native_object);
-    public String getExpiration() {
-        return getExpirationImpl(this.getNativeObject());
-    }
-
-
-    private native String getLogFilenamePrefixImpl(long native_object);
-    public String getLogFilenamePrefix() {
-        return getLogFilenamePrefixImpl(this.getNativeObject());
-    }
-
-
-    private native String getLoglevelImpl(long native_object);
-    public String getLoglevel() {
-        return getLoglevelImpl(this.getNativeObject());
-    }
-
-
-    private native int getConnectionTimeoutMsImpl(long native_object);
-    public int getConnectionTimeoutMs() {
-        return getConnectionTimeoutMsImpl(this.getNativeObject());
-    }
-
-
-    private native int getRequestTimeoutMsImpl(long native_object);
-    public int getRequestTimeoutMs() {
-        return getRequestTimeoutMsImpl(this.getNativeObject());
-    }
-
-
-    private native boolean getDisableInitApiImpl(long native_object);
-    public boolean getDisableInitApi() {
-        return getDisableInitApiImpl(this.getNativeObject());
     }
 
     AWSOpenOptions(long nativeobject) {

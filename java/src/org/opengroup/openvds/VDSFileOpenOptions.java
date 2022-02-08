@@ -28,6 +28,12 @@ import java.nio.ByteBuffer;
  */
 public class VDSFileOpenOptions extends OpenOptions {
 
+    ///AUTOGEN-OK: FIELD_DECL fileName std::string RECORD
+    native private String getFileNameImpl(long native_object);
+    public String getFileName() {
+        return getFileNameImpl(getNativeObject());
+    }
+
     native private static long ctorImpl();
     
     public VDSFileOpenOptions() {
@@ -47,12 +53,6 @@ public class VDSFileOpenOptions extends OpenOptions {
     
         super(ctor2Impl(fileName));
     
-    }
-
-
-    private native String getFileNameImpl(long native_object);
-    public String getFileName() {
-        return getFileNameImpl(this.getNativeObject());
     }
 
     VDSFileOpenOptions(long nativeobject) {

@@ -61,6 +61,42 @@ public class GoogleOpenOptions extends OpenOptions {
     
     }
 
+    ///AUTOGEN-OK: FIELD_DECL credentialsType OpenVDS::GoogleOpenOptions::CredentialsType ENUM
+    native private long getCredentialsTypeImpl(long native_object);
+    public GoogleOpenOptions.CredentialsType getCredentialsType() {
+        return GoogleOpenOptions.CredentialsType.fromInt((int)getCredentialsTypeImpl(getNativeObject()));
+    }
+
+    ///AUTOGEN-OK: FIELD_DECL bucket std::string RECORD
+    native private String getBucketImpl(long native_object);
+    public String getBucket() {
+        return getBucketImpl(getNativeObject());
+    }
+
+    ///AUTOGEN-OK: FIELD_DECL pathPrefix std::string RECORD
+    native private String getPathPrefixImpl(long native_object);
+    public String getPathPrefix() {
+        return getPathPrefixImpl(getNativeObject());
+    }
+
+    ///AUTOGEN-OK: FIELD_DECL credentials std::string RECORD
+    native private String getCredentialsImpl(long native_object);
+    public String getCredentials() {
+        return getCredentialsImpl(getNativeObject());
+    }
+
+    ///AUTOGEN-OK: FIELD_DECL storageClass std::string RECORD
+    native private String getStorageClassImpl(long native_object);
+    public String getStorageClass() {
+        return getStorageClassImpl(getNativeObject());
+    }
+
+    ///AUTOGEN-OK: FIELD_DECL region std::string RECORD
+    native private String getRegionImpl(long native_object);
+    public String getRegion() {
+        return getRegionImpl(getNativeObject());
+    }
+
     native private static long ctorImpl();
     
     public GoogleOpenOptions() {
@@ -135,42 +171,6 @@ public class GoogleOpenOptions extends OpenOptions {
     native private boolean SetSignedUrlImpl(long native_object);
     public boolean setSignedUrl() {
         return SetSignedUrlImpl(getNativeObject());
-    }
-
-
-    private native long getCredentialsTypeImpl(long native_object);
-    public CredentialsType getCredentialsType() {
-        return CredentialsType.fromInt((int)getCredentialsTypeImpl(this.getNativeObject()));
-    }
-
-
-    private native String getBucketImpl(long native_object);
-    public String getBucket() {
-        return getBucketImpl(this.getNativeObject());
-    }
-
-
-    private native String getPathPrefixImpl(long native_object);
-    public String getPathPrefix() {
-        return getPathPrefixImpl(this.getNativeObject());
-    }
-
-
-    private native String getCredentialsImpl(long native_object);
-    public String getCredentials() {
-        return getCredentialsImpl(this.getNativeObject());
-    }
-
-
-    private native String getStorageClassImpl(long native_object);
-    public String getStorageClass() {
-        return getStorageClassImpl(this.getNativeObject());
-    }
-
-
-    private native String getRegionImpl(long native_object);
-    public String getRegion() {
-        return getRegionImpl(this.getNativeObject());
     }
 
     GoogleOpenOptions(long nativeobject) {

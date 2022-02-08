@@ -30,6 +30,12 @@ import java.nio.ByteBuffer;
  */
 public class HttpOpenOptions extends OpenOptions {
 
+    ///AUTOGEN-OK: FIELD_DECL url std::string RECORD
+    native private String getUrlImpl(long native_object);
+    public String getUrl() {
+        return getUrlImpl(getNativeObject());
+    }
+
     native private static long ctorImpl();
     
     public HttpOpenOptions() {
@@ -49,12 +55,6 @@ public class HttpOpenOptions extends OpenOptions {
     
         super(ctor2Impl(url));
     
-    }
-
-
-    private native String getUrlImpl(long native_object);
-    public String getUrl() {
-        return getUrlImpl(this.getNativeObject());
     }
 
     HttpOpenOptions(long nativeobject) {

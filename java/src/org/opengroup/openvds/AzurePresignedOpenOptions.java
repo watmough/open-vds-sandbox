@@ -28,6 +28,18 @@ import java.nio.ByteBuffer;
  */
 public class AzurePresignedOpenOptions extends OpenOptions {
 
+    ///AUTOGEN-OK: FIELD_DECL baseUrl std::string RECORD
+    native private String getBaseUrlImpl(long native_object);
+    public String getBaseUrl() {
+        return getBaseUrlImpl(getNativeObject());
+    }
+
+    ///AUTOGEN-OK: FIELD_DECL urlSuffix std::string RECORD
+    native private String getUrlSuffixImpl(long native_object);
+    public String getUrlSuffix() {
+        return getUrlSuffixImpl(getNativeObject());
+    }
+
     native private static long ctorImpl();
     
     public AzurePresignedOpenOptions() {
@@ -48,18 +60,6 @@ public class AzurePresignedOpenOptions extends OpenOptions {
     
         super(ctor2Impl(baseUrl, urlSuffix));
     
-    }
-
-
-    private native String getBaseUrlImpl(long native_object);
-    public String getBaseUrl() {
-        return getBaseUrlImpl(this.getNativeObject());
-    }
-
-
-    private native String getUrlSuffixImpl(long native_object);
-    public String getUrlSuffix() {
-        return getUrlSuffixImpl(this.getNativeObject());
     }
 
     AzurePresignedOpenOptions(long nativeobject) {

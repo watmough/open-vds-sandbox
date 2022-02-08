@@ -41,70 +41,70 @@ public class DMSOpenOptions extends OpenOptions {
     
     }
 
-
-    private native String getSdAuthorityUrlImpl(long native_object);
+    ///AUTOGEN-OK: FIELD_DECL sdAuthorityUrl std::string RECORD
+    native private String getSdAuthorityUrlImpl(long native_object);
     public String getSdAuthorityUrl() {
-        return getSdAuthorityUrlImpl(this.getNativeObject());
+        return getSdAuthorityUrlImpl(getNativeObject());
     }
 
-
-    private native String getSdApiKeyImpl(long native_object);
+    ///AUTOGEN-OK: FIELD_DECL sdApiKey std::string RECORD
+    native private String getSdApiKeyImpl(long native_object);
     public String getSdApiKey() {
-        return getSdApiKeyImpl(this.getNativeObject());
+        return getSdApiKeyImpl(getNativeObject());
     }
 
-
-    private native String getSdTokenImpl(long native_object);
+    ///AUTOGEN-OK: FIELD_DECL sdToken std::string RECORD
+    native private String getSdTokenImpl(long native_object);
     public String getSdToken() {
-        return getSdTokenImpl(this.getNativeObject());
+        return getSdTokenImpl(getNativeObject());
     }
 
-
-    private native String getDatasetPathImpl(long native_object);
+    ///AUTOGEN-OK: FIELD_DECL datasetPath std::string RECORD
+    native private String getDatasetPathImpl(long native_object);
     public String getDatasetPath() {
-        return getDatasetPathImpl(this.getNativeObject());
+        return getDatasetPathImpl(getNativeObject());
     }
 
-
-    private native int getLogLevelImpl(long native_object);
+    ///AUTOGEN-OK: FIELD_DECL logLevel int INT
+    native private int getLogLevelImpl(long native_object);
     public int getLogLevel() {
-        return getLogLevelImpl(this.getNativeObject());
+        return getLogLevelImpl(getNativeObject());
     }
 
-
-    private native String getAuthTokenUrlImpl(long native_object);
+    ///AUTOGEN-OK: FIELD_DECL authTokenUrl std::string RECORD
+    native private String getAuthTokenUrlImpl(long native_object);
     public String getAuthTokenUrl() {
-        return getAuthTokenUrlImpl(this.getNativeObject());
+        return getAuthTokenUrlImpl(getNativeObject());
     }
 
-
-    private native String getRefreshTokenImpl(long native_object);
+    ///AUTOGEN-OK: FIELD_DECL refreshToken std::string RECORD
+    native private String getRefreshTokenImpl(long native_object);
     public String getRefreshToken() {
-        return getRefreshTokenImpl(this.getNativeObject());
+        return getRefreshTokenImpl(getNativeObject());
     }
 
-
-    private native String getClientIdImpl(long native_object);
+    ///AUTOGEN-OK: FIELD_DECL clientId std::string RECORD
+    native private String getClientIdImpl(long native_object);
     public String getClientId() {
-        return getClientIdImpl(this.getNativeObject());
+        return getClientIdImpl(getNativeObject());
     }
 
-
-    private native String getClientSecretImpl(long native_object);
+    ///AUTOGEN-OK: FIELD_DECL clientSecret std::string RECORD
+    native private String getClientSecretImpl(long native_object);
     public String getClientSecret() {
-        return getClientSecretImpl(this.getNativeObject());
+        return getClientSecretImpl(getNativeObject());
     }
 
-
-    private native String getScopesImpl(long native_object);
+    ///AUTOGEN-OK: FIELD_DECL scopes std::string RECORD
+    native private String getScopesImpl(long native_object);
     public String getScopes() {
-        return getScopesImpl(this.getNativeObject());
+        return getScopesImpl(getNativeObject());
     }
 
-
-    private native boolean getUseFileNameForSingleFileDatasetsImpl(long native_object);
+    ///AUTOGEN-OK: FIELD_DECL useFileNameForSingleFileDatasets bool BOOL
+    native private boolean getUseFileNameForSingleFileDatasetsImpl(long native_object);
     public boolean getUseFileNameForSingleFileDatasets() {
-        return getUseFileNameForSingleFileDatasetsImpl(this.getNativeObject());
+        return getUseFileNameForSingleFileDatasetsImpl(getNativeObject());
     }
 
     DMSOpenOptions(long nativeobject) {

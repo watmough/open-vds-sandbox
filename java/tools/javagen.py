@@ -1331,7 +1331,6 @@ def create_java_class(scope: Scope, template: str, override_name: str = '', temp
         if re.match(regex, class_name) != None:
             explicit_add_get_prefix_functions = _explicit_add_get_prefix[regex]
     scopes = [scope]
-    data_members = []
     if len(bases) > 1:
         # Multiple inheritances is only indirectly supported. Members of base classes other than the first
         # are inlined like normal class methods.
@@ -1352,17 +1351,19 @@ def create_java_class(scope: Scope, template: str, override_name: str = '', temp
                     if child.get_enum_values():
                         enum_contents = create_java_enum(child, template=load_java_template(child, is_inner_class=True))
                         print(indent(enum_contents), file=methods)
-                elif child.is_data_member:
-                    if child.typename in _cppjava_typemap or find_enum_type(child.typename):
-                        data_members.append(child)
-                elif child.is_function:
+                elif child.is_function or child.is_data_member:
                     if child.nodetype == 'FUNCTION_TEMPLATE':
                         continue
                     if child.is_destructor:
                         continue
+                    if child.is_data_member and template_args:
+                        continue # SteinFIXME
                     function_name = child.name
                     jni_function_name = child.overload_name
-                    result_param: Param = child.result
+                    result_param = child.result or Param(child.typename, 'result')
+                    if child.is_data_member:
+                        function_name = f'get{capfirst(child.name)}'
+                        jni_function_name = function_name
                     args = child.get_args()
                     if template_args:
                         result_param = param_subsitute_template_args(result_param, template_args)
@@ -1462,27 +1463,6 @@ def create_java_class(scope: Scope, template: str, override_name: str = '', temp
     extra_overloadable_functions, extra_overloadable_function_docstrings, template = get_overloadable_functions_from_template(template)
     for function, docstring in zip(extra_overloadable_functions, extra_overloadable_function_docstrings):
         create_defaulted_overloads(overload_functions, overload_default_args, function, docstring, methods)
-    for m in data_members:
-        typ = m.typename
-        et = find_enum_type(typ)
-        name = capfirst(m.name)
-        if any([f'get{name}' in o for o in overloads_created]):
-            continue
-        print('\n', file=methods)
-        if et:
-            jtype = et.name
-            ntype = cpp_to_native_type(et.enum_integral_type)
-            print(f'    private native long get{name}Impl(long native_object);', file=methods)
-            print(f'    public {jtype} get{name}() {{', file=methods)
-            print(f'        return {jtype}.fromInt(({ntype})get{name}Impl(this.getNativeObject()));', file=methods)
-            print(f'    }}', file=methods)
-        else:
-            jtype = cpp_to_java_type(typ)
-            ntype = cpp_to_native_type(typ)
-            print(f'    private native {ntype} get{name}Impl(long native_object);', file=methods)
-            print(f'    public {jtype} get{name}() {{', file=methods)
-            print(f'        return get{name}Impl(this.getNativeObject());', file=methods)
-            print(f'    }}', file=methods)
     class_implements_interfaces = []   
     _bases = []
     for b, t in bases:

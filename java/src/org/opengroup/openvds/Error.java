@@ -25,16 +25,16 @@ import java.nio.ByteBuffer;
 
 public class Error extends ManagedBase {
 
-
-    private native int getCodeImpl(long native_object);
+    ///AUTOGEN-OK: FIELD_DECL code int INT
+    native private int getCodeImpl(long native_object);
     public int getCode() {
-        return getCodeImpl(this.getNativeObject());
+        return getCodeImpl(getNativeObject());
     }
 
-
-    private native String getStringImpl(long native_object);
+    ///AUTOGEN-OK: FIELD_DECL string std::string RECORD
+    native private String getStringImpl(long native_object);
     public String getString() {
-        return getStringImpl(this.getNativeObject());
+        return getStringImpl(getNativeObject());
     }
 
     Error(long nativeobject) {
