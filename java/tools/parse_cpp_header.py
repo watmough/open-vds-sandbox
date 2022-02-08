@@ -41,7 +41,7 @@ _remap_canonical_types = {
     'long double':        'double',
     'unsigned long':      'uint32_t',
     'long':               'int32_t',
-    'unsigned int':       'uint32_t',
+#    'unsigned int':       'uint32_t',
 #    'int':                'int32_t',
 }
 
