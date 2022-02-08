@@ -1356,8 +1356,6 @@ def create_java_class(scope: Scope, template: str, override_name: str = '', temp
                         continue
                     if child.is_destructor:
                         continue
-                    if child.is_data_member and template_args:
-                        debug = 0
                     function_name = child.name
                     jni_function_name = child.overload_name
                     result_param = child.result or Param(child.typename, 'result', is_out=True)
