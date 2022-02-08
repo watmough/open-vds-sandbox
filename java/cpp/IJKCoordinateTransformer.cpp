@@ -28,7 +28,7 @@
 extern "C" {
 #endif
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_ctorImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_ctorImpl
   (JNIEnv * env, jclass cls, jobject jproxyinterface)
 {
   JEnvPushPop
@@ -48,7 +48,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_ctorImpl
 }
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_ctor2Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_ctor2Impl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jobject ijkGridDefinitionbytebuffer, jlong ijkGridDefinitionbyteoffset, jobject ijkSizebytebuffer, jlong ijkSizebyteoffset)
 {
   JEnvPushPop
@@ -68,7 +68,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_ctor2Impl
 }
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_ctor3Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_ctor3Impl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jobject ijkGridDefinitionbytebuffer, jlong ijkGridDefinitionbyteoffset, jobject ijkSizebytebuffer, jlong ijkSizebyteoffset, jobject ijkToVoxelDimensionMapbytebuffer, jlong ijkToVoxelDimensionMapbyteoffset)
 {
   JEnvPushPop
@@ -91,7 +91,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_ctor3Impl
 }
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_ctor4Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_ctor4Impl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jobject vdsIJKGridDefinitionbytebuffer, jlong vdsIJKGridDefinitionbyteoffset, jobject ijkSizebytebuffer, jlong ijkSizebyteoffset)
 {
   JEnvPushPop
@@ -111,7 +111,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_ctor4Impl
 }
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_ctor5Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_ctor5Impl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jobject ijkGridDefinitionbytebuffer, jlong ijkGridDefinitionbyteoffset, jobject ijkSizebytebuffer, jlong ijkSizebyteoffset, jobject ijkAnnotationStartbytebuffer, jlong ijkAnnotationStartbyteoffset, jobject ijkAnnotationEndbytebuffer, jlong ijkAnnotationEndbyteoffset)
 {
   JEnvPushPop
@@ -135,7 +135,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_ctor5Impl
 }
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_ctor6Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_ctor6Impl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jobject ijkGridDefinitionbytebuffer, jlong ijkGridDefinitionbyteoffset, jobject ijkSizebytebuffer, jlong ijkSizebyteoffset, jobject ijkToVoxelDimensionMapbytebuffer, jlong ijkToVoxelDimensionMapbyteoffset, jobject ijkAnnotationStartbytebuffer, jlong ijkAnnotationStartbyteoffset, jobject ijkAnnotationEndbytebuffer, jlong ijkAnnotationEndbyteoffset)
 {
   JEnvPushPop
@@ -160,7 +160,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_ctor6Impl
 }
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_ctor7Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_ctor7Impl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jobject vdsIJKGridDefinitionbytebuffer, jlong vdsIJKGridDefinitionbyteoffset, jobject ijkSizebytebuffer, jlong ijkSizebyteoffset, jobject ijkAnnotationStartbytebuffer, jlong ijkAnnotationStartbyteoffset, jobject ijkAnnotationEndbytebuffer, jlong ijkAnnotationEndbyteoffset)
 {
   JEnvPushPop
@@ -184,7 +184,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_ctor7Impl
 }
 
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_IJKGridImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKGridImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
 {
   JEnvPushPop
@@ -199,7 +199,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_IJKGridImp
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_IJKSizeImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKSizeImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
 {
   JEnvPushPop
@@ -214,7 +214,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_IJKSizeImp
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_IJKToVoxelDimensionMapImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKToVoxelDimensionMapImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
 {
   JEnvPushPop
@@ -229,7 +229,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_IJKToVoxel
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_IJKToWorldTransformImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKToWorldTransformImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
 {
   JEnvPushPop
@@ -244,7 +244,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_IJKToWorld
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_WorldToIJKTransformImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_WorldToIJKTransformImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
 {
   JEnvPushPop
@@ -259,7 +259,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_WorldToIJK
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_IJKAnnotationStartImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKAnnotationStartImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
 {
   JEnvPushPop
@@ -274,7 +274,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_IJKAnnotat
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_IJKAnnotationEndImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKAnnotationEndImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
 {
   JEnvPushPop
@@ -289,7 +289,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_IJKAnnotat
   HUE_JNI_CATCH
 }
 
-JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_AnnotationsDefinedImpl
+JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_AnnotationsDefinedImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
 {
   JEnvPushPop
@@ -305,7 +305,7 @@ JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_Annota
   return 0;
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_IJKPositionToWorldImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKPositionToWorldImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jobject ijkPositionbytebuffer, jlong ijkPositionbyteoffset)
 {
   JEnvPushPop
@@ -320,7 +320,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_IJKPositio
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_IJKIndexToWorldImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKIndexToWorldImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jobject ijkIndexbytebuffer, jlong ijkIndexbyteoffset)
 {
   JEnvPushPop
@@ -335,7 +335,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_IJKIndexTo
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_IJKPositionToAnnotationImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKPositionToAnnotationImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jobject ijkPositionbytebuffer, jlong ijkPositionbyteoffset)
 {
   JEnvPushPop
@@ -350,7 +350,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_IJKPositio
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_IJKIndexToAnnotationImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKIndexToAnnotationImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jobject ijkIndexbytebuffer, jlong ijkIndexbyteoffset)
 {
   JEnvPushPop
@@ -365,7 +365,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_IJKIndexTo
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_IJKPositionToVoxelPositionImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKPositionToVoxelPositionImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jobject ijkPositionbytebuffer, jlong ijkPositionbyteoffset)
 {
   JEnvPushPop
@@ -380,7 +380,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_IJKPositio
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_IJKIndexToVoxelIndexImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKIndexToVoxelIndexImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jobject ijkIndexbytebuffer, jlong ijkIndexbyteoffset)
 {
   JEnvPushPop
@@ -395,7 +395,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_IJKIndexTo
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_WorldToIJKPositionImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_WorldToIJKPositionImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jobject worldPositionbytebuffer, jlong worldPositionbyteoffset)
 {
   JEnvPushPop
@@ -410,7 +410,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_WorldToIJK
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_WorldToIJKIndexImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_WorldToIJKIndexImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jobject worldPositionbytebuffer, jlong worldPositionbyteoffset)
 {
   JEnvPushPop
@@ -425,7 +425,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_WorldToIJK
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_WorldToAnnotationImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_WorldToAnnotationImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jobject worldPositionbytebuffer, jlong worldPositionbyteoffset)
 {
   JEnvPushPop
@@ -440,7 +440,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_WorldToAnn
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_WorldToVoxelPositionImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_WorldToVoxelPositionImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jobject worldPositionbytebuffer, jlong worldPositionbyteoffset)
 {
   JEnvPushPop
@@ -455,7 +455,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_WorldToVox
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_WorldToVoxelIndexImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_WorldToVoxelIndexImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jobject worldPositionbytebuffer, jlong worldPositionbyteoffset)
 {
   JEnvPushPop
@@ -470,7 +470,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_WorldToVox
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_AnnotationToIJKPositionImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_AnnotationToIJKPositionImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jobject annotationPositionbytebuffer, jlong annotationPositionbyteoffset)
 {
   JEnvPushPop
@@ -485,7 +485,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_Annotation
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_AnnotationToIJKIndexImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_AnnotationToIJKIndexImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jobject annotationPositionbytebuffer, jlong annotationPositionbyteoffset)
 {
   JEnvPushPop
@@ -500,7 +500,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_Annotation
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_AnnotationToWorldImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_AnnotationToWorldImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jobject annotationPositionbytebuffer, jlong annotationPositionbyteoffset)
 {
   JEnvPushPop
@@ -515,7 +515,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_Annotation
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_AnnotationToVoxelPositionImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_AnnotationToVoxelPositionImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jobject annotationPositionbytebuffer, jlong annotationPositionbyteoffset)
 {
   JEnvPushPop
@@ -530,7 +530,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_Annotation
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_AnnotationToVoxelIndexImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_AnnotationToVoxelIndexImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jobject annotationPositionbytebuffer, jlong annotationPositionbyteoffset)
 {
   JEnvPushPop
@@ -545,7 +545,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_Annotation
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_VoxelPositionToIJKPositionImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_VoxelPositionToIJKPositionImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jobject voxelPositionbytebuffer, jlong voxelPositionbyteoffset)
 {
   JEnvPushPop
@@ -560,7 +560,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_VoxelPosit
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_VoxelIndexToIJKIndexImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_VoxelIndexToIJKIndexImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jobject voxelIndexbytebuffer, jlong voxelIndexbyteoffset)
 {
   JEnvPushPop
@@ -575,7 +575,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_VoxelIndex
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_VoxelPositionToWorldImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_VoxelPositionToWorldImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jobject voxelPositionbytebuffer, jlong voxelPositionbyteoffset)
 {
   JEnvPushPop
@@ -590,7 +590,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_VoxelPosit
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_VoxelIndexToWorldImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_VoxelIndexToWorldImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jobject voxelIndexbytebuffer, jlong voxelIndexbyteoffset)
 {
   JEnvPushPop
@@ -605,7 +605,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_VoxelIndex
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_VoxelPositionToAnnotationImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_VoxelPositionToAnnotationImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jobject voxelPositionbytebuffer, jlong voxelPositionbyteoffset)
 {
   JEnvPushPop
@@ -620,7 +620,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_VoxelPosit
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_VoxelIndexToAnnotationImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_VoxelIndexToAnnotationImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jobject voxelIndexbytebuffer, jlong voxelIndexbyteoffset)
 {
   JEnvPushPop
@@ -635,7 +635,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_VoxelIndex
   HUE_JNI_CATCH
 }
 
-JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_IsIJKPositionOutOfRangeImpl
+JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IsIJKPositionOutOfRangeImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject ijkPositionbytebuffer, jlong ijkPositionbyteoffset)
 {
   JEnvPushPop
@@ -651,7 +651,7 @@ JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_IsIJKP
   return 0;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_IsIJKIndexOutOfRangeImpl
+JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IsIJKIndexOutOfRangeImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject ijkIndexbytebuffer, jlong ijkIndexbyteoffset)
 {
   JEnvPushPop
@@ -667,7 +667,7 @@ JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_IsIJKI
   return 0;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_IsVoxelPositionOutOfRangeImpl
+JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IsVoxelPositionOutOfRangeImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject voxelPositionbytebuffer, jlong voxelPositionbyteoffset)
 {
   JEnvPushPop
@@ -683,7 +683,7 @@ JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_IsVoxe
   return 0;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_IsVoxelIndexOutOfRangeImpl
+JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IsVoxelIndexOutOfRangeImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject voxelIndexbytebuffer, jlong voxelIndexbyteoffset)
 {
   JEnvPushPop
@@ -699,7 +699,7 @@ JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_IsVoxe
   return 0;
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_ConvertIJKPositionToIndexImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_ConvertIJKPositionToIndexImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jobject ijkPositionbytebuffer, jlong ijkPositionbyteoffset)
 {
   JEnvPushPop
@@ -714,7 +714,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_ConvertIJK
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_ConvertVoxelPositionToIndexImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_ConvertVoxelPositionToIndexImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jobject voxelPositionbytebuffer, jlong voxelPositionbyteoffset)
 {
   JEnvPushPop
@@ -729,7 +729,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_ConvertVox
   HUE_JNI_CATCH
 }
 
-JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_operatorEQImpl
+JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_operatorEQImpl
   (JNIEnv * env, jobject object, jlong native_handle, jlong other_native_handle)
 {
   HUE_JNI_TRY
@@ -743,7 +743,7 @@ JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_operat
 }
 
 
-JNIEXPORT jint JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_ErrorCodeIfIJKPositionOutOfRangeImpl
+JNIEXPORT jint JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_ErrorCodeIfIJKPositionOutOfRangeImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject ijkPositionbytebuffer, jlong ijkPositionbyteoffset)
 {
   JEnvPushPop
@@ -759,7 +759,7 @@ JNIEXPORT jint JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_ErrorCodeI
   return 0;
 }
 
-JNIEXPORT jint JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_ErrorCodeIfVoxelPositionOutOfRangeImpl
+JNIEXPORT jint JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_ErrorCodeIfVoxelPositionOutOfRangeImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject voxelPositionbytebuffer, jlong voxelPositionbyteoffset)
 {
   JEnvPushPop
@@ -775,7 +775,7 @@ JNIEXPORT jint JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_ErrorCodeI
   return 0;
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_IJKCoordinateTransformer_dtorImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
   HUE_JNI_TRY

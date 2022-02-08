@@ -28,7 +28,7 @@
 extern "C" {
 #endif
 
-JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_MetadataContainer_IsMetadataIntAvailableImpl
+JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataContainer_IsMetadataIntAvailableImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name)
 {
   JEnvPushPop
@@ -44,7 +44,7 @@ JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_MetadataContainer_IsMetadataInt
   return 0;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_MetadataContainer_IsMetadataIntVector2AvailableImpl
+JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataContainer_IsMetadataIntVector2AvailableImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name)
 {
   JEnvPushPop
@@ -60,7 +60,7 @@ JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_MetadataContainer_IsMetadataInt
   return 0;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_MetadataContainer_IsMetadataIntVector3AvailableImpl
+JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataContainer_IsMetadataIntVector3AvailableImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name)
 {
   JEnvPushPop
@@ -76,7 +76,7 @@ JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_MetadataContainer_IsMetadataInt
   return 0;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_MetadataContainer_IsMetadataIntVector4AvailableImpl
+JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataContainer_IsMetadataIntVector4AvailableImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name)
 {
   JEnvPushPop
@@ -92,7 +92,7 @@ JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_MetadataContainer_IsMetadataInt
   return 0;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_MetadataContainer_IsMetadataFloatAvailableImpl
+JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataContainer_IsMetadataFloatAvailableImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name)
 {
   JEnvPushPop
@@ -108,7 +108,7 @@ JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_MetadataContainer_IsMetadataFlo
   return 0;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_MetadataContainer_IsMetadataFloatVector2AvailableImpl
+JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataContainer_IsMetadataFloatVector2AvailableImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name)
 {
   JEnvPushPop
@@ -124,7 +124,7 @@ JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_MetadataContainer_IsMetadataFlo
   return 0;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_MetadataContainer_IsMetadataFloatVector3AvailableImpl
+JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataContainer_IsMetadataFloatVector3AvailableImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name)
 {
   JEnvPushPop
@@ -140,7 +140,7 @@ JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_MetadataContainer_IsMetadataFlo
   return 0;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_MetadataContainer_IsMetadataFloatVector4AvailableImpl
+JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataContainer_IsMetadataFloatVector4AvailableImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name)
 {
   JEnvPushPop
@@ -156,7 +156,7 @@ JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_MetadataContainer_IsMetadataFlo
   return 0;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_MetadataContainer_IsMetadataDoubleAvailableImpl
+JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataContainer_IsMetadataDoubleAvailableImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name)
 {
   JEnvPushPop
@@ -172,7 +172,7 @@ JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_MetadataContainer_IsMetadataDou
   return 0;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_MetadataContainer_IsMetadataDoubleVector2AvailableImpl
+JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataContainer_IsMetadataDoubleVector2AvailableImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name)
 {
   JEnvPushPop
@@ -188,7 +188,7 @@ JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_MetadataContainer_IsMetadataDou
   return 0;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_MetadataContainer_IsMetadataDoubleVector3AvailableImpl
+JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataContainer_IsMetadataDoubleVector3AvailableImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name)
 {
   JEnvPushPop
@@ -204,7 +204,7 @@ JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_MetadataContainer_IsMetadataDou
   return 0;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_MetadataContainer_IsMetadataDoubleVector4AvailableImpl
+JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataContainer_IsMetadataDoubleVector4AvailableImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name)
 {
   JEnvPushPop
@@ -220,7 +220,7 @@ JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_MetadataContainer_IsMetadataDou
   return 0;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_MetadataContainer_IsMetadataStringAvailableImpl
+JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataContainer_IsMetadataStringAvailableImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name)
 {
   JEnvPushPop
@@ -236,7 +236,7 @@ JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_MetadataContainer_IsMetadataStr
   return 0;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_MetadataContainer_IsMetadataBLOBAvailableImpl
+JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataContainer_IsMetadataBLOBAvailableImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name)
 {
   JEnvPushPop
@@ -252,7 +252,7 @@ JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_MetadataContainer_IsMetadataBLO
   return 0;
 }
 
-JNIEXPORT jint JNICALL Java_com_hue_proxylib_MetadataContainer_GetMetadataIntImpl
+JNIEXPORT jint JNICALL Java_org_opengroup_openvds_MetadataContainer_GetMetadataIntImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name)
 {
   JEnvPushPop
@@ -268,7 +268,7 @@ JNIEXPORT jint JNICALL Java_com_hue_proxylib_MetadataContainer_GetMetadataIntImp
   return 0;
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_GetMetadataIntVector2Impl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_GetMetadataIntVector2Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jstring category, jstring name)
 {
   JEnvPushPop
@@ -285,7 +285,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_GetMetadataIntVec
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_GetMetadataIntVector3Impl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_GetMetadataIntVector3Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jstring category, jstring name)
 {
   JEnvPushPop
@@ -302,7 +302,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_GetMetadataIntVec
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_GetMetadataIntVector4Impl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_GetMetadataIntVector4Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jstring category, jstring name)
 {
   JEnvPushPop
@@ -319,7 +319,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_GetMetadataIntVec
   HUE_JNI_CATCH
 }
 
-JNIEXPORT jfloat JNICALL Java_com_hue_proxylib_MetadataContainer_GetMetadataFloatImpl
+JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_MetadataContainer_GetMetadataFloatImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name)
 {
   JEnvPushPop
@@ -335,7 +335,7 @@ JNIEXPORT jfloat JNICALL Java_com_hue_proxylib_MetadataContainer_GetMetadataFloa
   return 0;
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_GetMetadataFloatVector2Impl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_GetMetadataFloatVector2Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jstring category, jstring name)
 {
   JEnvPushPop
@@ -352,7 +352,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_GetMetadataFloatV
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_GetMetadataFloatVector3Impl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_GetMetadataFloatVector3Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jstring category, jstring name)
 {
   JEnvPushPop
@@ -369,7 +369,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_GetMetadataFloatV
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_GetMetadataFloatVector4Impl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_GetMetadataFloatVector4Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jstring category, jstring name)
 {
   JEnvPushPop
@@ -386,7 +386,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_GetMetadataFloatV
   HUE_JNI_CATCH
 }
 
-JNIEXPORT jdouble JNICALL Java_com_hue_proxylib_MetadataContainer_GetMetadataDoubleImpl
+JNIEXPORT jdouble JNICALL Java_org_opengroup_openvds_MetadataContainer_GetMetadataDoubleImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name)
 {
   JEnvPushPop
@@ -402,7 +402,7 @@ JNIEXPORT jdouble JNICALL Java_com_hue_proxylib_MetadataContainer_GetMetadataDou
   return 0;
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_GetMetadataDoubleVector2Impl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_GetMetadataDoubleVector2Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jstring category, jstring name)
 {
   JEnvPushPop
@@ -419,7 +419,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_GetMetadataDouble
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_GetMetadataDoubleVector3Impl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_GetMetadataDoubleVector3Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jstring category, jstring name)
 {
   JEnvPushPop
@@ -436,7 +436,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_GetMetadataDouble
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_GetMetadataDoubleVector4Impl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_GetMetadataDoubleVector4Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jstring category, jstring name)
 {
   JEnvPushPop
@@ -453,7 +453,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_GetMetadataDouble
   HUE_JNI_CATCH
 }
 
-JNIEXPORT jstring JNICALL Java_com_hue_proxylib_MetadataContainer_GetMetadataStringImpl
+JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_MetadataContainer_GetMetadataStringImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name)
 {
   JEnvPushPop
@@ -469,7 +469,7 @@ JNIEXPORT jstring JNICALL Java_com_hue_proxylib_MetadataContainer_GetMetadataStr
   return 0;
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_SetMetadataIntImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_SetMetadataIntImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name, jint value)
 {
   JEnvPushPop
@@ -486,7 +486,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_SetMetadataIntImp
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_SetMetadataIntVector2Impl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_SetMetadataIntVector2Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name, jobject valuebytebuffer, jlong valuebyteoffset)
 {
   JEnvPushPop
@@ -503,7 +503,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_SetMetadataIntVec
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_SetMetadataIntVector3Impl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_SetMetadataIntVector3Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name, jobject valuebytebuffer, jlong valuebyteoffset)
 {
   JEnvPushPop
@@ -520,7 +520,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_SetMetadataIntVec
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_SetMetadataIntVector4Impl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_SetMetadataIntVector4Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name, jobject valuebytebuffer, jlong valuebyteoffset)
 {
   JEnvPushPop
@@ -537,7 +537,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_SetMetadataIntVec
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_SetMetadataFloatImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_SetMetadataFloatImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name, jfloat value)
 {
   JEnvPushPop
@@ -554,7 +554,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_SetMetadataFloatI
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_SetMetadataFloatVector2Impl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_SetMetadataFloatVector2Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name, jobject valuebytebuffer, jlong valuebyteoffset)
 {
   JEnvPushPop
@@ -571,7 +571,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_SetMetadataFloatV
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_SetMetadataFloatVector3Impl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_SetMetadataFloatVector3Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name, jobject valuebytebuffer, jlong valuebyteoffset)
 {
   JEnvPushPop
@@ -588,7 +588,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_SetMetadataFloatV
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_SetMetadataFloatVector4Impl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_SetMetadataFloatVector4Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name, jobject valuebytebuffer, jlong valuebyteoffset)
 {
   JEnvPushPop
@@ -605,7 +605,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_SetMetadataFloatV
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_SetMetadataDoubleImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_SetMetadataDoubleImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name, jdouble value)
 {
   JEnvPushPop
@@ -622,7 +622,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_SetMetadataDouble
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_SetMetadataDoubleVector2Impl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_SetMetadataDoubleVector2Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name, jobject valuebytebuffer, jlong valuebyteoffset)
 {
   JEnvPushPop
@@ -639,7 +639,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_SetMetadataDouble
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_SetMetadataDoubleVector3Impl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_SetMetadataDoubleVector3Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name, jobject valuebytebuffer, jlong valuebyteoffset)
 {
   JEnvPushPop
@@ -656,7 +656,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_SetMetadataDouble
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_SetMetadataDoubleVector4Impl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_SetMetadataDoubleVector4Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name, jobject valuebytebuffer, jlong valuebyteoffset)
 {
   JEnvPushPop
@@ -673,7 +673,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_SetMetadataDouble
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_SetMetadataStringImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_SetMetadataStringImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name, jstring value)
 {
   JEnvPushPop
@@ -690,7 +690,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_SetMetadataString
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_SetMetadataBLOBImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_SetMetadataBLOBImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name, jobject data)
 {
   JEnvPushPop
@@ -708,7 +708,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_SetMetadataBLOBIm
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_CopyMetadataImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_CopyMetadataImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jlong metadataReadAccess)
 {
   JEnvPushPop
@@ -722,7 +722,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_CopyMetadataImpl
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_ClearMetadataImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_ClearMetadataImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name)
 {
   JEnvPushPop
@@ -736,7 +736,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_ClearMetadataImpl
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_ClearMetadata2Impl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_ClearMetadata2Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category)
 {
   JEnvPushPop
@@ -751,7 +751,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_ClearMetadata2Imp
 }
 ///AUTOGEN-FAIL: CXX_METHOD GetMetadataBLOB void (const char *, const char *, const void **, uint64_t *) const FUNCTIONPROTO
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_SetMetadataString2Impl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_SetMetadataString2Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name, jstring value)
 {
   JEnvPushPop
@@ -768,7 +768,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_SetMetadataString
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataContainer_dtorImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
   HUE_JNI_TRY

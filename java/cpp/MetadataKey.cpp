@@ -28,7 +28,7 @@
 extern "C" {
 #endif
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_MetadataKey_ctorImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_MetadataKey_ctorImpl
   (JNIEnv * env, jclass cls, jobject jproxyinterface)
 {
   JEnvPushPop
@@ -48,7 +48,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_MetadataKey_ctorImpl
 }
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_MetadataKey_ctor2Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_MetadataKey_ctor2Impl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jlong type, jstring category, jstring name)
 {
   JEnvPushPop
@@ -71,7 +71,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_MetadataKey_ctor2Impl
 }
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_MetadataKey_GetTypeImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_MetadataKey_GetTypeImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
 {
   JEnvPushPop
@@ -87,7 +87,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_MetadataKey_GetTypeImpl
   return 0;
 }
 
-JNIEXPORT jstring JNICALL Java_com_hue_proxylib_MetadataKey_GetCategoryImpl
+JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_MetadataKey_GetCategoryImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
 {
   JEnvPushPop
@@ -103,7 +103,7 @@ JNIEXPORT jstring JNICALL Java_com_hue_proxylib_MetadataKey_GetCategoryImpl
   return 0;
 }
 
-JNIEXPORT jstring JNICALL Java_com_hue_proxylib_MetadataKey_GetNameImpl
+JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_MetadataKey_GetNameImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
 {
   JEnvPushPop
@@ -119,7 +119,7 @@ JNIEXPORT jstring JNICALL Java_com_hue_proxylib_MetadataKey_GetNameImpl
   return 0;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_MetadataKey_operatorEQImpl
+JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataKey_operatorEQImpl
   (JNIEnv * env, jobject object, jlong native_handle, jlong other_native_handle)
 {
   HUE_JNI_TRY
@@ -133,7 +133,7 @@ JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_MetadataKey_operatorEQImpl
 }
 
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_MetadataKey_dtorImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataKey_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
   HUE_JNI_TRY

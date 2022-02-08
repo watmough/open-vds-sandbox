@@ -28,7 +28,7 @@
 extern "C" {
 #endif
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataRequest_ctorImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataRequest_ctorImpl
   (JNIEnv * env, jclass cls, jobject jproxyinterface)
 {
   JEnvPushPop
@@ -48,7 +48,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataRequest_ctorImpl
 }
 
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_VolumeDataRequest_ValidateRequestImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataRequest_ValidateRequestImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
 {
   JEnvPushPop
@@ -62,7 +62,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_VolumeDataRequest_ValidateRequestIm
   HUE_JNI_CATCH
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataRequest_RequestIDImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataRequest_RequestIDImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
 {
   JEnvPushPop
@@ -78,7 +78,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataRequest_RequestIDImpl
   return 0;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_VolumeDataRequest_IsCompletedImpl
+JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeDataRequest_IsCompletedImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
 {
   JEnvPushPop
@@ -94,7 +94,7 @@ JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_VolumeDataRequest_IsCompletedIm
   return 0;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_VolumeDataRequest_IsCanceledImpl
+JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeDataRequest_IsCanceledImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
 {
   JEnvPushPop
@@ -110,7 +110,7 @@ JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_VolumeDataRequest_IsCanceledImp
   return 0;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_VolumeDataRequest_WaitForCompletionImpl
+JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeDataRequest_WaitForCompletionImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jint millisecondsBeforeTimeout)
 {
   JEnvPushPop
@@ -126,7 +126,7 @@ JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_VolumeDataRequest_WaitForComple
   return 0;
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_VolumeDataRequest_CancelImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataRequest_CancelImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
 {
   JEnvPushPop
@@ -140,7 +140,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_VolumeDataRequest_CancelImpl
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_VolumeDataRequest_CancelAndWaitForCompletionImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataRequest_CancelAndWaitForCompletionImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
 {
   JEnvPushPop
@@ -154,7 +154,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_VolumeDataRequest_CancelAndWaitForC
   HUE_JNI_CATCH
 }
 
-JNIEXPORT jfloat JNICALL Java_com_hue_proxylib_VolumeDataRequest_GetCompletionFactorImpl
+JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataRequest_GetCompletionFactorImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
 {
   JEnvPushPop
@@ -171,7 +171,7 @@ JNIEXPORT jfloat JNICALL Java_com_hue_proxylib_VolumeDataRequest_GetCompletionFa
 }
 ///AUTOGEN-FAIL: CXX_METHOD Buffer void *() const FUNCTIONPROTO
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataRequest_BufferByteSizeImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataRequest_BufferByteSizeImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
 {
   JEnvPushPop
@@ -187,7 +187,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataRequest_BufferByteSizeIm
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataRequest_BufferDataTypeImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataRequest_BufferDataTypeImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
 {
   JEnvPushPop
@@ -203,7 +203,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataRequest_BufferDataTypeIm
   return 0;
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_VolumeDataRequest_dtorImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataRequest_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
   HUE_JNI_TRY
@@ -218,7 +218,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_VolumeDataRequest_dtorImpl
 
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_ctorImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_ctorImpl
   (JNIEnv * env, jclass cls, jobject jproxyinterface)
 {
   JEnvPushPop
@@ -238,7 +238,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_ctorImpl
 }
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_GetVolumeDataLayoutImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_GetVolumeDataLayoutImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
 {
   JEnvPushPop
@@ -255,7 +255,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_GetVolumeD
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_GetVDSProduceStatusImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_GetVDSProduceStatusImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel)
 {
   JEnvPushPop
@@ -274,7 +274,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_GetVDSProd
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_GetVDSChunkCountImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_GetVDSChunkCountImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel)
 {
   JEnvPushPop
@@ -293,7 +293,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_GetVDSChun
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeDataPageAccessorImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeDataPageAccessorImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jint maxPages, jlong accessMode, jint chunkMetadataPageSize)
 {
   JEnvPushPop
@@ -316,7 +316,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_DestroyVolumeDataPageAccessorImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_DestroyVolumeDataPageAccessorImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong volumeDataPageAccessor)
 {
   JEnvPushPop
@@ -330,7 +330,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_DestroyVolu
   HUE_JNI_CATCH
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData2DInterpolatingAccessorR64Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData2DInterpolatingAccessorR64Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jlong interpolationMethod, jint maxPages, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -353,7 +353,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData2DInterpolatingAccessorR642Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData2DInterpolatingAccessorR642Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jlong interpolationMethod, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -375,7 +375,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData2DInterpolatingAccessorR32Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData2DInterpolatingAccessorR32Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jlong interpolationMethod, jint maxPages, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -398,7 +398,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData2DInterpolatingAccessorR322Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData2DInterpolatingAccessorR322Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jlong interpolationMethod, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -420,7 +420,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData2DReadAccessor1BitImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData2DReadAccessor1BitImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jint maxPages, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -442,7 +442,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData2DReadAccessor1Bit2Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData2DReadAccessor1Bit2Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -463,7 +463,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData2DReadAccessorU8Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData2DReadAccessorU8Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jint maxPages, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -485,7 +485,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData2DReadAccessorU82Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData2DReadAccessorU82Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -506,7 +506,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData2DReadAccessorU16Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData2DReadAccessorU16Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jint maxPages, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -528,7 +528,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData2DReadAccessorU162Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData2DReadAccessorU162Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -549,7 +549,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData2DReadAccessorU32Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData2DReadAccessorU32Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jint maxPages, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -571,7 +571,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData2DReadAccessorU322Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData2DReadAccessorU322Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -592,7 +592,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData2DReadAccessorU64Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData2DReadAccessorU64Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jint maxPages, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -614,7 +614,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData2DReadAccessorU642Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData2DReadAccessorU642Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -635,7 +635,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData2DReadAccessorR32Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData2DReadAccessorR32Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jint maxPages, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -657,7 +657,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData2DReadAccessorR322Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData2DReadAccessorR322Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -678,7 +678,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData2DReadAccessorR64Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData2DReadAccessorR64Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jint maxPages, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -700,7 +700,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData2DReadAccessorR642Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData2DReadAccessorR642Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -721,7 +721,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData2DReadWriteAccessor1BitImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData2DReadWriteAccessor1BitImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jint maxPages, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -743,7 +743,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData2DReadWriteAccessor1Bit2Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData2DReadWriteAccessor1Bit2Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -764,7 +764,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData2DReadWriteAccessorU8Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData2DReadWriteAccessorU8Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jint maxPages, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -786,7 +786,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData2DReadWriteAccessorU82Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData2DReadWriteAccessorU82Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -807,7 +807,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData2DReadWriteAccessorU16Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData2DReadWriteAccessorU16Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jint maxPages, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -829,7 +829,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData2DReadWriteAccessorU162Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData2DReadWriteAccessorU162Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -850,7 +850,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData2DReadWriteAccessorU32Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData2DReadWriteAccessorU32Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jint maxPages, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -872,7 +872,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData2DReadWriteAccessorU322Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData2DReadWriteAccessorU322Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -893,7 +893,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData2DReadWriteAccessorU64Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData2DReadWriteAccessorU64Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jint maxPages, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -915,7 +915,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData2DReadWriteAccessorU642Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData2DReadWriteAccessorU642Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -936,7 +936,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData2DReadWriteAccessorR32Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData2DReadWriteAccessorR32Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jint maxPages, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -958,7 +958,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData2DReadWriteAccessorR322Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData2DReadWriteAccessorR322Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -979,7 +979,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData2DReadWriteAccessorR64Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData2DReadWriteAccessorR64Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jint maxPages, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -1001,7 +1001,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData2DReadWriteAccessorR642Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData2DReadWriteAccessorR642Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -1022,7 +1022,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData3DInterpolatingAccessorR64Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData3DInterpolatingAccessorR64Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jlong interpolationMethod, jint maxPages, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -1045,7 +1045,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData3DInterpolatingAccessorR642Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData3DInterpolatingAccessorR642Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jlong interpolationMethod, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -1067,7 +1067,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData3DInterpolatingAccessorR32Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData3DInterpolatingAccessorR32Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jlong interpolationMethod, jint maxPages, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -1090,7 +1090,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData3DInterpolatingAccessorR322Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData3DInterpolatingAccessorR322Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jlong interpolationMethod, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -1112,7 +1112,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData3DReadAccessor1BitImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData3DReadAccessor1BitImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jint maxPages, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -1134,7 +1134,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData3DReadAccessor1Bit2Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData3DReadAccessor1Bit2Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -1155,7 +1155,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData3DReadAccessorU8Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData3DReadAccessorU8Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jint maxPages, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -1177,7 +1177,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData3DReadAccessorU82Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData3DReadAccessorU82Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -1198,7 +1198,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData3DReadAccessorU16Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData3DReadAccessorU16Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jint maxPages, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -1220,7 +1220,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData3DReadAccessorU162Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData3DReadAccessorU162Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -1241,7 +1241,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData3DReadAccessorU32Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData3DReadAccessorU32Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jint maxPages, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -1263,7 +1263,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData3DReadAccessorU322Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData3DReadAccessorU322Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -1284,7 +1284,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData3DReadAccessorU64Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData3DReadAccessorU64Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jint maxPages, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -1306,7 +1306,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData3DReadAccessorU642Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData3DReadAccessorU642Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -1327,7 +1327,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData3DReadAccessorR32Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData3DReadAccessorR32Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jint maxPages, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -1349,7 +1349,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData3DReadAccessorR322Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData3DReadAccessorR322Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -1370,7 +1370,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData3DReadAccessorR64Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData3DReadAccessorR64Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jint maxPages, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -1392,7 +1392,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData3DReadAccessorR642Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData3DReadAccessorR642Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -1413,7 +1413,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData3DReadWriteAccessor1BitImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData3DReadWriteAccessor1BitImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jint maxPages, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -1435,7 +1435,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData3DReadWriteAccessor1Bit2Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData3DReadWriteAccessor1Bit2Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -1456,7 +1456,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData3DReadWriteAccessorU8Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData3DReadWriteAccessorU8Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jint maxPages, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -1478,7 +1478,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData3DReadWriteAccessorU82Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData3DReadWriteAccessorU82Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -1499,7 +1499,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData3DReadWriteAccessorU16Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData3DReadWriteAccessorU16Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jint maxPages, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -1521,7 +1521,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData3DReadWriteAccessorU162Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData3DReadWriteAccessorU162Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -1542,7 +1542,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData3DReadWriteAccessorU32Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData3DReadWriteAccessorU32Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jint maxPages, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -1564,7 +1564,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData3DReadWriteAccessorU322Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData3DReadWriteAccessorU322Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -1585,7 +1585,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData3DReadWriteAccessorU64Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData3DReadWriteAccessorU64Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jint maxPages, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -1607,7 +1607,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData3DReadWriteAccessorU642Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData3DReadWriteAccessorU642Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -1628,7 +1628,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData3DReadWriteAccessorR32Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData3DReadWriteAccessorR32Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jint maxPages, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -1650,7 +1650,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData3DReadWriteAccessorR322Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData3DReadWriteAccessorR322Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -1671,7 +1671,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData3DReadWriteAccessorR64Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData3DReadWriteAccessorR64Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jint maxPages, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -1693,7 +1693,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData3DReadWriteAccessorR642Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData3DReadWriteAccessorR642Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -1714,7 +1714,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData4DInterpolatingAccessorR64Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData4DInterpolatingAccessorR64Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jlong interpolationMethod, jint maxPages, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -1737,7 +1737,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData4DInterpolatingAccessorR642Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData4DInterpolatingAccessorR642Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jlong interpolationMethod, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -1759,7 +1759,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData4DInterpolatingAccessorR32Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData4DInterpolatingAccessorR32Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jlong interpolationMethod, jint maxPages, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -1782,7 +1782,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData4DInterpolatingAccessorR322Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData4DInterpolatingAccessorR322Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jlong interpolationMethod, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -1804,7 +1804,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData4DReadAccessor1BitImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData4DReadAccessor1BitImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jint maxPages, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -1826,7 +1826,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData4DReadAccessor1Bit2Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData4DReadAccessor1Bit2Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -1847,7 +1847,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData4DReadAccessorU8Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData4DReadAccessorU8Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jint maxPages, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -1869,7 +1869,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData4DReadAccessorU82Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData4DReadAccessorU82Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -1890,7 +1890,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData4DReadAccessorU16Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData4DReadAccessorU16Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jint maxPages, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -1912,7 +1912,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData4DReadAccessorU162Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData4DReadAccessorU162Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -1933,7 +1933,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData4DReadAccessorU32Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData4DReadAccessorU32Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jint maxPages, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -1955,7 +1955,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData4DReadAccessorU322Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData4DReadAccessorU322Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -1976,7 +1976,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData4DReadAccessorU64Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData4DReadAccessorU64Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jint maxPages, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -1998,7 +1998,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData4DReadAccessorU642Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData4DReadAccessorU642Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -2019,7 +2019,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData4DReadAccessorR32Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData4DReadAccessorR32Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jint maxPages, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -2041,7 +2041,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData4DReadAccessorR322Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData4DReadAccessorR322Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -2062,7 +2062,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData4DReadAccessorR64Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData4DReadAccessorR64Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jint maxPages, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -2084,7 +2084,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData4DReadAccessorR642Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData4DReadAccessorR642Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -2105,7 +2105,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData4DReadWriteAccessor1BitImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData4DReadWriteAccessor1BitImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jint maxPages, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -2127,7 +2127,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData4DReadWriteAccessor1Bit2Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData4DReadWriteAccessor1Bit2Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -2148,7 +2148,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData4DReadWriteAccessorU8Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData4DReadWriteAccessorU8Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jint maxPages, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -2170,7 +2170,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData4DReadWriteAccessorU82Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData4DReadWriteAccessorU82Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -2191,7 +2191,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData4DReadWriteAccessorU16Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData4DReadWriteAccessorU16Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jint maxPages, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -2213,7 +2213,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData4DReadWriteAccessorU162Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData4DReadWriteAccessorU162Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -2234,7 +2234,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData4DReadWriteAccessorU32Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData4DReadWriteAccessorU32Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jint maxPages, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -2256,7 +2256,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData4DReadWriteAccessorU322Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData4DReadWriteAccessorU322Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -2277,7 +2277,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData4DReadWriteAccessorU64Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData4DReadWriteAccessorU64Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jint maxPages, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -2299,7 +2299,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData4DReadWriteAccessorU642Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData4DReadWriteAccessorU642Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -2320,7 +2320,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData4DReadWriteAccessorR32Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData4DReadWriteAccessorR32Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jint maxPages, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -2342,7 +2342,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData4DReadWriteAccessorR322Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData4DReadWriteAccessorR322Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -2363,7 +2363,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData4DReadWriteAccessorR64Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData4DReadWriteAccessorR64Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jint maxPages, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -2385,7 +2385,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolumeData4DReadWriteAccessorR642Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData4DReadWriteAccessorR642Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -2406,7 +2406,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_CreateVolu
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_GetVolumeSubsetBufferSizeImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_GetVolumeSubsetBufferSizeImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jintArray minVoxelCoordinates, jintArray maxVoxelCoordinates, jlong format, jint LOD, jint channel)
 {
   JEnvPushPop
@@ -2429,7 +2429,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_GetVolumeS
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_RequestVolumeSubsetImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestVolumeSubsetImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject buffer, jlong dimensionsND, jint LOD, jint channel, jintArray minVoxelCoordinates, jintArray maxVoxelCoordinates, jlong format, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -2458,7 +2458,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_RequestVol
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_RequestVolumeSubset1BitImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestVolumeSubset1BitImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject buffer, jlong dimensionsND, jint LOD, jint channel, jintArray minVoxelCoordinates, jintArray maxVoxelCoordinates)
 {
   JEnvPushPop
@@ -2485,7 +2485,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_RequestVol
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_RequestVolumeSubset3Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestVolumeSubset3Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jintArray minVoxelCoordinates, jintArray maxVoxelCoordinates, jlong format, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -2511,7 +2511,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_RequestVol
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_RequestVolumeSubset1Bit2Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestVolumeSubset1Bit2Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jintArray minVoxelCoordinates, jintArray maxVoxelCoordinates)
 {
   JEnvPushPop
@@ -2535,7 +2535,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_RequestVol
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_GetProjectedVolumeSubsetBufferSizeImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_GetProjectedVolumeSubsetBufferSizeImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jintArray minVoxelCoordinates, jintArray maxVoxelCoordinates, jlong projectedDimensions, jlong format, jint LOD, jint channel)
 {
   JEnvPushPop
@@ -2559,7 +2559,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_GetProject
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_RequestProjectedVolumeSubsetImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestProjectedVolumeSubsetImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject buffer, jlong dimensionsND, jint LOD, jint channel, jintArray minVoxelCoordinates, jintArray maxVoxelCoordinates, jobject voxelPlanebytebuffer, jlong voxelPlanebyteoffset, jlong projectedDimensions, jlong format, jlong interpolationMethod, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -2591,7 +2591,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_RequestPro
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_RequestProjectedVolumeSubset2Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestProjectedVolumeSubset2Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jintArray minVoxelCoordinates, jintArray maxVoxelCoordinates, jobject voxelPlanebytebuffer, jlong voxelPlanebyteoffset, jlong projectedDimensions, jlong format, jlong interpolationMethod, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -2620,7 +2620,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_RequestPro
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_GetVolumeSamplesBufferSizeImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_GetVolumeSamplesBufferSizeImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jint sampleCount, jint channel)
 {
   JEnvPushPop
@@ -2636,7 +2636,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_GetVolumeS
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_RequestVolumeSamplesImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestVolumeSamplesImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject buffer, jlong dimensionsND, jint LOD, jint channel, jfloatArray samplePositions, jlong interpolationMethod, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -2663,7 +2663,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_RequestVol
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_RequestVolumeSamples2Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestVolumeSamples2Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jfloatArray samplePositions, jlong interpolationMethod, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -2687,7 +2687,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_RequestVol
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_GetVolumeTracesBufferSizeImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_GetVolumeTracesBufferSizeImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jint traceCount, jint traceDimension, jint LOD, jint channel)
 {
   JEnvPushPop
@@ -2707,7 +2707,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_GetVolumeT
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_RequestVolumeTracesImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestVolumeTracesImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jfloatArray tracePositions, jlong interpolationMethod, jint traceDimension, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -2732,7 +2732,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_RequestVol
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_RequestVolumeTraces2Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestVolumeTraces2Impl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject buffer, jlong dimensionsND, jint LOD, jint channel, jfloatArray tracePositions, jlong interpolationMethod, jint traceDimension, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
   JEnvPushPop
@@ -2760,7 +2760,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_RequestVol
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_PrefetchVolumeChunkImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_PrefetchVolumeChunkImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jlong chunkIndex)
 {
   JEnvPushPop
@@ -2781,7 +2781,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_PrefetchVo
   return 0;
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_FlushUploadQueueImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_FlushUploadQueueImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jboolean writeUpdatedLayerStatus)
 {
   JEnvPushPop
@@ -2795,7 +2795,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_FlushUpload
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_ClearUploadErrorsImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_ClearUploadErrorsImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
 {
   JEnvPushPop
@@ -2809,7 +2809,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_ClearUpload
   HUE_JNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_ForceClearAllUploadErrorsImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_ForceClearAllUploadErrorsImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
 {
   JEnvPushPop
@@ -2823,7 +2823,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_ForceClearA
   HUE_JNI_CATCH
 }
 
-JNIEXPORT jint JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_UploadErrorCountImpl
+JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_UploadErrorCountImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
 {
   JEnvPushPop
@@ -2841,7 +2841,7 @@ JNIEXPORT jint JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_UploadError
 ///AUTOGEN-FAIL: CXX_METHOD GetCurrentUploadError void (const char **, int *, const char **) FUNCTIONPROTO
 ///AUTOGEN-FAIL: CXX_METHOD GetCurrentDownloadError void (int *, const char **) FUNCTIONPROTO
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_dtorImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
   HUE_JNI_TRY
@@ -2854,7 +2854,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_VolumeDataAccessManager_dtorImpl
 
 
 
-JNIEXPORT jbyteArray JNICALL Java_com_hue_proxylib_VolumeDataRequest1Bit_DataImpl
+JNIEXPORT jbyteArray JNICALL Java_org_opengroup_openvds_VolumeDataRequest1Bit_DataImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
 {
   JEnvPushPop
@@ -2870,7 +2870,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_hue_proxylib_VolumeDataRequest1Bit_DataImp
   return 0;
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_VolumeDataRequest1Bit_dtorImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataRequest1Bit_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
   HUE_JNI_TRY
@@ -2883,7 +2883,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_VolumeDataRequest1Bit_dtorImpl
 
 
 
-JNIEXPORT jbyteArray JNICALL Java_com_hue_proxylib_VolumeDataRequestByte_DataImpl
+JNIEXPORT jbyteArray JNICALL Java_org_opengroup_openvds_VolumeDataRequestByte_DataImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
 {
   JEnvPushPop
@@ -2899,7 +2899,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_hue_proxylib_VolumeDataRequestByte_DataImp
   return 0;
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_VolumeDataRequestByte_dtorImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataRequestByte_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
   HUE_JNI_TRY
@@ -2912,7 +2912,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_VolumeDataRequestByte_dtorImpl
 
 
 
-JNIEXPORT jshortArray JNICALL Java_com_hue_proxylib_VolumeDataRequestUShort_DataImpl
+JNIEXPORT jshortArray JNICALL Java_org_opengroup_openvds_VolumeDataRequestUShort_DataImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
 {
   JEnvPushPop
@@ -2928,7 +2928,7 @@ JNIEXPORT jshortArray JNICALL Java_com_hue_proxylib_VolumeDataRequestUShort_Data
   return 0;
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_VolumeDataRequestUShort_dtorImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataRequestUShort_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
   HUE_JNI_TRY
@@ -2941,7 +2941,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_VolumeDataRequestUShort_dtorImpl
 
 
 
-JNIEXPORT jintArray JNICALL Java_com_hue_proxylib_VolumeDataRequestUInt_DataImpl
+JNIEXPORT jintArray JNICALL Java_org_opengroup_openvds_VolumeDataRequestUInt_DataImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
 {
   JEnvPushPop
@@ -2957,7 +2957,7 @@ JNIEXPORT jintArray JNICALL Java_com_hue_proxylib_VolumeDataRequestUInt_DataImpl
   return 0;
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_VolumeDataRequestUInt_dtorImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataRequestUInt_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
   HUE_JNI_TRY
@@ -2970,7 +2970,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_VolumeDataRequestUInt_dtorImpl
 
 
 
-JNIEXPORT jlongArray JNICALL Java_com_hue_proxylib_VolumeDataRequestULong_DataImpl
+JNIEXPORT jlongArray JNICALL Java_org_opengroup_openvds_VolumeDataRequestULong_DataImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
 {
   JEnvPushPop
@@ -2986,7 +2986,7 @@ JNIEXPORT jlongArray JNICALL Java_com_hue_proxylib_VolumeDataRequestULong_DataIm
   return 0;
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_VolumeDataRequestULong_dtorImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataRequestULong_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
   HUE_JNI_TRY
@@ -2999,7 +2999,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_VolumeDataRequestULong_dtorImpl
 
 
 
-JNIEXPORT jfloatArray JNICALL Java_com_hue_proxylib_VolumeDataRequestFloat_DataImpl
+JNIEXPORT jfloatArray JNICALL Java_org_opengroup_openvds_VolumeDataRequestFloat_DataImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
 {
   JEnvPushPop
@@ -3015,7 +3015,7 @@ JNIEXPORT jfloatArray JNICALL Java_com_hue_proxylib_VolumeDataRequestFloat_DataI
   return 0;
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_VolumeDataRequestFloat_dtorImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataRequestFloat_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
   HUE_JNI_TRY
@@ -3028,7 +3028,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_VolumeDataRequestFloat_dtorImpl
 
 
 
-JNIEXPORT jdoubleArray JNICALL Java_com_hue_proxylib_VolumeDataRequestDouble_DataImpl
+JNIEXPORT jdoubleArray JNICALL Java_org_opengroup_openvds_VolumeDataRequestDouble_DataImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
 {
   JEnvPushPop
@@ -3044,7 +3044,7 @@ JNIEXPORT jdoubleArray JNICALL Java_com_hue_proxylib_VolumeDataRequestDouble_Dat
   return 0;
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_VolumeDataRequestDouble_dtorImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataRequestDouble_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
   HUE_JNI_TRY

@@ -28,7 +28,7 @@
 extern "C" {
 #endif
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataLayoutDescriptor_ctorImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor_ctorImpl
   (JNIEnv * env, jclass cls, jobject jproxyinterface)
 {
   JEnvPushPop
@@ -48,7 +48,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataLayoutDescriptor_ctorImp
 }
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataLayoutDescriptor_ctor2Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor_ctor2Impl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jlong brickSize, jint negativeMargin, jint positiveMargin, jint brickSize2DMultiplier, jlong lodLevels, jlong options, jint fullResolutionDimension)
 {
   JEnvPushPop
@@ -75,7 +75,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataLayoutDescriptor_ctor2Im
 }
 
 
-JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_VolumeDataLayoutDescriptor_IsValidImpl
+JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor_IsValidImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
 {
   JEnvPushPop
@@ -91,7 +91,7 @@ JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_VolumeDataLayoutDescriptor_IsVa
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataLayoutDescriptor_GetBrickSizeImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor_GetBrickSizeImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
 {
   JEnvPushPop
@@ -107,7 +107,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataLayoutDescriptor_GetBric
   return 0;
 }
 
-JNIEXPORT jint JNICALL Java_com_hue_proxylib_VolumeDataLayoutDescriptor_GetNegativeMarginImpl
+JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor_GetNegativeMarginImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
 {
   JEnvPushPop
@@ -123,7 +123,7 @@ JNIEXPORT jint JNICALL Java_com_hue_proxylib_VolumeDataLayoutDescriptor_GetNegat
   return 0;
 }
 
-JNIEXPORT jint JNICALL Java_com_hue_proxylib_VolumeDataLayoutDescriptor_GetPositiveMarginImpl
+JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor_GetPositiveMarginImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
 {
   JEnvPushPop
@@ -139,7 +139,7 @@ JNIEXPORT jint JNICALL Java_com_hue_proxylib_VolumeDataLayoutDescriptor_GetPosit
   return 0;
 }
 
-JNIEXPORT jint JNICALL Java_com_hue_proxylib_VolumeDataLayoutDescriptor_GetBrickSizeMultiplier2DImpl
+JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor_GetBrickSizeMultiplier2DImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
 {
   JEnvPushPop
@@ -155,7 +155,7 @@ JNIEXPORT jint JNICALL Java_com_hue_proxylib_VolumeDataLayoutDescriptor_GetBrick
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataLayoutDescriptor_GetLODLevelsImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor_GetLODLevelsImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
 {
   JEnvPushPop
@@ -171,7 +171,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataLayoutDescriptor_GetLODL
   return 0;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_VolumeDataLayoutDescriptor_IsCreate2DLODsImpl
+JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor_IsCreate2DLODsImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
 {
   JEnvPushPop
@@ -187,7 +187,7 @@ JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_VolumeDataLayoutDescriptor_IsCr
   return 0;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_VolumeDataLayoutDescriptor_IsForceFullResolutionDimensionImpl
+JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor_IsForceFullResolutionDimensionImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
 {
   JEnvPushPop
@@ -203,7 +203,7 @@ JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_VolumeDataLayoutDescriptor_IsFo
   return 0;
 }
 
-JNIEXPORT jint JNICALL Java_com_hue_proxylib_VolumeDataLayoutDescriptor_GetFullResolutionDimensionImpl
+JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor_GetFullResolutionDimensionImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
 {
   JEnvPushPop
@@ -219,7 +219,7 @@ JNIEXPORT jint JNICALL Java_com_hue_proxylib_VolumeDataLayoutDescriptor_GetFullR
   return 0;
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_VolumeDataLayoutDescriptor_dtorImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
   HUE_JNI_TRY

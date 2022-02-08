@@ -643,10 +643,7 @@ def create_jni_proto(retval: Param, class_name: str, method_name: str, extra_arg
     assert isinstance(retval, Param)
     return_type = cpp_to_jni_type(retval.canonical_type)
     args = create_jni_arglist(class_name, extra_args, is_include_proxyinterface_arg, is_static_method)
-    if class_name == 'HueLicenseAPIHelper':
-        proto = "\nJNIEXPORT {} JNICALL Java_com_hue_licenseapi_{}_{}Impl\n  ({})".format(return_type, class_name, method_name, args)
-    else:
-        proto = "\nJNIEXPORT {} JNICALL Java_com_hue_proxylib_{}_{}Impl\n  ({})".format(return_type, class_name, method_name, args)
+    proto = "\nJNIEXPORT {} JNICALL Java_org_opengroup_openvds_{}_{}Impl\n  ({})".format(return_type, class_name, method_name, args)
     return proto
 
 def _override_fullname(scope: Scope, class_name: str) -> str:

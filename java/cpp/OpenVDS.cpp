@@ -28,7 +28,7 @@
 extern "C" {
 #endif
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VDS_ctorImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VDS_ctorImpl
   (JNIEnv * env, jclass cls, jobject jproxyinterface)
 {
   JEnvPushPop
@@ -48,7 +48,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VDS_ctorImpl
 }
 
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_VDS_dtorImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_VDS_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
   HUE_JNI_TRY
@@ -61,7 +61,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_VDS_dtorImpl
 
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_IOManager_ctorImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IOManager_ctorImpl
   (JNIEnv * env, jclass cls, jobject jproxyinterface)
 {
   JEnvPushPop
@@ -81,7 +81,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_IOManager_ctorImpl
 }
 
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_IOManager_dtorImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_IOManager_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
   HUE_JNI_TRY
@@ -96,7 +96,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_IOManager_dtorImpl
 
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_AWSOpenOptions_ctorImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_AWSOpenOptions_ctorImpl
   (JNIEnv * env, jclass cls, jobject jproxyinterface)
 {
   JEnvPushPop
@@ -116,7 +116,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_AWSOpenOptions_ctorImpl
 }
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_AWSOpenOptions_ctor2Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_AWSOpenOptions_ctor2Impl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring bucket, jstring key, jstring region, jstring endpointOverride, jint connectionTimeoutMs, jint requestTimeoutMs, jboolean disableInitApi)
 {
   JEnvPushPop
@@ -143,7 +143,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_AWSOpenOptions_ctor2Impl
 }
 
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_AWSOpenOptions_dtorImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_AWSOpenOptions_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
   HUE_JNI_TRY
@@ -156,7 +156,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_AWSOpenOptions_dtorImpl
 
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_AzureOpenOptions_ctorImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_AzureOpenOptions_ctorImpl
   (JNIEnv * env, jclass cls, jobject jproxyinterface)
 {
   JEnvPushPop
@@ -176,7 +176,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_AzureOpenOptions_ctorImpl
 }
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_AzureOpenOptions_ctor2Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_AzureOpenOptions_ctor2Impl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring connectionString, jstring container, jstring blob)
 {
   JEnvPushPop
@@ -199,7 +199,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_AzureOpenOptions_ctor2Impl
 }
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_AzureOpenOptions_ctor3Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_AzureOpenOptions_ctor3Impl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring connectionString, jstring container, jstring blob, jint parallelism_factor, jint max_execution_time)
 {
   JEnvPushPop
@@ -224,7 +224,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_AzureOpenOptions_ctor3Impl
 }
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_AzureOpenOptions_AzureOpenOptionsBearerImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_AzureOpenOptions_AzureOpenOptionsBearerImpl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring accountName, jstring bearerToken, jstring container, jstring blob)
 {
   JEnvPushPop
@@ -244,7 +244,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_AzureOpenOptions_AzureOpenOptionsB
   return 0;
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_AzureOpenOptions_dtorImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_AzureOpenOptions_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
   HUE_JNI_TRY
@@ -257,7 +257,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_AzureOpenOptions_dtorImpl
 
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_AzurePresignedOpenOptions_ctorImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_AzurePresignedOpenOptions_ctorImpl
   (JNIEnv * env, jclass cls, jobject jproxyinterface)
 {
   JEnvPushPop
@@ -277,7 +277,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_AzurePresignedOpenOptions_ctorImpl
 }
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_AzurePresignedOpenOptions_ctor2Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_AzurePresignedOpenOptions_ctor2Impl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring baseUrl, jstring urlSuffix)
 {
   JEnvPushPop
@@ -297,7 +297,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_AzurePresignedOpenOptions_ctor2Imp
 }
 
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_AzurePresignedOpenOptions_dtorImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_AzurePresignedOpenOptions_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
   HUE_JNI_TRY
@@ -310,7 +310,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_AzurePresignedOpenOptions_dtorImpl
 
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GoogleCredentialsToken_ctorImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsToken_ctorImpl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring token)
 {
   JEnvPushPop
@@ -330,7 +330,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GoogleCredentialsToken_ctorImpl
 }
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GoogleCredentialsToken_ctor2Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsToken_ctor2Impl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring token)
 {
   JEnvPushPop
@@ -350,7 +350,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GoogleCredentialsToken_ctor2Impl
 }
 
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_GoogleCredentialsToken_dtorImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_GoogleCredentialsToken_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
   HUE_JNI_TRY
@@ -363,7 +363,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_GoogleCredentialsToken_dtorImpl
 
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GoogleCredentialsPath_ctorImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsPath_ctorImpl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring path)
 {
   JEnvPushPop
@@ -383,7 +383,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GoogleCredentialsPath_ctorImpl
 }
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GoogleCredentialsPath_ctor2Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsPath_ctor2Impl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring path)
 {
   JEnvPushPop
@@ -403,7 +403,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GoogleCredentialsPath_ctor2Impl
 }
 
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_GoogleCredentialsPath_dtorImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_GoogleCredentialsPath_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
   HUE_JNI_TRY
@@ -416,7 +416,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_GoogleCredentialsPath_dtorImpl
 
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GoogleCredentialsJson_ctorImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsJson_ctorImpl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring json)
 {
   JEnvPushPop
@@ -436,7 +436,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GoogleCredentialsJson_ctorImpl
 }
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GoogleCredentialsJson_ctor2Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsJson_ctor2Impl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring json)
 {
   JEnvPushPop
@@ -456,7 +456,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GoogleCredentialsJson_ctor2Impl
 }
 
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_GoogleCredentialsJson_dtorImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_GoogleCredentialsJson_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
   HUE_JNI_TRY
@@ -469,7 +469,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_GoogleCredentialsJson_dtorImpl
 
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GoogleCredentialsSignedUrl_ctorImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrl_ctorImpl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring region)
 {
   JEnvPushPop
@@ -489,7 +489,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GoogleCredentialsSignedUrl_ctorImp
 }
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GoogleCredentialsSignedUrl_ctor2Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrl_ctor2Impl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring region)
 {
   JEnvPushPop
@@ -509,7 +509,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GoogleCredentialsSignedUrl_ctor2Im
 }
 
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_GoogleCredentialsSignedUrl_dtorImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrl_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
   HUE_JNI_TRY
@@ -522,7 +522,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_GoogleCredentialsSignedUrl_dtorImpl
 
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GoogleCredentialsSignedUrlPath_ctorImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrlPath_ctorImpl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring region, jstring path)
 {
   JEnvPushPop
@@ -542,7 +542,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GoogleCredentialsSignedUrlPath_cto
 }
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GoogleCredentialsSignedUrlPath_ctor2Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrlPath_ctor2Impl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring region, jstring path)
 {
   JEnvPushPop
@@ -562,7 +562,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GoogleCredentialsSignedUrlPath_cto
 }
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GoogleCredentialsSignedUrlPath_ctor3Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrlPath_ctor3Impl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring region, jstring path)
 {
   JEnvPushPop
@@ -582,7 +582,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GoogleCredentialsSignedUrlPath_cto
 }
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GoogleCredentialsSignedUrlPath_ctor4Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrlPath_ctor4Impl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring region, jstring path)
 {
   JEnvPushPop
@@ -602,7 +602,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GoogleCredentialsSignedUrlPath_cto
 }
 
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_GoogleCredentialsSignedUrlPath_dtorImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrlPath_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
   HUE_JNI_TRY
@@ -615,7 +615,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_GoogleCredentialsSignedUrlPath_dtor
 
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GoogleCredentialsSignedUrlJson_ctorImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrlJson_ctorImpl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring region, jstring json)
 {
   JEnvPushPop
@@ -635,7 +635,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GoogleCredentialsSignedUrlJson_cto
 }
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GoogleCredentialsSignedUrlJson_ctor2Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrlJson_ctor2Impl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring region, jstring json)
 {
   JEnvPushPop
@@ -655,7 +655,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GoogleCredentialsSignedUrlJson_cto
 }
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GoogleCredentialsSignedUrlJson_ctor3Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrlJson_ctor3Impl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring region, jstring json)
 {
   JEnvPushPop
@@ -675,7 +675,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GoogleCredentialsSignedUrlJson_cto
 }
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GoogleCredentialsSignedUrlJson_ctor4Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrlJson_ctor4Impl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring region, jstring json)
 {
   JEnvPushPop
@@ -695,7 +695,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GoogleCredentialsSignedUrlJson_cto
 }
 
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_GoogleCredentialsSignedUrlJson_dtorImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrlJson_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
   HUE_JNI_TRY
@@ -708,7 +708,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_GoogleCredentialsSignedUrlJson_dtor
 
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GoogleOpenOptions_ctorImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_ctorImpl
   (JNIEnv * env, jclass cls, jobject jproxyinterface)
 {
   JEnvPushPop
@@ -728,7 +728,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GoogleOpenOptions_ctorImpl
 }
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GoogleOpenOptions_ctor2Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_ctor2Impl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring bucket, jstring pathPrefix)
 {
   JEnvPushPop
@@ -748,7 +748,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GoogleOpenOptions_ctor2Impl
 }
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GoogleOpenOptions_ctor3Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_ctor3Impl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring bucket, jstring pathPrefix, jlong credentials)
 {
   JEnvPushPop
@@ -771,7 +771,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GoogleOpenOptions_ctor3Impl
 }
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GoogleOpenOptions_ctor4Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_ctor4Impl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring bucket, jstring pathPrefix, jlong credentials)
 {
   JEnvPushPop
@@ -794,7 +794,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GoogleOpenOptions_ctor4Impl
 }
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GoogleOpenOptions_ctor5Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_ctor5Impl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring bucket, jstring pathPrefix, jlong credentials)
 {
   JEnvPushPop
@@ -817,7 +817,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GoogleOpenOptions_ctor5Impl
 }
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GoogleOpenOptions_ctor6Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_ctor6Impl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring bucket, jstring pathPrefix, jlong credentials)
 {
   JEnvPushPop
@@ -840,7 +840,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GoogleOpenOptions_ctor6Impl
 }
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GoogleOpenOptions_ctor7Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_ctor7Impl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring bucket, jstring pathPrefix, jlong credentials)
 {
   JEnvPushPop
@@ -863,7 +863,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GoogleOpenOptions_ctor7Impl
 }
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GoogleOpenOptions_ctor8Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_ctor8Impl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring bucket, jstring pathPrefix, jlong credentials)
 {
   JEnvPushPop
@@ -886,7 +886,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GoogleOpenOptions_ctor8Impl
 }
 
 
-JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_GoogleOpenOptions_SetSignedUrlImpl
+JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_SetSignedUrlImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
 {
   JEnvPushPop
@@ -902,7 +902,7 @@ JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_GoogleOpenOptions_SetSignedUrlI
   return 0;
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_GoogleOpenOptions_dtorImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
   HUE_JNI_TRY
@@ -915,7 +915,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_GoogleOpenOptions_dtorImpl
 
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_DMSOpenOptions_ctorImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_DMSOpenOptions_ctorImpl
   (JNIEnv * env, jclass cls, jobject jproxyinterface)
 {
   JEnvPushPop
@@ -935,7 +935,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_DMSOpenOptions_ctorImpl
 }
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_DMSOpenOptions_ctor2Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_DMSOpenOptions_ctor2Impl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring sdAuthorityUrl, jstring sdApiKey, jstring sdToken, jstring datasetPath, jint logLevel, jstring authTokenUrl, jstring refreshToken, jstring clientId, jstring clientSecret, jstring scopes, jboolean useFileNameForSingleFileDatasets)
 {
   JEnvPushPop
@@ -966,7 +966,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_DMSOpenOptions_ctor2Impl
 }
 
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_DMSOpenOptions_dtorImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_DMSOpenOptions_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
   HUE_JNI_TRY
@@ -979,7 +979,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_DMSOpenOptions_dtorImpl
 
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_HttpOpenOptions_ctorImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_HttpOpenOptions_ctorImpl
   (JNIEnv * env, jclass cls, jobject jproxyinterface)
 {
   JEnvPushPop
@@ -999,7 +999,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_HttpOpenOptions_ctorImpl
 }
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_HttpOpenOptions_ctor2Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_HttpOpenOptions_ctor2Impl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring url)
 {
   JEnvPushPop
@@ -1019,7 +1019,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_HttpOpenOptions_ctor2Impl
 }
 
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_HttpOpenOptions_dtorImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_HttpOpenOptions_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
   HUE_JNI_TRY
@@ -1032,7 +1032,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_HttpOpenOptions_dtorImpl
 
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_InMemoryOpenOptions_ctorImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_InMemoryOpenOptions_ctorImpl
   (JNIEnv * env, jclass cls, jobject jproxyinterface)
 {
   JEnvPushPop
@@ -1052,7 +1052,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_InMemoryOpenOptions_ctorImpl
 }
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_InMemoryOpenOptions_ctor2Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_InMemoryOpenOptions_ctor2Impl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring name)
 {
   JEnvPushPop
@@ -1072,7 +1072,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_InMemoryOpenOptions_ctor2Impl
 }
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_InMemoryOpenOptions_ctor3Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_InMemoryOpenOptions_ctor3Impl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring name)
 {
   JEnvPushPop
@@ -1092,7 +1092,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_InMemoryOpenOptions_ctor3Impl
 }
 
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_InMemoryOpenOptions_dtorImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_InMemoryOpenOptions_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
   HUE_JNI_TRY
@@ -1105,7 +1105,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_InMemoryOpenOptions_dtorImpl
 
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VDSFileOpenOptions_ctorImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VDSFileOpenOptions_ctorImpl
   (JNIEnv * env, jclass cls, jobject jproxyinterface)
 {
   JEnvPushPop
@@ -1125,7 +1125,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VDSFileOpenOptions_ctorImpl
 }
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VDSFileOpenOptions_ctor2Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VDSFileOpenOptions_ctor2Impl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring fileName)
 {
   JEnvPushPop
@@ -1145,7 +1145,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VDSFileOpenOptions_ctor2Impl
 }
 
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_VDSFileOpenOptions_dtorImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_VDSFileOpenOptions_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
   HUE_JNI_TRY
@@ -1160,7 +1160,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_VDSFileOpenOptions_dtorImpl
 
 
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_OpenVDS_CreateOpenOptionsImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_CreateOpenOptionsImpl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring url, jstring connectionString, jlong error)
 {
   JEnvPushPop
@@ -1179,7 +1179,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_OpenVDS_CreateOpenOptionsImpl
   return 0;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_OpenVDS_IsSupportedProtocolImpl
+JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_OpenVDS_IsSupportedProtocolImpl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring url)
 {
   JEnvPushPop
@@ -1194,7 +1194,7 @@ JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_OpenVDS_IsSupportedProtocolImpl
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_OpenVDS_OpenImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_OpenImpl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring url, jstring connectionString, jlong error)
 {
   JEnvPushPop
@@ -1213,7 +1213,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_OpenVDS_OpenImpl
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_OpenVDS_OpenWithAdaptiveCompressionToleranceImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_OpenWithAdaptiveCompressionToleranceImpl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring url, jstring connectionString, jfloat waveletAdaptiveTolerance, jlong error)
 {
   JEnvPushPop
@@ -1233,7 +1233,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_OpenVDS_OpenWithAdaptiveCompressio
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_OpenVDS_OpenWithAdaptiveCompressionRatioImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_OpenWithAdaptiveCompressionRatioImpl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring url, jstring connectionString, jfloat waveletAdaptiveRatio, jlong error)
 {
   JEnvPushPop
@@ -1253,7 +1253,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_OpenVDS_OpenWithAdaptiveCompressio
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_OpenVDS_Open2Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Open2Impl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring url, jlong error)
 {
   JEnvPushPop
@@ -1269,7 +1269,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_OpenVDS_Open2Impl
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_OpenVDS_Open3Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Open3Impl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jlong options, jlong error)
 {
   JEnvPushPop
@@ -1285,7 +1285,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_OpenVDS_Open3Impl
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_OpenVDS_Open4Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Open4Impl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jlong ioManager, jlong error)
 {
   JEnvPushPop
@@ -1301,7 +1301,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_OpenVDS_Open4Impl
   return 0;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_OpenVDS_IsCompressionMethodSupportedImpl
+JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_OpenVDS_IsCompressionMethodSupportedImpl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jlong compressionMethod)
 {
   JEnvPushPop
@@ -1316,7 +1316,7 @@ JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_OpenVDS_IsCompressionMethodSupp
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_OpenVDS_CreateImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_CreateImpl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring url, jstring connectionString, jlong layoutDescriptor, jlongArray axisDescriptors, jlongArray channelDescriptors, jlong metadata, jlong compressionMethod, jfloat compressionTolerance, jlong error)
 {
   JEnvPushPop
@@ -1341,7 +1341,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_OpenVDS_CreateImpl
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_OpenVDS_Create2Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Create2Impl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring url, jstring connectionString, jlong layoutDescriptor, jlongArray axisDescriptors, jlongArray channelDescriptors, jlong metadata, jlong error)
 {
   JEnvPushPop
@@ -1364,7 +1364,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_OpenVDS_Create2Impl
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_OpenVDS_Create3Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Create3Impl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring url, jlong layoutDescriptor, jlongArray axisDescriptors, jlongArray channelDescriptors, jlong metadata, jlong compressionMethod, jfloat compressionTolerance, jlong error)
 {
   JEnvPushPop
@@ -1388,7 +1388,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_OpenVDS_Create3Impl
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_OpenVDS_Create4Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Create4Impl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring url, jlong layoutDescriptor, jlongArray axisDescriptors, jlongArray channelDescriptors, jlong metadata, jlong error)
 {
   JEnvPushPop
@@ -1410,7 +1410,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_OpenVDS_Create4Impl
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_OpenVDS_Create5Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Create5Impl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jlong options, jlong layoutDescriptor, jlongArray axisDescriptors, jlongArray channelDescriptors, jlong metadata, jlong compressionMethod, jfloat compressionTolerance, jlong error)
 {
   JEnvPushPop
@@ -1434,7 +1434,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_OpenVDS_Create5Impl
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_OpenVDS_Create6Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Create6Impl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jlong options, jlong layoutDescriptor, jlongArray axisDescriptors, jlongArray channelDescriptors, jlong metadata, jlong error)
 {
   JEnvPushPop
@@ -1456,7 +1456,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_OpenVDS_Create6Impl
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_OpenVDS_Create7Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Create7Impl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jlong ioManager, jlong layoutDescriptor, jlongArray axisDescriptors, jlongArray channelDescriptors, jlong metadata, jlong compressionMethod, jfloat compressionTolerance, jlong error)
 {
   JEnvPushPop
@@ -1480,7 +1480,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_OpenVDS_Create7Impl
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_OpenVDS_Create8Impl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Create8Impl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jlong ioManager, jlong layoutDescriptor, jlongArray axisDescriptors, jlongArray channelDescriptors, jlong metadata, jlong error)
 {
   JEnvPushPop
@@ -1502,7 +1502,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_OpenVDS_Create8Impl
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_OpenVDS_GetLayoutImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_GetLayoutImpl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jlong handle)
 {
   JEnvPushPop
@@ -1518,7 +1518,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_OpenVDS_GetLayoutImpl
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_OpenVDS_GetAccessManagerImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_GetAccessManagerImpl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jlong handle)
 {
   JEnvPushPop
@@ -1534,7 +1534,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_OpenVDS_GetAccessManagerImpl
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_OpenVDS_GetCompressionMethodImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_GetCompressionMethodImpl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jlong handle)
 {
   JEnvPushPop
@@ -1549,7 +1549,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_OpenVDS_GetCompressionMethodImpl
   return 0;
 }
 
-JNIEXPORT jfloat JNICALL Java_com_hue_proxylib_OpenVDS_GetCompressionToleranceImpl
+JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_OpenVDS_GetCompressionToleranceImpl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jlong handle)
 {
   JEnvPushPop
@@ -1564,7 +1564,7 @@ JNIEXPORT jfloat JNICALL Java_com_hue_proxylib_OpenVDS_GetCompressionToleranceIm
   return 0;
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_OpenVDS_CloseImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_OpenVDS_CloseImpl
   (JNIEnv * env, jclass cls, jobject jproxyinterface, jlong handle)
 {
   JEnvPushPop
@@ -1577,7 +1577,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_OpenVDS_CloseImpl
   HUE_JNI_CATCH
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_OpenVDS_GetGlobalStateImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_GetGlobalStateImpl
   (JNIEnv * env, jclass cls, jobject jproxyinterface)
 {
   JEnvPushPop
@@ -1593,7 +1593,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_OpenVDS_GetGlobalStateImpl
   return 0;
 }
 
-JNIEXPORT jstring JNICALL Java_com_hue_proxylib_OpenVDS_GetOpenVDSNameImpl
+JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_OpenVDS_GetOpenVDSNameImpl
   (JNIEnv * env, jclass cls, jobject jproxyinterface)
 {
   JEnvPushPop
@@ -1608,7 +1608,7 @@ JNIEXPORT jstring JNICALL Java_com_hue_proxylib_OpenVDS_GetOpenVDSNameImpl
   return 0;
 }
 
-JNIEXPORT jstring JNICALL Java_com_hue_proxylib_OpenVDS_GetOpenVDSVersionImpl
+JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_OpenVDS_GetOpenVDSVersionImpl
   (JNIEnv * env, jclass cls, jobject jproxyinterface)
 {
   JEnvPushPop
@@ -1623,7 +1623,7 @@ JNIEXPORT jstring JNICALL Java_com_hue_proxylib_OpenVDS_GetOpenVDSVersionImpl
   return 0;
 }
 
-JNIEXPORT jstring JNICALL Java_com_hue_proxylib_OpenVDS_GetOpenVDSRevisionImpl
+JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_OpenVDS_GetOpenVDSRevisionImpl
   (JNIEnv * env, jclass cls, jobject jproxyinterface)
 {
   JEnvPushPop

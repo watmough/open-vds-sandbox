@@ -28,7 +28,7 @@
 extern "C" {
 #endif
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataLayout_GetContentsHashImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetContentsHashImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
 {
   JEnvPushPop
@@ -44,7 +44,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataLayout_GetContentsHashIm
   return 0;
 }
 
-JNIEXPORT jint JNICALL Java_com_hue_proxylib_VolumeDataLayout_GetDimensionalityImpl
+JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetDimensionalityImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
 {
   JEnvPushPop
@@ -60,7 +60,7 @@ JNIEXPORT jint JNICALL Java_com_hue_proxylib_VolumeDataLayout_GetDimensionalityI
   return 0;
 }
 
-JNIEXPORT jint JNICALL Java_com_hue_proxylib_VolumeDataLayout_GetChannelCountImpl
+JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetChannelCountImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
 {
   JEnvPushPop
@@ -76,7 +76,7 @@ JNIEXPORT jint JNICALL Java_com_hue_proxylib_VolumeDataLayout_GetChannelCountImp
   return 0;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_VolumeDataLayout_IsChannelAvailableImpl
+JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeDataLayout_IsChannelAvailableImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring channelName)
 {
   JEnvPushPop
@@ -92,7 +92,7 @@ JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_VolumeDataLayout_IsChannelAvail
   return 0;
 }
 
-JNIEXPORT jint JNICALL Java_com_hue_proxylib_VolumeDataLayout_GetChannelIndexImpl
+JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetChannelIndexImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring channelName)
 {
   JEnvPushPop
@@ -108,7 +108,7 @@ JNIEXPORT jint JNICALL Java_com_hue_proxylib_VolumeDataLayout_GetChannelIndexImp
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataLayout_GetLayoutDescriptorImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetLayoutDescriptorImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
 {
   JEnvPushPop
@@ -125,7 +125,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataLayout_GetLayoutDescript
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataLayout_GetChannelDescriptorImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetChannelDescriptorImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jint channel)
 {
   JEnvPushPop
@@ -142,7 +142,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataLayout_GetChannelDescrip
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataLayout_GetAxisDescriptorImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetAxisDescriptorImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jint dimension)
 {
   JEnvPushPop
@@ -159,7 +159,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataLayout_GetAxisDescriptor
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataLayout_GetChannelFormatImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetChannelFormatImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jint channel)
 {
   JEnvPushPop
@@ -175,7 +175,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataLayout_GetChannelFormatI
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataLayout_GetChannelComponentsImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetChannelComponentsImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jint channel)
 {
   JEnvPushPop
@@ -191,7 +191,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataLayout_GetChannelCompone
   return 0;
 }
 
-JNIEXPORT jstring JNICALL Java_com_hue_proxylib_VolumeDataLayout_GetChannelNameImpl
+JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetChannelNameImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jint channel)
 {
   JEnvPushPop
@@ -207,7 +207,7 @@ JNIEXPORT jstring JNICALL Java_com_hue_proxylib_VolumeDataLayout_GetChannelNameI
   return 0;
 }
 
-JNIEXPORT jstring JNICALL Java_com_hue_proxylib_VolumeDataLayout_GetChannelUnitImpl
+JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetChannelUnitImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jint channel)
 {
   JEnvPushPop
@@ -223,7 +223,7 @@ JNIEXPORT jstring JNICALL Java_com_hue_proxylib_VolumeDataLayout_GetChannelUnitI
   return 0;
 }
 
-JNIEXPORT jfloat JNICALL Java_com_hue_proxylib_VolumeDataLayout_GetChannelValueRangeMinImpl
+JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetChannelValueRangeMinImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jint channel)
 {
   JEnvPushPop
@@ -239,7 +239,7 @@ JNIEXPORT jfloat JNICALL Java_com_hue_proxylib_VolumeDataLayout_GetChannelValueR
   return 0;
 }
 
-JNIEXPORT jfloat JNICALL Java_com_hue_proxylib_VolumeDataLayout_GetChannelValueRangeMaxImpl
+JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetChannelValueRangeMaxImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jint channel)
 {
   JEnvPushPop
@@ -255,7 +255,7 @@ JNIEXPORT jfloat JNICALL Java_com_hue_proxylib_VolumeDataLayout_GetChannelValueR
   return 0;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_VolumeDataLayout_IsChannelDiscreteImpl
+JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeDataLayout_IsChannelDiscreteImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jint channel)
 {
   JEnvPushPop
@@ -271,7 +271,7 @@ JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_VolumeDataLayout_IsChannelDiscr
   return 0;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_VolumeDataLayout_IsChannelRenderableImpl
+JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeDataLayout_IsChannelRenderableImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jint channel)
 {
   JEnvPushPop
@@ -287,7 +287,7 @@ JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_VolumeDataLayout_IsChannelRende
   return 0;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_VolumeDataLayout_IsChannelAllowingLossyCompressionImpl
+JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeDataLayout_IsChannelAllowingLossyCompressionImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jint channel)
 {
   JEnvPushPop
@@ -303,7 +303,7 @@ JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_VolumeDataLayout_IsChannelAllow
   return 0;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_VolumeDataLayout_IsChannelUseZipForLosslessCompressionImpl
+JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeDataLayout_IsChannelUseZipForLosslessCompressionImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jint channel)
 {
   JEnvPushPop
@@ -319,7 +319,7 @@ JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_VolumeDataLayout_IsChannelUseZi
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataLayout_GetChannelMappingImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetChannelMappingImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jint channel)
 {
   JEnvPushPop
@@ -335,7 +335,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_VolumeDataLayout_GetChannelMapping
   return 0;
 }
 
-JNIEXPORT jint JNICALL Java_com_hue_proxylib_VolumeDataLayout_GetDimensionNumSamplesImpl
+JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetDimensionNumSamplesImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jint dimension)
 {
   JEnvPushPop
@@ -351,7 +351,7 @@ JNIEXPORT jint JNICALL Java_com_hue_proxylib_VolumeDataLayout_GetDimensionNumSam
   return 0;
 }
 
-JNIEXPORT jstring JNICALL Java_com_hue_proxylib_VolumeDataLayout_GetDimensionNameImpl
+JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetDimensionNameImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jint dimension)
 {
   JEnvPushPop
@@ -367,7 +367,7 @@ JNIEXPORT jstring JNICALL Java_com_hue_proxylib_VolumeDataLayout_GetDimensionNam
   return 0;
 }
 
-JNIEXPORT jstring JNICALL Java_com_hue_proxylib_VolumeDataLayout_GetDimensionUnitImpl
+JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetDimensionUnitImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jint dimension)
 {
   JEnvPushPop
@@ -383,7 +383,7 @@ JNIEXPORT jstring JNICALL Java_com_hue_proxylib_VolumeDataLayout_GetDimensionUni
   return 0;
 }
 
-JNIEXPORT jfloat JNICALL Java_com_hue_proxylib_VolumeDataLayout_GetDimensionMinImpl
+JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetDimensionMinImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jint dimension)
 {
   JEnvPushPop
@@ -399,7 +399,7 @@ JNIEXPORT jfloat JNICALL Java_com_hue_proxylib_VolumeDataLayout_GetDimensionMinI
   return 0;
 }
 
-JNIEXPORT jfloat JNICALL Java_com_hue_proxylib_VolumeDataLayout_GetDimensionMaxImpl
+JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetDimensionMaxImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jint dimension)
 {
   JEnvPushPop
@@ -415,7 +415,7 @@ JNIEXPORT jfloat JNICALL Java_com_hue_proxylib_VolumeDataLayout_GetDimensionMaxI
   return 0;
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_VolumeDataLayout_GetVDSIJKGridDefinitionFromMetadataImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetVDSIJKGridDefinitionFromMetadataImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
 {
   JEnvPushPop
@@ -430,7 +430,7 @@ JNIEXPORT void JNICALL Java_com_hue_proxylib_VolumeDataLayout_GetVDSIJKGridDefin
   HUE_JNI_CATCH
 }
 
-JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_VolumeDataLayout_IsChannelUseNoValueImpl
+JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeDataLayout_IsChannelUseNoValueImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jint channel)
 {
   JEnvPushPop
@@ -446,7 +446,7 @@ JNIEXPORT jboolean JNICALL Java_com_hue_proxylib_VolumeDataLayout_IsChannelUseNo
   return 0;
 }
 
-JNIEXPORT jfloat JNICALL Java_com_hue_proxylib_VolumeDataLayout_GetChannelNoValueImpl
+JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetChannelNoValueImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jint channel)
 {
   JEnvPushPop
@@ -462,7 +462,7 @@ JNIEXPORT jfloat JNICALL Java_com_hue_proxylib_VolumeDataLayout_GetChannelNoValu
   return 0;
 }
 
-JNIEXPORT jfloat JNICALL Java_com_hue_proxylib_VolumeDataLayout_GetChannelIntegerScaleImpl
+JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetChannelIntegerScaleImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jint channel)
 {
   JEnvPushPop
@@ -478,7 +478,7 @@ JNIEXPORT jfloat JNICALL Java_com_hue_proxylib_VolumeDataLayout_GetChannelIntege
   return 0;
 }
 
-JNIEXPORT jfloat JNICALL Java_com_hue_proxylib_VolumeDataLayout_GetChannelIntegerOffsetImpl
+JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetChannelIntegerOffsetImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jint channel)
 {
   JEnvPushPop
@@ -494,7 +494,7 @@ JNIEXPORT jfloat JNICALL Java_com_hue_proxylib_VolumeDataLayout_GetChannelIntege
   return 0;
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_VolumeDataLayout_dtorImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataLayout_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
   HUE_JNI_TRY

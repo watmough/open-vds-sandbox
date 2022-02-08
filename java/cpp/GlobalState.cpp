@@ -28,7 +28,7 @@
 extern "C" {
 #endif
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GlobalState_GetBytesDownloadedImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GlobalState_GetBytesDownloadedImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong connectionType)
 {
   JEnvPushPop
@@ -44,7 +44,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GlobalState_GetBytesDownloadedImpl
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GlobalState_GetChunksDownloadedImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GlobalState_GetChunksDownloadedImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong connectionType)
 {
   JEnvPushPop
@@ -60,7 +60,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GlobalState_GetChunksDownloadedImp
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GlobalState_GetBytesDecompressedImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GlobalState_GetBytesDecompressedImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong connectionType)
 {
   JEnvPushPop
@@ -76,7 +76,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GlobalState_GetBytesDecompressedIm
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GlobalState_GetChunksDecompressedImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GlobalState_GetChunksDecompressedImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong connectionType)
 {
   JEnvPushPop
@@ -92,7 +92,7 @@ JNIEXPORT jlong JNICALL Java_com_hue_proxylib_GlobalState_GetChunksDecompressedI
   return 0;
 }
 
-JNIEXPORT void JNICALL Java_com_hue_proxylib_GlobalState_dtorImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_GlobalState_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
   HUE_JNI_TRY
