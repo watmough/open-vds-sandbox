@@ -173,6 +173,12 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
+if (MSVC)
+  set(DISABLE_WARNING_FLAG "/W0 /WX-")
+else()
+  set(DISABLE_WARNING_FLAG "-w")
+endif()
+
 define_property(GLOBAL PROPERTY OPENVDS_RUNTIME_LIBS_RELEASE BRIEF_DOCS "Runtime libraries" FULL_DOCS "Files that will be copied to test folders")
 define_property(GLOBAL PROPERTY OPENVDS_RUNTIME_LIBS_DEBUG   BRIEF_DOCS "Runtime libraries" FULL_DOCS "Files that will be copied to test folders")
 define_property(GLOBAL PROPERTY OPENVDS_LINK_LIBRARIES_RELEASE BRIEF_DOCS "OpenVDS link libraries" FULL_DOCS "Files OpenVDS will link with")
