@@ -509,7 +509,7 @@ class VolumeDataAccessManager(object):
     if data_out is None:
       data_out = self.allocateVolumeSamplesBuffer(len(samplePositions), channel)
     else:
-      if data_out.nbytes < self.getVolumeSamplesBufferSize(sampleCount, channel):
+      if data_out.nbytes < self.getVolumeSamplesBufferSize(len(samplePositions), channel):
         raise ValueError("output array is too small to hold the requested data with format {}".format(str(VoxelFormat.Format_R32)))
     req = VolumeDataRequest(
       data_out            = data_out,
@@ -519,7 +519,7 @@ class VolumeDataAccessManager(object):
       format              = VoxelFormat.Format_R32,
       replacementNoValue  = replacementNoValue,
       interpolationMethod = interpolationMethod)
-    req.samplePositions = _ndarraypositions(arr)
+    req.samplePositions = _ndarraypositions(samplePositions)
     req._request = self._manager.requestVolumeSamples(
                     req.data_out, 
                     req.dimensionsND,
