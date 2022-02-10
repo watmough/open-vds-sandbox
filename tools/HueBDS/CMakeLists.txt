@@ -15,4 +15,5 @@ target_include_directories(HueBDS PRIVATE ${PROJECT_SOURCE_DIR}/src/OpenVDS ${PR
 target_compile_definitions(HueBDS PRIVATE _CRT_SECURE_NO_WARNINGS=1 OPENVDS_STATIC_DEFINE)
 compileInTarget(HueBDS fmt::fmt)
 compileInTarget(HueBDS jsoncpp_lib_static)
+string(REPLACE " " ";" DISABLE_WARNING_FLAG ${DISABLE_WARNING_FLAG})
 target_compile_options(HueBDS PRIVATE ${DISABLE_WARNING_FLAG})
