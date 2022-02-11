@@ -15,18 +15,23 @@ REPLACE_PATTERNS = {
     'int projectedDimensions':  'long projectedDimensions',
     'jobject jproxyinterface, ': '',
     ', jproxyinterface': '',
+    'ProxyInterface.getInstanceSafe(), ': '',
+    'ProxyInterface proxyInterface, ': '',
     'com_hue_proxylib': 'org_opengroup_openvds',
+    'com.hue.proxylib': 'org.opengroup.openvds',
 }
 
 def main():
-    auto_update = '-u' in sys.argv[1:]
+    force_update = '-f' in sys.argv[1:]
+    auto_update = '-u' in sys.argv[1:] or force_update
     cpp_files = glob.glob('javagen_templates/*.cpp')
     java_files = glob.glob('javagen_templates/*.java')
     templates = cpp_files + java_files
-    any_errors = False
     all_patterns = ILLEGAL_PATTERNS + list(REPLACE_PATTERNS.keys())
+    any_errors = False
     for t in templates:
         rewrite = False
+        template_ok = True
         lines = []
         with open(t, 'r') as file:
             lines = file.readlines()
@@ -42,10 +47,14 @@ def main():
                 for p in all_patterns:
                     if p in line:
                         print(f'Illegal pattern "{p}" found in {t}, line {lineno + 1}', file=sys.stderr)
-                        any_errors = True
+                        template_ok = False
         if rewrite:
-            with open(t, 'w') as outfile:
-                outfile.writelines(lines)
+            if template_ok or force_update:
+                with open(t, 'w') as outfile:
+                    outfile.writelines(lines)
+            else:
+                print('Automatic update did not fix all errors in {t}. Invoke this script with -f to force update anyway.', sys.stdout)
+        any_errors = any_errors or not template_ok
     if any_errors:
         print('Invoke this script with -u to try to automatically update templates.', file=sys.stdout)
     
