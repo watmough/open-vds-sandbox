@@ -1,6 +1,6 @@
 /****************************************************************************
-** Copyright 2019 The Open Group
-** Copyright 2019 Bluware, Inc.
+** Copyright 2022 The Open Group
+** Copyright 2022 Bluware, Inc.
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
 ** limitations under the License.
 ****************************************************************************/
 
-#ifndef WAVELETADAPTIVELL_H
-#define WAVELETADAPTIVELL_H
+#ifndef WAVELETADAPTIVELLDECOMPRESS_H
+#define WAVELETADAPTIVELLDECOMPRESS_H
 
 #include "WaveletTypes.h"
 
@@ -36,8 +36,8 @@ struct WaveletAdaptiveLL_DecodeIterator
 {
   int32_t dataVersion;
 
-  Wavelet_FastDecodeInsig *insig;
-  Wavelet_FastDecodeInsig *sig;
+  Wavelet_FastEncodeInsig *insig;
+  Wavelet_FastEncodeInsig *sig;
 
   int32_t *pos;
   const uint8_t *compiledTransformData;
@@ -53,6 +53,9 @@ struct WaveletAdaptiveLL_DecodeIterator
 
   uint8_t *stream;
 
+  const float *maxChildrenBuffer;
+  const float *maxChildrenChildrenBuffer;
+
   int32_t sizeX;
   int32_t sizeY;
   int32_t sizeZ;
@@ -60,7 +63,6 @@ struct WaveletAdaptiveLL_DecodeIterator
   int32_t maxSizeX;
   int32_t maxSizeXY;
   int32_t maxChildren;
-  int32_t maxPixel;
 
   int32_t firstSubBand[8];
 
@@ -91,14 +93,16 @@ struct WaveletAdaptiveLL_DecodeIterator
   int32_t pixelSetPixelInsignificantCount;
 };
 
-WaveletAdaptiveLL_DecodeIterator WaveletAdaptiveLL_CreateDecodeIterator(int dataVersion, uint8_t *streamCPU, float *pictureCPU, int dimensions, int sizeX, int sizeY, int sizeZ,
+WaveletAdaptiveLL_DecodeIterator WaveletAdaptiveLLDecompress_CreateDecodeIterator(int dataVersion, uint8_t *stream, float *picture, int dimensions, int sizeX, int sizeY, int sizeZ,
                                                                         const float threshold, const float startThreshold, int *transformMask, Wavelet_TransformData *transformData, int transformDataCount,
                                                                         Wavelet_PixelSetChildren *pixelSetChildren, int pixelSetChildrenCount, Wavelet_PixelSetPixel *pixelSetPixelInSignificant, int pixelSetPixelInsignificantCount,
-                                                                        int maxSizeX, int maxSizeXY, uint8_t *tempBufferCPU, int maxChildren, int maxPixels, int decompressLevel, bool isInteger);
+                                                                        float* maxChildrenBuffer, float* maxChildrenChildrenBuffer, int maxSizeX, int maxSizeXY, uint8_t* &tempBuffer, int maxChildren, int maxPixels, int decompressLevel, bool isInteger);
 
-int32_t WaveletAdaptiveLL_DecompressAdaptive(WaveletAdaptiveLL_DecodeIterator decodeIterator, DecompressAdaptiveMode decompressAdaptiveMode);
-int32_t WaveletAdaptiveLL_DecompressLossless(uint8_t *in, float *pic, int32_t sizeX, int32_t sizeY, int32_t sizeZ, int32_t allocatedSizeX, int32_t allocatedSizeXY);
-bool    WaveletAdaptiveLL_IsWaveletStreamEncodedWithBug(Wavelet_TransformData *transformData, int transformDataCount, int *transformMask);
+bool WaveletAdaptiveLL_IsWaveletStreamEncodedWithBug(Wavelet_TransformData* transformData, int transformDataCount, int* transformMask);
+int32_t WaveletAdaptiveLLDecompress_DecompressAdaptive(const WaveletAdaptiveLL_DecodeIterator &decodeIterator, DecompressAdaptiveMode decompressAdaptiveMode);
+int32_t WaveletAdaptiveLLDecompress_DecompressLossless(uint8_t *in, float *pic, int32_t sizeX, int32_t sizeY, int32_t sizeZ, int32_t allocatedSizeX, int32_t allocatedSizeXY);
+void WaveletAdaptiveLLDecompress_DecompressZerosAlongX(const unsigned char* in, void* pic, int elementSize, float replaceValue, int transformSizeX, int transformSizeY, int transformSizeZ, int allocatedSizeX, int allocatedSizeY, int allocatedSizeZ, unsigned char* tempBuffer);
+int32_t WaveletAdaptiveLLDecompress_CalculateBufferSizeNeeded(int maxPixels, int maxChildren);
 }
 
 #endif

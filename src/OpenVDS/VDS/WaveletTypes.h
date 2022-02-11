@@ -1,6 +1,6 @@
 /****************************************************************************
-** Copyright 2019 The Open Group
-** Copyright 2019 Bluware, Inc.
+** Copyright 2022 The Open Group
+** Copyright 2022 Bluware, Inc.
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -19,10 +19,12 @@
 #define WAVELETTYPES_H
 
 #include <OpenVDS/Vector.h>
-#include <OpenVDS/VolumeDataChannelDescriptor.h>
+#include <OpenVDS/Range.h>
+#include <OpenVDS/VolumeData.h>
 #include "DataBlock.h"
 #include <math.h>
 #include <assert.h>
+#include <vector>
 
 #define WAVELET_MIN_COMPRESSION_TOLERANCE 0.01f
 
@@ -41,6 +43,7 @@
 
 #define ADAPTIVEWAVELET_ALIGNBUFFERSIZE 256
 #define DECODEITERATOR_MAXDECODEBITS    256
+
 
 #define WAVELET_ADAPTIVE_LEVELS 16
 
@@ -145,8 +148,6 @@ enum Wavelet_IntegerInfo
   WAVELET_INTEGERINFO_ISCOMPRESSEDWITHDIFFPASS = (1 << 2),
   WAVELET_INTEGERINFO_16BIT = (1 << 3)
 };
-
-bool Wavelet_Decompress(const void *compressedData, int nCompressedAdaptiveDataSize, VolumeDataChannelDescriptor::Format dataBlockFormat, const FloatRange &valueRange, float integerScale, float integerOffset, bool isUseNoValue, float noValue, bool isNormalize, int nDecompressLevel, bool isLossless, DataBlock &dataBlock, std::vector<uint8_t> &target, Error &error);
 
 struct Wavelet_PixelSetPixel
 {
@@ -267,24 +268,50 @@ struct Wavelet_FastDecodeInsig
 
 };
 
-struct Wavelet_FastDecodeInsigAllNormal
+struct Wavelet_FastEncodeInsig
+{
+  int xyz;
+
+  unsigned short subBandPos;
+
+  char iteration;
+  char isDeleteMe;
+   
+  int GetX() const {return (xyz >> WAVELET_ADAPTIVELL_X_SHIFT) & WAVELET_ADAPTIVELL_XYZ_AND_MASK; }
+  int GetY() const {return (xyz >> WAVELET_ADAPTIVELL_Y_SHIFT) & WAVELET_ADAPTIVELL_XYZ_AND_MASK; }
+  int GetZ() const {return (xyz >> WAVELET_ADAPTIVELL_Z_SHIFT) & WAVELET_ADAPTIVELL_XYZ_AND_MASK; }
+
+  void SetXYZ(int uX, int uY, int uZ) {xyz = uX | (uY << WAVELET_ADAPTIVELL_Y_SHIFT) | (uZ << WAVELET_ADAPTIVELL_Z_SHIFT); }
+ 
+  Wavelet_FastEncodeInsig() : xyz(), subBandPos(), iteration(), isDeleteMe() {}
+  Wavelet_FastEncodeInsig(int nX, int nY, int nZ, int nIteration, unsigned short iSubBandPos)
+  {
+    SetXYZ(nX, nY, nZ);
+    iteration = nIteration;
+    subBandPos = iSubBandPos;
+    isDeleteMe = 0;
+  }
+};
+
+struct Wavelet_FastEncodeInsigAllNormal
 {
 public:
-  uint32_t iterXYZ;
+  unsigned int iterXYZ;
 
-  int GetX() const {return (iterXYZ >> WAVELET_ADAPTIVELL_X_SHIFT) & WAVELET_ADAPTIVELL_XYZ_AND_MASK; }
-  int GetY() const {return (iterXYZ >> WAVELET_ADAPTIVELL_Y_SHIFT) & WAVELET_ADAPTIVELL_XYZ_AND_MASK; }
-  int GetZ() const {return (iterXYZ >> WAVELET_ADAPTIVELL_Z_SHIFT) & WAVELET_ADAPTIVELL_XYZ_AND_MASK; }
-  int GetIteration() const {return iterXYZ >> WAVELET_ADAPTIVELL_ITER_SHIFT; }
+  int GetX() const { return (iterXYZ >> WAVELET_ADAPTIVELL_X_SHIFT) & WAVELET_ADAPTIVELL_XYZ_AND_MASK; }
+  int GetY() const { return (iterXYZ >> WAVELET_ADAPTIVELL_Y_SHIFT) & WAVELET_ADAPTIVELL_XYZ_AND_MASK; }
+  int GetZ() const { return (iterXYZ >> WAVELET_ADAPTIVELL_Z_SHIFT) & WAVELET_ADAPTIVELL_XYZ_AND_MASK; }
+  int GetIteration() const { return iterXYZ >> WAVELET_ADAPTIVELL_ITER_SHIFT; }
 
-  void SetXYZIter(int uX, int uY, int uZ, int uIter) {iterXYZ = uX | (uY << WAVELET_ADAPTIVELL_Y_SHIFT) | (uZ << WAVELET_ADAPTIVELL_Z_SHIFT) | (uIter << WAVELET_ADAPTIVELL_ITER_SHIFT); }
+  void SetXYZIter(int uX, int uY, int uZ, int uIter) { iterXYZ = uX | (uY << WAVELET_ADAPTIVELL_Y_SHIFT) | (uZ << WAVELET_ADAPTIVELL_Z_SHIFT) | (uIter << WAVELET_ADAPTIVELL_ITER_SHIFT); }
 
-  Wavelet_FastDecodeInsigAllNormal() {}
+  Wavelet_FastEncodeInsigAllNormal() {}
 
-  Wavelet_FastDecodeInsigAllNormal(int nX, int nY, int nZ, int nIteration)
+  Wavelet_FastEncodeInsigAllNormal(int nX, int nY, int nZ, int nIteration)
   {
     SetXYZIter(nX, nY, nZ, nIteration);
   }
+
 };
 
 }

@@ -1,27 +1,40 @@
 include(${PROJECT_SOURCE_DIR}/CMake/CompileInTarget.cmake)
+
+set(WAVELET_SOURCES
+      VDS/WaveletAdaptiveLLDecompress.cpp
+      VDS/WaveletDecompress.cpp
+      VDS/WaveletInverseTransform.cpp
+      VDS/FSE/entropy_common.cpp
+      VDS/FSE/fse_decompress.cpp
+      VDS/Rle.cpp
+   )
+set(WAVELET_HEADERS
+      VDS/WaveletAdaptiveLLDecompress.h
+      VDS/WaveletAdaptiveLLDecompress_DecodeAllBits.h
+      VDS/WaveletAdaptiveLLDecompress_DecodeTreeStructure.h
+      VDS/WaveletDecompress.h
+      VDS/WaveletInverseTransform.h
+      VDS/WaveletInverseTransformSSE.h
+      VDS/WaveletTypes.h
+      VDS/FSE/bitstream.h
+      VDS/FSE/error_private.h
+      VDS/FSE/error_public.h
+      VDS/FSE/mem.h
+      VDS/FSE/fse.h
+      VDS/Rle.h
+   )
+
 if (EMSCRIPTEN)
   set(SOURCE_FILES
     VDS/VolumeDataStore.cpp
-    VDS/Wavelet.cpp
-    VDS/WaveletAdaptiveLL.cpp
     VDS/DataBlock.cpp
-    VDS/FSE/entropy_common.cpp
-    VDS/FSE/fse_decompress.cpp
-    VDS/Rle.cpp
+    ${WAVELET_SOURCES}
     ${CMAKE_CURRENT_BINARY_DIR}/VDS/GetGitRevision.cpp)
 
   set (PRIVATE_HEADER_FILES
-    VDS/Wavelet.h
-    VDS/WaveletAdaptiveLL.h
-    VDS/WaveletTypes.h
     VDS/DataBlock.h
-    VDS/WaveletSSETransform.h
-    VDS/FSE/bitstream.h
-    VDS/FSE/error_private.h
-    VDS/FSE/error_public.h
-    VDS/FSE/mem.h
-    VDS/FSE/fse.h
-    VDS/Rle.h)
+    ${WAVELET_HEADERS}
+    )
 else()
 
   set(SOURCE_FILES
@@ -59,16 +72,12 @@ else()
     VDS/VolumeDataStore.cpp
     VDS/VolumeDataStoreIOManager.cpp
     VDS/VolumeDataStoreVDSFile.cpp
-    VDS/Wavelet.cpp
-    VDS/WaveletAdaptiveLL.cpp
     VDS/DataBlock.cpp
-    VDS/FSE/entropy_common.cpp
-    VDS/FSE/fse_decompress.cpp
-    VDS/Rle.cpp
     VDS/VolumeDataRequestProcessor.cpp
     VDS/VolumeIndexer.cpp
     VDS/Env.cpp
     VDS/StringToDouble.cpp
+    ${WAVELET_SOURCES}
     ${CMAKE_CURRENT_BINARY_DIR}/VDS/GetGitRevision.cpp
     ${COMMON_DIR}/Base64/Base64.cpp)
 
@@ -110,22 +119,13 @@ else()
     VDS/VolumeDataStore.h
     VDS/VolumeDataStoreIOManager.h
     VDS/VolumeDataStoreVDSFile.h
-    VDS/Wavelet.h
-    VDS/WaveletAdaptiveLL.h
-    VDS/WaveletTypes.h
     VDS/DataBlock.h
-    VDS/WaveletSSETransform.h
-    VDS/FSE/bitstream.h
-    VDS/FSE/error_private.h
-    VDS/FSE/error_public.h
-    VDS/FSE/mem.h
-    VDS/FSE/fse.h
-    VDS/Rle.h
     VDS/VolumeDataRequestProcessor.h
     VDS/Env.h
     VDS/ConnectionStringParser.h
     VDS/GlobalStateImpl.h
     VDS/StringToDouble.h
+    ${WAVELET_HEADERS}
     ${COMMON_DIR}/Base64/Base64.h
     ${COMMON_DIR}/ThreadPool/ThreadPool.h
     json_cpp_include.h)

@@ -29,7 +29,8 @@
 #include <fmt/format.h>
 #endif
 
-#include "Wavelet.h"
+#include "WaveletDecompress.h"
+#include "WaveletTypes.h"
 #include "Rle.h"
 #include "DataBlock.h"
 
@@ -116,7 +117,7 @@ bool DeserializeVolumeData(const std::vector<uint8_t> &serializedData, VolumeDat
       adaptiveLevel = 0;
     }
 
-    if (!Wavelet_Decompress(data, int32_t(serializedData.size()), format, valueRange, integerScale, integerOffset, isUseNoValue, noValue, isNormalize, adaptiveLevel, isLossless, dataBlock, destination, error))
+    if (!Wavelet_Decompress(const_cast<void *>(data), int32_t(serializedData.size()), format, valueRange, integerScale, integerOffset, isUseNoValue, noValue, isNormalize, adaptiveLevel, isLossless, dataBlock, destination, error))
       return false;
   }
   else if(compressionMethod == CompressionMethod::RLE)

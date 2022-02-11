@@ -1,6 +1,6 @@
 /****************************************************************************
-** Copyright 2019 The Open Group
-** Copyright 2019 Bluware, Inc.
+** Copyright 2022 The Open Group
+** Copyright 2022 Bluware, Inc.
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -15,20 +15,18 @@
 ** limitations under the License.
 ****************************************************************************/
 
-#ifndef WAVELETSSETRANSFORM_H
-#define WAVELETSSETRANSFORM_H
+#ifndef WAVELETINVERSETRANSFORMSSE_H
+#define WAVELETINVERSETRANSFORMSSE_H
 
-#define REAL_SQRT2                        1.4142135623730950488016887242097
 #define REAL_INVSQRT2                     0.7071067811865475244008443621048
 
 #ifdef ENABLE_SSE_TRANSFORM
+
 #include <stdint.h>
-#include <cmath>
-#include <string.h>
 
 #ifdef __EMSCRIPTEN__
-// Make the Emscripten SSE header file compile.
-#define __unaligned Unaligned
+  // Make the Emscripten SSE header file compile.
+  #define __unaligned Unaligned
 #endif
 
 #include <xmmintrin.h>
@@ -36,12 +34,11 @@
 #include <smmintrin.h>
 
 #ifdef __EMSCRIPTEN__
-#undef __unaligned
+  #undef __unaligned
 #endif
 
 namespace OpenVDS
 {
-
 inline void Wavelet_UpdateCoarseSSEInt(float* write, float* readLow, const __m128& mm0, const __m128& mm1, const __m128& mm2, const __m128& mm3, const __m128& mmNine, const __m128& mmSign, const __m128& mmVal)
 {
   __m128 mmIntRounded = _mm_mul_ps(_mm_loadu_ps(readLow), mmVal);
@@ -91,7 +88,7 @@ inline void Wavelet_PredictDetailSSEInt(float* write, float* prReadHigh, const _
   );
 }
 
-static inline void Wavelet_UpdateCoarseSSE(float* write, float* readLow, const __m128& mm0, const __m128& mm1, const __m128& mm2, const __m128& mm3, const __m128& mmNine, const __m128& mmSign, const __m128& mmVal)
+inline void Wavelet_UpdateCoarseSSE(float* write, float* readLow, const __m128& mm0, const __m128& mm1, const __m128& mm2, const __m128& mm3, const __m128& mmNine, const __m128& mmSign, const __m128& mmVal)
 {
   _mm_storeu_ps(
     write,
@@ -114,8 +111,7 @@ static inline void Wavelet_UpdateCoarseSSE(float* write, float* readLow, const _
   );
 }
 
-inline void
-Wavelet_PredictDetailSSE(float* write, float* readHigh, const __m128& mm0, const __m128& mm1, const __m128& mm2, const __m128& mm3, const __m128& mmNine, const __m128& mmSign)
+inline void Wavelet_PredictDetailSSE(float* write, float* readHigh, const __m128& mm0, const __m128& mm1, const __m128& mm2, const __m128& mm3, const __m128& mmNine, const __m128& mmSign)
 {
   _mm_storeu_ps(
     write,
@@ -418,7 +414,7 @@ Wavelet_TransformSlice_PredictDetail(float* write, int32_t nWritePitch, float* r
   }
 }
 
-void
+inline void
 Wavelet_InverseTransformSliceInterleave(float* write, int32_t nWritePitch, float* read, int32_t nReadPitch, int32_t nSliceWidth, int32_t nSliceHeight, uint32_t integerInfo)
 {
   int32_t
@@ -437,7 +433,7 @@ Wavelet_InverseTransformSliceInterleave(float* write, int32_t nWritePitch, float
   }
 }
 
-void
+inline void
 Wavelet_InverseTransformSlice(float* write, int32_t nWritePitch, float* read, int32_t nReadPitch, int32_t nSliceWidth, int32_t nSliceHeight, uint32_t integerInfo)
 {
   int32_t
@@ -456,7 +452,7 @@ Wavelet_InverseTransformSlice(float* write, int32_t nWritePitch, float* read, in
   }
 }
 
-void
+inline void
 Wavelet_CopySlice(float* write, int32_t nWritePitch, float* read, int32_t nReadPitch, int32_t nSliceWidth, int32_t nSliceHeight)
 {
   for (int32_t iLine = 0; iLine < nSliceHeight; ++iLine)
@@ -596,7 +592,7 @@ Wavelet_TransformLine_PredictDetail(float* write, float* read, int32_t nLength, 
     arFloat[2] = arFloat[3];
   }
 }
-
+  
 template<bool isInteger>
 inline void
 Wavelet_TransformLine_UpdateCoarse(float* write, float* read, int32_t nLength, float rSign, float rVal, bool isOdd, uint32_t integerInfo)
@@ -799,8 +795,7 @@ Wavelet_InterleaveLine(float* write, float* readLow, float* readHigh, int32_t nL
     write[i] = readLow[i >> 1];
   }
 }
-
 }
-
 #endif //IFDEF ENABLE_SSE_TRANSFORM
-#endif //WAVELETSSETRANSFORM_H
+
+#endif //WAVELETINVERSETRANSFORMSSE_H
