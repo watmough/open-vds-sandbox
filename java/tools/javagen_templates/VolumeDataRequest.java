@@ -17,17 +17,23 @@
         readOnlyBuffer.order(java.nio.ByteOrder.nativeOrder());
         return readOnlyBuffer;
     }}
+	
+    private String getErrorMessage() {{
+        return "Error!"; // SteinFIXME!
+    }}
+	
+	private int getErrorCode() {{
+		return 0; // SteinFIXME!
+	}}
         
     private void ensureRequestCompleted() {{
-        if (!waitForCompletion() || isCanceled()) {{
-            if (isCanceled()) {{
-                if (getErrorCode() == 0) {{
-                    throw new UnsupportedOperationException("Volume data request was canceled");
-                }}
-            }}
-        }}
-
-        throw new ReadErrorException(getErrorMessage(), getErrorCode());
+		if (!waitForCompletion()) {{
+			if (isCanceled() && getErrorCode() == 0) {{
+				throw new UnsupportedOperationException("Volume data request was canceled");
+			}} else {{
+				throw new RuntimeException(getErrorMessage() + ", Errorcode: " + Integer.toString(getErrorCode())); // SteinFIXME!
+			}}
+		}}
     }}
     
     /**

@@ -48,4 +48,14 @@ public class VolumeDataRequestFloat extends VolumeDataRequest {
 
 
 
+
+    /**
+     * Get the buffer the request is writing to as a FloatBuffer.
+     * 
+     * @return The buffer the request is writing to as a FloatBuffer
+     */
+    public java.nio.FloatBuffer getFloatBuffer() {
+        return getBuffer().asFloatBuffer();
+    }
+
 }

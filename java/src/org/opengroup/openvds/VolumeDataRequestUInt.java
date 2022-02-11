@@ -48,4 +48,17 @@ public class VolumeDataRequestUInt extends VolumeDataRequest {
 
 
 
+
+    /**
+     * Get the buffer the request is writing to as an IntBuffer.
+     * The backing data is actually stored as unsigned 32-bit integer values.
+     * However, Java does not directly support unsigned integer types, so care should 
+     * be taken when working with the values read from the buffer.
+     * 
+     * @return The buffer the request is writing to as an IntBuffer
+     */
+    public java.nio.IntBuffer getIntBuffer() {
+        return getBuffer().asIntBuffer();
+    }
+
 }

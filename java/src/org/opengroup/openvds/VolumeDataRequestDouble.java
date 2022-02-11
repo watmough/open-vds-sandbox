@@ -48,4 +48,14 @@ public class VolumeDataRequestDouble extends VolumeDataRequest {
 
 
 
+
+    /**
+     * Get the buffer the request is writing to as a DoubleBuffer.
+     * 
+     * @return The buffer the request is writing to as a DoubleBuffer
+     */
+    public java.nio.DoubleBuffer getDoubleBuffer() {
+        return getBuffer().asDoubleBuffer();
+    }
+
 }
