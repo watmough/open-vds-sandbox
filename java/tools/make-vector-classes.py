@@ -1,7 +1,7 @@
 
 COPYRIGHT = """
 /*
- * Copyright 2021 The Open Group
+ * Copyright 2022 The Open Group
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -209,6 +209,10 @@ VECTOR_MEMBERS = [
     'x', 'y', 'z', 't'
 ]
 
+NDPOS_MEMBERS = [
+    'pos0', 'pos1', 'pos2', 'pos3', 'pos4', 'pos5', 
+]
+
 VECTOR_HANDLERS = [
     createDefaultCtor,
     createFullCtor,
@@ -245,10 +249,10 @@ MATRIX_HANDLERS = [
 
 MATRIX_MEMBERS = [ 'x', 'y', 'z', 't' ]
 
-def make_class(class_name: str, members: list, handlers: list, t: str, n: int, composite_count: int):
+def make_class(class_name: str, members: list, handlers: list, member_type: str, vector_count: int, composite_count: int):
     global MEMBERS 
     MEMBERS = members
-    valuetype = TYPEMAP[t]
+    valuetype = TYPEMAP[member_type]
     content = COPYRIGHT + """
 package org.opengroup.openvds;
 import java.nio.*;
@@ -258,10 +262,10 @@ import java.nio.*;
 public class CLASSNAME extends ByteBufferBackedObject {
 """
     for handler in handlers:
-        content += handler(class_name, t, n, composite_count)
+        content += handler(class_name, member_type, vector_count, composite_count)
     content += "}\n"
-    content = transformTemplate(content, class_name, t, n, composite_count)
-    class_filename = transformTemplate("CLASSNAME.java", class_name, t, n, composite_count)
+    content = transformTemplate(content, class_name, member_type, vector_count, composite_count)
+    class_filename = transformTemplate("CLASSNAME.java", class_name, member_type, vector_count, composite_count)
     with open(f'../src/org/opengroup/openvds/{class_filename}', 'w') as file:
         print(content, file=file)
 
@@ -277,6 +281,7 @@ def make_composite_class(class_name: str, members: list, handlers: list, member_
 def main():
     make_vector_classes("TYPENAMERange", RANGE_MEMBERS, range(2,3))
     make_vector_classes("TYPENAMEVectorVECTORCOUNT", VECTOR_MEMBERS, range(2,5))
+    make_class("NDPos", NDPOS_MEMBERS, VECTOR_HANDLERS, "Float", 6, 1)
 
     make_composite_class('IJKGridDefinition', IJKGRID_MEMBERS, IJKGRID_HANDLERS, 'Double', 3)
     make_composite_class('TYPENAMEMatrix3x3', MATRIX_MEMBERS, MATRIX_HANDLERS, 'Double', 3, 3)

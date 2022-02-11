@@ -95,6 +95,21 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeDataPageAccessor.fromNativeObject(CreateVolumeDataPageAccessorImpl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, accessMode.value(), chunkMetadataPageSize));
     }
 
+    /**
+     * Create a VolumeDataPageAccessor object for the VDS.
+     * 
+     * @param dimensionsND The dimensions group that the volume data page accessor will access.
+     * @param LOD The LOD level that the volume data page accessor will access.
+     * @param channel The channel index that the volume data page accessor will access.
+     * @param maxPages The maximum number of pages that the volume data page accessor will cache.
+     * @param accessMode This specifies the access mode (ReadOnly/ReadWrite/Create) of the volume data page accessor.
+     * @return A VolumeDataPageAccessor object for the VDS.
+     */
+
+    public VolumeDataPageAccessor createVolumeDataPageAccessor(DimensionsND dimensionsND, int LOD, int channel, int maxPages, VolumeDataPageAccessor.AccessMode accessMode) {
+        return createVolumeDataPageAccessor(dimensionsND, LOD, channel, maxPages, accessMode, /*chunkMetadataPageSize=*/1024);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD DestroyVolumeDataPageAccessor void (OpenVDS::VolumeDataPageAccessor *) FUNCTIONPROTO
     native private void DestroyVolumeDataPageAccessorImpl(long native_object, long volumeDataPageAccessor);
 
@@ -113,10 +128,22 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeData2DInterpolatingAccessorR64.fromNativeObject(CreateVolumeData2DInterpolatingAccessorR64Impl(getNativeObject(), dimensionsND.value(), LOD, channel, interpolationMethod.value(), maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
+
+
+    public VolumeData2DInterpolatingAccessorR64 createVolumeData2DInterpolatingAccessorR64(DimensionsND dimensionsND, int LOD, int channel, InterpolationMethod interpolationMethod, int maxPages) {
+        return createVolumeData2DInterpolatingAccessorR64(dimensionsND, LOD, channel, interpolationMethod, maxPages, /*replacementNoValue=*/null);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DInterpolatingAccessorR64 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 2>, double> (OpenVDS::DimensionsND, int, int, OpenVDS::InterpolationMethod, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData2DInterpolatingAccessorR642Impl(long native_object, long dimensionsND, int LOD, int channel, long interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData2DInterpolatingAccessorR64 createVolumeData2DInterpolatingAccessorR64(DimensionsND dimensionsND, int LOD, int channel, InterpolationMethod interpolationMethod, Float replacementNoValue) {
         return VolumeData2DInterpolatingAccessorR64.fromNativeObject(CreateVolumeData2DInterpolatingAccessorR642Impl(getNativeObject(), dimensionsND.value(), LOD, channel, interpolationMethod.value(), replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+
+    public VolumeData2DInterpolatingAccessorR64 createVolumeData2DInterpolatingAccessorR64(DimensionsND dimensionsND, int LOD, int channel, InterpolationMethod interpolationMethod) {
+        return createVolumeData2DInterpolatingAccessorR64(dimensionsND, LOD, channel, interpolationMethod, /*replacementNoValue=*/null);
     }
 
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DInterpolatingAccessorR32 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 2>, float> (OpenVDS::DimensionsND, int, int, OpenVDS::InterpolationMethod, int, OpenVDS::optional<float>) FUNCTIONPROTO
@@ -125,10 +152,22 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeData2DInterpolatingAccessorR32.fromNativeObject(CreateVolumeData2DInterpolatingAccessorR32Impl(getNativeObject(), dimensionsND.value(), LOD, channel, interpolationMethod.value(), maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
+
+
+    public VolumeData2DInterpolatingAccessorR32 createVolumeData2DInterpolatingAccessorR32(DimensionsND dimensionsND, int LOD, int channel, InterpolationMethod interpolationMethod, int maxPages) {
+        return createVolumeData2DInterpolatingAccessorR32(dimensionsND, LOD, channel, interpolationMethod, maxPages, /*replacementNoValue=*/null);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DInterpolatingAccessorR32 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 2>, float> (OpenVDS::DimensionsND, int, int, OpenVDS::InterpolationMethod, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData2DInterpolatingAccessorR322Impl(long native_object, long dimensionsND, int LOD, int channel, long interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData2DInterpolatingAccessorR32 createVolumeData2DInterpolatingAccessorR32(DimensionsND dimensionsND, int LOD, int channel, InterpolationMethod interpolationMethod, Float replacementNoValue) {
         return VolumeData2DInterpolatingAccessorR32.fromNativeObject(CreateVolumeData2DInterpolatingAccessorR322Impl(getNativeObject(), dimensionsND.value(), LOD, channel, interpolationMethod.value(), replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+
+    public VolumeData2DInterpolatingAccessorR32 createVolumeData2DInterpolatingAccessorR32(DimensionsND dimensionsND, int LOD, int channel, InterpolationMethod interpolationMethod) {
+        return createVolumeData2DInterpolatingAccessorR32(dimensionsND, LOD, channel, interpolationMethod, /*replacementNoValue=*/null);
     }
 
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadAccessor1Bit OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, bool> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
@@ -137,10 +176,22 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeData2DReadAccessor1Bit.fromNativeObject(CreateVolumeData2DReadAccessor1BitImpl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
+
+
+    public VolumeData2DReadAccessor1Bit createVolumeData2DReadAccessor1Bit(DimensionsND dimensionsND, int LOD, int channel, int maxPages) {
+        return createVolumeData2DReadAccessor1Bit(dimensionsND, LOD, channel, maxPages, /*replacementNoValue=*/null);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadAccessor1Bit OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, bool> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData2DReadAccessor1Bit2Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData2DReadAccessor1Bit createVolumeData2DReadAccessor1Bit(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
         return VolumeData2DReadAccessor1Bit.fromNativeObject(CreateVolumeData2DReadAccessor1Bit2Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+
+    public VolumeData2DReadAccessor1Bit createVolumeData2DReadAccessor1Bit(DimensionsND dimensionsND, int LOD, int channel) {
+        return createVolumeData2DReadAccessor1Bit(dimensionsND, LOD, channel, /*replacementNoValue=*/null);
     }
 
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadAccessorU8 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, unsigned char> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
@@ -149,10 +200,22 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeData2DReadAccessorU8.fromNativeObject(CreateVolumeData2DReadAccessorU8Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
+
+
+    public VolumeData2DReadAccessorU8 createVolumeData2DReadAccessorU8(DimensionsND dimensionsND, int LOD, int channel, int maxPages) {
+        return createVolumeData2DReadAccessorU8(dimensionsND, LOD, channel, maxPages, /*replacementNoValue=*/null);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadAccessorU8 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, unsigned char> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData2DReadAccessorU82Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData2DReadAccessorU8 createVolumeData2DReadAccessorU8(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
         return VolumeData2DReadAccessorU8.fromNativeObject(CreateVolumeData2DReadAccessorU82Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+
+    public VolumeData2DReadAccessorU8 createVolumeData2DReadAccessorU8(DimensionsND dimensionsND, int LOD, int channel) {
+        return createVolumeData2DReadAccessorU8(dimensionsND, LOD, channel, /*replacementNoValue=*/null);
     }
 
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadAccessorU16 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, unsigned short> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
@@ -161,10 +224,22 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeData2DReadAccessorU16.fromNativeObject(CreateVolumeData2DReadAccessorU16Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
+
+
+    public VolumeData2DReadAccessorU16 createVolumeData2DReadAccessorU16(DimensionsND dimensionsND, int LOD, int channel, int maxPages) {
+        return createVolumeData2DReadAccessorU16(dimensionsND, LOD, channel, maxPages, /*replacementNoValue=*/null);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadAccessorU16 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, unsigned short> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData2DReadAccessorU162Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData2DReadAccessorU16 createVolumeData2DReadAccessorU16(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
         return VolumeData2DReadAccessorU16.fromNativeObject(CreateVolumeData2DReadAccessorU162Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+
+    public VolumeData2DReadAccessorU16 createVolumeData2DReadAccessorU16(DimensionsND dimensionsND, int LOD, int channel) {
+        return createVolumeData2DReadAccessorU16(dimensionsND, LOD, channel, /*replacementNoValue=*/null);
     }
 
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadAccessorU32 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, unsigned int> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
@@ -173,10 +248,22 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeData2DReadAccessorU32.fromNativeObject(CreateVolumeData2DReadAccessorU32Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
+
+
+    public VolumeData2DReadAccessorU32 createVolumeData2DReadAccessorU32(DimensionsND dimensionsND, int LOD, int channel, int maxPages) {
+        return createVolumeData2DReadAccessorU32(dimensionsND, LOD, channel, maxPages, /*replacementNoValue=*/null);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadAccessorU32 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, unsigned int> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData2DReadAccessorU322Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData2DReadAccessorU32 createVolumeData2DReadAccessorU32(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
         return VolumeData2DReadAccessorU32.fromNativeObject(CreateVolumeData2DReadAccessorU322Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+
+    public VolumeData2DReadAccessorU32 createVolumeData2DReadAccessorU32(DimensionsND dimensionsND, int LOD, int channel) {
+        return createVolumeData2DReadAccessorU32(dimensionsND, LOD, channel, /*replacementNoValue=*/null);
     }
 
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadAccessorU64 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, uint64_t> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
@@ -185,10 +272,22 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeData2DReadAccessorU64.fromNativeObject(CreateVolumeData2DReadAccessorU64Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
+
+
+    public VolumeData2DReadAccessorU64 createVolumeData2DReadAccessorU64(DimensionsND dimensionsND, int LOD, int channel, int maxPages) {
+        return createVolumeData2DReadAccessorU64(dimensionsND, LOD, channel, maxPages, /*replacementNoValue=*/null);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadAccessorU64 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, uint64_t> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData2DReadAccessorU642Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData2DReadAccessorU64 createVolumeData2DReadAccessorU64(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
         return VolumeData2DReadAccessorU64.fromNativeObject(CreateVolumeData2DReadAccessorU642Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+
+    public VolumeData2DReadAccessorU64 createVolumeData2DReadAccessorU64(DimensionsND dimensionsND, int LOD, int channel) {
+        return createVolumeData2DReadAccessorU64(dimensionsND, LOD, channel, /*replacementNoValue=*/null);
     }
 
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadAccessorR32 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, float> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
@@ -197,10 +296,22 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeData2DReadAccessorR32.fromNativeObject(CreateVolumeData2DReadAccessorR32Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
+
+
+    public VolumeData2DReadAccessorR32 createVolumeData2DReadAccessorR32(DimensionsND dimensionsND, int LOD, int channel, int maxPages) {
+        return createVolumeData2DReadAccessorR32(dimensionsND, LOD, channel, maxPages, /*replacementNoValue=*/null);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadAccessorR32 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, float> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData2DReadAccessorR322Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData2DReadAccessorR32 createVolumeData2DReadAccessorR32(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
         return VolumeData2DReadAccessorR32.fromNativeObject(CreateVolumeData2DReadAccessorR322Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+
+    public VolumeData2DReadAccessorR32 createVolumeData2DReadAccessorR32(DimensionsND dimensionsND, int LOD, int channel) {
+        return createVolumeData2DReadAccessorR32(dimensionsND, LOD, channel, /*replacementNoValue=*/null);
     }
 
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadAccessorR64 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, double> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
@@ -209,10 +320,22 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeData2DReadAccessorR64.fromNativeObject(CreateVolumeData2DReadAccessorR64Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
+
+
+    public VolumeData2DReadAccessorR64 createVolumeData2DReadAccessorR64(DimensionsND dimensionsND, int LOD, int channel, int maxPages) {
+        return createVolumeData2DReadAccessorR64(dimensionsND, LOD, channel, maxPages, /*replacementNoValue=*/null);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadAccessorR64 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, double> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData2DReadAccessorR642Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData2DReadAccessorR64 createVolumeData2DReadAccessorR64(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
         return VolumeData2DReadAccessorR64.fromNativeObject(CreateVolumeData2DReadAccessorR642Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+
+    public VolumeData2DReadAccessorR64 createVolumeData2DReadAccessorR64(DimensionsND dimensionsND, int LOD, int channel) {
+        return createVolumeData2DReadAccessorR64(dimensionsND, LOD, channel, /*replacementNoValue=*/null);
     }
 
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadWriteAccessor1Bit OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, bool> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
@@ -221,10 +344,22 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeData2DReadWriteAccessor1Bit.fromNativeObject(CreateVolumeData2DReadWriteAccessor1BitImpl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
+
+
+    public VolumeData2DReadWriteAccessor1Bit createVolumeData2DReadWriteAccessor1Bit(DimensionsND dimensionsND, int LOD, int channel, int maxPages) {
+        return createVolumeData2DReadWriteAccessor1Bit(dimensionsND, LOD, channel, maxPages, /*replacementNoValue=*/null);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadWriteAccessor1Bit OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, bool> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData2DReadWriteAccessor1Bit2Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData2DReadWriteAccessor1Bit createVolumeData2DReadWriteAccessor1Bit(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
         return VolumeData2DReadWriteAccessor1Bit.fromNativeObject(CreateVolumeData2DReadWriteAccessor1Bit2Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+
+    public VolumeData2DReadWriteAccessor1Bit createVolumeData2DReadWriteAccessor1Bit(DimensionsND dimensionsND, int LOD, int channel) {
+        return createVolumeData2DReadWriteAccessor1Bit(dimensionsND, LOD, channel, /*replacementNoValue=*/null);
     }
 
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadWriteAccessorU8 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, unsigned char> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
@@ -233,10 +368,22 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeData2DReadWriteAccessorU8.fromNativeObject(CreateVolumeData2DReadWriteAccessorU8Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
+
+
+    public VolumeData2DReadWriteAccessorU8 createVolumeData2DReadWriteAccessorU8(DimensionsND dimensionsND, int LOD, int channel, int maxPages) {
+        return createVolumeData2DReadWriteAccessorU8(dimensionsND, LOD, channel, maxPages, /*replacementNoValue=*/null);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadWriteAccessorU8 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, unsigned char> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData2DReadWriteAccessorU82Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData2DReadWriteAccessorU8 createVolumeData2DReadWriteAccessorU8(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
         return VolumeData2DReadWriteAccessorU8.fromNativeObject(CreateVolumeData2DReadWriteAccessorU82Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+
+    public VolumeData2DReadWriteAccessorU8 createVolumeData2DReadWriteAccessorU8(DimensionsND dimensionsND, int LOD, int channel) {
+        return createVolumeData2DReadWriteAccessorU8(dimensionsND, LOD, channel, /*replacementNoValue=*/null);
     }
 
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadWriteAccessorU16 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, unsigned short> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
@@ -245,10 +392,22 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeData2DReadWriteAccessorU16.fromNativeObject(CreateVolumeData2DReadWriteAccessorU16Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
+
+
+    public VolumeData2DReadWriteAccessorU16 createVolumeData2DReadWriteAccessorU16(DimensionsND dimensionsND, int LOD, int channel, int maxPages) {
+        return createVolumeData2DReadWriteAccessorU16(dimensionsND, LOD, channel, maxPages, /*replacementNoValue=*/null);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadWriteAccessorU16 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, unsigned short> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData2DReadWriteAccessorU162Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData2DReadWriteAccessorU16 createVolumeData2DReadWriteAccessorU16(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
         return VolumeData2DReadWriteAccessorU16.fromNativeObject(CreateVolumeData2DReadWriteAccessorU162Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+
+    public VolumeData2DReadWriteAccessorU16 createVolumeData2DReadWriteAccessorU16(DimensionsND dimensionsND, int LOD, int channel) {
+        return createVolumeData2DReadWriteAccessorU16(dimensionsND, LOD, channel, /*replacementNoValue=*/null);
     }
 
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadWriteAccessorU32 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, unsigned int> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
@@ -257,10 +416,22 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeData2DReadWriteAccessorU32.fromNativeObject(CreateVolumeData2DReadWriteAccessorU32Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
+
+
+    public VolumeData2DReadWriteAccessorU32 createVolumeData2DReadWriteAccessorU32(DimensionsND dimensionsND, int LOD, int channel, int maxPages) {
+        return createVolumeData2DReadWriteAccessorU32(dimensionsND, LOD, channel, maxPages, /*replacementNoValue=*/null);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadWriteAccessorU32 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, unsigned int> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData2DReadWriteAccessorU322Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData2DReadWriteAccessorU32 createVolumeData2DReadWriteAccessorU32(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
         return VolumeData2DReadWriteAccessorU32.fromNativeObject(CreateVolumeData2DReadWriteAccessorU322Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+
+    public VolumeData2DReadWriteAccessorU32 createVolumeData2DReadWriteAccessorU32(DimensionsND dimensionsND, int LOD, int channel) {
+        return createVolumeData2DReadWriteAccessorU32(dimensionsND, LOD, channel, /*replacementNoValue=*/null);
     }
 
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadWriteAccessorU64 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, uint64_t> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
@@ -269,10 +440,22 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeData2DReadWriteAccessorU64.fromNativeObject(CreateVolumeData2DReadWriteAccessorU64Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
+
+
+    public VolumeData2DReadWriteAccessorU64 createVolumeData2DReadWriteAccessorU64(DimensionsND dimensionsND, int LOD, int channel, int maxPages) {
+        return createVolumeData2DReadWriteAccessorU64(dimensionsND, LOD, channel, maxPages, /*replacementNoValue=*/null);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadWriteAccessorU64 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, uint64_t> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData2DReadWriteAccessorU642Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData2DReadWriteAccessorU64 createVolumeData2DReadWriteAccessorU64(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
         return VolumeData2DReadWriteAccessorU64.fromNativeObject(CreateVolumeData2DReadWriteAccessorU642Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+
+    public VolumeData2DReadWriteAccessorU64 createVolumeData2DReadWriteAccessorU64(DimensionsND dimensionsND, int LOD, int channel) {
+        return createVolumeData2DReadWriteAccessorU64(dimensionsND, LOD, channel, /*replacementNoValue=*/null);
     }
 
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadWriteAccessorR32 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, float> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
@@ -281,10 +464,22 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeData2DReadWriteAccessorR32.fromNativeObject(CreateVolumeData2DReadWriteAccessorR32Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
+
+
+    public VolumeData2DReadWriteAccessorR32 createVolumeData2DReadWriteAccessorR32(DimensionsND dimensionsND, int LOD, int channel, int maxPages) {
+        return createVolumeData2DReadWriteAccessorR32(dimensionsND, LOD, channel, maxPages, /*replacementNoValue=*/null);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadWriteAccessorR32 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, float> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData2DReadWriteAccessorR322Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData2DReadWriteAccessorR32 createVolumeData2DReadWriteAccessorR32(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
         return VolumeData2DReadWriteAccessorR32.fromNativeObject(CreateVolumeData2DReadWriteAccessorR322Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+
+    public VolumeData2DReadWriteAccessorR32 createVolumeData2DReadWriteAccessorR32(DimensionsND dimensionsND, int LOD, int channel) {
+        return createVolumeData2DReadWriteAccessorR32(dimensionsND, LOD, channel, /*replacementNoValue=*/null);
     }
 
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadWriteAccessorR64 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, double> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
@@ -293,10 +488,22 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeData2DReadWriteAccessorR64.fromNativeObject(CreateVolumeData2DReadWriteAccessorR64Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
+
+
+    public VolumeData2DReadWriteAccessorR64 createVolumeData2DReadWriteAccessorR64(DimensionsND dimensionsND, int LOD, int channel, int maxPages) {
+        return createVolumeData2DReadWriteAccessorR64(dimensionsND, LOD, channel, maxPages, /*replacementNoValue=*/null);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadWriteAccessorR64 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, double> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData2DReadWriteAccessorR642Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData2DReadWriteAccessorR64 createVolumeData2DReadWriteAccessorR64(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
         return VolumeData2DReadWriteAccessorR64.fromNativeObject(CreateVolumeData2DReadWriteAccessorR642Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+
+    public VolumeData2DReadWriteAccessorR64 createVolumeData2DReadWriteAccessorR64(DimensionsND dimensionsND, int LOD, int channel) {
+        return createVolumeData2DReadWriteAccessorR64(dimensionsND, LOD, channel, /*replacementNoValue=*/null);
     }
 
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DInterpolatingAccessorR64 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 3>, double> (OpenVDS::DimensionsND, int, int, OpenVDS::InterpolationMethod, int, OpenVDS::optional<float>) FUNCTIONPROTO
@@ -305,10 +512,22 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeData3DInterpolatingAccessorR64.fromNativeObject(CreateVolumeData3DInterpolatingAccessorR64Impl(getNativeObject(), dimensionsND.value(), LOD, channel, interpolationMethod.value(), maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
+
+
+    public VolumeData3DInterpolatingAccessorR64 createVolumeData3DInterpolatingAccessorR64(DimensionsND dimensionsND, int LOD, int channel, InterpolationMethod interpolationMethod, int maxPages) {
+        return createVolumeData3DInterpolatingAccessorR64(dimensionsND, LOD, channel, interpolationMethod, maxPages, /*replacementNoValue=*/null);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DInterpolatingAccessorR64 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 3>, double> (OpenVDS::DimensionsND, int, int, OpenVDS::InterpolationMethod, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData3DInterpolatingAccessorR642Impl(long native_object, long dimensionsND, int LOD, int channel, long interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData3DInterpolatingAccessorR64 createVolumeData3DInterpolatingAccessorR64(DimensionsND dimensionsND, int LOD, int channel, InterpolationMethod interpolationMethod, Float replacementNoValue) {
         return VolumeData3DInterpolatingAccessorR64.fromNativeObject(CreateVolumeData3DInterpolatingAccessorR642Impl(getNativeObject(), dimensionsND.value(), LOD, channel, interpolationMethod.value(), replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+
+    public VolumeData3DInterpolatingAccessorR64 createVolumeData3DInterpolatingAccessorR64(DimensionsND dimensionsND, int LOD, int channel, InterpolationMethod interpolationMethod) {
+        return createVolumeData3DInterpolatingAccessorR64(dimensionsND, LOD, channel, interpolationMethod, /*replacementNoValue=*/null);
     }
 
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DInterpolatingAccessorR32 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 3>, float> (OpenVDS::DimensionsND, int, int, OpenVDS::InterpolationMethod, int, OpenVDS::optional<float>) FUNCTIONPROTO
@@ -317,10 +536,22 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeData3DInterpolatingAccessorR32.fromNativeObject(CreateVolumeData3DInterpolatingAccessorR32Impl(getNativeObject(), dimensionsND.value(), LOD, channel, interpolationMethod.value(), maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
+
+
+    public VolumeData3DInterpolatingAccessorR32 createVolumeData3DInterpolatingAccessorR32(DimensionsND dimensionsND, int LOD, int channel, InterpolationMethod interpolationMethod, int maxPages) {
+        return createVolumeData3DInterpolatingAccessorR32(dimensionsND, LOD, channel, interpolationMethod, maxPages, /*replacementNoValue=*/null);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DInterpolatingAccessorR32 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 3>, float> (OpenVDS::DimensionsND, int, int, OpenVDS::InterpolationMethod, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData3DInterpolatingAccessorR322Impl(long native_object, long dimensionsND, int LOD, int channel, long interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData3DInterpolatingAccessorR32 createVolumeData3DInterpolatingAccessorR32(DimensionsND dimensionsND, int LOD, int channel, InterpolationMethod interpolationMethod, Float replacementNoValue) {
         return VolumeData3DInterpolatingAccessorR32.fromNativeObject(CreateVolumeData3DInterpolatingAccessorR322Impl(getNativeObject(), dimensionsND.value(), LOD, channel, interpolationMethod.value(), replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+
+    public VolumeData3DInterpolatingAccessorR32 createVolumeData3DInterpolatingAccessorR32(DimensionsND dimensionsND, int LOD, int channel, InterpolationMethod interpolationMethod) {
+        return createVolumeData3DInterpolatingAccessorR32(dimensionsND, LOD, channel, interpolationMethod, /*replacementNoValue=*/null);
     }
 
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadAccessor1Bit OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, bool> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
@@ -329,10 +560,22 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeData3DReadAccessor1Bit.fromNativeObject(CreateVolumeData3DReadAccessor1BitImpl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
+
+
+    public VolumeData3DReadAccessor1Bit createVolumeData3DReadAccessor1Bit(DimensionsND dimensionsND, int LOD, int channel, int maxPages) {
+        return createVolumeData3DReadAccessor1Bit(dimensionsND, LOD, channel, maxPages, /*replacementNoValue=*/null);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadAccessor1Bit OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, bool> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData3DReadAccessor1Bit2Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData3DReadAccessor1Bit createVolumeData3DReadAccessor1Bit(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
         return VolumeData3DReadAccessor1Bit.fromNativeObject(CreateVolumeData3DReadAccessor1Bit2Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+
+    public VolumeData3DReadAccessor1Bit createVolumeData3DReadAccessor1Bit(DimensionsND dimensionsND, int LOD, int channel) {
+        return createVolumeData3DReadAccessor1Bit(dimensionsND, LOD, channel, /*replacementNoValue=*/null);
     }
 
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadAccessorU8 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, unsigned char> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
@@ -341,10 +584,22 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeData3DReadAccessorU8.fromNativeObject(CreateVolumeData3DReadAccessorU8Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
+
+
+    public VolumeData3DReadAccessorU8 createVolumeData3DReadAccessorU8(DimensionsND dimensionsND, int LOD, int channel, int maxPages) {
+        return createVolumeData3DReadAccessorU8(dimensionsND, LOD, channel, maxPages, /*replacementNoValue=*/null);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadAccessorU8 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, unsigned char> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData3DReadAccessorU82Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData3DReadAccessorU8 createVolumeData3DReadAccessorU8(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
         return VolumeData3DReadAccessorU8.fromNativeObject(CreateVolumeData3DReadAccessorU82Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+
+    public VolumeData3DReadAccessorU8 createVolumeData3DReadAccessorU8(DimensionsND dimensionsND, int LOD, int channel) {
+        return createVolumeData3DReadAccessorU8(dimensionsND, LOD, channel, /*replacementNoValue=*/null);
     }
 
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadAccessorU16 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, unsigned short> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
@@ -353,10 +608,22 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeData3DReadAccessorU16.fromNativeObject(CreateVolumeData3DReadAccessorU16Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
+
+
+    public VolumeData3DReadAccessorU16 createVolumeData3DReadAccessorU16(DimensionsND dimensionsND, int LOD, int channel, int maxPages) {
+        return createVolumeData3DReadAccessorU16(dimensionsND, LOD, channel, maxPages, /*replacementNoValue=*/null);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadAccessorU16 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, unsigned short> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData3DReadAccessorU162Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData3DReadAccessorU16 createVolumeData3DReadAccessorU16(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
         return VolumeData3DReadAccessorU16.fromNativeObject(CreateVolumeData3DReadAccessorU162Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+
+    public VolumeData3DReadAccessorU16 createVolumeData3DReadAccessorU16(DimensionsND dimensionsND, int LOD, int channel) {
+        return createVolumeData3DReadAccessorU16(dimensionsND, LOD, channel, /*replacementNoValue=*/null);
     }
 
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadAccessorU32 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, unsigned int> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
@@ -365,10 +632,22 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeData3DReadAccessorU32.fromNativeObject(CreateVolumeData3DReadAccessorU32Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
+
+
+    public VolumeData3DReadAccessorU32 createVolumeData3DReadAccessorU32(DimensionsND dimensionsND, int LOD, int channel, int maxPages) {
+        return createVolumeData3DReadAccessorU32(dimensionsND, LOD, channel, maxPages, /*replacementNoValue=*/null);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadAccessorU32 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, unsigned int> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData3DReadAccessorU322Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData3DReadAccessorU32 createVolumeData3DReadAccessorU32(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
         return VolumeData3DReadAccessorU32.fromNativeObject(CreateVolumeData3DReadAccessorU322Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+
+    public VolumeData3DReadAccessorU32 createVolumeData3DReadAccessorU32(DimensionsND dimensionsND, int LOD, int channel) {
+        return createVolumeData3DReadAccessorU32(dimensionsND, LOD, channel, /*replacementNoValue=*/null);
     }
 
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadAccessorU64 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, uint64_t> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
@@ -377,10 +656,22 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeData3DReadAccessorU64.fromNativeObject(CreateVolumeData3DReadAccessorU64Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
+
+
+    public VolumeData3DReadAccessorU64 createVolumeData3DReadAccessorU64(DimensionsND dimensionsND, int LOD, int channel, int maxPages) {
+        return createVolumeData3DReadAccessorU64(dimensionsND, LOD, channel, maxPages, /*replacementNoValue=*/null);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadAccessorU64 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, uint64_t> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData3DReadAccessorU642Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData3DReadAccessorU64 createVolumeData3DReadAccessorU64(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
         return VolumeData3DReadAccessorU64.fromNativeObject(CreateVolumeData3DReadAccessorU642Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+
+    public VolumeData3DReadAccessorU64 createVolumeData3DReadAccessorU64(DimensionsND dimensionsND, int LOD, int channel) {
+        return createVolumeData3DReadAccessorU64(dimensionsND, LOD, channel, /*replacementNoValue=*/null);
     }
 
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadAccessorR32 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, float> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
@@ -389,10 +680,22 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeData3DReadAccessorR32.fromNativeObject(CreateVolumeData3DReadAccessorR32Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
+
+
+    public VolumeData3DReadAccessorR32 createVolumeData3DReadAccessorR32(DimensionsND dimensionsND, int LOD, int channel, int maxPages) {
+        return createVolumeData3DReadAccessorR32(dimensionsND, LOD, channel, maxPages, /*replacementNoValue=*/null);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadAccessorR32 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, float> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData3DReadAccessorR322Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData3DReadAccessorR32 createVolumeData3DReadAccessorR32(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
         return VolumeData3DReadAccessorR32.fromNativeObject(CreateVolumeData3DReadAccessorR322Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+
+    public VolumeData3DReadAccessorR32 createVolumeData3DReadAccessorR32(DimensionsND dimensionsND, int LOD, int channel) {
+        return createVolumeData3DReadAccessorR32(dimensionsND, LOD, channel, /*replacementNoValue=*/null);
     }
 
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadAccessorR64 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, double> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
@@ -401,10 +704,22 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeData3DReadAccessorR64.fromNativeObject(CreateVolumeData3DReadAccessorR64Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
+
+
+    public VolumeData3DReadAccessorR64 createVolumeData3DReadAccessorR64(DimensionsND dimensionsND, int LOD, int channel, int maxPages) {
+        return createVolumeData3DReadAccessorR64(dimensionsND, LOD, channel, maxPages, /*replacementNoValue=*/null);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadAccessorR64 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, double> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData3DReadAccessorR642Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData3DReadAccessorR64 createVolumeData3DReadAccessorR64(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
         return VolumeData3DReadAccessorR64.fromNativeObject(CreateVolumeData3DReadAccessorR642Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+
+    public VolumeData3DReadAccessorR64 createVolumeData3DReadAccessorR64(DimensionsND dimensionsND, int LOD, int channel) {
+        return createVolumeData3DReadAccessorR64(dimensionsND, LOD, channel, /*replacementNoValue=*/null);
     }
 
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadWriteAccessor1Bit OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, bool> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
@@ -413,10 +728,22 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeData3DReadWriteAccessor1Bit.fromNativeObject(CreateVolumeData3DReadWriteAccessor1BitImpl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
+
+
+    public VolumeData3DReadWriteAccessor1Bit createVolumeData3DReadWriteAccessor1Bit(DimensionsND dimensionsND, int LOD, int channel, int maxPages) {
+        return createVolumeData3DReadWriteAccessor1Bit(dimensionsND, LOD, channel, maxPages, /*replacementNoValue=*/null);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadWriteAccessor1Bit OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, bool> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData3DReadWriteAccessor1Bit2Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData3DReadWriteAccessor1Bit createVolumeData3DReadWriteAccessor1Bit(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
         return VolumeData3DReadWriteAccessor1Bit.fromNativeObject(CreateVolumeData3DReadWriteAccessor1Bit2Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+
+    public VolumeData3DReadWriteAccessor1Bit createVolumeData3DReadWriteAccessor1Bit(DimensionsND dimensionsND, int LOD, int channel) {
+        return createVolumeData3DReadWriteAccessor1Bit(dimensionsND, LOD, channel, /*replacementNoValue=*/null);
     }
 
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadWriteAccessorU8 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, unsigned char> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
@@ -425,10 +752,22 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeData3DReadWriteAccessorU8.fromNativeObject(CreateVolumeData3DReadWriteAccessorU8Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
+
+
+    public VolumeData3DReadWriteAccessorU8 createVolumeData3DReadWriteAccessorU8(DimensionsND dimensionsND, int LOD, int channel, int maxPages) {
+        return createVolumeData3DReadWriteAccessorU8(dimensionsND, LOD, channel, maxPages, /*replacementNoValue=*/null);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadWriteAccessorU8 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, unsigned char> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData3DReadWriteAccessorU82Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData3DReadWriteAccessorU8 createVolumeData3DReadWriteAccessorU8(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
         return VolumeData3DReadWriteAccessorU8.fromNativeObject(CreateVolumeData3DReadWriteAccessorU82Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+
+    public VolumeData3DReadWriteAccessorU8 createVolumeData3DReadWriteAccessorU8(DimensionsND dimensionsND, int LOD, int channel) {
+        return createVolumeData3DReadWriteAccessorU8(dimensionsND, LOD, channel, /*replacementNoValue=*/null);
     }
 
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadWriteAccessorU16 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, unsigned short> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
@@ -437,10 +776,22 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeData3DReadWriteAccessorU16.fromNativeObject(CreateVolumeData3DReadWriteAccessorU16Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
+
+
+    public VolumeData3DReadWriteAccessorU16 createVolumeData3DReadWriteAccessorU16(DimensionsND dimensionsND, int LOD, int channel, int maxPages) {
+        return createVolumeData3DReadWriteAccessorU16(dimensionsND, LOD, channel, maxPages, /*replacementNoValue=*/null);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadWriteAccessorU16 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, unsigned short> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData3DReadWriteAccessorU162Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData3DReadWriteAccessorU16 createVolumeData3DReadWriteAccessorU16(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
         return VolumeData3DReadWriteAccessorU16.fromNativeObject(CreateVolumeData3DReadWriteAccessorU162Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+
+    public VolumeData3DReadWriteAccessorU16 createVolumeData3DReadWriteAccessorU16(DimensionsND dimensionsND, int LOD, int channel) {
+        return createVolumeData3DReadWriteAccessorU16(dimensionsND, LOD, channel, /*replacementNoValue=*/null);
     }
 
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadWriteAccessorU32 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, unsigned int> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
@@ -449,10 +800,22 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeData3DReadWriteAccessorU32.fromNativeObject(CreateVolumeData3DReadWriteAccessorU32Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
+
+
+    public VolumeData3DReadWriteAccessorU32 createVolumeData3DReadWriteAccessorU32(DimensionsND dimensionsND, int LOD, int channel, int maxPages) {
+        return createVolumeData3DReadWriteAccessorU32(dimensionsND, LOD, channel, maxPages, /*replacementNoValue=*/null);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadWriteAccessorU32 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, unsigned int> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData3DReadWriteAccessorU322Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData3DReadWriteAccessorU32 createVolumeData3DReadWriteAccessorU32(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
         return VolumeData3DReadWriteAccessorU32.fromNativeObject(CreateVolumeData3DReadWriteAccessorU322Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+
+    public VolumeData3DReadWriteAccessorU32 createVolumeData3DReadWriteAccessorU32(DimensionsND dimensionsND, int LOD, int channel) {
+        return createVolumeData3DReadWriteAccessorU32(dimensionsND, LOD, channel, /*replacementNoValue=*/null);
     }
 
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadWriteAccessorU64 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, uint64_t> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
@@ -461,10 +824,22 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeData3DReadWriteAccessorU64.fromNativeObject(CreateVolumeData3DReadWriteAccessorU64Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
+
+
+    public VolumeData3DReadWriteAccessorU64 createVolumeData3DReadWriteAccessorU64(DimensionsND dimensionsND, int LOD, int channel, int maxPages) {
+        return createVolumeData3DReadWriteAccessorU64(dimensionsND, LOD, channel, maxPages, /*replacementNoValue=*/null);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadWriteAccessorU64 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, uint64_t> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData3DReadWriteAccessorU642Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData3DReadWriteAccessorU64 createVolumeData3DReadWriteAccessorU64(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
         return VolumeData3DReadWriteAccessorU64.fromNativeObject(CreateVolumeData3DReadWriteAccessorU642Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+
+    public VolumeData3DReadWriteAccessorU64 createVolumeData3DReadWriteAccessorU64(DimensionsND dimensionsND, int LOD, int channel) {
+        return createVolumeData3DReadWriteAccessorU64(dimensionsND, LOD, channel, /*replacementNoValue=*/null);
     }
 
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadWriteAccessorR32 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, float> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
@@ -473,10 +848,22 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeData3DReadWriteAccessorR32.fromNativeObject(CreateVolumeData3DReadWriteAccessorR32Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
+
+
+    public VolumeData3DReadWriteAccessorR32 createVolumeData3DReadWriteAccessorR32(DimensionsND dimensionsND, int LOD, int channel, int maxPages) {
+        return createVolumeData3DReadWriteAccessorR32(dimensionsND, LOD, channel, maxPages, /*replacementNoValue=*/null);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadWriteAccessorR32 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, float> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData3DReadWriteAccessorR322Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData3DReadWriteAccessorR32 createVolumeData3DReadWriteAccessorR32(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
         return VolumeData3DReadWriteAccessorR32.fromNativeObject(CreateVolumeData3DReadWriteAccessorR322Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+
+    public VolumeData3DReadWriteAccessorR32 createVolumeData3DReadWriteAccessorR32(DimensionsND dimensionsND, int LOD, int channel) {
+        return createVolumeData3DReadWriteAccessorR32(dimensionsND, LOD, channel, /*replacementNoValue=*/null);
     }
 
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadWriteAccessorR64 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, double> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
@@ -485,10 +872,22 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeData3DReadWriteAccessorR64.fromNativeObject(CreateVolumeData3DReadWriteAccessorR64Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
+
+
+    public VolumeData3DReadWriteAccessorR64 createVolumeData3DReadWriteAccessorR64(DimensionsND dimensionsND, int LOD, int channel, int maxPages) {
+        return createVolumeData3DReadWriteAccessorR64(dimensionsND, LOD, channel, maxPages, /*replacementNoValue=*/null);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadWriteAccessorR64 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, double> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData3DReadWriteAccessorR642Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData3DReadWriteAccessorR64 createVolumeData3DReadWriteAccessorR64(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
         return VolumeData3DReadWriteAccessorR64.fromNativeObject(CreateVolumeData3DReadWriteAccessorR642Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+
+    public VolumeData3DReadWriteAccessorR64 createVolumeData3DReadWriteAccessorR64(DimensionsND dimensionsND, int LOD, int channel) {
+        return createVolumeData3DReadWriteAccessorR64(dimensionsND, LOD, channel, /*replacementNoValue=*/null);
     }
 
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DInterpolatingAccessorR64 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 4>, double> (OpenVDS::DimensionsND, int, int, OpenVDS::InterpolationMethod, int, OpenVDS::optional<float>) FUNCTIONPROTO
@@ -497,10 +896,22 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeData4DInterpolatingAccessorR64.fromNativeObject(CreateVolumeData4DInterpolatingAccessorR64Impl(getNativeObject(), dimensionsND.value(), LOD, channel, interpolationMethod.value(), maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
+
+
+    public VolumeData4DInterpolatingAccessorR64 createVolumeData4DInterpolatingAccessorR64(DimensionsND dimensionsND, int LOD, int channel, InterpolationMethod interpolationMethod, int maxPages) {
+        return createVolumeData4DInterpolatingAccessorR64(dimensionsND, LOD, channel, interpolationMethod, maxPages, /*replacementNoValue=*/null);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DInterpolatingAccessorR64 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 4>, double> (OpenVDS::DimensionsND, int, int, OpenVDS::InterpolationMethod, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData4DInterpolatingAccessorR642Impl(long native_object, long dimensionsND, int LOD, int channel, long interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData4DInterpolatingAccessorR64 createVolumeData4DInterpolatingAccessorR64(DimensionsND dimensionsND, int LOD, int channel, InterpolationMethod interpolationMethod, Float replacementNoValue) {
         return VolumeData4DInterpolatingAccessorR64.fromNativeObject(CreateVolumeData4DInterpolatingAccessorR642Impl(getNativeObject(), dimensionsND.value(), LOD, channel, interpolationMethod.value(), replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+
+    public VolumeData4DInterpolatingAccessorR64 createVolumeData4DInterpolatingAccessorR64(DimensionsND dimensionsND, int LOD, int channel, InterpolationMethod interpolationMethod) {
+        return createVolumeData4DInterpolatingAccessorR64(dimensionsND, LOD, channel, interpolationMethod, /*replacementNoValue=*/null);
     }
 
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DInterpolatingAccessorR32 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 4>, float> (OpenVDS::DimensionsND, int, int, OpenVDS::InterpolationMethod, int, OpenVDS::optional<float>) FUNCTIONPROTO
@@ -509,10 +920,22 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeData4DInterpolatingAccessorR32.fromNativeObject(CreateVolumeData4DInterpolatingAccessorR32Impl(getNativeObject(), dimensionsND.value(), LOD, channel, interpolationMethod.value(), maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
+
+
+    public VolumeData4DInterpolatingAccessorR32 createVolumeData4DInterpolatingAccessorR32(DimensionsND dimensionsND, int LOD, int channel, InterpolationMethod interpolationMethod, int maxPages) {
+        return createVolumeData4DInterpolatingAccessorR32(dimensionsND, LOD, channel, interpolationMethod, maxPages, /*replacementNoValue=*/null);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DInterpolatingAccessorR32 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 4>, float> (OpenVDS::DimensionsND, int, int, OpenVDS::InterpolationMethod, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData4DInterpolatingAccessorR322Impl(long native_object, long dimensionsND, int LOD, int channel, long interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData4DInterpolatingAccessorR32 createVolumeData4DInterpolatingAccessorR32(DimensionsND dimensionsND, int LOD, int channel, InterpolationMethod interpolationMethod, Float replacementNoValue) {
         return VolumeData4DInterpolatingAccessorR32.fromNativeObject(CreateVolumeData4DInterpolatingAccessorR322Impl(getNativeObject(), dimensionsND.value(), LOD, channel, interpolationMethod.value(), replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+
+    public VolumeData4DInterpolatingAccessorR32 createVolumeData4DInterpolatingAccessorR32(DimensionsND dimensionsND, int LOD, int channel, InterpolationMethod interpolationMethod) {
+        return createVolumeData4DInterpolatingAccessorR32(dimensionsND, LOD, channel, interpolationMethod, /*replacementNoValue=*/null);
     }
 
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadAccessor1Bit OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, bool> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
@@ -521,10 +944,22 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeData4DReadAccessor1Bit.fromNativeObject(CreateVolumeData4DReadAccessor1BitImpl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
+
+
+    public VolumeData4DReadAccessor1Bit createVolumeData4DReadAccessor1Bit(DimensionsND dimensionsND, int LOD, int channel, int maxPages) {
+        return createVolumeData4DReadAccessor1Bit(dimensionsND, LOD, channel, maxPages, /*replacementNoValue=*/null);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadAccessor1Bit OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, bool> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData4DReadAccessor1Bit2Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData4DReadAccessor1Bit createVolumeData4DReadAccessor1Bit(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
         return VolumeData4DReadAccessor1Bit.fromNativeObject(CreateVolumeData4DReadAccessor1Bit2Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+
+    public VolumeData4DReadAccessor1Bit createVolumeData4DReadAccessor1Bit(DimensionsND dimensionsND, int LOD, int channel) {
+        return createVolumeData4DReadAccessor1Bit(dimensionsND, LOD, channel, /*replacementNoValue=*/null);
     }
 
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadAccessorU8 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, unsigned char> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
@@ -533,10 +968,22 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeData4DReadAccessorU8.fromNativeObject(CreateVolumeData4DReadAccessorU8Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
+
+
+    public VolumeData4DReadAccessorU8 createVolumeData4DReadAccessorU8(DimensionsND dimensionsND, int LOD, int channel, int maxPages) {
+        return createVolumeData4DReadAccessorU8(dimensionsND, LOD, channel, maxPages, /*replacementNoValue=*/null);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadAccessorU8 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, unsigned char> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData4DReadAccessorU82Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData4DReadAccessorU8 createVolumeData4DReadAccessorU8(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
         return VolumeData4DReadAccessorU8.fromNativeObject(CreateVolumeData4DReadAccessorU82Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+
+    public VolumeData4DReadAccessorU8 createVolumeData4DReadAccessorU8(DimensionsND dimensionsND, int LOD, int channel) {
+        return createVolumeData4DReadAccessorU8(dimensionsND, LOD, channel, /*replacementNoValue=*/null);
     }
 
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadAccessorU16 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, unsigned short> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
@@ -545,10 +992,22 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeData4DReadAccessorU16.fromNativeObject(CreateVolumeData4DReadAccessorU16Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
+
+
+    public VolumeData4DReadAccessorU16 createVolumeData4DReadAccessorU16(DimensionsND dimensionsND, int LOD, int channel, int maxPages) {
+        return createVolumeData4DReadAccessorU16(dimensionsND, LOD, channel, maxPages, /*replacementNoValue=*/null);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadAccessorU16 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, unsigned short> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData4DReadAccessorU162Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData4DReadAccessorU16 createVolumeData4DReadAccessorU16(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
         return VolumeData4DReadAccessorU16.fromNativeObject(CreateVolumeData4DReadAccessorU162Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+
+    public VolumeData4DReadAccessorU16 createVolumeData4DReadAccessorU16(DimensionsND dimensionsND, int LOD, int channel) {
+        return createVolumeData4DReadAccessorU16(dimensionsND, LOD, channel, /*replacementNoValue=*/null);
     }
 
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadAccessorU32 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, unsigned int> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
@@ -557,10 +1016,22 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeData4DReadAccessorU32.fromNativeObject(CreateVolumeData4DReadAccessorU32Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
+
+
+    public VolumeData4DReadAccessorU32 createVolumeData4DReadAccessorU32(DimensionsND dimensionsND, int LOD, int channel, int maxPages) {
+        return createVolumeData4DReadAccessorU32(dimensionsND, LOD, channel, maxPages, /*replacementNoValue=*/null);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadAccessorU32 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, unsigned int> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData4DReadAccessorU322Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData4DReadAccessorU32 createVolumeData4DReadAccessorU32(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
         return VolumeData4DReadAccessorU32.fromNativeObject(CreateVolumeData4DReadAccessorU322Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+
+    public VolumeData4DReadAccessorU32 createVolumeData4DReadAccessorU32(DimensionsND dimensionsND, int LOD, int channel) {
+        return createVolumeData4DReadAccessorU32(dimensionsND, LOD, channel, /*replacementNoValue=*/null);
     }
 
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadAccessorU64 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, uint64_t> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
@@ -569,10 +1040,22 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeData4DReadAccessorU64.fromNativeObject(CreateVolumeData4DReadAccessorU64Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
+
+
+    public VolumeData4DReadAccessorU64 createVolumeData4DReadAccessorU64(DimensionsND dimensionsND, int LOD, int channel, int maxPages) {
+        return createVolumeData4DReadAccessorU64(dimensionsND, LOD, channel, maxPages, /*replacementNoValue=*/null);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadAccessorU64 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, uint64_t> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData4DReadAccessorU642Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData4DReadAccessorU64 createVolumeData4DReadAccessorU64(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
         return VolumeData4DReadAccessorU64.fromNativeObject(CreateVolumeData4DReadAccessorU642Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+
+    public VolumeData4DReadAccessorU64 createVolumeData4DReadAccessorU64(DimensionsND dimensionsND, int LOD, int channel) {
+        return createVolumeData4DReadAccessorU64(dimensionsND, LOD, channel, /*replacementNoValue=*/null);
     }
 
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadAccessorR32 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, float> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
@@ -581,10 +1064,22 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeData4DReadAccessorR32.fromNativeObject(CreateVolumeData4DReadAccessorR32Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
+
+
+    public VolumeData4DReadAccessorR32 createVolumeData4DReadAccessorR32(DimensionsND dimensionsND, int LOD, int channel, int maxPages) {
+        return createVolumeData4DReadAccessorR32(dimensionsND, LOD, channel, maxPages, /*replacementNoValue=*/null);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadAccessorR32 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, float> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData4DReadAccessorR322Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData4DReadAccessorR32 createVolumeData4DReadAccessorR32(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
         return VolumeData4DReadAccessorR32.fromNativeObject(CreateVolumeData4DReadAccessorR322Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+
+    public VolumeData4DReadAccessorR32 createVolumeData4DReadAccessorR32(DimensionsND dimensionsND, int LOD, int channel) {
+        return createVolumeData4DReadAccessorR32(dimensionsND, LOD, channel, /*replacementNoValue=*/null);
     }
 
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadAccessorR64 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, double> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
@@ -593,10 +1088,22 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeData4DReadAccessorR64.fromNativeObject(CreateVolumeData4DReadAccessorR64Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
+
+
+    public VolumeData4DReadAccessorR64 createVolumeData4DReadAccessorR64(DimensionsND dimensionsND, int LOD, int channel, int maxPages) {
+        return createVolumeData4DReadAccessorR64(dimensionsND, LOD, channel, maxPages, /*replacementNoValue=*/null);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadAccessorR64 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, double> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData4DReadAccessorR642Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData4DReadAccessorR64 createVolumeData4DReadAccessorR64(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
         return VolumeData4DReadAccessorR64.fromNativeObject(CreateVolumeData4DReadAccessorR642Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+
+    public VolumeData4DReadAccessorR64 createVolumeData4DReadAccessorR64(DimensionsND dimensionsND, int LOD, int channel) {
+        return createVolumeData4DReadAccessorR64(dimensionsND, LOD, channel, /*replacementNoValue=*/null);
     }
 
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadWriteAccessor1Bit OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, bool> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
@@ -605,10 +1112,22 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeData4DReadWriteAccessor1Bit.fromNativeObject(CreateVolumeData4DReadWriteAccessor1BitImpl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
+
+
+    public VolumeData4DReadWriteAccessor1Bit createVolumeData4DReadWriteAccessor1Bit(DimensionsND dimensionsND, int LOD, int channel, int maxPages) {
+        return createVolumeData4DReadWriteAccessor1Bit(dimensionsND, LOD, channel, maxPages, /*replacementNoValue=*/null);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadWriteAccessor1Bit OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, bool> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData4DReadWriteAccessor1Bit2Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData4DReadWriteAccessor1Bit createVolumeData4DReadWriteAccessor1Bit(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
         return VolumeData4DReadWriteAccessor1Bit.fromNativeObject(CreateVolumeData4DReadWriteAccessor1Bit2Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+
+    public VolumeData4DReadWriteAccessor1Bit createVolumeData4DReadWriteAccessor1Bit(DimensionsND dimensionsND, int LOD, int channel) {
+        return createVolumeData4DReadWriteAccessor1Bit(dimensionsND, LOD, channel, /*replacementNoValue=*/null);
     }
 
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadWriteAccessorU8 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, unsigned char> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
@@ -617,10 +1136,22 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeData4DReadWriteAccessorU8.fromNativeObject(CreateVolumeData4DReadWriteAccessorU8Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
+
+
+    public VolumeData4DReadWriteAccessorU8 createVolumeData4DReadWriteAccessorU8(DimensionsND dimensionsND, int LOD, int channel, int maxPages) {
+        return createVolumeData4DReadWriteAccessorU8(dimensionsND, LOD, channel, maxPages, /*replacementNoValue=*/null);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadWriteAccessorU8 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, unsigned char> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData4DReadWriteAccessorU82Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData4DReadWriteAccessorU8 createVolumeData4DReadWriteAccessorU8(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
         return VolumeData4DReadWriteAccessorU8.fromNativeObject(CreateVolumeData4DReadWriteAccessorU82Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+
+    public VolumeData4DReadWriteAccessorU8 createVolumeData4DReadWriteAccessorU8(DimensionsND dimensionsND, int LOD, int channel) {
+        return createVolumeData4DReadWriteAccessorU8(dimensionsND, LOD, channel, /*replacementNoValue=*/null);
     }
 
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadWriteAccessorU16 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, unsigned short> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
@@ -629,10 +1160,22 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeData4DReadWriteAccessorU16.fromNativeObject(CreateVolumeData4DReadWriteAccessorU16Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
+
+
+    public VolumeData4DReadWriteAccessorU16 createVolumeData4DReadWriteAccessorU16(DimensionsND dimensionsND, int LOD, int channel, int maxPages) {
+        return createVolumeData4DReadWriteAccessorU16(dimensionsND, LOD, channel, maxPages, /*replacementNoValue=*/null);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadWriteAccessorU16 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, unsigned short> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData4DReadWriteAccessorU162Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData4DReadWriteAccessorU16 createVolumeData4DReadWriteAccessorU16(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
         return VolumeData4DReadWriteAccessorU16.fromNativeObject(CreateVolumeData4DReadWriteAccessorU162Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+
+    public VolumeData4DReadWriteAccessorU16 createVolumeData4DReadWriteAccessorU16(DimensionsND dimensionsND, int LOD, int channel) {
+        return createVolumeData4DReadWriteAccessorU16(dimensionsND, LOD, channel, /*replacementNoValue=*/null);
     }
 
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadWriteAccessorU32 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, unsigned int> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
@@ -641,10 +1184,22 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeData4DReadWriteAccessorU32.fromNativeObject(CreateVolumeData4DReadWriteAccessorU32Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
+
+
+    public VolumeData4DReadWriteAccessorU32 createVolumeData4DReadWriteAccessorU32(DimensionsND dimensionsND, int LOD, int channel, int maxPages) {
+        return createVolumeData4DReadWriteAccessorU32(dimensionsND, LOD, channel, maxPages, /*replacementNoValue=*/null);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadWriteAccessorU32 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, unsigned int> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData4DReadWriteAccessorU322Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData4DReadWriteAccessorU32 createVolumeData4DReadWriteAccessorU32(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
         return VolumeData4DReadWriteAccessorU32.fromNativeObject(CreateVolumeData4DReadWriteAccessorU322Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+
+    public VolumeData4DReadWriteAccessorU32 createVolumeData4DReadWriteAccessorU32(DimensionsND dimensionsND, int LOD, int channel) {
+        return createVolumeData4DReadWriteAccessorU32(dimensionsND, LOD, channel, /*replacementNoValue=*/null);
     }
 
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadWriteAccessorU64 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, uint64_t> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
@@ -653,10 +1208,22 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeData4DReadWriteAccessorU64.fromNativeObject(CreateVolumeData4DReadWriteAccessorU64Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
+
+
+    public VolumeData4DReadWriteAccessorU64 createVolumeData4DReadWriteAccessorU64(DimensionsND dimensionsND, int LOD, int channel, int maxPages) {
+        return createVolumeData4DReadWriteAccessorU64(dimensionsND, LOD, channel, maxPages, /*replacementNoValue=*/null);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadWriteAccessorU64 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, uint64_t> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData4DReadWriteAccessorU642Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData4DReadWriteAccessorU64 createVolumeData4DReadWriteAccessorU64(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
         return VolumeData4DReadWriteAccessorU64.fromNativeObject(CreateVolumeData4DReadWriteAccessorU642Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+
+    public VolumeData4DReadWriteAccessorU64 createVolumeData4DReadWriteAccessorU64(DimensionsND dimensionsND, int LOD, int channel) {
+        return createVolumeData4DReadWriteAccessorU64(dimensionsND, LOD, channel, /*replacementNoValue=*/null);
     }
 
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadWriteAccessorR32 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, float> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
@@ -665,10 +1232,22 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeData4DReadWriteAccessorR32.fromNativeObject(CreateVolumeData4DReadWriteAccessorR32Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
+
+
+    public VolumeData4DReadWriteAccessorR32 createVolumeData4DReadWriteAccessorR32(DimensionsND dimensionsND, int LOD, int channel, int maxPages) {
+        return createVolumeData4DReadWriteAccessorR32(dimensionsND, LOD, channel, maxPages, /*replacementNoValue=*/null);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadWriteAccessorR32 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, float> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData4DReadWriteAccessorR322Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData4DReadWriteAccessorR32 createVolumeData4DReadWriteAccessorR32(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
         return VolumeData4DReadWriteAccessorR32.fromNativeObject(CreateVolumeData4DReadWriteAccessorR322Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+
+    public VolumeData4DReadWriteAccessorR32 createVolumeData4DReadWriteAccessorR32(DimensionsND dimensionsND, int LOD, int channel) {
+        return createVolumeData4DReadWriteAccessorR32(dimensionsND, LOD, channel, /*replacementNoValue=*/null);
     }
 
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadWriteAccessorR64 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, double> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
@@ -677,10 +1256,22 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeData4DReadWriteAccessorR64.fromNativeObject(CreateVolumeData4DReadWriteAccessorR64Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
+
+
+    public VolumeData4DReadWriteAccessorR64 createVolumeData4DReadWriteAccessorR64(DimensionsND dimensionsND, int LOD, int channel, int maxPages) {
+        return createVolumeData4DReadWriteAccessorR64(dimensionsND, LOD, channel, maxPages, /*replacementNoValue=*/null);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadWriteAccessorR64 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, double> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData4DReadWriteAccessorR642Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData4DReadWriteAccessorR64 createVolumeData4DReadWriteAccessorR64(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
         return VolumeData4DReadWriteAccessorR64.fromNativeObject(CreateVolumeData4DReadWriteAccessorR642Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+
+    public VolumeData4DReadWriteAccessorR64 createVolumeData4DReadWriteAccessorR64(DimensionsND dimensionsND, int LOD, int channel) {
+        return createVolumeData4DReadWriteAccessorR64(dimensionsND, LOD, channel, /*replacementNoValue=*/null);
     }
 
     ///AUTOGEN-OK: CXX_METHOD GetVolumeSubsetBufferSize int64_t (int const (&)[6], int const (&)[6], OpenVDS::VolumeDataChannelDescriptor::Format, int, int) FUNCTIONPROTO
@@ -867,45 +1458,15 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return GetVolumeSamplesBufferSizeImpl(getNativeObject(), sampleCount, channel);
     }
 
-    ///AUTOGEN-OK: CXX_METHOD RequestVolumeSamples std::shared_ptr<OpenVDS::VolumeDataRequest_t<float>> (float *, int64_t, OpenVDS::DimensionsND, int, int, float const (*)[6], int, OpenVDS::InterpolationMethod, OpenVDS::optional<float>) FUNCTIONPROTO
-    native private long RequestVolumeSamplesImpl(long native_object, ByteBuffer buffer, long dimensionsND, int LOD, int channel, float[] samplePositions, int sampleCount, long interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
-
     /**
-     * Request sampling of the input VDS at the specified coordinates.
+     * Compute the buffer size (in bytes) for a volume samples request.
      * 
-     * @param buffer Pointer to a preallocated buffer holding at least sampleCount elements.
-     * @param dimensionsND The dimensiongroup the requested data is read from.
-     * @param LOD The LOD level the requested data is read from.
-     * @param channel The channel index the requested data is read from.
-     * @param samplePositions Pointer to array of VolumeDataLayout::Dimensionality_Max-elements indicating the positions to sample. May be deleted once RequestVolumeSamples return, as HueSpace makes a deep copy of the data.
      * @param sampleCount Number of samples to request.
-     * @param interpolationMethod Interpolation method to use when sampling the buffer.
-     * @param replacementNoValue If specified, this value is used to replace regions of the input VDS that has no data.
-     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     * @return The buffer size needed.
      */
-    public VolumeDataRequestFloat requestVolumeSamples(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, float[] samplePositions, int sampleCount, InterpolationMethod interpolationMethod, Float replacementNoValue) {
-        if (samplePositions.length != 6) throw new IllegalArgumentException("Array \"samplePositions\" must have length 6");
-        return VolumeDataRequestFloat.fromNativeObject(RequestVolumeSamplesImpl(getNativeObject(), buffer, dimensionsND.value(), LOD, channel, samplePositions, sampleCount, interpolationMethod.value(), replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
-    }
 
-    ///AUTOGEN-OK: CXX_METHOD RequestVolumeSamples std::shared_ptr<OpenVDS::VolumeDataRequest_t<float>> (OpenVDS::DimensionsND, int, int, float const (*)[6], int, OpenVDS::InterpolationMethod, OpenVDS::optional<float>) FUNCTIONPROTO
-    native private long RequestVolumeSamples2Impl(long native_object, long dimensionsND, int LOD, int channel, float[] samplePositions, int sampleCount, long interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
-
-    /**
-     * Request sampling of the input VDS at the specified coordinates, using an automatically allocated buffer.
-     * 
-     * @param dimensionsND The dimensiongroup the requested data is read from.
-     * @param LOD The LOD level the requested data is read from.
-     * @param channel The channel index the requested data is read from.
-     * @param samplePositions Pointer to array of VolumeDataLayout::Dimensionality_Max-elements indicating the positions to sample. May be deleted once RequestVolumeSamples return, as HueSpace makes a deep copy of the data.
-     * @param sampleCount Number of samples to request.
-     * @param interpolationMethod Interpolation method to use when sampling the buffer.
-     * @param replacementNoValue If specified, this value is used to replace regions of the input VDS that has no data.
-     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
-     */
-    public VolumeDataRequestFloat requestVolumeSamples(DimensionsND dimensionsND, int LOD, int channel, float[] samplePositions, int sampleCount, InterpolationMethod interpolationMethod, Float replacementNoValue) {
-        if (samplePositions.length != 6) throw new IllegalArgumentException("Array \"samplePositions\" must have length 6");
-        return VolumeDataRequestFloat.fromNativeObject(RequestVolumeSamples2Impl(getNativeObject(), dimensionsND.value(), LOD, channel, samplePositions, sampleCount, interpolationMethod.value(), replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    public long getVolumeSamplesBufferSize(int sampleCount) {
+        return getVolumeSamplesBufferSize(sampleCount, /*channel=*/0);
     }
 
     ///AUTOGEN-OK: CXX_METHOD GetVolumeTracesBufferSize int64_t (int, int, int, int) FUNCTIONPROTO
@@ -924,47 +1485,29 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return GetVolumeTracesBufferSizeImpl(getNativeObject(), traceCount, traceDimension, LOD, channel);
     }
 
-    ///AUTOGEN-OK: CXX_METHOD RequestVolumeTraces std::shared_ptr<OpenVDS::VolumeDataRequest_t<float>> (OpenVDS::DimensionsND, int, int, float const (*)[6], int, OpenVDS::InterpolationMethod, int, OpenVDS::optional<float>) FUNCTIONPROTO
-    native private long RequestVolumeTracesImpl(long native_object, long dimensionsND, int LOD, int channel, float[] tracePositions, int traceCount, long interpolationMethod, int traceDimension, float replacementNoValue, boolean use_replacementNoValue);
-
     /**
-     * Request traces from the input VDS, using an automatically allocated buffer.
+     * Compute the buffer size (in bytes) for a volume traces request.
      * 
-     * @param dimensionsND The dimensiongroup the requested data is read from.
-     * @param LOD The LOD level the requested data is read from.
-     * @param channel The channel index the requested data is read from.
-     * @param tracePositions Pointer to array of traceCount VolumeDataLayout::Dimensionality_Max-elements indicating the trace positions.
      * @param traceCount Number of traces to request.
-     * @param interpolationMethod Interpolation method to use when sampling the buffer.
      * @param traceDimension The dimension to trace
-     * @param replacementNoValue If specified, this value is used to replace regions of the input VDS that has no data.
-     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     * @param LOD The LOD level the requested data is read from.
+     * @return The buffer size needed.
      */
-    public VolumeDataRequestFloat requestVolumeTraces(DimensionsND dimensionsND, int LOD, int channel, float[] tracePositions, int traceCount, InterpolationMethod interpolationMethod, int traceDimension, Float replacementNoValue) {
-        if (tracePositions.length != 6) throw new IllegalArgumentException("Array \"tracePositions\" must have length 6");
-        return VolumeDataRequestFloat.fromNativeObject(RequestVolumeTracesImpl(getNativeObject(), dimensionsND.value(), LOD, channel, tracePositions, traceCount, interpolationMethod.value(), traceDimension, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+
+    public long getVolumeTracesBufferSize(int traceCount, int traceDimension, int LOD) {
+        return getVolumeTracesBufferSize(traceCount, traceDimension, LOD, /*channel=*/0);
     }
 
-    ///AUTOGEN-OK: CXX_METHOD RequestVolumeTraces std::shared_ptr<OpenVDS::VolumeDataRequest_t<float>> (float *, int64_t, OpenVDS::DimensionsND, int, int, float const (*)[6], int, OpenVDS::InterpolationMethod, int, OpenVDS::optional<float>) FUNCTIONPROTO
-    native private long RequestVolumeTraces2Impl(long native_object, ByteBuffer buffer, long dimensionsND, int LOD, int channel, float[] tracePositions, int traceCount, long interpolationMethod, int traceDimension, float replacementNoValue, boolean use_replacementNoValue);
-
     /**
-     * Request traces from the input VDS.
+     * Compute the buffer size (in bytes) for a volume traces request.
      * 
-     * @param buffer Pointer to a preallocated buffer holding at least traceCount * number of samples in the traceDimension.
-     * @param dimensionsND The dimensiongroup the requested data is read from.
-     * @param LOD The LOD level the requested data is read from.
-     * @param channel The channel index the requested data is read from.
-     * @param tracePositions Pointer to array of traceCount VolumeDataLayout::Dimensionality_Max-elements indicating the trace positions.
      * @param traceCount Number of traces to request.
-     * @param interpolationMethod Interpolation method to use when sampling the buffer.
      * @param traceDimension The dimension to trace
-     * @param replacementNoValue If specified, this value is used to replace regions of the input VDS that has no data.
-     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     * @return The buffer size needed.
      */
-    public VolumeDataRequestFloat requestVolumeTraces(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, float[] tracePositions, int traceCount, InterpolationMethod interpolationMethod, int traceDimension, Float replacementNoValue) {
-        if (tracePositions.length != 6) throw new IllegalArgumentException("Array \"tracePositions\" must have length 6");
-        return VolumeDataRequestFloat.fromNativeObject(RequestVolumeTraces2Impl(getNativeObject(), buffer, dimensionsND.value(), LOD, channel, tracePositions, traceCount, interpolationMethod.value(), traceDimension, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+
+    public long getVolumeTracesBufferSize(int traceCount, int traceDimension) {
+        return getVolumeTracesBufferSize(traceCount, traceDimension, /*LOD=*/0, /*channel=*/0);
     }
 
     ///AUTOGEN-OK: CXX_METHOD PrefetchVolumeChunk std::shared_ptr<OpenVDS::VolumeDataRequest> (OpenVDS::DimensionsND, int, int, int64_t) FUNCTIONPROTO
@@ -1032,6 +1575,493 @@ of the number of chunks in some of the dimensions. Do not change this from the d
 
     ///AUTOGEN-FAIL: CXX_METHOD GetCurrentDownloadError void (int *, const char **) FUNCTIONPROTO
 
+/*
+ * Copyright 2022 The Open Group
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+    /**
+     * Request a subset of the input VDS.
+     * 
+     * @param buffer Pointer to a preallocated buffer holding at least as many elements of format as indicated by minVoxelCoordinates and maxVoxelCoordinates.
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+
+    public VolumeDataRequestByte requestVolumeSubsetByte(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates) {
+        return requestVolumeSubsetByte(buffer, dimensionsND, LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, /*replacementNoValue=*/null);
+    }
+
+    /**
+     * Request a subset of the input VDS, using an automatically allocated buffer.
+     * 
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+
+    public VolumeDataRequestByte requestVolumeSubsetByte(DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates) {
+        return requestVolumeSubsetByte(dimensionsND, LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, /*replacementNoValue=*/null);
+    }
+
+    /**
+     * Request a subset of the input VDS.
+     * 
+     * @param buffer Pointer to a preallocated buffer holding at least as many elements of format as indicated by minVoxelCoordinates and maxVoxelCoordinates.
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+
+    public VolumeDataRequestUShort requestVolumeSubsetUShort(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates) {
+        return requestVolumeSubsetUShort(buffer, dimensionsND, LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, /*replacementNoValue=*/null);
+    }
+
+    /**
+     * Request a subset of the input VDS, using an automatically allocated buffer.
+     * 
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+
+    public VolumeDataRequestUShort requestVolumeSubsetUShort(DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates) {
+        return requestVolumeSubsetUShort(dimensionsND, LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, /*replacementNoValue=*/null);
+    }
+
+    /**
+     * Request a subset of the input VDS.
+     * 
+     * @param buffer Pointer to a preallocated buffer holding at least as many elements of format as indicated by minVoxelCoordinates and maxVoxelCoordinates.
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+
+    public VolumeDataRequestUInt requestVolumeSubsetUInt(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates) {
+        return requestVolumeSubsetUInt(buffer, dimensionsND, LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, /*replacementNoValue=*/null);
+    }
+
+    /**
+     * Request a subset of the input VDS, using an automatically allocated buffer.
+     * 
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+
+    public VolumeDataRequestUInt requestVolumeSubsetUInt(DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates) {
+        return requestVolumeSubsetUInt(dimensionsND, LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, /*replacementNoValue=*/null);
+    }
+
+    /**
+     * Request a subset of the input VDS.
+     * 
+     * @param buffer Pointer to a preallocated buffer holding at least as many elements of format as indicated by minVoxelCoordinates and maxVoxelCoordinates.
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+
+    public VolumeDataRequestULong requestVolumeSubsetULong(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates) {
+        return requestVolumeSubsetULong(buffer, dimensionsND, LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, /*replacementNoValue=*/null);
+    }
+
+    /**
+     * Request a subset of the input VDS, using an automatically allocated buffer.
+     * 
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+
+    public VolumeDataRequestULong requestVolumeSubsetULong(DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates) {
+        return requestVolumeSubsetULong(dimensionsND, LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, /*replacementNoValue=*/null);
+    }
+
+    /**
+     * Request a subset of the input VDS.
+     * 
+     * @param buffer Pointer to a preallocated buffer holding at least as many elements of format as indicated by minVoxelCoordinates and maxVoxelCoordinates.
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+
+    public VolumeDataRequestFloat requestVolumeSubsetFloat(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates) {
+        return requestVolumeSubsetFloat(buffer, dimensionsND, LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, /*replacementNoValue=*/null);
+    }
+
+    /**
+     * Request a subset of the input VDS, using an automatically allocated buffer.
+     * 
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+
+    public VolumeDataRequestFloat requestVolumeSubsetFloat(DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates) {
+        return requestVolumeSubsetFloat(dimensionsND, LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, /*replacementNoValue=*/null);
+    }
+
+    /**
+     * Request a subset of the input VDS.
+     * 
+     * @param buffer Pointer to a preallocated buffer holding at least as many elements of format as indicated by minVoxelCoordinates and maxVoxelCoordinates.
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+
+    public VolumeDataRequestDouble requestVolumeSubsetDouble(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates) {
+        return requestVolumeSubsetDouble(buffer, dimensionsND, LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, /*replacementNoValue=*/null);
+    }
+
+    /**
+     * Request a subset of the input VDS, using an automatically allocated buffer.
+     * 
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+
+    public VolumeDataRequestDouble requestVolumeSubsetDouble(DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates) {
+        return requestVolumeSubsetDouble(dimensionsND, LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, /*replacementNoValue=*/null);
+    }
+
+    /**
+     * Request a subset projected from an arbitrary 3D plane through the subset onto one of the sides of the subset.
+     * 
+     * @param buffer Pointer to a preallocated buffer holding at least as many elements of format as indicated by minVoxelCoordinates and maxVoxelCoordinates for the projected dimensions.
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @param voxelPlane The plane equation for the projection from the dimension source to the projected dimensions (which must be a 2D subset of the source dimensions).
+     * @param projectedDimensions The 2D dimension group that the plane in the source dimensiongroup is projected into. It must be a 2D subset of the source dimensions.
+     * @param interpolationMethod Interpolation method to use when sampling the buffer.
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+
+    public VolumeDataRequestByte requestProjectedVolumeSubsetByte(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, FloatVector4 voxelPlane, DimensionsND projectedDimensions, InterpolationMethod interpolationMethod) {
+        return requestProjectedVolumeSubsetByte(buffer, dimensionsND, LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, voxelPlane, projectedDimensions, interpolationMethod, /*replacementNoValue=*/null);
+    }
+
+    /**
+     * Request a subset projected from an arbitrary 3D plane through the subset onto one of the sides of the subset, using an automatically allocated buffer.
+     * 
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @param voxelPlane The plane equation for the projection from the dimension source to the projected dimensions (which must be a 2D subset of the source dimensions).
+     * @param projectedDimensions The 2D dimension group that the plane in the source dimensiongroup is projected into. It must be a 2D subset of the source dimensions.
+     * @param interpolationMethod Interpolation method to use when sampling the buffer.
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+
+    public VolumeDataRequestByte requestProjectedVolumeSubsetByte(DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, FloatVector4 voxelPlane, DimensionsND projectedDimensions, InterpolationMethod interpolationMethod) {
+        return requestProjectedVolumeSubsetByte(dimensionsND, LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, voxelPlane, projectedDimensions, interpolationMethod, /*replacementNoValue=*/null);
+    }
+
+    /**
+     * Request a subset projected from an arbitrary 3D plane through the subset onto one of the sides of the subset.
+     * 
+     * @param buffer Pointer to a preallocated buffer holding at least as many elements of format as indicated by minVoxelCoordinates and maxVoxelCoordinates for the projected dimensions.
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @param voxelPlane The plane equation for the projection from the dimension source to the projected dimensions (which must be a 2D subset of the source dimensions).
+     * @param projectedDimensions The 2D dimension group that the plane in the source dimensiongroup is projected into. It must be a 2D subset of the source dimensions.
+     * @param interpolationMethod Interpolation method to use when sampling the buffer.
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+
+    public VolumeDataRequestUShort requestProjectedVolumeSubsetUShort(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, FloatVector4 voxelPlane, DimensionsND projectedDimensions, InterpolationMethod interpolationMethod) {
+        return requestProjectedVolumeSubsetUShort(buffer, dimensionsND, LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, voxelPlane, projectedDimensions, interpolationMethod, /*replacementNoValue=*/null);
+    }
+
+    /**
+     * Request a subset projected from an arbitrary 3D plane through the subset onto one of the sides of the subset, using an automatically allocated buffer.
+     * 
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @param voxelPlane The plane equation for the projection from the dimension source to the projected dimensions (which must be a 2D subset of the source dimensions).
+     * @param projectedDimensions The 2D dimension group that the plane in the source dimensiongroup is projected into. It must be a 2D subset of the source dimensions.
+     * @param interpolationMethod Interpolation method to use when sampling the buffer.
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+
+    public VolumeDataRequestUShort requestProjectedVolumeSubsetUShort(DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, FloatVector4 voxelPlane, DimensionsND projectedDimensions, InterpolationMethod interpolationMethod) {
+        return requestProjectedVolumeSubsetUShort(dimensionsND, LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, voxelPlane, projectedDimensions, interpolationMethod, /*replacementNoValue=*/null);
+    }
+
+    /**
+     * Request a subset projected from an arbitrary 3D plane through the subset onto one of the sides of the subset.
+     * 
+     * @param buffer Pointer to a preallocated buffer holding at least as many elements of format as indicated by minVoxelCoordinates and maxVoxelCoordinates for the projected dimensions.
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @param voxelPlane The plane equation for the projection from the dimension source to the projected dimensions (which must be a 2D subset of the source dimensions).
+     * @param projectedDimensions The 2D dimension group that the plane in the source dimensiongroup is projected into. It must be a 2D subset of the source dimensions.
+     * @param interpolationMethod Interpolation method to use when sampling the buffer.
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+
+    public VolumeDataRequestUInt requestProjectedVolumeSubsetUInt(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, FloatVector4 voxelPlane, DimensionsND projectedDimensions, InterpolationMethod interpolationMethod) {
+        return requestProjectedVolumeSubsetUInt(buffer, dimensionsND, LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, voxelPlane, projectedDimensions, interpolationMethod, /*replacementNoValue=*/null);
+    }
+
+    /**
+     * Request a subset projected from an arbitrary 3D plane through the subset onto one of the sides of the subset, using an automatically allocated buffer.
+     * 
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @param voxelPlane The plane equation for the projection from the dimension source to the projected dimensions (which must be a 2D subset of the source dimensions).
+     * @param projectedDimensions The 2D dimension group that the plane in the source dimensiongroup is projected into. It must be a 2D subset of the source dimensions.
+     * @param interpolationMethod Interpolation method to use when sampling the buffer.
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+
+    public VolumeDataRequestUInt requestProjectedVolumeSubsetUInt(DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, FloatVector4 voxelPlane, DimensionsND projectedDimensions, InterpolationMethod interpolationMethod) {
+        return requestProjectedVolumeSubsetUInt(dimensionsND, LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, voxelPlane, projectedDimensions, interpolationMethod, /*replacementNoValue=*/null);
+    }
+
+    /**
+     * Request a subset projected from an arbitrary 3D plane through the subset onto one of the sides of the subset.
+     * 
+     * @param buffer Pointer to a preallocated buffer holding at least as many elements of format as indicated by minVoxelCoordinates and maxVoxelCoordinates for the projected dimensions.
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @param voxelPlane The plane equation for the projection from the dimension source to the projected dimensions (which must be a 2D subset of the source dimensions).
+     * @param projectedDimensions The 2D dimension group that the plane in the source dimensiongroup is projected into. It must be a 2D subset of the source dimensions.
+     * @param interpolationMethod Interpolation method to use when sampling the buffer.
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+
+    public VolumeDataRequestULong requestProjectedVolumeSubsetULong(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, FloatVector4 voxelPlane, DimensionsND projectedDimensions, InterpolationMethod interpolationMethod) {
+        return requestProjectedVolumeSubsetULong(buffer, dimensionsND, LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, voxelPlane, projectedDimensions, interpolationMethod, /*replacementNoValue=*/null);
+    }
+
+    /**
+     * Request a subset projected from an arbitrary 3D plane through the subset onto one of the sides of the subset, using an automatically allocated buffer.
+     * 
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @param voxelPlane The plane equation for the projection from the dimension source to the projected dimensions (which must be a 2D subset of the source dimensions).
+     * @param projectedDimensions The 2D dimension group that the plane in the source dimensiongroup is projected into. It must be a 2D subset of the source dimensions.
+     * @param interpolationMethod Interpolation method to use when sampling the buffer.
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+
+    public VolumeDataRequestULong requestProjectedVolumeSubsetULong(DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, FloatVector4 voxelPlane, DimensionsND projectedDimensions, InterpolationMethod interpolationMethod) {
+        return requestProjectedVolumeSubsetULong(dimensionsND, LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, voxelPlane, projectedDimensions, interpolationMethod, /*replacementNoValue=*/null);
+    }
+
+    /**
+     * Request a subset projected from an arbitrary 3D plane through the subset onto one of the sides of the subset.
+     * 
+     * @param buffer Pointer to a preallocated buffer holding at least as many elements of format as indicated by minVoxelCoordinates and maxVoxelCoordinates for the projected dimensions.
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @param voxelPlane The plane equation for the projection from the dimension source to the projected dimensions (which must be a 2D subset of the source dimensions).
+     * @param projectedDimensions The 2D dimension group that the plane in the source dimensiongroup is projected into. It must be a 2D subset of the source dimensions.
+     * @param interpolationMethod Interpolation method to use when sampling the buffer.
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+
+    public VolumeDataRequestFloat requestProjectedVolumeSubsetFloat(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, FloatVector4 voxelPlane, DimensionsND projectedDimensions, InterpolationMethod interpolationMethod) {
+        return requestProjectedVolumeSubsetFloat(buffer, dimensionsND, LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, voxelPlane, projectedDimensions, interpolationMethod, /*replacementNoValue=*/null);
+    }
+
+    /**
+     * Request a subset projected from an arbitrary 3D plane through the subset onto one of the sides of the subset, using an automatically allocated buffer.
+     * 
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @param voxelPlane The plane equation for the projection from the dimension source to the projected dimensions (which must be a 2D subset of the source dimensions).
+     * @param projectedDimensions The 2D dimension group that the plane in the source dimensiongroup is projected into. It must be a 2D subset of the source dimensions.
+     * @param interpolationMethod Interpolation method to use when sampling the buffer.
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+
+    public VolumeDataRequestFloat requestProjectedVolumeSubsetFloat(DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, FloatVector4 voxelPlane, DimensionsND projectedDimensions, InterpolationMethod interpolationMethod) {
+        return requestProjectedVolumeSubsetFloat(dimensionsND, LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, voxelPlane, projectedDimensions, interpolationMethod, /*replacementNoValue=*/null);
+    }
+
+    /**
+     * Request a subset projected from an arbitrary 3D plane through the subset onto one of the sides of the subset.
+     * 
+     * @param buffer Pointer to a preallocated buffer holding at least as many elements of format as indicated by minVoxelCoordinates and maxVoxelCoordinates for the projected dimensions.
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @param voxelPlane The plane equation for the projection from the dimension source to the projected dimensions (which must be a 2D subset of the source dimensions).
+     * @param projectedDimensions The 2D dimension group that the plane in the source dimensiongroup is projected into. It must be a 2D subset of the source dimensions.
+     * @param interpolationMethod Interpolation method to use when sampling the buffer.
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+
+    public VolumeDataRequestDouble requestProjectedVolumeSubsetDouble(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, FloatVector4 voxelPlane, DimensionsND projectedDimensions, InterpolationMethod interpolationMethod) {
+        return requestProjectedVolumeSubsetDouble(buffer, dimensionsND, LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, voxelPlane, projectedDimensions, interpolationMethod, /*replacementNoValue=*/null);
+    }
+
+    /**
+     * Request a subset projected from an arbitrary 3D plane through the subset onto one of the sides of the subset, using an automatically allocated buffer.
+     * 
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @param voxelPlane The plane equation for the projection from the dimension source to the projected dimensions (which must be a 2D subset of the source dimensions).
+     * @param projectedDimensions The 2D dimension group that the plane in the source dimensiongroup is projected into. It must be a 2D subset of the source dimensions.
+     * @param interpolationMethod Interpolation method to use when sampling the buffer.
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+
+    public VolumeDataRequestDouble requestProjectedVolumeSubsetDouble(DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, FloatVector4 voxelPlane, DimensionsND projectedDimensions, InterpolationMethod interpolationMethod) {
+        return requestProjectedVolumeSubsetDouble(dimensionsND, LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, voxelPlane, projectedDimensions, interpolationMethod, /*replacementNoValue=*/null);
+    }
+
+    /**
+     * Request sampling of the input VDS at the specified coordinates.
+     * 
+     * @param buffer Pointer to a preallocated buffer holding at least sampleCount elements.
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param samplePositions Pointer to array of VolumeDataLayout::Dimensionality_Max-elements indicating the positions to sample. May be deleted once RequestVolumeSamples return, as HueSpace makes a deep copy of the data.
+     * @param interpolationMethod Interpolation method to use when sampling the buffer.
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+
+    public VolumeDataRequestFloat requestVolumeSamples(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, NDPosArray samplePositions, InterpolationMethod interpolationMethod) {
+        return requestVolumeSamples(buffer, dimensionsND, LOD, channel, samplePositions, interpolationMethod, /*replacementNoValue=*/null);
+    }
+
+    /**
+     * Request sampling of the input VDS at the specified coordinates, using an automatically allocated buffer.
+     * 
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param samplePositions Pointer to array of VolumeDataLayout::Dimensionality_Max-elements indicating the positions to sample. May be deleted once RequestVolumeSamples return, as HueSpace makes a deep copy of the data.
+     * @param interpolationMethod Interpolation method to use when sampling the buffer.
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+
+    public VolumeDataRequestFloat requestVolumeSamples(DimensionsND dimensionsND, int LOD, int channel, NDPosArray samplePositions, InterpolationMethod interpolationMethod) {
+        return requestVolumeSamples(dimensionsND, LOD, channel, samplePositions, interpolationMethod, /*replacementNoValue=*/null);
+    }
+
+    /**
+     * Request traces from the input VDS, using an automatically allocated buffer.
+     * 
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param tracePositions Pointer to array of traceCount VolumeDataLayout::Dimensionality_Max-elements indicating the trace positions.
+     * @param interpolationMethod Interpolation method to use when sampling the buffer.
+     * @param traceDimension The dimension to trace
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+
+    public VolumeDataRequestFloat requestVolumeTraces(DimensionsND dimensionsND, int LOD, int channel, NDPosArray tracePositions, InterpolationMethod interpolationMethod, int traceDimension) {
+        return requestVolumeTraces(dimensionsND, LOD, channel, tracePositions, interpolationMethod, traceDimension, /*replacementNoValue=*/null);
+    }
+
+    /**
+     * Request traces from the input VDS.
+     * 
+     * @param buffer Pointer to a preallocated buffer holding at least traceCount * number of samples in the traceDimension.
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param tracePositions Pointer to array of traceCount VolumeDataLayout::Dimensionality_Max-elements indicating the trace positions.
+     * @param interpolationMethod Interpolation method to use when sampling the buffer.
+     * @param traceDimension The dimension to trace
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+
+    public VolumeDataRequestFloat requestVolumeTraces(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, NDPosArray tracePositions, InterpolationMethod interpolationMethod, int traceDimension) {
+        return requestVolumeTraces(buffer, dimensionsND, LOD, channel, tracePositions, interpolationMethod, traceDimension, /*replacementNoValue=*/null);
+    }
+
     VolumeDataAccessManager(long nativeobject) {
         super(nativeobject);
     }
@@ -1049,4 +2079,685 @@ of the number of chunks in some of the dimensions. Do not change this from the d
 
 
 
+
+
+
+
+    
+
+    native private long RequestVolumeSubsetByteImpl(long native_object, ByteBuffer buffer, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, float replacementNoValue, boolean use_replacementNoValue);
+
+    /**
+     * Request a subset of the input VDS.
+     * 
+     * @param buffer Pointer to a preallocated buffer holding at least as many elements of format as indicated by minVoxelCoordinates and maxVoxelCoordinates.
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @param replacementNoValue If specified, this value is used to replace regions of the input VDS that has no data.
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+    public VolumeDataRequestByte requestVolumeSubsetByte(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, Float replacementNoValue) {
+        if (minVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"minVoxelCoordinates\" must have length 6");
+        if (maxVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"maxVoxelCoordinates\" must have length 6");
+        return VolumeDataRequestByte.fromNativeObject(RequestVolumeSubsetByteImpl(getNativeObject(), buffer, dimensionsND.value(), LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+    
+
+    native private long RequestVolumeSubsetByte2Impl(long native_object, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, float replacementNoValue, boolean use_replacementNoValue);
+
+    /**
+     * Request a subset of the input VDS, using an automatically allocated buffer.
+     * 
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @param replacementNoValue If specified, this value is used to replace regions of the input VDS that has no data.
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+    public VolumeDataRequestByte requestVolumeSubsetByte(DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, Float replacementNoValue) {
+        if (minVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"minVoxelCoordinates\" must have length 6");
+        if (maxVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"maxVoxelCoordinates\" must have length 6");
+        return VolumeDataRequestByte.fromNativeObject(RequestVolumeSubsetByte2Impl(getNativeObject(), dimensionsND.value(), LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+    native private long RequestVolumeSubsetUShortImpl(long native_object, ByteBuffer buffer, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, float replacementNoValue, boolean use_replacementNoValue);
+
+    /**
+     * Request a subset of the input VDS.
+     * 
+     * @param buffer Pointer to a preallocated buffer holding at least as many elements of format as indicated by minVoxelCoordinates and maxVoxelCoordinates.
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @param replacementNoValue If specified, this value is used to replace regions of the input VDS that has no data.
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+    public VolumeDataRequestUShort requestVolumeSubsetUShort(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, Float replacementNoValue) {
+        if (minVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"minVoxelCoordinates\" must have length 6");
+        if (maxVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"maxVoxelCoordinates\" must have length 6");
+        return VolumeDataRequestUShort.fromNativeObject(RequestVolumeSubsetUShortImpl(getNativeObject(), buffer, dimensionsND.value(), LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+    
+
+    native private long RequestVolumeSubsetUShort2Impl(long native_object, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, float replacementNoValue, boolean use_replacementNoValue);
+
+    /**
+     * Request a subset of the input VDS, using an automatically allocated buffer.
+     * 
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @param replacementNoValue If specified, this value is used to replace regions of the input VDS that has no data.
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+    public VolumeDataRequestUShort requestVolumeSubsetUShort(DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, Float replacementNoValue) {
+        if (minVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"minVoxelCoordinates\" must have length 6");
+        if (maxVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"maxVoxelCoordinates\" must have length 6");
+        return VolumeDataRequestUShort.fromNativeObject(RequestVolumeSubsetUShort2Impl(getNativeObject(), dimensionsND.value(), LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+    native private long RequestVolumeSubsetUIntImpl(long native_object, ByteBuffer buffer, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, float replacementNoValue, boolean use_replacementNoValue);
+
+    /**
+     * Request a subset of the input VDS.
+     * 
+     * @param buffer Pointer to a preallocated buffer holding at least as many elements of format as indicated by minVoxelCoordinates and maxVoxelCoordinates.
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @param replacementNoValue If specified, this value is used to replace regions of the input VDS that has no data.
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+    public VolumeDataRequestUInt requestVolumeSubsetUInt(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, Float replacementNoValue) {
+        if (minVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"minVoxelCoordinates\" must have length 6");
+        if (maxVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"maxVoxelCoordinates\" must have length 6");
+        return VolumeDataRequestUInt.fromNativeObject(RequestVolumeSubsetUIntImpl(getNativeObject(), buffer, dimensionsND.value(), LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+    
+
+    native private long RequestVolumeSubsetUInt2Impl(long native_object, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, float replacementNoValue, boolean use_replacementNoValue);
+
+    /**
+     * Request a subset of the input VDS, using an automatically allocated buffer.
+     * 
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @param replacementNoValue If specified, this value is used to replace regions of the input VDS that has no data.
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+    public VolumeDataRequestUInt requestVolumeSubsetUInt(DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, Float replacementNoValue) {
+        if (minVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"minVoxelCoordinates\" must have length 6");
+        if (maxVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"maxVoxelCoordinates\" must have length 6");
+        return VolumeDataRequestUInt.fromNativeObject(RequestVolumeSubsetUInt2Impl(getNativeObject(), dimensionsND.value(), LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+    native private long RequestVolumeSubsetULongImpl(long native_object, ByteBuffer buffer, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, float replacementNoValue, boolean use_replacementNoValue);
+
+    /**
+     * Request a subset of the input VDS.
+     * 
+     * @param buffer Pointer to a preallocated buffer holding at least as many elements of format as indicated by minVoxelCoordinates and maxVoxelCoordinates.
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @param replacementNoValue If specified, this value is used to replace regions of the input VDS that has no data.
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+    public VolumeDataRequestULong requestVolumeSubsetULong(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, Float replacementNoValue) {
+        if (minVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"minVoxelCoordinates\" must have length 6");
+        if (maxVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"maxVoxelCoordinates\" must have length 6");
+        return VolumeDataRequestULong.fromNativeObject(RequestVolumeSubsetULongImpl(getNativeObject(), buffer, dimensionsND.value(), LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+    
+
+    native private long RequestVolumeSubsetULong2Impl(long native_object, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, float replacementNoValue, boolean use_replacementNoValue);
+
+    /**
+     * Request a subset of the input VDS, using an automatically allocated buffer.
+     * 
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @param replacementNoValue If specified, this value is used to replace regions of the input VDS that has no data.
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+    public VolumeDataRequestULong requestVolumeSubsetULong(DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, Float replacementNoValue) {
+        if (minVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"minVoxelCoordinates\" must have length 6");
+        if (maxVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"maxVoxelCoordinates\" must have length 6");
+        return VolumeDataRequestULong.fromNativeObject(RequestVolumeSubsetULong2Impl(getNativeObject(), dimensionsND.value(), LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+    native private long RequestVolumeSubsetFloatImpl(long native_object, ByteBuffer buffer, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, float replacementNoValue, boolean use_replacementNoValue);
+
+    /**
+     * Request a subset of the input VDS.
+     * 
+     * @param buffer Pointer to a preallocated buffer holding at least as many elements of format as indicated by minVoxelCoordinates and maxVoxelCoordinates.
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @param replacementNoValue If specified, this value is used to replace regions of the input VDS that has no data.
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+    public VolumeDataRequestFloat requestVolumeSubsetFloat(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, Float replacementNoValue) {
+        if (minVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"minVoxelCoordinates\" must have length 6");
+        if (maxVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"maxVoxelCoordinates\" must have length 6");
+        return VolumeDataRequestFloat.fromNativeObject(RequestVolumeSubsetFloatImpl(getNativeObject(), buffer, dimensionsND.value(), LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+    
+
+    native private long RequestVolumeSubsetFloat2Impl(long native_object, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, float replacementNoValue, boolean use_replacementNoValue);
+
+    /**
+     * Request a subset of the input VDS, using an automatically allocated buffer.
+     * 
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @param replacementNoValue If specified, this value is used to replace regions of the input VDS that has no data.
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+    public VolumeDataRequestFloat requestVolumeSubsetFloat(DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, Float replacementNoValue) {
+        if (minVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"minVoxelCoordinates\" must have length 6");
+        if (maxVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"maxVoxelCoordinates\" must have length 6");
+        return VolumeDataRequestFloat.fromNativeObject(RequestVolumeSubsetFloat2Impl(getNativeObject(), dimensionsND.value(), LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+    native private long RequestVolumeSubsetDoubleImpl(long native_object, ByteBuffer buffer, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, float replacementNoValue, boolean use_replacementNoValue);
+
+    /**
+     * Request a subset of the input VDS.
+     * 
+     * @param buffer Pointer to a preallocated buffer holding at least as many elements of format as indicated by minVoxelCoordinates and maxVoxelCoordinates.
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @param replacementNoValue If specified, this value is used to replace regions of the input VDS that has no data.
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+    public VolumeDataRequestDouble requestVolumeSubsetDouble(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, Float replacementNoValue) {
+        if (minVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"minVoxelCoordinates\" must have length 6");
+        if (maxVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"maxVoxelCoordinates\" must have length 6");
+        return VolumeDataRequestDouble.fromNativeObject(RequestVolumeSubsetDoubleImpl(getNativeObject(), buffer, dimensionsND.value(), LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+    
+
+    native private long RequestVolumeSubsetDouble2Impl(long native_object, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, float replacementNoValue, boolean use_replacementNoValue);
+
+    /**
+     * Request a subset of the input VDS, using an automatically allocated buffer.
+     * 
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @param replacementNoValue If specified, this value is used to replace regions of the input VDS that has no data.
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+    public VolumeDataRequestDouble requestVolumeSubsetDouble(DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, Float replacementNoValue) {
+        if (minVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"minVoxelCoordinates\" must have length 6");
+        if (maxVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"maxVoxelCoordinates\" must have length 6");
+        return VolumeDataRequestDouble.fromNativeObject(RequestVolumeSubsetDouble2Impl(getNativeObject(), dimensionsND.value(), LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+
+    
+    
+
+    native private long RequestProjectedVolumeSubsetByteImpl(long native_object, ByteBuffer buffer, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, ByteBuffer voxelPlane, long voxelPlane_byteoffset, int projectedDimensions, int interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
+
+    /**
+     * Request a subset projected from an arbitrary 3D plane through the subset onto one of the sides of the subset.
+     * 
+     * @param buffer Pointer to a preallocated buffer holding at least as many elements of format as indicated by minVoxelCoordinates and maxVoxelCoordinates for the projected dimensions.
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @param voxelPlane The plane equation for the projection from the dimension source to the projected dimensions (which must be a 2D subset of the source dimensions).
+     * @param projectedDimensions The 2D dimension group that the plane in the source dimensiongroup is projected into. It must be a 2D subset of the source dimensions.
+     * @param interpolationMethod Interpolation method to use when sampling the buffer.
+     * @param replacementNoValue If specified, this value is used to replace regions of the input VDS that has no data.
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+    public VolumeDataRequestByte requestProjectedVolumeSubsetByte(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, FloatVector4 voxelPlane, DimensionsND projectedDimensions, InterpolationMethod interpolationMethod, Float replacementNoValue) {
+        if (minVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"minVoxelCoordinates\" must have length 6");
+        if (maxVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"maxVoxelCoordinates\" must have length 6");
+        return VolumeDataRequestByte.fromNativeObject(RequestProjectedVolumeSubsetByteImpl(getNativeObject(), buffer, dimensionsND.value(), LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, voxelPlane.getBackingByteBuffer(), voxelPlane.getByteBufferOffset(), projectedDimensions.value(), interpolationMethod.value(), replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+    
+
+    native private long RequestProjectedVolumeSubsetByte2Impl(long native_object, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, ByteBuffer voxelPlane, long voxelPlane_byteoffset, int projectedDimensions, int interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
+
+    /**
+     * Request a subset projected from an arbitrary 3D plane through the subset onto one of the sides of the subset, using an automatically allocated buffer.
+     * 
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @param voxelPlane The plane equation for the projection from the dimension source to the projected dimensions (which must be a 2D subset of the source dimensions).
+     * @param projectedDimensions The 2D dimension group that the plane in the source dimensiongroup is projected into. It must be a 2D subset of the source dimensions.
+     * @param interpolationMethod Interpolation method to use when sampling the buffer.
+     * @param replacementNoValue If specified, this value is used to replace regions of the input VDS that has no data.
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+    public VolumeDataRequestByte requestProjectedVolumeSubsetByte(DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, FloatVector4 voxelPlane, DimensionsND projectedDimensions, InterpolationMethod interpolationMethod, Float replacementNoValue) {
+        if (minVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"minVoxelCoordinates\" must have length 6");
+        if (maxVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"maxVoxelCoordinates\" must have length 6");
+        return VolumeDataRequestByte.fromNativeObject(RequestProjectedVolumeSubsetByte2Impl(getNativeObject(), dimensionsND.value(), LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, voxelPlane.getBackingByteBuffer(), voxelPlane.getByteBufferOffset(), projectedDimensions.value(), interpolationMethod.value(), replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+    
+
+    native private long RequestProjectedVolumeSubsetUShortImpl(long native_object, ByteBuffer buffer, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, ByteBuffer voxelPlane, long voxelPlane_byteoffset, int projectedDimensions, int interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
+
+    /**
+     * Request a subset projected from an arbitrary 3D plane through the subset onto one of the sides of the subset.
+     * 
+     * @param buffer Pointer to a preallocated buffer holding at least as many elements of format as indicated by minVoxelCoordinates and maxVoxelCoordinates for the projected dimensions.
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @param voxelPlane The plane equation for the projection from the dimension source to the projected dimensions (which must be a 2D subset of the source dimensions).
+     * @param projectedDimensions The 2D dimension group that the plane in the source dimensiongroup is projected into. It must be a 2D subset of the source dimensions.
+     * @param interpolationMethod Interpolation method to use when sampling the buffer.
+     * @param replacementNoValue If specified, this value is used to replace regions of the input VDS that has no data.
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+    public VolumeDataRequestUShort requestProjectedVolumeSubsetUShort(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, FloatVector4 voxelPlane, DimensionsND projectedDimensions, InterpolationMethod interpolationMethod, Float replacementNoValue) {
+        if (minVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"minVoxelCoordinates\" must have length 6");
+        if (maxVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"maxVoxelCoordinates\" must have length 6");
+        return VolumeDataRequestUShort.fromNativeObject(RequestProjectedVolumeSubsetUShortImpl(getNativeObject(), buffer, dimensionsND.value(), LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, voxelPlane.getBackingByteBuffer(), voxelPlane.getByteBufferOffset(), projectedDimensions.value(), interpolationMethod.value(), replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+    
+
+    native private long RequestProjectedVolumeSubsetUShort2Impl(long native_object, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, ByteBuffer voxelPlane, long voxelPlane_byteoffset, int projectedDimensions, int interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
+
+    /**
+     * Request a subset projected from an arbitrary 3D plane through the subset onto one of the sides of the subset, using an automatically allocated buffer.
+     * 
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @param voxelPlane The plane equation for the projection from the dimension source to the projected dimensions (which must be a 2D subset of the source dimensions).
+     * @param projectedDimensions The 2D dimension group that the plane in the source dimensiongroup is projected into. It must be a 2D subset of the source dimensions.
+     * @param interpolationMethod Interpolation method to use when sampling the buffer.
+     * @param replacementNoValue If specified, this value is used to replace regions of the input VDS that has no data.
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+    public VolumeDataRequestUShort requestProjectedVolumeSubsetUShort(DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, FloatVector4 voxelPlane, DimensionsND projectedDimensions, InterpolationMethod interpolationMethod, Float replacementNoValue) {
+        if (minVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"minVoxelCoordinates\" must have length 6");
+        if (maxVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"maxVoxelCoordinates\" must have length 6");
+        return VolumeDataRequestUShort.fromNativeObject(RequestProjectedVolumeSubsetUShort2Impl(getNativeObject(), dimensionsND.value(), LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, voxelPlane.getBackingByteBuffer(), voxelPlane.getByteBufferOffset(), projectedDimensions.value(), interpolationMethod.value(), replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+    
+
+    native private long RequestProjectedVolumeSubsetUIntImpl(long native_object, ByteBuffer buffer, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, ByteBuffer voxelPlane, long voxelPlane_byteoffset, int projectedDimensions, int interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
+
+    /**
+     * Request a subset projected from an arbitrary 3D plane through the subset onto one of the sides of the subset.
+     * 
+     * @param buffer Pointer to a preallocated buffer holding at least as many elements of format as indicated by minVoxelCoordinates and maxVoxelCoordinates for the projected dimensions.
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @param voxelPlane The plane equation for the projection from the dimension source to the projected dimensions (which must be a 2D subset of the source dimensions).
+     * @param projectedDimensions The 2D dimension group that the plane in the source dimensiongroup is projected into. It must be a 2D subset of the source dimensions.
+     * @param interpolationMethod Interpolation method to use when sampling the buffer.
+     * @param replacementNoValue If specified, this value is used to replace regions of the input VDS that has no data.
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+    public VolumeDataRequestUInt requestProjectedVolumeSubsetUInt(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, FloatVector4 voxelPlane, DimensionsND projectedDimensions, InterpolationMethod interpolationMethod, Float replacementNoValue) {
+        if (minVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"minVoxelCoordinates\" must have length 6");
+        if (maxVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"maxVoxelCoordinates\" must have length 6");
+        return VolumeDataRequestUInt.fromNativeObject(RequestProjectedVolumeSubsetUIntImpl(getNativeObject(), buffer, dimensionsND.value(), LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, voxelPlane.getBackingByteBuffer(), voxelPlane.getByteBufferOffset(), projectedDimensions.value(), interpolationMethod.value(), replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+    
+
+    native private long RequestProjectedVolumeSubsetUInt2Impl(long native_object, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, ByteBuffer voxelPlane, long voxelPlane_byteoffset, int projectedDimensions, int interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
+
+    /**
+     * Request a subset projected from an arbitrary 3D plane through the subset onto one of the sides of the subset, using an automatically allocated buffer.
+     * 
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @param voxelPlane The plane equation for the projection from the dimension source to the projected dimensions (which must be a 2D subset of the source dimensions).
+     * @param projectedDimensions The 2D dimension group that the plane in the source dimensiongroup is projected into. It must be a 2D subset of the source dimensions.
+     * @param interpolationMethod Interpolation method to use when sampling the buffer.
+     * @param replacementNoValue If specified, this value is used to replace regions of the input VDS that has no data.
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+    public VolumeDataRequestUInt requestProjectedVolumeSubsetUInt(DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, FloatVector4 voxelPlane, DimensionsND projectedDimensions, InterpolationMethod interpolationMethod, Float replacementNoValue) {
+        if (minVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"minVoxelCoordinates\" must have length 6");
+        if (maxVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"maxVoxelCoordinates\" must have length 6");
+        return VolumeDataRequestUInt.fromNativeObject(RequestProjectedVolumeSubsetUInt2Impl(getNativeObject(), dimensionsND.value(), LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, voxelPlane.getBackingByteBuffer(), voxelPlane.getByteBufferOffset(), projectedDimensions.value(), interpolationMethod.value(), replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+    
+
+    native private long RequestProjectedVolumeSubsetULongImpl(long native_object, ByteBuffer buffer, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, ByteBuffer voxelPlane, long voxelPlane_byteoffset, int projectedDimensions, int interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
+
+    /**
+     * Request a subset projected from an arbitrary 3D plane through the subset onto one of the sides of the subset.
+     * 
+     * @param buffer Pointer to a preallocated buffer holding at least as many elements of format as indicated by minVoxelCoordinates and maxVoxelCoordinates for the projected dimensions.
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @param voxelPlane The plane equation for the projection from the dimension source to the projected dimensions (which must be a 2D subset of the source dimensions).
+     * @param projectedDimensions The 2D dimension group that the plane in the source dimensiongroup is projected into. It must be a 2D subset of the source dimensions.
+     * @param interpolationMethod Interpolation method to use when sampling the buffer.
+     * @param replacementNoValue If specified, this value is used to replace regions of the input VDS that has no data.
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+    public VolumeDataRequestULong requestProjectedVolumeSubsetULong(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, FloatVector4 voxelPlane, DimensionsND projectedDimensions, InterpolationMethod interpolationMethod, Float replacementNoValue) {
+        if (minVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"minVoxelCoordinates\" must have length 6");
+        if (maxVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"maxVoxelCoordinates\" must have length 6");
+        return VolumeDataRequestULong.fromNativeObject(RequestProjectedVolumeSubsetULongImpl(getNativeObject(), buffer, dimensionsND.value(), LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, voxelPlane.getBackingByteBuffer(), voxelPlane.getByteBufferOffset(), projectedDimensions.value(), interpolationMethod.value(), replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+    
+
+    native private long RequestProjectedVolumeSubsetULong2Impl(long native_object, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, ByteBuffer voxelPlane, long voxelPlane_byteoffset, int projectedDimensions, int interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
+
+    /**
+     * Request a subset projected from an arbitrary 3D plane through the subset onto one of the sides of the subset, using an automatically allocated buffer.
+     * 
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @param voxelPlane The plane equation for the projection from the dimension source to the projected dimensions (which must be a 2D subset of the source dimensions).
+     * @param projectedDimensions The 2D dimension group that the plane in the source dimensiongroup is projected into. It must be a 2D subset of the source dimensions.
+     * @param interpolationMethod Interpolation method to use when sampling the buffer.
+     * @param replacementNoValue If specified, this value is used to replace regions of the input VDS that has no data.
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+    public VolumeDataRequestULong requestProjectedVolumeSubsetULong(DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, FloatVector4 voxelPlane, DimensionsND projectedDimensions, InterpolationMethod interpolationMethod, Float replacementNoValue) {
+        if (minVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"minVoxelCoordinates\" must have length 6");
+        if (maxVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"maxVoxelCoordinates\" must have length 6");
+        return VolumeDataRequestULong.fromNativeObject(RequestProjectedVolumeSubsetULong2Impl(getNativeObject(), dimensionsND.value(), LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, voxelPlane.getBackingByteBuffer(), voxelPlane.getByteBufferOffset(), projectedDimensions.value(), interpolationMethod.value(), replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+    
+
+    native private long RequestProjectedVolumeSubsetFloatImpl(long native_object, ByteBuffer buffer, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, ByteBuffer voxelPlane, long voxelPlane_byteoffset, int projectedDimensions, int interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
+
+    /**
+     * Request a subset projected from an arbitrary 3D plane through the subset onto one of the sides of the subset.
+     * 
+     * @param buffer Pointer to a preallocated buffer holding at least as many elements of format as indicated by minVoxelCoordinates and maxVoxelCoordinates for the projected dimensions.
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @param voxelPlane The plane equation for the projection from the dimension source to the projected dimensions (which must be a 2D subset of the source dimensions).
+     * @param projectedDimensions The 2D dimension group that the plane in the source dimensiongroup is projected into. It must be a 2D subset of the source dimensions.
+     * @param interpolationMethod Interpolation method to use when sampling the buffer.
+     * @param replacementNoValue If specified, this value is used to replace regions of the input VDS that has no data.
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+    public VolumeDataRequestFloat requestProjectedVolumeSubsetFloat(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, FloatVector4 voxelPlane, DimensionsND projectedDimensions, InterpolationMethod interpolationMethod, Float replacementNoValue) {
+        if (minVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"minVoxelCoordinates\" must have length 6");
+        if (maxVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"maxVoxelCoordinates\" must have length 6");
+        return VolumeDataRequestFloat.fromNativeObject(RequestProjectedVolumeSubsetFloatImpl(getNativeObject(), buffer, dimensionsND.value(), LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, voxelPlane.getBackingByteBuffer(), voxelPlane.getByteBufferOffset(), projectedDimensions.value(), interpolationMethod.value(), replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+    
+
+    native private long RequestProjectedVolumeSubsetFloat2Impl(long native_object, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, ByteBuffer voxelPlane, long voxelPlane_byteoffset, int projectedDimensions, int interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
+
+    /**
+     * Request a subset projected from an arbitrary 3D plane through the subset onto one of the sides of the subset, using an automatically allocated buffer.
+     * 
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @param voxelPlane The plane equation for the projection from the dimension source to the projected dimensions (which must be a 2D subset of the source dimensions).
+     * @param projectedDimensions The 2D dimension group that the plane in the source dimensiongroup is projected into. It must be a 2D subset of the source dimensions.
+     * @param interpolationMethod Interpolation method to use when sampling the buffer.
+     * @param replacementNoValue If specified, this value is used to replace regions of the input VDS that has no data.
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+    public VolumeDataRequestFloat requestProjectedVolumeSubsetFloat(DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, FloatVector4 voxelPlane, DimensionsND projectedDimensions, InterpolationMethod interpolationMethod, Float replacementNoValue) {
+        if (minVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"minVoxelCoordinates\" must have length 6");
+        if (maxVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"maxVoxelCoordinates\" must have length 6");
+        return VolumeDataRequestFloat.fromNativeObject(RequestProjectedVolumeSubsetFloat2Impl(getNativeObject(), dimensionsND.value(), LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, voxelPlane.getBackingByteBuffer(), voxelPlane.getByteBufferOffset(), projectedDimensions.value(), interpolationMethod.value(), replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+    
+
+    native private long RequestProjectedVolumeSubsetDoubleImpl(long native_object, ByteBuffer buffer, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, ByteBuffer voxelPlane, long voxelPlane_byteoffset, int projectedDimensions, int interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
+
+    /**
+     * Request a subset projected from an arbitrary 3D plane through the subset onto one of the sides of the subset.
+     * 
+     * @param buffer Pointer to a preallocated buffer holding at least as many elements of format as indicated by minVoxelCoordinates and maxVoxelCoordinates for the projected dimensions.
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @param voxelPlane The plane equation for the projection from the dimension source to the projected dimensions (which must be a 2D subset of the source dimensions).
+     * @param projectedDimensions The 2D dimension group that the plane in the source dimensiongroup is projected into. It must be a 2D subset of the source dimensions.
+     * @param interpolationMethod Interpolation method to use when sampling the buffer.
+     * @param replacementNoValue If specified, this value is used to replace regions of the input VDS that has no data.
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+    public VolumeDataRequestDouble requestProjectedVolumeSubsetDouble(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, FloatVector4 voxelPlane, DimensionsND projectedDimensions, InterpolationMethod interpolationMethod, Float replacementNoValue) {
+        if (minVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"minVoxelCoordinates\" must have length 6");
+        if (maxVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"maxVoxelCoordinates\" must have length 6");
+        return VolumeDataRequestDouble.fromNativeObject(RequestProjectedVolumeSubsetDoubleImpl(getNativeObject(), buffer, dimensionsND.value(), LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, voxelPlane.getBackingByteBuffer(), voxelPlane.getByteBufferOffset(), projectedDimensions.value(), interpolationMethod.value(), replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+    
+
+    native private long RequestProjectedVolumeSubsetDouble2Impl(long native_object, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, ByteBuffer voxelPlane, long voxelPlane_byteoffset, int projectedDimensions, int interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
+
+    /**
+     * Request a subset projected from an arbitrary 3D plane through the subset onto one of the sides of the subset, using an automatically allocated buffer.
+     * 
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @param voxelPlane The plane equation for the projection from the dimension source to the projected dimensions (which must be a 2D subset of the source dimensions).
+     * @param projectedDimensions The 2D dimension group that the plane in the source dimensiongroup is projected into. It must be a 2D subset of the source dimensions.
+     * @param interpolationMethod Interpolation method to use when sampling the buffer.
+     * @param replacementNoValue If specified, this value is used to replace regions of the input VDS that has no data.
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+    public VolumeDataRequestDouble requestProjectedVolumeSubsetDouble(DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, FloatVector4 voxelPlane, DimensionsND projectedDimensions, InterpolationMethod interpolationMethod, Float replacementNoValue) {
+        if (minVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"minVoxelCoordinates\" must have length 6");
+        if (maxVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"maxVoxelCoordinates\" must have length 6");
+        return VolumeDataRequestDouble.fromNativeObject(RequestProjectedVolumeSubsetDouble2Impl(getNativeObject(), dimensionsND.value(), LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, voxelPlane.getBackingByteBuffer(), voxelPlane.getByteBufferOffset(), projectedDimensions.value(), interpolationMethod.value(), replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+    
+
+
+    ///AUTOGEN-IGNORE: CXX_METHOD RequestVolumeSamples std::shared_ptr<OpenVDS::VolumeDataRequest_t<float>> (float *, int64_t, OpenVDS::DimensionsND, int, int, float const (*)[6], int, OpenVDS::InterpolationMethod, OpenVDS::optional<float>) FUNCTIONPROTO
+    native private long RequestVolumeSamplesImpl(long native_object, ByteBuffer buffer, long dimensionsND, int LOD, int channel, ByteBuffer samplePositions, int interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
+
+    /**
+     * Request sampling of the input VDS at the specified coordinates.
+     * 
+     * @param buffer Pointer to a preallocated buffer holding at least sampleCount elements.
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param samplePositions Pointer to array of VolumeDataLayout::Dimensionality_Max-elements indicating the positions to sample. May be deleted once RequestVolumeSamples return, as HueSpace makes a deep copy of the data.
+     * @param interpolationMethod Interpolation method to use when sampling the buffer.
+     * @param replacementNoValue If specified, this value is used to replace regions of the input VDS that has no data.
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+    public VolumeDataRequestFloat requestVolumeSamples(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, NDPosArray samplePositions, InterpolationMethod interpolationMethod, Float replacementNoValue) {
+        return VolumeDataRequestFloat.fromNativeObject(RequestVolumeSamplesImpl(getNativeObject(), buffer, dimensionsND.value(), LOD, channel, samplePositions.getBackingByteBuffer(), interpolationMethod.value(), replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+    ///AUTOGEN-IGNORE: CXX_METHOD RequestVolumeSamples std::shared_ptr<OpenVDS::VolumeDataRequest_t<float>> (OpenVDS::DimensionsND, int, int, float const (*)[6], int, OpenVDS::InterpolationMethod, OpenVDS::optional<float>) FUNCTIONPROTO
+    native private long RequestVolumeSamples2Impl(long native_object, long dimensionsND, int LOD, int channel, ByteBuffer samplePositions, int interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
+
+    /**
+     * Request sampling of the input VDS at the specified coordinates, using an automatically allocated buffer.
+     * 
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param samplePositions Pointer to array of VolumeDataLayout::Dimensionality_Max-elements indicating the positions to sample. May be deleted once RequestVolumeSamples return, as HueSpace makes a deep copy of the data.
+     * @param interpolationMethod Interpolation method to use when sampling the buffer.
+     * @param replacementNoValue If specified, this value is used to replace regions of the input VDS that has no data.
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+    public VolumeDataRequestFloat requestVolumeSamples(DimensionsND dimensionsND, int LOD, int channel, NDPosArray samplePositions, InterpolationMethod interpolationMethod, Float replacementNoValue) {
+        return VolumeDataRequestFloat.fromNativeObject(RequestVolumeSamples2Impl(getNativeObject(), dimensionsND.value(), LOD, channel, samplePositions.getBackingByteBuffer(), interpolationMethod.value(), replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+    
+    
+    
+    ///AUTOGEN-IGNORE: CXX_METHOD RequestVolumeTraces std::shared_ptr<OpenVDS::VolumeDataRequest_t<float>> (OpenVDS::DimensionsND, int, int, float const (*)[6], int, OpenVDS::InterpolationMethod, int, OpenVDS::optional<float>) FUNCTIONPROTO
+    native private long RequestVolumeTracesImpl(long native_object, long dimensionsND, int LOD, int channel, ByteBuffer tracePositions, int interpolationMethod, int traceDimension, float replacementNoValue, boolean use_replacementNoValue);
+
+    /**
+     * Request traces from the input VDS, using an automatically allocated buffer.
+     * 
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param tracePositions Pointer to array of traceCount VolumeDataLayout::Dimensionality_Max-elements indicating the trace positions.
+     * @param interpolationMethod Interpolation method to use when sampling the buffer.
+     * @param traceDimension The dimension to trace
+     * @param replacementNoValue If specified, this value is used to replace regions of the input VDS that has no data.
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+    public VolumeDataRequestFloat requestVolumeTraces(DimensionsND dimensionsND, int LOD, int channel, NDPosArray tracePositions, InterpolationMethod interpolationMethod, int traceDimension, Float replacementNoValue) {
+        return VolumeDataRequestFloat.fromNativeObject(RequestVolumeTracesImpl(getNativeObject(), dimensionsND.value(), LOD, channel, tracePositions.getBackingByteBuffer(), interpolationMethod.value(), traceDimension, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+
+    ///AUTOGEN-IGNORE: CXX_METHOD RequestVolumeTraces std::shared_ptr<OpenVDS::VolumeDataRequest_t<float>> (float *, int64_t, OpenVDS::DimensionsND, int, int, float const (*)[6], int, OpenVDS::InterpolationMethod, int, OpenVDS::optional<float>) FUNCTIONPROTO
+    native private long RequestVolumeTraces2Impl(long native_object, ByteBuffer buffer, long dimensionsND, int LOD, int channel, ByteBuffer tracePositions, int interpolationMethod, int traceDimension, float replacementNoValue, boolean use_replacementNoValue);
+
+    /**
+     * Request traces from the input VDS.
+     * 
+     * @param buffer Pointer to a preallocated buffer holding at least traceCount * number of samples in the traceDimension.
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param tracePositions Pointer to array of traceCount VolumeDataLayout::Dimensionality_Max-elements indicating the trace positions.
+     * @param interpolationMethod Interpolation method to use when sampling the buffer.
+     * @param traceDimension The dimension to trace
+     * @param replacementNoValue If specified, this value is used to replace regions of the input VDS that has no data.
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+    public VolumeDataRequestFloat requestVolumeTraces(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, NDPosArray tracePositions, InterpolationMethod interpolationMethod, int traceDimension, Float replacementNoValue) {
+        return VolumeDataRequestFloat.fromNativeObject(RequestVolumeTraces2Impl(getNativeObject(), buffer, dimensionsND.value(), LOD, channel, tracePositions.getBackingByteBuffer(), interpolationMethod.value(), traceDimension, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+    
+    
+
+
+// FIXME? RequestVolumeTraceRanges does not exist in OpenVDS 
+//    ///AUTOGEN-IGNORE: CXX_METHOD RequestVolumeTraceRanges std::shared_ptr<OpenVDS::VolumeDataRequest_t<float>> (OpenVDS::DimensionsND, int, int, float const (*)[6], int, OpenVDS::InterpolationMethod, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
+//    native private long RequestVolumeTraceRangesImpl(long native_object, long dimensionsND, int LOD, int channel, ByteBuffer tracePositions, int traceCount, int interpolationMethod, int traceDimension, int traceMin, int traceMax, float replacementNoValue, boolean use_replacementNoValue);
+//
+//    /**
+//     * Request traces from the input VDS in a given range of samples, using an automatically allocated buffer.
+//     * 
+//     * @param dimensionsND The dimensiongroup the requested data is read from.
+//     * @param LOD The LOD level the requested data is read from.
+//     * @param channel The channel index the requested data is read from.
+//     * @param tracePositions Pointer to array of traceCount VolumeDataLayout::Dimensionality_Max-elements indicating the trace positions.
+//     * @param traceCount Number of traces to request.
+//     * @param interpolationMethod Interpolation method to use when sampling the buffer.
+//     * @param traceDimension The dimension to trace
+//     * @param traceMin The first sample to include in the trace.
+//     * @param traceMax The sample after the last to include in the trace.
+//     * @param replacementNoValue If specified, this value is used to replace regions of the input VDS that has no data.
+//     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+//     */
+//    public VolumeDataRequestFloat requestVolumeTraceRanges(DimensionsND dimensionsND, int LOD, int channel, NDPosArray tracePositions, int traceCount, InterpolationMethod interpolationMethod, int traceDimension, int traceMin, int traceMax, Float replacementNoValue) {
+//        return VolumeDataRequestFloat.fromNativeObject(RequestVolumeTraceRangesImpl(getNativeObject(), dimensionsND.value(), LOD, channel, tracePositions.getBackingByteBuffer(), traceCount, interpolationMethod.value(), traceDimension, traceMin, traceMax, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+//    }
+//
+//    ///FIXME AUTOGEN-ADD-OVERLOAD: VolumeDataRequestFloat requestVolumeTraceRanges(DimensionsND dimensionsND, int LOD, int channel, NDPosArray tracePositions, int traceCount, InterpolationMethod interpolationMethod, int traceDimension, int traceMin, int traceMax, Float replacementNoValue) -> replacementNoValue=null
+//
+//    ///AUTOGEN-IGNORE: CXX_METHOD RequestVolumeTraceRanges std::shared_ptr<OpenVDS::VolumeDataRequest_t<float>> (float *, int64_t, OpenVDS::DimensionsND, int, int, float const (*)[6], int, OpenVDS::InterpolationMethod, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
+//    native private long RequestVolumeTraceRanges2Impl(long native_object, ByteBuffer buffer, long dimensionsND, int LOD, int channel, ByteBuffer tracePositions, int traceCount, int interpolationMethod, int traceDimension, int traceMin, int traceMax, float replacementNoValue, boolean use_replacementNoValue);
+//
+//    /**
+//     * Request traces from the input VDS in a given range of samples.
+//     * 
+//     * @param buffer Pointer to a preallocated buffer holding at least traceCount * number of samples in the traceDimension.
+//     * @param dimensionsND The dimensiongroup the requested data is read from.
+//     * @param LOD The LOD level the requested data is read from.
+//     * @param channel The channel index the requested data is read from.
+//     * @param tracePositions Pointer to array of traceCount VolumeDataLayout::Dimensionality_Max-elements indicating the trace positions.
+//     * @param traceCount Number of traces to request.
+//     * @param interpolationMethod Interpolation method to use when sampling the buffer.
+//     * @param traceDimension The dimension to trace
+//     * @param traceMin The first sample to include in the trace.
+//     * @param traceMax The sample after the last to include in the trace.
+//     * @param replacementNoValue If specified, this value is used to replace regions of the input VDS that has no data.
+//     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+//     */
+//    public VolumeDataRequestFloat requestVolumeTraceRanges(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, NDPosArray tracePositions, int traceCount, InterpolationMethod interpolationMethod, int traceDimension, int traceMin, int traceMax, Float replacementNoValue) {
+//        return VolumeDataRequestFloat.fromNativeObject(RequestVolumeTraceRanges2Impl(getNativeObject(), buffer, dimensionsND.value(), LOD, channel, tracePositions.getBackingByteBuffer(), traceCount, interpolationMethod.value(), traceDimension, traceMin, traceMax, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+//    }
+        
+    ///FIXME AUTOGEN-ADD-OVERLOAD: VolumeDataRequestFloat requestVolumeTraceRanges(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, NDPosArray tracePositions, int traceCount, InterpolationMethod interpolationMethod, int traceDimension, int traceMin, int traceMax, Float replacementNoValue) -> replacementNoValue=null
+    
+    
+
+
+    
+
+    /**
+     * Get the default maxPages for VolumeDataPageAccessors
+     */
+    public static final int MaxPagesDefault = 8;
 }

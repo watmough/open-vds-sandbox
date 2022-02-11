@@ -2636,57 +2636,6 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_GetVo
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestVolumeSamplesImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject buffer, jlong dimensionsND, jint LOD, jint channel, jfloatArray samplePositions, jlong interpolationMethod, jfloat replacementNoValue, jboolean use_replacementNoValue)
-{
-  JEnvPushPop
-    stackitem(env, jproxyinterface);
-
-  HUE_JNI_TRY
-  {
-    auto tmpbuffer = HueJNIAsyncBuffer<float>(env, buffer);
-    auto tmpsamplePositions = HueJNIArrayAdapter<float,6,false>(env, samplePositions);
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
-    auto result = pInstance->RequestVolumeSamples(
-                               tmpbuffer.buffer(), tmpbuffer.byteSize(), 
-                               (OpenVDS::DimensionsND)dimensionsND, 
-                               LOD, 
-                               channel, 
-                               &tmpsamplePositions.getArray(), (int)tmpsamplePositions.getArrayLength(), 
-                               (OpenVDS::InterpolationMethod)interpolationMethod, 
-                               use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(result);
-    context->registerGlobalRef(env, buffer);
-    return context->handle();
-  }
-  HUE_JNI_CATCH
-  return 0;
-}
-
-JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestVolumeSamples2Impl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jfloatArray samplePositions, jlong interpolationMethod, jfloat replacementNoValue, jboolean use_replacementNoValue)
-{
-  JEnvPushPop
-    stackitem(env, jproxyinterface);
-
-  HUE_JNI_TRY
-  {
-    auto tmpsamplePositions = HueJNIArrayAdapter<float,6,false>(env, samplePositions);
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
-    auto result = pInstance->RequestVolumeSamples(
-                               (OpenVDS::DimensionsND)dimensionsND, 
-                               LOD, 
-                               channel, 
-                               &tmpsamplePositions.getArray(), (int)tmpsamplePositions.getArrayLength(), 
-                               (OpenVDS::InterpolationMethod)interpolationMethod, 
-                               use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(result);
-    return context->handle();
-  }
-  HUE_JNI_CATCH
-  return 0;
-}
-
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_GetVolumeTracesBufferSizeImpl
   (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jint traceCount, jint traceDimension, jint LOD, jint channel)
 {
@@ -2702,59 +2651,6 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_GetVo
                                LOD, 
                                channel);
     return result;
-  }
-  HUE_JNI_CATCH
-  return 0;
-}
-
-JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestVolumeTracesImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jfloatArray tracePositions, jlong interpolationMethod, jint traceDimension, jfloat replacementNoValue, jboolean use_replacementNoValue)
-{
-  JEnvPushPop
-    stackitem(env, jproxyinterface);
-
-  HUE_JNI_TRY
-  {
-    auto tmptracePositions = HueJNIArrayAdapter<float,6,false>(env, tracePositions);
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
-    auto result = pInstance->RequestVolumeTraces(
-                               (OpenVDS::DimensionsND)dimensionsND, 
-                               LOD, 
-                               channel, 
-                               &tmptracePositions.getArray(), (int)tmptracePositions.getArrayLength(), 
-                               (OpenVDS::InterpolationMethod)interpolationMethod, 
-                               traceDimension, 
-                               use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(result);
-    return context->handle();
-  }
-  HUE_JNI_CATCH
-  return 0;
-}
-
-JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestVolumeTraces2Impl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject buffer, jlong dimensionsND, jint LOD, jint channel, jfloatArray tracePositions, jlong interpolationMethod, jint traceDimension, jfloat replacementNoValue, jboolean use_replacementNoValue)
-{
-  JEnvPushPop
-    stackitem(env, jproxyinterface);
-
-  HUE_JNI_TRY
-  {
-    auto tmpbuffer = HueJNIAsyncBuffer<float>(env, buffer);
-    auto tmptracePositions = HueJNIArrayAdapter<float,6,false>(env, tracePositions);
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
-    auto result = pInstance->RequestVolumeTraces(
-                               tmpbuffer.buffer(), tmpbuffer.byteSize(), 
-                               (OpenVDS::DimensionsND)dimensionsND, 
-                               LOD, 
-                               channel, 
-                               &tmptracePositions.getArray(), (int)tmptracePositions.getArrayLength(), 
-                               (OpenVDS::InterpolationMethod)interpolationMethod, 
-                               traceDimension, 
-                               use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(result);
-    context->registerGlobalRef(env, buffer);
-    return context->handle();
   }
   HUE_JNI_CATCH
   return 0;
@@ -2852,6 +2748,861 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_dtorIm
 }
 
 
+
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestVolumeSubsetByteImpl
+  (JNIEnv * env, jobject object, jlong native_handle, jobject buffer, jlong dimensionsND, jint LOD, jint channel, jintArray minVoxelCoordinates, jintArray maxVoxelCoordinates, jfloat replacementNoValue, jboolean use_replacementNoValue)
+{
+  JEnvPushPop
+    stackitem(env);
+
+  HUE_JNI_TRY
+  {
+    auto tmpbuffer = HueJNIAsyncBuffer<void>(env, buffer);
+    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto result = pInstance->RequestVolumeSubset<uint8_t>(
+                               (uint8_t*)tmpbuffer.buffer(), tmpbuffer.byteSize(), 
+                               (OpenVDS::DimensionsND)dimensionsND, 
+                               LOD, 
+                               channel, 
+                               tmpminVoxelCoordinates.getArray(), 
+                               tmpmaxVoxelCoordinates.getArray(), 
+                               use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
+    auto context = HueJNI_createObjectContext(result);
+    context->registerGlobalRef(env, buffer);
+    return context->handle();
+  }
+  HUE_JNI_CATCH
+  return 0;
+}
+
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestVolumeSubsetByte2Impl
+  (JNIEnv * env, jobject object, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jintArray minVoxelCoordinates, jintArray maxVoxelCoordinates, jfloat replacementNoValue, jboolean use_replacementNoValue)
+{
+  JEnvPushPop
+    stackitem(env);
+
+  HUE_JNI_TRY
+  {
+    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto result = pInstance->RequestVolumeSubset<uint8_t>(
+                               (OpenVDS::DimensionsND)dimensionsND, 
+                               LOD, 
+                               channel, 
+                               tmpminVoxelCoordinates.getArray(), 
+                               tmpmaxVoxelCoordinates.getArray(), 
+                               use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
+    auto context = HueJNI_createObjectContext(result);
+    return context->handle();
+  }
+  HUE_JNI_CATCH
+  return 0;
+}
+
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestVolumeSubsetUShortImpl
+  (JNIEnv * env, jobject object, jlong native_handle, jobject buffer, jlong dimensionsND, jint LOD, jint channel, jintArray minVoxelCoordinates, jintArray maxVoxelCoordinates, jfloat replacementNoValue, jboolean use_replacementNoValue)
+{
+  JEnvPushPop
+    stackitem(env);
+
+  HUE_JNI_TRY
+  {
+    auto tmpbuffer = HueJNIAsyncBuffer<void>(env, buffer);
+    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto result = pInstance->RequestVolumeSubset<uint16_t>(
+                               (uint16_t*)tmpbuffer.buffer(), tmpbuffer.byteSize(), 
+                               (OpenVDS::DimensionsND)dimensionsND, 
+                               LOD, 
+                               channel, 
+                               tmpminVoxelCoordinates.getArray(), 
+                               tmpmaxVoxelCoordinates.getArray(), 
+                               use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
+    auto context = HueJNI_createObjectContext(result);
+    context->registerGlobalRef(env, buffer);
+    return context->handle();
+  }
+  HUE_JNI_CATCH
+  return 0;
+}
+
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestVolumeSubsetUShort2Impl
+  (JNIEnv * env, jobject object, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jintArray minVoxelCoordinates, jintArray maxVoxelCoordinates, jfloat replacementNoValue, jboolean use_replacementNoValue)
+{
+  JEnvPushPop
+    stackitem(env);
+
+  HUE_JNI_TRY
+  {
+    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto result = pInstance->RequestVolumeSubset<uint16_t>(
+                               (OpenVDS::DimensionsND)dimensionsND, 
+                               LOD, 
+                               channel, 
+                               tmpminVoxelCoordinates.getArray(), 
+                               tmpmaxVoxelCoordinates.getArray(), 
+                               use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
+    auto context = HueJNI_createObjectContext(result);
+    return context->handle();
+  }
+  HUE_JNI_CATCH
+  return 0;
+}
+
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestVolumeSubsetUIntImpl
+  (JNIEnv * env, jobject object, jlong native_handle, jobject buffer, jlong dimensionsND, jint LOD, jint channel, jintArray minVoxelCoordinates, jintArray maxVoxelCoordinates, jfloat replacementNoValue, jboolean use_replacementNoValue)
+{
+  JEnvPushPop
+    stackitem(env);
+
+  HUE_JNI_TRY
+  {
+    auto tmpbuffer = HueJNIAsyncBuffer<void>(env, buffer);
+    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto result = pInstance->RequestVolumeSubset<uint32_t>(
+                               (uint32_t*)tmpbuffer.buffer(), tmpbuffer.byteSize(), 
+                               (OpenVDS::DimensionsND)dimensionsND, 
+                               LOD, 
+                               channel, 
+                               tmpminVoxelCoordinates.getArray(), 
+                               tmpmaxVoxelCoordinates.getArray(), 
+                               use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
+    auto context = HueJNI_createObjectContext(result);
+    context->registerGlobalRef(env, buffer);
+    return context->handle();
+  }
+  HUE_JNI_CATCH
+  return 0;
+}
+
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestVolumeSubsetUInt2Impl
+  (JNIEnv * env, jobject object, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jintArray minVoxelCoordinates, jintArray maxVoxelCoordinates, jfloat replacementNoValue, jboolean use_replacementNoValue)
+{
+  JEnvPushPop
+    stackitem(env);
+
+  HUE_JNI_TRY
+  {
+    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto result = pInstance->RequestVolumeSubset<uint32_t>(
+                               (OpenVDS::DimensionsND)dimensionsND, 
+                               LOD, 
+                               channel, 
+                               tmpminVoxelCoordinates.getArray(), 
+                               tmpmaxVoxelCoordinates.getArray(), 
+                               use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
+    auto context = HueJNI_createObjectContext(result);
+    return context->handle();
+  }
+  HUE_JNI_CATCH
+  return 0;
+}
+
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestVolumeSubsetULongImpl
+  (JNIEnv * env, jobject object, jlong native_handle, jobject buffer, jlong dimensionsND, jint LOD, jint channel, jintArray minVoxelCoordinates, jintArray maxVoxelCoordinates, jfloat replacementNoValue, jboolean use_replacementNoValue)
+{
+  JEnvPushPop
+    stackitem(env);
+
+  HUE_JNI_TRY
+  {
+    auto tmpbuffer = HueJNIAsyncBuffer<void>(env, buffer);
+    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto result = pInstance->RequestVolumeSubset<uint64_t>(
+                               (uint64_t*)tmpbuffer.buffer(), tmpbuffer.byteSize(), 
+                               (OpenVDS::DimensionsND)dimensionsND, 
+                               LOD, 
+                               channel, 
+                               tmpminVoxelCoordinates.getArray(), 
+                               tmpmaxVoxelCoordinates.getArray(), 
+                               use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
+    auto context = HueJNI_createObjectContext(result);
+    context->registerGlobalRef(env, buffer);
+    return context->handle();
+  }
+  HUE_JNI_CATCH
+  return 0;
+}
+
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestVolumeSubsetULong2Impl
+  (JNIEnv * env, jobject object, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jintArray minVoxelCoordinates, jintArray maxVoxelCoordinates, jfloat replacementNoValue, jboolean use_replacementNoValue)
+{
+  JEnvPushPop
+    stackitem(env);
+
+  HUE_JNI_TRY
+  {
+    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto result = pInstance->RequestVolumeSubset<uint64_t>(
+                               (OpenVDS::DimensionsND)dimensionsND, 
+                               LOD, 
+                               channel, 
+                               tmpminVoxelCoordinates.getArray(), 
+                               tmpmaxVoxelCoordinates.getArray(), 
+                               use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
+    auto context = HueJNI_createObjectContext(result);
+    return context->handle();
+  }
+  HUE_JNI_CATCH
+  return 0;
+}
+
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestVolumeSubsetFloatImpl
+  (JNIEnv * env, jobject object, jlong native_handle, jobject buffer, jlong dimensionsND, jint LOD, jint channel, jintArray minVoxelCoordinates, jintArray maxVoxelCoordinates, jfloat replacementNoValue, jboolean use_replacementNoValue)
+{
+  JEnvPushPop
+    stackitem(env);
+
+  HUE_JNI_TRY
+  {
+    auto tmpbuffer = HueJNIAsyncBuffer<void>(env, buffer);
+    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto result = pInstance->RequestVolumeSubset<float>(
+                               (float*)tmpbuffer.buffer(), tmpbuffer.byteSize(), 
+                               (OpenVDS::DimensionsND)dimensionsND, 
+                               LOD, 
+                               channel, 
+                               tmpminVoxelCoordinates.getArray(), 
+                               tmpmaxVoxelCoordinates.getArray(), 
+                               use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
+    auto context = HueJNI_createObjectContext(result);
+    context->registerGlobalRef(env, buffer);
+    return context->handle();
+  }
+  HUE_JNI_CATCH
+  return 0;
+}
+
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestVolumeSubsetFloat2Impl
+  (JNIEnv * env, jobject object, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jintArray minVoxelCoordinates, jintArray maxVoxelCoordinates, jfloat replacementNoValue, jboolean use_replacementNoValue)
+{
+  JEnvPushPop
+    stackitem(env);
+
+  HUE_JNI_TRY
+  {
+    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto result = pInstance->RequestVolumeSubset<float>(
+                               (OpenVDS::DimensionsND)dimensionsND, 
+                               LOD, 
+                               channel, 
+                               tmpminVoxelCoordinates.getArray(), 
+                               tmpmaxVoxelCoordinates.getArray(), 
+                               use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
+    auto context = HueJNI_createObjectContext(result);
+    return context->handle();
+  }
+  HUE_JNI_CATCH
+  return 0;
+}
+
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestVolumeSubsetDoubleImpl
+  (JNIEnv * env, jobject object, jlong native_handle, jobject buffer, jlong dimensionsND, jint LOD, jint channel, jintArray minVoxelCoordinates, jintArray maxVoxelCoordinates, jfloat replacementNoValue, jboolean use_replacementNoValue)
+{
+  JEnvPushPop
+    stackitem(env);
+
+  HUE_JNI_TRY
+  {
+    auto tmpbuffer = HueJNIAsyncBuffer<void>(env, buffer);
+    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto result = pInstance->RequestVolumeSubset<double>(
+                               (double*)tmpbuffer.buffer(), tmpbuffer.byteSize(), 
+                               (OpenVDS::DimensionsND)dimensionsND, 
+                               LOD, 
+                               channel, 
+                               tmpminVoxelCoordinates.getArray(), 
+                               tmpmaxVoxelCoordinates.getArray(), 
+                               use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
+    auto context = HueJNI_createObjectContext(result);
+    context->registerGlobalRef(env, buffer);
+    return context->handle();
+  }
+  HUE_JNI_CATCH
+  return 0;
+}
+
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestVolumeSubsetDouble2Impl
+  (JNIEnv * env, jobject object, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jintArray minVoxelCoordinates, jintArray maxVoxelCoordinates, jfloat replacementNoValue, jboolean use_replacementNoValue)
+{
+  JEnvPushPop
+    stackitem(env);
+
+  HUE_JNI_TRY
+  {
+    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto result = pInstance->RequestVolumeSubset<double>(
+                               (OpenVDS::DimensionsND)dimensionsND, 
+                               LOD, 
+                               channel, 
+                               tmpminVoxelCoordinates.getArray(), 
+                               tmpmaxVoxelCoordinates.getArray(), 
+                               use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
+    auto context = HueJNI_createObjectContext(result);
+    return context->handle();
+  }
+  HUE_JNI_CATCH
+  return 0;
+}
+
+
+/* FIXME THIS OVERLOAD DOES NOT EXIST IN OPENVDS
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestProjectedVolumeSubsetByteImpl
+  (JNIEnv * env, jobject object, jlong native_handle, jobject buffer, jlong dimensionsND, jint LOD, jint channel, jintArray minVoxelCoordinates, jintArray maxVoxelCoordinates, jobject voxelPlanebytebuffer, jlong voxelPlanebyteoffset, jlong projectedDimensions, jlong interpolationMethod, jfloat replacementNoValue, jboolean use_replacementNoValue)
+{
+  JEnvPushPop
+    stackitem(env);
+
+  HUE_JNI_TRY
+  {
+    auto tmpbuffer = HueJNIAsyncBuffer<void>(env, buffer);
+    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto result = pInstance->RequestProjectedVolumeSubset<uint8_t>(
+                               (uint8_t*)tmpbuffer.buffer(), tmpbuffer.byteSize(),
+                               (OpenVDS::DimensionsND)dimensionsND, 
+                               LOD, 
+                               channel, 
+                               tmpminVoxelCoordinates.getArray(), 
+                               tmpmaxVoxelCoordinates.getArray(), 
+                               HueJNIByteBufferAdapter<OpenVDS::FloatVector4>(env, voxelPlanebytebuffer, voxelPlanebyteoffset), 
+                               (OpenVDS::DimensionsND)projectedDimensions, 
+                               (OpenVDS::InterpolationMethod)interpolationMethod, 
+                               use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
+    auto context = HueJNI_createObjectContext(result);
+    context->registerGlobalRef(env, buffer);
+    return context->handle();
+  }
+  HUE_JNI_CATCH
+  return 0;
+}
+*/
+
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestProjectedVolumeSubsetByte2Impl
+  (JNIEnv * env, jobject object, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jintArray minVoxelCoordinates, jintArray maxVoxelCoordinates, jobject voxelPlanebytebuffer, jlong voxelPlanebyteoffset, jlong projectedDimensions, jlong interpolationMethod, jfloat replacementNoValue, jboolean use_replacementNoValue)
+{
+  JEnvPushPop
+    stackitem(env);
+
+  HUE_JNI_TRY
+  {
+    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto result = pInstance->RequestProjectedVolumeSubset<uint8_t>(
+                               (OpenVDS::DimensionsND)dimensionsND, 
+                               LOD, 
+                               channel, 
+                               tmpminVoxelCoordinates.getArray(), 
+                               tmpmaxVoxelCoordinates.getArray(), 
+                               HueJNIByteBufferAdapter<OpenVDS::FloatVector4>(env, voxelPlanebytebuffer, voxelPlanebyteoffset), 
+                               (OpenVDS::DimensionsND)projectedDimensions, 
+                               (OpenVDS::InterpolationMethod)interpolationMethod, 
+                               use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
+    auto context = HueJNI_createObjectContext(result);
+    return context->handle();
+  }
+  HUE_JNI_CATCH
+  return 0;
+}
+
+/* FIXME THIS OVERLOAD DOES NOT EXIST IN OPENVDS
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestProjectedVolumeSubsetUShortImpl
+  (JNIEnv * env, jobject object, jlong native_handle, jobject buffer, jlong dimensionsND, jint LOD, jint channel, jintArray minVoxelCoordinates, jintArray maxVoxelCoordinates, jobject voxelPlanebytebuffer, jlong voxelPlanebyteoffset, jlong projectedDimensions, jlong interpolationMethod, jfloat replacementNoValue, jboolean use_replacementNoValue)
+{
+  JEnvPushPop
+    stackitem(env);
+
+  HUE_JNI_TRY
+  {
+    auto tmpbuffer = HueJNIAsyncBuffer<void>(env, buffer);
+    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto result = pInstance->RequestProjectedVolumeSubset<uint16_t>(
+                               (uint16_t*)tmpbuffer.buffer(), tmpbuffer.byteSize(),
+                               (OpenVDS::DimensionsND)dimensionsND, 
+                               LOD, 
+                               channel, 
+                               tmpminVoxelCoordinates.getArray(), 
+                               tmpmaxVoxelCoordinates.getArray(), 
+                               HueJNIByteBufferAdapter<OpenVDS::FloatVector4>(env, voxelPlanebytebuffer, voxelPlanebyteoffset), 
+                               (OpenVDS::DimensionsND)projectedDimensions, 
+                               (OpenVDS::InterpolationMethod)interpolationMethod, 
+                               use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
+    auto context = HueJNI_createObjectContext(result);
+    context->registerGlobalRef(env, buffer);
+    return context->handle();
+  }
+  HUE_JNI_CATCH
+  return 0;
+}
+*/
+
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestProjectedVolumeSubsetUShort2Impl
+  (JNIEnv * env, jobject object, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jintArray minVoxelCoordinates, jintArray maxVoxelCoordinates, jobject voxelPlanebytebuffer, jlong voxelPlanebyteoffset, jlong projectedDimensions, jlong interpolationMethod, jfloat replacementNoValue, jboolean use_replacementNoValue)
+{
+  JEnvPushPop
+    stackitem(env);
+
+  HUE_JNI_TRY
+  {
+    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto result = pInstance->RequestProjectedVolumeSubset<uint16_t>(
+                               (OpenVDS::DimensionsND)dimensionsND, 
+                               LOD, 
+                               channel, 
+                               tmpminVoxelCoordinates.getArray(), 
+                               tmpmaxVoxelCoordinates.getArray(), 
+                               HueJNIByteBufferAdapter<OpenVDS::FloatVector4>(env, voxelPlanebytebuffer, voxelPlanebyteoffset), 
+                               (OpenVDS::DimensionsND)projectedDimensions, 
+                               (OpenVDS::InterpolationMethod)interpolationMethod, 
+                               use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
+    auto context = HueJNI_createObjectContext(result);
+    return context->handle();
+  }
+  HUE_JNI_CATCH
+  return 0;
+}
+
+/* FIXME THIS OVERLOAD DOES NOT EXIST IN OPENVDS
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestProjectedVolumeSubsetUIntImpl
+  (JNIEnv * env, jobject object, jlong native_handle, jobject buffer, jlong dimensionsND, jint LOD, jint channel, jintArray minVoxelCoordinates, jintArray maxVoxelCoordinates, jobject voxelPlanebytebuffer, jlong voxelPlanebyteoffset, jlong projectedDimensions, jlong interpolationMethod, jfloat replacementNoValue, jboolean use_replacementNoValue)
+{
+  JEnvPushPop
+    stackitem(env);
+
+  HUE_JNI_TRY
+  {
+    auto tmpbuffer = HueJNIAsyncBuffer<void>(env, buffer);
+    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto result = pInstance->RequestProjectedVolumeSubset<uint32_t>(
+                               (uint32_t*)tmpbuffer.buffer(), tmpbuffer.byteSize(),
+                               (OpenVDS::DimensionsND)dimensionsND, 
+                               LOD, 
+                               channel, 
+                               tmpminVoxelCoordinates.getArray(), 
+                               tmpmaxVoxelCoordinates.getArray(), 
+                               HueJNIByteBufferAdapter<OpenVDS::FloatVector4>(env, voxelPlanebytebuffer, voxelPlanebyteoffset), 
+                               (OpenVDS::DimensionsND)projectedDimensions, 
+                               (OpenVDS::InterpolationMethod)interpolationMethod, 
+                               use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
+    auto context = HueJNI_createObjectContext(result);
+    context->registerGlobalRef(env, buffer);
+    return context->handle();
+  }
+  HUE_JNI_CATCH
+  return 0;
+}
+*/
+
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestProjectedVolumeSubsetUInt2Impl
+  (JNIEnv * env, jobject object, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jintArray minVoxelCoordinates, jintArray maxVoxelCoordinates, jobject voxelPlanebytebuffer, jlong voxelPlanebyteoffset, jlong projectedDimensions, jlong interpolationMethod, jfloat replacementNoValue, jboolean use_replacementNoValue)
+{
+  JEnvPushPop
+    stackitem(env);
+
+  HUE_JNI_TRY
+  {
+    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto result = pInstance->RequestProjectedVolumeSubset<uint32_t>(
+                               (OpenVDS::DimensionsND)dimensionsND, 
+                               LOD, 
+                               channel, 
+                               tmpminVoxelCoordinates.getArray(), 
+                               tmpmaxVoxelCoordinates.getArray(), 
+                               HueJNIByteBufferAdapter<OpenVDS::FloatVector4>(env, voxelPlanebytebuffer, voxelPlanebyteoffset), 
+                               (OpenVDS::DimensionsND)projectedDimensions, 
+                               (OpenVDS::InterpolationMethod)interpolationMethod, 
+                               use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
+    auto context = HueJNI_createObjectContext(result);
+    return context->handle();
+  }
+  HUE_JNI_CATCH
+  return 0;
+}
+
+/* FIXME THIS OVERLOAD DOES NOT EXIST IN OPENVDS
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestProjectedVolumeSubsetULongImpl
+  (JNIEnv * env, jobject object, jlong native_handle, jobject buffer, jlong dimensionsND, jint LOD, jint channel, jintArray minVoxelCoordinates, jintArray maxVoxelCoordinates, jobject voxelPlanebytebuffer, jlong voxelPlanebyteoffset, jlong projectedDimensions, jlong interpolationMethod, jfloat replacementNoValue, jboolean use_replacementNoValue)
+{
+  JEnvPushPop
+    stackitem(env);
+
+  HUE_JNI_TRY
+  {
+    auto tmpbuffer = HueJNIAsyncBuffer<void>(env, buffer);
+    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto result = pInstance->RequestProjectedVolumeSubset<uint64_t>(
+                               (uint64_t*)tmpbuffer.buffer(), tmpbuffer.byteSize(),
+                               (OpenVDS::DimensionsND)dimensionsND, 
+                               LOD, 
+                               channel, 
+                               tmpminVoxelCoordinates.getArray(), 
+                               tmpmaxVoxelCoordinates.getArray(), 
+                               HueJNIByteBufferAdapter<OpenVDS::FloatVector4>(env, voxelPlanebytebuffer, voxelPlanebyteoffset), 
+                               (OpenVDS::DimensionsND)projectedDimensions, 
+                               (OpenVDS::InterpolationMethod)interpolationMethod, 
+                               use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
+    auto context = HueJNI_createObjectContext(result);
+    context->registerGlobalRef(env, buffer);
+    return context->handle();
+  }
+  HUE_JNI_CATCH
+  return 0;
+}
+*/
+
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestProjectedVolumeSubsetULong2Impl
+  (JNIEnv * env, jobject object, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jintArray minVoxelCoordinates, jintArray maxVoxelCoordinates, jobject voxelPlanebytebuffer, jlong voxelPlanebyteoffset, jlong projectedDimensions, jlong interpolationMethod, jfloat replacementNoValue, jboolean use_replacementNoValue)
+{
+  JEnvPushPop
+    stackitem(env);
+
+  HUE_JNI_TRY
+  {
+    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto result = pInstance->RequestProjectedVolumeSubset<uint64_t>(
+                               (OpenVDS::DimensionsND)dimensionsND, 
+                               LOD, 
+                               channel, 
+                               tmpminVoxelCoordinates.getArray(), 
+                               tmpmaxVoxelCoordinates.getArray(), 
+                               HueJNIByteBufferAdapter<OpenVDS::FloatVector4>(env, voxelPlanebytebuffer, voxelPlanebyteoffset), 
+                               (OpenVDS::DimensionsND)projectedDimensions, 
+                               (OpenVDS::InterpolationMethod)interpolationMethod, 
+                               use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
+    auto context = HueJNI_createObjectContext(result);
+    return context->handle();
+  }
+  HUE_JNI_CATCH
+  return 0;
+}
+
+/* FIXME THIS OVERLOAD DOES NOT EXIST IN OPENVDS
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestProjectedVolumeSubsetFloatImpl
+  (JNIEnv * env, jobject object, jlong native_handle, jobject buffer, jlong dimensionsND, jint LOD, jint channel, jintArray minVoxelCoordinates, jintArray maxVoxelCoordinates, jobject voxelPlanebytebuffer, jlong voxelPlanebyteoffset, jlong projectedDimensions, jlong interpolationMethod, jfloat replacementNoValue, jboolean use_replacementNoValue)
+{
+  JEnvPushPop
+    stackitem(env);
+
+  HUE_JNI_TRY
+  {
+    auto tmpbuffer = HueJNIAsyncBuffer<void>(env, buffer);
+    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto result = pInstance->RequestProjectedVolumeSubset<float>(
+                               (float*)tmpbuffer.buffer(), tmpbuffer.byteSize(),
+                               (OpenVDS::DimensionsND)dimensionsND, 
+                               LOD, 
+                               channel, 
+                               tmpminVoxelCoordinates.getArray(), 
+                               tmpmaxVoxelCoordinates.getArray(), 
+                               HueJNIByteBufferAdapter<OpenVDS::FloatVector4>(env, voxelPlanebytebuffer, voxelPlanebyteoffset), 
+                               (OpenVDS::DimensionsND)projectedDimensions, 
+                               (OpenVDS::InterpolationMethod)interpolationMethod, 
+                               use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
+    auto context = HueJNI_createObjectContext(result);
+    context->registerGlobalRef(env, buffer);
+    return context->handle();
+  }
+  HUE_JNI_CATCH
+  return 0;
+}
+*/
+
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestProjectedVolumeSubsetFloat2Impl
+  (JNIEnv * env, jobject object, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jintArray minVoxelCoordinates, jintArray maxVoxelCoordinates, jobject voxelPlanebytebuffer, jlong voxelPlanebyteoffset, jlong projectedDimensions, jlong interpolationMethod, jfloat replacementNoValue, jboolean use_replacementNoValue)
+{
+  JEnvPushPop
+    stackitem(env);
+
+  HUE_JNI_TRY
+  {
+    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto result = pInstance->RequestProjectedVolumeSubset<float>(
+                               (OpenVDS::DimensionsND)dimensionsND, 
+                               LOD, 
+                               channel, 
+                               tmpminVoxelCoordinates.getArray(), 
+                               tmpmaxVoxelCoordinates.getArray(), 
+                               HueJNIByteBufferAdapter<OpenVDS::FloatVector4>(env, voxelPlanebytebuffer, voxelPlanebyteoffset), 
+                               (OpenVDS::DimensionsND)projectedDimensions, 
+                               (OpenVDS::InterpolationMethod)interpolationMethod, 
+                               use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
+    auto context = HueJNI_createObjectContext(result);
+    return context->handle();
+  }
+  HUE_JNI_CATCH
+  return 0;
+}
+
+/* FIXME THIS OVERLOAD DOES NOT EXIST IN OPENVDS
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestProjectedVolumeSubsetDoubleImpl
+  (JNIEnv * env, jobject object, jlong native_handle, jobject buffer, jlong dimensionsND, jint LOD, jint channel, jintArray minVoxelCoordinates, jintArray maxVoxelCoordinates, jobject voxelPlanebytebuffer, jlong voxelPlanebyteoffset, jlong projectedDimensions, jlong interpolationMethod, jfloat replacementNoValue, jboolean use_replacementNoValue)
+{
+  JEnvPushPop
+    stackitem(env);
+
+  HUE_JNI_TRY
+  {
+    auto tmpbuffer = HueJNIAsyncBuffer<void>(env, buffer);
+    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto result = pInstance->RequestProjectedVolumeSubset<double>(
+                               (double*)tmpbuffer.buffer(), tmpbuffer.byteSize(),
+                               (OpenVDS::DimensionsND)dimensionsND, 
+                               LOD, 
+                               channel, 
+                               tmpminVoxelCoordinates.getArray(), 
+                               tmpmaxVoxelCoordinates.getArray(), 
+                               HueJNIByteBufferAdapter<OpenVDS::FloatVector4>(env, voxelPlanebytebuffer, voxelPlanebyteoffset), 
+                               (OpenVDS::DimensionsND)projectedDimensions, 
+                               (OpenVDS::InterpolationMethod)interpolationMethod, 
+                               use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
+    auto context = HueJNI_createObjectContext(result);
+    context->registerGlobalRef(env, buffer);
+    return context->handle();
+  }
+  HUE_JNI_CATCH
+  return 0;
+}
+*/
+
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestProjectedVolumeSubsetDouble2Impl
+  (JNIEnv * env, jobject object, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jintArray minVoxelCoordinates, jintArray maxVoxelCoordinates, jobject voxelPlanebytebuffer, jlong voxelPlanebyteoffset, jlong projectedDimensions, jlong interpolationMethod, jfloat replacementNoValue, jboolean use_replacementNoValue)
+{
+  JEnvPushPop
+    stackitem(env);
+
+  HUE_JNI_TRY
+  {
+    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto result = pInstance->RequestProjectedVolumeSubset<double>(
+                               (OpenVDS::DimensionsND)dimensionsND, 
+                               LOD, 
+                               channel, 
+                               tmpminVoxelCoordinates.getArray(), 
+                               tmpmaxVoxelCoordinates.getArray(), 
+                               HueJNIByteBufferAdapter<OpenVDS::FloatVector4>(env, voxelPlanebytebuffer, voxelPlanebyteoffset), 
+                               (OpenVDS::DimensionsND)projectedDimensions, 
+                               (OpenVDS::InterpolationMethod)interpolationMethod, 
+                               use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
+    auto context = HueJNI_createObjectContext(result);
+    return context->handle();
+  }
+  HUE_JNI_CATCH
+  return 0;
+}
+
+///AUTOGEN-IGNORE: CXX_METHOD RequestVolumeSamples std::shared_ptr<OpenVDS::VolumeDataRequest_t<float>> (float *, int64_t, OpenVDS::DimensionsND, int, int, float const (*)[6], int, OpenVDS::InterpolationMethod, OpenVDS::optional<float>) FUNCTIONPROTO
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestVolumeSamplesImpl
+  (JNIEnv * env, jobject object, jlong native_handle, jobject buffer, jlong dimensionsND, jint LOD, jint channel, jobject samplePositionsbytebuffer, jlong interpolationMethod, jfloat replacementNoValue, jboolean use_replacementNoValue)
+{
+  JEnvPushPop
+    stackitem(env);
+
+  HUE_JNI_TRY
+  {
+    auto tmpbuffer = HueJNIAsyncBuffer<float>(env, buffer);
+    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto result = pInstance->RequestVolumeSamples(
+                               tmpbuffer.buffer(), tmpbuffer.byteSize(), 
+                               (OpenVDS::DimensionsND)dimensionsND, 
+                               LOD, 
+                               channel, 
+                               HueJNIByteBufferAdapter<float[6]>(env, samplePositionsbytebuffer, 0).m_Data, 
+                               (int)env->GetDirectBufferCapacity(samplePositionsbytebuffer) / sizeof(float[6]), 
+                               (OpenVDS::InterpolationMethod)interpolationMethod, 
+                               use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
+    auto context = HueJNI_createObjectContext(result);
+    context->registerGlobalRef(env, buffer);
+    return context->handle();
+  }
+  HUE_JNI_CATCH
+  return 0;
+}
+
+///AUTOGEN-IGNORE: CXX_METHOD RequestVolumeSamples std::shared_ptr<OpenVDS::VolumeDataRequest_t<float>> (OpenVDS::DimensionsND, int, int, float const (*)[6], int, OpenVDS::InterpolationMethod, OpenVDS::optional<float>) FUNCTIONPROTO
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestVolumeSamples2Impl
+  (JNIEnv * env, jobject object, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jobject samplePositionsbytebuffer, jlong interpolationMethod, jfloat replacementNoValue, jboolean use_replacementNoValue)
+{
+  JEnvPushPop
+    stackitem(env);
+
+  HUE_JNI_TRY
+  {
+    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto result = pInstance->RequestVolumeSamples(
+                               (OpenVDS::DimensionsND)dimensionsND, 
+                               LOD, 
+                               channel, 
+                               HueJNIByteBufferAdapter<float[6]>(env, samplePositionsbytebuffer, 0).m_Data, 
+                               (int)env->GetDirectBufferCapacity(samplePositionsbytebuffer) / sizeof(float[6]), 
+                               (OpenVDS::InterpolationMethod)interpolationMethod, 
+                               use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
+    auto context = HueJNI_createObjectContext(result);
+    return context->handle();
+  }
+  HUE_JNI_CATCH
+  return 0;
+}
+
+///AUTOGEN-IGNORE: CXX_METHOD RequestVolumeTraces std::shared_ptr<OpenVDS::VolumeDataRequest_t<float>> (OpenVDS::DimensionsND, int, int, float const (*)[6], int, OpenVDS::InterpolationMethod, int, OpenVDS::optional<float>) FUNCTIONPROTO
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestVolumeTracesImpl
+  (JNIEnv * env, jobject object, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jobject tracePositionsbytebuffer, jlong interpolationMethod, jint traceDimension, jfloat replacementNoValue, jboolean use_replacementNoValue)
+{
+  JEnvPushPop
+    stackitem(env);
+
+  HUE_JNI_TRY
+  {
+    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto result = pInstance->RequestVolumeTraces(
+                               (OpenVDS::DimensionsND)dimensionsND, 
+                               LOD, 
+                               channel, 
+                               HueJNIByteBufferAdapter<float[6]>(env, tracePositionsbytebuffer, 0).m_Data, 
+                               (int)env->GetDirectBufferCapacity(tracePositionsbytebuffer) / sizeof(float[6]), 
+                               (OpenVDS::InterpolationMethod)interpolationMethod, 
+                               traceDimension, 
+                               use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
+    auto context = HueJNI_createObjectContext(result);
+    return context->handle();
+  }
+  HUE_JNI_CATCH
+  return 0;
+}
+
+///AUTOGEN-IGNORE: CXX_METHOD RequestVolumeTraces std::shared_ptr<OpenVDS::VolumeDataRequest_t<float>> (float *, int64_t, OpenVDS::DimensionsND, int, int, float const (*)[6], int, OpenVDS::InterpolationMethod, int, OpenVDS::optional<float>) FUNCTIONPROTO
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestVolumeTraces2Impl
+  (JNIEnv * env, jobject object, jlong native_handle, jobject buffer, jlong dimensionsND, jint LOD, jint channel, jobject tracePositionsbytebuffer, jlong interpolationMethod, jint traceDimension, jfloat replacementNoValue, jboolean use_replacementNoValue)
+{
+  JEnvPushPop
+    stackitem(env);
+
+  HUE_JNI_TRY
+  {
+    auto tmpbuffer = HueJNIAsyncBuffer<float>(env, buffer);
+    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto result = pInstance->RequestVolumeTraces(
+                               tmpbuffer.buffer(), tmpbuffer.byteSize(), 
+                               (OpenVDS::DimensionsND)dimensionsND, 
+                               LOD, 
+                               channel, 
+                               HueJNIByteBufferAdapter<float[6]>(env, tracePositionsbytebuffer, 0).m_Data, 
+                               (int)env->GetDirectBufferCapacity(tracePositionsbytebuffer) / sizeof(float[6]), 
+                               (OpenVDS::InterpolationMethod)interpolationMethod, 
+                               traceDimension, 
+                               use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
+    auto context = HueJNI_createObjectContext(result);
+    context->registerGlobalRef(env, buffer);
+    return context->handle();
+  }
+  HUE_JNI_CATCH
+  return 0;
+}
+
+/* FIXME? DOES NOT EXIST IN OPENVDS 
+///AUTOGEN-IGNORE: CXX_METHOD RequestVolumeTraceRanges std::shared_ptr<OpenVDS::VolumeDataRequest_t<float>> (OpenVDS::DimensionsND, int, int, float const (*)[6], int, OpenVDS::InterpolationMethod, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestVolumeTraceRangesImpl
+  (JNIEnv * env, jobject object, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jobject tracePositionsbytebuffer, jlong interpolationMethod, jint traceDimension, jint traceMin, jint traceMax, jfloat replacementNoValue, jboolean use_replacementNoValue)
+{
+  JEnvPushPop
+    stackitem(env);
+
+  HUE_JNI_TRY
+  {
+    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto result = pInstance->RequestVolumeTraceRanges(
+                               (OpenVDS::DimensionsND)dimensionsND, 
+                               LOD, 
+                               channel, 
+                               HueJNIByteBufferAdapter<float[6]>(env, tracePositionsbytebuffer, 0).m_Data, 
+                               (int)env->GetDirectBufferCapacity(tracePositionsbytebuffer) / sizeof(float[6]), 
+                               (OpenVDS::InterpolationMethod)interpolationMethod, 
+                               traceDimension, 
+                               traceMin,
+                               traceMax,
+                               use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
+    auto context = HueJNI_createObjectContext(result);
+    return context->handle();
+  }
+  HUE_JNI_CATCH
+  return 0;
+}
+
+///AUTOGEN-IGNORE: CXX_METHOD RequestVolumeTraceRanges std::shared_ptr<OpenVDS::VolumeDataRequest_t<float>> (float *, int64_t, OpenVDS::DimensionsND, int, int, float const (*)[6], int, OpenVDS::InterpolationMethod, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestVolumeTraceRanges2Impl
+  (JNIEnv * env, jobject object, jlong native_handle, jobject buffer, jlong dimensionsND, jint LOD, jint channel, jobject tracePositionsbytebuffer, jlong interpolationMethod, jint traceDimension, jint traceMin, jint traceMax, jfloat replacementNoValue, jboolean use_replacementNoValue)
+{
+  JEnvPushPop
+    stackitem(env);
+
+  HUE_JNI_TRY
+  {
+    auto tmpbuffer = HueJNIAsyncBuffer<float>(env, buffer);
+    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto result = pInstance->RequestVolumeTraceRanges(
+                               tmpbuffer.buffer(), tmpbuffer.byteSize(), 
+                               (OpenVDS::DimensionsND)dimensionsND, 
+                               LOD, 
+                               channel, 
+                               HueJNIByteBufferAdapter<float[6]>(env, tracePositionsbytebuffer, 0).m_Data, 
+                               (int)env->GetDirectBufferCapacity(tracePositionsbytebuffer) / sizeof(float[6]), 
+                               (OpenVDS::InterpolationMethod)interpolationMethod, 
+                               traceDimension, 
+                               traceMin,
+                               traceMax,
+                               use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
+    auto context = HueJNI_createObjectContext(result);
+    context->registerGlobalRef(env, buffer);
+    return context->handle();
+  }
+  HUE_JNI_CATCH
+  return 0;
+}
+
+*/
 
 
 JNIEXPORT jbyteArray JNICALL Java_org_opengroup_openvds_VolumeDataRequest1Bit_DataImpl
