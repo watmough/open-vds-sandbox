@@ -35,7 +35,7 @@
     ///AUTOGEN-ADD-OVERLOAD: long getVolumeSamplesBufferSize(int sampleCount, int channel) -> channel = 0
 
     ///AUTOGEN-IGNORE: CXX_METHOD RequestVolumeSamples std::shared_ptr<OpenVDS::VolumeDataRequest_t<float>> (float *, int64_t, OpenVDS::DimensionsND, int, int, float const (*)[6], int, OpenVDS::InterpolationMethod, OpenVDS::optional<float>) FUNCTIONPROTO
-    native private long RequestVolumeSamplesImpl(long native_object, ByteBuffer buffer, long dimensionsND, int LOD, int channel, ByteBuffer samplePositions, int interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
+    native private long RequestVolumeSamplesImpl(long native_object, ByteBuffer buffer, long dimensionsND, int LOD, int channel, ByteBuffer samplePositions, long interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
 
     /**
      * Request sampling of the input VDS at the specified coordinates.
@@ -57,7 +57,7 @@
     ///AUTOGEN-ADD-OVERLOAD: VolumeDataRequestFloat requestVolumeSamples(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, NDPosArray samplePositions, InterpolationMethod interpolationMethod, Float replacementNoValue) -> replacementNoValue=null
 
     ///AUTOGEN-IGNORE: CXX_METHOD RequestVolumeSamples std::shared_ptr<OpenVDS::VolumeDataRequest_t<float>> (OpenVDS::DimensionsND, int, int, float const (*)[6], int, OpenVDS::InterpolationMethod, OpenVDS::optional<float>) FUNCTIONPROTO
-    native private long RequestVolumeSamples2Impl(long native_object, long dimensionsND, int LOD, int channel, ByteBuffer samplePositions, int interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
+    native private long RequestVolumeSamples2Impl(long native_object, long dimensionsND, int LOD, int channel, ByteBuffer samplePositions, long interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
 
     /**
      * Request sampling of the input VDS at the specified coordinates, using an automatically allocated buffer.
@@ -81,7 +81,7 @@
     ///AUTOGEN-ADD-OVERLOAD: long getVolumeTracesBufferSize(int traceCount, int traceDimension, int LOD, int channel) -> LOD = 0, channel = 0
     
     ///AUTOGEN-IGNORE: CXX_METHOD RequestVolumeTraces std::shared_ptr<OpenVDS::VolumeDataRequest_t<float>> (OpenVDS::DimensionsND, int, int, float const (*)[6], int, OpenVDS::InterpolationMethod, int, OpenVDS::optional<float>) FUNCTIONPROTO
-    native private long RequestVolumeTracesImpl(long native_object, long dimensionsND, int LOD, int channel, ByteBuffer tracePositions, int interpolationMethod, int traceDimension, float replacementNoValue, boolean use_replacementNoValue);
+    native private long RequestVolumeTracesImpl(long native_object, long dimensionsND, int LOD, int channel, ByteBuffer tracePositions, long interpolationMethod, int traceDimension, float replacementNoValue, boolean use_replacementNoValue);
 
     /**
      * Request traces from the input VDS, using an automatically allocated buffer.
@@ -103,7 +103,7 @@
     ///AUTOGEN-ADD-OVERLOAD: VolumeDataRequestFloat requestVolumeTraces(DimensionsND dimensionsND, int LOD, int channel, NDPosArray tracePositions, InterpolationMethod interpolationMethod, int traceDimension, Float replacementNoValue) -> replacementNoValue=null
 
     ///AUTOGEN-IGNORE: CXX_METHOD RequestVolumeTraces std::shared_ptr<OpenVDS::VolumeDataRequest_t<float>> (float *, int64_t, OpenVDS::DimensionsND, int, int, float const (*)[6], int, OpenVDS::InterpolationMethod, int, OpenVDS::optional<float>) FUNCTIONPROTO
-    native private long RequestVolumeTraces2Impl(long native_object, ByteBuffer buffer, long dimensionsND, int LOD, int channel, ByteBuffer tracePositions, int interpolationMethod, int traceDimension, float replacementNoValue, boolean use_replacementNoValue);
+    native private long RequestVolumeTraces2Impl(long native_object, ByteBuffer buffer, long dimensionsND, int LOD, int channel, ByteBuffer tracePositions, long interpolationMethod, int traceDimension, float replacementNoValue, boolean use_replacementNoValue);
 
     /**
      * Request traces from the input VDS.
@@ -131,7 +131,7 @@
 
 // FIXME? RequestVolumeTraceRanges does not exist in OpenVDS 
 //    ///AUTOGEN-IGNORE: CXX_METHOD RequestVolumeTraceRanges std::shared_ptr<OpenVDS::VolumeDataRequest_t<float>> (OpenVDS::DimensionsND, int, int, float const (*)[6], int, OpenVDS::InterpolationMethod, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
-//    native private long RequestVolumeTraceRangesImpl(long native_object, long dimensionsND, int LOD, int channel, ByteBuffer tracePositions, int traceCount, int interpolationMethod, int traceDimension, int traceMin, int traceMax, float replacementNoValue, boolean use_replacementNoValue);
+//    native private long RequestVolumeTraceRangesImpl(long native_object, long dimensionsND, int LOD, int channel, ByteBuffer tracePositions, int traceCount, long interpolationMethod, int traceDimension, int traceMin, int traceMax, float replacementNoValue, boolean use_replacementNoValue);
 //
 //    /**
 //     * Request traces from the input VDS in a given range of samples, using an automatically allocated buffer.
@@ -156,7 +156,7 @@
 //    ///FIXME AUTOGEN-ADD-OVERLOAD: VolumeDataRequestFloat requestVolumeTraceRanges(DimensionsND dimensionsND, int LOD, int channel, NDPosArray tracePositions, int traceCount, InterpolationMethod interpolationMethod, int traceDimension, int traceMin, int traceMax, Float replacementNoValue) -> replacementNoValue=null
 //
 //    ///AUTOGEN-IGNORE: CXX_METHOD RequestVolumeTraceRanges std::shared_ptr<OpenVDS::VolumeDataRequest_t<float>> (float *, int64_t, OpenVDS::DimensionsND, int, int, float const (*)[6], int, OpenVDS::InterpolationMethod, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
-//    native private long RequestVolumeTraceRanges2Impl(long native_object, ByteBuffer buffer, long dimensionsND, int LOD, int channel, ByteBuffer tracePositions, int traceCount, int interpolationMethod, int traceDimension, int traceMin, int traceMax, float replacementNoValue, boolean use_replacementNoValue);
+//    native private long RequestVolumeTraceRanges2Impl(long native_object, ByteBuffer buffer, long dimensionsND, int LOD, int channel, ByteBuffer tracePositions, int traceCount, long interpolationMethod, int traceDimension, int traceMin, int traceMax, float replacementNoValue, boolean use_replacementNoValue);
 //
 //    /**
 //     * Request traces from the input VDS in a given range of samples.

@@ -1531,10 +1531,11 @@ def create_java_class(scope: Scope, template: str, override_name: str = '', temp
             factory += f'    }}'
         print(f"\n{ctor}", file=methods)
         print('    native private long dtorImpl(long nativeobject);\n', file=methods)
-        print('    @Override', file=methods)
-        print('    protected void onDisposing(long native_object) {', file=methods)
-        print('        dtorImpl(native_object);', file=methods)
-        print('    }', file=methods)
+        if not 'onDisposing' in ignored_nodes:
+            print('    @Override', file=methods)
+            print('    protected void onDisposing(long native_object) {', file=methods)
+            print('        dtorImpl(native_object);', file=methods)
+            print('    }', file=methods)
         if dtor:
             print(f"\n{dtor}", file=methods)
         print(f"\n{factory}", file=methods)
@@ -1550,8 +1551,15 @@ def create_java_class(scope: Scope, template: str, override_name: str = '', temp
             print(f'///AUTOGEN-FAIL: {n}', file=sys.stderr)
     return full_txt
 
+_IGNORE_GENERATOR_NODES = {
+    'void onDisposing(long ': 'onDisposing',
+}
+
 def get_ignored_nodes_from_template(template: str):
     nodes = [l.replace('///AUTOGEN-IGNORE: ', '').strip() for l in template.splitlines() if '///AUTOGEN-IGNORE: ' in l]
+    for pat in _IGNORE_GENERATOR_NODES:
+        if pat in template:
+            nodes.append(_IGNORE_GENERATOR_NODES[pat])
     return nodes
 
 def get_overloadable_functions_from_template(template: str):

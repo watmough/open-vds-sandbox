@@ -23,7 +23,7 @@ import java.util.*;
 import java.nio.ByteBuffer;
 
 
-public class VolumeDataPage extends ManagedBase {
+public class VolumeDataPage extends ManagedBase implements AutoCloseable {
 
     ///AUTOGEN-OK: CXX_METHOD GetVolumeDataPageAccessor OpenVDS::VolumeDataPageAccessor &() const FUNCTIONPROTO
     native private long GetVolumeDataPageAccessorImpl(long native_object);
@@ -47,10 +47,6 @@ public class VolumeDataPage extends ManagedBase {
         GetMinMaxExcludingMarginImpl(getNativeObject(), minExcludingMargin, maxExcludingMargin);
     }
 
-    ///AUTOGEN-FAIL: CXX_METHOD GetBuffer const void *(int (&)[6]) FUNCTIONPROTO
-
-    ///AUTOGEN-FAIL: CXX_METHOD GetWritableBuffer void *(int (&)[6]) FUNCTIONPROTO
-
     ///AUTOGEN-OK: CXX_METHOD UpdateWrittenRegion void (int const (&)[6], int const (&)[6]) FUNCTIONPROTO
     native private void UpdateWrittenRegionImpl(long native_object, int[] writtenMin, int[] writtenMax);
     public void updateWrittenRegion(int[] writtenMin, int[] writtenMax) {
@@ -59,21 +55,11 @@ public class VolumeDataPage extends ManagedBase {
         UpdateWrittenRegionImpl(getNativeObject(), writtenMin, writtenMax);
     }
 
-    ///AUTOGEN-OK: CXX_METHOD Release void () FUNCTIONPROTO
-    native private void ReleaseImpl(long native_object);
-    public void release() {
-        ReleaseImpl(getNativeObject());
-    }
-
     VolumeDataPage(long nativeobject) {
         super(nativeobject);
     }
     native private long dtorImpl(long nativeobject);
 
-    @Override
-    protected void onDisposing(long native_object) {
-        dtorImpl(native_object);
-    }
 
     static VolumeDataPage fromNativeObject(long nativeobject) {
         return new VolumeDataPage(nativeobject);
@@ -82,4 +68,54 @@ public class VolumeDataPage extends ManagedBase {
 
 
 
+///AUTOGEN-IGNORE: CXX_METHOD GetBuffer const void *(int (&)[6]) FUNCTIONPROTO
+    native ByteBuffer GetBufferImpl(long native_object, int[] pitch);
+    
+    /**
+     * @param pitch An array of length 6 which describes the layout of the returned buffer : Each 
+     *              non-zero element is equal to the distance between neighboring elements (bytes, floats, etc.)
+     *              along each dimension in the buffer. 
+     * @return A read-only ByteBuffer
+     */
+    public ByteBuffer getBuffer(int[] pitch) {
+        if (pitch.length != 6) throw new IllegalArgumentException("Array \"pitch\" must have length 6");
+        ByteBuffer buffer = GetBufferImpl(getNativeObject(), pitch);
+        buffer.order(java.nio.ByteOrder.nativeOrder());
+        return buffer.asReadOnlyBuffer();
+    }
+
+///AUTOGEN-IGNORE: CXX_METHOD GetWritableBuffer void *(int (&)[6]) FUNCTIONPROTO
+
+    native ByteBuffer GetWritableBufferImpl(long native_object, int[] pitch);
+    
+    /**
+     * @param pitch An array of length 6 which describes the layout of the returned buffer : Each 
+     *              non-zero element is equal to the distance between neighboring elements (bytes, floats, etc.)
+     *              along each dimension in the buffer. 
+     * @return A writable ByteBuffer
+     */
+    public ByteBuffer getWritableBuffer(int[] pitch) {
+        if (pitch.length != 6) throw new IllegalArgumentException("Array \"pitch\" must have length 6");
+        ByteBuffer buffer = GetWritableBufferImpl(getNativeObject(), pitch);
+        buffer.order(java.nio.ByteOrder.nativeOrder());
+        return buffer;
+    }
+	
+///AUTOGEN-IGNORE: CXX_METHOD Release void () FUNCTIONPROTO
+    native private void ReleaseImpl(long native_object);
+	
+	@Override
+	protected void onDisposing(long native_object) {
+        ReleaseImpl(native_object);
+		dtorImpl(native_object);
+	}
+	
+    public void release() {
+		this.dispose();
+    }
+	
+	public void close() {
+		this.dispose();
+	}
+	
 }

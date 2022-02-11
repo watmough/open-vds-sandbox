@@ -2335,7 +2335,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     
     
 
-    native private long RequestProjectedVolumeSubsetByteImpl(long native_object, ByteBuffer buffer, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, ByteBuffer voxelPlane, long voxelPlane_byteoffset, int projectedDimensions, int interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
+    native private long RequestProjectedVolumeSubsetByteImpl(long native_object, ByteBuffer buffer, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, ByteBuffer voxelPlane, long voxelPlane_byteoffset, long projectedDimensions, int interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
 
     /**
      * Request a subset projected from an arbitrary 3D plane through the subset onto one of the sides of the subset.
@@ -2359,7 +2359,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     }
     
 
-    native private long RequestProjectedVolumeSubsetByte2Impl(long native_object, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, ByteBuffer voxelPlane, long voxelPlane_byteoffset, int projectedDimensions, int interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
+    native private long RequestProjectedVolumeSubsetByte2Impl(long native_object, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, ByteBuffer voxelPlane, long voxelPlane_byteoffset, long projectedDimensions, int interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
 
     /**
      * Request a subset projected from an arbitrary 3D plane through the subset onto one of the sides of the subset, using an automatically allocated buffer.
@@ -2382,7 +2382,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     }
     
 
-    native private long RequestProjectedVolumeSubsetUShortImpl(long native_object, ByteBuffer buffer, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, ByteBuffer voxelPlane, long voxelPlane_byteoffset, int projectedDimensions, int interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
+    native private long RequestProjectedVolumeSubsetUShortImpl(long native_object, ByteBuffer buffer, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, ByteBuffer voxelPlane, long voxelPlane_byteoffset, long projectedDimensions, int interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
 
     /**
      * Request a subset projected from an arbitrary 3D plane through the subset onto one of the sides of the subset.
@@ -2406,7 +2406,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     }
     
 
-    native private long RequestProjectedVolumeSubsetUShort2Impl(long native_object, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, ByteBuffer voxelPlane, long voxelPlane_byteoffset, int projectedDimensions, int interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
+    native private long RequestProjectedVolumeSubsetUShort2Impl(long native_object, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, ByteBuffer voxelPlane, long voxelPlane_byteoffset, long projectedDimensions, int interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
 
     /**
      * Request a subset projected from an arbitrary 3D plane through the subset onto one of the sides of the subset, using an automatically allocated buffer.
@@ -2429,7 +2429,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     }
     
 
-    native private long RequestProjectedVolumeSubsetUIntImpl(long native_object, ByteBuffer buffer, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, ByteBuffer voxelPlane, long voxelPlane_byteoffset, int projectedDimensions, int interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
+    native private long RequestProjectedVolumeSubsetUIntImpl(long native_object, ByteBuffer buffer, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, ByteBuffer voxelPlane, long voxelPlane_byteoffset, long projectedDimensions, int interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
 
     /**
      * Request a subset projected from an arbitrary 3D plane through the subset onto one of the sides of the subset.
@@ -2453,7 +2453,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     }
     
 
-    native private long RequestProjectedVolumeSubsetUInt2Impl(long native_object, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, ByteBuffer voxelPlane, long voxelPlane_byteoffset, int projectedDimensions, int interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
+    native private long RequestProjectedVolumeSubsetUInt2Impl(long native_object, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, ByteBuffer voxelPlane, long voxelPlane_byteoffset, long projectedDimensions, int interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
 
     /**
      * Request a subset projected from an arbitrary 3D plane through the subset onto one of the sides of the subset, using an automatically allocated buffer.
@@ -2476,7 +2476,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     }
     
 
-    native private long RequestProjectedVolumeSubsetULongImpl(long native_object, ByteBuffer buffer, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, ByteBuffer voxelPlane, long voxelPlane_byteoffset, int projectedDimensions, int interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
+    native private long RequestProjectedVolumeSubsetULongImpl(long native_object, ByteBuffer buffer, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, ByteBuffer voxelPlane, long voxelPlane_byteoffset, long projectedDimensions, int interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
 
     /**
      * Request a subset projected from an arbitrary 3D plane through the subset onto one of the sides of the subset.
@@ -2500,7 +2500,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     }
     
 
-    native private long RequestProjectedVolumeSubsetULong2Impl(long native_object, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, ByteBuffer voxelPlane, long voxelPlane_byteoffset, int projectedDimensions, int interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
+    native private long RequestProjectedVolumeSubsetULong2Impl(long native_object, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, ByteBuffer voxelPlane, long voxelPlane_byteoffset, long projectedDimensions, int interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
 
     /**
      * Request a subset projected from an arbitrary 3D plane through the subset onto one of the sides of the subset, using an automatically allocated buffer.
@@ -2523,7 +2523,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     }
     
 
-    native private long RequestProjectedVolumeSubsetFloatImpl(long native_object, ByteBuffer buffer, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, ByteBuffer voxelPlane, long voxelPlane_byteoffset, int projectedDimensions, int interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
+    native private long RequestProjectedVolumeSubsetFloatImpl(long native_object, ByteBuffer buffer, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, ByteBuffer voxelPlane, long voxelPlane_byteoffset, long projectedDimensions, int interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
 
     /**
      * Request a subset projected from an arbitrary 3D plane through the subset onto one of the sides of the subset.
@@ -2547,7 +2547,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     }
     
 
-    native private long RequestProjectedVolumeSubsetFloat2Impl(long native_object, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, ByteBuffer voxelPlane, long voxelPlane_byteoffset, int projectedDimensions, int interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
+    native private long RequestProjectedVolumeSubsetFloat2Impl(long native_object, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, ByteBuffer voxelPlane, long voxelPlane_byteoffset, long projectedDimensions, int interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
 
     /**
      * Request a subset projected from an arbitrary 3D plane through the subset onto one of the sides of the subset, using an automatically allocated buffer.
@@ -2570,7 +2570,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     }
     
 
-    native private long RequestProjectedVolumeSubsetDoubleImpl(long native_object, ByteBuffer buffer, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, ByteBuffer voxelPlane, long voxelPlane_byteoffset, int projectedDimensions, int interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
+    native private long RequestProjectedVolumeSubsetDoubleImpl(long native_object, ByteBuffer buffer, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, ByteBuffer voxelPlane, long voxelPlane_byteoffset, long projectedDimensions, int interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
 
     /**
      * Request a subset projected from an arbitrary 3D plane through the subset onto one of the sides of the subset.
@@ -2594,7 +2594,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     }
     
 
-    native private long RequestProjectedVolumeSubsetDouble2Impl(long native_object, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, ByteBuffer voxelPlane, long voxelPlane_byteoffset, int projectedDimensions, int interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
+    native private long RequestProjectedVolumeSubsetDouble2Impl(long native_object, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, ByteBuffer voxelPlane, long voxelPlane_byteoffset, long projectedDimensions, int interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
 
     /**
      * Request a subset projected from an arbitrary 3D plane through the subset onto one of the sides of the subset, using an automatically allocated buffer.
