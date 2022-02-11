@@ -1,5 +1,5 @@
 
-    native private long RequestProjectedVolumeSubset<DataType>Impl(long native_object, ByteBuffer buffer, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, ByteBuffer voxelPlane, long voxelPlane_byteoffset, int projectedDimensions, int interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
+    native private long RequestProjectedVolumeSubset<DataType>Impl(long native_object, ByteBuffer buffer, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, ByteBuffer voxelPlane, long voxelPlane_byteoffset, long projectedDimensions, int interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
 
     /**
      * Request a subset projected from an arbitrary 3D plane through the subset onto one of the sides of the subset.
@@ -25,7 +25,7 @@
     ///AUTOGEN-REGISTER-OVERLOADABLE-FUNCTION: VolumeDataRequest<DataType> requestProjectedVolumeSubset<DataType>(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, FloatVector4 voxelPlane, DimensionsND projectedDimensions, InterpolationMethod interpolationMethod, Float replacementNoValue)
     ///AUTOGEN-ADD-OVERLOAD: VolumeDataRequest<DataType> requestProjectedVolumeSubset<DataType>(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, FloatVector4 voxelPlane, DimensionsND projectedDimensions, InterpolationMethod interpolationMethod, Float replacementNoValue) -> replacementNoValue=null
 
-    native private long RequestProjectedVolumeSubset<DataType>2Impl(long native_object, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, ByteBuffer voxelPlane, long voxelPlane_byteoffset, int projectedDimensions, int interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
+    native private long RequestProjectedVolumeSubset<DataType>2Impl(long native_object, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, ByteBuffer voxelPlane, long voxelPlane_byteoffset, long projectedDimensions, int interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
 
     /**
      * Request a subset projected from an arbitrary 3D plane through the subset onto one of the sides of the subset, using an automatically allocated buffer.
