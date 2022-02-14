@@ -36,9 +36,11 @@
 #include "PyExceptions.h"
 #include "PyCoordinateTransformer.h"
 #include "PyIJKCoordinateTransformer.h"
+#include "PyError.h"
 
 
 PYBIND11_MODULE(core, m) {
+  PyError::initModule(m);
   PyGlobal::initModule(m);
   PyMetadataKey::initModule(m);
   PyKnownMetadata::initModule(m);

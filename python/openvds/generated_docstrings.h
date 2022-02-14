@@ -680,6 +680,12 @@ static const char *__doc_OpenVDS_DMSOpenOptions_DMSOpenOptions = R"doc()doc";
 
 static const char *__doc_OpenVDS_DMSOpenOptions_DMSOpenOptions_2 = R"doc()doc";
 
+static const char *__doc_OpenVDS_DMSOpenOptions_DMSOpenOptions_3 = R"doc()doc";
+
+static const char *__doc_OpenVDS_DMSOpenOptions_authProviderCallback = R"doc()doc";
+
+static const char *__doc_OpenVDS_DMSOpenOptions_authProviderCallbackData = R"doc()doc";
+
 static const char *__doc_OpenVDS_DMSOpenOptions_authTokenUrl = R"doc()doc";
 
 static const char *__doc_OpenVDS_DMSOpenOptions_clientId = R"doc()doc";
@@ -1155,6 +1161,26 @@ static const char *__doc_OpenVDS_GoogleOpenOptions_pathPrefix = R"doc()doc";
 static const char *__doc_OpenVDS_GoogleOpenOptions_region = R"doc()doc";
 
 static const char *__doc_OpenVDS_GoogleOpenOptions_storageClass = R"doc()doc";
+
+static const char *__doc_OpenVDS_HeapBasedValueRangeEstimator = R"doc()doc";
+
+static const char *__doc_OpenVDS_HeapBasedValueRangeEstimator_GetValueRange = R"doc()doc";
+
+static const char *__doc_OpenVDS_HeapBasedValueRangeEstimator_HeapBasedValueRangeEstimator = R"doc()doc";
+
+static const char *__doc_OpenVDS_HeapBasedValueRangeEstimator_NaNCount = R"doc()doc";
+
+static const char *__doc_OpenVDS_HeapBasedValueRangeEstimator_UpdateValueRange = R"doc()doc";
+
+static const char *__doc_OpenVDS_HeapBasedValueRangeEstimator_UpdateValueRange_2 = R"doc()doc";
+
+static const char *__doc_OpenVDS_HeapBasedValueRangeEstimator_m_heapSizeMax = R"doc()doc";
+
+static const char *__doc_OpenVDS_HeapBasedValueRangeEstimator_m_maxHeap = R"doc()doc";
+
+static const char *__doc_OpenVDS_HeapBasedValueRangeEstimator_m_minHeap = R"doc()doc";
+
+static const char *__doc_OpenVDS_HeapBasedValueRangeEstimator_m_nanCount = R"doc()doc";
 
 static const char *__doc_OpenVDS_HttpOpenOptions =
 R"doc(Options for opening a VDS with a plain http url. If there are query
@@ -4873,6 +4899,21 @@ static const char *__doc_OpenVDS_VolumeDataPageAccessor_AccessMode_AccessMode_Re
 static const char *__doc_OpenVDS_VolumeDataPageAccessor_AddReference = R"doc()doc";
 
 static const char *__doc_OpenVDS_VolumeDataPageAccessor_Commit = R"doc()doc";
+
+static const char *__doc_OpenVDS_VolumeDataPageAccessor_CopyPage =
+R"doc(Copy a page of data from another VolumeDataPageAccessor with a
+compatible layout. This method is not blocking so if you want to
+access the copied data you need to call ReadPage which will block
+until the copy is done and return the copied data.
+
+Parameters:
+-----------
+
+chunkIndex :
+    The chunk index to copy
+
+source :
+    The VolumeDataPageAccessor to copy data from)doc";
 
 static const char *__doc_OpenVDS_VolumeDataPageAccessor_CreatePage = R"doc()doc";
 
