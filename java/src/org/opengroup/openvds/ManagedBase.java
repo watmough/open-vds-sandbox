@@ -30,20 +30,25 @@ public abstract class ManagedBase {
         return this.native_object;
     }
 	
-	protected void onDisposing(long native_object) {
+	protected void onDisposing(long native_object, boolean isDisposing) {
 	}
-	
-    public synchronized void dispose() {
+
+	private synchronized void dispose(boolean isDisposing) {
+
 		if (this.native_object != 0) {
 			long native_object = this.native_object;
 			this.native_object = 0;
-			onDisposing(native_object);
+			onDisposing(native_object, isDisposing);
 		}
+    }
+
+    public synchronized void dispose() {
+        dispose(true);
     }
 
     @Override
     public void finalize() {
-		dispose();
+		dispose(false);
     }
 	
 	public boolean isDisposed() {

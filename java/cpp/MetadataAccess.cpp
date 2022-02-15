@@ -470,7 +470,7 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMetad
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataReadAccess_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -877,7 +877,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_ClearMetad
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {

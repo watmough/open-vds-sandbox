@@ -49,7 +49,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VDS_ctorImpl
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VDS_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -82,7 +82,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IOManager_ctorImpl
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IOManager_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -159,7 +159,7 @@ JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_OpenOptions_getWaveletAdapti
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_OpenOptions_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -427,7 +427,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_AWSOpenOptions_ctor2Impl
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_AWSOpenOptions_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -640,7 +640,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_AzureOpenOptions_AzureOpenOpt
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_AzureOpenOptions_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -725,7 +725,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_AzurePresignedOpenOptions_cto
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_AzurePresignedOpenOptions_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -778,7 +778,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsToken_ctor2I
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_GoogleCredentialsToken_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -831,7 +831,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsPath_ctor2Im
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_GoogleCredentialsPath_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -884,7 +884,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsJson_ctor2Im
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_GoogleCredentialsJson_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -937,7 +937,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrl_ct
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrl_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -1030,7 +1030,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrlPat
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrlPath_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -1123,7 +1123,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrlJso
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrlJson_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -1426,7 +1426,7 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_SetSigne
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -1666,7 +1666,7 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_DMSOpenOptions_getUseFileN
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_DMSOpenOptions_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -1735,7 +1735,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_HttpOpenOptions_ctor2Impl
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_HttpOpenOptions_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -1824,7 +1824,7 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_InMemoryOpenOptions_getName
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_InMemoryOpenOptions_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -1893,7 +1893,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VDSFileOpenOptions_ctor2Impl
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VDSFileOpenOptions_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -1938,7 +1938,7 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_Error_getStringImpl
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_Error_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {

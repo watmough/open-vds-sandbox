@@ -75,11 +75,11 @@ public class VolumeData3DReadAccessor1Bit extends ManagedBase {
     VolumeData3DReadAccessor1Bit(long nativeobject) {
         super(nativeobject);
     }
-    native private long dtorImpl(long nativeobject);
+    native private long dtorImpl(long nativeobject, boolean isDisposing);
 
     @Override
-    protected void onDisposing(long native_object) {
-        dtorImpl(native_object);
+    protected void onDisposing(long native_object, boolean isDisposing) {
+        dtorImpl(native_object, isDisposing);
     }
 
     static VolumeData3DReadAccessor1Bit fromNativeObject(long nativeobject) {

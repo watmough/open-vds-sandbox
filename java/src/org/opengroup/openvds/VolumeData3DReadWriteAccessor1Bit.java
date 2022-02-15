@@ -57,11 +57,11 @@ public class VolumeData3DReadWriteAccessor1Bit extends VolumeData3DReadAccessor1
     VolumeData3DReadWriteAccessor1Bit(long nativeobject) {
         super(nativeobject);
     }
-    native private long dtorImpl(long nativeobject);
+    native private long dtorImpl(long nativeobject, boolean isDisposing);
 
     @Override
-    protected void onDisposing(long native_object) {
-        dtorImpl(native_object);
+    protected void onDisposing(long native_object, boolean isDisposing) {
+        dtorImpl(native_object, isDisposing);
     }
 
     static VolumeData3DReadWriteAccessor1Bit fromNativeObject(long nativeobject) {

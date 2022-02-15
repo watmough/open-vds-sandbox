@@ -58,7 +58,7 @@ public class VolumeDataPage extends ManagedBase implements AutoCloseable {
     VolumeDataPage(long nativeobject) {
         super(nativeobject);
     }
-    native private long dtorImpl(long nativeobject);
+    native private long dtorImpl(long nativeobject, boolean isDisposing);
 
 
     static VolumeDataPage fromNativeObject(long nativeobject) {
@@ -105,9 +105,9 @@ public class VolumeDataPage extends ManagedBase implements AutoCloseable {
     native private void ReleaseImpl(long native_object);
 	
 	@Override
-	protected void onDisposing(long native_object) {
+	protected void onDisposing(long native_object, boolean isDisposing) {
         ReleaseImpl(native_object);
-		dtorImpl(native_object);
+		dtorImpl(native_object, isDisposing);
 	}
 	
     public void release() {

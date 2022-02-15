@@ -684,7 +684,7 @@ def create_jni_ctor(scope: Scope, ctor: Scope, class_name: str, class_canonical_
     return proto + body
 
 def create_jni_dtor(scope: Scope, class_name: str, class_canonical_name: str) -> str:
-    proto = create_jni_proto(Param('void'), class_name, "dtor", is_include_proxyinterface_arg=False)
+    proto = create_jni_proto(Param('void'), class_name, "dtor", is_include_proxyinterface_arg=False, extra_args=[Param('bool', 'is_disposing')])
     body = f"""
 {{
   HUE_JNI_TRY
@@ -1530,11 +1530,11 @@ def create_java_class(scope: Scope, template: str, override_name: str = '', temp
             factory += f'        return this.native_object;\n'
             factory += f'    }}'
         print(f"\n{ctor}", file=methods)
-        print('    native private long dtorImpl(long nativeobject);\n', file=methods)
+        print('    native private long dtorImpl(long nativeobject, boolean isDisposing);\n', file=methods)
         if not 'onDisposing' in ignored_nodes:
             print('    @Override', file=methods)
-            print('    protected void onDisposing(long native_object) {', file=methods)
-            print('        dtorImpl(native_object);', file=methods)
+            print('    protected void onDisposing(long native_object, boolean isDisposing) {', file=methods)
+            print('        dtorImpl(native_object, isDisposing);', file=methods)
             print('    }', file=methods)
         if dtor:
             print(f"\n{dtor}", file=methods)

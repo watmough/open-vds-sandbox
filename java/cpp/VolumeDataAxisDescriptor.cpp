@@ -218,7 +218,7 @@ JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataAxisDescriptor_Coo
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataAxisDescriptor_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {

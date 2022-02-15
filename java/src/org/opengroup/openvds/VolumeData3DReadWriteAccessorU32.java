@@ -57,11 +57,11 @@ public class VolumeData3DReadWriteAccessorU32 extends VolumeData3DReadAccessorU3
     VolumeData3DReadWriteAccessorU32(long nativeobject) {
         super(nativeobject);
     }
-    native private long dtorImpl(long nativeobject);
+    native private long dtorImpl(long nativeobject, boolean isDisposing);
 
     @Override
-    protected void onDisposing(long native_object) {
-        dtorImpl(native_object);
+    protected void onDisposing(long native_object, boolean isDisposing) {
+        dtorImpl(native_object, isDisposing);
     }
 
     static VolumeData3DReadWriteAccessorU32 fromNativeObject(long nativeobject) {

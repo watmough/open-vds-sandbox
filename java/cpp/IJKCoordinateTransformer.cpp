@@ -776,7 +776,7 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_Error
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {

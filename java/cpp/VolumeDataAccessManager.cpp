@@ -203,7 +203,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataRequest_BufferDataT
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataRequest_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -2758,7 +2758,7 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Upload
 ///AUTOGEN-FAIL: CXX_METHOD GetCurrentDownloadError void (int *, const char **) FUNCTIONPROTO
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -3642,7 +3642,7 @@ JNIEXPORT jbyteArray JNICALL Java_org_opengroup_openvds_VolumeDataRequest1Bit_Da
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataRequest1Bit_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -3671,7 +3671,7 @@ JNIEXPORT jbyteArray JNICALL Java_org_opengroup_openvds_VolumeDataRequestByte_Da
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataRequestByte_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -3700,7 +3700,7 @@ JNIEXPORT jshortArray JNICALL Java_org_opengroup_openvds_VolumeDataRequestUShort
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataRequestUShort_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -3729,7 +3729,7 @@ JNIEXPORT jintArray JNICALL Java_org_opengroup_openvds_VolumeDataRequestUInt_Dat
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataRequestUInt_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -3758,7 +3758,7 @@ JNIEXPORT jlongArray JNICALL Java_org_opengroup_openvds_VolumeDataRequestULong_D
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataRequestULong_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -3787,7 +3787,7 @@ JNIEXPORT jfloatArray JNICALL Java_org_opengroup_openvds_VolumeDataRequestFloat_
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataRequestFloat_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -3816,7 +3816,7 @@ JNIEXPORT jdoubleArray JNICALL Java_org_opengroup_openvds_VolumeDataRequestDoubl
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataRequestDouble_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {

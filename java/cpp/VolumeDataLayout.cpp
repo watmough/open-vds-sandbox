@@ -495,7 +495,7 @@ JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetChannelI
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataLayout_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {

@@ -57,11 +57,11 @@ public class VolumeData4DReadWriteAccessorU8 extends VolumeData4DReadAccessorU8 
     VolumeData4DReadWriteAccessorU8(long nativeobject) {
         super(nativeobject);
     }
-    native private long dtorImpl(long nativeobject);
+    native private long dtorImpl(long nativeobject, boolean isDisposing);
 
     @Override
-    protected void onDisposing(long native_object) {
-        dtorImpl(native_object);
+    protected void onDisposing(long native_object, boolean isDisposing) {
+        dtorImpl(native_object, isDisposing);
     }
 
     static VolumeData4DReadWriteAccessorU8 fromNativeObject(long nativeobject) {

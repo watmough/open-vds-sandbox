@@ -220,7 +220,7 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor_Get
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {

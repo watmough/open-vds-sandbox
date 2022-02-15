@@ -60,11 +60,11 @@ public class IndexRegionFloatVector4 extends ManagedBase {
     IndexRegionFloatVector4(long nativeobject) {
         super(nativeobject);
     }
-    native private long dtorImpl(long nativeobject);
+    native private long dtorImpl(long nativeobject, boolean isDisposing);
 
     @Override
-    protected void onDisposing(long native_object) {
-        dtorImpl(native_object);
+    protected void onDisposing(long native_object, boolean isDisposing) {
+        dtorImpl(native_object, isDisposing);
     }
 
     static IndexRegionFloatVector4 fromNativeObject(long nativeobject) {

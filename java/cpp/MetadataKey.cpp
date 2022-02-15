@@ -134,7 +134,7 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataKey_operatorEQImpl
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataKey_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {

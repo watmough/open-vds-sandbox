@@ -108,7 +108,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataPage_ReleaseImpl
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataPage_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -508,7 +508,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_CommitI
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -640,7 +640,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DInterpolatingAcce
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DInterpolatingAccessorR64_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -772,7 +772,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DInterpolatingAcce
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DInterpolatingAccessorR32_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -904,7 +904,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorR64_c
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorR64_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -1036,7 +1036,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU64_c
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU64_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -1168,7 +1168,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorR32_c
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorR32_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -1300,7 +1300,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU32_c
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU32_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -1432,7 +1432,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU16_c
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU16_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -1564,7 +1564,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU8_ct
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU8_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -1696,7 +1696,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessor1Bit_
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessor1Bit_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -1771,7 +1771,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessor
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorR64_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -1846,7 +1846,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessor
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorU64_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -1921,7 +1921,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessor
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorR32_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -1996,7 +1996,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessor
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorU32_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -2071,7 +2071,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessor
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorU16_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -2146,7 +2146,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessor
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorU8_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -2221,7 +2221,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessor
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessor1Bit_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -2353,7 +2353,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DInterpolatingAcce
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DInterpolatingAccessorR64_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -2485,7 +2485,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DInterpolatingAcce
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DInterpolatingAccessorR32_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -2617,7 +2617,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorR64_c
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorR64_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -2749,7 +2749,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU64_c
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU64_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -2881,7 +2881,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorR32_c
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorR32_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -3013,7 +3013,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU32_c
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU32_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -3145,7 +3145,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU16_c
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU16_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -3277,7 +3277,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU8_ct
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU8_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -3409,7 +3409,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessor1Bit_
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessor1Bit_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -3484,7 +3484,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessor
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorR64_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -3559,7 +3559,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessor
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorU64_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -3634,7 +3634,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessor
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorR32_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -3709,7 +3709,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessor
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorU32_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -3784,7 +3784,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessor
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorU16_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -3859,7 +3859,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessor
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorU8_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -3934,7 +3934,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessor
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessor1Bit_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -4066,7 +4066,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DInterpolatingAcce
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DInterpolatingAccessorR64_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -4198,7 +4198,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DInterpolatingAcce
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DInterpolatingAccessorR32_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -4330,7 +4330,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorR64_c
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorR64_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -4462,7 +4462,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU64_c
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU64_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -4594,7 +4594,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorR32_c
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorR32_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -4726,7 +4726,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU32_c
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU32_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -4858,7 +4858,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU16_c
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU16_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -4990,7 +4990,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU8_ct
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU8_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -5122,7 +5122,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessor1Bit_
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessor1Bit_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -5197,7 +5197,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessor
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorR64_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -5272,7 +5272,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessor
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorU64_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -5347,7 +5347,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessor
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorR32_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -5422,7 +5422,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessor
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorU32_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -5497,7 +5497,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessor
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorU16_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -5572,7 +5572,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessor
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorU8_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -5647,7 +5647,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessor
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessor1Bit_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -5730,7 +5730,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector2_ctor2
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector2_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -5813,7 +5813,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IndexRegionIntVector2_ctor2Im
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionIntVector2_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -5896,7 +5896,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector3_ctor2
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector3_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -5979,7 +5979,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IndexRegionIntVector3_ctor2Im
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionIntVector3_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -6062,7 +6062,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector4_ctor2
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector4_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {
@@ -6145,7 +6145,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IndexRegionIntVector4_ctor2Im
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionIntVector4_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   HUE_JNI_TRY
   {

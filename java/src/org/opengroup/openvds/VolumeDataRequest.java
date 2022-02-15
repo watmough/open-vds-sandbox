@@ -170,11 +170,11 @@ Whenever WaitForCompletion returns false you need to call IsCanceled() to know i
     VolumeDataRequest(long nativeobject) {
         super(nativeobject);
     }
-    native private long dtorImpl(long nativeobject);
+    native private long dtorImpl(long nativeobject, boolean isDisposing);
 
     @Override
-    protected void onDisposing(long native_object) {
-        dtorImpl(native_object);
+    protected void onDisposing(long native_object, boolean isDisposing) {
+        dtorImpl(native_object, isDisposing);
     }
 
     static VolumeDataRequest fromNativeObject(long nativeobject) {
