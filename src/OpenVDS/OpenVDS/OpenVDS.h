@@ -979,12 +979,42 @@ OPENVDS_EXPORT CompressionMethod GetCompressionMethod(VDSHandle handle);
 OPENVDS_EXPORT float GetCompressionTolerance(VDSHandle handle);
 
 /// <summary>
-/// Close a VDS and free up all associated resources
+/// Close a VDS and free up all associated resources. If an error occurs, an exception will be thrown.
 /// </summary>
 /// <param name="handle">
 /// The handle of the VDS
 /// </param>
 OPENVDS_EXPORT void Close(VDSHandle handle);
+
+/// <summary>
+/// Close a VDS and free up all associated resources
+/// </summary>
+/// <param name="handle">
+/// The handle of the VDS
+/// </param>
+/// <param name="error">
+/// If an error occured, the error code and message will be written to this output parameter
+/// </param>
+OPENVDS_EXPORT void Close(VDSHandle handle, Error &error);
+
+/// <summary>
+/// Close a VDS and free up all associated resources if the close succeeds. If an error occurs, an exception will be thrown.
+/// </summary>
+/// <param name="handle">
+/// The handle of the VDS
+/// </param>
+OPENVDS_EXPORT void RetryableClose(VDSHandle handle);
+
+/// <summary>
+/// Close a VDS and free up all associated resources if the close succeeds
+/// </summary>
+/// <param name="handle">
+/// The handle of the VDS
+/// </param>
+/// <param name="error">
+/// If an error occured, the error code and message will be written to this output parameter
+/// </param>
+OPENVDS_EXPORT void RetryableClose(VDSHandle handle, Error &error);
 
 /// <summary>
 /// Get the GlobalState interface 
@@ -1017,6 +1047,44 @@ OPENVDS_EXPORT const char *GetOpenVDSVersion();
 /// A revision string
 /// </returnes>
 OPENVDS_EXPORT const char *GetOpenVDSRevision();
+
+#ifndef PYTHON_WRAPPER_GENERATOR
+class ScopedVDSHandle
+{
+  VDSHandle m_VDS;
+public:
+  ScopedVDSHandle() : m_VDS() {}
+  ScopedVDSHandle(VDSHandle const &VDS) : m_VDS(VDS) {}
+  ScopedVDSHandle(ScopedVDSHandle &&VDS) : m_VDS(VDS) { VDS.m_VDS = VDSHandle(); }
+  ~ScopedVDSHandle() { try { Close(); } catch(...) {} }
+
+  /// <summary>
+  /// Close the VDS and free up all associated resources. If an error occurs, an exception will be thrown.
+  /// </summary>
+  void Close()             { if(VDSHandle VDS = m_VDS) { m_VDS = VDSHandle(); OpenVDS::Close(VDS); } }
+
+  /// <summary>
+  /// Close the VDS and free up all associated resources.
+  /// </summary>
+  void Close(Error &error) { if(VDSHandle VDS = m_VDS) { m_VDS = VDSHandle(); OpenVDS::Close(VDS, error); } else { error = Error(); } }
+
+  /// <summary>
+  /// Close the VDS and free up all associated resources if the close succeeds. If an error occurs, an exception will be thrown.
+  /// </summary>
+  void RetryableClose()             { if(m_VDS) { OpenVDS::RetryableClose(m_VDS); m_VDS = VDSHandle(); } }
+
+  /// <summary>
+  /// Close the VDS and free up all associated resources if the close succeeds.
+  /// </summary>
+  void RetryableClose(Error &error) { if(m_VDS) { OpenVDS::RetryableClose(m_VDS, error); if(error.code == 0) m_VDS = VDSHandle(); } else { error = Error(); } }
+
+  operator VDSHandle() const { return m_VDS; }
+  operator bool() const { return m_VDS; }
+  ScopedVDSHandle & operator=(VDSHandle const &VDS)  noexcept(true) { try { Close(); } catch(...) {} m_VDS = VDS; return *this; }
+  ScopedVDSHandle & operator=(ScopedVDSHandle &&VDS) noexcept(true) { try { Close(); } catch(...) {} m_VDS = VDS; VDS.m_VDS = VDSHandle(); return *this; }
+};
+#endif
+
 }
 
 #endif //OPENVDS_H

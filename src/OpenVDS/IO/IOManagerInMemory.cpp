@@ -139,6 +139,8 @@ public:
     return backend->WriteObject(objectName, contentDispostionFilename, contentType, metadataHeader, data, completedCallback);
   }
 
+  bool Close(Error &error) override { return backend->Close(error); }
+
   IOManager *backend;
 };
 

@@ -277,6 +277,9 @@ PyGlobal::initModule(py::module& m)
   m.def("getCompressionMethod"        , static_cast<native::CompressionMethod(*)(native::VDSHandle)>(&GetCompressionMethod), py::arg("handle").none(false), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(GetCompressionMethod));
   m.def("getCompressionTolerance"     , static_cast<float(*)(native::VDSHandle)>(&GetCompressionTolerance), py::arg("handle").none(false), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(GetCompressionTolerance));
   m.def("close"                       , static_cast<void(*)(native::VDSHandle)>(&Close), py::arg("handle").none(false), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(Close));
+  m.def("close"                       , static_cast<void(*)(native::VDSHandle, native::Error &)>(&Close), py::arg("handle").none(false), py::arg("error").none(false), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(Close_2));
+  m.def("retryableClose"              , static_cast<void(*)(native::VDSHandle)>(&RetryableClose), py::arg("handle").none(false), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(RetryableClose));
+  m.def("retryableClose"              , static_cast<void(*)(native::VDSHandle, native::Error &)>(&RetryableClose), py::arg("handle").none(false), py::arg("error").none(false), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(RetryableClose_2));
   m.def("getGlobalState"              , static_cast<native::GlobalState *(*)()>(&GetGlobalState), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(GetGlobalState));
   m.def("getOpenVDSName"              , static_cast<const char *(*)()>(&GetOpenVDSName), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(GetOpenVDSName));
   m.def("getOpenVDSVersion"           , static_cast<const char *(*)()>(&GetOpenVDSVersion), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(GetOpenVDSVersion));
@@ -306,6 +309,8 @@ PyGlobal::initModule(py::module& m)
 // IMPLEMENTED : AWSOpenOptions_.def(py::init<const std::string &, const std::string &, const std::string &, const std::string &>(), py::arg("bucket").none(false), py::arg("key").none(false), py::arg("region").none(false), py::arg("endpointOverride").none(false), OPENVDS_DOCSTRING(AWSOpenOptions_AWSOpenOptions_2));
   AWSOpenOptions_.def(py::init<const std::string &, const std::string &, const std::string &, const std::string &>(), py::arg("bucket").none(false), py::arg("key").none(false), py::arg("region").none(false) = "", py::arg("endpointOverride").none(false) = "", OPENVDS_DOCSTRING(AWSOpenOptions_AWSOpenOptions_2));
 }
+// IMPLEMENTED : m.def("close"                       , [](OpenVDS::VDSHandle handle) { native::Error err; auto ret = Close(handle, err); if (err.code) throw std::runtime_error(err.string); return ret; }, py::call_guard<py::gil_scoped_release>(), py::arg("handle").none(false));
+// IMPLEMENTED : m.def("retryableClose"              , [](OpenVDS::VDSHandle handle) { native::Error err; auto ret = RetryableClose(handle, err); if (err.code) throw std::runtime_error(err.string); return ret; }, py::call_guard<py::gil_scoped_release>(), py::arg("handle").none(false));
 
 // IMPLEMENTED : m.def_property_readonly("openVDSName", &GetOpenVDSName, OPENVDS_DOCSTRING(GetOpenVDSName));
 // IMPLEMENTED : m.def_property_readonly("openVDSVersion", &GetOpenVDSVersion, OPENVDS_DOCSTRING(GetOpenVDSVersion));

@@ -41,11 +41,11 @@ GTEST_TEST(OpenVDS_integration, SimpleVolumeDataPageRead)
     GTEST_SKIP() << "Test Environment for connecting to VDS is not set";
   }
 
-  std::unique_ptr<OpenVDS::VDS, decltype(&OpenVDS::Close)> handle(OpenVDS::Open(url, connectionString, error), &OpenVDS::Close);
+  OpenVDS::ScopedVDSHandle handle(OpenVDS::Open(url, connectionString, error));
   ASSERT_TRUE(handle);
 
-  OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle.get());
-  OpenVDS::VolumeDataLayout *layout = OpenVDS::GetLayout(handle.get());
+  OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle);
+  OpenVDS::VolumeDataLayout *layout = OpenVDS::GetLayout(handle);
 
   OpenVDS::VolumeDataPageAccessor *pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, 0, 0, 10, OpenVDS::VolumeDataAccessManager::AccessMode_ReadOnly);
   ASSERT_TRUE(pageAccessor);
@@ -77,11 +77,11 @@ GTEST_TEST(OpenVDS_integration, SimpleVolumeDataPageReadVDSFile)
   OpenVDS::Error error;
   std::string fileName = TEST_DATA_PATH "/subset.vds";
 
-  std::unique_ptr<OpenVDS::VDS, decltype(&OpenVDS::Close)> handle(OpenVDS::Open(OpenVDS::VDSFileOpenOptions(fileName), error), &OpenVDS::Close);
+  OpenVDS::ScopedVDSHandle handle(OpenVDS::Open(OpenVDS::VDSFileOpenOptions(fileName), error));
   ASSERT_TRUE(handle);
 
-  OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle.get());
-  OpenVDS::VolumeDataLayout *layout = OpenVDS::GetLayout(handle.get());
+  OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle);
+  OpenVDS::VolumeDataLayout *layout = OpenVDS::GetLayout(handle);
 
   OpenVDS::VolumeDataPageAccessor *pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, 0, 0, 10, OpenVDS::VolumeDataAccessManager::AccessMode_ReadOnly);
   ASSERT_TRUE(pageAccessor);
@@ -115,11 +115,11 @@ GTEST_TEST(OpenVDS_integration, SimpleVolumeDataPageReadVDSFileWithAdaptiveCompr
   auto options = OpenVDS::VDSFileOpenOptions(fileName);
   options.waveletAdaptiveMode = OpenVDS::WaveletAdaptiveMode::Ratio;
   options.waveletAdaptiveRatio = 10.0f;
-  std::unique_ptr<OpenVDS::VDS, decltype(&OpenVDS::Close)> handle(OpenVDS::Open(options, error), &OpenVDS::Close);
+  OpenVDS::ScopedVDSHandle handle(OpenVDS::Open(options, error));
   ASSERT_TRUE(handle);
 
-  OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle.get());
-  OpenVDS::VolumeDataLayout *layout = OpenVDS::GetLayout(handle.get());
+  OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle);
+  OpenVDS::VolumeDataLayout *layout = OpenVDS::GetLayout(handle);
 
   OpenVDS::VolumeDataPageAccessor *pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, 0, 0, 10, OpenVDS::VolumeDataAccessManager::AccessMode_ReadOnly);
   ASSERT_TRUE(pageAccessor);
@@ -160,13 +160,13 @@ GTEST_TEST(OpenVDS_integration, SimpleRequestVolumeSubset)
     GTEST_SKIP() << "Test Environment for connecting to VDS is not set";
   }
 
-  std::unique_ptr<OpenVDS::VDS, decltype(&OpenVDS::Close)> handle(OpenVDS::Open(url, connectionString, error), &OpenVDS::Close);
+  OpenVDS::ScopedVDSHandle handle(OpenVDS::Open(url, connectionString, error));
   ASSERT_TRUE(handle);
 
-  OpenVDS::VolumeDataLayout *layout = OpenVDS::GetLayout(handle.get());
+  OpenVDS::VolumeDataLayout *layout = OpenVDS::GetLayout(handle);
   ASSERT_TRUE(layout);
 
-  OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle.get());
+  OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle);
 
   int loopDimension = 4;
   int groupSize = 100;
@@ -207,13 +207,13 @@ GTEST_TEST(OpenVDS_integration, SimpleRequestVolumeSubsetWithAdaptiveCompression
     GTEST_SKIP() << "Test Environment for connecting to VDS is not set";
   }
 
-  std::unique_ptr<OpenVDS::VDS, decltype(&OpenVDS::Close)> handle(OpenVDS::OpenWithAdaptiveCompressionRatio(url, connectionString, 10.0f, error), &OpenVDS::Close);
+  OpenVDS::ScopedVDSHandle handle(OpenVDS::OpenWithAdaptiveCompressionRatio(url, connectionString, 10.0f, error));
   ASSERT_TRUE(handle);
 
-  OpenVDS::VolumeDataLayout *layout = OpenVDS::GetLayout(handle.get());
+  OpenVDS::VolumeDataLayout *layout = OpenVDS::GetLayout(handle);
   ASSERT_TRUE(layout);
 
-  OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle.get());
+  OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle);
 
   int loopDimension = 4;
   int groupSize = 100;
@@ -246,16 +246,16 @@ GTEST_TEST(OpenVDS_integration, SimpleRequestVolumeSubsetWithAdaptiveCompression
 GTEST_TEST(VolumeSubset, BadLOD)
 {
   OpenVDS::Error error;
-  std::unique_ptr<OpenVDS::VDS, decltype(&OpenVDS::Close)> handle(generateSimpleInMemory3DVDS(60, 60, 60), &OpenVDS::Close);
+  OpenVDS::ScopedVDSHandle handle(generateSimpleInMemory3DVDS(60, 60, 60));
 
-  fill3DVDSWithNoise(handle.get());
+  fill3DVDSWithNoise(handle);
 
   ASSERT_TRUE(handle);
 
-  OpenVDS::VolumeDataLayout *layout = OpenVDS::GetLayout(handle.get());
+  OpenVDS::VolumeDataLayout *layout = OpenVDS::GetLayout(handle);
   ASSERT_TRUE(layout);
 
-  OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle.get());
+  OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle);
 
   int loopDimension = 4;
   int groupSize = 100;
@@ -345,11 +345,11 @@ GTEST_TEST(OpenVDS_integration, RequestVolumeSubsetWithDifferentFormatsAndDimens
   EXPECT_EQ(error.code, 0);
   EXPECT_EQ(error.string, "");
 
-  std::unique_ptr<OpenVDS::VDS, decltype(&OpenVDS::Close)> handle(generateSimpleInMemory3DVDS(dim[0], dim[1], dim[2], OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, inMemory), OpenVDS::Close);
+  OpenVDS::ScopedVDSHandle handle(generateSimpleInMemory3DVDS(dim[0], dim[1], dim[2], OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, inMemory));
   ASSERT_TRUE(handle);
-  fill3DVDSWithNoise(handle.get());
+  fill3DVDSWithNoise(handle);
 
-  OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle.get());
+  OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle);
 
   int voxelMin[] = { 13, 13, 119,  0, 0, 0};
   int voxelMax[] = { 23, 23, 129,  1, 1, 1};

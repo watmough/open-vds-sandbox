@@ -84,6 +84,7 @@ public:
   {
     return facade.WriteObject(objectName, contentDispostionFilename, contentType, metadataHeader, data, completedCallback);
   }
+  bool Close(OpenVDS::Error &error) override { return facade.Close(error); }
 
   std::unique_ptr<OpenVDS::IOManager> deleter;
   IOManagerFacadeUtil facade;

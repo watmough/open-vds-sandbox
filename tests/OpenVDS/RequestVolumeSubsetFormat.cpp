@@ -29,22 +29,21 @@
 #pragma warning(disable:4800)
 #endif
 
-void setupNoiseTestHandle(std::unique_ptr<OpenVDS::VDS, decltype(&OpenVDS::Close)> &handle)
+void setupNoiseTestHandle(OpenVDS::ScopedVDSHandle &handle)
 {
   OpenVDS::Error error;
-  handle.reset(generateSimpleInMemory3DVDS(60,60,60));
+  handle = generateSimpleInMemory3DVDS(60,60,60);
 
-  fill3DVDSWithNoise(handle.get());
+  fill3DVDSWithNoise(handle);
 }
 
 struct RequestSharedData
 {
   RequestSharedData()
-    : handle(nullptr, &OpenVDS::Close)
   {
     setupNoiseTestHandle(handle);
-    layout = OpenVDS::GetLayout(handle.get());
-    accessManager = OpenVDS::GetAccessManager(handle.get());
+    layout = OpenVDS::GetLayout(handle);
+    accessManager = OpenVDS::GetAccessManager(handle);
 
     minPos[0] = 10; minPos[1] = 10; minPos[2] = 10;
     maxPos[0] = 50; maxPos[1] = 50; maxPos[2] = 50;
@@ -56,7 +55,7 @@ struct RequestSharedData
   ~RequestSharedData()
   {
   }
-  std::unique_ptr<OpenVDS::VDS, decltype(&OpenVDS::Close)> handle;
+  OpenVDS::ScopedVDSHandle handle;
   OpenVDS::VolumeDataLayout *layout;
   OpenVDS::VolumeDataAccessManager accessManager;
   int32_t minPos[OpenVDS::Dimensionality_Max];
@@ -131,9 +130,9 @@ TEST_F(RequestVolumeSubsetFormat, test1Bit)
 
 TEST_F(RequestVolumeSubsetFormat, source1Bit)
 {
-  std::unique_ptr<OpenVDS::VDS, decltype(&OpenVDS::Close)> handle(generateSimpleInMemory3DVDS(60,60,60, OpenVDS::VolumeDataChannelDescriptor::Format_1Bit), OpenVDS::Close);
-  fill3DVDSWithBitNoise(handle.get());
-  OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle.get());
+  OpenVDS::ScopedVDSHandle handle(generateSimpleInMemory3DVDS(60,60,60, OpenVDS::VolumeDataChannelDescriptor::Format_1Bit));
+  fill3DVDSWithBitNoise(handle);
+  OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle);
 
   int32_t minPos[OpenVDS::Dimensionality_Max];
   int32_t maxPos[OpenVDS::Dimensionality_Max];

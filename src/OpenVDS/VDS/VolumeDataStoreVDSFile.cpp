@@ -284,6 +284,25 @@ bool VolumeDataStoreVDSFile::Flush(bool writeUpdatedLayerStatus)
   return success;
 }
 
+bool VolumeDataStoreVDSFile::Close(Error &error)
+{
+  std::unique_lock<std::mutex> lock(m_mutex);
+
+  if(!m_dataStore)
+  {
+    error.code = -1;
+    error.string = "Datastore not open";
+  }
+
+  for(auto &layerFileEntry : m_layerFiles)
+  {
+    m_dataStore->CloseFile(layerFileEntry.second.fileInterface);
+  }
+  m_layerFiles.clear();
+  m_dataStore.reset();
+  return true;
+}
+
 bool VolumeDataStoreVDSFile::ReadSerializedVolumeDataLayout(std::vector<uint8_t>& serializedVolumeDataLayout, Error &error)
 {
   bool isReadVDSObject = (m_isVDSObjectFilePresent && !m_isVolumeDataLayoutFilePresent);

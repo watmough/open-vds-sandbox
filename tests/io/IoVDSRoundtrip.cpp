@@ -45,9 +45,9 @@ TEST(IOTests, CreateSyntheticVDSAndVerifyUpload)
   int createDim[] = {400,400,400};
 #endif
 
-  std::unique_ptr<OpenVDS::VDS, decltype(&OpenVDS::Close)> inMemoryVDS(generateSimpleInMemory3DVDS(createDim[0], createDim[1], createDim[2], OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataLayoutDescriptor::BrickSize_64, inMemory), OpenVDS::Close);
-  fill3DVDSWithNoise(inMemoryVDS.get());
-  OpenVDS::VolumeDataLayout *inMemoryLayout = OpenVDS::GetLayout(inMemoryVDS.get());
+  OpenVDS::ScopedVDSHandle inMemoryVDS(generateSimpleInMemory3DVDS(createDim[0], createDim[1], createDim[2], OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataLayoutDescriptor::BrickSize_64, inMemory));
+  fill3DVDSWithNoise(inMemoryVDS);
+  OpenVDS::VolumeDataLayout *inMemoryLayout = OpenVDS::GetLayout(inMemoryVDS);
 
 #ifndef IN_MEMORY_TEST
   std::string url = TEST_URL;
@@ -103,19 +103,19 @@ TEST(IOTests, CreateSyntheticVDSAndVerifyUpload)
 
   auto create_start = std::chrono::high_resolution_clock::now();
 #ifdef IN_MEMORY_TEST
-  std::unique_ptr<OpenVDS::VDS, decltype(&OpenVDS::Close)> networkVDS(OpenVDS::Create(new IOManagerFacadeLight(inMemory), layoutDescriptor, axisDescriptors, channelDescriptors, metadata, error), &OpenVDS::Close);
+  OpenVDS::ScopedVDSHandle networkVDS(OpenVDS::Create(new IOManagerFacadeLight(inMemory), layoutDescriptor, axisDescriptors, channelDescriptors, metadata, error));
 #else
-  std::unique_ptr<OpenVDS::VDS, decltype(&OpenVDS::Close)> networkVDS(OpenVDS::Create(url, connectionString, layoutDescriptor, axisDescriptors, channelDescriptors, metadata, error), &OpenVDS::Close);
+  OpenVDS::ScopedVDSHandle networkVDS(OpenVDS::Create(url, connectionString, layoutDescriptor, axisDescriptors, channelDescriptors, metadata, error));
 #endif
   ASSERT_TRUE(networkVDS);
 
 
-  OpenVDS::VolumeDataAccessManager inMemoryAccessManager = OpenVDS::GetAccessManager(inMemoryVDS.get());
+  OpenVDS::VolumeDataAccessManager inMemoryAccessManager = OpenVDS::GetAccessManager(inMemoryVDS);
   OpenVDS::VolumeDataPageAccessor *inMemoryPageAccessor = inMemoryAccessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, 0, 0, 100, OpenVDS::VolumeDataAccessManager::AccessMode_ReadOnly);
   int64_t chunkCount = inMemoryPageAccessor->GetChunkCount();
 
   {
-    OpenVDS::VolumeDataAccessManager networkAccessManager = OpenVDS::GetAccessManager(networkVDS.get());
+    OpenVDS::VolumeDataAccessManager networkAccessManager = OpenVDS::GetAccessManager(networkVDS);
     OpenVDS::VolumeDataPageAccessor *networkPageAccessor = networkAccessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, 0, 0, 100, OpenVDS::VolumeDataAccessManager::AccessMode_Create);
 
     for (int64_t i = 0; i < chunkCount; i++)
@@ -153,20 +153,21 @@ TEST(IOTests, CreateSyntheticVDSAndVerifyUpload)
     networkAccessManager.DestroyVolumeDataPageAccessor(networkPageAccessor);
   }
 
-  networkVDS.reset();
+  networkVDS.Close(error);
+  EXPECT_EQ(error.code, 0);
 
   auto create_time = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - create_start);
 
   auto read_start = std::chrono::high_resolution_clock::now();
 #ifdef IN_MEMORY_TEST
-  networkVDS.reset(OpenVDS::Open(new IOManagerFacadeLight(inMemory), error));
+  networkVDS = OpenVDS::Open(new IOManagerFacadeLight(inMemory), error);
 #else
-  networkVDS.reset(OpenVDS::Open(url, connectionString, error));
+  networkVDS = OpenVDS::Open(url, connectionString, error);
 #endif
   ASSERT_TRUE(networkVDS);
 
-  OpenVDS::VolumeDataLayout *networkLayout = OpenVDS::GetLayout(networkVDS.get());
-  OpenVDS::VolumeDataAccessManager networkAccessManager = OpenVDS::GetAccessManager(networkVDS.get());
+  OpenVDS::VolumeDataLayout *networkLayout = OpenVDS::GetLayout(networkVDS);
+  OpenVDS::VolumeDataAccessManager networkAccessManager = OpenVDS::GetAccessManager(networkVDS);
 
   std::vector<uint8_t> networkData;
 
@@ -188,7 +189,8 @@ TEST(IOTests, CreateSyntheticVDSAndVerifyUpload)
 
   auto download_end_time = std::chrono::high_resolution_clock::now();
 
-  networkVDS.reset();
+  networkVDS.Close(error);
+  EXPECT_EQ(error.code, 0);
 
   auto end_time = std::chrono::high_resolution_clock::now();
   auto read_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - read_start);
@@ -229,9 +231,9 @@ TEST(IOTests, CreateSyntheticVDSAndVerifyCreateVDSFile)
   OpenVDS::IOManager *inMemory = OpenVDS::IOManagerInMemory::CreateIOManagerInMemory("", error);
   int createDim[] = {200,200,200};
 
-  std::unique_ptr<OpenVDS::VDS, decltype(&OpenVDS::Close)> inMemoryVDS(generateSimpleInMemory3DVDS(createDim[0], createDim[1], createDim[2], OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataLayoutDescriptor::BrickSize_64, inMemory), OpenVDS::Close);
-  fill3DVDSWithNoise(inMemoryVDS.get());
-  OpenVDS::VolumeDataLayout *inMemoryLayout = OpenVDS::GetLayout(inMemoryVDS.get());
+  OpenVDS::ScopedVDSHandle inMemoryVDS(generateSimpleInMemory3DVDS(createDim[0], createDim[1], createDim[2], OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataLayoutDescriptor::BrickSize_64, inMemory));
+  fill3DVDSWithNoise(inMemoryVDS);
+  OpenVDS::VolumeDataLayout *inMemoryLayout = OpenVDS::GetLayout(inMemoryVDS);
 
   auto layoutDescriptor = inMemoryLayout->GetLayoutDescriptor();
   int dimensions = inMemoryLayout->GetDimensionality();
@@ -280,15 +282,15 @@ TEST(IOTests, CreateSyntheticVDSAndVerifyCreateVDSFile)
   remove(openOptions.fileName.c_str());
 
   auto create_start = std::chrono::high_resolution_clock::now();
-  std::unique_ptr<OpenVDS::VDS, decltype(&OpenVDS::Close)> fileVDS(OpenVDS::Create(openOptions, layoutDescriptor, axisDescriptors, channelDescriptors, metadata, error), &OpenVDS::Close);
+  OpenVDS::ScopedVDSHandle fileVDS(OpenVDS::Create(openOptions, layoutDescriptor, axisDescriptors, channelDescriptors, metadata, error));
   ASSERT_TRUE(fileVDS);
 
-  OpenVDS::VolumeDataAccessManager inMemoryAccessManager = OpenVDS::GetAccessManager(inMemoryVDS.get());
+  OpenVDS::VolumeDataAccessManager inMemoryAccessManager = OpenVDS::GetAccessManager(inMemoryVDS);
   OpenVDS::VolumeDataPageAccessor *inMemoryPageAccessor = inMemoryAccessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, 0, 0, 100, OpenVDS::VolumeDataAccessManager::AccessMode_ReadOnly);
   int64_t chunkCount = inMemoryPageAccessor->GetChunkCount();
 
   {
-    OpenVDS::VolumeDataAccessManager fileAccessManager = OpenVDS::GetAccessManager(fileVDS.get());
+    OpenVDS::VolumeDataAccessManager fileAccessManager = OpenVDS::GetAccessManager(fileVDS);
     OpenVDS::VolumeDataPageAccessor *filePageAccessor = fileAccessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, 0, 0, 100, OpenVDS::VolumeDataAccessManager::AccessMode_Create);
 
     for (int64_t i = 0; i < chunkCount; i++)
@@ -326,20 +328,21 @@ TEST(IOTests, CreateSyntheticVDSAndVerifyCreateVDSFile)
     fileAccessManager.DestroyVolumeDataPageAccessor(filePageAccessor);
   }
 
-  fileVDS.reset();
+  fileVDS.Close(error);
+  EXPECT_EQ(error.code, 0);
 
   auto create_time = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - create_start);
 
   auto read_start = std::chrono::high_resolution_clock::now();
 #ifdef IN_MEMORY_TEST
-  fileVDS.reset(OpenVDS::Open(new IOManagerFacadeLight(inMemory), error));
+  fileVDS = OpenVDS::Open(new IOManagerFacadeLight(inMemory), error);
 #else
-  fileVDS.reset(OpenVDS::Open(openOptions, error));
+  fileVDS = OpenVDS::Open(openOptions, error);
 #endif
   ASSERT_TRUE(fileVDS);
 
-  OpenVDS::VolumeDataLayout *fileLayout = OpenVDS::GetLayout(fileVDS.get());
-  OpenVDS::VolumeDataAccessManager fileAccessManager = OpenVDS::GetAccessManager(fileVDS.get());
+  OpenVDS::VolumeDataLayout *fileLayout = OpenVDS::GetLayout(fileVDS);
+  OpenVDS::VolumeDataAccessManager fileAccessManager = OpenVDS::GetAccessManager(fileVDS);
 
   std::vector<uint8_t> fileData;
 
@@ -361,7 +364,8 @@ TEST(IOTests, CreateSyntheticVDSAndVerifyCreateVDSFile)
 
   auto download_end_time = std::chrono::high_resolution_clock::now();
 
-  fileVDS.reset();
+  fileVDS.Close(error);
+  EXPECT_EQ(error.code, 0);
 
   auto end_time = std::chrono::high_resolution_clock::now();
   auto read_time = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - read_start);

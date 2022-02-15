@@ -31,7 +31,7 @@ GTEST_TEST(OpenVDS_integration, OpenClose)
     GTEST_SKIP() << "Test Environment for connecting to VDS is not set";
   }
 
-  std::unique_ptr<OpenVDS::VDS, decltype(&OpenVDS::Close)> handle(OpenVDS::Open(url, connectionString, error), &OpenVDS::Close);
+  OpenVDS::ScopedVDSHandle handle(OpenVDS::Open(url, connectionString, error));
   ASSERT_TRUE(handle);
 }
 
@@ -40,6 +40,6 @@ GTEST_TEST(OpenVDS_integration, OpenCloseVDSFile)
   OpenVDS::Error error;
   std::string fileName = TEST_DATA_PATH "/subset.vds";
 
-  std::unique_ptr<OpenVDS::VDS, decltype(&OpenVDS::Close)> handle(OpenVDS::Open(OpenVDS::VDSFileOpenOptions(fileName), error), &OpenVDS::Close);
+  OpenVDS::ScopedVDSHandle handle(OpenVDS::Open(OpenVDS::VDSFileOpenOptions(fileName), error));
   ASSERT_TRUE(handle);
 }

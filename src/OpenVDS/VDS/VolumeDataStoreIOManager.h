@@ -133,6 +133,7 @@ public:
   bool          WriteSerializedVolumeDataLayout(const std::vector<uint8_t>& serializedVolumeDataLayout, Error &error) override;
   bool          AddLayer(VolumeDataLayer* volumeDataLayer, int chunkMetadataPageSize) override;
   bool          RemoveLayer(VolumeDataLayer* volumeDataLayer) override { return false; }
+  bool          Close(Error &error) override { return m_ioManager->Close(error); }
 
   bool          GetMetadataStatus(std::string const &layerName, MetadataStatus &metadataStatus) const override;
   void          SetMetadataStatus(std::string const &layerName, MetadataStatus &metadataStatus, int pageLimit) override;

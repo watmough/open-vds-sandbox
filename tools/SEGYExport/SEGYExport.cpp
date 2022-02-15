@@ -123,7 +123,7 @@ main(int argc, char *argv[])
 
   OpenVDS::Error openError;
 
-  OpenVDS::VDSHandle handle;
+  OpenVDS::ScopedVDSHandle handle;
   
   if(OpenVDS::IsSupportedProtocol(url))
   {
@@ -141,9 +141,6 @@ main(int argc, char *argv[])
   }
 
   OpenVDS::printVersion(printConfig, "SEGYExport");
-
-  // auto-close vds handle when it goes out of scope
-  std::unique_ptr<OpenVDS::VDS, decltype(&OpenVDS::Close)> vdsGuard(handle, &OpenVDS::Close);
 
   auto accessManager = OpenVDS::GetAccessManager(handle);
   auto volumeDataLayout = accessManager.GetVolumeDataLayout();

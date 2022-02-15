@@ -83,6 +83,7 @@ namespace OpenVDS
     {
       return WriteObject(objectName, "", "application/json", std::vector<std::pair<std::string, std::string>>(), data, completedCallback);
     }
+    virtual bool Close(Error &error) = 0;
 
     OpenOptions::ConnectionType connectionType() const { return m_connectionType; }
 

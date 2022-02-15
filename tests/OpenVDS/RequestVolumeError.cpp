@@ -64,9 +64,9 @@ GTEST_TEST(OpenVDS_integration, SimpleRequestVolumeError)
   SlowIOManager* slowIOManager = new SlowIOManager(5, facadeIOManager.get());
 
   int dim[3] = { 100, 100, 100 };
-  std::unique_ptr<OpenVDS::VDS, decltype(&OpenVDS::Close)> handle(generateSimpleInMemory3DVDS(dim[0], dim[1], dim[2], OpenVDS::VolumeDataChannelDescriptor::Format_1Bit, OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, slowIOManager), OpenVDS::Close);
+  OpenVDS::ScopedVDSHandle handle(generateSimpleInMemory3DVDS(dim[0], dim[1], dim[2], OpenVDS::VolumeDataChannelDescriptor::Format_1Bit, OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, slowIOManager));
   ASSERT_TRUE(handle);
-  fill3DVDSWithBitNoise(handle.get());
+  fill3DVDSWithBitNoise(handle);
 
   for (int i = 0; i < 100; i++)
   {
@@ -93,10 +93,10 @@ GTEST_TEST(OpenVDS_integration, SimpleRequestVolumeError)
   error = OpenVDS::Error();
 
 
-  OpenVDS::VolumeDataLayout *layout = OpenVDS::GetLayout(handle.get());
+  OpenVDS::VolumeDataLayout *layout = OpenVDS::GetLayout(handle);
   ASSERT_TRUE(layout);
 
-  OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle.get());
+  OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle);
 
   int samples[3];
   for (int i = 0; i < 3; i++)

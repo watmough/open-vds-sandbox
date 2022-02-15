@@ -57,6 +57,11 @@ public:
     return backend->WriteObject(objectName, contentDispostionFilename, contentType, metadataHeader, data, completedCallback);
   }
 
+  bool Close(OpenVDS::Error &error) override
+  {
+    return backend->Close(error);
+  }
+
   IOManager *backend;
 };
 
@@ -208,6 +213,8 @@ public:
     return backend->WriteObject(objectName, contentDispostionFilename, contentType, metadataHeader, data, completedCallback);
   }
 
+  bool Close(OpenVDS::Error &error) { return backend->Close(error); }
+
   OpenVDS::IOManager *backend;
   ThreadPool threadPool;
   std::map<std::string, Object> &m_data;
@@ -224,6 +231,7 @@ public:
   std::shared_ptr<OpenVDS::Request> ReadObjectInfo(const std::string& objectName, std::shared_ptr<OpenVDS::TransferDownloadHandler> handler) override { return facade.ReadObjectInfo(objectName, handler); }
   std::shared_ptr<OpenVDS::Request> ReadObject(const std::string& objectName, std::shared_ptr<OpenVDS::TransferDownloadHandler> handler, const OpenVDS::IORange& range = OpenVDS::IORange()) override { return facade.ReadObject(objectName, handler, range); }
   std::shared_ptr<OpenVDS::Request> WriteObject(const std::string& objectName, const std::string& contentDispostionFilename, const std::string& contentType, const std::vector<std::pair<std::string, std::string>>& metadataHeader, std::shared_ptr<std::vector<uint8_t>> data, std::function<void(const OpenVDS::Request& request, const OpenVDS::Error& error)> completedCallback = nullptr) override { return facade.WriteObject(objectName, contentDispostionFilename, contentType, metadataHeader, data, completedCallback); }
+  bool Close(OpenVDS::Error &error) override { return facade.Close(error); }
 
   std::map<std::string, Object> m_data;
   std::mutex m_mutex;

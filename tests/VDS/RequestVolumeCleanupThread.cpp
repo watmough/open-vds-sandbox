@@ -49,13 +49,13 @@ TEST(VDS_integration, RequestVolumeCleanupThread)
   CleanupTimeoutCleanup cleanup;
 
   OpenVDS::Error error;
-  std::unique_ptr<OpenVDS::VDS, decltype(&OpenVDS::Close)> handle(generateSimpleInMemory3DVDS(100,100,100, OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32), OpenVDS::Close);
-  fill3DVDSWithNoise(handle.get());
+  OpenVDS::ScopedVDSHandle handle(generateSimpleInMemory3DVDS(100,100,100, OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32));
+  fill3DVDSWithNoise(handle);
   ASSERT_TRUE(handle);
 
-  OpenVDS::VolumeDataAccessManagerImpl *accessManager = static_cast<OpenVDS::VolumeDataAccessManagerImpl *>(OpenVDS::GetAccessManagerInterface(handle.get()));
+  OpenVDS::VolumeDataAccessManagerImpl *accessManager = static_cast<OpenVDS::VolumeDataAccessManagerImpl *>(OpenVDS::GetAccessManagerInterface(handle));
 
-  OpenVDS::VolumeDataLayout *layout = OpenVDS::GetLayout(handle.get());
+  OpenVDS::VolumeDataLayout *layout = OpenVDS::GetLayout(handle);
 
   int sampleCount0 = layout->GetDimensionNumSamples(0);
   std::vector<float> buffer(10 * sampleCount0);

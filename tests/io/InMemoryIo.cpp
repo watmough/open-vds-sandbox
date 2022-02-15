@@ -33,13 +33,13 @@ size_t byteSize(const std::vector<T> vec)
 TEST(IOTests, InMemory)
 {
   OpenVDS::Error error;
-  std::unique_ptr<OpenVDS::VDS, decltype(&OpenVDS::Close)> handle(generateSimpleInMemory3DVDS(60,60,60), &OpenVDS::Close);
+  OpenVDS::ScopedVDSHandle handle(generateSimpleInMemory3DVDS(60,60,60));
   ASSERT_TRUE(handle);
 
-  fill3DVDSWithNoise(handle.get());
+  fill3DVDSWithNoise(handle);
 
-  auto layout = OpenVDS::GetLayout(handle.get());
-  auto accessManager = OpenVDS::GetAccessManager(handle.get());
+  auto layout = OpenVDS::GetLayout(handle);
+  auto accessManager = OpenVDS::GetAccessManager(handle);
 
   int32_t minPos[OpenVDS::Dimensionality_Max] = {15, 15, 15};
   int32_t maxPos[OpenVDS::Dimensionality_Max] = {55, 55, 55};

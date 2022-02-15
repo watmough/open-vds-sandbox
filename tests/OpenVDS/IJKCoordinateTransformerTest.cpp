@@ -486,8 +486,8 @@ KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_AXISNAME_TIME,
 KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_AXISNAME_CROSSLINE,
 KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_AXISNAME_INLINE
     };
-    std::unique_ptr<OpenVDS::VDS, decltype(&OpenVDS::Close)> handle(generateVDS("time_corssline_inline", axisnames), OpenVDS::Close);
-    auto layout = OpenVDS::GetLayout(handle.get());
+    OpenVDS::ScopedVDSHandle handle(generateVDS("time_corssline_inline", axisnames));
+    auto layout = OpenVDS::GetLayout(handle);
 
     OpenVDS::IJKCoordinateTransformer ijkCoordinateTransformer(layout);
 
@@ -506,8 +506,8 @@ KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_AXISNAME_INLINE,
 KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_AXISNAME_TIME,
 KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_AXISNAME_CROSSLINE
     };
-    std::unique_ptr<OpenVDS::VDS, decltype(&OpenVDS::Close)> handle(generateVDS("inline_time_corssline", axisnames), OpenVDS::Close);
-    auto layout = OpenVDS::GetLayout(handle.get());
+    OpenVDS::ScopedVDSHandle handle(generateVDS("inline_time_corssline", axisnames));
+    auto layout = OpenVDS::GetLayout(handle);
 
     OpenVDS::IJKCoordinateTransformer ijkCoordinateTransformer(layout);
 
@@ -526,8 +526,8 @@ KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_AXISNAME_INLINE,
 KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_AXISNAME_CROSSLINE,
 KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_AXISNAME_TIME
     };
-    std::unique_ptr<OpenVDS::VDS, decltype(&OpenVDS::Close)> handle(generateVDS("inline_corssline_time", axisnames), OpenVDS::Close);
-    auto layout = OpenVDS::GetLayout(handle.get());
+    OpenVDS::ScopedVDSHandle handle(generateVDS("inline_corssline_time", axisnames));
+    auto layout = OpenVDS::GetLayout(handle);
 
     OpenVDS::IJKCoordinateTransformer ijkCoordinateTransformer(layout);
 
@@ -547,8 +547,8 @@ KNOWNMETADATA_SURVEYCOORDINATE_3DIJK_AXISNAME_K,
 KNOWNMETADATA_SURVEYCOORDINATE_3DIJK_AXISNAME_J,
 KNOWNMETADATA_SURVEYCOORDINATE_3DIJK_AXISNAME_I
     };
-    std::unique_ptr<OpenVDS::VDS, decltype(&OpenVDS::Close)> handle(generateVDS("kji", axisnames), OpenVDS::Close);
-    auto layout = OpenVDS::GetLayout(handle.get());
+    OpenVDS::ScopedVDSHandle handle(generateVDS("kji", axisnames));
+    auto layout = OpenVDS::GetLayout(handle);
 
     OpenVDS::IJKCoordinateTransformer ijkCoordinateTransformer(layout);
 
@@ -567,8 +567,8 @@ KNOWNMETADATA_SURVEYCOORDINATE_3DIJK_AXISNAME_I,
 KNOWNMETADATA_SURVEYCOORDINATE_3DIJK_AXISNAME_K,
 KNOWNMETADATA_SURVEYCOORDINATE_3DIJK_AXISNAME_J
     };
-    std::unique_ptr<OpenVDS::VDS, decltype(&OpenVDS::Close)> handle(generateVDS("ikj", axisnames), OpenVDS::Close);
-    auto layout = OpenVDS::GetLayout(handle.get());
+    OpenVDS::ScopedVDSHandle handle(generateVDS("ikj", axisnames));
+    auto layout = OpenVDS::GetLayout(handle);
 
     OpenVDS::IJKCoordinateTransformer ijkCoordinateTransformer(layout);
 
@@ -587,8 +587,8 @@ KNOWNMETADATA_SURVEYCOORDINATE_3DIJK_AXISNAME_I,
 KNOWNMETADATA_SURVEYCOORDINATE_3DIJK_AXISNAME_J,
 KNOWNMETADATA_SURVEYCOORDINATE_3DIJK_AXISNAME_K
     };
-    std::unique_ptr<OpenVDS::VDS, decltype(&OpenVDS::Close)> handle(generateVDS("ikj", axisnames), OpenVDS::Close);
-    auto layout = OpenVDS::GetLayout(handle.get());
+    OpenVDS::ScopedVDSHandle handle(generateVDS("ikj", axisnames));
+    auto layout = OpenVDS::GetLayout(handle);
 
     OpenVDS::IJKCoordinateTransformer ijkCoordinateTransformer(layout);
 

@@ -93,12 +93,12 @@ TEST(OpenVDS_integration, WriteReadPage)
   std::unique_ptr<OpenVDS::IOManager> inMemory(OpenVDS::IOManagerInMemory::CreateIOManager(options, OpenVDS::IOManager::AccessPattern::ReadWrite, error));
   auto ioCreate = new IOManagerFacadeLight(inMemory.get());
   {
-    std::unique_ptr<OpenVDS::VDS, decltype(&OpenVDS::Close)> handle(generateSimpleInMemory3DVDS(60, 60, 60, OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, ioCreate), OpenVDS::Close);
-    fill3DVDSWithBitNoise(handle.get());
+    OpenVDS::ScopedVDSHandle handle(generateSimpleInMemory3DVDS(60, 60, 60, OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, ioCreate));
+    fill3DVDSWithBitNoise(handle);
   }
   SlowIOManager* slowIOManager = new SlowIOManager(50, inMemory.get());
-  std::unique_ptr<OpenVDS::VDS, decltype(&OpenVDS::Close)> handle(OpenVDS::Open(slowIOManager, error), OpenVDS::Close);
-  OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle.get());
+  OpenVDS::ScopedVDSHandle handle(OpenVDS::Open(slowIOManager, error));
+  OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle);
   
   auto pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, 0, 0, 1024, OpenVDS::VolumeDataAccessManager::AccessMode_ReadWrite);
   writeBuffer(pageAccessor, Read, 2, 1234.5f);
@@ -114,12 +114,12 @@ TEST(OpenVDS_integration, ReadWritePage)
   std::unique_ptr<OpenVDS::IOManager> inMemory(OpenVDS::IOManagerInMemory::CreateIOManager(options, OpenVDS::IOManager::AccessPattern::ReadWrite, error));
   auto ioCreate = new IOManagerFacadeLight(inMemory.get());
   {
-    std::unique_ptr<OpenVDS::VDS, decltype(&OpenVDS::Close)> handle(generateSimpleInMemory3DVDS(60, 60, 60, OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, ioCreate), OpenVDS::Close);
-    fill3DVDSWithBitNoise(handle.get());
+    OpenVDS::ScopedVDSHandle handle(generateSimpleInMemory3DVDS(60, 60, 60, OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, ioCreate));
+    fill3DVDSWithBitNoise(handle);
   }
   SlowIOManager* slowIOManager = new SlowIOManager(50, inMemory.get());
-  std::unique_ptr<OpenVDS::VDS, decltype(&OpenVDS::Close)> handle(OpenVDS::Open(slowIOManager, error), OpenVDS::Close);
-  OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle.get());
+  OpenVDS::ScopedVDSHandle handle(OpenVDS::Open(slowIOManager, error));
+  OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle);
 
   auto pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, 0, 0, 1024, OpenVDS::VolumeDataAccessManager::AccessMode_ReadWrite);
 
@@ -144,19 +144,19 @@ TEST(OpenVDS_integration, CopyPage)
   std::unique_ptr<OpenVDS::IOManager> inMemory(OpenVDS::IOManagerInMemory::CreateIOManager(options, OpenVDS::IOManager::AccessPattern::ReadWrite, error));
   auto ioCreate = new IOManagerFacadeLight(inMemory.get());
   {
-    std::unique_ptr<OpenVDS::VDS, decltype(&OpenVDS::Close)> handle(generateSimpleInMemory3DVDS(60, 60, 60, OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, ioCreate), OpenVDS::Close);
-    fill3DVDSWithBitNoise(handle.get());
+    OpenVDS::ScopedVDSHandle handle(generateSimpleInMemory3DVDS(60, 60, 60, OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, ioCreate));
+    fill3DVDSWithBitNoise(handle);
   }
   SlowIOManager* slowIOManager = new SlowIOManager(50, inMemory.get());
-  std::unique_ptr<OpenVDS::VDS, decltype(&OpenVDS::Close)> handle(OpenVDS::Open(slowIOManager, error), OpenVDS::Close);
-  OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle.get());
+  OpenVDS::ScopedVDSHandle handle(OpenVDS::Open(slowIOManager, error));
+  OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle);
 
   auto pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, 0, 0, 1024, OpenVDS::VolumeDataAccessManager::AccessMode_ReadWrite);
 
-  std::unique_ptr<OpenVDS::VDS, decltype(&OpenVDS::Close)> copyTo(nullptr, OpenVDS::Close);
+  OpenVDS::ScopedVDSHandle copyTo;
 
   {
-    auto layout = OpenVDS::GetLayout(handle.get());
+    auto layout = OpenVDS::GetLayout(handle);
     int dimensionCount = layout->GetDimensionality();
     std::vector<OpenVDS::VolumeDataAxisDescriptor> axisDescriptors;
     axisDescriptors.reserve(dimensionCount);
@@ -173,12 +173,12 @@ TEST(OpenVDS_integration, CopyPage)
       channelDescriptors.emplace_back(layout->GetChannelDescriptor(i));
     }
     OpenVDS::VolumeDataLayoutDescriptor layoutDescriptor = layout->GetLayoutDescriptor();
-    auto compressionMethod = OpenVDS::GetCompressionMethod(handle.get());
-    auto compressionTolerance = OpenVDS::GetCompressionTolerance(handle.get());
-    copyTo.reset(OpenVDS::Create("inmemory://copy_to", "", layoutDescriptor, axisDescriptors, channelDescriptors, *layout, compressionMethod, compressionTolerance, error));
+    auto compressionMethod = OpenVDS::GetCompressionMethod(handle);
+    auto compressionTolerance = OpenVDS::GetCompressionTolerance(handle);
+    copyTo = OpenVDS::Create("inmemory://copy_to", "", layoutDescriptor, axisDescriptors, channelDescriptors, *layout, compressionMethod, compressionTolerance, error);
   }
 
-  auto copyToAccessManager = OpenVDS::GetAccessManager(copyTo.get());
+  auto copyToAccessManager = OpenVDS::GetAccessManager(copyTo);
   auto copyToPageAccessor = copyToAccessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, 0, 0, 1024, OpenVDS::VolumeDataAccessManager::AccessMode_Create);
 
   {
@@ -224,9 +224,8 @@ TEST(OpenVDS_integration, ReadWriteVDSFile)
   OpenVDS::MetadataContainer
     metadataContainer;
 
-  auto handle = OpenVDS::Create(openOptions, layoutDescriptor, axisDescriptors, channelDescriptors, metadataContainer, error);
+  OpenVDS::ScopedVDSHandle handle = OpenVDS::Create(openOptions, layoutDescriptor, axisDescriptors, channelDescriptors, metadataContainer, error);
   ASSERT_EQ(error.code, 0);
-  std::unique_ptr<OpenVDS::VDS, decltype(&OpenVDS::Close)> vdsGuard(handle, &OpenVDS::Close);
 
   auto accessManager = OpenVDS::GetAccessManager(handle);
   auto layout = accessManager.GetVolumeDataLayout();
@@ -265,12 +264,12 @@ TEST(OpenVDS_integration, ReadWriteVDSFile)
   accessManager.GetCurrentUploadError(&object, &errorCode, &errorString);
   EXPECT_EQ(errorCode, 0) << "Error " << errorCode << " writing " << object << ": " << errorString;
 
-  vdsGuard.reset();
+  handle.Close(error);
+  EXPECT_EQ(error.code, 0);
 
   // Modify dataset
   handle = OpenVDS::Open(openOptions, error);
   ASSERT_EQ(error.code, 0);
-  vdsGuard.reset(handle);
   accessManager = OpenVDS::GetAccessManager(handle);
   layout = accessManager.GetVolumeDataLayout();
 
@@ -288,7 +287,8 @@ TEST(OpenVDS_integration, ReadWriteVDSFile)
   EXPECT_EQ(errorCode, 0) << "Error " << errorCode << " writing " << object << ": " << errorString;
 
   // Close VDS and remove file
-  vdsGuard.reset();
+  handle.Close(error);
+  EXPECT_EQ(error.code, 0);
   remove(openOptions.fileName.c_str());
 }
 
@@ -299,12 +299,12 @@ TEST(OpenVDS_integration, WriteReadMultiPageAccessorPage)
   std::unique_ptr<OpenVDS::IOManager> inMemory(OpenVDS::IOManagerInMemory::CreateIOManager(options, OpenVDS::IOManager::AccessPattern::ReadWrite, error));
   auto ioCreate = new IOManagerFacadeLight(inMemory.get());
   {
-    std::unique_ptr<OpenVDS::VDS, decltype(&OpenVDS::Close)> handle(generateSimpleInMemory3DVDS(60, 60, 60, OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, ioCreate), OpenVDS::Close);
-    fill3DVDSWithBitNoise(handle.get());
+    OpenVDS::ScopedVDSHandle handle(generateSimpleInMemory3DVDS(60, 60, 60, OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, ioCreate));
+    fill3DVDSWithBitNoise(handle);
   }
   SlowIOManager* slowIOManager = new SlowIOManager(150, inMemory.get(), SlowIOManager::Write);
-  std::unique_ptr<OpenVDS::VDS, decltype(&OpenVDS::Close)> handle(OpenVDS::Open(slowIOManager, error), OpenVDS::Close);
-  OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle.get());
+  OpenVDS::ScopedVDSHandle handle(OpenVDS::Open(slowIOManager, error));
+  OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle);
   
   auto writePageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, 0, 0, 1024, OpenVDS::VolumeDataAccessManager::AccessMode_ReadWrite);
   writeBuffer(writePageAccessor, Read, 2, 1234.5f);
@@ -322,12 +322,12 @@ TEST(OpenVDS_integration, ReadWriteReadMultiPageAccessorPage)
   std::unique_ptr<OpenVDS::IOManager> inMemory(OpenVDS::IOManagerInMemory::CreateIOManager(options, OpenVDS::IOManager::AccessPattern::ReadWrite, error));
   auto ioCreate = new IOManagerFacadeLight(inMemory.get());
   {
-    std::unique_ptr<OpenVDS::VDS, decltype(&OpenVDS::Close)> handle(generateSimpleInMemory3DVDS(60, 60, 60, OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, ioCreate), OpenVDS::Close);
-    fill3DVDSWithBitNoise(handle.get());
+    OpenVDS::ScopedVDSHandle handle(generateSimpleInMemory3DVDS(60, 60, 60, OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, ioCreate));
+    fill3DVDSWithBitNoise(handle);
   }
   SlowIOManager* slowIOManager = new SlowIOManager(150, inMemory.get(), SlowIOManager::Read);
-  std::unique_ptr<OpenVDS::VDS, decltype(&OpenVDS::Close)> handle(OpenVDS::Open(slowIOManager, error), OpenVDS::Close);
-  OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle.get());
+  OpenVDS::ScopedVDSHandle handle(OpenVDS::Open(slowIOManager, error));
+  OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle);
 
   auto readPageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, 0, 0, 1024, OpenVDS::VolumeDataAccessManager::AccessMode_ReadOnly);
   auto writePageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, 0, 0, 1024, OpenVDS::VolumeDataAccessManager::AccessMode_ReadWrite);

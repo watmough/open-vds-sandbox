@@ -262,10 +262,31 @@ namespace OpenVDS
 
   IOManagerDms::~IOManagerDms()
   {
+  }
+
+  bool IOManagerDms::Close(Error &error)
+  {
     if (m_dataset && m_opened)
     {
-      m_dataset->close();
+      try
+      {
+        m_dataset->close();
+        (void)m_dataset.release();
+      }
+      catch (const seismicdrive::SDException& ex)
+      {
+        error.code = -1;
+        error.string = ex.what();
+        return false;
+      }
+      catch (...)
+      {
+        error.code = -1;
+        error.string = "Unknown exception in DMS close";
+        return false;
+      }
     }
+    return true;
   }
 
   std::shared_ptr<Request> IOManagerDms::ReadObjectInfo(const std::string& objectName, std::shared_ptr<TransferDownloadHandler> handler)

@@ -266,7 +266,7 @@ VDSInfo --metadata-name TextHeader -b -e -w 80 s3://bluware-jorgen-dev/volve
 
   OpenVDS::Error openError;
 
-  OpenVDS::VDSHandle handle;
+  OpenVDS::ScopedVDSHandle handle;
 
   if(OpenVDS::IsSupportedProtocol(url))
   {
@@ -282,9 +282,6 @@ VDSInfo --metadata-name TextHeader -b -e -w 80 s3://bluware-jorgen-dev/volve
     OpenVDS::printError(printConfig, "VDS", "Could not open VDS", openError.string);
     return EXIT_FAILURE;
   }
-
-  // auto-close vds handle when it goes out of scope
-  std::unique_ptr<OpenVDS::VDS, decltype(&OpenVDS::Close)> vdsGuard(handle, &OpenVDS::Close);
 
   auto layout = OpenVDS::GetLayout(handle);
   if (!layout)

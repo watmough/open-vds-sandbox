@@ -3489,7 +3489,7 @@ main(int argc, char* argv[])
 
   OpenVDS::Error createError;
 
-  OpenVDS::VDSHandle handle;
+  OpenVDS::ScopedVDSHandle handle;
 
   if(OpenVDS::IsSupportedProtocol(url))
   {
@@ -3518,12 +3518,8 @@ main(int argc, char* argv[])
     return EXIT_FAILURE;
   }
 
-  // auto-close vds handle when it goes out of scope
-  std::unique_ptr<OpenVDS::VDS, decltype(&OpenVDS::Close)> vdsGuard(handle, &OpenVDS::Close);
-
   auto accessManager = OpenVDS::GetAccessManager(handle);
   auto layout = accessManager.GetVolumeDataLayout();
-
 
   OpenVDS::DimensionsND writeDimensionGroup = OpenVDS::DimensionsND::Dimensions_012;
 

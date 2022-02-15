@@ -102,7 +102,7 @@ int main(int argc, char **argv)
   }
 
   OpenVDS::Error error;
-  OpenVDS::VDSHandle handle = nullptr;
+  OpenVDS::ScopedVDSHandle handle;
 
   if (generate_noise)
   {
@@ -141,9 +141,6 @@ int main(int argc, char **argv)
     fprintf(stderr, "Failed to open VDS: %s\n", error.string.c_str());
     return error.code;
   }
-
-  // auto-close vds handle when it goes out of scope
-  std::unique_ptr<OpenVDS::VDS, decltype(&OpenVDS::Close)> vdsGuard(handle, &OpenVDS::Close);
 
   if (!ends_with(file_name, ".bmp"))
     file_name = file_name + ".bmp";

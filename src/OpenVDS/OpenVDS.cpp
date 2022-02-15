@@ -959,8 +959,50 @@ void Close(VDS *vds)
 {
   if (!vds)
     return;
+  Error error;
+  bool success = vds->volumeDataStore->Close(error);
   vds->accessManager->Invalidate();
   delete vds;
+  if(!success)
+  {
+    throw InvalidOperation(fmt::format("Close failed: {}", error.string).c_str());
+  }
+}
+
+void Close(VDS *vds, Error &error)
+{
+  error = Error();
+  if (!vds)
+    return;
+  vds->volumeDataStore->Close(error);
+  vds->accessManager->Invalidate();
+  delete vds;
+}
+
+void RetryableClose(VDS *vds)
+{
+  if (!vds)
+    return;
+  Error error;
+  bool success = vds->volumeDataStore->Close(error);
+  if(!success)
+  {
+    throw InvalidOperation(fmt::format("Close failed: {}", error.string).c_str());
+  }
+  vds->accessManager->Invalidate();
+  delete vds;
+}
+
+void RetryableClose(VDS *vds, Error &error)
+{
+  error = Error();
+  if (!vds)
+    return;
+  if(vds->volumeDataStore->Close(error))
+  {
+    vds->accessManager->Invalidate();
+    delete vds;
+  }
 }
 
 GlobalState *GetGlobalState()
@@ -968,7 +1010,6 @@ GlobalState *GetGlobalState()
   static GlobalStateImpl globalState;
   return &globalState;
 }
-
 
 void SetIoManagerTransformer(std::function<IOManager* (IOManager*)> transformer)
 {

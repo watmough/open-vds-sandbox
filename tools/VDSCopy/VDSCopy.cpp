@@ -144,15 +144,15 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
 
   OpenVDS::Error error;
 
-  std::unique_ptr<OpenVDS::VDS, decltype(&OpenVDS::Close)> sourceHandle(nullptr, &OpenVDS::Close);
+  OpenVDS::ScopedVDSHandle sourceHandle;
 
   if(OpenVDS::IsSupportedProtocol(sourceUrl))
   {
-    sourceHandle.reset(OpenVDS::Open(sourceUrl, sourceConnection, error));
+    sourceHandle = OpenVDS::Open(sourceUrl, sourceConnection, error);
   }
   else
   {
-    sourceHandle.reset(OpenVDS::Open(OpenVDS::VDSFileOpenOptions(sourceUrl), error));
+    sourceHandle = OpenVDS::Open(OpenVDS::VDSFileOpenOptions(sourceUrl), error);
   }
 
   if(error.code != 0)
@@ -161,7 +161,7 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
     return EXIT_FAILURE;
   }
 
-  auto layout = OpenVDS::GetLayout(sourceHandle.get());
+  auto layout = OpenVDS::GetLayout(sourceHandle);
   if (!layout)
   {
     OpenVDS::printError(printConfig, "VDS", "Internal error, no layout");
@@ -170,13 +170,13 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
 
   if (std::isnan(compressionTolerance))
   {
-    compressionTolerance = OpenVDS::GetCompressionTolerance(sourceHandle.get());
+    compressionTolerance = OpenVDS::GetCompressionTolerance(sourceHandle);
   }
   OpenVDS::CompressionMethod compressionMethod = OpenVDS::CompressionMethod::None;
 
   std::transform(compressionMethodString.begin(), compressionMethodString.end(), compressionMethodString.begin(), asciitolower);
 
-  if(compressionMethodString.empty()) compressionMethod = OpenVDS::GetCompressionMethod(sourceHandle.get());
+  if(compressionMethodString.empty()) compressionMethod = OpenVDS::GetCompressionMethod(sourceHandle);
   else if(compressionMethodString == "none")                          compressionMethod = OpenVDS::CompressionMethod::None;
   else if(compressionMethodString == "wavelet")                       compressionMethod = OpenVDS::CompressionMethod::Wavelet;
   else if(compressionMethodString == "rle")                           compressionMethod = OpenVDS::CompressionMethod::RLE;
@@ -213,8 +213,8 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
   OpenVDS::VolumeDataLayoutDescriptor layoutDescriptor = layout->GetLayoutDescriptor();
 
 
-  std::unique_ptr<OpenVDS::VDS, decltype(&OpenVDS::Close)> destinationHandle(nullptr, &OpenVDS::Close);
-  destinationHandle.reset(OpenVDS::Create(destinationUrl, destinationConnection, layoutDescriptor, axisDescriptors, channelDescriptors, *layout, compressionMethod, compressionTolerance, error));
+  OpenVDS::ScopedVDSHandle destinationHandle;
+  destinationHandle = OpenVDS::Create(destinationUrl, destinationConnection, layoutDescriptor, axisDescriptors, channelDescriptors, *layout, compressionMethod, compressionTolerance, error);
   if(error.code != 0)
   {
     OpenVDS::printError(printConfig, "VDS", fmt::format("Could not create VDS {}", destinationUrl), error.string);
@@ -223,8 +223,8 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
 
   OpenVDS::printVersion(printConfig, "VDSCopy");
 
-  auto sourceAccessManager = OpenVDS::GetAccessManager(sourceHandle.get());
-  auto destinationAccessManager = OpenVDS::GetAccessManager(destinationHandle.get());
+  auto sourceAccessManager = OpenVDS::GetAccessManager(sourceHandle);
+  auto destinationAccessManager = OpenVDS::GetAccessManager(destinationHandle);
 
   auto sourceAccessorDestroyer = [&sourceAccessManager](OpenVDS::VolumeDataPageAccessor* acc) { if (acc) sourceAccessManager.DestroyVolumeDataPageAccessor(acc); };
   auto destinationAccessorDestroyer = [&destinationAccessManager](OpenVDS::VolumeDataPageAccessor* acc)
@@ -252,12 +252,12 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
     }
   }
 
-  auto sourceCompressionMethod = OpenVDS::GetCompressionMethod(sourceHandle.get());
-  auto destinationCompressionMethod = OpenVDS::GetCompressionMethod(destinationHandle.get());
+  auto sourceCompressionMethod = OpenVDS::GetCompressionMethod(sourceHandle);
+  auto destinationCompressionMethod = OpenVDS::GetCompressionMethod(destinationHandle);
 
   if ((sourceCompressionMethod == OpenVDS::CompressionMethod::Wavelet || sourceCompressionMethod == OpenVDS::CompressionMethod::WaveletNormalizeBlock)
     && (destinationCompressionMethod == OpenVDS::CompressionMethod::Wavelet || destinationCompressionMethod == OpenVDS::CompressionMethod::WaveletNormalizeBlock)
-    && (OpenVDS::GetCompressionTolerance(sourceHandle.get()) != OpenVDS::GetCompressionTolerance(destinationHandle.get())))
+    && (OpenVDS::GetCompressionTolerance(sourceHandle) != OpenVDS::GetCompressionTolerance(destinationHandle)))
   {
     OpenVDS::printInfo(printConfig, "Data degradation", "Copying between lossy compressed datasets will lead to a slight data degradation.");
   }

@@ -32,10 +32,10 @@ GTEST_TEST(OpenVDS_integration, DataAccessorClone)
 {
   int dimensionSize = 60;
   OpenVDS::Error error;
-  std::unique_ptr<OpenVDS::VDS, decltype(&OpenVDS::Close)> VDS(generateSimpleInMemory3DVDS(dimensionSize,dimensionSize,dimensionSize, OpenVDS::VolumeDataChannelDescriptor::Format_R32), OpenVDS::Close);
-  fill3DVDSWithNoise(VDS.get());
+  OpenVDS::ScopedVDSHandle VDS(generateSimpleInMemory3DVDS(dimensionSize,dimensionSize,dimensionSize, OpenVDS::VolumeDataChannelDescriptor::Format_R32));
+  fill3DVDSWithNoise(VDS);
 
-  OpenVDS::IVolumeDataAccessManager *accessManagerInterface = OpenVDS::GetAccessManagerInterface(VDS.get());
+  OpenVDS::IVolumeDataAccessManager *accessManagerInterface = OpenVDS::GetAccessManagerInterface(VDS);
 
   auto pageAccessor = accessManagerInterface->CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, 0, 0, 100, OpenVDS::VolumeDataAccessManager::AccessMode_ReadOnly);
 

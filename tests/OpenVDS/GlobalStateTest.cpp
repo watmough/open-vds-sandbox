@@ -55,14 +55,14 @@ TEST(GlobalState, basic)
 
   {
     IOManagerFacadeLight *iomanager = new IOManagerFacadeLight(inMemory.get());
-    std::unique_ptr<OpenVDS::VDS, decltype(&OpenVDS::Close)> handle(generateSimpleInMemory3DVDS(datasetSize, datasetSize, datasetSize, OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, iomanager), OpenVDS::Close);
+    OpenVDS::ScopedVDSHandle handle(generateSimpleInMemory3DVDS(datasetSize, datasetSize, datasetSize, OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, iomanager));
 
-    fill3DVDSWithBitNoise(handle.get());
+    fill3DVDSWithBitNoise(handle);
   }
   
   SlowIOManager* slowIOManager = new SlowIOManager(requestDelayMs, inMemory.get());
-  std::unique_ptr<OpenVDS::VDS, decltype(&OpenVDS::Close)> handle(OpenVDS::Open(slowIOManager, error), OpenVDS::Close);
-  OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle.get());
+  OpenVDS::ScopedVDSHandle handle(OpenVDS::Open(slowIOManager, error));
+  OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle);
 
   ThreadPool threadPool(threadCount);
 

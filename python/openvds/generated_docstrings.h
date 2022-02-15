@@ -181,13 +181,27 @@ static const char *__doc_OpenVDS_AzurePresignedOpenOptions_urlSuffix = R"doc()do
 static const char *__doc_OpenVDS_Clear = R"doc()doc";
 
 static const char *__doc_OpenVDS_Close =
-R"doc(Close a VDS and free up all associated resources
+R"doc(Close a VDS and free up all associated resources. If an error occurs,
+an exception will be thrown.
 
 Parameters:
 -----------
 
 handle :
     The handle of the VDS)doc";
+
+static const char *__doc_OpenVDS_Close_2 =
+R"doc(Close a VDS and free up all associated resources
+
+Parameters:
+-----------
+
+handle :
+    The handle of the VDS
+
+error :
+    If an error occured, the error code and message will be written to
+    this output parameter)doc";
 
 static const char *__doc_OpenVDS_CompressionMethod = R"doc()doc";
 
@@ -3032,7 +3046,52 @@ static const char *__doc_OpenVDS_ResultConverter_ConvertValueT = R"doc()doc";
 
 static const char *__doc_OpenVDS_ResultConverter_ReciprocalScale = R"doc()doc";
 
+static const char *__doc_OpenVDS_RetryableClose =
+R"doc(Close a VDS and free up all associated resources if the close
+succeeds. If an error occurs, an exception will be thrown.
+
+Parameters:
+-----------
+
+handle :
+    The handle of the VDS)doc";
+
+static const char *__doc_OpenVDS_RetryableClose_2 =
+R"doc(Close a VDS and free up all associated resources if the close succeeds
+
+Parameters:
+-----------
+
+handle :
+    The handle of the VDS
+
+error :
+    If an error occured, the error code and message will be written to
+    this output parameter)doc";
+
 static const char *__doc_OpenVDS_Scale = R"doc()doc";
+
+static const char *__doc_OpenVDS_ScopedVDSHandle = R"doc()doc";
+
+static const char *__doc_OpenVDS_ScopedVDSHandle_Close = R"doc()doc";
+
+static const char *__doc_OpenVDS_ScopedVDSHandle_Close_2 = R"doc()doc";
+
+static const char *__doc_OpenVDS_ScopedVDSHandle_ScopedVDSHandle = R"doc()doc";
+
+static const char *__doc_OpenVDS_ScopedVDSHandle_ScopedVDSHandle_2 = R"doc()doc";
+
+static const char *__doc_OpenVDS_ScopedVDSHandle_ScopedVDSHandle_3 = R"doc()doc";
+
+static const char *__doc_OpenVDS_ScopedVDSHandle_m_VDS = R"doc()doc";
+
+static const char *__doc_OpenVDS_ScopedVDSHandle_operator_OpenVDS_VDS = R"doc()doc";
+
+static const char *__doc_OpenVDS_ScopedVDSHandle_operator_assign = R"doc()doc";
+
+static const char *__doc_OpenVDS_ScopedVDSHandle_operator_assign_2 = R"doc()doc";
+
+static const char *__doc_OpenVDS_ScopedVDSHandle_operator_bool = R"doc()doc";
 
 static const char *__doc_OpenVDS_StringWrapper = R"doc()doc";
 

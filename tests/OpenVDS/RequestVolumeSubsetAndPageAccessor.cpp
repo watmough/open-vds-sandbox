@@ -20,12 +20,12 @@ TEST(OpenVDS, MixedRequests)
 
   for (int i = 0; i < 20; i++)
   {
-    std::unique_ptr<OpenVDS::VDS, decltype(&OpenVDS::Close)> handle(OpenVDS::Open(url, connectionString, error), &OpenVDS::Close);
+    OpenVDS::ScopedVDSHandle handle(OpenVDS::Open(url, connectionString, error));
     ASSERT_TRUE(handle);
 
-    OpenVDS::VolumeDataLayout* layout = OpenVDS::GetLayout(handle.get());
+    OpenVDS::VolumeDataLayout* layout = OpenVDS::GetLayout(handle);
 
-    OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle.get());
+    OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle);
 
     std::vector<uint8_t> buffer;
     buffer.resize(accessManager.GetVolumeSubsetBufferSize({ 0, 0, 0 }, { 100, 100, 100 }, layout->GetChannelFormat(0)));
