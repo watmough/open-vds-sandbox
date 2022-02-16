@@ -29,10 +29,10 @@ extern "C" {
 #endif
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GlobalState_GetBytesDownloadedImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong connectionType)
+  (JNIEnv * env, jobject object, jlong native_handle, jlong connectionType)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -45,10 +45,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GlobalState_GetBytesDownloade
 }
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GlobalState_GetChunksDownloadedImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong connectionType)
+  (JNIEnv * env, jobject object, jlong native_handle, jlong connectionType)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -61,10 +61,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GlobalState_GetChunksDownload
 }
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GlobalState_GetBytesDecompressedImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong connectionType)
+  (JNIEnv * env, jobject object, jlong native_handle, jlong connectionType)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -77,10 +77,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GlobalState_GetBytesDecompres
 }
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GlobalState_GetChunksDecompressedImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jlong connectionType)
+  (JNIEnv * env, jobject object, jlong native_handle, jlong connectionType)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {

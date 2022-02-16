@@ -519,9 +519,6 @@ def create_jni_arglist(class_name: str, args: List[Param], is_include_proxyinter
         arglist.append('jclass cls')
     else:
         arglist.append('jobject object')
-    if is_include_proxyinterface_arg and not is_licenseapi(class_name):
-        arglist.append('jobject jproxyinterface')
-
     if is_static_method:
         pass
     else:
@@ -665,7 +662,7 @@ def create_jni_ctor(scope: Scope, ctor: Scope, class_name: str, class_canonical_
     body = f"""
 {{
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {{
@@ -804,7 +801,7 @@ def create_jni_methods(scope: Scope, template: str, override_name: str = '', tem
                         retval = ''
                         print("{", file=local_output)
                         if not islicenseapi:
-                            print("  JEnvPushPop\n    stackitem(env, jproxyinterface);\n", file=local_output)
+                            print("  JEnvPushPop\n    stackitem(env);\n", file=local_output)
                             print("  HUE_JNI_TRY\n  {", file=local_output)
                         invoke_args, prologue, epilogue = transform_jni_functioncall_args(args, is_static_method=is_static_method)
                         if prologue:

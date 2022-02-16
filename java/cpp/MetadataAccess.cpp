@@ -29,10 +29,10 @@ extern "C" {
 #endif
 
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataReadAccess_IsMetadataIntAvailableImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name)
+  (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -45,10 +45,10 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataReadAccess_IsMetad
 }
 
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataReadAccess_IsMetadataIntVector2AvailableImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name)
+  (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -61,10 +61,10 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataReadAccess_IsMetad
 }
 
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataReadAccess_IsMetadataIntVector3AvailableImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name)
+  (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -77,10 +77,10 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataReadAccess_IsMetad
 }
 
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataReadAccess_IsMetadataIntVector4AvailableImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name)
+  (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -93,10 +93,10 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataReadAccess_IsMetad
 }
 
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataReadAccess_IsMetadataFloatAvailableImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name)
+  (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -109,10 +109,10 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataReadAccess_IsMetad
 }
 
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataReadAccess_IsMetadataFloatVector2AvailableImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name)
+  (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -125,10 +125,10 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataReadAccess_IsMetad
 }
 
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataReadAccess_IsMetadataFloatVector3AvailableImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name)
+  (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -141,10 +141,10 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataReadAccess_IsMetad
 }
 
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataReadAccess_IsMetadataFloatVector4AvailableImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name)
+  (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -157,10 +157,10 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataReadAccess_IsMetad
 }
 
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataReadAccess_IsMetadataDoubleAvailableImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name)
+  (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -173,10 +173,10 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataReadAccess_IsMetad
 }
 
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataReadAccess_IsMetadataDoubleVector2AvailableImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name)
+  (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -189,10 +189,10 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataReadAccess_IsMetad
 }
 
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataReadAccess_IsMetadataDoubleVector3AvailableImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name)
+  (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -205,10 +205,10 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataReadAccess_IsMetad
 }
 
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataReadAccess_IsMetadataDoubleVector4AvailableImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name)
+  (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -221,10 +221,10 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataReadAccess_IsMetad
 }
 
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataReadAccess_IsMetadataStringAvailableImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name)
+  (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -237,10 +237,10 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataReadAccess_IsMetad
 }
 
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataReadAccess_IsMetadataBLOBAvailableImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name)
+  (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -253,10 +253,10 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataReadAccess_IsMetad
 }
 
 JNIEXPORT jint JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMetadataIntImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name)
+  (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -269,10 +269,10 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMetadata
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMetadataIntVector2Impl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jstring category, jstring name)
+  (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jstring category, jstring name)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -286,10 +286,10 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMetadata
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMetadataIntVector3Impl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jstring category, jstring name)
+  (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jstring category, jstring name)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -303,10 +303,10 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMetadata
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMetadataIntVector4Impl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jstring category, jstring name)
+  (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jstring category, jstring name)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -320,10 +320,10 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMetadata
 }
 
 JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMetadataFloatImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name)
+  (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -336,10 +336,10 @@ JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMetada
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMetadataFloatVector2Impl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jstring category, jstring name)
+  (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jstring category, jstring name)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -353,10 +353,10 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMetadata
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMetadataFloatVector3Impl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jstring category, jstring name)
+  (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jstring category, jstring name)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -370,10 +370,10 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMetadata
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMetadataFloatVector4Impl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jstring category, jstring name)
+  (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jstring category, jstring name)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -387,10 +387,10 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMetadata
 }
 
 JNIEXPORT jdouble JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMetadataDoubleImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name)
+  (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -403,10 +403,10 @@ JNIEXPORT jdouble JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMetad
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMetadataDoubleVector2Impl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jstring category, jstring name)
+  (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jstring category, jstring name)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -420,10 +420,10 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMetadata
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMetadataDoubleVector3Impl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jstring category, jstring name)
+  (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jstring category, jstring name)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -437,10 +437,10 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMetadata
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMetadataDoubleVector4Impl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jstring category, jstring name)
+  (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jstring category, jstring name)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -454,10 +454,10 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMetadata
 }
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMetadataStringImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name)
+  (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -579,10 +579,10 @@ JNIEXPORT jobjectArray JNICALL Java_org_opengroup_openvds_MetadataReadAccess_Get
 
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadataIntImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name, jint value)
+  (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name, jint value)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -596,10 +596,10 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadat
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadataIntVector2Impl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name, jobject valuebytebuffer, jlong valuebyteoffset)
+  (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name, jobject valuebytebuffer, jlong valuebyteoffset)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -613,10 +613,10 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadat
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadataIntVector3Impl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name, jobject valuebytebuffer, jlong valuebyteoffset)
+  (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name, jobject valuebytebuffer, jlong valuebyteoffset)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -630,10 +630,10 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadat
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadataIntVector4Impl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name, jobject valuebytebuffer, jlong valuebyteoffset)
+  (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name, jobject valuebytebuffer, jlong valuebyteoffset)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -647,10 +647,10 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadat
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadataFloatImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name, jfloat value)
+  (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name, jfloat value)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -664,10 +664,10 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadat
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadataFloatVector2Impl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name, jobject valuebytebuffer, jlong valuebyteoffset)
+  (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name, jobject valuebytebuffer, jlong valuebyteoffset)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -681,10 +681,10 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadat
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadataFloatVector3Impl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name, jobject valuebytebuffer, jlong valuebyteoffset)
+  (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name, jobject valuebytebuffer, jlong valuebyteoffset)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -698,10 +698,10 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadat
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadataFloatVector4Impl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name, jobject valuebytebuffer, jlong valuebyteoffset)
+  (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name, jobject valuebytebuffer, jlong valuebyteoffset)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -715,10 +715,10 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadat
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadataDoubleImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name, jdouble value)
+  (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name, jdouble value)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -732,10 +732,10 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadat
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadataDoubleVector2Impl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name, jobject valuebytebuffer, jlong valuebyteoffset)
+  (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name, jobject valuebytebuffer, jlong valuebyteoffset)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -749,10 +749,10 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadat
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadataDoubleVector3Impl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name, jobject valuebytebuffer, jlong valuebyteoffset)
+  (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name, jobject valuebytebuffer, jlong valuebyteoffset)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -766,10 +766,10 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadat
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadataDoubleVector4Impl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name, jobject valuebytebuffer, jlong valuebyteoffset)
+  (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name, jobject valuebytebuffer, jlong valuebyteoffset)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -783,10 +783,10 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadat
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadataStringImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name, jstring value)
+  (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name, jstring value)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -800,10 +800,10 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadat
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadataString2Impl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name, jstring value)
+  (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name, jstring value)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -817,10 +817,10 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadat
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadataBLOBImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name, jobject data)
+  (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name, jobject data)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -835,10 +835,10 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadat
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_CopyMetadataImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jlong metadataReadAccess)
+  (JNIEnv * env, jobject object, jlong native_handle, jstring category, jlong metadataReadAccess)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -849,10 +849,10 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_CopyMetada
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_ClearMetadataImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category, jstring name)
+  (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -863,10 +863,10 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_ClearMetad
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_ClearMetadata2Impl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring category)
+  (JNIEnv * env, jobject object, jlong native_handle, jstring category)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {

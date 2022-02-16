@@ -29,10 +29,10 @@ extern "C" {
 #endif
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_MetadataKey_ctorImpl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface)
+  (JNIEnv * env, jclass cls)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -49,10 +49,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_MetadataKey_ctorImpl
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_MetadataKey_ctor2Impl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jlong type, jstring category, jstring name)
+  (JNIEnv * env, jclass cls, jlong type, jstring category, jstring name)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -72,10 +72,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_MetadataKey_ctor2Impl
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_MetadataKey_GetTypeImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -88,10 +88,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_MetadataKey_GetTypeImpl
 }
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_MetadataKey_GetCategoryImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -104,10 +104,10 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_MetadataKey_GetCategoryImpl
 }
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_MetadataKey_GetNameImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {

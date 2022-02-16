@@ -29,10 +29,10 @@ extern "C" {
 #endif
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_ctorImpl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface)
+  (JNIEnv * env, jclass cls)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -49,10 +49,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_c
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_ctor2Impl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jlong format, jlong components, jstring name, jstring unit, jfloat valueRangeMin, jfloat valueRangeMax)
+  (JNIEnv * env, jclass cls, jlong format, jlong components, jstring name, jstring unit, jfloat valueRangeMin, jfloat valueRangeMax)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -75,10 +75,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_c
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_ctor3Impl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jlong format, jlong components, jstring name, jstring unit, jfloat valueRangeMin, jfloat valueRangeMax, jlong mapping)
+  (JNIEnv * env, jclass cls, jlong format, jlong components, jstring name, jstring unit, jfloat valueRangeMin, jfloat valueRangeMax, jlong mapping)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -102,10 +102,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_c
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_ctor4Impl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jlong format, jlong components, jstring name, jstring unit, jfloat valueRangeMin, jfloat valueRangeMax, jlong flags)
+  (JNIEnv * env, jclass cls, jlong format, jlong components, jstring name, jstring unit, jfloat valueRangeMin, jfloat valueRangeMax, jlong flags)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -129,10 +129,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_c
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_ctor5Impl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jlong format, jlong components, jstring name, jstring unit, jfloat valueRangeMin, jfloat valueRangeMax, jlong mapping, jlong flags)
+  (JNIEnv * env, jclass cls, jlong format, jlong components, jstring name, jstring unit, jfloat valueRangeMin, jfloat valueRangeMax, jlong mapping, jlong flags)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -157,10 +157,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_c
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_ctor6Impl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jlong format, jlong components, jstring name, jstring unit, jfloat valueRangeMin, jfloat valueRangeMax, jlong mapping, jint mappedValueCount, jlong flags, jfloat integerScale, jfloat integerOffset)
+  (JNIEnv * env, jclass cls, jlong format, jlong components, jstring name, jstring unit, jfloat valueRangeMin, jfloat valueRangeMax, jlong mapping, jint mappedValueCount, jlong flags, jfloat integerScale, jfloat integerOffset)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -188,10 +188,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_c
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_ctor7Impl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jlong format, jlong components, jstring name, jstring unit, jfloat valueRangeMin, jfloat valueRangeMax, jfloat noValue)
+  (JNIEnv * env, jclass cls, jlong format, jlong components, jstring name, jstring unit, jfloat valueRangeMin, jfloat valueRangeMax, jfloat noValue)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -215,10 +215,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_c
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_ctor8Impl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jlong format, jlong components, jstring name, jstring unit, jfloat valueRangeMin, jfloat valueRangeMax, jfloat noValue, jlong mapping, jlong flags)
+  (JNIEnv * env, jclass cls, jlong format, jlong components, jstring name, jstring unit, jfloat valueRangeMin, jfloat valueRangeMax, jfloat noValue, jlong mapping, jlong flags)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -244,10 +244,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_c
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_ctor9Impl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jlong format, jlong components, jstring name, jstring unit, jfloat valueRangeMin, jfloat valueRangeMax, jlong mapping, jint mappedValueCount, jlong flags, jfloat noValue, jfloat integerScale, jfloat integerOffset)
+  (JNIEnv * env, jclass cls, jlong format, jlong components, jstring name, jstring unit, jfloat valueRangeMin, jfloat valueRangeMax, jlong mapping, jint mappedValueCount, jlong flags, jfloat noValue, jfloat integerScale, jfloat integerOffset)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -276,10 +276,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_c
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_GetFormatImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -292,10 +292,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_G
 }
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_GetComponentsImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -308,10 +308,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_G
 }
 
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_IsDiscreteImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -324,10 +324,10 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescripto
 }
 
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_IsRenderableImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -340,10 +340,10 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescripto
 }
 
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_IsAllowLossyCompressionImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -356,10 +356,10 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescripto
 }
 
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_IsUseZipForLosslessCompressionImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -372,10 +372,10 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescripto
 }
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_GetNameImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -388,10 +388,10 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor
 }
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_GetUnitImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -404,10 +404,10 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_GetValueRangeImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
+  (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -419,10 +419,10 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_Ge
 }
 
 JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_GetValueRangeMinImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -435,10 +435,10 @@ JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_
 }
 
 JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_GetValueRangeMaxImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -451,10 +451,10 @@ JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_
 }
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_GetMappingImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -467,10 +467,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_G
 }
 
 JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_GetMappedValueCountImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -483,10 +483,10 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_Ge
 }
 
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_IsUseNoValueImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -499,10 +499,10 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescripto
 }
 
 JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_GetNoValueImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -515,10 +515,10 @@ JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_
 }
 
 JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_GetIntegerScaleImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -531,10 +531,10 @@ JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_
 }
 
 JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_GetIntegerOffsetImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -547,10 +547,10 @@ JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_
 }
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_TraceMappedVolumeDataChannelDescriptorImpl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jlong format, jlong components, jstring name, jstring unit, jfloat valueRangeMin, jfloat valueRangeMax, jint mappedValueCount, jlong flags)
+  (JNIEnv * env, jclass cls, jlong format, jlong components, jstring name, jstring unit, jfloat valueRangeMin, jfloat valueRangeMax, jint mappedValueCount, jlong flags)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -571,10 +571,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_T
 }
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_TraceMappedVolumeDataChannelDescriptor2Impl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jlong format, jlong components, jstring name, jstring unit, jfloat valueRangeMin, jfloat valueRangeMax, jint mappedValueCount, jlong flags, jfloat noValue)
+  (JNIEnv * env, jclass cls, jlong format, jlong components, jstring name, jstring unit, jfloat valueRangeMin, jfloat valueRangeMax, jint mappedValueCount, jlong flags, jfloat noValue)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {

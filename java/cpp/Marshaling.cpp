@@ -13,15 +13,38 @@
 #include "OpenVDS/VolumeData.h"
 #include <assert.h>
 
+#ifdef _WIN32
+#define ENABLE_DEBUGGER_ATTACH 1
+#include <Windows.h>
+#endif
+
 static std::mutex
   s_FinalizerMutex;
 
 thread_local std::stack<JNIEnv*>
 JEnvPushPop::s_JNIEnvStack;
 
-thread_local std::stack<jobject>
-JEnvPushPop::s_JProxyObjectStack;
+void 
+JEnvPushPop::checkInit()
+{
+#ifdef ENABLE_DEBUGGER_ATTACH
+  {
+    static bool s_IsCancel;
+    char buffer[256];
+    *buffer = '\0';
+    GetEnvironmentVariableA("OPENVDS_ENABLE_JAVA_ATTACH", buffer, sizeof(buffer));
+    if (!s_IsCancel && *buffer && isdigit(*buffer))
+    {
+      int enable_attach = atoi(buffer);
+      if (enable_attach)
+      {
+        s_IsCancel = IDCANCEL == MessageBoxA(0, "Attach now!", "OpenVDS Java API", MB_OKCANCEL);
+      }
+    }
+  }
+#endif
 
+}
 jobject Marshaling::CreateJavaObject(const char* type) {
   jclass clazz = GetJNIEnv()->FindClass(type);
   if (clazz) {

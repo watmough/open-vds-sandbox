@@ -24,6 +24,9 @@ import java.nio.ByteBuffer;
 
 
 public class OpenVDS {
+	static {
+		ManagedBase.staticInit();
+	}
 
     ///AUTOGEN-OK: FUNCTION_DECL CreateOpenOptions OpenVDS::OpenOptions *(OpenVDS::StringWrapper, OpenVDS::StringWrapper, OpenVDS::Error &) FUNCTIONPROTO
     native private static long CreateOpenOptionsImpl(String url, String connectionString, long error);

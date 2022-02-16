@@ -15,9 +15,27 @@
  */
 
 package org.opengroup.openvds;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public abstract class ManagedBase {
-	
+
+    static final String JNI_LIB_NAME = "OpenVDSJava";
+
+    private static final Logger LOGGER = Logger.getLogger(ManagedBase.class.getName());
+    private static final String ERR_LIBRARY = "JNI library load failed";
+
+    static {
+        try {
+            System.loadLibrary(JNI_LIB_NAME);
+        } catch (Throwable e) {
+            LOGGER.log(Level.SEVERE, ERR_LIBRARY, e);
+        }
+    }
+
+    static void staticInit() {
+    }
+
 	private long native_object;
 
     public ManagedBase(long native_object) {
@@ -47,7 +65,7 @@ public abstract class ManagedBase {
     }
 
     @Override
-    public void finalize() {
+    protected void finalize() {
 		dispose(false);
     }
 	

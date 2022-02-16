@@ -29,10 +29,10 @@ extern "C" {
 #endif
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VDS_ctorImpl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface)
+  (JNIEnv * env, jclass cls)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -62,10 +62,10 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VDS_dtorImpl
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IOManager_ctorImpl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface)
+  (JNIEnv * env, jclass cls)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -95,10 +95,10 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IOManager_dtorImpl
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenOptions_getConnectionTypeImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -111,10 +111,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenOptions_getConnectionType
 }
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenOptions_getWaveletAdaptiveModeImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -127,10 +127,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenOptions_getWaveletAdaptiv
 }
 
 JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_OpenOptions_getWaveletAdaptiveToleranceImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -143,10 +143,10 @@ JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_OpenOptions_getWaveletAdapti
 }
 
 JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_OpenOptions_getWaveletAdaptiveRatioImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -172,10 +172,10 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_OpenOptions_dtorImpl
 
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_AWSOpenOptions_getBucketImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -188,10 +188,10 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_AWSOpenOptions_getBucketImp
 }
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_AWSOpenOptions_getKeyImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -204,10 +204,10 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_AWSOpenOptions_getKeyImpl
 }
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_AWSOpenOptions_getRegionImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -220,10 +220,10 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_AWSOpenOptions_getRegionImp
 }
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_AWSOpenOptions_getEndpointOverrideImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -236,10 +236,10 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_AWSOpenOptions_getEndpointO
 }
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_AWSOpenOptions_getAccessKeyIdImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -252,10 +252,10 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_AWSOpenOptions_getAccessKey
 }
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_AWSOpenOptions_getSecretKeyImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -268,10 +268,10 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_AWSOpenOptions_getSecretKey
 }
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_AWSOpenOptions_getSessionTokenImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -284,10 +284,10 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_AWSOpenOptions_getSessionTo
 }
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_AWSOpenOptions_getExpirationImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -300,10 +300,10 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_AWSOpenOptions_getExpiratio
 }
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_AWSOpenOptions_getLogFilenamePrefixImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -316,10 +316,10 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_AWSOpenOptions_getLogFilena
 }
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_AWSOpenOptions_getLoglevelImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -332,10 +332,10 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_AWSOpenOptions_getLoglevelI
 }
 
 JNIEXPORT jint JNICALL Java_org_opengroup_openvds_AWSOpenOptions_getConnectionTimeoutMsImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -348,10 +348,10 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_AWSOpenOptions_getConnectionTi
 }
 
 JNIEXPORT jint JNICALL Java_org_opengroup_openvds_AWSOpenOptions_getRequestTimeoutMsImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -364,10 +364,10 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_AWSOpenOptions_getRequestTimeo
 }
 
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_AWSOpenOptions_getDisableInitApiImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -380,10 +380,10 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_AWSOpenOptions_getDisableI
 }
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_AWSOpenOptions_ctorImpl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface)
+  (JNIEnv * env, jclass cls)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -400,10 +400,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_AWSOpenOptions_ctorImpl
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_AWSOpenOptions_ctor2Impl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring bucket, jstring key, jstring region, jstring endpointOverride, jint connectionTimeoutMs, jint requestTimeoutMs, jboolean disableInitApi)
+  (JNIEnv * env, jclass cls, jstring bucket, jstring key, jstring region, jstring endpointOverride, jint connectionTimeoutMs, jint requestTimeoutMs, jboolean disableInitApi)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -440,10 +440,10 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_AWSOpenOptions_dtorImpl
 
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_AzureOpenOptions_getConnectionStringImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -456,10 +456,10 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_AzureOpenOptions_getConnect
 }
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_AzureOpenOptions_getAccountNameImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -472,10 +472,10 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_AzureOpenOptions_getAccount
 }
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_AzureOpenOptions_getBearerTokenImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -488,10 +488,10 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_AzureOpenOptions_getBearerT
 }
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_AzureOpenOptions_getContainerImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -504,10 +504,10 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_AzureOpenOptions_getContain
 }
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_AzureOpenOptions_getBlobImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -520,10 +520,10 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_AzureOpenOptions_getBlobImp
 }
 
 JNIEXPORT jint JNICALL Java_org_opengroup_openvds_AzureOpenOptions_getParallelism_factorImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -536,10 +536,10 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_AzureOpenOptions_getParallelis
 }
 
 JNIEXPORT jint JNICALL Java_org_opengroup_openvds_AzureOpenOptions_getMax_execution_timeImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -552,10 +552,10 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_AzureOpenOptions_getMax_execut
 }
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_AzureOpenOptions_ctorImpl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface)
+  (JNIEnv * env, jclass cls)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -572,10 +572,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_AzureOpenOptions_ctorImpl
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_AzureOpenOptions_ctor2Impl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring connectionString, jstring container, jstring blob)
+  (JNIEnv * env, jclass cls, jstring connectionString, jstring container, jstring blob)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -595,10 +595,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_AzureOpenOptions_ctor2Impl
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_AzureOpenOptions_ctor3Impl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring connectionString, jstring container, jstring blob, jint parallelism_factor, jint max_execution_time)
+  (JNIEnv * env, jclass cls, jstring connectionString, jstring container, jstring blob, jint parallelism_factor, jint max_execution_time)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -620,10 +620,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_AzureOpenOptions_ctor3Impl
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_AzureOpenOptions_AzureOpenOptionsBearerImpl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring accountName, jstring bearerToken, jstring container, jstring blob)
+  (JNIEnv * env, jclass cls, jstring accountName, jstring bearerToken, jstring container, jstring blob)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -653,10 +653,10 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_AzureOpenOptions_dtorImpl
 
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_AzurePresignedOpenOptions_getBaseUrlImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -669,10 +669,10 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_AzurePresignedOpenOptions_g
 }
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_AzurePresignedOpenOptions_getUrlSuffixImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -685,10 +685,10 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_AzurePresignedOpenOptions_g
 }
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_AzurePresignedOpenOptions_ctorImpl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface)
+  (JNIEnv * env, jclass cls)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -705,10 +705,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_AzurePresignedOpenOptions_cto
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_AzurePresignedOpenOptions_ctor2Impl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring baseUrl, jstring urlSuffix)
+  (JNIEnv * env, jclass cls, jstring baseUrl, jstring urlSuffix)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -738,10 +738,10 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_AzurePresignedOpenOptions_dtor
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsToken_ctorImpl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring token)
+  (JNIEnv * env, jclass cls, jstring token)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -758,10 +758,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsToken_ctorIm
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsToken_ctor2Impl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring token)
+  (JNIEnv * env, jclass cls, jstring token)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -791,10 +791,10 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_GoogleCredentialsToken_dtorImp
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsPath_ctorImpl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring path)
+  (JNIEnv * env, jclass cls, jstring path)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -811,10 +811,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsPath_ctorImp
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsPath_ctor2Impl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring path)
+  (JNIEnv * env, jclass cls, jstring path)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -844,10 +844,10 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_GoogleCredentialsPath_dtorImpl
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsJson_ctorImpl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring json)
+  (JNIEnv * env, jclass cls, jstring json)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -864,10 +864,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsJson_ctorImp
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsJson_ctor2Impl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring json)
+  (JNIEnv * env, jclass cls, jstring json)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -897,10 +897,10 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_GoogleCredentialsJson_dtorImpl
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrl_ctorImpl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring region)
+  (JNIEnv * env, jclass cls, jstring region)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -917,10 +917,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrl_ct
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrl_ctor2Impl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring region)
+  (JNIEnv * env, jclass cls, jstring region)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -950,10 +950,10 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrl_dto
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrlPath_ctorImpl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring region, jstring path)
+  (JNIEnv * env, jclass cls, jstring region, jstring path)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -970,10 +970,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrlPat
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrlPath_ctor2Impl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring region, jstring path)
+  (JNIEnv * env, jclass cls, jstring region, jstring path)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -990,10 +990,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrlPat
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrlPath_ctor3Impl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring region, jstring path)
+  (JNIEnv * env, jclass cls, jstring region, jstring path)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -1010,10 +1010,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrlPat
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrlPath_ctor4Impl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring region, jstring path)
+  (JNIEnv * env, jclass cls, jstring region, jstring path)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -1043,10 +1043,10 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrlPath
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrlJson_ctorImpl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring region, jstring json)
+  (JNIEnv * env, jclass cls, jstring region, jstring json)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -1063,10 +1063,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrlJso
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrlJson_ctor2Impl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring region, jstring json)
+  (JNIEnv * env, jclass cls, jstring region, jstring json)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -1083,10 +1083,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrlJso
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrlJson_ctor3Impl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring region, jstring json)
+  (JNIEnv * env, jclass cls, jstring region, jstring json)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -1103,10 +1103,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrlJso
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrlJson_ctor4Impl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring region, jstring json)
+  (JNIEnv * env, jclass cls, jstring region, jstring json)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -1136,10 +1136,10 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrlJson
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_getCredentialsTypeImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -1152,10 +1152,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_getCredenti
 }
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_getBucketImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -1168,10 +1168,10 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_getBucket
 }
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_getPathPrefixImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -1184,10 +1184,10 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_getPathPr
 }
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_getCredentialsImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -1200,10 +1200,10 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_getCreden
 }
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_getStorageClassImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -1216,10 +1216,10 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_getStorag
 }
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_getRegionImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -1232,10 +1232,10 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_getRegion
 }
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_ctorImpl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface)
+  (JNIEnv * env, jclass cls)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -1252,10 +1252,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_ctorImpl
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_ctor2Impl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring bucket, jstring pathPrefix)
+  (JNIEnv * env, jclass cls, jstring bucket, jstring pathPrefix)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -1272,10 +1272,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_ctor2Impl
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_ctor3Impl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring bucket, jstring pathPrefix, jlong credentials)
+  (JNIEnv * env, jclass cls, jstring bucket, jstring pathPrefix, jlong credentials)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -1295,10 +1295,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_ctor3Impl
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_ctor4Impl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring bucket, jstring pathPrefix, jlong credentials)
+  (JNIEnv * env, jclass cls, jstring bucket, jstring pathPrefix, jlong credentials)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -1318,10 +1318,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_ctor4Impl
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_ctor5Impl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring bucket, jstring pathPrefix, jlong credentials)
+  (JNIEnv * env, jclass cls, jstring bucket, jstring pathPrefix, jlong credentials)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -1341,10 +1341,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_ctor5Impl
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_ctor6Impl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring bucket, jstring pathPrefix, jlong credentials)
+  (JNIEnv * env, jclass cls, jstring bucket, jstring pathPrefix, jlong credentials)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -1364,10 +1364,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_ctor6Impl
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_ctor7Impl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring bucket, jstring pathPrefix, jlong credentials)
+  (JNIEnv * env, jclass cls, jstring bucket, jstring pathPrefix, jlong credentials)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -1387,10 +1387,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_ctor7Impl
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_ctor8Impl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring bucket, jstring pathPrefix, jlong credentials)
+  (JNIEnv * env, jclass cls, jstring bucket, jstring pathPrefix, jlong credentials)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -1410,10 +1410,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_ctor8Impl
 
 
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_SetSignedUrlImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -1439,10 +1439,10 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_dtorImpl
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_DMSOpenOptions_ctorImpl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface)
+  (JNIEnv * env, jclass cls)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -1459,10 +1459,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_DMSOpenOptions_ctorImpl
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_DMSOpenOptions_ctor2Impl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring sdAuthorityUrl, jstring sdApiKey, jstring sdToken, jstring datasetPath, jint logLevel, jstring authTokenUrl, jstring refreshToken, jstring clientId, jstring clientSecret, jstring scopes, jboolean useFileNameForSingleFileDatasets)
+  (JNIEnv * env, jclass cls, jstring sdAuthorityUrl, jstring sdApiKey, jstring sdToken, jstring datasetPath, jint logLevel, jstring authTokenUrl, jstring refreshToken, jstring clientId, jstring clientSecret, jstring scopes, jboolean useFileNameForSingleFileDatasets)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -1490,10 +1490,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_DMSOpenOptions_ctor2Impl
 
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_DMSOpenOptions_getSdAuthorityUrlImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -1506,10 +1506,10 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_DMSOpenOptions_getSdAuthori
 }
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_DMSOpenOptions_getSdApiKeyImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -1522,10 +1522,10 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_DMSOpenOptions_getSdApiKeyI
 }
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_DMSOpenOptions_getSdTokenImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -1538,10 +1538,10 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_DMSOpenOptions_getSdTokenIm
 }
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_DMSOpenOptions_getDatasetPathImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -1554,10 +1554,10 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_DMSOpenOptions_getDatasetPa
 }
 
 JNIEXPORT jint JNICALL Java_org_opengroup_openvds_DMSOpenOptions_getLogLevelImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -1570,10 +1570,10 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_DMSOpenOptions_getLogLevelImpl
 }
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_DMSOpenOptions_getAuthTokenUrlImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -1586,10 +1586,10 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_DMSOpenOptions_getAuthToken
 }
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_DMSOpenOptions_getRefreshTokenImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -1602,10 +1602,10 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_DMSOpenOptions_getRefreshTo
 }
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_DMSOpenOptions_getClientIdImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -1618,10 +1618,10 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_DMSOpenOptions_getClientIdI
 }
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_DMSOpenOptions_getClientSecretImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -1634,10 +1634,10 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_DMSOpenOptions_getClientSec
 }
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_DMSOpenOptions_getScopesImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -1650,10 +1650,10 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_DMSOpenOptions_getScopesImp
 }
 
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_DMSOpenOptions_getUseFileNameForSingleFileDatasetsImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -1679,10 +1679,10 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_DMSOpenOptions_dtorImpl
 
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_HttpOpenOptions_getUrlImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -1695,10 +1695,10 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_HttpOpenOptions_getUrlImpl
 }
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_HttpOpenOptions_ctorImpl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface)
+  (JNIEnv * env, jclass cls)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -1715,10 +1715,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_HttpOpenOptions_ctorImpl
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_HttpOpenOptions_ctor2Impl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring url)
+  (JNIEnv * env, jclass cls, jstring url)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -1748,10 +1748,10 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_HttpOpenOptions_dtorImpl
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_InMemoryOpenOptions_ctorImpl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface)
+  (JNIEnv * env, jclass cls)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -1768,10 +1768,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_InMemoryOpenOptions_ctorImpl
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_InMemoryOpenOptions_ctor2Impl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring name)
+  (JNIEnv * env, jclass cls, jstring name)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -1788,10 +1788,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_InMemoryOpenOptions_ctor2Impl
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_InMemoryOpenOptions_ctor3Impl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring name)
+  (JNIEnv * env, jclass cls, jstring name)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -1808,10 +1808,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_InMemoryOpenOptions_ctor3Impl
 
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_InMemoryOpenOptions_getNameImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -1837,10 +1837,10 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_InMemoryOpenOptions_dtorImpl
 
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_VDSFileOpenOptions_getFileNameImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -1853,10 +1853,10 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_VDSFileOpenOptions_getFileN
 }
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VDSFileOpenOptions_ctorImpl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface)
+  (JNIEnv * env, jclass cls)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -1873,10 +1873,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VDSFileOpenOptions_ctorImpl
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VDSFileOpenOptions_ctor2Impl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring fileName)
+  (JNIEnv * env, jclass cls, jstring fileName)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -1906,10 +1906,10 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VDSFileOpenOptions_dtorImpl
 
 
 JNIEXPORT jint JNICALL Java_org_opengroup_openvds_Error_getCodeImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -1922,10 +1922,10 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_Error_getCodeImpl
 }
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_Error_getStringImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -1951,10 +1951,10 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_Error_dtorImpl
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_CreateOpenOptionsImpl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring url, jstring connectionString, jlong error)
+  (JNIEnv * env, jclass cls, jstring url, jstring connectionString, jlong error)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -1970,10 +1970,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_CreateOpenOptionsImpl
 }
 
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_OpenVDS_IsSupportedProtocolImpl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring url)
+  (JNIEnv * env, jclass cls, jstring url)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -1985,10 +1985,10 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_OpenVDS_IsSupportedProtoco
 }
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_OpenImpl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring url, jstring connectionString, jlong error)
+  (JNIEnv * env, jclass cls, jstring url, jstring connectionString, jlong error)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -2004,10 +2004,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_OpenImpl
 }
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_OpenWithAdaptiveCompressionToleranceImpl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring url, jstring connectionString, jfloat waveletAdaptiveTolerance, jlong error)
+  (JNIEnv * env, jclass cls, jstring url, jstring connectionString, jfloat waveletAdaptiveTolerance, jlong error)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -2024,10 +2024,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_OpenWithAdaptiveCompr
 }
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_OpenWithAdaptiveCompressionRatioImpl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring url, jstring connectionString, jfloat waveletAdaptiveRatio, jlong error)
+  (JNIEnv * env, jclass cls, jstring url, jstring connectionString, jfloat waveletAdaptiveRatio, jlong error)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -2044,10 +2044,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_OpenWithAdaptiveCompr
 }
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Open2Impl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring url, jlong error)
+  (JNIEnv * env, jclass cls, jstring url, jlong error)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -2060,10 +2060,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Open2Impl
 }
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Open3Impl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jlong options, jlong error)
+  (JNIEnv * env, jclass cls, jlong options, jlong error)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -2076,10 +2076,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Open3Impl
 }
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Open4Impl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jlong ioManager, jlong error)
+  (JNIEnv * env, jclass cls, jlong ioManager, jlong error)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -2092,10 +2092,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Open4Impl
 }
 
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_OpenVDS_IsCompressionMethodSupportedImpl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jlong compressionMethod)
+  (JNIEnv * env, jclass cls, jlong compressionMethod)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -2107,10 +2107,10 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_OpenVDS_IsCompressionMetho
 }
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_CreateImpl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring url, jstring connectionString, jlong layoutDescriptor, jlongArray axisDescriptors, jlongArray channelDescriptors, jlong metadata, jlong compressionMethod, jfloat compressionTolerance, jlong error)
+  (JNIEnv * env, jclass cls, jstring url, jstring connectionString, jlong layoutDescriptor, jlongArray axisDescriptors, jlongArray channelDescriptors, jlong metadata, jlong compressionMethod, jfloat compressionTolerance, jlong error)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -2132,10 +2132,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_CreateImpl
 }
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Create2Impl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring url, jstring connectionString, jlong layoutDescriptor, jlongArray axisDescriptors, jlongArray channelDescriptors, jlong metadata, jlong error)
+  (JNIEnv * env, jclass cls, jstring url, jstring connectionString, jlong layoutDescriptor, jlongArray axisDescriptors, jlongArray channelDescriptors, jlong metadata, jlong error)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -2155,10 +2155,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Create2Impl
 }
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Create3Impl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring url, jlong layoutDescriptor, jlongArray axisDescriptors, jlongArray channelDescriptors, jlong metadata, jlong compressionMethod, jfloat compressionTolerance, jlong error)
+  (JNIEnv * env, jclass cls, jstring url, jlong layoutDescriptor, jlongArray axisDescriptors, jlongArray channelDescriptors, jlong metadata, jlong compressionMethod, jfloat compressionTolerance, jlong error)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -2179,10 +2179,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Create3Impl
 }
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Create4Impl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jstring url, jlong layoutDescriptor, jlongArray axisDescriptors, jlongArray channelDescriptors, jlong metadata, jlong error)
+  (JNIEnv * env, jclass cls, jstring url, jlong layoutDescriptor, jlongArray axisDescriptors, jlongArray channelDescriptors, jlong metadata, jlong error)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -2201,10 +2201,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Create4Impl
 }
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Create5Impl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jlong options, jlong layoutDescriptor, jlongArray axisDescriptors, jlongArray channelDescriptors, jlong metadata, jlong compressionMethod, jfloat compressionTolerance, jlong error)
+  (JNIEnv * env, jclass cls, jlong options, jlong layoutDescriptor, jlongArray axisDescriptors, jlongArray channelDescriptors, jlong metadata, jlong compressionMethod, jfloat compressionTolerance, jlong error)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -2225,10 +2225,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Create5Impl
 }
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Create6Impl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jlong options, jlong layoutDescriptor, jlongArray axisDescriptors, jlongArray channelDescriptors, jlong metadata, jlong error)
+  (JNIEnv * env, jclass cls, jlong options, jlong layoutDescriptor, jlongArray axisDescriptors, jlongArray channelDescriptors, jlong metadata, jlong error)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -2247,10 +2247,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Create6Impl
 }
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Create7Impl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jlong ioManager, jlong layoutDescriptor, jlongArray axisDescriptors, jlongArray channelDescriptors, jlong metadata, jlong compressionMethod, jfloat compressionTolerance, jlong error)
+  (JNIEnv * env, jclass cls, jlong ioManager, jlong layoutDescriptor, jlongArray axisDescriptors, jlongArray channelDescriptors, jlong metadata, jlong compressionMethod, jfloat compressionTolerance, jlong error)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -2271,10 +2271,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Create7Impl
 }
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Create8Impl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jlong ioManager, jlong layoutDescriptor, jlongArray axisDescriptors, jlongArray channelDescriptors, jlong metadata, jlong error)
+  (JNIEnv * env, jclass cls, jlong ioManager, jlong layoutDescriptor, jlongArray axisDescriptors, jlongArray channelDescriptors, jlong metadata, jlong error)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -2293,10 +2293,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Create8Impl
 }
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_GetLayoutImpl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jlong handle)
+  (JNIEnv * env, jclass cls, jlong handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -2309,10 +2309,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_GetLayoutImpl
 }
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_GetAccessManagerImpl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jlong handle)
+  (JNIEnv * env, jclass cls, jlong handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -2325,10 +2325,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_GetAccessManagerImpl
 }
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_GetCompressionMethodImpl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jlong handle)
+  (JNIEnv * env, jclass cls, jlong handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -2340,10 +2340,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_GetCompressionMethodI
 }
 
 JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_OpenVDS_GetCompressionToleranceImpl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jlong handle)
+  (JNIEnv * env, jclass cls, jlong handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -2355,10 +2355,10 @@ JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_OpenVDS_GetCompressionTolera
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_OpenVDS_CloseImpl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jlong handle)
+  (JNIEnv * env, jclass cls, jlong handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -2368,10 +2368,10 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_OpenVDS_CloseImpl
 }
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_GetGlobalStateImpl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface)
+  (JNIEnv * env, jclass cls)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -2384,10 +2384,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_GetGlobalStateImpl
 }
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_OpenVDS_GetOpenVDSNameImpl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface)
+  (JNIEnv * env, jclass cls)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -2399,10 +2399,10 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_OpenVDS_GetOpenVDSNameImpl
 }
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_OpenVDS_GetOpenVDSVersionImpl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface)
+  (JNIEnv * env, jclass cls)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -2414,10 +2414,10 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_OpenVDS_GetOpenVDSVersionIm
 }
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_OpenVDS_GetOpenVDSRevisionImpl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface)
+  (JNIEnv * env, jclass cls)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {

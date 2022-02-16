@@ -29,10 +29,10 @@ extern "C" {
 #endif
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetContentsHashImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -45,10 +45,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetContentsH
 }
 
 JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetDimensionalityImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -61,10 +61,10 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetDimensiona
 }
 
 JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetChannelCountImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -77,10 +77,10 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetChannelCou
 }
 
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeDataLayout_IsChannelAvailableImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring channelName)
+  (JNIEnv * env, jobject object, jlong native_handle, jstring channelName)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -93,10 +93,10 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeDataLayout_IsChannel
 }
 
 JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetChannelIndexImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jstring channelName)
+  (JNIEnv * env, jobject object, jlong native_handle, jstring channelName)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -109,10 +109,10 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetChannelInd
 }
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetLayoutDescriptorImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -126,10 +126,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetLayoutDes
 }
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetChannelDescriptorImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jint channel)
+  (JNIEnv * env, jobject object, jlong native_handle, jint channel)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -143,10 +143,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetChannelDe
 }
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetAxisDescriptorImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jint dimension)
+  (JNIEnv * env, jobject object, jlong native_handle, jint dimension)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -160,10 +160,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetAxisDescr
 }
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetChannelFormatImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jint channel)
+  (JNIEnv * env, jobject object, jlong native_handle, jint channel)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -176,10 +176,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetChannelFo
 }
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetChannelComponentsImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jint channel)
+  (JNIEnv * env, jobject object, jlong native_handle, jint channel)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -192,10 +192,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetChannelCo
 }
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetChannelNameImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jint channel)
+  (JNIEnv * env, jobject object, jlong native_handle, jint channel)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -208,10 +208,10 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetChannel
 }
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetChannelUnitImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jint channel)
+  (JNIEnv * env, jobject object, jlong native_handle, jint channel)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -224,10 +224,10 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetChannel
 }
 
 JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetChannelValueRangeMinImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jint channel)
+  (JNIEnv * env, jobject object, jlong native_handle, jint channel)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -240,10 +240,10 @@ JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetChannelV
 }
 
 JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetChannelValueRangeMaxImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jint channel)
+  (JNIEnv * env, jobject object, jlong native_handle, jint channel)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -256,10 +256,10 @@ JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetChannelV
 }
 
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeDataLayout_IsChannelDiscreteImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jint channel)
+  (JNIEnv * env, jobject object, jlong native_handle, jint channel)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -272,10 +272,10 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeDataLayout_IsChannel
 }
 
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeDataLayout_IsChannelRenderableImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jint channel)
+  (JNIEnv * env, jobject object, jlong native_handle, jint channel)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -288,10 +288,10 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeDataLayout_IsChannel
 }
 
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeDataLayout_IsChannelAllowingLossyCompressionImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jint channel)
+  (JNIEnv * env, jobject object, jlong native_handle, jint channel)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -304,10 +304,10 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeDataLayout_IsChannel
 }
 
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeDataLayout_IsChannelUseZipForLosslessCompressionImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jint channel)
+  (JNIEnv * env, jobject object, jlong native_handle, jint channel)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -320,10 +320,10 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeDataLayout_IsChannel
 }
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetChannelMappingImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jint channel)
+  (JNIEnv * env, jobject object, jlong native_handle, jint channel)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -336,10 +336,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetChannelMa
 }
 
 JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetDimensionNumSamplesImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jint dimension)
+  (JNIEnv * env, jobject object, jlong native_handle, jint dimension)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -352,10 +352,10 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetDimensionN
 }
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetDimensionNameImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jint dimension)
+  (JNIEnv * env, jobject object, jlong native_handle, jint dimension)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -368,10 +368,10 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetDimensi
 }
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetDimensionUnitImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jint dimension)
+  (JNIEnv * env, jobject object, jlong native_handle, jint dimension)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -384,10 +384,10 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetDimensi
 }
 
 JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetDimensionMinImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jint dimension)
+  (JNIEnv * env, jobject object, jlong native_handle, jint dimension)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -400,10 +400,10 @@ JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetDimensio
 }
 
 JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetDimensionMaxImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jint dimension)
+  (JNIEnv * env, jobject object, jlong native_handle, jint dimension)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -416,10 +416,10 @@ JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetDimensio
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetVDSIJKGridDefinitionFromMetadataImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
+  (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -431,10 +431,10 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetVDSIJKGrid
 }
 
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeDataLayout_IsChannelUseNoValueImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jint channel)
+  (JNIEnv * env, jobject object, jlong native_handle, jint channel)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -447,10 +447,10 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeDataLayout_IsChannel
 }
 
 JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetChannelNoValueImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jint channel)
+  (JNIEnv * env, jobject object, jlong native_handle, jint channel)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -463,10 +463,10 @@ JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetChannelN
 }
 
 JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetChannelIntegerScaleImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jint channel)
+  (JNIEnv * env, jobject object, jlong native_handle, jint channel)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -479,10 +479,10 @@ JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetChannelI
 }
 
 JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetChannelIntegerOffsetImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jint channel)
+  (JNIEnv * env, jobject object, jlong native_handle, jint channel)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {

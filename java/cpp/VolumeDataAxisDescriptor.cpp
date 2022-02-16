@@ -29,10 +29,10 @@ extern "C" {
 #endif
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAxisDescriptor_ctorImpl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface)
+  (JNIEnv * env, jclass cls)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -49,10 +49,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAxisDescriptor_ctor
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAxisDescriptor_ctor2Impl
-  (JNIEnv * env, jclass cls, jobject jproxyinterface, jint numSamples, jstring name, jstring unit, jfloat coordinateMin, jfloat coordinateMax)
+  (JNIEnv * env, jclass cls, jint numSamples, jstring name, jstring unit, jfloat coordinateMin, jfloat coordinateMax)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -74,10 +74,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAxisDescriptor_ctor
 
 
 JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataAxisDescriptor_GetNumSamplesImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -90,10 +90,10 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataAxisDescriptor_GetNu
 }
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_VolumeDataAxisDescriptor_GetNameImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -106,10 +106,10 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_VolumeDataAxisDescriptor_Ge
 }
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_VolumeDataAxisDescriptor_GetUnitImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -122,10 +122,10 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_VolumeDataAxisDescriptor_Ge
 }
 
 JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataAxisDescriptor_GetCoordinateMinImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -138,10 +138,10 @@ JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataAxisDescriptor_Get
 }
 
 JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataAxisDescriptor_GetCoordinateMaxImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -154,10 +154,10 @@ JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataAxisDescriptor_Get
 }
 
 JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataAxisDescriptor_GetCoordinateStepImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle)
+  (JNIEnv * env, jobject object, jlong native_handle)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -170,10 +170,10 @@ JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataAxisDescriptor_Get
 }
 
 JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataAxisDescriptor_SampleIndexToCoordinateImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jint sampleIndex)
+  (JNIEnv * env, jobject object, jlong native_handle, jint sampleIndex)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -186,10 +186,10 @@ JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataAxisDescriptor_Sam
 }
 
 JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataAxisDescriptor_CoordinateToSampleIndexImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jfloat coordinate)
+  (JNIEnv * env, jobject object, jlong native_handle, jfloat coordinate)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
@@ -202,10 +202,10 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataAxisDescriptor_Coord
 }
 
 JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataAxisDescriptor_CoordinateToSamplePositionImpl
-  (JNIEnv * env, jobject object, jobject jproxyinterface, jlong native_handle, jfloat coordinate)
+  (JNIEnv * env, jobject object, jlong native_handle, jfloat coordinate)
 {
   JEnvPushPop
-    stackitem(env, jproxyinterface);
+    stackitem(env);
 
   HUE_JNI_TRY
   {
