@@ -600,29 +600,20 @@ class JEnvPushPop
   static thread_local std::stack<JNIEnv*>
     s_JNIEnvStack;
 
-  static thread_local std::stack<jobject>
-    s_JProxyObjectStack;
+  static void checkInit();
 
 public:
   JEnvPushPop(JNIEnv* env)
   {
+    checkInit();
     assert(env != NULL);
     s_JNIEnvStack.push(env);
-    s_JProxyObjectStack.push(0);
-  }
-
-  JEnvPushPop(JNIEnv* env, jobject proxyobject)
-  {
-    assert(env != NULL);
-    s_JNIEnvStack.push(env);
-    s_JProxyObjectStack.push(proxyobject);
   }
 
   ~JEnvPushPop()
   {
     FlushStrings();
     s_JNIEnvStack.pop();
-    s_JProxyObjectStack.pop();
   }
 
   const char* GetStringUTFChars(jstring value) {
