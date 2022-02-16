@@ -18,35 +18,17 @@
 #include "WaveletAdaptiveLLDecompress.h"
 #include "WaveletAdaptiveLLDecompress_DecodeAllBits.h"
 #include "WaveletAdaptiveLLDecompress_DecodeTreeStructure.h"
-
+#include "WaveletOpenMP.h"
+#include "FSE/fse.h"
 #include <assert.h>
-
-#if defined(_OPENMP)
-#include <omp.h>
-#endif
-
 #include <algorithm>
 #include <math.h>
 #include <string.h>
-
-#include "FSE/fse.h"
 
 #define DECODEITERATOR_MAXDECODEBITS       256
 
 namespace OpenVDS
 {
-
-#if !defined(_OPENMP)
-static int32_t omp_get_max_threads()
-{
-  return 1;
-}
-
-static int32_t omp_get_thread_num()
-{
-  return 0;
-}
-#endif
 
 static uint8_t* AssignPtrAndIncrementOffset(int nSize, uint8_t*& workBuffer)
 {
@@ -552,7 +534,9 @@ int32_t WaveletAdaptiveLLDecompress_DecompressLossless(uint8_t *in, float *pic, 
     totalSize += size;
   }
 
-#pragma omp parallel for num_threads(4) schedule(static)
+  const int threadCount = Wavelet_GetEffectiveOpenMPThreadCount(WAVELET_OPENMP_SSE_THREAD_COUNT);
+
+#pragma omp parallel for num_threads(threadCount) schedule(static)
   for (int i = 0; i < 4; i++)
   {
     if (readSize[i] == ADAPTIVEWAVELET_LOSSLESS_CHANNEL_UNCOMPRESSED)
@@ -572,10 +556,10 @@ int32_t WaveletAdaptiveLLDecompress_DecompressLossless(uint8_t *in, float *pic, 
   
   int *intPic = (int *)pic;
 
-  
+#pragma omp parallel for if(sizeZ > 1) num_threads(threadCount) schedule(static)
   for (int iZ = 0; iZ < sizeZ; iZ++)
   {
-#pragma omp parallel for schedule(static)
+#pragma omp parallel for if(sizeZ == 1) num_threads(threadCount) schedule(static)
     for (int iY = 0; iY < sizeY; iY++)
     {
       int
@@ -670,9 +654,12 @@ bool WaveletAdaptiveLL_IsWaveletStreamEncodedWithBug(Wavelet_TransformData *tran
 template <class T, bool isHigh>
 static void WaveletAdaptiveLL_ReplaceZeroFromZeroCount(T * pxPic, int nTransformSizeY, int nTransformSizeZ, int nAllocatedSizeX, int nAllocatedSizeY, const unsigned char *puCountLow, const unsigned char *puCountHigh, T replaceValue)
 {
+  const int threadCount = Wavelet_GetEffectiveOpenMPThreadCount(WAVELET_OPENMP_SSE_THREAD_COUNT);
+
+#pragma omp parallel for if(nTransformSizeZ > 1) num_threads(threadCount) schedule(static)
   for (int iZ=0; iZ<nTransformSizeZ;iZ++)
   {
-  #pragma omp parallel for
+#pragma omp parallel for if(nTransformSizeZ == 1) num_threads(threadCount) schedule(static)
     for (int iY=0; iY<nTransformSizeY;iY++)
     {
       T

@@ -18,10 +18,9 @@
 #define ENABLE_SSE_TRANSFORM 1
 #include "WaveletInverseTransform.h"
 #include "WaveletInverseTransformSSE.h"
-
+#include "WaveletOpenMP.h"
 #include <assert.h>
 
-#define WAVELET_SSE_THREADS 4 //Number of streams packed/unpacked for bit decoding
 #define WAVELET_MAX_DIMENSION_SIZE 4096
 
 namespace OpenVDS
@@ -267,8 +266,8 @@ void WaveletTransform_InverseTransform(float* tempBuffer, int32_t tempBufferSize
 
     float *read = source;
     float *write = tempBuffer;
-    const int32_t threadCount = WAVELET_SSE_THREADS;
-    (void)threadCount;
+
+    const int threadCount = Wavelet_GetEffectiveOpenMPThreadCount(WAVELET_OPENMP_SSE_THREAD_COUNT);
 
     if (transformMaskCurr == 7)
     {

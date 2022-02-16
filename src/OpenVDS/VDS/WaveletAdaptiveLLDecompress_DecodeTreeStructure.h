@@ -18,29 +18,14 @@
 #ifndef WAVELETADAPTIVELLDECOMPRESS_DECODETREESTRUCTURE_H
 #define WAVELETADAPTIVELLDECOMPRESS_DECODETREESTRUCTURE_H
 
+#include "WaveletTypes.h"
+#include "WaveletOpenMP.h"
 #include <assert.h>
-
-#if defined(_OPENMP)
-#include <omp.h>
-#endif
-
 #include <math.h>
 #include <string.h>
 
 namespace OpenVDS
 {
-
-#if !defined(_OPENMP)
-static int32_t omp_get_max_threads()
-{
-  return 1;
-}
-
-static int32_t omp_get_thread_num()
-{
-  return 0;
-}
-#endif
 
 template<bool isAllNormal>
 static inline void WaveletAdaptiveLL_InitializeInsignificantsKernel(int iElement, const WaveletAdaptiveLL_DecodeIterator& decodeIterator, const Wavelet_PixelSetChildren* pixelSetChildren)

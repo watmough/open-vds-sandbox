@@ -19,27 +19,11 @@
 #define WAVELETADAPTIVELLDECOMPRESS_DECODEALLBITS_H
 
 #include "WaveletAdaptiveLLDecompress.h"
-
+#include "WaveletOpenMP.h"
 #include <assert.h>
-
-#if defined(_OPENMP)
-#include <omp.h>
-#endif
 
 namespace OpenVDS
 {
-
-#if !defined(_OPENMP)
-static int32_t omp_get_max_threads()
-{
-  return 1;
-}
-
-static int32_t omp_get_thread_num()
-{
-  return 0;
-}
-#endif
 
 template<bool isMultiple, bool isAllNormal, int multiple, bool isPreventOverwrite>
 void WaveletAdaptiveLLDecompress_DecodeAllBits(const WaveletAdaptiveLL_DecodeIterator& decodeIterator, float threshold, const int* valueEncoding, const int* valuesAtLevel, const int values, const int startDecodeBits, const int maxDecodeLevel, int threads)

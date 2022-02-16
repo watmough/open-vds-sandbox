@@ -21,10 +21,8 @@
 #include <OpenVDS/VolumeData.h>
 #include <OpenVDS/Vector.h>
 #include "DataBlock.h"
-
-#include <memory>
-
 #include "WaveletTypes.h"
+#include <memory>
 
 namespace OpenVDS
 {

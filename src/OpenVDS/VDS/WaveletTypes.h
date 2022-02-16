@@ -25,6 +25,7 @@
 #include <math.h>
 #include <assert.h>
 #include <vector>
+#include <algorithm>
 
 #define WAVELET_MIN_COMPRESSION_TOLERANCE 0.01f
 
@@ -43,7 +44,6 @@
 
 #define ADAPTIVEWAVELET_ALIGNBUFFERSIZE 256
 #define DECODEITERATOR_MAXDECODEBITS    256
-
 
 #define WAVELET_ADAPTIVE_LEVELS 16
 

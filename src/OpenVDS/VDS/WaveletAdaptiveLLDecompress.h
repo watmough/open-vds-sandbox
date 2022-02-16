@@ -19,7 +19,6 @@
 #define WAVELETADAPTIVELLDECOMPRESS_H
 
 #include "WaveletTypes.h"
-
 #include <inttypes.h>
 
 namespace OpenVDS
