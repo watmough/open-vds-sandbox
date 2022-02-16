@@ -127,8 +127,17 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>"C:\src\open-vds\out\install\x64-Debug\lib\msvc_142\Debug\openvdsd.lib";%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>"$(ProjectDir)..\..\..\out\install\$(Platform)-$(ConfigurationName)\lib\msvc_$(PlatformToolsetVersion)\Debug\openvdsd.lib";%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>if not exist $(ProjectDir)test_bin mkdir test_bin
+copy $(TargetPath) test_bin\
+set _DEBUG_DIR=$(ProjectDir)..\..\..\out\install\$(Platform)-$(ConfigurationName)\bin\msvc_$(PlatformToolsetVersion)\Debug\
+set _RELEASE_DIR=$(ProjectDir)..\..\..\out\install\$(Platform)-$(ConfigurationName)\bin\msvc_$(PlatformToolsetVersion)\RelWithDebInfo\
+if exist "%_DEBUG_DIR%openvdsd.dll" copy "%_DEBUG_DIR%*.dll" test_bin\
+if exist "%_RELEASE_DIR%openvds.dll" copy "%_RELEASE_DIR%*.dll" test_bin\
+</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -145,7 +154,17 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>"$(ProjectDir)..\..\..\out\install\$(Platform)-$(ConfigurationName)\lib\msvc_$(PlatformToolsetVersion)\RelWithDebInfo\openvds.lib";%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>if not exist $(ProjectDir)test_bin mkdir test_bin
+copy $(TargetPath) test_bin\
+set _DEBUG_DIR=$(ProjectDir)..\..\..\out\install\$(Platform)-$(ConfigurationName)\bin\msvc_$(PlatformToolsetVersion)\Debug\
+set _RELEASE_DIR=$(ProjectDir)..\..\..\out\install\$(Platform)-$(ConfigurationName)\bin\msvc_$(PlatformToolsetVersion)\RelWithDebInfo\
+if exist "%_DEBUG_DIR%openvdsd.dll" copy "%_DEBUG_DIR%*.dll" test_bin\
+if exist "%_RELEASE_DIR%openvds.dll" copy "%_RELEASE_DIR%*.dll" test_bin\
+</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\CoordinateTransformer.cpp" />
