@@ -23,7 +23,7 @@ import java.util.*;
 import java.nio.ByteBuffer;
 
 
-public class VDS extends ManagedBase {
+public class VDS extends ManagedBase implements AutoCloseable {
 
     native private static long ctorImpl();
     
@@ -43,6 +43,10 @@ public class VDS extends ManagedBase {
         dtorImpl(native_object, isDisposing);
     }
 
+    public void close() {
+        dispose();
+    }
+
     static VDS fromNativeObject(long nativeobject) {
         return new VDS(nativeobject);
     }
@@ -50,4 +54,11 @@ public class VDS extends ManagedBase {
 
 
 
+    public VolumeDataLayout getLayout() {
+        return OpenVDS.getLayout(this);
+    }
+
+    public VolumeDataAccessManager getAccessManager() {
+        return OpenVDS.getAccessManager(this);
+    }
 }

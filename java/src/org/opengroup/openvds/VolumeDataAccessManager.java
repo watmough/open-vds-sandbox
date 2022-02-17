@@ -23,7 +23,7 @@ import java.util.*;
 import java.nio.ByteBuffer;
 
 
-public class VolumeDataAccessManager extends ManagedBase {
+public class VolumeDataAccessManager extends ManagedBase implements AutoCloseable {
 
     native private static long ctorImpl();
     
@@ -2070,6 +2070,10 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     @Override
     protected void onDisposing(long native_object, boolean isDisposing) {
         dtorImpl(native_object, isDisposing);
+    }
+
+    public void close() {
+        dispose();
     }
 
     static VolumeDataAccessManager fromNativeObject(long nativeobject) {

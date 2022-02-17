@@ -464,6 +464,16 @@ struct Destroyer<T, false>
   static void destroy(T* instance) { }
 };
 
+template<>
+struct Destroyer<OpenVDS::VDS, true>
+{
+  static void 
+  destroy(OpenVDS::VDS* instance) 
+  { 
+    OpenVDS::Close(instance); 
+  }
+};
+
 template<typename T>
 struct HueJNIObjectContext_t : public HueJNIObjectContext
 {

@@ -26,7 +26,7 @@ import java.nio.ByteBuffer;
  * A class that provides random read access to the voxel values of a VDS
  * 
  */
-public class VolumeData4DReadAccessorU8 extends ManagedBase {
+public class VolumeData4DReadAccessorU8 extends ManagedBase implements AutoCloseable {
 
     ///AUTOGEN-OK: CXX_METHOD GetLayout const OpenVDS::VolumeDataLayout *() const FUNCTIONPROTO
     native private long GetLayoutImpl(long native_object);
@@ -80,6 +80,10 @@ public class VolumeData4DReadAccessorU8 extends ManagedBase {
     @Override
     protected void onDisposing(long native_object, boolean isDisposing) {
         dtorImpl(native_object, isDisposing);
+    }
+
+    public void close() {
+        dispose();
     }
 
     static VolumeData4DReadAccessorU8 fromNativeObject(long nativeobject) {

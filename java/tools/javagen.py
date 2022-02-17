@@ -1490,7 +1490,7 @@ def create_java_class(scope: Scope, template: str, override_name: str = '', temp
         if re.match(raii_class, class_name):
             is_raii = True
             break
-    is_raii = False if bases else is_raii
+    is_raii = False if bases and bases[0] != 'ManagedBase' else is_raii
     if is_raii and has_instance_methods:
         # AutoCloseable interface can be used with the java try-with-resources pattern (RAAI)
         class_implements_interfaces.append('AutoCloseable')
@@ -1813,6 +1813,7 @@ include_classes = [
 ]
 
 raii_classes = [
+    'VDS$',
     'VolumeDataAccessManager$', 
     'VolumeDataRequest$',
     'VolumeData[2-4]D\w*Accessor\w*$',

@@ -15,21 +15,25 @@
  */
 
 package org.opengroup.openvds;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.logging.*;
 
 public abstract class ManagedBase {
 
-    static final String JNI_LIB_NAME = "OpenVDSJava";
-
-    private static final Logger LOGGER = Logger.getLogger(ManagedBase.class.getName());
-    private static final String ERR_LIBRARY = "JNI library load failed";
-
     static {
         try {
-            System.loadLibrary(JNI_LIB_NAME);
+            System.loadLibrary("OpenVDSJava");
         } catch (Throwable e) {
-            LOGGER.log(Level.SEVERE, ERR_LIBRARY, e);
+            Logger.getLogger(ManagedBase.class.getName()).log(Level.SEVERE, "Failed to load JNI library.", e);
+        }
+    }
+
+    public static class ObjectDisposedException extends RuntimeException {
+        public ObjectDisposedException() {
+            super("Accessing disposed object");
+        }
+
+        public ObjectDisposedException(String msg) {
+            super("Accessing disposed object: " + msg);
         }
     }
 
@@ -44,7 +48,7 @@ public abstract class ManagedBase {
 	
     long getNativeObject() {
         if (this.native_object == 0)
-           throw new RuntimeException("Accessing disposed object");
+           throw new ObjectDisposedException();
         return this.native_object;
     }
 	
@@ -52,7 +56,6 @@ public abstract class ManagedBase {
 	}
 
 	private synchronized void dispose(boolean isDisposing) {
-
 		if (this.native_object != 0) {
 			long native_object = this.native_object;
 			this.native_object = 0;

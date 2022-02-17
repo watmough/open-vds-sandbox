@@ -23,7 +23,7 @@ import java.util.*;
 import java.nio.ByteBuffer;
 
 
-public class VolumeDataRequest extends ManagedBase {
+public class VolumeDataRequest extends ManagedBase implements AutoCloseable {
 
     native private static long ctorImpl();
     
@@ -175,6 +175,10 @@ Whenever WaitForCompletion returns false you need to call IsCanceled() to know i
     @Override
     protected void onDisposing(long native_object, boolean isDisposing) {
         dtorImpl(native_object, isDisposing);
+    }
+
+    public void close() {
+        dispose();
     }
 
     static VolumeDataRequest fromNativeObject(long nativeobject) {
