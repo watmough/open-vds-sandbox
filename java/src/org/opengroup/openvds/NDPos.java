@@ -141,6 +141,10 @@ public class NDPos extends ByteBufferBackedObject {
         return value;
     }
 
+    public float[] toArray() {
+        return new float[]{ getPos0(), getPos1(), getPos2(), getPos3(), getPos4(), getPos5() };
+    }
+
     public static final int BYTES = Float.BYTES * 6 * 1;
 }
 
