@@ -89,6 +89,10 @@ public class IntVector2 extends ByteBufferBackedObject {
         return value;
     }
 
+    public int[] toArray() {
+        return new int[]{ getX(), getY() };
+    }
+
     public static final int BYTES = Integer.BYTES * 2 * 1;
 }
 

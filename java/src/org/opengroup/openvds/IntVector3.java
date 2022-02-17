@@ -102,6 +102,10 @@ public class IntVector3 extends ByteBufferBackedObject {
         return value;
     }
 
+    public int[] toArray() {
+        return new int[]{ getX(), getY(), getZ() };
+    }
+
     public static final int BYTES = Integer.BYTES * 3 * 1;
 }
 

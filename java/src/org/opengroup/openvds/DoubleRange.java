@@ -89,6 +89,10 @@ public class DoubleRange extends ByteBufferBackedObject {
         return value;
     }
 
+    public double[] toArray() {
+        return new double[]{ getMin(), getMax() };
+    }
+
     public static final int BYTES = Double.BYTES * 2 * 1;
 }
 

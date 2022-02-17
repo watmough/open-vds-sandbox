@@ -89,6 +89,10 @@ public class FloatRange extends ByteBufferBackedObject {
         return value;
     }
 
+    public float[] toArray() {
+        return new float[]{ getMin(), getMax() };
+    }
+
     public static final int BYTES = Float.BYTES * 2 * 1;
 }
 

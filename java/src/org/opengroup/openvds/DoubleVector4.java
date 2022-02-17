@@ -115,6 +115,10 @@ public class DoubleVector4 extends ByteBufferBackedObject {
         return value;
     }
 
+    public double[] toArray() {
+        return new double[]{ getX(), getY(), getZ(), getT() };
+    }
+
     public static final int BYTES = Double.BYTES * 4 * 1;
 }
 

@@ -89,6 +89,10 @@ public class FloatVector2 extends ByteBufferBackedObject {
         return value;
     }
 
+    public float[] toArray() {
+        return new float[]{ getX(), getY() };
+    }
+
     public static final int BYTES = Float.BYTES * 2 * 1;
 }
 

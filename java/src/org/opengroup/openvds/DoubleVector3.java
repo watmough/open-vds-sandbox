@@ -102,6 +102,10 @@ public class DoubleVector3 extends ByteBufferBackedObject {
         return value;
     }
 
+    public double[] toArray() {
+        return new double[]{ getX(), getY(), getZ() };
+    }
+
     public static final int BYTES = Double.BYTES * 3 * 1;
 }
 

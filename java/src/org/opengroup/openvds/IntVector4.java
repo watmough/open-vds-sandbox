@@ -115,6 +115,10 @@ public class IntVector4 extends ByteBufferBackedObject {
         return value;
     }
 
+    public int[] toArray() {
+        return new int[]{ getX(), getY(), getZ(), getT() };
+    }
+
     public static final int BYTES = Integer.BYTES * 4 * 1;
 }
 

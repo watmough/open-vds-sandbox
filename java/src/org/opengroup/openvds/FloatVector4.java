@@ -115,6 +115,10 @@ public class FloatVector4 extends ByteBufferBackedObject {
         return value;
     }
 
+    public float[] toArray() {
+        return new float[]{ getX(), getY(), getZ(), getT() };
+    }
+
     public static final int BYTES = Float.BYTES * 4 * 1;
 }
 

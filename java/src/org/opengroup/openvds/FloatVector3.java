@@ -102,6 +102,10 @@ public class FloatVector3 extends ByteBufferBackedObject {
         return value;
     }
 
+    public float[] toArray() {
+        return new float[]{ getX(), getY(), getZ() };
+    }
+
     public static final int BYTES = Float.BYTES * 3 * 1;
 }
 

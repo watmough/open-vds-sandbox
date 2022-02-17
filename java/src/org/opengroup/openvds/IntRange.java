@@ -89,6 +89,10 @@ public class IntRange extends ByteBufferBackedObject {
         return value;
     }
 
+    public int[] toArray() {
+        return new int[]{ getMin(), getMax() };
+    }
+
     public static final int BYTES = Integer.BYTES * 2 * 1;
 }
 

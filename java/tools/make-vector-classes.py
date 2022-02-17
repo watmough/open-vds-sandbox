@@ -53,6 +53,15 @@ def createDefaultCtor(class_name: str, typename: str, count: int, composite_coun
 """
     return transformTemplate(contents, class_name, typename, count, composite_count)
 
+def createToArray(class_name: str, typename: str, count: int, composite_count: int) -> str:
+    init = ", ".join([ f"get{capfirst(MEMBERS[c])}()" for c in range(0, count) ])
+    contents = f"""
+    public PRIMITIVETYPE[] toArray() {{
+        return new PRIMITIVETYPE[]{{ {init} }};
+    }}
+"""    
+    return transformTemplate(contents, class_name, typename, count, composite_count)
+
 def createFullCtor(class_name: str, typename: str, count: int, composite_count: int) -> str:
     args = ", ".join([ f"PRIMITIVETYPE {MEMBERS[c]}" for c in range(0, count) ])
     init = ", ".join([ f"{MEMBERS[c]}" for c in range(0, count) ])
@@ -224,6 +233,7 @@ VECTOR_HANDLERS = [
     createSetters,
     createGetters,
     createToString,
+    createToArray,
     createDefaultBytesize,
 ]
 

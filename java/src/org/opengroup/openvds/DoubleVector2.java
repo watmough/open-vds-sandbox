@@ -89,6 +89,10 @@ public class DoubleVector2 extends ByteBufferBackedObject {
         return value;
     }
 
+    public double[] toArray() {
+        return new double[]{ getX(), getY() };
+    }
+
     public static final int BYTES = Double.BYTES * 2 * 1;
 }
 
