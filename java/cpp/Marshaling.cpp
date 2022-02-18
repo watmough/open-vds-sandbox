@@ -18,6 +18,7 @@
 #include "Marshaling.h"
 #include "OpenVDS/OpenVDS.h"
 #include "OpenVDS/VolumeData.h"
+#include "OpenVDS/Exceptions.h"
 #include <assert.h>
 
 #ifdef _WIN32
@@ -143,5 +144,15 @@ CPPJNI_HandleStdRuntimeError(struct JNIEnv_ *env, class std::runtime_error &e)
 void 
 CPPJNI_HandleSharedLibraryException(struct JNIEnv_ *env, class OpenVDS::Exception &e)
 {
-  CPPJNI_Throw(env, e.what(), JavaExceptionType::RuntimeException);
+  OpenVDS::Exception
+    *pException = &e;
+
+  if (dynamic_cast<OpenVDS::ReadErrorException*>(pException) != nullptr)
+  {
+    CPPJNI_Throw(env, e.what(), JavaExceptionType::IOException);
+  }
+  else
+  {
+    CPPJNI_Throw(env, e.what(), JavaExceptionType::Exception);
+  }
 }
