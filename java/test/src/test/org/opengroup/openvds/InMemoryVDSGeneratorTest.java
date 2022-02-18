@@ -139,7 +139,7 @@ public class InMemoryVDSGeneratorTest {
         assertEquals(1, layout.getChannelDescriptor(0).getMappedValueCount());
 
         final MetadataKey[] metadataKeys = layout.getMetadataKeys();
-        assertEquals(13, metadataKeys.length);
+        assertEquals(14, metadataKeys.length);
 
         assertTrue(layout.isMetadataIntAvailable("categoryInt", "Int"));
         assertEquals(123, layout.getMetadataInt("categoryInt", "Int"));
@@ -170,6 +170,9 @@ public class InMemoryVDSGeneratorTest {
 
         assertTrue(layout.isMetadataStringAvailable("categoryString", "String"));
         assertEquals("Test string", layout.getMetadataString("categoryString", "String"));
+
+        assertTrue(layout.isMetadataBLOBAvailable("categoryBLOB", "BLOB"));
+        assertArrayEquals(new byte[]{1,2,3,4}, layout.getMetadataBLOB("categoryBLOB", "BLOB"));
 
         generator.close();
 
