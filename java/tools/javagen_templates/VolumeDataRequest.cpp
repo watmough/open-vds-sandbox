@@ -8,15 +8,15 @@ JNIEXPORT jobject JNICALL Java_org_opengroup_openvds_VolumeDataRequest_GetBuffer
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataRequest>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataRequest>(native_handle);
 
     void *buffer = pInstance->Buffer();
     jlong nBufferSize = pInstance->BufferByteSize();
 
     return env->NewDirectByteBuffer(buffer, nBufferSize);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }

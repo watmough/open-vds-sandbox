@@ -1,12 +1,19 @@
-//=============================================================================
-// <copyright>
-// Copyright (c) 2020 Bluware Inc. All rights reserved.
-//
-// All rights are reserved. Reproduction or transmission in whole or in part,
-// in any form or by any means, electronic, mechanical or otherwise,
-// is prohibited without the prior written permission of the copyright owner.
-// </copyright>
-//=============================================================================
+/*
+ * Copyright 2022 The Open Group
+ * Copyright 2022 Bluware Inc. 
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 #include "Marshaling.h"
 #include "OpenVDS/OpenVDS.h"
@@ -63,47 +70,78 @@ jobject Marshaling::CreateJavaObject(jclass clazz) {
 }
 
 int
-HueJNIObjectContext::getHueSpaceGeneration()
-{
+CPPJNIObjectContext::getSharedLibraryGeneration()
+{ // The HueSpace shared library supports unloading and reloading within the same process.
+  // Here, we just return 1.
   return 1;
 }
 
-// Ensure that the context wraps a resource allocated in the current HueSpace library instance.
-// If this is not the case, throw ObsoleteObjectException which in turn is caught by HUE_JNI_CATCH
+// Ensure that the context wraps a resource allocated in the current shared library instance.
+// If this is not the case, throw ObsoleteObjectException which in turn is caught by CPPJNI_CATCH
 // thus making the outer function call a no-op.
 void
-HueJNIObjectContext::ensureValid() const
+CPPJNIObjectContext::ensureValid() const
 {
   assert(this);
   if (m_MagicNumber != MAGIC_NUMBER)
   {
-    throw std::runtime_error("Invalid HueJNIObjectContext");
+    throw std::runtime_error("Invalid CPPJNIObjectContext");
   }
-  if (m_HueSpaceGeneration != getHueSpaceGeneration())
+  if (m_SharedLibraryGeneration != getSharedLibraryGeneration())
   {
     throw ObsoleteObjectException();
   }
 }
 
-HueJNIFinalizerMutexGuard::HueJNIFinalizerMutexGuard() : std::lock_guard<std::mutex>(s_FinalizerMutex)
+CPPJNIFinalizerMutexGuard::CPPJNIFinalizerMutexGuard() : std::lock_guard<std::mutex>(s_FinalizerMutex)
 {
 }
 
-HueJNIFinalizerMutexGuard::~HueJNIFinalizerMutexGuard()
+CPPJNIFinalizerMutexGuard::~CPPJNIFinalizerMutexGuard()
 {
 }
 
-void Hue_Handle_StdException(struct JNIEnv_ *,class std::exception &)
+enum class JavaExceptionType
 {
+  Exception,
+  RuntimeException,
+  IOException,
+};
+
+void
+CPPJNI_Throw(struct JNIEnv_ *env, const char* message, JavaExceptionType exceptionType)
+{
+  const char* 
+    ex = "java/lang/Exception";
+
+  switch (exceptionType)
+  {
+  case JavaExceptionType::RuntimeException:
+    ex = "java/lang/RuntimeException";
+    break;
+  case JavaExceptionType::IOException:
+    ex = "java/io/IOException";
+    break;
+  default:
+    break;
+  }
+  env->ThrowNew(env->FindClass(ex), message);
 }
 
-void Hue_Handle_StdRuntimeError(struct JNIEnv_ *,class std::runtime_error &)
+void 
+CPPJNI_HandleStdException(struct JNIEnv_ *env, class std::exception &e)
 {
+  CPPJNI_Throw(env, e.what(), JavaExceptionType::Exception);
 }
 
-void Hue_Handle_HueSpaceLibException(struct JNIEnv_ *,class OpenVDS::Exception &)
+void 
+CPPJNI_HandleStdRuntimeError(struct JNIEnv_ *env, class std::runtime_error &e)
 {
+  CPPJNI_Throw(env, e.what(), JavaExceptionType::RuntimeException);
 }
 
-
-
+void 
+CPPJNI_HandleSharedLibraryException(struct JNIEnv_ *env, class OpenVDS::Exception &e)
+{
+  CPPJNI_Throw(env, e.what(), JavaExceptionType::RuntimeException);
+}

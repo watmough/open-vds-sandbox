@@ -34,16 +34,16 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor_ct
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::VolumeDataLayoutDescriptor>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::VolumeDataLayoutDescriptor>();
 
     auto native_handle = context->handle();
     context->setObject(new OpenVDS::VolumeDataLayoutDescriptor());
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -54,9 +54,9 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor_ct
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::VolumeDataLayoutDescriptor>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::VolumeDataLayoutDescriptor>();
 
     auto native_handle = context->handle();
     context->setObject(new OpenVDS::VolumeDataLayoutDescriptor(
@@ -70,7 +70,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor_ct
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -81,13 +81,13 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataLayoutDescriptor>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataLayoutDescriptor>(native_handle);
     auto result = pInstance->IsValid();
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -97,13 +97,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor_Ge
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataLayoutDescriptor>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataLayoutDescriptor>(native_handle);
     auto result = pInstance->GetBrickSize();
     return (jlong)result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -113,13 +113,13 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor_Get
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataLayoutDescriptor>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataLayoutDescriptor>(native_handle);
     auto result = pInstance->GetNegativeMargin();
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -129,13 +129,13 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor_Get
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataLayoutDescriptor>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataLayoutDescriptor>(native_handle);
     auto result = pInstance->GetPositiveMargin();
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -145,13 +145,13 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor_Get
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataLayoutDescriptor>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataLayoutDescriptor>(native_handle);
     auto result = pInstance->GetBrickSizeMultiplier2D();
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -161,13 +161,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor_Ge
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataLayoutDescriptor>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataLayoutDescriptor>(native_handle);
     auto result = pInstance->GetLODLevels();
     return (jlong)result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -177,13 +177,13 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataLayoutDescriptor>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataLayoutDescriptor>(native_handle);
     auto result = pInstance->IsCreate2DLODs();
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -193,13 +193,13 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataLayoutDescriptor>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataLayoutDescriptor>(native_handle);
     auto result = pInstance->IsForceFullResolutionDimension();
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -209,24 +209,24 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor_Get
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataLayoutDescriptor>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataLayoutDescriptor>(native_handle);
     auto result = pInstance->GetFullResolutionDimension();
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    HueJNI_destroyHandle<OpenVDS::VolumeDataLayoutDescriptor>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataLayoutDescriptor>(env, native_handle);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 

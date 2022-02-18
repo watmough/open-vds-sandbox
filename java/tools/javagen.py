@@ -198,9 +198,6 @@ def check_ignore_args(args: List[Param]):
         if t in _ignore_types:
             raise TypeIgnored(f'Ignoring function with parameter of type: {arg.typename}')
 
-def is_licenseapi(class_name: str) -> bool:
-    return class_name == 'HueLicenseAPIHelper'
-
 def is_marshaled_valuetype(typename: str) -> bool:
     return clean_typename(typename) in _marshaled_value_types
 
@@ -568,7 +565,7 @@ def transform_jni_functioncall_args(args: List[Param], is_static_method: bool=Fa
             is_mutable = 'false'
             if not 'const' in type_:
                 is_mutable = 'true'
-            prologue.append(f"auto tmp{name} = HueJNIArrayAdapter<{arr_element_type},{arr_size},{is_mutable}>(env, {name});")
+            prologue.append(f"auto tmp{name} = CPPJNIArrayAdapter<{arr_element_type},{arr_size},{is_mutable}>(env, {name});")
             if '*' in type_ and is_arg_size_type(p.peek(None)):
                 nextarg = next(p)
                 ntype_, nname = nextarg.canonical_type, nextarg.name
@@ -584,7 +581,7 @@ def transform_jni_functioncall_args(args: List[Param], is_static_method: bool=Fa
         elif is_bytebuffer_backed(type_):
             # bytebuffer objects are passed as 2 separate parameters: the bytebuffer object itself and a byteoffset into the buffer
             cleantype = clean_typename(type_)
-            arglist.append(f"HueJNIByteBufferAdapter<{cleantype}>(env, {name}bytebuffer, {name}byteoffset)")
+            arglist.append(f"CPPJNIByteBufferAdapter<{cleantype}>(env, {name}bytebuffer, {name}byteoffset)")
         elif is_optional_type(type_):
             # optional<T> values are passed as 2 separate parameters: the T value and whether the T value is valid.
             t = get_template_arg0(type_)
@@ -592,7 +589,7 @@ def transform_jni_functioncall_args(args: List[Param], is_static_method: bool=Fa
         elif use_buffer_protocol([arg, p.peek(None)]):
             # get size parameter from bytebuffer object
             elem_type = get_pointee(type_)
-            prologue.append(f"auto tmp{name} = HueJNIAsyncBuffer<{elem_type}>(env, {name});")
+            prologue.append(f"auto tmp{name} = CPPJNIAsyncBuffer<{elem_type}>(env, {name});")
             arglist.append(f"tmp{name}.buffer(), tmp{name}.byteSize()")
             if 'const' in type_:
                 # Buffer is read-only, so its lifetime is not assumed to be longer than the duration of this call,
@@ -604,14 +601,14 @@ def transform_jni_functioncall_args(args: List[Param], is_static_method: bool=Fa
             next(p) # consume buffer size parameter
         elif  is_vector_type(type_) and is_pass_by_handle(clean_typename(get_template_arg0(type_))):
             elem_type = get_template_arg0(type_)
-            arglist.append(f'HueJNIVectorWrapperAdapter<{elem_type}>(env, {name}).toVector()')
+            arglist.append(f'CPPJNIVectorWrapperAdapter<{elem_type}>(env, {name}).toVector()')
         else:
             jnitype_ = cpp_to_jni_type(type_)
             if jnitype_ == "jstring":
                 if is_static_method:
-                    _wrapper = f"HueJNIStringWrapper(env, {name})"
+                    _wrapper = f"CPPJNIStringWrapper(env, {name})"
                 else:
-                    _wrapper = f"HueJNIStringWrapper(env, native_handle, {name})"
+                    _wrapper = f"CPPJNIStringWrapper(env, native_handle, {name})"
                 _clean_type = clean_typename(type_)
                 if not 'const char *' in type_:
                     # we want to avoid overload ambiguities with regard to const char*/std::string etc
@@ -627,9 +624,9 @@ def transform_jni_functioncall_args(args: List[Param], is_static_method: bool=Fa
             elif is_pass_by_handle(type_):
                 cpptype = clean_typename(type_)
                 if '&' in type_:
-                    arglist.append(f"*HueJNI_cast<{cpptype}>({name})")
+                    arglist.append(f"*CPPJNI_cast<{cpptype}>({name})")
                 else:
-                    arglist.append(f"HueJNI_cast<{cpptype}>({name})")
+                    arglist.append(f"CPPJNI_cast<{cpptype}>({name})")
             else:
                 arglist.append(name)
     separator = '\n                               ' if len(args) > _functioncall_readability_threshold else ''
@@ -664,16 +661,16 @@ def create_jni_ctor(scope: Scope, ctor: Scope, class_name: str, class_canonical_
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {{
-    auto context = new HueJNIObjectContext_t<{class_canonical_name}>();
+    auto context = new CPPJNIObjectContext_t<{class_canonical_name}>();
 {prologue}
     auto native_handle = context->handle();
     context->setObject(new {class_canonical_name}({args}));
 {epilogue}
     return native_handle;
   }}
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }}
 """
@@ -684,11 +681,11 @@ def create_jni_dtor(scope: Scope, class_name: str, class_canonical_name: str) ->
     proto = create_jni_proto(Param('void'), class_name, "dtor", is_include_proxyinterface_arg=False, extra_args=[Param('bool', 'is_disposing')])
     body = f"""
 {{
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {{
-    HueJNI_destroyHandle<{class_canonical_name}>(env, native_handle);
+    CPPJNI_destroyHandle<{class_canonical_name}>(env, native_handle);
   }}
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }}
 """
     return proto + body
@@ -697,13 +694,13 @@ def create_jni_equals(class_name, class_canonical_name):
     proto = create_jni_proto(Param('bool'), class_name, "operatorEQ", extra_args=[Param(typename=class_canonical_name, name='other_native_handle')], is_include_proxyinterface_arg=False, is_static_method=False)
     body = f"""
 {{
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {{
-    auto pInstance = HueJNI_cast<{class_canonical_name}>(native_handle);
-    auto pOtherInstance = HueJNI_cast<{class_canonical_name}>(other_native_handle);
+    auto pInstance = CPPJNI_cast<{class_canonical_name}>(native_handle);
+    auto pOtherInstance = CPPJNI_cast<{class_canonical_name}>(other_native_handle);
     return *pInstance == *pOtherInstance;
   }}
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }}
 """
@@ -787,7 +784,6 @@ def create_jni_methods(scope: Scope, template: str, override_name: str = '', tem
                             has_instance_methods = True
                             has_ctor = True
                     else:
-                        islicenseapi = class_name == 'HueLicenseAPIHelper'
                         is_static_method = child.is_static_method or scope.is_namespace
                         proto = create_jni_proto(result_param, class_name, overload_name, extra_args=args, is_include_proxyinterface_arg=True, is_static_method=is_static_method)
                         overload_signature = proto
@@ -800,22 +796,21 @@ def create_jni_methods(scope: Scope, template: str, override_name: str = '', tem
                             declare_result = 'auto& result = '
                         retval = ''
                         print("{", file=local_output)
-                        if not islicenseapi:
-                            print("  JEnvPushPop\n    stackitem(env);\n", file=local_output)
-                            print("  HUE_JNI_TRY\n  {", file=local_output)
+                        print("  JEnvPushPop\n    stackitem(env);\n", file=local_output)
+                        print("  CPPJNI_TRY\n  {", file=local_output)
                         invoke_args, prologue, epilogue = transform_jni_functioncall_args(args, is_static_method=is_static_method)
                         if prologue:
                             print(prologue, file=local_output)
                         if is_static_method:
                             print("    {}{}({});".format(declare_result, child.fullname, invoke_args), file=local_output)
                         else:
-                            print("    auto pInstance = HueJNI_cast<{}>(native_handle);".format(class_canonical_name), file=local_output)
+                            print("    auto pInstance = CPPJNI_cast<{}>(native_handle);".format(class_canonical_name), file=local_output)
                             if child.is_data_member:
                                 print("    {}pInstance->{};".format(declare_result, child.name), file=local_output)
                             else:
                                 print("    {}pInstance->{}({});".format(declare_result, child.name, invoke_args), file=local_output)
                         if return_type == 'jstring':
-                            retval = 'HueJNI_newString(env, result)'
+                            retval = 'CPPJNI_newString(env, result)'
                         elif is_marshaled_valuetype(real_return_type):
                             marshaled_type = cpp_to_jni_type(real_return_type)
                             print(f'    {marshaled_type} real_result = {marshaled_type}();', file=local_output)
@@ -826,20 +821,20 @@ def create_jni_methods(scope: Scope, template: str, override_name: str = '', tem
                             if is_pass_by_handle(element_type):
                                 raise NotImplementedError(f'Return values of type {element_type}as array.')
                             else:
-                                retval = f'HueJNIVectorAdapter<{element_type}>(env, result).toArray()'
+                                retval = f'CPPJNIVectorAdapter<{element_type}>(env, result).toArray()'
                         elif is_pass_by_handle(real_return_type):
                             if is_enum_type(result_param):
                                 retval = '(jlong)result'
                             elif is_smartptr_type(real_return_type):
-                                retval = 'HueJNI_createObjectContext(result)'.format(real_return_type)
+                                retval = 'CPPJNI_createObjectContext(result)'.format(real_return_type)
                             elif is_ptr_type(real_return_type):
                                 # This handle will not destroy the backing object because it is not the owner:
-                                retval = 'HueJNI_createNonOwningObjectContext(result)'
+                                retval = 'CPPJNI_createNonOwningObjectContext(result)'
                             elif is_ref_type(real_return_type):
                                 # This handle will not destroy the backing object because it is not the owner:
-                                retval = 'HueJNI_createNonOwningObjectContext(&result)'
+                                retval = 'CPPJNI_createNonOwningObjectContext(&result)'
                             else:
-                                retval = 'HueJNI_createObjectContext(new {}(result))'.format(clean_typename(real_return_type))
+                                retval = 'CPPJNI_createObjectContext(new {}(result))'.format(clean_typename(real_return_type))
                         elif return_type == 'void':
                             pass
                         else:
@@ -856,9 +851,8 @@ def create_jni_methods(scope: Scope, template: str, override_name: str = '', tem
                                 print(f'    return {retval};', file=local_output)
                         if 'context->' in epilogue and not 'ObjectContext' in retval:
                             raise NotImplementedError(f'Protocol mismatch: No local context.')
-                        if not islicenseapi:
-                            print("  }\n  HUE_JNI_CATCH", file=local_output)
-                        if not return_type == "void" and not islicenseapi:
+                        print("  }\n  CPPJNI_CATCH", file=local_output)
+                        if not return_type == "void":
                             print("  return 0;", file=local_output)
                         print("}", file=local_output)
                         if not is_static_method:
@@ -940,8 +934,6 @@ def use_buffer_protocol(args: List[Param]) -> bool:
         
 def create_native_arglist(class_name:str, args: List[Param], is_include_proxyinterface_arg: bool=False, is_static_method: bool=False) -> str:
     arglist = []
-#    if is_include_proxyinterface_arg and not is_licenseapi(class_name):
-#        arglist.append('ProxyInterface proxyInterface')
     if not is_static_method:
         arglist.append('long native_object')
     p = peekable(args)
@@ -981,8 +973,6 @@ def create_java_arglist(args: List[Param]) -> str:
 
 def transform_java_functioncall_args(class_name: str, args: List[Param], is_include_proxyinterface_arg: bool=False, is_static_method: bool=False, used_arglist = []) -> Tuple[str, str, str]:
     arglist = []
-#    if is_include_proxyinterface_arg and not is_licenseapi(class_name):
-#        arglist.append('ProxyInterface.getInstanceSafe()')
     if not is_static_method:
         arglist.append('getNativeObject()')
     prologue = []

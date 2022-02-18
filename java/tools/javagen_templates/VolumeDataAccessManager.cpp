@@ -20,24 +20,24 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto tmpbuffer = HueJNIAsyncBuffer<float>(env, buffer);
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto tmpbuffer = CPPJNIAsyncBuffer<float>(env, buffer);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->RequestVolumeSamples(
                                tmpbuffer.buffer(), tmpbuffer.byteSize(), 
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
-                               HueJNIByteBufferAdapter<float[6]>(env, samplePositionsbytebuffer, 0).m_Data, 
+                               CPPJNIByteBufferAdapter<float[6]>(env, samplePositionsbytebuffer, 0).m_Data, 
                                (int)env->GetDirectBufferCapacity(samplePositionsbytebuffer) / sizeof(float[6]), 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(result);
+    auto context = CPPJNI_createObjectContext(result);
     context->registerGlobalRef(env, buffer);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -48,21 +48,21 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->RequestVolumeSamples(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
-                               HueJNIByteBufferAdapter<float[6]>(env, samplePositionsbytebuffer, 0).m_Data, 
+                               CPPJNIByteBufferAdapter<float[6]>(env, samplePositionsbytebuffer, 0).m_Data, 
                                (int)env->GetDirectBufferCapacity(samplePositionsbytebuffer) / sizeof(float[6]), 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(result);
+    auto context = CPPJNI_createObjectContext(result);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -73,22 +73,22 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->RequestVolumeTraces(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
-                               HueJNIByteBufferAdapter<float[6]>(env, tracePositionsbytebuffer, 0).m_Data, 
+                               CPPJNIByteBufferAdapter<float[6]>(env, tracePositionsbytebuffer, 0).m_Data, 
                                (int)env->GetDirectBufferCapacity(tracePositionsbytebuffer) / sizeof(float[6]), 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                traceDimension, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(result);
+    auto context = CPPJNI_createObjectContext(result);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -99,25 +99,25 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto tmpbuffer = HueJNIAsyncBuffer<float>(env, buffer);
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto tmpbuffer = CPPJNIAsyncBuffer<float>(env, buffer);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->RequestVolumeTraces(
                                tmpbuffer.buffer(), tmpbuffer.byteSize(), 
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
-                               HueJNIByteBufferAdapter<float[6]>(env, tracePositionsbytebuffer, 0).m_Data, 
+                               CPPJNIByteBufferAdapter<float[6]>(env, tracePositionsbytebuffer, 0).m_Data, 
                                (int)env->GetDirectBufferCapacity(tracePositionsbytebuffer) / sizeof(float[6]), 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                traceDimension, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(result);
+    auto context = CPPJNI_createObjectContext(result);
     context->registerGlobalRef(env, buffer);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -129,24 +129,24 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->RequestVolumeTraceRanges(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
-                               HueJNIByteBufferAdapter<float[6]>(env, tracePositionsbytebuffer, 0).m_Data, 
+                               CPPJNIByteBufferAdapter<float[6]>(env, tracePositionsbytebuffer, 0).m_Data, 
                                (int)env->GetDirectBufferCapacity(tracePositionsbytebuffer) / sizeof(float[6]), 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                traceDimension, 
                                traceMin,
                                traceMax,
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(result);
+    auto context = CPPJNI_createObjectContext(result);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -157,27 +157,27 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto tmpbuffer = HueJNIAsyncBuffer<float>(env, buffer);
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto tmpbuffer = CPPJNIAsyncBuffer<float>(env, buffer);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->RequestVolumeTraceRanges(
                                tmpbuffer.buffer(), tmpbuffer.byteSize(), 
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
-                               HueJNIByteBufferAdapter<float[6]>(env, tracePositionsbytebuffer, 0).m_Data, 
+                               CPPJNIByteBufferAdapter<float[6]>(env, tracePositionsbytebuffer, 0).m_Data, 
                                (int)env->GetDirectBufferCapacity(tracePositionsbytebuffer) / sizeof(float[6]), 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                traceDimension, 
                                traceMin,
                                traceMax,
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(result);
+    auto context = CPPJNI_createObjectContext(result);
     context->registerGlobalRef(env, buffer);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 

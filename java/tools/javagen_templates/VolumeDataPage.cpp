@@ -14,9 +14,9 @@ VolumeDataPage_GetWritableBufferImpl(JNIEnv * env, jobject object, jlong native_
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataPage>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataPage>(native_handle);
 
     int pitch[VolumeDataLayout::Dimensionality_Max];
     void *buffer = WRITEABLE ? pInstance->GetWritableBuffer(pitch) : (void*)pInstance->GetBuffer(pitch);
@@ -55,7 +55,7 @@ VolumeDataPage_GetWritableBufferImpl(JNIEnv * env, jobject object, jlong native_
     nBufferSize *= itemSize;
     return env->NewDirectByteBuffer(buffer, nBufferSize);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 

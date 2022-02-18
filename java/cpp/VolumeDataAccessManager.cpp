@@ -34,16 +34,16 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataRequest_ctorImpl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::VolumeDataRequest>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::VolumeDataRequest>();
 
     auto native_handle = context->handle();
     context->setObject(new OpenVDS::VolumeDataRequest());
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -54,12 +54,12 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataRequest_ValidateRequ
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataRequest>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataRequest>(native_handle);
     pInstance->ValidateRequest();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataRequest_RequestIDImpl
@@ -68,13 +68,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataRequest_RequestIDIm
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataRequest>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataRequest>(native_handle);
     auto result = pInstance->RequestID();
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -84,13 +84,13 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeDataRequest_IsComple
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataRequest>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataRequest>(native_handle);
     auto result = pInstance->IsCompleted();
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -100,13 +100,13 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeDataRequest_IsCancel
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataRequest>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataRequest>(native_handle);
     auto result = pInstance->IsCanceled();
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -116,13 +116,13 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeDataRequest_WaitForC
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataRequest>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataRequest>(native_handle);
     auto result = pInstance->WaitForCompletion(millisecondsBeforeTimeout);
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -132,12 +132,12 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataRequest_CancelImpl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataRequest>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataRequest>(native_handle);
     pInstance->Cancel();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataRequest_CancelAndWaitForCompletionImpl
@@ -146,12 +146,12 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataRequest_CancelAndWai
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataRequest>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataRequest>(native_handle);
     pInstance->CancelAndWaitForCompletion();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataRequest_GetCompletionFactorImpl
@@ -160,13 +160,13 @@ JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataRequest_GetComplet
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataRequest>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataRequest>(native_handle);
     auto result = pInstance->GetCompletionFactor();
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -176,13 +176,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataRequest_BufferByteS
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataRequest>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataRequest>(native_handle);
     auto result = pInstance->BufferByteSize();
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -192,24 +192,24 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataRequest_BufferDataT
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataRequest>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataRequest>(native_handle);
     auto result = pInstance->BufferDataType();
     return (jlong)result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataRequest_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    HueJNI_destroyHandle<OpenVDS::VolumeDataRequest>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataRequest>(env, native_handle);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 ///AUTOGEN-IGNORE: CXX_METHOD Buffer void *() const FUNCTIONPROTO
@@ -222,16 +222,16 @@ JNIEXPORT jobject JNICALL Java_org_opengroup_openvds_VolumeDataRequest_GetBuffer
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataRequest>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataRequest>(native_handle);
 
     void *buffer = pInstance->Buffer();
     jlong nBufferSize = pInstance->BufferByteSize();
 
     return env->NewDirectByteBuffer(buffer, nBufferSize);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -244,16 +244,16 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_ctorI
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::VolumeDataAccessManager>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::VolumeDataAccessManager>();
 
     auto native_handle = context->handle();
     context->setObject(new OpenVDS::VolumeDataAccessManager());
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -264,14 +264,14 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_GetVo
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->GetVolumeDataLayout();
-    auto context = HueJNI_createNonOwningObjectContext(result);
+    auto context = CPPJNI_createNonOwningObjectContext(result);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -281,16 +281,16 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_GetVD
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->GetVDSProduceStatus(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel);
     return (jlong)result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -300,16 +300,16 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_GetVD
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->GetVDSChunkCount(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel);
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -319,9 +319,9 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeDataPageAccessor(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
@@ -329,10 +329,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                maxPages, 
                                (enum OpenVDS::VolumeDataPageAccessor::AccessMode)accessMode, 
                                chunkMetadataPageSize);
-    auto context = HueJNI_createNonOwningObjectContext(result);
+    auto context = CPPJNI_createNonOwningObjectContext(result);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -342,12 +342,12 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Destro
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
-    pInstance->DestroyVolumeDataPageAccessor(HueJNI_cast<OpenVDS::VolumeDataPageAccessor>(volumeDataPageAccessor));
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    pInstance->DestroyVolumeDataPageAccessor(CPPJNI_cast<OpenVDS::VolumeDataPageAccessor>(volumeDataPageAccessor));
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData2DInterpolatingAccessorR64Impl
@@ -356,9 +356,9 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData2DInterpolatingAccessorR64(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
@@ -366,10 +366,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 2>, double>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 2>, double>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -379,19 +379,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData2DInterpolatingAccessorR64(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 2>, double>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 2>, double>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -401,9 +401,9 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData2DInterpolatingAccessorR32(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
@@ -411,10 +411,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 2>, float>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 2>, float>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -424,19 +424,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData2DInterpolatingAccessorR32(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 2>, float>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 2>, float>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -446,19 +446,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData2DReadAccessor1Bit(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, bool>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, bool>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -468,18 +468,18 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData2DReadAccessor1Bit(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, bool>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, bool>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -489,19 +489,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData2DReadAccessorU8(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, unsigned char>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, unsigned char>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -511,18 +511,18 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData2DReadAccessorU8(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, unsigned char>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, unsigned char>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -532,19 +532,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData2DReadAccessorU16(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, unsigned short>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, unsigned short>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -554,18 +554,18 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData2DReadAccessorU16(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, unsigned short>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, unsigned short>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -575,19 +575,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData2DReadAccessorU32(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, unsigned int>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, unsigned int>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -597,18 +597,18 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData2DReadAccessorU32(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, unsigned int>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, unsigned int>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -618,19 +618,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData2DReadAccessorU64(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, uint64_t>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, uint64_t>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -640,18 +640,18 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData2DReadAccessorU64(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, uint64_t>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, uint64_t>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -661,19 +661,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData2DReadAccessorR32(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, float>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, float>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -683,18 +683,18 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData2DReadAccessorR32(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, float>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, float>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -704,19 +704,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData2DReadAccessorR64(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, double>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, double>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -726,18 +726,18 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData2DReadAccessorR64(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, double>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, double>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -747,19 +747,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData2DReadWriteAccessor1Bit(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, bool>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, bool>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -769,18 +769,18 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData2DReadWriteAccessor1Bit(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, bool>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, bool>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -790,19 +790,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData2DReadWriteAccessorU8(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, unsigned char>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, unsigned char>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -812,18 +812,18 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData2DReadWriteAccessorU8(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, unsigned char>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, unsigned char>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -833,19 +833,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData2DReadWriteAccessorU16(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, unsigned short>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, unsigned short>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -855,18 +855,18 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData2DReadWriteAccessorU16(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, unsigned short>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, unsigned short>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -876,19 +876,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData2DReadWriteAccessorU32(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, unsigned int>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, unsigned int>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -898,18 +898,18 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData2DReadWriteAccessorU32(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, unsigned int>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, unsigned int>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -919,19 +919,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData2DReadWriteAccessorU64(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, uint64_t>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, uint64_t>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -941,18 +941,18 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData2DReadWriteAccessorU64(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, uint64_t>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, uint64_t>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -962,19 +962,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData2DReadWriteAccessorR32(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, float>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, float>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -984,18 +984,18 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData2DReadWriteAccessorR32(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, float>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, float>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1005,19 +1005,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData2DReadWriteAccessorR64(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, double>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, double>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1027,18 +1027,18 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData2DReadWriteAccessorR64(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, double>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, double>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1048,9 +1048,9 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData3DInterpolatingAccessorR64(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
@@ -1058,10 +1058,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 3>, double>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 3>, double>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1071,19 +1071,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData3DInterpolatingAccessorR64(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 3>, double>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 3>, double>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1093,9 +1093,9 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData3DInterpolatingAccessorR32(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
@@ -1103,10 +1103,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 3>, float>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 3>, float>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1116,19 +1116,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData3DInterpolatingAccessorR32(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 3>, float>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 3>, float>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1138,19 +1138,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData3DReadAccessor1Bit(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, bool>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, bool>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1160,18 +1160,18 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData3DReadAccessor1Bit(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, bool>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, bool>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1181,19 +1181,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData3DReadAccessorU8(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, unsigned char>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, unsigned char>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1203,18 +1203,18 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData3DReadAccessorU8(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, unsigned char>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, unsigned char>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1224,19 +1224,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData3DReadAccessorU16(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, unsigned short>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, unsigned short>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1246,18 +1246,18 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData3DReadAccessorU16(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, unsigned short>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, unsigned short>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1267,19 +1267,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData3DReadAccessorU32(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, unsigned int>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, unsigned int>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1289,18 +1289,18 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData3DReadAccessorU32(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, unsigned int>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, unsigned int>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1310,19 +1310,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData3DReadAccessorU64(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, uint64_t>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, uint64_t>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1332,18 +1332,18 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData3DReadAccessorU64(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, uint64_t>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, uint64_t>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1353,19 +1353,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData3DReadAccessorR32(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, float>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, float>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1375,18 +1375,18 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData3DReadAccessorR32(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, float>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, float>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1396,19 +1396,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData3DReadAccessorR64(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, double>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, double>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1418,18 +1418,18 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData3DReadAccessorR64(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, double>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, double>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1439,19 +1439,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData3DReadWriteAccessor1Bit(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, bool>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, bool>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1461,18 +1461,18 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData3DReadWriteAccessor1Bit(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, bool>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, bool>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1482,19 +1482,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData3DReadWriteAccessorU8(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, unsigned char>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, unsigned char>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1504,18 +1504,18 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData3DReadWriteAccessorU8(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, unsigned char>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, unsigned char>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1525,19 +1525,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData3DReadWriteAccessorU16(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, unsigned short>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, unsigned short>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1547,18 +1547,18 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData3DReadWriteAccessorU16(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, unsigned short>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, unsigned short>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1568,19 +1568,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData3DReadWriteAccessorU32(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, unsigned int>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, unsigned int>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1590,18 +1590,18 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData3DReadWriteAccessorU32(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, unsigned int>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, unsigned int>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1611,19 +1611,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData3DReadWriteAccessorU64(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, uint64_t>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, uint64_t>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1633,18 +1633,18 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData3DReadWriteAccessorU64(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, uint64_t>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, uint64_t>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1654,19 +1654,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData3DReadWriteAccessorR32(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, float>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, float>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1676,18 +1676,18 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData3DReadWriteAccessorR32(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, float>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, float>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1697,19 +1697,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData3DReadWriteAccessorR64(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, double>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, double>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1719,18 +1719,18 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData3DReadWriteAccessorR64(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, double>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, double>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1740,9 +1740,9 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData4DInterpolatingAccessorR64(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
@@ -1750,10 +1750,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 4>, double>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 4>, double>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1763,19 +1763,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData4DInterpolatingAccessorR64(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 4>, double>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 4>, double>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1785,9 +1785,9 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData4DInterpolatingAccessorR32(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
@@ -1795,10 +1795,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 4>, float>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 4>, float>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1808,19 +1808,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData4DInterpolatingAccessorR32(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 4>, float>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 4>, float>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1830,19 +1830,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData4DReadAccessor1Bit(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, bool>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, bool>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1852,18 +1852,18 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData4DReadAccessor1Bit(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, bool>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, bool>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1873,19 +1873,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData4DReadAccessorU8(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, unsigned char>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, unsigned char>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1895,18 +1895,18 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData4DReadAccessorU8(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, unsigned char>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, unsigned char>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1916,19 +1916,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData4DReadAccessorU16(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, unsigned short>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, unsigned short>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1938,18 +1938,18 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData4DReadAccessorU16(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, unsigned short>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, unsigned short>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1959,19 +1959,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData4DReadAccessorU32(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, unsigned int>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, unsigned int>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1981,18 +1981,18 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData4DReadAccessorU32(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, unsigned int>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, unsigned int>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2002,19 +2002,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData4DReadAccessorU64(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, uint64_t>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, uint64_t>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2024,18 +2024,18 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData4DReadAccessorU64(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, uint64_t>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, uint64_t>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2045,19 +2045,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData4DReadAccessorR32(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, float>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, float>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2067,18 +2067,18 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData4DReadAccessorR32(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, float>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, float>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2088,19 +2088,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData4DReadAccessorR64(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, double>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, double>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2110,18 +2110,18 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData4DReadAccessorR64(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, double>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, double>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2131,19 +2131,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData4DReadWriteAccessor1Bit(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, bool>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, bool>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2153,18 +2153,18 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData4DReadWriteAccessor1Bit(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, bool>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, bool>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2174,19 +2174,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData4DReadWriteAccessorU8(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, unsigned char>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, unsigned char>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2196,18 +2196,18 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData4DReadWriteAccessorU8(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, unsigned char>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, unsigned char>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2217,19 +2217,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData4DReadWriteAccessorU16(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, unsigned short>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, unsigned short>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2239,18 +2239,18 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData4DReadWriteAccessorU16(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, unsigned short>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, unsigned short>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2260,19 +2260,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData4DReadWriteAccessorU32(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, unsigned int>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, unsigned int>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2282,18 +2282,18 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData4DReadWriteAccessorU32(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, unsigned int>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, unsigned int>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2303,19 +2303,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData4DReadWriteAccessorU64(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, uint64_t>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, uint64_t>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2325,18 +2325,18 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData4DReadWriteAccessorU64(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, uint64_t>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, uint64_t>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2346,19 +2346,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData4DReadWriteAccessorR32(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, float>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, float>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2368,18 +2368,18 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData4DReadWriteAccessorR32(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, float>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, float>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2389,19 +2389,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData4DReadWriteAccessorR64(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, double>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, double>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2411,18 +2411,18 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->CreateVolumeData4DReadWriteAccessorR64(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, double>(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, double>(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2432,11 +2432,11 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_GetVo
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
-    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto tmpminVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->GetVolumeSubsetBufferSize(
                                tmpminVoxelCoordinates.getArray(), 
                                tmpmaxVoxelCoordinates.getArray(), 
@@ -2445,7 +2445,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_GetVo
                                channel);
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2455,12 +2455,12 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto tmpbuffer = HueJNIAsyncBuffer<void>(env, buffer);
-    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
-    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto tmpbuffer = CPPJNIAsyncBuffer<void>(env, buffer);
+    auto tmpminVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->RequestVolumeSubset(
                                tmpbuffer.buffer(), tmpbuffer.byteSize(), 
                                (OpenVDS::DimensionsND)dimensionsND, 
@@ -2470,11 +2470,11 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                tmpmaxVoxelCoordinates.getArray(), 
                                (enum OpenVDS::VolumeDataChannelDescriptor::Format)format, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(result);
+    auto context = CPPJNI_createObjectContext(result);
     context->registerGlobalRef(env, buffer);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2484,12 +2484,12 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto tmpbuffer = HueJNIAsyncBuffer<unsigned char>(env, buffer);
-    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
-    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto tmpbuffer = CPPJNIAsyncBuffer<unsigned char>(env, buffer);
+    auto tmpminVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->RequestVolumeSubset1Bit(
                                tmpbuffer.buffer(), tmpbuffer.byteSize(), 
                                (OpenVDS::DimensionsND)dimensionsND, 
@@ -2497,11 +2497,11 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                channel, 
                                tmpminVoxelCoordinates.getArray(), 
                                tmpmaxVoxelCoordinates.getArray());
-    auto context = HueJNI_createObjectContext(result);
+    auto context = CPPJNI_createObjectContext(result);
     context->registerGlobalRef(env, buffer);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2511,11 +2511,11 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
-    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto tmpminVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->RequestVolumeSubset(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
@@ -2524,10 +2524,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                tmpmaxVoxelCoordinates.getArray(), 
                                (enum OpenVDS::VolumeDataChannelDescriptor::Format)format, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(result);
+    auto context = CPPJNI_createObjectContext(result);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2537,21 +2537,21 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
-    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto tmpminVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->RequestVolumeSubset1Bit(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                tmpminVoxelCoordinates.getArray(), 
                                tmpmaxVoxelCoordinates.getArray());
-    auto context = HueJNI_createObjectContext(result);
+    auto context = CPPJNI_createObjectContext(result);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2561,11 +2561,11 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_GetPr
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
-    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto tmpminVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->GetProjectedVolumeSubsetBufferSize(
                                tmpminVoxelCoordinates.getArray(), 
                                tmpmaxVoxelCoordinates.getArray(), 
@@ -2575,7 +2575,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_GetPr
                                channel);
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2585,12 +2585,12 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto tmpbuffer = HueJNIAsyncBuffer<void>(env, buffer);
-    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
-    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto tmpbuffer = CPPJNIAsyncBuffer<void>(env, buffer);
+    auto tmpminVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->RequestProjectedVolumeSubset(
                                tmpbuffer.buffer(), tmpbuffer.byteSize(), 
                                (OpenVDS::DimensionsND)dimensionsND, 
@@ -2598,16 +2598,16 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                channel, 
                                tmpminVoxelCoordinates.getArray(), 
                                tmpmaxVoxelCoordinates.getArray(), 
-                               HueJNIByteBufferAdapter<OpenVDS::FloatVector4>(env, voxelPlanebytebuffer, voxelPlanebyteoffset), 
+                               CPPJNIByteBufferAdapter<OpenVDS::FloatVector4>(env, voxelPlanebytebuffer, voxelPlanebyteoffset), 
                                (OpenVDS::DimensionsND)projectedDimensions, 
                                (enum OpenVDS::VolumeDataChannelDescriptor::Format)format, 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(result);
+    auto context = CPPJNI_createObjectContext(result);
     context->registerGlobalRef(env, buffer);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2617,26 +2617,26 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
-    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto tmpminVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->RequestProjectedVolumeSubset(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                tmpminVoxelCoordinates.getArray(), 
                                tmpmaxVoxelCoordinates.getArray(), 
-                               HueJNIByteBufferAdapter<OpenVDS::FloatVector4>(env, voxelPlanebytebuffer, voxelPlanebyteoffset), 
+                               CPPJNIByteBufferAdapter<OpenVDS::FloatVector4>(env, voxelPlanebytebuffer, voxelPlanebyteoffset), 
                                (OpenVDS::DimensionsND)projectedDimensions, 
                                (enum OpenVDS::VolumeDataChannelDescriptor::Format)format, 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(result);
+    auto context = CPPJNI_createObjectContext(result);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2646,13 +2646,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_GetVo
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->GetVolumeSamplesBufferSize(sampleCount, channel);
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2662,9 +2662,9 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_GetVo
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->GetVolumeTracesBufferSize(
                                traceCount, 
                                traceDimension, 
@@ -2672,7 +2672,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_GetVo
                                channel);
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2682,18 +2682,18 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Prefe
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->PrefetchVolumeChunk(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                chunkIndex);
-    auto context = HueJNI_createObjectContext(result);
+    auto context = CPPJNI_createObjectContext(result);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2703,12 +2703,12 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_FlushU
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     pInstance->FlushUploadQueue(writeUpdatedLayerStatus ? true : false);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_ClearUploadErrorsImpl
@@ -2717,12 +2717,12 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_ClearU
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     pInstance->ClearUploadErrors();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_ForceClearAllUploadErrorsImpl
@@ -2731,12 +2731,12 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_ForceC
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     pInstance->ForceClearAllUploadErrors();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_UploadErrorCountImpl
@@ -2745,13 +2745,13 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Upload
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->UploadErrorCount();
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 ///AUTOGEN-FAIL: CXX_METHOD GetCurrentUploadError void (const char **, int *, const char **) FUNCTIONPROTO
@@ -2760,11 +2760,11 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Upload
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    HueJNI_destroyHandle<OpenVDS::VolumeDataAccessManager>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataAccessManager>(env, native_handle);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 
@@ -2775,12 +2775,12 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto tmpbuffer = HueJNIAsyncBuffer<void>(env, buffer);
-    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
-    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto tmpbuffer = CPPJNIAsyncBuffer<void>(env, buffer);
+    auto tmpminVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->RequestVolumeSubset<uint8_t>(
                                (uint8_t*)tmpbuffer.buffer(), tmpbuffer.byteSize(), 
                                (OpenVDS::DimensionsND)dimensionsND, 
@@ -2789,11 +2789,11 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                tmpminVoxelCoordinates.getArray(), 
                                tmpmaxVoxelCoordinates.getArray(), 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(result);
+    auto context = CPPJNI_createObjectContext(result);
     context->registerGlobalRef(env, buffer);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2803,11 +2803,11 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
-    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto tmpminVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->RequestVolumeSubset<uint8_t>(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
@@ -2815,10 +2815,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                tmpminVoxelCoordinates.getArray(), 
                                tmpmaxVoxelCoordinates.getArray(), 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(result);
+    auto context = CPPJNI_createObjectContext(result);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2828,12 +2828,12 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto tmpbuffer = HueJNIAsyncBuffer<void>(env, buffer);
-    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
-    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto tmpbuffer = CPPJNIAsyncBuffer<void>(env, buffer);
+    auto tmpminVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->RequestVolumeSubset<uint16_t>(
                                (uint16_t*)tmpbuffer.buffer(), tmpbuffer.byteSize(), 
                                (OpenVDS::DimensionsND)dimensionsND, 
@@ -2842,11 +2842,11 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                tmpminVoxelCoordinates.getArray(), 
                                tmpmaxVoxelCoordinates.getArray(), 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(result);
+    auto context = CPPJNI_createObjectContext(result);
     context->registerGlobalRef(env, buffer);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2856,11 +2856,11 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
-    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto tmpminVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->RequestVolumeSubset<uint16_t>(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
@@ -2868,10 +2868,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                tmpminVoxelCoordinates.getArray(), 
                                tmpmaxVoxelCoordinates.getArray(), 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(result);
+    auto context = CPPJNI_createObjectContext(result);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2881,12 +2881,12 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto tmpbuffer = HueJNIAsyncBuffer<void>(env, buffer);
-    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
-    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto tmpbuffer = CPPJNIAsyncBuffer<void>(env, buffer);
+    auto tmpminVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->RequestVolumeSubset<uint32_t>(
                                (uint32_t*)tmpbuffer.buffer(), tmpbuffer.byteSize(), 
                                (OpenVDS::DimensionsND)dimensionsND, 
@@ -2895,11 +2895,11 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                tmpminVoxelCoordinates.getArray(), 
                                tmpmaxVoxelCoordinates.getArray(), 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(result);
+    auto context = CPPJNI_createObjectContext(result);
     context->registerGlobalRef(env, buffer);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2909,11 +2909,11 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
-    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto tmpminVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->RequestVolumeSubset<uint32_t>(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
@@ -2921,10 +2921,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                tmpminVoxelCoordinates.getArray(), 
                                tmpmaxVoxelCoordinates.getArray(), 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(result);
+    auto context = CPPJNI_createObjectContext(result);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2934,12 +2934,12 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto tmpbuffer = HueJNIAsyncBuffer<void>(env, buffer);
-    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
-    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto tmpbuffer = CPPJNIAsyncBuffer<void>(env, buffer);
+    auto tmpminVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->RequestVolumeSubset<uint64_t>(
                                (uint64_t*)tmpbuffer.buffer(), tmpbuffer.byteSize(), 
                                (OpenVDS::DimensionsND)dimensionsND, 
@@ -2948,11 +2948,11 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                tmpminVoxelCoordinates.getArray(), 
                                tmpmaxVoxelCoordinates.getArray(), 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(result);
+    auto context = CPPJNI_createObjectContext(result);
     context->registerGlobalRef(env, buffer);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2962,11 +2962,11 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
-    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto tmpminVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->RequestVolumeSubset<uint64_t>(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
@@ -2974,10 +2974,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                tmpminVoxelCoordinates.getArray(), 
                                tmpmaxVoxelCoordinates.getArray(), 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(result);
+    auto context = CPPJNI_createObjectContext(result);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2987,12 +2987,12 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto tmpbuffer = HueJNIAsyncBuffer<void>(env, buffer);
-    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
-    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto tmpbuffer = CPPJNIAsyncBuffer<void>(env, buffer);
+    auto tmpminVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->RequestVolumeSubset<float>(
                                (float*)tmpbuffer.buffer(), tmpbuffer.byteSize(), 
                                (OpenVDS::DimensionsND)dimensionsND, 
@@ -3001,11 +3001,11 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                tmpminVoxelCoordinates.getArray(), 
                                tmpmaxVoxelCoordinates.getArray(), 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(result);
+    auto context = CPPJNI_createObjectContext(result);
     context->registerGlobalRef(env, buffer);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -3015,11 +3015,11 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
-    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto tmpminVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->RequestVolumeSubset<float>(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
@@ -3027,10 +3027,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                tmpminVoxelCoordinates.getArray(), 
                                tmpmaxVoxelCoordinates.getArray(), 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(result);
+    auto context = CPPJNI_createObjectContext(result);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -3040,12 +3040,12 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto tmpbuffer = HueJNIAsyncBuffer<void>(env, buffer);
-    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
-    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto tmpbuffer = CPPJNIAsyncBuffer<void>(env, buffer);
+    auto tmpminVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->RequestVolumeSubset<double>(
                                (double*)tmpbuffer.buffer(), tmpbuffer.byteSize(), 
                                (OpenVDS::DimensionsND)dimensionsND, 
@@ -3054,11 +3054,11 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                tmpminVoxelCoordinates.getArray(), 
                                tmpmaxVoxelCoordinates.getArray(), 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(result);
+    auto context = CPPJNI_createObjectContext(result);
     context->registerGlobalRef(env, buffer);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -3068,11 +3068,11 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
-    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto tmpminVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->RequestVolumeSubset<double>(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
@@ -3080,10 +3080,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                tmpminVoxelCoordinates.getArray(), 
                                tmpmaxVoxelCoordinates.getArray(), 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(result);
+    auto context = CPPJNI_createObjectContext(result);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -3095,12 +3095,12 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto tmpbuffer = HueJNIAsyncBuffer<void>(env, buffer);
-    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
-    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto tmpbuffer = CPPJNIAsyncBuffer<void>(env, buffer);
+    auto tmpminVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->RequestProjectedVolumeSubset<uint8_t>(
                                (uint8_t*)tmpbuffer.buffer(), tmpbuffer.byteSize(),
                                (OpenVDS::DimensionsND)dimensionsND, 
@@ -3108,15 +3108,15 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                channel, 
                                tmpminVoxelCoordinates.getArray(), 
                                tmpmaxVoxelCoordinates.getArray(), 
-                               HueJNIByteBufferAdapter<OpenVDS::FloatVector4>(env, voxelPlanebytebuffer, voxelPlanebyteoffset), 
+                               CPPJNIByteBufferAdapter<OpenVDS::FloatVector4>(env, voxelPlanebytebuffer, voxelPlanebyteoffset), 
                                (OpenVDS::DimensionsND)projectedDimensions, 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(result);
+    auto context = CPPJNI_createObjectContext(result);
     context->registerGlobalRef(env, buffer);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 */
@@ -3127,25 +3127,25 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
-    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto tmpminVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->RequestProjectedVolumeSubset<uint8_t>(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                tmpminVoxelCoordinates.getArray(), 
                                tmpmaxVoxelCoordinates.getArray(), 
-                               HueJNIByteBufferAdapter<OpenVDS::FloatVector4>(env, voxelPlanebytebuffer, voxelPlanebyteoffset), 
+                               CPPJNIByteBufferAdapter<OpenVDS::FloatVector4>(env, voxelPlanebytebuffer, voxelPlanebyteoffset), 
                                (OpenVDS::DimensionsND)projectedDimensions, 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(result);
+    auto context = CPPJNI_createObjectContext(result);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -3156,12 +3156,12 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto tmpbuffer = HueJNIAsyncBuffer<void>(env, buffer);
-    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
-    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto tmpbuffer = CPPJNIAsyncBuffer<void>(env, buffer);
+    auto tmpminVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->RequestProjectedVolumeSubset<uint16_t>(
                                (uint16_t*)tmpbuffer.buffer(), tmpbuffer.byteSize(),
                                (OpenVDS::DimensionsND)dimensionsND, 
@@ -3169,15 +3169,15 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                channel, 
                                tmpminVoxelCoordinates.getArray(), 
                                tmpmaxVoxelCoordinates.getArray(), 
-                               HueJNIByteBufferAdapter<OpenVDS::FloatVector4>(env, voxelPlanebytebuffer, voxelPlanebyteoffset), 
+                               CPPJNIByteBufferAdapter<OpenVDS::FloatVector4>(env, voxelPlanebytebuffer, voxelPlanebyteoffset), 
                                (OpenVDS::DimensionsND)projectedDimensions, 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(result);
+    auto context = CPPJNI_createObjectContext(result);
     context->registerGlobalRef(env, buffer);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 */
@@ -3188,25 +3188,25 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
-    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto tmpminVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->RequestProjectedVolumeSubset<uint16_t>(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                tmpminVoxelCoordinates.getArray(), 
                                tmpmaxVoxelCoordinates.getArray(), 
-                               HueJNIByteBufferAdapter<OpenVDS::FloatVector4>(env, voxelPlanebytebuffer, voxelPlanebyteoffset), 
+                               CPPJNIByteBufferAdapter<OpenVDS::FloatVector4>(env, voxelPlanebytebuffer, voxelPlanebyteoffset), 
                                (OpenVDS::DimensionsND)projectedDimensions, 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(result);
+    auto context = CPPJNI_createObjectContext(result);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -3217,12 +3217,12 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto tmpbuffer = HueJNIAsyncBuffer<void>(env, buffer);
-    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
-    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto tmpbuffer = CPPJNIAsyncBuffer<void>(env, buffer);
+    auto tmpminVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->RequestProjectedVolumeSubset<uint32_t>(
                                (uint32_t*)tmpbuffer.buffer(), tmpbuffer.byteSize(),
                                (OpenVDS::DimensionsND)dimensionsND, 
@@ -3230,15 +3230,15 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                channel, 
                                tmpminVoxelCoordinates.getArray(), 
                                tmpmaxVoxelCoordinates.getArray(), 
-                               HueJNIByteBufferAdapter<OpenVDS::FloatVector4>(env, voxelPlanebytebuffer, voxelPlanebyteoffset), 
+                               CPPJNIByteBufferAdapter<OpenVDS::FloatVector4>(env, voxelPlanebytebuffer, voxelPlanebyteoffset), 
                                (OpenVDS::DimensionsND)projectedDimensions, 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(result);
+    auto context = CPPJNI_createObjectContext(result);
     context->registerGlobalRef(env, buffer);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 */
@@ -3249,25 +3249,25 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
-    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto tmpminVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->RequestProjectedVolumeSubset<uint32_t>(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                tmpminVoxelCoordinates.getArray(), 
                                tmpmaxVoxelCoordinates.getArray(), 
-                               HueJNIByteBufferAdapter<OpenVDS::FloatVector4>(env, voxelPlanebytebuffer, voxelPlanebyteoffset), 
+                               CPPJNIByteBufferAdapter<OpenVDS::FloatVector4>(env, voxelPlanebytebuffer, voxelPlanebyteoffset), 
                                (OpenVDS::DimensionsND)projectedDimensions, 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(result);
+    auto context = CPPJNI_createObjectContext(result);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -3278,12 +3278,12 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto tmpbuffer = HueJNIAsyncBuffer<void>(env, buffer);
-    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
-    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto tmpbuffer = CPPJNIAsyncBuffer<void>(env, buffer);
+    auto tmpminVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->RequestProjectedVolumeSubset<uint64_t>(
                                (uint64_t*)tmpbuffer.buffer(), tmpbuffer.byteSize(),
                                (OpenVDS::DimensionsND)dimensionsND, 
@@ -3291,15 +3291,15 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                channel, 
                                tmpminVoxelCoordinates.getArray(), 
                                tmpmaxVoxelCoordinates.getArray(), 
-                               HueJNIByteBufferAdapter<OpenVDS::FloatVector4>(env, voxelPlanebytebuffer, voxelPlanebyteoffset), 
+                               CPPJNIByteBufferAdapter<OpenVDS::FloatVector4>(env, voxelPlanebytebuffer, voxelPlanebyteoffset), 
                                (OpenVDS::DimensionsND)projectedDimensions, 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(result);
+    auto context = CPPJNI_createObjectContext(result);
     context->registerGlobalRef(env, buffer);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 */
@@ -3310,25 +3310,25 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
-    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto tmpminVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->RequestProjectedVolumeSubset<uint64_t>(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                tmpminVoxelCoordinates.getArray(), 
                                tmpmaxVoxelCoordinates.getArray(), 
-                               HueJNIByteBufferAdapter<OpenVDS::FloatVector4>(env, voxelPlanebytebuffer, voxelPlanebyteoffset), 
+                               CPPJNIByteBufferAdapter<OpenVDS::FloatVector4>(env, voxelPlanebytebuffer, voxelPlanebyteoffset), 
                                (OpenVDS::DimensionsND)projectedDimensions, 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(result);
+    auto context = CPPJNI_createObjectContext(result);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -3339,12 +3339,12 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto tmpbuffer = HueJNIAsyncBuffer<void>(env, buffer);
-    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
-    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto tmpbuffer = CPPJNIAsyncBuffer<void>(env, buffer);
+    auto tmpminVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->RequestProjectedVolumeSubset<float>(
                                (float*)tmpbuffer.buffer(), tmpbuffer.byteSize(),
                                (OpenVDS::DimensionsND)dimensionsND, 
@@ -3352,15 +3352,15 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                channel, 
                                tmpminVoxelCoordinates.getArray(), 
                                tmpmaxVoxelCoordinates.getArray(), 
-                               HueJNIByteBufferAdapter<OpenVDS::FloatVector4>(env, voxelPlanebytebuffer, voxelPlanebyteoffset), 
+                               CPPJNIByteBufferAdapter<OpenVDS::FloatVector4>(env, voxelPlanebytebuffer, voxelPlanebyteoffset), 
                                (OpenVDS::DimensionsND)projectedDimensions, 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(result);
+    auto context = CPPJNI_createObjectContext(result);
     context->registerGlobalRef(env, buffer);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 */
@@ -3371,25 +3371,25 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
-    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto tmpminVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->RequestProjectedVolumeSubset<float>(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                tmpminVoxelCoordinates.getArray(), 
                                tmpmaxVoxelCoordinates.getArray(), 
-                               HueJNIByteBufferAdapter<OpenVDS::FloatVector4>(env, voxelPlanebytebuffer, voxelPlanebyteoffset), 
+                               CPPJNIByteBufferAdapter<OpenVDS::FloatVector4>(env, voxelPlanebytebuffer, voxelPlanebyteoffset), 
                                (OpenVDS::DimensionsND)projectedDimensions, 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(result);
+    auto context = CPPJNI_createObjectContext(result);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -3400,12 +3400,12 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto tmpbuffer = HueJNIAsyncBuffer<void>(env, buffer);
-    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
-    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto tmpbuffer = CPPJNIAsyncBuffer<void>(env, buffer);
+    auto tmpminVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->RequestProjectedVolumeSubset<double>(
                                (double*)tmpbuffer.buffer(), tmpbuffer.byteSize(),
                                (OpenVDS::DimensionsND)dimensionsND, 
@@ -3413,15 +3413,15 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                channel, 
                                tmpminVoxelCoordinates.getArray(), 
                                tmpmaxVoxelCoordinates.getArray(), 
-                               HueJNIByteBufferAdapter<OpenVDS::FloatVector4>(env, voxelPlanebytebuffer, voxelPlanebyteoffset), 
+                               CPPJNIByteBufferAdapter<OpenVDS::FloatVector4>(env, voxelPlanebytebuffer, voxelPlanebyteoffset), 
                                (OpenVDS::DimensionsND)projectedDimensions, 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(result);
+    auto context = CPPJNI_createObjectContext(result);
     context->registerGlobalRef(env, buffer);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 */
@@ -3432,25 +3432,25 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto tmpminVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
-    auto tmpmaxVoxelCoordinates = HueJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto tmpminVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->RequestProjectedVolumeSubset<double>(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
                                tmpminVoxelCoordinates.getArray(), 
                                tmpmaxVoxelCoordinates.getArray(), 
-                               HueJNIByteBufferAdapter<OpenVDS::FloatVector4>(env, voxelPlanebytebuffer, voxelPlanebyteoffset), 
+                               CPPJNIByteBufferAdapter<OpenVDS::FloatVector4>(env, voxelPlanebytebuffer, voxelPlanebyteoffset), 
                                (OpenVDS::DimensionsND)projectedDimensions, 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(result);
+    auto context = CPPJNI_createObjectContext(result);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -3461,24 +3461,24 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto tmpbuffer = HueJNIAsyncBuffer<float>(env, buffer);
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto tmpbuffer = CPPJNIAsyncBuffer<float>(env, buffer);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->RequestVolumeSamples(
                                tmpbuffer.buffer(), tmpbuffer.byteSize(), 
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
-                               HueJNIByteBufferAdapter<float[6]>(env, samplePositionsbytebuffer, 0).m_Data, 
+                               CPPJNIByteBufferAdapter<float[6]>(env, samplePositionsbytebuffer, 0).m_Data, 
                                (int)env->GetDirectBufferCapacity(samplePositionsbytebuffer) / sizeof(float[6]), 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(result);
+    auto context = CPPJNI_createObjectContext(result);
     context->registerGlobalRef(env, buffer);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -3489,21 +3489,21 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->RequestVolumeSamples(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
-                               HueJNIByteBufferAdapter<float[6]>(env, samplePositionsbytebuffer, 0).m_Data, 
+                               CPPJNIByteBufferAdapter<float[6]>(env, samplePositionsbytebuffer, 0).m_Data, 
                                (int)env->GetDirectBufferCapacity(samplePositionsbytebuffer) / sizeof(float[6]), 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(result);
+    auto context = CPPJNI_createObjectContext(result);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -3514,22 +3514,22 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->RequestVolumeTraces(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
-                               HueJNIByteBufferAdapter<float[6]>(env, tracePositionsbytebuffer, 0).m_Data, 
+                               CPPJNIByteBufferAdapter<float[6]>(env, tracePositionsbytebuffer, 0).m_Data, 
                                (int)env->GetDirectBufferCapacity(tracePositionsbytebuffer) / sizeof(float[6]), 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                traceDimension, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(result);
+    auto context = CPPJNI_createObjectContext(result);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -3540,25 +3540,25 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto tmpbuffer = HueJNIAsyncBuffer<float>(env, buffer);
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto tmpbuffer = CPPJNIAsyncBuffer<float>(env, buffer);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->RequestVolumeTraces(
                                tmpbuffer.buffer(), tmpbuffer.byteSize(), 
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
-                               HueJNIByteBufferAdapter<float[6]>(env, tracePositionsbytebuffer, 0).m_Data, 
+                               CPPJNIByteBufferAdapter<float[6]>(env, tracePositionsbytebuffer, 0).m_Data, 
                                (int)env->GetDirectBufferCapacity(tracePositionsbytebuffer) / sizeof(float[6]), 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                traceDimension, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(result);
+    auto context = CPPJNI_createObjectContext(result);
     context->registerGlobalRef(env, buffer);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -3570,24 +3570,24 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->RequestVolumeTraceRanges(
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
-                               HueJNIByteBufferAdapter<float[6]>(env, tracePositionsbytebuffer, 0).m_Data, 
+                               CPPJNIByteBufferAdapter<float[6]>(env, tracePositionsbytebuffer, 0).m_Data, 
                                (int)env->GetDirectBufferCapacity(tracePositionsbytebuffer) / sizeof(float[6]), 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                traceDimension, 
                                traceMin,
                                traceMax,
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(result);
+    auto context = CPPJNI_createObjectContext(result);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -3598,27 +3598,27 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto tmpbuffer = HueJNIAsyncBuffer<float>(env, buffer);
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto tmpbuffer = CPPJNIAsyncBuffer<float>(env, buffer);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->RequestVolumeTraceRanges(
                                tmpbuffer.buffer(), tmpbuffer.byteSize(), 
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
-                               HueJNIByteBufferAdapter<float[6]>(env, tracePositionsbytebuffer, 0).m_Data, 
+                               CPPJNIByteBufferAdapter<float[6]>(env, tracePositionsbytebuffer, 0).m_Data, 
                                (int)env->GetDirectBufferCapacity(tracePositionsbytebuffer) / sizeof(float[6]), 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                traceDimension, 
                                traceMin,
                                traceMax,
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = HueJNI_createObjectContext(result);
+    auto context = CPPJNI_createObjectContext(result);
     context->registerGlobalRef(env, buffer);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -3631,24 +3631,24 @@ JNIEXPORT jbyteArray JNICALL Java_org_opengroup_openvds_VolumeDataRequest1Bit_Da
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataRequest_t<uint8_t>>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataRequest_t<uint8_t>>(native_handle);
     auto result = pInstance->Data();
-    return HueJNIVectorAdapter<uint8_t>(env, result).toArray();
+    return CPPJNIVectorAdapter<uint8_t>(env, result).toArray();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataRequest1Bit_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    HueJNI_destroyHandle<OpenVDS::VolumeDataRequest_t<uint8_t>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataRequest_t<uint8_t>>(env, native_handle);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 
@@ -3660,24 +3660,24 @@ JNIEXPORT jbyteArray JNICALL Java_org_opengroup_openvds_VolumeDataRequestByte_Da
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataRequest_t<uint8_t>>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataRequest_t<uint8_t>>(native_handle);
     auto result = pInstance->Data();
-    return HueJNIVectorAdapter<uint8_t>(env, result).toArray();
+    return CPPJNIVectorAdapter<uint8_t>(env, result).toArray();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataRequestByte_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    HueJNI_destroyHandle<OpenVDS::VolumeDataRequest_t<uint8_t>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataRequest_t<uint8_t>>(env, native_handle);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 
@@ -3689,24 +3689,24 @@ JNIEXPORT jshortArray JNICALL Java_org_opengroup_openvds_VolumeDataRequestUShort
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataRequest_t<uint16_t>>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataRequest_t<uint16_t>>(native_handle);
     auto result = pInstance->Data();
-    return HueJNIVectorAdapter<uint16_t>(env, result).toArray();
+    return CPPJNIVectorAdapter<uint16_t>(env, result).toArray();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataRequestUShort_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    HueJNI_destroyHandle<OpenVDS::VolumeDataRequest_t<uint16_t>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataRequest_t<uint16_t>>(env, native_handle);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 
@@ -3718,24 +3718,24 @@ JNIEXPORT jintArray JNICALL Java_org_opengroup_openvds_VolumeDataRequestUInt_Dat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataRequest_t<uint32_t>>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataRequest_t<uint32_t>>(native_handle);
     auto result = pInstance->Data();
-    return HueJNIVectorAdapter<uint32_t>(env, result).toArray();
+    return CPPJNIVectorAdapter<uint32_t>(env, result).toArray();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataRequestUInt_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    HueJNI_destroyHandle<OpenVDS::VolumeDataRequest_t<uint32_t>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataRequest_t<uint32_t>>(env, native_handle);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 
@@ -3747,24 +3747,24 @@ JNIEXPORT jlongArray JNICALL Java_org_opengroup_openvds_VolumeDataRequestULong_D
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataRequest_t<uint64_t>>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataRequest_t<uint64_t>>(native_handle);
     auto result = pInstance->Data();
-    return HueJNIVectorAdapter<uint64_t>(env, result).toArray();
+    return CPPJNIVectorAdapter<uint64_t>(env, result).toArray();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataRequestULong_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    HueJNI_destroyHandle<OpenVDS::VolumeDataRequest_t<uint64_t>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataRequest_t<uint64_t>>(env, native_handle);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 
@@ -3776,24 +3776,24 @@ JNIEXPORT jfloatArray JNICALL Java_org_opengroup_openvds_VolumeDataRequestFloat_
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataRequest_t<float>>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataRequest_t<float>>(native_handle);
     auto result = pInstance->Data();
-    return HueJNIVectorAdapter<float>(env, result).toArray();
+    return CPPJNIVectorAdapter<float>(env, result).toArray();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataRequestFloat_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    HueJNI_destroyHandle<OpenVDS::VolumeDataRequest_t<float>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataRequest_t<float>>(env, native_handle);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 
@@ -3805,24 +3805,24 @@ JNIEXPORT jdoubleArray JNICALL Java_org_opengroup_openvds_VolumeDataRequestDoubl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataRequest_t<double>>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataRequest_t<double>>(native_handle);
     auto result = pInstance->Data();
-    return HueJNIVectorAdapter<double>(env, result).toArray();
+    return CPPJNIVectorAdapter<double>(env, result).toArray();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataRequestDouble_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    HueJNI_destroyHandle<OpenVDS::VolumeDataRequest_t<double>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataRequest_t<double>>(env, native_handle);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 

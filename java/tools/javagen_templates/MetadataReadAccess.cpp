@@ -9,9 +9,9 @@ JNIEXPORT jintArray JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMet
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
 
     auto lsKey = pInstance->GetMetadataKeys();
 
@@ -29,7 +29,7 @@ JNIEXPORT jintArray JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMet
 
     return metadata_key_types;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -41,9 +41,9 @@ JNIEXPORT jobjectArray JNICALL Java_org_opengroup_openvds_MetadataReadAccess_Get
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
 
     auto lsKey = pInstance->GetMetadataKeys();
 
@@ -60,7 +60,7 @@ JNIEXPORT jobjectArray JNICALL Java_org_opengroup_openvds_MetadataReadAccess_Get
 
     return metadata_key_categories;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -72,9 +72,9 @@ JNIEXPORT jobjectArray JNICALL Java_org_opengroup_openvds_MetadataReadAccess_Get
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
 
     auto lsKey = pInstance->GetMetadataKeys();
 
@@ -91,7 +91,7 @@ JNIEXPORT jobjectArray JNICALL Java_org_opengroup_openvds_MetadataReadAccess_Get
 
     return metadata_key_names;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 

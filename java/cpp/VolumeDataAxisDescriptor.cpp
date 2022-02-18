@@ -34,16 +34,16 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAxisDescriptor_ctor
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::VolumeDataAxisDescriptor>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::VolumeDataAxisDescriptor>();
 
     auto native_handle = context->handle();
     context->setObject(new OpenVDS::VolumeDataAxisDescriptor());
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -54,21 +54,21 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAxisDescriptor_ctor
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::VolumeDataAxisDescriptor>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::VolumeDataAxisDescriptor>();
 
     auto native_handle = context->handle();
     context->setObject(new OpenVDS::VolumeDataAxisDescriptor(
                                numSamples, 
-                               HueJNIStringWrapper(env, name), 
-                               HueJNIStringWrapper(env, unit), 
+                               CPPJNIStringWrapper(env, name), 
+                               CPPJNIStringWrapper(env, unit), 
                                coordinateMin, 
                                coordinateMax));
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -79,13 +79,13 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataAxisDescriptor_GetNu
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAxisDescriptor>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAxisDescriptor>(native_handle);
     auto result = pInstance->GetNumSamples();
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -95,13 +95,13 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_VolumeDataAxisDescriptor_Ge
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAxisDescriptor>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAxisDescriptor>(native_handle);
     auto result = pInstance->GetName();
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -111,13 +111,13 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_VolumeDataAxisDescriptor_Ge
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAxisDescriptor>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAxisDescriptor>(native_handle);
     auto result = pInstance->GetUnit();
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -127,13 +127,13 @@ JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataAxisDescriptor_Get
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAxisDescriptor>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAxisDescriptor>(native_handle);
     auto result = pInstance->GetCoordinateMin();
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -143,13 +143,13 @@ JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataAxisDescriptor_Get
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAxisDescriptor>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAxisDescriptor>(native_handle);
     auto result = pInstance->GetCoordinateMax();
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -159,13 +159,13 @@ JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataAxisDescriptor_Get
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAxisDescriptor>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAxisDescriptor>(native_handle);
     auto result = pInstance->GetCoordinateStep();
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -175,13 +175,13 @@ JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataAxisDescriptor_Sam
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAxisDescriptor>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAxisDescriptor>(native_handle);
     auto result = pInstance->SampleIndexToCoordinate(sampleIndex);
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -191,13 +191,13 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataAxisDescriptor_Coord
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAxisDescriptor>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAxisDescriptor>(native_handle);
     auto result = pInstance->CoordinateToSampleIndex(coordinate);
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -207,24 +207,24 @@ JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataAxisDescriptor_Coo
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataAxisDescriptor>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAxisDescriptor>(native_handle);
     auto result = pInstance->CoordinateToSamplePosition(coordinate);
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataAxisDescriptor_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    HueJNI_destroyHandle<OpenVDS::VolumeDataAxisDescriptor>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataAxisDescriptor>(env, native_handle);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 

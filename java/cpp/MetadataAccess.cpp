@@ -34,13 +34,13 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataReadAccess_IsMetad
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
-    auto result = pInstance->IsMetadataIntAvailable(HueJNIStringWrapper(env, native_handle, category), HueJNIStringWrapper(env, native_handle, name));
+    auto pInstance = CPPJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
+    auto result = pInstance->IsMetadataIntAvailable(CPPJNIStringWrapper(env, native_handle, category), CPPJNIStringWrapper(env, native_handle, name));
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -50,13 +50,13 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataReadAccess_IsMetad
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
-    auto result = pInstance->IsMetadataIntVector2Available(HueJNIStringWrapper(env, native_handle, category), HueJNIStringWrapper(env, native_handle, name));
+    auto pInstance = CPPJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
+    auto result = pInstance->IsMetadataIntVector2Available(CPPJNIStringWrapper(env, native_handle, category), CPPJNIStringWrapper(env, native_handle, name));
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -66,13 +66,13 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataReadAccess_IsMetad
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
-    auto result = pInstance->IsMetadataIntVector3Available(HueJNIStringWrapper(env, native_handle, category), HueJNIStringWrapper(env, native_handle, name));
+    auto pInstance = CPPJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
+    auto result = pInstance->IsMetadataIntVector3Available(CPPJNIStringWrapper(env, native_handle, category), CPPJNIStringWrapper(env, native_handle, name));
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -82,13 +82,13 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataReadAccess_IsMetad
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
-    auto result = pInstance->IsMetadataIntVector4Available(HueJNIStringWrapper(env, native_handle, category), HueJNIStringWrapper(env, native_handle, name));
+    auto pInstance = CPPJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
+    auto result = pInstance->IsMetadataIntVector4Available(CPPJNIStringWrapper(env, native_handle, category), CPPJNIStringWrapper(env, native_handle, name));
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -98,13 +98,13 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataReadAccess_IsMetad
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
-    auto result = pInstance->IsMetadataFloatAvailable(HueJNIStringWrapper(env, native_handle, category), HueJNIStringWrapper(env, native_handle, name));
+    auto pInstance = CPPJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
+    auto result = pInstance->IsMetadataFloatAvailable(CPPJNIStringWrapper(env, native_handle, category), CPPJNIStringWrapper(env, native_handle, name));
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -114,13 +114,13 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataReadAccess_IsMetad
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
-    auto result = pInstance->IsMetadataFloatVector2Available(HueJNIStringWrapper(env, native_handle, category), HueJNIStringWrapper(env, native_handle, name));
+    auto pInstance = CPPJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
+    auto result = pInstance->IsMetadataFloatVector2Available(CPPJNIStringWrapper(env, native_handle, category), CPPJNIStringWrapper(env, native_handle, name));
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -130,13 +130,13 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataReadAccess_IsMetad
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
-    auto result = pInstance->IsMetadataFloatVector3Available(HueJNIStringWrapper(env, native_handle, category), HueJNIStringWrapper(env, native_handle, name));
+    auto pInstance = CPPJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
+    auto result = pInstance->IsMetadataFloatVector3Available(CPPJNIStringWrapper(env, native_handle, category), CPPJNIStringWrapper(env, native_handle, name));
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -146,13 +146,13 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataReadAccess_IsMetad
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
-    auto result = pInstance->IsMetadataFloatVector4Available(HueJNIStringWrapper(env, native_handle, category), HueJNIStringWrapper(env, native_handle, name));
+    auto pInstance = CPPJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
+    auto result = pInstance->IsMetadataFloatVector4Available(CPPJNIStringWrapper(env, native_handle, category), CPPJNIStringWrapper(env, native_handle, name));
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -162,13 +162,13 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataReadAccess_IsMetad
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
-    auto result = pInstance->IsMetadataDoubleAvailable(HueJNIStringWrapper(env, native_handle, category), HueJNIStringWrapper(env, native_handle, name));
+    auto pInstance = CPPJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
+    auto result = pInstance->IsMetadataDoubleAvailable(CPPJNIStringWrapper(env, native_handle, category), CPPJNIStringWrapper(env, native_handle, name));
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -178,13 +178,13 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataReadAccess_IsMetad
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
-    auto result = pInstance->IsMetadataDoubleVector2Available(HueJNIStringWrapper(env, native_handle, category), HueJNIStringWrapper(env, native_handle, name));
+    auto pInstance = CPPJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
+    auto result = pInstance->IsMetadataDoubleVector2Available(CPPJNIStringWrapper(env, native_handle, category), CPPJNIStringWrapper(env, native_handle, name));
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -194,13 +194,13 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataReadAccess_IsMetad
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
-    auto result = pInstance->IsMetadataDoubleVector3Available(HueJNIStringWrapper(env, native_handle, category), HueJNIStringWrapper(env, native_handle, name));
+    auto pInstance = CPPJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
+    auto result = pInstance->IsMetadataDoubleVector3Available(CPPJNIStringWrapper(env, native_handle, category), CPPJNIStringWrapper(env, native_handle, name));
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -210,13 +210,13 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataReadAccess_IsMetad
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
-    auto result = pInstance->IsMetadataDoubleVector4Available(HueJNIStringWrapper(env, native_handle, category), HueJNIStringWrapper(env, native_handle, name));
+    auto pInstance = CPPJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
+    auto result = pInstance->IsMetadataDoubleVector4Available(CPPJNIStringWrapper(env, native_handle, category), CPPJNIStringWrapper(env, native_handle, name));
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -226,13 +226,13 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataReadAccess_IsMetad
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
-    auto result = pInstance->IsMetadataStringAvailable(HueJNIStringWrapper(env, native_handle, category), HueJNIStringWrapper(env, native_handle, name));
+    auto pInstance = CPPJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
+    auto result = pInstance->IsMetadataStringAvailable(CPPJNIStringWrapper(env, native_handle, category), CPPJNIStringWrapper(env, native_handle, name));
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -242,13 +242,13 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataReadAccess_IsMetad
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
-    auto result = pInstance->IsMetadataBLOBAvailable(HueJNIStringWrapper(env, native_handle, category), HueJNIStringWrapper(env, native_handle, name));
+    auto pInstance = CPPJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
+    auto result = pInstance->IsMetadataBLOBAvailable(CPPJNIStringWrapper(env, native_handle, category), CPPJNIStringWrapper(env, native_handle, name));
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -258,13 +258,13 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMetadata
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
-    auto result = pInstance->GetMetadataInt(HueJNIStringWrapper(env, native_handle, category), HueJNIStringWrapper(env, native_handle, name));
+    auto pInstance = CPPJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
+    auto result = pInstance->GetMetadataInt(CPPJNIStringWrapper(env, native_handle, category), CPPJNIStringWrapper(env, native_handle, name));
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -274,15 +274,15 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMetadata
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
     auto result = pInstance->GetMetadataIntVector2(
-                               HueJNIStringWrapper(env, native_handle, category), 
-                               HueJNIStringWrapper(env, native_handle, name));
+                               CPPJNIStringWrapper(env, native_handle, category), 
+                               CPPJNIStringWrapper(env, native_handle, name));
     *(OpenVDS::IntVector2*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMetadataIntVector3Impl
@@ -291,15 +291,15 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMetadata
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
     auto result = pInstance->GetMetadataIntVector3(
-                               HueJNIStringWrapper(env, native_handle, category), 
-                               HueJNIStringWrapper(env, native_handle, name));
+                               CPPJNIStringWrapper(env, native_handle, category), 
+                               CPPJNIStringWrapper(env, native_handle, name));
     *(OpenVDS::IntVector3*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMetadataIntVector4Impl
@@ -308,15 +308,15 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMetadata
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
     auto result = pInstance->GetMetadataIntVector4(
-                               HueJNIStringWrapper(env, native_handle, category), 
-                               HueJNIStringWrapper(env, native_handle, name));
+                               CPPJNIStringWrapper(env, native_handle, category), 
+                               CPPJNIStringWrapper(env, native_handle, name));
     *(OpenVDS::IntVector4*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMetadataFloatImpl
@@ -325,13 +325,13 @@ JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMetada
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
-    auto result = pInstance->GetMetadataFloat(HueJNIStringWrapper(env, native_handle, category), HueJNIStringWrapper(env, native_handle, name));
+    auto pInstance = CPPJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
+    auto result = pInstance->GetMetadataFloat(CPPJNIStringWrapper(env, native_handle, category), CPPJNIStringWrapper(env, native_handle, name));
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -341,15 +341,15 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMetadata
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
     auto result = pInstance->GetMetadataFloatVector2(
-                               HueJNIStringWrapper(env, native_handle, category), 
-                               HueJNIStringWrapper(env, native_handle, name));
+                               CPPJNIStringWrapper(env, native_handle, category), 
+                               CPPJNIStringWrapper(env, native_handle, name));
     *(OpenVDS::FloatVector2*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMetadataFloatVector3Impl
@@ -358,15 +358,15 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMetadata
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
     auto result = pInstance->GetMetadataFloatVector3(
-                               HueJNIStringWrapper(env, native_handle, category), 
-                               HueJNIStringWrapper(env, native_handle, name));
+                               CPPJNIStringWrapper(env, native_handle, category), 
+                               CPPJNIStringWrapper(env, native_handle, name));
     *(OpenVDS::FloatVector3*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMetadataFloatVector4Impl
@@ -375,15 +375,15 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMetadata
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
     auto result = pInstance->GetMetadataFloatVector4(
-                               HueJNIStringWrapper(env, native_handle, category), 
-                               HueJNIStringWrapper(env, native_handle, name));
+                               CPPJNIStringWrapper(env, native_handle, category), 
+                               CPPJNIStringWrapper(env, native_handle, name));
     *(OpenVDS::FloatVector4*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT jdouble JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMetadataDoubleImpl
@@ -392,13 +392,13 @@ JNIEXPORT jdouble JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMetad
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
-    auto result = pInstance->GetMetadataDouble(HueJNIStringWrapper(env, native_handle, category), HueJNIStringWrapper(env, native_handle, name));
+    auto pInstance = CPPJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
+    auto result = pInstance->GetMetadataDouble(CPPJNIStringWrapper(env, native_handle, category), CPPJNIStringWrapper(env, native_handle, name));
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -408,15 +408,15 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMetadata
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
     auto result = pInstance->GetMetadataDoubleVector2(
-                               HueJNIStringWrapper(env, native_handle, category), 
-                               HueJNIStringWrapper(env, native_handle, name));
+                               CPPJNIStringWrapper(env, native_handle, category), 
+                               CPPJNIStringWrapper(env, native_handle, name));
     *(OpenVDS::DoubleVector2*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMetadataDoubleVector3Impl
@@ -425,15 +425,15 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMetadata
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
     auto result = pInstance->GetMetadataDoubleVector3(
-                               HueJNIStringWrapper(env, native_handle, category), 
-                               HueJNIStringWrapper(env, native_handle, name));
+                               CPPJNIStringWrapper(env, native_handle, category), 
+                               CPPJNIStringWrapper(env, native_handle, name));
     *(OpenVDS::DoubleVector3*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMetadataDoubleVector4Impl
@@ -442,15 +442,15 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMetadata
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
     auto result = pInstance->GetMetadataDoubleVector4(
-                               HueJNIStringWrapper(env, native_handle, category), 
-                               HueJNIStringWrapper(env, native_handle, name));
+                               CPPJNIStringWrapper(env, native_handle, category), 
+                               CPPJNIStringWrapper(env, native_handle, name));
     *(OpenVDS::DoubleVector4*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMetadataStringImpl
@@ -459,24 +459,24 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMetad
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
-    auto result = pInstance->GetMetadataString(HueJNIStringWrapper(env, native_handle, category), HueJNIStringWrapper(env, native_handle, name));
-    return HueJNI_newString(env, result);
+    auto pInstance = CPPJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
+    auto result = pInstance->GetMetadataString(CPPJNIStringWrapper(env, native_handle, category), CPPJNIStringWrapper(env, native_handle, name));
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataReadAccess_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    HueJNI_destroyHandle<OpenVDS::MetadataReadAccess>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::MetadataReadAccess>(env, native_handle);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 
@@ -490,9 +490,9 @@ JNIEXPORT jintArray JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMet
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
 
     auto lsKey = pInstance->GetMetadataKeys();
 
@@ -510,7 +510,7 @@ JNIEXPORT jintArray JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMet
 
     return metadata_key_types;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -522,9 +522,9 @@ JNIEXPORT jobjectArray JNICALL Java_org_opengroup_openvds_MetadataReadAccess_Get
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
 
     auto lsKey = pInstance->GetMetadataKeys();
 
@@ -541,7 +541,7 @@ JNIEXPORT jobjectArray JNICALL Java_org_opengroup_openvds_MetadataReadAccess_Get
 
     return metadata_key_categories;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -553,9 +553,9 @@ JNIEXPORT jobjectArray JNICALL Java_org_opengroup_openvds_MetadataReadAccess_Get
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
 
     auto lsKey = pInstance->GetMetadataKeys();
 
@@ -572,7 +572,7 @@ JNIEXPORT jobjectArray JNICALL Java_org_opengroup_openvds_MetadataReadAccess_Get
 
     return metadata_key_names;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -584,15 +584,15 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::MetadataWriteAccess>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::MetadataWriteAccess>(native_handle);
     pInstance->SetMetadataInt(
-                               HueJNIStringWrapper(env, native_handle, category), 
-                               HueJNIStringWrapper(env, native_handle, name), 
+                               CPPJNIStringWrapper(env, native_handle, category), 
+                               CPPJNIStringWrapper(env, native_handle, name), 
                                value);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadataIntVector2Impl
@@ -601,15 +601,15 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::MetadataWriteAccess>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::MetadataWriteAccess>(native_handle);
     pInstance->SetMetadataIntVector2(
-                               HueJNIStringWrapper(env, native_handle, category), 
-                               HueJNIStringWrapper(env, native_handle, name), 
-                               HueJNIByteBufferAdapter<OpenVDS::IntVector2>(env, valuebytebuffer, valuebyteoffset));
+                               CPPJNIStringWrapper(env, native_handle, category), 
+                               CPPJNIStringWrapper(env, native_handle, name), 
+                               CPPJNIByteBufferAdapter<OpenVDS::IntVector2>(env, valuebytebuffer, valuebyteoffset));
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadataIntVector3Impl
@@ -618,15 +618,15 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::MetadataWriteAccess>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::MetadataWriteAccess>(native_handle);
     pInstance->SetMetadataIntVector3(
-                               HueJNIStringWrapper(env, native_handle, category), 
-                               HueJNIStringWrapper(env, native_handle, name), 
-                               HueJNIByteBufferAdapter<OpenVDS::IntVector3>(env, valuebytebuffer, valuebyteoffset));
+                               CPPJNIStringWrapper(env, native_handle, category), 
+                               CPPJNIStringWrapper(env, native_handle, name), 
+                               CPPJNIByteBufferAdapter<OpenVDS::IntVector3>(env, valuebytebuffer, valuebyteoffset));
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadataIntVector4Impl
@@ -635,15 +635,15 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::MetadataWriteAccess>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::MetadataWriteAccess>(native_handle);
     pInstance->SetMetadataIntVector4(
-                               HueJNIStringWrapper(env, native_handle, category), 
-                               HueJNIStringWrapper(env, native_handle, name), 
-                               HueJNIByteBufferAdapter<OpenVDS::IntVector4>(env, valuebytebuffer, valuebyteoffset));
+                               CPPJNIStringWrapper(env, native_handle, category), 
+                               CPPJNIStringWrapper(env, native_handle, name), 
+                               CPPJNIByteBufferAdapter<OpenVDS::IntVector4>(env, valuebytebuffer, valuebyteoffset));
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadataFloatImpl
@@ -652,15 +652,15 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::MetadataWriteAccess>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::MetadataWriteAccess>(native_handle);
     pInstance->SetMetadataFloat(
-                               HueJNIStringWrapper(env, native_handle, category), 
-                               HueJNIStringWrapper(env, native_handle, name), 
+                               CPPJNIStringWrapper(env, native_handle, category), 
+                               CPPJNIStringWrapper(env, native_handle, name), 
                                value);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadataFloatVector2Impl
@@ -669,15 +669,15 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::MetadataWriteAccess>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::MetadataWriteAccess>(native_handle);
     pInstance->SetMetadataFloatVector2(
-                               HueJNIStringWrapper(env, native_handle, category), 
-                               HueJNIStringWrapper(env, native_handle, name), 
-                               HueJNIByteBufferAdapter<OpenVDS::FloatVector2>(env, valuebytebuffer, valuebyteoffset));
+                               CPPJNIStringWrapper(env, native_handle, category), 
+                               CPPJNIStringWrapper(env, native_handle, name), 
+                               CPPJNIByteBufferAdapter<OpenVDS::FloatVector2>(env, valuebytebuffer, valuebyteoffset));
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadataFloatVector3Impl
@@ -686,15 +686,15 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::MetadataWriteAccess>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::MetadataWriteAccess>(native_handle);
     pInstance->SetMetadataFloatVector3(
-                               HueJNIStringWrapper(env, native_handle, category), 
-                               HueJNIStringWrapper(env, native_handle, name), 
-                               HueJNIByteBufferAdapter<OpenVDS::FloatVector3>(env, valuebytebuffer, valuebyteoffset));
+                               CPPJNIStringWrapper(env, native_handle, category), 
+                               CPPJNIStringWrapper(env, native_handle, name), 
+                               CPPJNIByteBufferAdapter<OpenVDS::FloatVector3>(env, valuebytebuffer, valuebyteoffset));
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadataFloatVector4Impl
@@ -703,15 +703,15 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::MetadataWriteAccess>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::MetadataWriteAccess>(native_handle);
     pInstance->SetMetadataFloatVector4(
-                               HueJNIStringWrapper(env, native_handle, category), 
-                               HueJNIStringWrapper(env, native_handle, name), 
-                               HueJNIByteBufferAdapter<OpenVDS::FloatVector4>(env, valuebytebuffer, valuebyteoffset));
+                               CPPJNIStringWrapper(env, native_handle, category), 
+                               CPPJNIStringWrapper(env, native_handle, name), 
+                               CPPJNIByteBufferAdapter<OpenVDS::FloatVector4>(env, valuebytebuffer, valuebyteoffset));
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadataDoubleImpl
@@ -720,15 +720,15 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::MetadataWriteAccess>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::MetadataWriteAccess>(native_handle);
     pInstance->SetMetadataDouble(
-                               HueJNIStringWrapper(env, native_handle, category), 
-                               HueJNIStringWrapper(env, native_handle, name), 
+                               CPPJNIStringWrapper(env, native_handle, category), 
+                               CPPJNIStringWrapper(env, native_handle, name), 
                                value);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadataDoubleVector2Impl
@@ -737,15 +737,15 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::MetadataWriteAccess>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::MetadataWriteAccess>(native_handle);
     pInstance->SetMetadataDoubleVector2(
-                               HueJNIStringWrapper(env, native_handle, category), 
-                               HueJNIStringWrapper(env, native_handle, name), 
-                               HueJNIByteBufferAdapter<OpenVDS::DoubleVector2>(env, valuebytebuffer, valuebyteoffset));
+                               CPPJNIStringWrapper(env, native_handle, category), 
+                               CPPJNIStringWrapper(env, native_handle, name), 
+                               CPPJNIByteBufferAdapter<OpenVDS::DoubleVector2>(env, valuebytebuffer, valuebyteoffset));
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadataDoubleVector3Impl
@@ -754,15 +754,15 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::MetadataWriteAccess>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::MetadataWriteAccess>(native_handle);
     pInstance->SetMetadataDoubleVector3(
-                               HueJNIStringWrapper(env, native_handle, category), 
-                               HueJNIStringWrapper(env, native_handle, name), 
-                               HueJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, valuebytebuffer, valuebyteoffset));
+                               CPPJNIStringWrapper(env, native_handle, category), 
+                               CPPJNIStringWrapper(env, native_handle, name), 
+                               CPPJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, valuebytebuffer, valuebyteoffset));
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadataDoubleVector4Impl
@@ -771,15 +771,15 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::MetadataWriteAccess>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::MetadataWriteAccess>(native_handle);
     pInstance->SetMetadataDoubleVector4(
-                               HueJNIStringWrapper(env, native_handle, category), 
-                               HueJNIStringWrapper(env, native_handle, name), 
-                               HueJNIByteBufferAdapter<OpenVDS::DoubleVector4>(env, valuebytebuffer, valuebyteoffset));
+                               CPPJNIStringWrapper(env, native_handle, category), 
+                               CPPJNIStringWrapper(env, native_handle, name), 
+                               CPPJNIByteBufferAdapter<OpenVDS::DoubleVector4>(env, valuebytebuffer, valuebyteoffset));
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadataStringImpl
@@ -788,15 +788,15 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::MetadataWriteAccess>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::MetadataWriteAccess>(native_handle);
     pInstance->SetMetadataString(
-                               HueJNIStringWrapper(env, native_handle, category), 
-                               HueJNIStringWrapper(env, native_handle, name), 
-                               HueJNIStringWrapper(env, native_handle, value));
+                               CPPJNIStringWrapper(env, native_handle, category), 
+                               CPPJNIStringWrapper(env, native_handle, name), 
+                               CPPJNIStringWrapper(env, native_handle, value));
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadataString2Impl
@@ -805,15 +805,15 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::MetadataWriteAccess>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::MetadataWriteAccess>(native_handle);
     pInstance->SetMetadataString(
-                               HueJNIStringWrapper(env, native_handle, category), 
-                               HueJNIStringWrapper(env, native_handle, name), 
-                               std::string(HueJNIStringWrapper(env, native_handle, value)));
+                               CPPJNIStringWrapper(env, native_handle, category), 
+                               CPPJNIStringWrapper(env, native_handle, name), 
+                               std::string(CPPJNIStringWrapper(env, native_handle, value)));
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadataBLOBImpl
@@ -822,16 +822,16 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_SetMetadat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto tmpdata = HueJNIAsyncBuffer<void>(env, data);
-    auto pInstance = HueJNI_cast<OpenVDS::MetadataWriteAccess>(native_handle);
+    auto tmpdata = CPPJNIAsyncBuffer<void>(env, data);
+    auto pInstance = CPPJNI_cast<OpenVDS::MetadataWriteAccess>(native_handle);
     pInstance->SetMetadataBLOB(
-                               HueJNIStringWrapper(env, native_handle, category), 
-                               HueJNIStringWrapper(env, native_handle, name), 
+                               CPPJNIStringWrapper(env, native_handle, category), 
+                               CPPJNIStringWrapper(env, native_handle, name), 
                                tmpdata.buffer(), tmpdata.byteSize());
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_CopyMetadataImpl
@@ -840,12 +840,12 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_CopyMetada
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::MetadataWriteAccess>(native_handle);
-    pInstance->CopyMetadata(HueJNIStringWrapper(env, native_handle, category), HueJNI_cast<OpenVDS::MetadataReadAccess>(metadataReadAccess));
+    auto pInstance = CPPJNI_cast<OpenVDS::MetadataWriteAccess>(native_handle);
+    pInstance->CopyMetadata(CPPJNIStringWrapper(env, native_handle, category), CPPJNI_cast<OpenVDS::MetadataReadAccess>(metadataReadAccess));
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_ClearMetadataImpl
@@ -854,12 +854,12 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_ClearMetad
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::MetadataWriteAccess>(native_handle);
-    pInstance->ClearMetadata(HueJNIStringWrapper(env, native_handle, category), HueJNIStringWrapper(env, native_handle, name));
+    auto pInstance = CPPJNI_cast<OpenVDS::MetadataWriteAccess>(native_handle);
+    pInstance->ClearMetadata(CPPJNIStringWrapper(env, native_handle, category), CPPJNIStringWrapper(env, native_handle, name));
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_ClearMetadata2Impl
@@ -868,22 +868,22 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_ClearMetad
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::MetadataWriteAccess>(native_handle);
-    pInstance->ClearMetadata(HueJNIStringWrapper(env, native_handle, category));
+    auto pInstance = CPPJNI_cast<OpenVDS::MetadataWriteAccess>(native_handle);
+    pInstance->ClearMetadata(CPPJNIStringWrapper(env, native_handle, category));
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    HueJNI_destroyHandle<OpenVDS::MetadataWriteAccess>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::MetadataWriteAccess>(env, native_handle);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 

@@ -34,16 +34,16 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_ctor
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::IJKCoordinateTransformer>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::IJKCoordinateTransformer>();
 
     auto native_handle = context->handle();
     context->setObject(new OpenVDS::IJKCoordinateTransformer());
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -54,16 +54,16 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_ctor
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::IJKCoordinateTransformer>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::IJKCoordinateTransformer>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::IJKCoordinateTransformer(HueJNIByteBufferAdapter<OpenVDS::IJKGridDefinition>(env, ijkGridDefinitionbytebuffer, ijkGridDefinitionbyteoffset), HueJNIByteBufferAdapter<OpenVDS::IntVector3>(env, ijkSizebytebuffer, ijkSizebyteoffset)));
+    context->setObject(new OpenVDS::IJKCoordinateTransformer(CPPJNIByteBufferAdapter<OpenVDS::IJKGridDefinition>(env, ijkGridDefinitionbytebuffer, ijkGridDefinitionbyteoffset), CPPJNIByteBufferAdapter<OpenVDS::IntVector3>(env, ijkSizebytebuffer, ijkSizebyteoffset)));
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -74,19 +74,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_ctor
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::IJKCoordinateTransformer>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::IJKCoordinateTransformer>();
 
     auto native_handle = context->handle();
     context->setObject(new OpenVDS::IJKCoordinateTransformer(
-                               HueJNIByteBufferAdapter<OpenVDS::IJKGridDefinition>(env, ijkGridDefinitionbytebuffer, ijkGridDefinitionbyteoffset), 
-                               HueJNIByteBufferAdapter<OpenVDS::IntVector3>(env, ijkSizebytebuffer, ijkSizebyteoffset), 
-                               HueJNIByteBufferAdapter<OpenVDS::IntVector3>(env, ijkToVoxelDimensionMapbytebuffer, ijkToVoxelDimensionMapbyteoffset)));
+                               CPPJNIByteBufferAdapter<OpenVDS::IJKGridDefinition>(env, ijkGridDefinitionbytebuffer, ijkGridDefinitionbyteoffset), 
+                               CPPJNIByteBufferAdapter<OpenVDS::IntVector3>(env, ijkSizebytebuffer, ijkSizebyteoffset), 
+                               CPPJNIByteBufferAdapter<OpenVDS::IntVector3>(env, ijkToVoxelDimensionMapbytebuffer, ijkToVoxelDimensionMapbyteoffset)));
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -97,16 +97,16 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_ctor
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::IJKCoordinateTransformer>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::IJKCoordinateTransformer>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::IJKCoordinateTransformer(HueJNIByteBufferAdapter<OpenVDS::VDSIJKGridDefinition>(env, vdsIJKGridDefinitionbytebuffer, vdsIJKGridDefinitionbyteoffset), HueJNIByteBufferAdapter<OpenVDS::IntVector3>(env, ijkSizebytebuffer, ijkSizebyteoffset)));
+    context->setObject(new OpenVDS::IJKCoordinateTransformer(CPPJNIByteBufferAdapter<OpenVDS::VDSIJKGridDefinition>(env, vdsIJKGridDefinitionbytebuffer, vdsIJKGridDefinitionbyteoffset), CPPJNIByteBufferAdapter<OpenVDS::IntVector3>(env, ijkSizebytebuffer, ijkSizebyteoffset)));
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -117,20 +117,20 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_ctor
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::IJKCoordinateTransformer>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::IJKCoordinateTransformer>();
 
     auto native_handle = context->handle();
     context->setObject(new OpenVDS::IJKCoordinateTransformer(
-                               HueJNIByteBufferAdapter<OpenVDS::IJKGridDefinition>(env, ijkGridDefinitionbytebuffer, ijkGridDefinitionbyteoffset), 
-                               HueJNIByteBufferAdapter<OpenVDS::IntVector3>(env, ijkSizebytebuffer, ijkSizebyteoffset), 
-                               HueJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, ijkAnnotationStartbytebuffer, ijkAnnotationStartbyteoffset), 
-                               HueJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, ijkAnnotationEndbytebuffer, ijkAnnotationEndbyteoffset)));
+                               CPPJNIByteBufferAdapter<OpenVDS::IJKGridDefinition>(env, ijkGridDefinitionbytebuffer, ijkGridDefinitionbyteoffset), 
+                               CPPJNIByteBufferAdapter<OpenVDS::IntVector3>(env, ijkSizebytebuffer, ijkSizebyteoffset), 
+                               CPPJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, ijkAnnotationStartbytebuffer, ijkAnnotationStartbyteoffset), 
+                               CPPJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, ijkAnnotationEndbytebuffer, ijkAnnotationEndbyteoffset)));
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -141,21 +141,21 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_ctor
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::IJKCoordinateTransformer>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::IJKCoordinateTransformer>();
 
     auto native_handle = context->handle();
     context->setObject(new OpenVDS::IJKCoordinateTransformer(
-                               HueJNIByteBufferAdapter<OpenVDS::IJKGridDefinition>(env, ijkGridDefinitionbytebuffer, ijkGridDefinitionbyteoffset), 
-                               HueJNIByteBufferAdapter<OpenVDS::IntVector3>(env, ijkSizebytebuffer, ijkSizebyteoffset), 
-                               HueJNIByteBufferAdapter<OpenVDS::IntVector3>(env, ijkToVoxelDimensionMapbytebuffer, ijkToVoxelDimensionMapbyteoffset), 
-                               HueJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, ijkAnnotationStartbytebuffer, ijkAnnotationStartbyteoffset), 
-                               HueJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, ijkAnnotationEndbytebuffer, ijkAnnotationEndbyteoffset)));
+                               CPPJNIByteBufferAdapter<OpenVDS::IJKGridDefinition>(env, ijkGridDefinitionbytebuffer, ijkGridDefinitionbyteoffset), 
+                               CPPJNIByteBufferAdapter<OpenVDS::IntVector3>(env, ijkSizebytebuffer, ijkSizebyteoffset), 
+                               CPPJNIByteBufferAdapter<OpenVDS::IntVector3>(env, ijkToVoxelDimensionMapbytebuffer, ijkToVoxelDimensionMapbyteoffset), 
+                               CPPJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, ijkAnnotationStartbytebuffer, ijkAnnotationStartbyteoffset), 
+                               CPPJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, ijkAnnotationEndbytebuffer, ijkAnnotationEndbyteoffset)));
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -166,20 +166,20 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_ctor
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::IJKCoordinateTransformer>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::IJKCoordinateTransformer>();
 
     auto native_handle = context->handle();
     context->setObject(new OpenVDS::IJKCoordinateTransformer(
-                               HueJNIByteBufferAdapter<OpenVDS::VDSIJKGridDefinition>(env, vdsIJKGridDefinitionbytebuffer, vdsIJKGridDefinitionbyteoffset), 
-                               HueJNIByteBufferAdapter<OpenVDS::IntVector3>(env, ijkSizebytebuffer, ijkSizebyteoffset), 
-                               HueJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, ijkAnnotationStartbytebuffer, ijkAnnotationStartbyteoffset), 
-                               HueJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, ijkAnnotationEndbytebuffer, ijkAnnotationEndbyteoffset)));
+                               CPPJNIByteBufferAdapter<OpenVDS::VDSIJKGridDefinition>(env, vdsIJKGridDefinitionbytebuffer, vdsIJKGridDefinitionbyteoffset), 
+                               CPPJNIByteBufferAdapter<OpenVDS::IntVector3>(env, ijkSizebytebuffer, ijkSizebyteoffset), 
+                               CPPJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, ijkAnnotationStartbytebuffer, ijkAnnotationStartbyteoffset), 
+                               CPPJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, ijkAnnotationEndbytebuffer, ijkAnnotationEndbyteoffset)));
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -190,13 +190,13 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKGr
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
     auto result = pInstance->IJKGrid();
     *(OpenVDS::IJKGridDefinition*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKSizeImpl
@@ -205,13 +205,13 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKSi
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
     auto result = pInstance->IJKSize();
     *(OpenVDS::IntVector3*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKToVoxelDimensionMapImpl
@@ -220,13 +220,13 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKTo
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
     auto result = pInstance->IJKToVoxelDimensionMap();
     *(OpenVDS::IntVector3*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKToWorldTransformImpl
@@ -235,13 +235,13 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKTo
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
     auto result = pInstance->IJKToWorldTransform();
     *(OpenVDS::DoubleMatrix4x4*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_WorldToIJKTransformImpl
@@ -250,13 +250,13 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_World
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
     auto result = pInstance->WorldToIJKTransform();
     *(OpenVDS::DoubleMatrix4x4*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKAnnotationStartImpl
@@ -265,13 +265,13 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKAn
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
     auto result = pInstance->IJKAnnotationStart();
     *(OpenVDS::DoubleVector3*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKAnnotationEndImpl
@@ -280,13 +280,13 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKAn
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
     auto result = pInstance->IJKAnnotationEnd();
     *(OpenVDS::DoubleVector3*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_AnnotationsDefinedImpl
@@ -295,13 +295,13 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_A
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
     auto result = pInstance->AnnotationsDefined();
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -311,13 +311,13 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKPo
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
-    auto result = pInstance->IJKPositionToWorld(HueJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, ijkPositionbytebuffer, ijkPositionbyteoffset));
+    auto pInstance = CPPJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
+    auto result = pInstance->IJKPositionToWorld(CPPJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, ijkPositionbytebuffer, ijkPositionbyteoffset));
     *(OpenVDS::DoubleVector3*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKIndexToWorldImpl
@@ -326,13 +326,13 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKIn
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
-    auto result = pInstance->IJKIndexToWorld(HueJNIByteBufferAdapter<OpenVDS::IntVector3>(env, ijkIndexbytebuffer, ijkIndexbyteoffset));
+    auto pInstance = CPPJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
+    auto result = pInstance->IJKIndexToWorld(CPPJNIByteBufferAdapter<OpenVDS::IntVector3>(env, ijkIndexbytebuffer, ijkIndexbyteoffset));
     *(OpenVDS::DoubleVector3*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKPositionToAnnotationImpl
@@ -341,13 +341,13 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKPo
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
-    auto result = pInstance->IJKPositionToAnnotation(HueJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, ijkPositionbytebuffer, ijkPositionbyteoffset));
+    auto pInstance = CPPJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
+    auto result = pInstance->IJKPositionToAnnotation(CPPJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, ijkPositionbytebuffer, ijkPositionbyteoffset));
     *(OpenVDS::DoubleVector3*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKIndexToAnnotationImpl
@@ -356,13 +356,13 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKIn
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
-    auto result = pInstance->IJKIndexToAnnotation(HueJNIByteBufferAdapter<OpenVDS::IntVector3>(env, ijkIndexbytebuffer, ijkIndexbyteoffset));
+    auto pInstance = CPPJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
+    auto result = pInstance->IJKIndexToAnnotation(CPPJNIByteBufferAdapter<OpenVDS::IntVector3>(env, ijkIndexbytebuffer, ijkIndexbyteoffset));
     *(OpenVDS::DoubleVector3*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKPositionToVoxelPositionImpl
@@ -371,13 +371,13 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKPo
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
-    auto result = pInstance->IJKPositionToVoxelPosition(HueJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, ijkPositionbytebuffer, ijkPositionbyteoffset));
+    auto pInstance = CPPJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
+    auto result = pInstance->IJKPositionToVoxelPosition(CPPJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, ijkPositionbytebuffer, ijkPositionbyteoffset));
     *(OpenVDS::DoubleVector3*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKIndexToVoxelIndexImpl
@@ -386,13 +386,13 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKIn
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
-    auto result = pInstance->IJKIndexToVoxelIndex(HueJNIByteBufferAdapter<OpenVDS::IntVector3>(env, ijkIndexbytebuffer, ijkIndexbyteoffset));
+    auto pInstance = CPPJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
+    auto result = pInstance->IJKIndexToVoxelIndex(CPPJNIByteBufferAdapter<OpenVDS::IntVector3>(env, ijkIndexbytebuffer, ijkIndexbyteoffset));
     *(OpenVDS::IntVector3*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_WorldToIJKPositionImpl
@@ -401,13 +401,13 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_World
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
-    auto result = pInstance->WorldToIJKPosition(HueJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, worldPositionbytebuffer, worldPositionbyteoffset));
+    auto pInstance = CPPJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
+    auto result = pInstance->WorldToIJKPosition(CPPJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, worldPositionbytebuffer, worldPositionbyteoffset));
     *(OpenVDS::DoubleVector3*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_WorldToIJKIndexImpl
@@ -416,13 +416,13 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_World
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
-    auto result = pInstance->WorldToIJKIndex(HueJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, worldPositionbytebuffer, worldPositionbyteoffset));
+    auto pInstance = CPPJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
+    auto result = pInstance->WorldToIJKIndex(CPPJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, worldPositionbytebuffer, worldPositionbyteoffset));
     *(OpenVDS::IntVector3*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_WorldToAnnotationImpl
@@ -431,13 +431,13 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_World
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
-    auto result = pInstance->WorldToAnnotation(HueJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, worldPositionbytebuffer, worldPositionbyteoffset));
+    auto pInstance = CPPJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
+    auto result = pInstance->WorldToAnnotation(CPPJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, worldPositionbytebuffer, worldPositionbyteoffset));
     *(OpenVDS::DoubleVector3*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_WorldToVoxelPositionImpl
@@ -446,13 +446,13 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_World
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
-    auto result = pInstance->WorldToVoxelPosition(HueJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, worldPositionbytebuffer, worldPositionbyteoffset));
+    auto pInstance = CPPJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
+    auto result = pInstance->WorldToVoxelPosition(CPPJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, worldPositionbytebuffer, worldPositionbyteoffset));
     *(OpenVDS::DoubleVector3*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_WorldToVoxelIndexImpl
@@ -461,13 +461,13 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_World
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
-    auto result = pInstance->WorldToVoxelIndex(HueJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, worldPositionbytebuffer, worldPositionbyteoffset));
+    auto pInstance = CPPJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
+    auto result = pInstance->WorldToVoxelIndex(CPPJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, worldPositionbytebuffer, worldPositionbyteoffset));
     *(OpenVDS::IntVector3*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_AnnotationToIJKPositionImpl
@@ -476,13 +476,13 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_Annot
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
-    auto result = pInstance->AnnotationToIJKPosition(HueJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, annotationPositionbytebuffer, annotationPositionbyteoffset));
+    auto pInstance = CPPJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
+    auto result = pInstance->AnnotationToIJKPosition(CPPJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, annotationPositionbytebuffer, annotationPositionbyteoffset));
     *(OpenVDS::DoubleVector3*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_AnnotationToIJKIndexImpl
@@ -491,13 +491,13 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_Annot
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
-    auto result = pInstance->AnnotationToIJKIndex(HueJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, annotationPositionbytebuffer, annotationPositionbyteoffset));
+    auto pInstance = CPPJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
+    auto result = pInstance->AnnotationToIJKIndex(CPPJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, annotationPositionbytebuffer, annotationPositionbyteoffset));
     *(OpenVDS::IntVector3*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_AnnotationToWorldImpl
@@ -506,13 +506,13 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_Annot
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
-    auto result = pInstance->AnnotationToWorld(HueJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, annotationPositionbytebuffer, annotationPositionbyteoffset));
+    auto pInstance = CPPJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
+    auto result = pInstance->AnnotationToWorld(CPPJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, annotationPositionbytebuffer, annotationPositionbyteoffset));
     *(OpenVDS::DoubleVector3*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_AnnotationToVoxelPositionImpl
@@ -521,13 +521,13 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_Annot
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
-    auto result = pInstance->AnnotationToVoxelPosition(HueJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, annotationPositionbytebuffer, annotationPositionbyteoffset));
+    auto pInstance = CPPJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
+    auto result = pInstance->AnnotationToVoxelPosition(CPPJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, annotationPositionbytebuffer, annotationPositionbyteoffset));
     *(OpenVDS::DoubleVector3*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_AnnotationToVoxelIndexImpl
@@ -536,13 +536,13 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_Annot
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
-    auto result = pInstance->AnnotationToVoxelIndex(HueJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, annotationPositionbytebuffer, annotationPositionbyteoffset));
+    auto pInstance = CPPJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
+    auto result = pInstance->AnnotationToVoxelIndex(CPPJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, annotationPositionbytebuffer, annotationPositionbyteoffset));
     *(OpenVDS::IntVector3*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_VoxelPositionToIJKPositionImpl
@@ -551,13 +551,13 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_Voxel
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
-    auto result = pInstance->VoxelPositionToIJKPosition(HueJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, voxelPositionbytebuffer, voxelPositionbyteoffset));
+    auto pInstance = CPPJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
+    auto result = pInstance->VoxelPositionToIJKPosition(CPPJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, voxelPositionbytebuffer, voxelPositionbyteoffset));
     *(OpenVDS::DoubleVector3*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_VoxelIndexToIJKIndexImpl
@@ -566,13 +566,13 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_Voxel
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
-    auto result = pInstance->VoxelIndexToIJKIndex(HueJNIByteBufferAdapter<OpenVDS::IntVector3>(env, voxelIndexbytebuffer, voxelIndexbyteoffset));
+    auto pInstance = CPPJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
+    auto result = pInstance->VoxelIndexToIJKIndex(CPPJNIByteBufferAdapter<OpenVDS::IntVector3>(env, voxelIndexbytebuffer, voxelIndexbyteoffset));
     *(OpenVDS::IntVector3*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_VoxelPositionToWorldImpl
@@ -581,13 +581,13 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_Voxel
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
-    auto result = pInstance->VoxelPositionToWorld(HueJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, voxelPositionbytebuffer, voxelPositionbyteoffset));
+    auto pInstance = CPPJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
+    auto result = pInstance->VoxelPositionToWorld(CPPJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, voxelPositionbytebuffer, voxelPositionbyteoffset));
     *(OpenVDS::DoubleVector3*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_VoxelIndexToWorldImpl
@@ -596,13 +596,13 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_Voxel
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
-    auto result = pInstance->VoxelIndexToWorld(HueJNIByteBufferAdapter<OpenVDS::IntVector3>(env, voxelIndexbytebuffer, voxelIndexbyteoffset));
+    auto pInstance = CPPJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
+    auto result = pInstance->VoxelIndexToWorld(CPPJNIByteBufferAdapter<OpenVDS::IntVector3>(env, voxelIndexbytebuffer, voxelIndexbyteoffset));
     *(OpenVDS::DoubleVector3*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_VoxelPositionToAnnotationImpl
@@ -611,13 +611,13 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_Voxel
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
-    auto result = pInstance->VoxelPositionToAnnotation(HueJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, voxelPositionbytebuffer, voxelPositionbyteoffset));
+    auto pInstance = CPPJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
+    auto result = pInstance->VoxelPositionToAnnotation(CPPJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, voxelPositionbytebuffer, voxelPositionbyteoffset));
     *(OpenVDS::DoubleVector3*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_VoxelIndexToAnnotationImpl
@@ -626,13 +626,13 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_Voxel
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
-    auto result = pInstance->VoxelIndexToAnnotation(HueJNIByteBufferAdapter<OpenVDS::IntVector3>(env, voxelIndexbytebuffer, voxelIndexbyteoffset));
+    auto pInstance = CPPJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
+    auto result = pInstance->VoxelIndexToAnnotation(CPPJNIByteBufferAdapter<OpenVDS::IntVector3>(env, voxelIndexbytebuffer, voxelIndexbyteoffset));
     *(OpenVDS::DoubleVector3*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IsIJKPositionOutOfRangeImpl
@@ -641,13 +641,13 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_I
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
-    auto result = pInstance->IsIJKPositionOutOfRange(HueJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, ijkPositionbytebuffer, ijkPositionbyteoffset));
+    auto pInstance = CPPJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
+    auto result = pInstance->IsIJKPositionOutOfRange(CPPJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, ijkPositionbytebuffer, ijkPositionbyteoffset));
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -657,13 +657,13 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_I
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
-    auto result = pInstance->IsIJKIndexOutOfRange(HueJNIByteBufferAdapter<OpenVDS::IntVector3>(env, ijkIndexbytebuffer, ijkIndexbyteoffset));
+    auto pInstance = CPPJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
+    auto result = pInstance->IsIJKIndexOutOfRange(CPPJNIByteBufferAdapter<OpenVDS::IntVector3>(env, ijkIndexbytebuffer, ijkIndexbyteoffset));
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -673,13 +673,13 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_I
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
-    auto result = pInstance->IsVoxelPositionOutOfRange(HueJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, voxelPositionbytebuffer, voxelPositionbyteoffset));
+    auto pInstance = CPPJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
+    auto result = pInstance->IsVoxelPositionOutOfRange(CPPJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, voxelPositionbytebuffer, voxelPositionbyteoffset));
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -689,13 +689,13 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_I
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
-    auto result = pInstance->IsVoxelIndexOutOfRange(HueJNIByteBufferAdapter<OpenVDS::IntVector3>(env, voxelIndexbytebuffer, voxelIndexbyteoffset));
+    auto pInstance = CPPJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
+    auto result = pInstance->IsVoxelIndexOutOfRange(CPPJNIByteBufferAdapter<OpenVDS::IntVector3>(env, voxelIndexbytebuffer, voxelIndexbyteoffset));
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -705,13 +705,13 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_Conve
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
-    auto result = pInstance->ConvertIJKPositionToIndex(HueJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, ijkPositionbytebuffer, ijkPositionbyteoffset));
+    auto pInstance = CPPJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
+    auto result = pInstance->ConvertIJKPositionToIndex(CPPJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, ijkPositionbytebuffer, ijkPositionbyteoffset));
     *(OpenVDS::IntVector3*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_ConvertVoxelPositionToIndexImpl
@@ -720,25 +720,25 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_Conve
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
-    auto result = pInstance->ConvertVoxelPositionToIndex(HueJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, voxelPositionbytebuffer, voxelPositionbyteoffset));
+    auto pInstance = CPPJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
+    auto result = pInstance->ConvertVoxelPositionToIndex(CPPJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, voxelPositionbytebuffer, voxelPositionbyteoffset));
     *(OpenVDS::IntVector3*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_operatorEQImpl
   (JNIEnv * env, jobject object, jlong native_handle, jlong other_native_handle)
 {
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
-    auto pOtherInstance = HueJNI_cast<OpenVDS::IJKCoordinateTransformer>(other_native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
+    auto pOtherInstance = CPPJNI_cast<OpenVDS::IJKCoordinateTransformer>(other_native_handle);
     return *pInstance == *pOtherInstance;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -749,13 +749,13 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_Error
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
-    auto result = pInstance->ErrorCodeIfIJKPositionOutOfRange(HueJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, ijkPositionbytebuffer, ijkPositionbyteoffset));
+    auto pInstance = CPPJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
+    auto result = pInstance->ErrorCodeIfIJKPositionOutOfRange(CPPJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, ijkPositionbytebuffer, ijkPositionbyteoffset));
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -765,24 +765,24 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_Error
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
-    auto result = pInstance->ErrorCodeIfVoxelPositionOutOfRange(HueJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, voxelPositionbytebuffer, voxelPositionbyteoffset));
+    auto pInstance = CPPJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
+    auto result = pInstance->ErrorCodeIfVoxelPositionOutOfRange(CPPJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, voxelPositionbytebuffer, voxelPositionbyteoffset));
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    HueJNI_destroyHandle<OpenVDS::IJKCoordinateTransformer>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::IJKCoordinateTransformer>(env, native_handle);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 

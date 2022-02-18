@@ -34,13 +34,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GlobalState_GetBytesDownloade
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::GlobalState>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::GlobalState>(native_handle);
     auto result = pInstance->GetBytesDownloaded((enum OpenVDS::OpenOptions::ConnectionType)connectionType);
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -50,13 +50,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GlobalState_GetChunksDownload
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::GlobalState>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::GlobalState>(native_handle);
     auto result = pInstance->GetChunksDownloaded((enum OpenVDS::OpenOptions::ConnectionType)connectionType);
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -66,13 +66,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GlobalState_GetBytesDecompres
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::GlobalState>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::GlobalState>(native_handle);
     auto result = pInstance->GetBytesDecompressed((enum OpenVDS::OpenOptions::ConnectionType)connectionType);
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -82,24 +82,24 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GlobalState_GetChunksDecompre
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::GlobalState>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::GlobalState>(native_handle);
     auto result = pInstance->GetChunksDecompressed((enum OpenVDS::OpenOptions::ConnectionType)connectionType);
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_GlobalState_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    HueJNI_destroyHandle<OpenVDS::GlobalState>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::GlobalState>(env, native_handle);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 

@@ -34,16 +34,16 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VDS_ctorImpl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::VDS>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::VDS>();
 
     auto native_handle = context->handle();
     context->setObject(new OpenVDS::VDS());
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -51,11 +51,11 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VDS_ctorImpl
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VDS_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    HueJNI_destroyHandle<OpenVDS::VDS>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VDS>(env, native_handle);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 
@@ -67,16 +67,16 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IOManager_ctorImpl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::IOManager>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::IOManager>();
 
     auto native_handle = context->handle();
     context->setObject(new OpenVDS::IOManager());
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -84,11 +84,11 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IOManager_ctorImpl
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IOManager_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    HueJNI_destroyHandle<OpenVDS::IOManager>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::IOManager>(env, native_handle);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 
@@ -100,13 +100,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenOptions_getConnectionType
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::OpenOptions>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::OpenOptions>(native_handle);
     auto result = pInstance->connectionType;
     return (jlong)result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -116,13 +116,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenOptions_getWaveletAdaptiv
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::OpenOptions>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::OpenOptions>(native_handle);
     auto result = pInstance->waveletAdaptiveMode;
     return (jlong)result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -132,13 +132,13 @@ JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_OpenOptions_getWaveletAdapti
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::OpenOptions>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::OpenOptions>(native_handle);
     auto result = pInstance->waveletAdaptiveTolerance;
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -148,24 +148,24 @@ JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_OpenOptions_getWaveletAdapti
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::OpenOptions>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::OpenOptions>(native_handle);
     auto result = pInstance->waveletAdaptiveRatio;
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_OpenOptions_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    HueJNI_destroyHandle<OpenVDS::OpenOptions>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::OpenOptions>(env, native_handle);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 
@@ -177,13 +177,13 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_AWSOpenOptions_getBucketImp
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::AWSOpenOptions>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::AWSOpenOptions>(native_handle);
     auto result = pInstance->bucket;
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -193,13 +193,13 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_AWSOpenOptions_getKeyImpl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::AWSOpenOptions>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::AWSOpenOptions>(native_handle);
     auto result = pInstance->key;
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -209,13 +209,13 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_AWSOpenOptions_getRegionImp
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::AWSOpenOptions>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::AWSOpenOptions>(native_handle);
     auto result = pInstance->region;
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -225,13 +225,13 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_AWSOpenOptions_getEndpointO
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::AWSOpenOptions>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::AWSOpenOptions>(native_handle);
     auto result = pInstance->endpointOverride;
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -241,13 +241,13 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_AWSOpenOptions_getAccessKey
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::AWSOpenOptions>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::AWSOpenOptions>(native_handle);
     auto result = pInstance->accessKeyId;
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -257,13 +257,13 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_AWSOpenOptions_getSecretKey
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::AWSOpenOptions>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::AWSOpenOptions>(native_handle);
     auto result = pInstance->secretKey;
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -273,13 +273,13 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_AWSOpenOptions_getSessionTo
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::AWSOpenOptions>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::AWSOpenOptions>(native_handle);
     auto result = pInstance->sessionToken;
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -289,13 +289,13 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_AWSOpenOptions_getExpiratio
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::AWSOpenOptions>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::AWSOpenOptions>(native_handle);
     auto result = pInstance->expiration;
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -305,13 +305,13 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_AWSOpenOptions_getLogFilena
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::AWSOpenOptions>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::AWSOpenOptions>(native_handle);
     auto result = pInstance->logFilenamePrefix;
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -321,13 +321,13 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_AWSOpenOptions_getLoglevelI
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::AWSOpenOptions>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::AWSOpenOptions>(native_handle);
     auto result = pInstance->loglevel;
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -337,13 +337,13 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_AWSOpenOptions_getConnectionTi
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::AWSOpenOptions>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::AWSOpenOptions>(native_handle);
     auto result = pInstance->connectionTimeoutMs;
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -353,13 +353,13 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_AWSOpenOptions_getRequestTimeo
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::AWSOpenOptions>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::AWSOpenOptions>(native_handle);
     auto result = pInstance->requestTimeoutMs;
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -369,13 +369,13 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_AWSOpenOptions_getDisableI
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::AWSOpenOptions>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::AWSOpenOptions>(native_handle);
     auto result = pInstance->disableInitApi;
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -385,16 +385,16 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_AWSOpenOptions_ctorImpl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::AWSOpenOptions>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::AWSOpenOptions>();
 
     auto native_handle = context->handle();
     context->setObject(new OpenVDS::AWSOpenOptions());
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -405,23 +405,23 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_AWSOpenOptions_ctor2Impl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::AWSOpenOptions>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::AWSOpenOptions>();
 
     auto native_handle = context->handle();
     context->setObject(new OpenVDS::AWSOpenOptions(
-                               std::string(HueJNIStringWrapper(env, bucket)), 
-                               std::string(HueJNIStringWrapper(env, key)), 
-                               std::string(HueJNIStringWrapper(env, region)), 
-                               std::string(HueJNIStringWrapper(env, endpointOverride)), 
+                               std::string(CPPJNIStringWrapper(env, bucket)), 
+                               std::string(CPPJNIStringWrapper(env, key)), 
+                               std::string(CPPJNIStringWrapper(env, region)), 
+                               std::string(CPPJNIStringWrapper(env, endpointOverride)), 
                                connectionTimeoutMs, 
                                requestTimeoutMs, 
                                disableInitApi ? true : false));
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -429,11 +429,11 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_AWSOpenOptions_ctor2Impl
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_AWSOpenOptions_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    HueJNI_destroyHandle<OpenVDS::AWSOpenOptions>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::AWSOpenOptions>(env, native_handle);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 
@@ -445,13 +445,13 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_AzureOpenOptions_getConnect
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::AzureOpenOptions>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::AzureOpenOptions>(native_handle);
     auto result = pInstance->connectionString;
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -461,13 +461,13 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_AzureOpenOptions_getAccount
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::AzureOpenOptions>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::AzureOpenOptions>(native_handle);
     auto result = pInstance->accountName;
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -477,13 +477,13 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_AzureOpenOptions_getBearerT
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::AzureOpenOptions>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::AzureOpenOptions>(native_handle);
     auto result = pInstance->bearerToken;
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -493,13 +493,13 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_AzureOpenOptions_getContain
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::AzureOpenOptions>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::AzureOpenOptions>(native_handle);
     auto result = pInstance->container;
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -509,13 +509,13 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_AzureOpenOptions_getBlobImp
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::AzureOpenOptions>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::AzureOpenOptions>(native_handle);
     auto result = pInstance->blob;
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -525,13 +525,13 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_AzureOpenOptions_getParallelis
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::AzureOpenOptions>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::AzureOpenOptions>(native_handle);
     auto result = pInstance->parallelism_factor;
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -541,13 +541,13 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_AzureOpenOptions_getMax_execut
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::AzureOpenOptions>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::AzureOpenOptions>(native_handle);
     auto result = pInstance->max_execution_time;
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -557,16 +557,16 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_AzureOpenOptions_ctorImpl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::AzureOpenOptions>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::AzureOpenOptions>();
 
     auto native_handle = context->handle();
     context->setObject(new OpenVDS::AzureOpenOptions());
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -577,19 +577,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_AzureOpenOptions_ctor2Impl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::AzureOpenOptions>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::AzureOpenOptions>();
 
     auto native_handle = context->handle();
     context->setObject(new OpenVDS::AzureOpenOptions(
-                               std::string(HueJNIStringWrapper(env, connectionString)), 
-                               std::string(HueJNIStringWrapper(env, container)), 
-                               std::string(HueJNIStringWrapper(env, blob))));
+                               std::string(CPPJNIStringWrapper(env, connectionString)), 
+                               std::string(CPPJNIStringWrapper(env, container)), 
+                               std::string(CPPJNIStringWrapper(env, blob))));
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -600,21 +600,21 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_AzureOpenOptions_ctor3Impl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::AzureOpenOptions>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::AzureOpenOptions>();
 
     auto native_handle = context->handle();
     context->setObject(new OpenVDS::AzureOpenOptions(
-                               std::string(HueJNIStringWrapper(env, connectionString)), 
-                               std::string(HueJNIStringWrapper(env, container)), 
-                               std::string(HueJNIStringWrapper(env, blob)), 
+                               std::string(CPPJNIStringWrapper(env, connectionString)), 
+                               std::string(CPPJNIStringWrapper(env, container)), 
+                               std::string(CPPJNIStringWrapper(env, blob)), 
                                parallelism_factor, 
                                max_execution_time));
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -625,28 +625,28 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_AzureOpenOptions_AzureOpenOpt
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::AzureOpenOptions::AzureOpenOptionsBearer(
-                               std::string(HueJNIStringWrapper(env, accountName)), 
-                               std::string(HueJNIStringWrapper(env, bearerToken)), 
-                               std::string(HueJNIStringWrapper(env, container)), 
-                               std::string(HueJNIStringWrapper(env, blob)));
-    auto context = HueJNI_createObjectContext(new OpenVDS::AzureOpenOptions(result));
+                               std::string(CPPJNIStringWrapper(env, accountName)), 
+                               std::string(CPPJNIStringWrapper(env, bearerToken)), 
+                               std::string(CPPJNIStringWrapper(env, container)), 
+                               std::string(CPPJNIStringWrapper(env, blob)));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::AzureOpenOptions(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_AzureOpenOptions_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    HueJNI_destroyHandle<OpenVDS::AzureOpenOptions>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::AzureOpenOptions>(env, native_handle);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 
@@ -658,13 +658,13 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_AzurePresignedOpenOptions_g
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::AzurePresignedOpenOptions>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::AzurePresignedOpenOptions>(native_handle);
     auto result = pInstance->baseUrl;
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -674,13 +674,13 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_AzurePresignedOpenOptions_g
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::AzurePresignedOpenOptions>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::AzurePresignedOpenOptions>(native_handle);
     auto result = pInstance->urlSuffix;
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -690,16 +690,16 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_AzurePresignedOpenOptions_cto
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::AzurePresignedOpenOptions>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::AzurePresignedOpenOptions>();
 
     auto native_handle = context->handle();
     context->setObject(new OpenVDS::AzurePresignedOpenOptions());
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -710,16 +710,16 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_AzurePresignedOpenOptions_cto
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::AzurePresignedOpenOptions>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::AzurePresignedOpenOptions>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::AzurePresignedOpenOptions(std::string(HueJNIStringWrapper(env, baseUrl)), std::string(HueJNIStringWrapper(env, urlSuffix))));
+    context->setObject(new OpenVDS::AzurePresignedOpenOptions(std::string(CPPJNIStringWrapper(env, baseUrl)), std::string(CPPJNIStringWrapper(env, urlSuffix))));
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -727,11 +727,11 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_AzurePresignedOpenOptions_cto
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_AzurePresignedOpenOptions_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    HueJNI_destroyHandle<OpenVDS::AzurePresignedOpenOptions>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::AzurePresignedOpenOptions>(env, native_handle);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 
@@ -743,16 +743,16 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsToken_ctorIm
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::GoogleCredentialsToken>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::GoogleCredentialsToken>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::GoogleCredentialsToken(std::string(HueJNIStringWrapper(env, token))));
+    context->setObject(new OpenVDS::GoogleCredentialsToken(std::string(CPPJNIStringWrapper(env, token))));
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -763,16 +763,16 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsToken_ctor2I
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::GoogleCredentialsToken>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::GoogleCredentialsToken>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::GoogleCredentialsToken(std::string(HueJNIStringWrapper(env, token))));
+    context->setObject(new OpenVDS::GoogleCredentialsToken(std::string(CPPJNIStringWrapper(env, token))));
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -780,11 +780,11 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsToken_ctor2I
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_GoogleCredentialsToken_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    HueJNI_destroyHandle<OpenVDS::GoogleCredentialsToken>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::GoogleCredentialsToken>(env, native_handle);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 
@@ -796,16 +796,16 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsPath_ctorImp
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::GoogleCredentialsPath>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::GoogleCredentialsPath>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::GoogleCredentialsPath(std::string(HueJNIStringWrapper(env, path))));
+    context->setObject(new OpenVDS::GoogleCredentialsPath(std::string(CPPJNIStringWrapper(env, path))));
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -816,16 +816,16 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsPath_ctor2Im
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::GoogleCredentialsPath>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::GoogleCredentialsPath>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::GoogleCredentialsPath(std::string(HueJNIStringWrapper(env, path))));
+    context->setObject(new OpenVDS::GoogleCredentialsPath(std::string(CPPJNIStringWrapper(env, path))));
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -833,11 +833,11 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsPath_ctor2Im
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_GoogleCredentialsPath_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    HueJNI_destroyHandle<OpenVDS::GoogleCredentialsPath>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::GoogleCredentialsPath>(env, native_handle);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 
@@ -849,16 +849,16 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsJson_ctorImp
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::GoogleCredentialsJson>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::GoogleCredentialsJson>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::GoogleCredentialsJson(std::string(HueJNIStringWrapper(env, json))));
+    context->setObject(new OpenVDS::GoogleCredentialsJson(std::string(CPPJNIStringWrapper(env, json))));
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -869,16 +869,16 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsJson_ctor2Im
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::GoogleCredentialsJson>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::GoogleCredentialsJson>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::GoogleCredentialsJson(std::string(HueJNIStringWrapper(env, json))));
+    context->setObject(new OpenVDS::GoogleCredentialsJson(std::string(CPPJNIStringWrapper(env, json))));
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -886,11 +886,11 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsJson_ctor2Im
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_GoogleCredentialsJson_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    HueJNI_destroyHandle<OpenVDS::GoogleCredentialsJson>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::GoogleCredentialsJson>(env, native_handle);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 
@@ -902,16 +902,16 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrl_ct
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::GoogleCredentialsSignedUrl>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::GoogleCredentialsSignedUrl>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::GoogleCredentialsSignedUrl(std::string(HueJNIStringWrapper(env, region))));
+    context->setObject(new OpenVDS::GoogleCredentialsSignedUrl(std::string(CPPJNIStringWrapper(env, region))));
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -922,16 +922,16 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrl_ct
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::GoogleCredentialsSignedUrl>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::GoogleCredentialsSignedUrl>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::GoogleCredentialsSignedUrl(std::string(HueJNIStringWrapper(env, region))));
+    context->setObject(new OpenVDS::GoogleCredentialsSignedUrl(std::string(CPPJNIStringWrapper(env, region))));
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -939,11 +939,11 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrl_ct
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrl_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    HueJNI_destroyHandle<OpenVDS::GoogleCredentialsSignedUrl>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::GoogleCredentialsSignedUrl>(env, native_handle);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 
@@ -955,16 +955,16 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrlPat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::GoogleCredentialsSignedUrlPath>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::GoogleCredentialsSignedUrlPath>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::GoogleCredentialsSignedUrlPath(std::string(HueJNIStringWrapper(env, region)), std::string(HueJNIStringWrapper(env, path))));
+    context->setObject(new OpenVDS::GoogleCredentialsSignedUrlPath(std::string(CPPJNIStringWrapper(env, region)), std::string(CPPJNIStringWrapper(env, path))));
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -975,16 +975,16 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrlPat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::GoogleCredentialsSignedUrlPath>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::GoogleCredentialsSignedUrlPath>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::GoogleCredentialsSignedUrlPath(std::string(HueJNIStringWrapper(env, region)), std::string(HueJNIStringWrapper(env, path))));
+    context->setObject(new OpenVDS::GoogleCredentialsSignedUrlPath(std::string(CPPJNIStringWrapper(env, region)), std::string(CPPJNIStringWrapper(env, path))));
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -995,16 +995,16 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrlPat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::GoogleCredentialsSignedUrlPath>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::GoogleCredentialsSignedUrlPath>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::GoogleCredentialsSignedUrlPath(std::string(HueJNIStringWrapper(env, region)), std::string(HueJNIStringWrapper(env, path))));
+    context->setObject(new OpenVDS::GoogleCredentialsSignedUrlPath(std::string(CPPJNIStringWrapper(env, region)), std::string(CPPJNIStringWrapper(env, path))));
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1015,16 +1015,16 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrlPat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::GoogleCredentialsSignedUrlPath>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::GoogleCredentialsSignedUrlPath>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::GoogleCredentialsSignedUrlPath(std::string(HueJNIStringWrapper(env, region)), std::string(HueJNIStringWrapper(env, path))));
+    context->setObject(new OpenVDS::GoogleCredentialsSignedUrlPath(std::string(CPPJNIStringWrapper(env, region)), std::string(CPPJNIStringWrapper(env, path))));
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1032,11 +1032,11 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrlPat
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrlPath_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    HueJNI_destroyHandle<OpenVDS::GoogleCredentialsSignedUrlPath>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::GoogleCredentialsSignedUrlPath>(env, native_handle);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 
@@ -1048,16 +1048,16 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrlJso
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::GoogleCredentialsSignedUrlJson>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::GoogleCredentialsSignedUrlJson>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::GoogleCredentialsSignedUrlJson(std::string(HueJNIStringWrapper(env, region)), std::string(HueJNIStringWrapper(env, json))));
+    context->setObject(new OpenVDS::GoogleCredentialsSignedUrlJson(std::string(CPPJNIStringWrapper(env, region)), std::string(CPPJNIStringWrapper(env, json))));
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1068,16 +1068,16 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrlJso
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::GoogleCredentialsSignedUrlJson>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::GoogleCredentialsSignedUrlJson>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::GoogleCredentialsSignedUrlJson(std::string(HueJNIStringWrapper(env, region)), std::string(HueJNIStringWrapper(env, json))));
+    context->setObject(new OpenVDS::GoogleCredentialsSignedUrlJson(std::string(CPPJNIStringWrapper(env, region)), std::string(CPPJNIStringWrapper(env, json))));
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1088,16 +1088,16 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrlJso
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::GoogleCredentialsSignedUrlJson>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::GoogleCredentialsSignedUrlJson>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::GoogleCredentialsSignedUrlJson(std::string(HueJNIStringWrapper(env, region)), std::string(HueJNIStringWrapper(env, json))));
+    context->setObject(new OpenVDS::GoogleCredentialsSignedUrlJson(std::string(CPPJNIStringWrapper(env, region)), std::string(CPPJNIStringWrapper(env, json))));
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1108,16 +1108,16 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrlJso
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::GoogleCredentialsSignedUrlJson>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::GoogleCredentialsSignedUrlJson>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::GoogleCredentialsSignedUrlJson(std::string(HueJNIStringWrapper(env, region)), std::string(HueJNIStringWrapper(env, json))));
+    context->setObject(new OpenVDS::GoogleCredentialsSignedUrlJson(std::string(CPPJNIStringWrapper(env, region)), std::string(CPPJNIStringWrapper(env, json))));
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1125,11 +1125,11 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrlJso
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrlJson_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    HueJNI_destroyHandle<OpenVDS::GoogleCredentialsSignedUrlJson>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::GoogleCredentialsSignedUrlJson>(env, native_handle);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 
@@ -1141,13 +1141,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_getCredenti
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::GoogleOpenOptions>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::GoogleOpenOptions>(native_handle);
     auto result = pInstance->credentialsType;
     return (jlong)result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1157,13 +1157,13 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_getBucket
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::GoogleOpenOptions>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::GoogleOpenOptions>(native_handle);
     auto result = pInstance->bucket;
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1173,13 +1173,13 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_getPathPr
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::GoogleOpenOptions>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::GoogleOpenOptions>(native_handle);
     auto result = pInstance->pathPrefix;
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1189,13 +1189,13 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_getCreden
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::GoogleOpenOptions>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::GoogleOpenOptions>(native_handle);
     auto result = pInstance->credentials;
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1205,13 +1205,13 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_getStorag
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::GoogleOpenOptions>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::GoogleOpenOptions>(native_handle);
     auto result = pInstance->storageClass;
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1221,13 +1221,13 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_getRegion
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::GoogleOpenOptions>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::GoogleOpenOptions>(native_handle);
     auto result = pInstance->region;
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1237,16 +1237,16 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_ctorImpl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::GoogleOpenOptions>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::GoogleOpenOptions>();
 
     auto native_handle = context->handle();
     context->setObject(new OpenVDS::GoogleOpenOptions());
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1257,16 +1257,16 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_ctor2Impl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::GoogleOpenOptions>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::GoogleOpenOptions>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::GoogleOpenOptions(std::string(HueJNIStringWrapper(env, bucket)), std::string(HueJNIStringWrapper(env, pathPrefix))));
+    context->setObject(new OpenVDS::GoogleOpenOptions(std::string(CPPJNIStringWrapper(env, bucket)), std::string(CPPJNIStringWrapper(env, pathPrefix))));
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1277,19 +1277,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_ctor3Impl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::GoogleOpenOptions>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::GoogleOpenOptions>();
 
     auto native_handle = context->handle();
     context->setObject(new OpenVDS::GoogleOpenOptions(
-                               std::string(HueJNIStringWrapper(env, bucket)), 
-                               std::string(HueJNIStringWrapper(env, pathPrefix)), 
-                               *HueJNI_cast<OpenVDS::GoogleCredentialsToken>(credentials)));
+                               std::string(CPPJNIStringWrapper(env, bucket)), 
+                               std::string(CPPJNIStringWrapper(env, pathPrefix)), 
+                               *CPPJNI_cast<OpenVDS::GoogleCredentialsToken>(credentials)));
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1300,19 +1300,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_ctor4Impl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::GoogleOpenOptions>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::GoogleOpenOptions>();
 
     auto native_handle = context->handle();
     context->setObject(new OpenVDS::GoogleOpenOptions(
-                               std::string(HueJNIStringWrapper(env, bucket)), 
-                               std::string(HueJNIStringWrapper(env, pathPrefix)), 
-                               *HueJNI_cast<OpenVDS::GoogleCredentialsPath>(credentials)));
+                               std::string(CPPJNIStringWrapper(env, bucket)), 
+                               std::string(CPPJNIStringWrapper(env, pathPrefix)), 
+                               *CPPJNI_cast<OpenVDS::GoogleCredentialsPath>(credentials)));
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1323,19 +1323,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_ctor5Impl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::GoogleOpenOptions>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::GoogleOpenOptions>();
 
     auto native_handle = context->handle();
     context->setObject(new OpenVDS::GoogleOpenOptions(
-                               std::string(HueJNIStringWrapper(env, bucket)), 
-                               std::string(HueJNIStringWrapper(env, pathPrefix)), 
-                               *HueJNI_cast<OpenVDS::GoogleCredentialsJson>(credentials)));
+                               std::string(CPPJNIStringWrapper(env, bucket)), 
+                               std::string(CPPJNIStringWrapper(env, pathPrefix)), 
+                               *CPPJNI_cast<OpenVDS::GoogleCredentialsJson>(credentials)));
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1346,19 +1346,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_ctor6Impl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::GoogleOpenOptions>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::GoogleOpenOptions>();
 
     auto native_handle = context->handle();
     context->setObject(new OpenVDS::GoogleOpenOptions(
-                               std::string(HueJNIStringWrapper(env, bucket)), 
-                               std::string(HueJNIStringWrapper(env, pathPrefix)), 
-                               *HueJNI_cast<OpenVDS::GoogleCredentialsSignedUrl>(credentials)));
+                               std::string(CPPJNIStringWrapper(env, bucket)), 
+                               std::string(CPPJNIStringWrapper(env, pathPrefix)), 
+                               *CPPJNI_cast<OpenVDS::GoogleCredentialsSignedUrl>(credentials)));
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1369,19 +1369,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_ctor7Impl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::GoogleOpenOptions>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::GoogleOpenOptions>();
 
     auto native_handle = context->handle();
     context->setObject(new OpenVDS::GoogleOpenOptions(
-                               std::string(HueJNIStringWrapper(env, bucket)), 
-                               std::string(HueJNIStringWrapper(env, pathPrefix)), 
-                               *HueJNI_cast<OpenVDS::GoogleCredentialsSignedUrlPath>(credentials)));
+                               std::string(CPPJNIStringWrapper(env, bucket)), 
+                               std::string(CPPJNIStringWrapper(env, pathPrefix)), 
+                               *CPPJNI_cast<OpenVDS::GoogleCredentialsSignedUrlPath>(credentials)));
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1392,19 +1392,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_ctor8Impl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::GoogleOpenOptions>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::GoogleOpenOptions>();
 
     auto native_handle = context->handle();
     context->setObject(new OpenVDS::GoogleOpenOptions(
-                               std::string(HueJNIStringWrapper(env, bucket)), 
-                               std::string(HueJNIStringWrapper(env, pathPrefix)), 
-                               *HueJNI_cast<OpenVDS::GoogleCredentialsSignedUrlJson>(credentials)));
+                               std::string(CPPJNIStringWrapper(env, bucket)), 
+                               std::string(CPPJNIStringWrapper(env, pathPrefix)), 
+                               *CPPJNI_cast<OpenVDS::GoogleCredentialsSignedUrlJson>(credentials)));
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1415,24 +1415,24 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_SetSigne
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::GoogleOpenOptions>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::GoogleOpenOptions>(native_handle);
     auto result = pInstance->SetSignedUrl();
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    HueJNI_destroyHandle<OpenVDS::GoogleOpenOptions>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::GoogleOpenOptions>(env, native_handle);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 
@@ -1444,16 +1444,16 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_DMSOpenOptions_ctorImpl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::DMSOpenOptions>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::DMSOpenOptions>();
 
     auto native_handle = context->handle();
     context->setObject(new OpenVDS::DMSOpenOptions());
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1464,27 +1464,27 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_DMSOpenOptions_ctor2Impl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::DMSOpenOptions>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::DMSOpenOptions>();
 
     auto native_handle = context->handle();
     context->setObject(new OpenVDS::DMSOpenOptions(
-                               std::string(HueJNIStringWrapper(env, sdAuthorityUrl)), 
-                               std::string(HueJNIStringWrapper(env, sdApiKey)), 
-                               std::string(HueJNIStringWrapper(env, sdToken)), 
-                               std::string(HueJNIStringWrapper(env, datasetPath)), 
+                               std::string(CPPJNIStringWrapper(env, sdAuthorityUrl)), 
+                               std::string(CPPJNIStringWrapper(env, sdApiKey)), 
+                               std::string(CPPJNIStringWrapper(env, sdToken)), 
+                               std::string(CPPJNIStringWrapper(env, datasetPath)), 
                                logLevel, 
-                               std::string(HueJNIStringWrapper(env, authTokenUrl)), 
-                               std::string(HueJNIStringWrapper(env, refreshToken)), 
-                               std::string(HueJNIStringWrapper(env, clientId)), 
-                               std::string(HueJNIStringWrapper(env, clientSecret)), 
-                               std::string(HueJNIStringWrapper(env, scopes)), 
+                               std::string(CPPJNIStringWrapper(env, authTokenUrl)), 
+                               std::string(CPPJNIStringWrapper(env, refreshToken)), 
+                               std::string(CPPJNIStringWrapper(env, clientId)), 
+                               std::string(CPPJNIStringWrapper(env, clientSecret)), 
+                               std::string(CPPJNIStringWrapper(env, scopes)), 
                                useFileNameForSingleFileDatasets ? true : false));
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1495,13 +1495,13 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_DMSOpenOptions_getSdAuthori
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::DMSOpenOptions>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::DMSOpenOptions>(native_handle);
     auto result = pInstance->sdAuthorityUrl;
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1511,13 +1511,13 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_DMSOpenOptions_getSdApiKeyI
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::DMSOpenOptions>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::DMSOpenOptions>(native_handle);
     auto result = pInstance->sdApiKey;
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1527,13 +1527,13 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_DMSOpenOptions_getSdTokenIm
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::DMSOpenOptions>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::DMSOpenOptions>(native_handle);
     auto result = pInstance->sdToken;
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1543,13 +1543,13 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_DMSOpenOptions_getDatasetPa
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::DMSOpenOptions>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::DMSOpenOptions>(native_handle);
     auto result = pInstance->datasetPath;
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1559,13 +1559,13 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_DMSOpenOptions_getLogLevelImpl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::DMSOpenOptions>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::DMSOpenOptions>(native_handle);
     auto result = pInstance->logLevel;
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1575,13 +1575,13 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_DMSOpenOptions_getAuthToken
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::DMSOpenOptions>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::DMSOpenOptions>(native_handle);
     auto result = pInstance->authTokenUrl;
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1591,13 +1591,13 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_DMSOpenOptions_getRefreshTo
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::DMSOpenOptions>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::DMSOpenOptions>(native_handle);
     auto result = pInstance->refreshToken;
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1607,13 +1607,13 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_DMSOpenOptions_getClientIdI
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::DMSOpenOptions>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::DMSOpenOptions>(native_handle);
     auto result = pInstance->clientId;
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1623,13 +1623,13 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_DMSOpenOptions_getClientSec
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::DMSOpenOptions>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::DMSOpenOptions>(native_handle);
     auto result = pInstance->clientSecret;
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1639,13 +1639,13 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_DMSOpenOptions_getScopesImp
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::DMSOpenOptions>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::DMSOpenOptions>(native_handle);
     auto result = pInstance->scopes;
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1655,24 +1655,24 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_DMSOpenOptions_getUseFileN
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::DMSOpenOptions>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::DMSOpenOptions>(native_handle);
     auto result = pInstance->useFileNameForSingleFileDatasets;
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_DMSOpenOptions_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    HueJNI_destroyHandle<OpenVDS::DMSOpenOptions>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::DMSOpenOptions>(env, native_handle);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 
@@ -1684,13 +1684,13 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_HttpOpenOptions_getUrlImpl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::HttpOpenOptions>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::HttpOpenOptions>(native_handle);
     auto result = pInstance->url;
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1700,16 +1700,16 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_HttpOpenOptions_ctorImpl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::HttpOpenOptions>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::HttpOpenOptions>();
 
     auto native_handle = context->handle();
     context->setObject(new OpenVDS::HttpOpenOptions());
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1720,16 +1720,16 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_HttpOpenOptions_ctor2Impl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::HttpOpenOptions>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::HttpOpenOptions>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::HttpOpenOptions(std::string(HueJNIStringWrapper(env, url))));
+    context->setObject(new OpenVDS::HttpOpenOptions(std::string(CPPJNIStringWrapper(env, url))));
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1737,11 +1737,11 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_HttpOpenOptions_ctor2Impl
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_HttpOpenOptions_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    HueJNI_destroyHandle<OpenVDS::HttpOpenOptions>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::HttpOpenOptions>(env, native_handle);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 
@@ -1753,16 +1753,16 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_InMemoryOpenOptions_ctorImpl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::InMemoryOpenOptions>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::InMemoryOpenOptions>();
 
     auto native_handle = context->handle();
     context->setObject(new OpenVDS::InMemoryOpenOptions());
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1773,16 +1773,16 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_InMemoryOpenOptions_ctor2Impl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::InMemoryOpenOptions>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::InMemoryOpenOptions>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::InMemoryOpenOptions(HueJNIStringWrapper(env, name)));
+    context->setObject(new OpenVDS::InMemoryOpenOptions(CPPJNIStringWrapper(env, name)));
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1793,16 +1793,16 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_InMemoryOpenOptions_ctor3Impl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::InMemoryOpenOptions>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::InMemoryOpenOptions>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::InMemoryOpenOptions(std::string(HueJNIStringWrapper(env, name))));
+    context->setObject(new OpenVDS::InMemoryOpenOptions(std::string(CPPJNIStringWrapper(env, name))));
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1813,24 +1813,24 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_InMemoryOpenOptions_getName
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::InMemoryOpenOptions>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::InMemoryOpenOptions>(native_handle);
     auto result = pInstance->name;
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_InMemoryOpenOptions_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    HueJNI_destroyHandle<OpenVDS::InMemoryOpenOptions>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::InMemoryOpenOptions>(env, native_handle);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 
@@ -1842,13 +1842,13 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_VDSFileOpenOptions_getFileN
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VDSFileOpenOptions>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VDSFileOpenOptions>(native_handle);
     auto result = pInstance->fileName;
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1858,16 +1858,16 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VDSFileOpenOptions_ctorImpl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::VDSFileOpenOptions>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::VDSFileOpenOptions>();
 
     auto native_handle = context->handle();
     context->setObject(new OpenVDS::VDSFileOpenOptions());
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1878,16 +1878,16 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VDSFileOpenOptions_ctor2Impl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::VDSFileOpenOptions>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::VDSFileOpenOptions>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::VDSFileOpenOptions(std::string(HueJNIStringWrapper(env, fileName))));
+    context->setObject(new OpenVDS::VDSFileOpenOptions(std::string(CPPJNIStringWrapper(env, fileName))));
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1895,11 +1895,11 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VDSFileOpenOptions_ctor2Impl
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VDSFileOpenOptions_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    HueJNI_destroyHandle<OpenVDS::VDSFileOpenOptions>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VDSFileOpenOptions>(env, native_handle);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 
@@ -1911,13 +1911,13 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_Error_getCodeImpl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::Error>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::Error>(native_handle);
     auto result = pInstance->code;
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1927,24 +1927,24 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_Error_getStringImpl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::Error>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::Error>(native_handle);
     auto result = pInstance->string;
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_Error_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    HueJNI_destroyHandle<OpenVDS::Error>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::Error>(env, native_handle);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 
@@ -1956,16 +1956,16 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_CreateOpenOptionsImpl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::CreateOpenOptions(
-                               OpenVDS::StringWrapper(HueJNIStringWrapper(env, url)), 
-                               OpenVDS::StringWrapper(HueJNIStringWrapper(env, connectionString)), 
-                               *HueJNI_cast<OpenVDS::Error>(error));
-    auto context = HueJNI_createNonOwningObjectContext(result);
+                               OpenVDS::StringWrapper(CPPJNIStringWrapper(env, url)), 
+                               OpenVDS::StringWrapper(CPPJNIStringWrapper(env, connectionString)), 
+                               *CPPJNI_cast<OpenVDS::Error>(error));
+    auto context = CPPJNI_createNonOwningObjectContext(result);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1975,12 +1975,12 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_OpenVDS_IsSupportedProtoco
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto result = OpenVDS::IsSupportedProtocol(OpenVDS::StringWrapper(HueJNIStringWrapper(env, url)));
+    auto result = OpenVDS::IsSupportedProtocol(OpenVDS::StringWrapper(CPPJNIStringWrapper(env, url)));
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -1990,16 +1990,16 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_OpenImpl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::Open(
-                               OpenVDS::StringWrapper(HueJNIStringWrapper(env, url)), 
-                               OpenVDS::StringWrapper(HueJNIStringWrapper(env, connectionString)), 
-                               *HueJNI_cast<OpenVDS::Error>(error));
-    auto context = HueJNI_createNonOwningObjectContext(result);
+                               OpenVDS::StringWrapper(CPPJNIStringWrapper(env, url)), 
+                               OpenVDS::StringWrapper(CPPJNIStringWrapper(env, connectionString)), 
+                               *CPPJNI_cast<OpenVDS::Error>(error));
+    auto context = CPPJNI_createNonOwningObjectContext(result);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2009,17 +2009,17 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_OpenWithAdaptiveCompr
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::OpenWithAdaptiveCompressionTolerance(
-                               OpenVDS::StringWrapper(HueJNIStringWrapper(env, url)), 
-                               OpenVDS::StringWrapper(HueJNIStringWrapper(env, connectionString)), 
+                               OpenVDS::StringWrapper(CPPJNIStringWrapper(env, url)), 
+                               OpenVDS::StringWrapper(CPPJNIStringWrapper(env, connectionString)), 
                                waveletAdaptiveTolerance, 
-                               *HueJNI_cast<OpenVDS::Error>(error));
-    auto context = HueJNI_createNonOwningObjectContext(result);
+                               *CPPJNI_cast<OpenVDS::Error>(error));
+    auto context = CPPJNI_createNonOwningObjectContext(result);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2029,17 +2029,17 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_OpenWithAdaptiveCompr
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::OpenWithAdaptiveCompressionRatio(
-                               OpenVDS::StringWrapper(HueJNIStringWrapper(env, url)), 
-                               OpenVDS::StringWrapper(HueJNIStringWrapper(env, connectionString)), 
+                               OpenVDS::StringWrapper(CPPJNIStringWrapper(env, url)), 
+                               OpenVDS::StringWrapper(CPPJNIStringWrapper(env, connectionString)), 
                                waveletAdaptiveRatio, 
-                               *HueJNI_cast<OpenVDS::Error>(error));
-    auto context = HueJNI_createNonOwningObjectContext(result);
+                               *CPPJNI_cast<OpenVDS::Error>(error));
+    auto context = CPPJNI_createNonOwningObjectContext(result);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2049,13 +2049,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Open2Impl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto result = OpenVDS::Open(OpenVDS::StringWrapper(HueJNIStringWrapper(env, url)), *HueJNI_cast<OpenVDS::Error>(error));
-    auto context = HueJNI_createNonOwningObjectContext(result);
+    auto result = OpenVDS::Open(OpenVDS::StringWrapper(CPPJNIStringWrapper(env, url)), *CPPJNI_cast<OpenVDS::Error>(error));
+    auto context = CPPJNI_createNonOwningObjectContext(result);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2065,13 +2065,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Open3Impl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto result = OpenVDS::Open(*HueJNI_cast<OpenVDS::OpenOptions>(options), *HueJNI_cast<OpenVDS::Error>(error));
-    auto context = HueJNI_createNonOwningObjectContext(result);
+    auto result = OpenVDS::Open(*CPPJNI_cast<OpenVDS::OpenOptions>(options), *CPPJNI_cast<OpenVDS::Error>(error));
+    auto context = CPPJNI_createNonOwningObjectContext(result);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2081,13 +2081,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Open4Impl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto result = OpenVDS::Open(HueJNI_cast<OpenVDS::IOManager>(ioManager), *HueJNI_cast<OpenVDS::Error>(error));
-    auto context = HueJNI_createNonOwningObjectContext(result);
+    auto result = OpenVDS::Open(CPPJNI_cast<OpenVDS::IOManager>(ioManager), *CPPJNI_cast<OpenVDS::Error>(error));
+    auto context = CPPJNI_createNonOwningObjectContext(result);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2097,12 +2097,12 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_OpenVDS_IsCompressionMetho
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::IsCompressionMethodSupported((OpenVDS::CompressionMethod)compressionMethod);
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2112,22 +2112,22 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_CreateImpl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::Create(
-                               OpenVDS::StringWrapper(HueJNIStringWrapper(env, url)), 
-                               OpenVDS::StringWrapper(HueJNIStringWrapper(env, connectionString)), 
-                               *HueJNI_cast<OpenVDS::VolumeDataLayoutDescriptor>(layoutDescriptor), 
-                               HueJNIVectorWrapperAdapter<OpenVDS::VolumeDataAxisDescriptor>(env, axisDescriptors).toVector(), 
-                               HueJNIVectorWrapperAdapter<OpenVDS::VolumeDataChannelDescriptor>(env, channelDescriptors).toVector(), 
-                               *HueJNI_cast<OpenVDS::MetadataReadAccess>(metadata), 
+                               OpenVDS::StringWrapper(CPPJNIStringWrapper(env, url)), 
+                               OpenVDS::StringWrapper(CPPJNIStringWrapper(env, connectionString)), 
+                               *CPPJNI_cast<OpenVDS::VolumeDataLayoutDescriptor>(layoutDescriptor), 
+                               CPPJNIVectorWrapperAdapter<OpenVDS::VolumeDataAxisDescriptor>(env, axisDescriptors).toVector(), 
+                               CPPJNIVectorWrapperAdapter<OpenVDS::VolumeDataChannelDescriptor>(env, channelDescriptors).toVector(), 
+                               *CPPJNI_cast<OpenVDS::MetadataReadAccess>(metadata), 
                                (OpenVDS::CompressionMethod)compressionMethod, 
                                compressionTolerance, 
-                               *HueJNI_cast<OpenVDS::Error>(error));
-    auto context = HueJNI_createNonOwningObjectContext(result);
+                               *CPPJNI_cast<OpenVDS::Error>(error));
+    auto context = CPPJNI_createNonOwningObjectContext(result);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2137,20 +2137,20 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Create2Impl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::Create(
-                               OpenVDS::StringWrapper(HueJNIStringWrapper(env, url)), 
-                               OpenVDS::StringWrapper(HueJNIStringWrapper(env, connectionString)), 
-                               *HueJNI_cast<OpenVDS::VolumeDataLayoutDescriptor>(layoutDescriptor), 
-                               HueJNIVectorWrapperAdapter<OpenVDS::VolumeDataAxisDescriptor>(env, axisDescriptors).toVector(), 
-                               HueJNIVectorWrapperAdapter<OpenVDS::VolumeDataChannelDescriptor>(env, channelDescriptors).toVector(), 
-                               *HueJNI_cast<OpenVDS::MetadataReadAccess>(metadata), 
-                               *HueJNI_cast<OpenVDS::Error>(error));
-    auto context = HueJNI_createNonOwningObjectContext(result);
+                               OpenVDS::StringWrapper(CPPJNIStringWrapper(env, url)), 
+                               OpenVDS::StringWrapper(CPPJNIStringWrapper(env, connectionString)), 
+                               *CPPJNI_cast<OpenVDS::VolumeDataLayoutDescriptor>(layoutDescriptor), 
+                               CPPJNIVectorWrapperAdapter<OpenVDS::VolumeDataAxisDescriptor>(env, axisDescriptors).toVector(), 
+                               CPPJNIVectorWrapperAdapter<OpenVDS::VolumeDataChannelDescriptor>(env, channelDescriptors).toVector(), 
+                               *CPPJNI_cast<OpenVDS::MetadataReadAccess>(metadata), 
+                               *CPPJNI_cast<OpenVDS::Error>(error));
+    auto context = CPPJNI_createNonOwningObjectContext(result);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2160,21 +2160,21 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Create3Impl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::Create(
-                               OpenVDS::StringWrapper(HueJNIStringWrapper(env, url)), 
-                               *HueJNI_cast<OpenVDS::VolumeDataLayoutDescriptor>(layoutDescriptor), 
-                               HueJNIVectorWrapperAdapter<OpenVDS::VolumeDataAxisDescriptor>(env, axisDescriptors).toVector(), 
-                               HueJNIVectorWrapperAdapter<OpenVDS::VolumeDataChannelDescriptor>(env, channelDescriptors).toVector(), 
-                               *HueJNI_cast<OpenVDS::MetadataReadAccess>(metadata), 
+                               OpenVDS::StringWrapper(CPPJNIStringWrapper(env, url)), 
+                               *CPPJNI_cast<OpenVDS::VolumeDataLayoutDescriptor>(layoutDescriptor), 
+                               CPPJNIVectorWrapperAdapter<OpenVDS::VolumeDataAxisDescriptor>(env, axisDescriptors).toVector(), 
+                               CPPJNIVectorWrapperAdapter<OpenVDS::VolumeDataChannelDescriptor>(env, channelDescriptors).toVector(), 
+                               *CPPJNI_cast<OpenVDS::MetadataReadAccess>(metadata), 
                                (OpenVDS::CompressionMethod)compressionMethod, 
                                compressionTolerance, 
-                               *HueJNI_cast<OpenVDS::Error>(error));
-    auto context = HueJNI_createNonOwningObjectContext(result);
+                               *CPPJNI_cast<OpenVDS::Error>(error));
+    auto context = CPPJNI_createNonOwningObjectContext(result);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2184,19 +2184,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Create4Impl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::Create(
-                               OpenVDS::StringWrapper(HueJNIStringWrapper(env, url)), 
-                               *HueJNI_cast<OpenVDS::VolumeDataLayoutDescriptor>(layoutDescriptor), 
-                               HueJNIVectorWrapperAdapter<OpenVDS::VolumeDataAxisDescriptor>(env, axisDescriptors).toVector(), 
-                               HueJNIVectorWrapperAdapter<OpenVDS::VolumeDataChannelDescriptor>(env, channelDescriptors).toVector(), 
-                               *HueJNI_cast<OpenVDS::MetadataReadAccess>(metadata), 
-                               *HueJNI_cast<OpenVDS::Error>(error));
-    auto context = HueJNI_createNonOwningObjectContext(result);
+                               OpenVDS::StringWrapper(CPPJNIStringWrapper(env, url)), 
+                               *CPPJNI_cast<OpenVDS::VolumeDataLayoutDescriptor>(layoutDescriptor), 
+                               CPPJNIVectorWrapperAdapter<OpenVDS::VolumeDataAxisDescriptor>(env, axisDescriptors).toVector(), 
+                               CPPJNIVectorWrapperAdapter<OpenVDS::VolumeDataChannelDescriptor>(env, channelDescriptors).toVector(), 
+                               *CPPJNI_cast<OpenVDS::MetadataReadAccess>(metadata), 
+                               *CPPJNI_cast<OpenVDS::Error>(error));
+    auto context = CPPJNI_createNonOwningObjectContext(result);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2206,21 +2206,21 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Create5Impl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::Create(
-                               *HueJNI_cast<OpenVDS::OpenOptions>(options), 
-                               *HueJNI_cast<OpenVDS::VolumeDataLayoutDescriptor>(layoutDescriptor), 
-                               HueJNIVectorWrapperAdapter<OpenVDS::VolumeDataAxisDescriptor>(env, axisDescriptors).toVector(), 
-                               HueJNIVectorWrapperAdapter<OpenVDS::VolumeDataChannelDescriptor>(env, channelDescriptors).toVector(), 
-                               *HueJNI_cast<OpenVDS::MetadataReadAccess>(metadata), 
+                               *CPPJNI_cast<OpenVDS::OpenOptions>(options), 
+                               *CPPJNI_cast<OpenVDS::VolumeDataLayoutDescriptor>(layoutDescriptor), 
+                               CPPJNIVectorWrapperAdapter<OpenVDS::VolumeDataAxisDescriptor>(env, axisDescriptors).toVector(), 
+                               CPPJNIVectorWrapperAdapter<OpenVDS::VolumeDataChannelDescriptor>(env, channelDescriptors).toVector(), 
+                               *CPPJNI_cast<OpenVDS::MetadataReadAccess>(metadata), 
                                (OpenVDS::CompressionMethod)compressionMethod, 
                                compressionTolerance, 
-                               *HueJNI_cast<OpenVDS::Error>(error));
-    auto context = HueJNI_createNonOwningObjectContext(result);
+                               *CPPJNI_cast<OpenVDS::Error>(error));
+    auto context = CPPJNI_createNonOwningObjectContext(result);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2230,19 +2230,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Create6Impl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::Create(
-                               *HueJNI_cast<OpenVDS::OpenOptions>(options), 
-                               *HueJNI_cast<OpenVDS::VolumeDataLayoutDescriptor>(layoutDescriptor), 
-                               HueJNIVectorWrapperAdapter<OpenVDS::VolumeDataAxisDescriptor>(env, axisDescriptors).toVector(), 
-                               HueJNIVectorWrapperAdapter<OpenVDS::VolumeDataChannelDescriptor>(env, channelDescriptors).toVector(), 
-                               *HueJNI_cast<OpenVDS::MetadataReadAccess>(metadata), 
-                               *HueJNI_cast<OpenVDS::Error>(error));
-    auto context = HueJNI_createNonOwningObjectContext(result);
+                               *CPPJNI_cast<OpenVDS::OpenOptions>(options), 
+                               *CPPJNI_cast<OpenVDS::VolumeDataLayoutDescriptor>(layoutDescriptor), 
+                               CPPJNIVectorWrapperAdapter<OpenVDS::VolumeDataAxisDescriptor>(env, axisDescriptors).toVector(), 
+                               CPPJNIVectorWrapperAdapter<OpenVDS::VolumeDataChannelDescriptor>(env, channelDescriptors).toVector(), 
+                               *CPPJNI_cast<OpenVDS::MetadataReadAccess>(metadata), 
+                               *CPPJNI_cast<OpenVDS::Error>(error));
+    auto context = CPPJNI_createNonOwningObjectContext(result);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2252,21 +2252,21 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Create7Impl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::Create(
-                               HueJNI_cast<OpenVDS::IOManager>(ioManager), 
-                               *HueJNI_cast<OpenVDS::VolumeDataLayoutDescriptor>(layoutDescriptor), 
-                               HueJNIVectorWrapperAdapter<OpenVDS::VolumeDataAxisDescriptor>(env, axisDescriptors).toVector(), 
-                               HueJNIVectorWrapperAdapter<OpenVDS::VolumeDataChannelDescriptor>(env, channelDescriptors).toVector(), 
-                               *HueJNI_cast<OpenVDS::MetadataReadAccess>(metadata), 
+                               CPPJNI_cast<OpenVDS::IOManager>(ioManager), 
+                               *CPPJNI_cast<OpenVDS::VolumeDataLayoutDescriptor>(layoutDescriptor), 
+                               CPPJNIVectorWrapperAdapter<OpenVDS::VolumeDataAxisDescriptor>(env, axisDescriptors).toVector(), 
+                               CPPJNIVectorWrapperAdapter<OpenVDS::VolumeDataChannelDescriptor>(env, channelDescriptors).toVector(), 
+                               *CPPJNI_cast<OpenVDS::MetadataReadAccess>(metadata), 
                                (OpenVDS::CompressionMethod)compressionMethod, 
                                compressionTolerance, 
-                               *HueJNI_cast<OpenVDS::Error>(error));
-    auto context = HueJNI_createNonOwningObjectContext(result);
+                               *CPPJNI_cast<OpenVDS::Error>(error));
+    auto context = CPPJNI_createNonOwningObjectContext(result);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2276,19 +2276,19 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Create8Impl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::Create(
-                               HueJNI_cast<OpenVDS::IOManager>(ioManager), 
-                               *HueJNI_cast<OpenVDS::VolumeDataLayoutDescriptor>(layoutDescriptor), 
-                               HueJNIVectorWrapperAdapter<OpenVDS::VolumeDataAxisDescriptor>(env, axisDescriptors).toVector(), 
-                               HueJNIVectorWrapperAdapter<OpenVDS::VolumeDataChannelDescriptor>(env, channelDescriptors).toVector(), 
-                               *HueJNI_cast<OpenVDS::MetadataReadAccess>(metadata), 
-                               *HueJNI_cast<OpenVDS::Error>(error));
-    auto context = HueJNI_createNonOwningObjectContext(result);
+                               CPPJNI_cast<OpenVDS::IOManager>(ioManager), 
+                               *CPPJNI_cast<OpenVDS::VolumeDataLayoutDescriptor>(layoutDescriptor), 
+                               CPPJNIVectorWrapperAdapter<OpenVDS::VolumeDataAxisDescriptor>(env, axisDescriptors).toVector(), 
+                               CPPJNIVectorWrapperAdapter<OpenVDS::VolumeDataChannelDescriptor>(env, channelDescriptors).toVector(), 
+                               *CPPJNI_cast<OpenVDS::MetadataReadAccess>(metadata), 
+                               *CPPJNI_cast<OpenVDS::Error>(error));
+    auto context = CPPJNI_createNonOwningObjectContext(result);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2298,13 +2298,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_GetLayoutImpl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto result = OpenVDS::GetLayout(HueJNI_cast<OpenVDS::VDS>(handle));
-    auto context = HueJNI_createNonOwningObjectContext(result);
+    auto result = OpenVDS::GetLayout(CPPJNI_cast<OpenVDS::VDS>(handle));
+    auto context = CPPJNI_createNonOwningObjectContext(result);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2314,13 +2314,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_GetAccessManagerImpl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto result = OpenVDS::GetAccessManager(HueJNI_cast<OpenVDS::VDS>(handle));
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataAccessManager(result));
+    auto result = OpenVDS::GetAccessManager(CPPJNI_cast<OpenVDS::VDS>(handle));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataAccessManager(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2330,12 +2330,12 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_GetCompressionMethodI
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto result = OpenVDS::GetCompressionMethod(HueJNI_cast<OpenVDS::VDS>(handle));
+    auto result = OpenVDS::GetCompressionMethod(CPPJNI_cast<OpenVDS::VDS>(handle));
     return (jlong)result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2345,12 +2345,12 @@ JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_OpenVDS_GetCompressionTolera
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto result = OpenVDS::GetCompressionTolerance(HueJNI_cast<OpenVDS::VDS>(handle));
+    auto result = OpenVDS::GetCompressionTolerance(CPPJNI_cast<OpenVDS::VDS>(handle));
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2360,11 +2360,11 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_OpenVDS_CloseImpl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    OpenVDS::Close(HueJNI_cast<OpenVDS::VDS>(handle));
+    OpenVDS::Close(CPPJNI_cast<OpenVDS::VDS>(handle));
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_GetGlobalStateImpl
@@ -2373,13 +2373,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_GetGlobalStateImpl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::GetGlobalState();
-    auto context = HueJNI_createNonOwningObjectContext(result);
+    auto context = CPPJNI_createNonOwningObjectContext(result);
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2389,12 +2389,12 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_OpenVDS_GetOpenVDSNameImpl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::GetOpenVDSName();
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2404,12 +2404,12 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_OpenVDS_GetOpenVDSVersionIm
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::GetOpenVDSVersion();
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -2419,12 +2419,12 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_OpenVDS_GetOpenVDSRevisionI
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::GetOpenVDSRevision();
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 

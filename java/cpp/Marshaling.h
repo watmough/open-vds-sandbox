@@ -44,18 +44,18 @@ class VolumeDataAxisDescriptor;
 struct IJKGridDefinition;
 }
 
-// Thrown by HueJNI_cast if a managed object belongs to an obsolete HueSpace generation.
+// Thrown by CPPJNI_cast if a managed object belongs to an obsolete library generation.
 // This should only happen when non-deterministic finalization/garbage collection is attempted.
-// Handled by HUE_JNI_CATCH and treated as a no-op.
+// Handled by CPPJNI_CATCH and treated as a no-op.
 struct ObsoleteObjectException
 {
 };
 
 template<typename T>
-struct HueJNIArrayAccessor;
+struct CPPJNIArrayAccessor;
 
 template<>
-struct HueJNIArrayAccessor<int8_t>
+struct CPPJNIArrayAccessor<int8_t>
 {
   using element_type = jbyte;
   using array_type = jbyteArray;
@@ -67,7 +67,7 @@ struct HueJNIArrayAccessor<int8_t>
 };
 
 template<>
-struct HueJNIArrayAccessor<int16_t>
+struct CPPJNIArrayAccessor<int16_t>
 {
   using element_type = jshort;
   using array_type = jshortArray;
@@ -79,7 +79,7 @@ struct HueJNIArrayAccessor<int16_t>
 };
 
 template<>
-struct HueJNIArrayAccessor<int32_t>
+struct CPPJNIArrayAccessor<int32_t>
 {
   using element_type = jint;
   using array_type = jintArray;
@@ -91,7 +91,7 @@ struct HueJNIArrayAccessor<int32_t>
 };
 
 template<>
-struct HueJNIArrayAccessor<int64_t>
+struct CPPJNIArrayAccessor<int64_t>
 {
   using element_type = jlong;
   using array_type = jlongArray;
@@ -103,7 +103,7 @@ struct HueJNIArrayAccessor<int64_t>
 };
 
 template<>
-struct HueJNIArrayAccessor<float>
+struct CPPJNIArrayAccessor<float>
 {
   using element_type = jfloat;
   using array_type = jfloatArray;
@@ -115,7 +115,7 @@ struct HueJNIArrayAccessor<float>
 };
 
 template<>
-struct HueJNIArrayAccessor<double>
+struct CPPJNIArrayAccessor<double>
 {
   using element_type = jdouble;
   using array_type = jdoubleArray;
@@ -127,64 +127,64 @@ struct HueJNIArrayAccessor<double>
 };
 
 template<typename T>
-struct HueCPPtoJNI_t
+struct CPPtoJNI_t
 {
   using type = T;
 };
 
-template<> struct HueCPPtoJNI_t<uint8_t>            { using type = int8_t; };
-template<> struct HueCPPtoJNI_t<char>               { using type = int8_t; };
-//template<> struct HueCPPtoJNI_t<unsigned char>      { using type = int8_t; };
+template<> struct CPPtoJNI_t<uint8_t>            { using type = int8_t; };
+template<> struct CPPtoJNI_t<char>               { using type = int8_t; };
+//template<> struct CPPtoJNI_t<unsigned char>      { using type = int8_t; };
 
-template<> struct HueCPPtoJNI_t<uint16_t>           { using type = int16_t; };
-template<> struct HueCPPtoJNI_t<short>              { using type = int16_t; };
-//template<> struct HueCPPtoJNI_t<unsigned short>     { using type = int16_t; };
+template<> struct CPPtoJNI_t<uint16_t>           { using type = int16_t; };
+template<> struct CPPtoJNI_t<short>              { using type = int16_t; };
+//template<> struct CPPtoJNI_t<unsigned short>     { using type = int16_t; };
 
 
-template<> struct HueCPPtoJNI_t<uint32_t>           { using type = int32_t; };
-template<> struct HueCPPtoJNI_t<int>                { using type = int32_t; };
-//template<> struct HueCPPtoJNI_t<unsigned int>       { using type = int32_t; };
-template<> struct HueCPPtoJNI_t<long>               { using type = int32_t; };
-//template<> struct HueCPPtoJNI_t<unsigned long>      { using type = int32_t; };
+template<> struct CPPtoJNI_t<uint32_t>           { using type = int32_t; };
+template<> struct CPPtoJNI_t<int>                { using type = int32_t; };
+//template<> struct CPPtoJNI_t<unsigned int>       { using type = int32_t; };
+template<> struct CPPtoJNI_t<long>               { using type = int32_t; };
+//template<> struct CPPtoJNI_t<unsigned long>      { using type = int32_t; };
 
-template<> struct HueCPPtoJNI_t<uint64_t>           { using type = int64_t; };
-template<> struct HueCPPtoJNI_t<long long>          { using type = int64_t; };
-//template<> struct HueCPPtoJNI_t<unsigned long long> { using type = int64_t; };
+template<> struct CPPtoJNI_t<uint64_t>           { using type = int64_t; };
+template<> struct CPPtoJNI_t<long long>          { using type = int64_t; };
+//template<> struct CPPtoJNI_t<unsigned long long> { using type = int64_t; };
 
 // Adapter class for converting std::vector -> jArray
 template<typename T>
-struct HueJNIVectorAdapter
+struct CPPJNIVectorAdapter
 {
-  using JNITYPE = typename HueCPPtoJNI_t<T>::type;
-  using ELEMENT_TYPE = typename HueJNIArrayAccessor<JNITYPE>::element_type;
-  using ARRAYTYPE = typename HueJNIArrayAccessor<JNITYPE>::array_type;
+  using JNITYPE = typename CPPtoJNI_t<T>::type;
+  using ELEMENT_TYPE = typename CPPJNIArrayAccessor<JNITYPE>::element_type;
+  using ARRAYTYPE = typename CPPJNIArrayAccessor<JNITYPE>::array_type;
 
   JNIEnv*               m_Env;
   std::vector<T> const& m_Vector;
 
-  HueJNIVectorAdapter(JNIEnv* env, std::vector<T> const& vec) : m_Env(env), m_Vector(vec)
+  CPPJNIVectorAdapter(JNIEnv* env, std::vector<T> const& vec) : m_Env(env), m_Vector(vec)
   {
   }
 
   ARRAYTYPE
   toArray() const
   {
-    auto arr = HueJNIArrayAccessor<JNITYPE>::CreateArray(m_Env, m_Vector.size());
-    HueJNIArrayAccessor<JNITYPE>::SetArrayElements(m_Env, arr, (ELEMENT_TYPE const*)m_Vector.data(), m_Vector.size());
+    auto arr = CPPJNIArrayAccessor<JNITYPE>::CreateArray(m_Env, m_Vector.size());
+    CPPJNIArrayAccessor<JNITYPE>::SetArrayElements(m_Env, arr, (ELEMENT_TYPE const*)m_Vector.data(), m_Vector.size());
     return arr;
   }
 };
 
-template<typename T> T* HueJNI_cast(jlong handle);
+template<typename T> T* CPPJNI_cast(jlong handle);
 
 template<typename T>
-struct HueJNIVectorWrapperAdapter
+struct CPPJNIVectorWrapperAdapter
 {
   JNIEnv*                 m_Env;
   jlongArray              m_Array;
   mutable std::vector<T>  m_Vector;
 
-  HueJNIVectorWrapperAdapter(JNIEnv* env, jlongArray arr) : m_Env(env), m_Array(arr)
+  CPPJNIVectorWrapperAdapter(JNIEnv* env, jlongArray arr) : m_Env(env), m_Array(arr)
   {
   }
 
@@ -196,7 +196,7 @@ struct HueJNIVectorWrapperAdapter
       jlong* elements = m_Env->GetLongArrayElements(m_Array, nullptr);
       for (int i = 0; i < m_Env->GetArrayLength(m_Array); ++i)
       {
-        auto item = HueJNI_cast<T>(elements[i]);
+        auto item = CPPJNI_cast<T>(elements[i]);
         m_Vector.push_back(*item);
       }
       m_Env->ReleaseLongArrayElements(m_Array, elements, 0);
@@ -207,28 +207,28 @@ struct HueJNIVectorWrapperAdapter
 
 // Adapter class to check N-component java arrays
 template<typename T, int N, bool MUTABLE = false>
-struct HueJNIArrayAdapter;
+struct CPPJNIArrayAdapter;
 
 template<typename T, int N>
-struct HueJNIArrayAdapter<T, N, false>
+struct CPPJNIArrayAdapter<T, N, false>
 {
-  using JNITYPE = typename HueCPPtoJNI_t<T>::type;
-  using ELEMENT_TYPE = typename HueJNIArrayAccessor<JNITYPE>::element_type;
-  using ARRAYTYPE = typename HueJNIArrayAccessor<JNITYPE>::array_type;
+  using JNITYPE = typename CPPtoJNI_t<T>::type;
+  using ELEMENT_TYPE = typename CPPJNIArrayAccessor<JNITYPE>::element_type;
+  using ARRAYTYPE = typename CPPJNIArrayAccessor<JNITYPE>::array_type;
 
   std::vector<T> m_Data;
 
-  HueJNIArrayAdapter(JNIEnv *env, jarray arr)
+  CPPJNIArrayAdapter(JNIEnv *env, jarray arr)
   {
     if (arr)
     { // We copy out the values so we don't need to do any pinning.
       jsize len = env->GetArrayLength(arr);
-      auto data = (T*)HueJNIArrayAccessor<T>::GetArrayElements(env, arr);
+      auto data = (T*)CPPJNIArrayAccessor<T>::GetArrayElements(env, arr);
       for (jsize i = 0; i < len; ++i)
       {
         m_Data.push_back(data[i]);
       }
-      HueJNIArrayAccessor<T>::ReleaseArrayElements(env, arr, (ELEMENT_TYPE*)data);
+      CPPJNIArrayAccessor<T>::ReleaseArrayElements(env, arr, (ELEMENT_TYPE*)data);
     }
     else
     {
@@ -256,17 +256,17 @@ struct HueJNIArrayAdapter<T, N, false>
 };
 
 template<typename T, int N>
-struct HueJNIArrayAdapter<T, N, true>
+struct CPPJNIArrayAdapter<T, N, true>
 {
-  using JNITYPE = typename HueCPPtoJNI_t<T>::type;
-  using ELEMENT_TYPE = typename HueJNIArrayAccessor<JNITYPE>::element_type;
-  using ARRAYTYPE = typename HueJNIArrayAccessor<JNITYPE>::array_type;
+  using JNITYPE = typename CPPtoJNI_t<T>::type;
+  using ELEMENT_TYPE = typename CPPJNIArrayAccessor<JNITYPE>::element_type;
+  using ARRAYTYPE = typename CPPJNIArrayAccessor<JNITYPE>::array_type;
 
   JNIEnv *m_env;
   jarray m_Arr;
   std::vector<T> m_Data;
 
-  HueJNIArrayAdapter(JNIEnv *env, jarray arr)
+  CPPJNIArrayAdapter(JNIEnv *env, jarray arr)
   {
     m_env = env;
     m_Arr = arr;
@@ -278,12 +278,12 @@ struct HueJNIArrayAdapter<T, N, true>
       {
         throw std::runtime_error("Array has incorrect length.");
       }
-      auto data = (T*)HueJNIArrayAccessor<T>::GetArrayElements(env, arr);
+      auto data = (T*)CPPJNIArrayAccessor<T>::GetArrayElements(env, arr);
       for (jsize i = 0; i < len; ++i)
       {
         m_Data.push_back(data[i]);
       }
-      HueJNIArrayAccessor<T>::ReleaseArrayElements(env, arr, (ELEMENT_TYPE*)data);
+      CPPJNIArrayAccessor<T>::ReleaseArrayElements(env, arr, (ELEMENT_TYPE*)data);
     }
     else
     {
@@ -291,9 +291,9 @@ struct HueJNIArrayAdapter<T, N, true>
     }
   }
 
-  ~HueJNIArrayAdapter()
+  ~CPPJNIArrayAdapter()
   {
-    HueJNIArrayAccessor<T>::SetArrayElements(m_env, (ARRAYTYPE)m_Arr, (ELEMENT_TYPE*)m_Data.data(), m_Data.size());
+    CPPJNIArrayAccessor<T>::SetArrayElements(m_env, (ARRAYTYPE)m_Arr, (ELEMENT_TYPE*)m_Data.data(), m_Data.size());
   }
 
   size_t
@@ -319,13 +319,13 @@ struct HueJNIArrayAdapter<T, N, true>
 // Users must keep a global handle to ensure the target buffer is not
 // garbage collected before it is written to.
 template<typename T>
-struct HueJNIAsyncBuffer
+struct CPPJNIAsyncBuffer
 {
   size_t    m_BufferSize;
   size_t    m_Offset;
   uint8_t*  m_Buffer;
 
-  HueJNIAsyncBuffer(JNIEnv* env, jobject bytebuffer, jlong byteoffset = 0) : m_BufferSize(), m_Offset(byteoffset), m_Buffer()
+  CPPJNIAsyncBuffer(JNIEnv* env, jobject bytebuffer, jlong byteoffset = 0) : m_BufferSize(), m_Offset(byteoffset), m_Buffer()
   {
     if (byteoffset < 0)
     {
@@ -355,12 +355,12 @@ struct HueJNIAsyncBuffer
 // This class is used for POD value types backed by a java.nio.ByteBuffer
 // It implements implicit conversion to the target type.
 template<typename T>
-struct HueJNIByteBufferAdapter
+struct CPPJNIByteBufferAdapter
 {
   size_t  m_DataSize;
   T*      m_Data;
 
-  HueJNIByteBufferAdapter(JNIEnv* env, jobject bytebuffer, jlong byteoffset) : m_DataSize(), m_Data()
+  CPPJNIByteBufferAdapter(JNIEnv* env, jobject bytebuffer, jlong byteoffset) : m_DataSize(), m_Data()
   {
     m_DataSize = env->GetDirectBufferCapacity(bytebuffer);
     if (m_DataSize < sizeof(T))
@@ -382,7 +382,7 @@ struct HueJNIByteBufferAdapter
 };
 
 
-struct HueJNIObjectContext
+struct CPPJNIObjectContext
 {
   constexpr static const uint64_t MAGIC_NUMBER = 0x1234567876543210;
 
@@ -391,13 +391,13 @@ struct HueJNIObjectContext
 
   std::vector<char*> m_AllocatedStrings;
   std::vector<jobject> m_GlobalRefs;
-  int m_HueSpaceGeneration;
+  int m_SharedLibraryGeneration;
 
-  HueJNIObjectContext(void* object) : m_MagicNumber(MAGIC_NUMBER), m_OpaqueObject(object), m_HueSpaceGeneration(getHueSpaceGeneration())
+  CPPJNIObjectContext(void* object) : m_MagicNumber(MAGIC_NUMBER), m_OpaqueObject(object), m_SharedLibraryGeneration(getSharedLibraryGeneration())
   {
   }
   
-  static int  getHueSpaceGeneration();
+  static int  getSharedLibraryGeneration();
   void        ensureValid() const;
 
   // Add a global reference to an external java object to ensure it stays alive until
@@ -423,7 +423,7 @@ struct HueJNIObjectContext
     m_GlobalRefs.clear();
   }
 
-  virtual ~HueJNIObjectContext()
+  virtual ~CPPJNIObjectContext()
   {
     assert(m_GlobalRefs.empty());
     assert(m_OpaqueObject == nullptr);
@@ -475,28 +475,28 @@ struct Destroyer<OpenVDS::VDS, true>
 };
 
 template<typename T>
-struct HueJNIObjectContext_t : public HueJNIObjectContext
+struct CPPJNIObjectContext_t : public CPPJNIObjectContext
 {
   bool m_IsOwner;
   std::shared_ptr<T> m_SharedPtr;
 
-  HueJNIObjectContext_t() : HueJNIObjectContext_t(nullptr, false)
+  CPPJNIObjectContext_t() : CPPJNIObjectContext_t(nullptr, false)
   {
   }
 
-  HueJNIObjectContext_t(T* object) : HueJNIObjectContext_t(object, true)
+  CPPJNIObjectContext_t(T* object) : CPPJNIObjectContext_t(object, true)
   {
   }
 
-  HueJNIObjectContext_t(std::shared_ptr<T> sharedPtr) : HueJNIObjectContext_t(sharedPtr.get(), false, sharedPtr)
+  CPPJNIObjectContext_t(std::shared_ptr<T> sharedPtr) : CPPJNIObjectContext_t(sharedPtr.get(), false, sharedPtr)
   {
   }
 
-  HueJNIObjectContext_t(T* object, bool isOwner, std::shared_ptr<T> sharedPtr = std::shared_ptr<T>()) : HueJNIObjectContext(object), m_IsOwner(isOwner), m_SharedPtr(sharedPtr)
+  CPPJNIObjectContext_t(T* object, bool isOwner, std::shared_ptr<T> sharedPtr = std::shared_ptr<T>()) : CPPJNIObjectContext(object), m_IsOwner(isOwner), m_SharedPtr(sharedPtr)
   {
   }
 
-  ~HueJNIObjectContext_t() override
+  ~CPPJNIObjectContext_t() override
   {
     auto object = (T*)m_OpaqueObject;
     m_OpaqueObject = nullptr;
@@ -524,13 +524,13 @@ struct HueJNIObjectContext_t : public HueJNIObjectContext
 };
 
 template<typename T>
-struct HueJNIOwningObjectContext_t : public HueJNIObjectContext_t<T> 
+struct CPPJNIOwningObjectContext_t : public CPPJNIObjectContext_t<T> 
 {
-  HueJNIOwningObjectContext_t(T* object) : HueJNIObjectContext_t<T>(object, true)
+  CPPJNIOwningObjectContext_t(T* object) : CPPJNIObjectContext_t<T>(object, true)
   {
   }
 
-  ~HueJNIOwningObjectContext_t() override
+  ~CPPJNIOwningObjectContext_t() override
   {
     auto object = (T*)this->getObject();
     Destroyer<T, std::is_destructible<T>::value>::destroy(object);
@@ -538,70 +538,70 @@ struct HueJNIOwningObjectContext_t : public HueJNIObjectContext_t<T>
 };
 
 template<typename T>
-HueJNIObjectContext_t<T>*
-HueJNI_createObjectContext(T* pNativeObject)
+CPPJNIObjectContext_t<T>*
+CPPJNI_createObjectContext(T* pNativeObject)
 {
-  return new HueJNIOwningObjectContext_t<T>(pNativeObject);
+  return new CPPJNIOwningObjectContext_t<T>(pNativeObject);
 }
 
 template<typename T>
-HueJNIObjectContext_t<T>*
-HueJNI_createObjectContext(std::shared_ptr<T> pNativeObject)
+CPPJNIObjectContext_t<T>*
+CPPJNI_createObjectContext(std::shared_ptr<T> pNativeObject)
 {
-  return new HueJNIObjectContext_t<T>(pNativeObject);
+  return new CPPJNIObjectContext_t<T>(pNativeObject);
 }
 
 template<typename T>
-HueJNIObjectContext_t<T>*
-HueJNI_createNonOwningObjectContext(T const* pNativeObject)
+CPPJNIObjectContext_t<T>*
+CPPJNI_createNonOwningObjectContext(T const* pNativeObject)
 {
-  return new HueJNIObjectContext_t<T>((T*)pNativeObject, false);
+  return new CPPJNIObjectContext_t<T>((T*)pNativeObject, false);
 }
 
 template<typename T>
 T*
-HueJNI_cast(jlong handle)
+CPPJNI_cast(jlong handle)
 {
   if (handle == 0)
   {
     throw std::runtime_error("null handle");
   }
-  auto pContext = ((HueJNIObjectContext_t<T>*)(handle));
+  auto pContext = ((CPPJNIObjectContext_t<T>*)(handle));
   pContext->ensureValid(); // May throw 
   return pContext->getObject();
 }
 
-struct HueJNIFinalizerMutexGuard : std::lock_guard<std::mutex>
+struct CPPJNIFinalizerMutexGuard : std::lock_guard<std::mutex>
 {
-  HueJNIFinalizerMutexGuard();
-  ~HueJNIFinalizerMutexGuard();
+  CPPJNIFinalizerMutexGuard();
+  ~CPPJNIFinalizerMutexGuard();
 };
 
 template<typename T>
 void
-HueJNI_destroyHandle(JNIEnv* env, jlong handle)
+CPPJNI_destroyHandle(JNIEnv* env, jlong handle)
 {
-  auto pContext = ((HueJNIObjectContext_t<T>*)(handle));
+  auto pContext = ((CPPJNIObjectContext_t<T>*)(handle));
   pContext->ensureValid(); // May throw 
   pContext->cleanupGlobalRefs(env);
   delete pContext;
 }
 
-inline jstring HueJNI_newString(JNIEnv * env, const char* str) { return env->NewStringUTF(str ? str : ""); }
-inline jstring HueJNI_newString(JNIEnv * env, std::string const& str) { return env->NewStringUTF(str.c_str()); }
+inline jstring CPPJNI_newString(JNIEnv * env, const char* str) { return env->NewStringUTF(str ? str : ""); }
+inline jstring CPPJNI_newString(JNIEnv * env, std::string const& str) { return env->NewStringUTF(str.c_str()); }
 
 class Marshaling;
 
-void Hue_Handle_HueSpaceLibException(JNIEnv* env, OpenVDS::Exception& e);
-void Hue_Handle_StdRuntimeError(JNIEnv *env, std::runtime_error& e);
-void Hue_Handle_StdException(JNIEnv *env, std::exception& e);
+void CPPJNI_HandleSharedLibraryException(JNIEnv* env, OpenVDS::Exception& e);
+void CPPJNI_HandleStdRuntimeError(JNIEnv *env, std::runtime_error& e);
+void CPPJNI_HandleStdException(JNIEnv *env, std::exception& e);
 
-#define HUE_JNI_TRY try
-#define HUE_JNI_CATCH \
+#define CPPJNI_TRY try
+#define CPPJNI_CATCH \
  catch(ObsoleteObjectException&) { /* No-op. See comment for ObsoleteObjectException */ } \
- catch(OpenVDS::Exception& e) { Hue_Handle_HueSpaceLibException(env, e); } \
- catch(std::runtime_error& e) { Hue_Handle_StdRuntimeError(env, e); } \
- catch(std::exception& e) { Hue_Handle_StdException(env, e); }
+ catch(OpenVDS::Exception& e) { CPPJNI_HandleSharedLibraryException(env, e); } \
+ catch(std::runtime_error& e) { CPPJNI_HandleStdRuntimeError(env, e); } \
+ catch(std::exception& e) { CPPJNI_HandleStdException(env, e); }
 
 class JEnvPushPop
 {
@@ -657,7 +657,7 @@ private:
   std::vector<StringRecord> m_lUtf8Chars;
 };
 
-struct HueJNIStringWrapper
+struct CPPJNIStringWrapper
 {
   JNIEnv *              m_Env;
   jlong                 m_NativeHandle;
@@ -665,15 +665,15 @@ struct HueJNIStringWrapper
   mutable const char *  m_TmpUtf8;
   mutable const char *  m_PersistentUTF8;
 
-  HueJNIStringWrapper(JNIEnv * env, jlong native_handle, jstring str) : m_Env(env), m_NativeHandle(native_handle), m_JString(str), m_TmpUtf8(), m_PersistentUTF8()
+  CPPJNIStringWrapper(JNIEnv * env, jlong native_handle, jstring str) : m_Env(env), m_NativeHandle(native_handle), m_JString(str), m_TmpUtf8(), m_PersistentUTF8()
   {
   }
 
-  HueJNIStringWrapper(JNIEnv * env, jstring str) : HueJNIStringWrapper(env, 0, str)
+  CPPJNIStringWrapper(JNIEnv * env, jstring str) : CPPJNIStringWrapper(env, 0, str)
   {
   }
 
-  ~HueJNIStringWrapper()
+  ~CPPJNIStringWrapper()
   {
     if (m_TmpUtf8)
     {
@@ -689,7 +689,7 @@ struct HueJNIStringWrapper
       if (m_NativeHandle)
       {
         m_TmpUtf8 = m_Env->GetStringUTFChars(m_JString, 0);
-        auto pObjectContext = (HueJNIObjectContext*)m_NativeHandle;
+        auto pObjectContext = (CPPJNIObjectContext*)m_NativeHandle;
         m_PersistentUTF8 = pObjectContext->addString(m_TmpUtf8);
       }
       else

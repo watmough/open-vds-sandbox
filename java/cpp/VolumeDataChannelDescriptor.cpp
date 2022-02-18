@@ -34,16 +34,16 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_c
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::VolumeDataChannelDescriptor>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::VolumeDataChannelDescriptor>();
 
     auto native_handle = context->handle();
     context->setObject(new OpenVDS::VolumeDataChannelDescriptor());
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -54,22 +54,22 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_c
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::VolumeDataChannelDescriptor>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::VolumeDataChannelDescriptor>();
 
     auto native_handle = context->handle();
     context->setObject(new OpenVDS::VolumeDataChannelDescriptor(
                                (enum OpenVDS::VolumeDataChannelDescriptor::Format)format, 
                                (enum OpenVDS::VolumeDataChannelDescriptor::Components)components, 
-                               HueJNIStringWrapper(env, name), 
-                               HueJNIStringWrapper(env, unit), 
+                               CPPJNIStringWrapper(env, name), 
+                               CPPJNIStringWrapper(env, unit), 
                                valueRangeMin, 
                                valueRangeMax));
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -80,23 +80,23 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_c
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::VolumeDataChannelDescriptor>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::VolumeDataChannelDescriptor>();
 
     auto native_handle = context->handle();
     context->setObject(new OpenVDS::VolumeDataChannelDescriptor(
                                (enum OpenVDS::VolumeDataChannelDescriptor::Format)format, 
                                (enum OpenVDS::VolumeDataChannelDescriptor::Components)components, 
-                               HueJNIStringWrapper(env, name), 
-                               HueJNIStringWrapper(env, unit), 
+                               CPPJNIStringWrapper(env, name), 
+                               CPPJNIStringWrapper(env, unit), 
                                valueRangeMin, 
                                valueRangeMax, 
                                (OpenVDS::VolumeDataMapping)mapping));
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -107,23 +107,23 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_c
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::VolumeDataChannelDescriptor>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::VolumeDataChannelDescriptor>();
 
     auto native_handle = context->handle();
     context->setObject(new OpenVDS::VolumeDataChannelDescriptor(
                                (enum OpenVDS::VolumeDataChannelDescriptor::Format)format, 
                                (enum OpenVDS::VolumeDataChannelDescriptor::Components)components, 
-                               HueJNIStringWrapper(env, name), 
-                               HueJNIStringWrapper(env, unit), 
+                               CPPJNIStringWrapper(env, name), 
+                               CPPJNIStringWrapper(env, unit), 
                                valueRangeMin, 
                                valueRangeMax, 
                                (enum OpenVDS::VolumeDataChannelDescriptor::Flags)flags));
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -134,16 +134,16 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_c
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::VolumeDataChannelDescriptor>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::VolumeDataChannelDescriptor>();
 
     auto native_handle = context->handle();
     context->setObject(new OpenVDS::VolumeDataChannelDescriptor(
                                (enum OpenVDS::VolumeDataChannelDescriptor::Format)format, 
                                (enum OpenVDS::VolumeDataChannelDescriptor::Components)components, 
-                               HueJNIStringWrapper(env, name), 
-                               HueJNIStringWrapper(env, unit), 
+                               CPPJNIStringWrapper(env, name), 
+                               CPPJNIStringWrapper(env, unit), 
                                valueRangeMin, 
                                valueRangeMax, 
                                (OpenVDS::VolumeDataMapping)mapping, 
@@ -151,7 +151,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_c
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -162,16 +162,16 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_c
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::VolumeDataChannelDescriptor>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::VolumeDataChannelDescriptor>();
 
     auto native_handle = context->handle();
     context->setObject(new OpenVDS::VolumeDataChannelDescriptor(
                                (enum OpenVDS::VolumeDataChannelDescriptor::Format)format, 
                                (enum OpenVDS::VolumeDataChannelDescriptor::Components)components, 
-                               HueJNIStringWrapper(env, name), 
-                               HueJNIStringWrapper(env, unit), 
+                               CPPJNIStringWrapper(env, name), 
+                               CPPJNIStringWrapper(env, unit), 
                                valueRangeMin, 
                                valueRangeMax, 
                                (OpenVDS::VolumeDataMapping)mapping, 
@@ -182,7 +182,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_c
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -193,23 +193,23 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_c
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::VolumeDataChannelDescriptor>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::VolumeDataChannelDescriptor>();
 
     auto native_handle = context->handle();
     context->setObject(new OpenVDS::VolumeDataChannelDescriptor(
                                (enum OpenVDS::VolumeDataChannelDescriptor::Format)format, 
                                (enum OpenVDS::VolumeDataChannelDescriptor::Components)components, 
-                               HueJNIStringWrapper(env, name), 
-                               HueJNIStringWrapper(env, unit), 
+                               CPPJNIStringWrapper(env, name), 
+                               CPPJNIStringWrapper(env, unit), 
                                valueRangeMin, 
                                valueRangeMax, 
                                noValue));
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -220,16 +220,16 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_c
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::VolumeDataChannelDescriptor>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::VolumeDataChannelDescriptor>();
 
     auto native_handle = context->handle();
     context->setObject(new OpenVDS::VolumeDataChannelDescriptor(
                                (enum OpenVDS::VolumeDataChannelDescriptor::Format)format, 
                                (enum OpenVDS::VolumeDataChannelDescriptor::Components)components, 
-                               HueJNIStringWrapper(env, name), 
-                               HueJNIStringWrapper(env, unit), 
+                               CPPJNIStringWrapper(env, name), 
+                               CPPJNIStringWrapper(env, unit), 
                                valueRangeMin, 
                                valueRangeMax, 
                                noValue, 
@@ -238,7 +238,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_c
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -249,16 +249,16 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_c
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto context = new HueJNIObjectContext_t<OpenVDS::VolumeDataChannelDescriptor>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::VolumeDataChannelDescriptor>();
 
     auto native_handle = context->handle();
     context->setObject(new OpenVDS::VolumeDataChannelDescriptor(
                                (enum OpenVDS::VolumeDataChannelDescriptor::Format)format, 
                                (enum OpenVDS::VolumeDataChannelDescriptor::Components)components, 
-                               HueJNIStringWrapper(env, name), 
-                               HueJNIStringWrapper(env, unit), 
+                               CPPJNIStringWrapper(env, name), 
+                               CPPJNIStringWrapper(env, unit), 
                                valueRangeMin, 
                                valueRangeMax, 
                                (OpenVDS::VolumeDataMapping)mapping, 
@@ -270,7 +270,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_c
 
     return native_handle;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -281,13 +281,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_G
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataChannelDescriptor>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataChannelDescriptor>(native_handle);
     auto result = pInstance->GetFormat();
     return (jlong)result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -297,13 +297,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_G
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataChannelDescriptor>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataChannelDescriptor>(native_handle);
     auto result = pInstance->GetComponents();
     return (jlong)result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -313,13 +313,13 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescripto
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataChannelDescriptor>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataChannelDescriptor>(native_handle);
     auto result = pInstance->IsDiscrete();
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -329,13 +329,13 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescripto
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataChannelDescriptor>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataChannelDescriptor>(native_handle);
     auto result = pInstance->IsRenderable();
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -345,13 +345,13 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescripto
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataChannelDescriptor>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataChannelDescriptor>(native_handle);
     auto result = pInstance->IsAllowLossyCompression();
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -361,13 +361,13 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescripto
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataChannelDescriptor>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataChannelDescriptor>(native_handle);
     auto result = pInstance->IsUseZipForLosslessCompression();
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -377,13 +377,13 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataChannelDescriptor>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataChannelDescriptor>(native_handle);
     auto result = pInstance->GetName();
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -393,13 +393,13 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataChannelDescriptor>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataChannelDescriptor>(native_handle);
     auto result = pInstance->GetUnit();
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -409,13 +409,13 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_Ge
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataChannelDescriptor>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataChannelDescriptor>(native_handle);
     auto result = pInstance->GetValueRange();
     *(OpenVDS::FloatRange*)((char*)env->GetDirectBufferAddress(resultbytebuffer) + resultbyteoffset) = result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_GetValueRangeMinImpl
@@ -424,13 +424,13 @@ JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataChannelDescriptor>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataChannelDescriptor>(native_handle);
     auto result = pInstance->GetValueRangeMin();
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -440,13 +440,13 @@ JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataChannelDescriptor>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataChannelDescriptor>(native_handle);
     auto result = pInstance->GetValueRangeMax();
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -456,13 +456,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_G
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataChannelDescriptor>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataChannelDescriptor>(native_handle);
     auto result = pInstance->GetMapping();
     return (jlong)result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -472,13 +472,13 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_Ge
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataChannelDescriptor>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataChannelDescriptor>(native_handle);
     auto result = pInstance->GetMappedValueCount();
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -488,13 +488,13 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescripto
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataChannelDescriptor>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataChannelDescriptor>(native_handle);
     auto result = pInstance->IsUseNoValue();
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -504,13 +504,13 @@ JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataChannelDescriptor>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataChannelDescriptor>(native_handle);
     auto result = pInstance->GetNoValue();
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -520,13 +520,13 @@ JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataChannelDescriptor>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataChannelDescriptor>(native_handle);
     auto result = pInstance->GetIntegerScale();
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -536,13 +536,13 @@ JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    auto pInstance = HueJNI_cast<OpenVDS::VolumeDataChannelDescriptor>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataChannelDescriptor>(native_handle);
     auto result = pInstance->GetIntegerOffset();
     return result;
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -552,21 +552,21 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_T
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::VolumeDataChannelDescriptor::TraceMappedVolumeDataChannelDescriptor(
                                (enum OpenVDS::VolumeDataChannelDescriptor::Format)format, 
                                (enum OpenVDS::VolumeDataChannelDescriptor::Components)components, 
-                               HueJNIStringWrapper(env, name), 
-                               HueJNIStringWrapper(env, unit), 
+                               CPPJNIStringWrapper(env, name), 
+                               CPPJNIStringWrapper(env, unit), 
                                valueRangeMin, 
                                valueRangeMax, 
                                mappedValueCount, 
                                (enum OpenVDS::VolumeDataChannelDescriptor::Flags)flags);
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataChannelDescriptor(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataChannelDescriptor(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -576,33 +576,33 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_T
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::VolumeDataChannelDescriptor::TraceMappedVolumeDataChannelDescriptor(
                                (enum OpenVDS::VolumeDataChannelDescriptor::Format)format, 
                                (enum OpenVDS::VolumeDataChannelDescriptor::Components)components, 
-                               HueJNIStringWrapper(env, name), 
-                               HueJNIStringWrapper(env, unit), 
+                               CPPJNIStringWrapper(env, name), 
+                               CPPJNIStringWrapper(env, unit), 
                                valueRangeMin, 
                                valueRangeMax, 
                                mappedValueCount, 
                                (enum OpenVDS::VolumeDataChannelDescriptor::Flags)flags, 
                                noValue);
-    auto context = HueJNI_createObjectContext(new OpenVDS::VolumeDataChannelDescriptor(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataChannelDescriptor(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
-    HueJNI_destroyHandle<OpenVDS::VolumeDataChannelDescriptor>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataChannelDescriptor>(env, native_handle);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
 }
 
 

@@ -2005,7 +2005,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
      * @param dimensionsND The dimensiongroup the requested data is read from.
      * @param LOD The LOD level the requested data is read from.
      * @param channel The channel index the requested data is read from.
-     * @param samplePositions Pointer to array of VolumeDataLayout::Dimensionality_Max-elements indicating the positions to sample. May be deleted once RequestVolumeSamples return, as HueSpace makes a deep copy of the data.
+     * @param samplePositions Pointer to array of VolumeDataLayout::Dimensionality_Max-elements indicating the positions to sample. 
      * @param interpolationMethod Interpolation method to use when sampling the buffer.
      * @return A VolumeDataRequest instance encapsulating the request status and buffer.
      */
@@ -2020,7 +2020,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
      * @param dimensionsND The dimensiongroup the requested data is read from.
      * @param LOD The LOD level the requested data is read from.
      * @param channel The channel index the requested data is read from.
-     * @param samplePositions Pointer to array of VolumeDataLayout::Dimensionality_Max-elements indicating the positions to sample. May be deleted once RequestVolumeSamples return, as HueSpace makes a deep copy of the data.
+     * @param samplePositions Pointer to array of VolumeDataLayout::Dimensionality_Max-elements indicating the positions to sample. 
      * @param interpolationMethod Interpolation method to use when sampling the buffer.
      * @return A VolumeDataRequest instance encapsulating the request status and buffer.
      */
@@ -2632,7 +2632,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
      * @param dimensionsND The dimensiongroup the requested data is read from.
      * @param LOD The LOD level the requested data is read from.
      * @param channel The channel index the requested data is read from.
-     * @param samplePositions Pointer to array of VolumeDataLayout::Dimensionality_Max-elements indicating the positions to sample. May be deleted once RequestVolumeSamples return, as HueSpace makes a deep copy of the data.
+     * @param samplePositions Pointer to array of VolumeDataLayout::Dimensionality_Max-elements indicating the positions to sample. 
      * @param interpolationMethod Interpolation method to use when sampling the buffer.
      * @param replacementNoValue If specified, this value is used to replace regions of the input VDS that has no data.
      * @return A VolumeDataRequest instance encapsulating the request status and buffer.
@@ -2651,7 +2651,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
      * @param dimensionsND The dimensiongroup the requested data is read from.
      * @param LOD The LOD level the requested data is read from.
      * @param channel The channel index the requested data is read from.
-     * @param samplePositions Pointer to array of VolumeDataLayout::Dimensionality_Max-elements indicating the positions to sample. May be deleted once RequestVolumeSamples return, as HueSpace makes a deep copy of the data.
+     * @param samplePositions Pointer to array of VolumeDataLayout::Dimensionality_Max-elements indicating the positions to sample. 
      * @param interpolationMethod Interpolation method to use when sampling the buffer.
      * @param replacementNoValue If specified, this value is used to replace regions of the input VDS that has no data.
      * @return A VolumeDataRequest instance encapsulating the request status and buffer.

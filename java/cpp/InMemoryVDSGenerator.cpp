@@ -198,16 +198,16 @@ extern "C" {
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_InMemoryVDSGenerator_CreateVDSImpl
 (JNIEnv *env, jclass, jint nXSamples, jint nYSamples, jint nZSamples, jlong format)
 {
-  HUE_JNI_TRY 
+  CPPJNI_TRY 
   {
     OpenVDS::VDSHandle handle = generateSimpleInMemory3DVDS( nXSamples, nYSamples, nZSamples, (OpenVDS::VolumeDataChannelDescriptor::Format)format );
     if(!handle ){
       throw std::runtime_error("OpenVDS::Create returned NULL");
     }
     fill3DVDSWithNoise(handle);
-    return HueJNI_createObjectContext<OpenVDS::VDS>(handle)->handle();
+    return CPPJNI_createObjectContext<OpenVDS::VDS>(handle)->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 

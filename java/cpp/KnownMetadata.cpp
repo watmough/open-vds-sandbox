@@ -34,12 +34,12 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownAxisNames_InlineImpl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownAxisNames::Inline();
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -49,12 +49,12 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownAxisNames_CrosslineImp
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownAxisNames::Crossline();
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -64,12 +64,12 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownAxisNames_TimeImpl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownAxisNames::Time();
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -79,12 +79,12 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownAxisNames_DepthImpl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownAxisNames::Depth();
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -94,12 +94,12 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownAxisNames_SampleImpl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownAxisNames::Sample();
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -109,12 +109,12 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownAxisNames_IImpl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownAxisNames::I();
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -124,12 +124,12 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownAxisNames_JImpl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownAxisNames::J();
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -139,12 +139,12 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownAxisNames_KImpl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownAxisNames::K();
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -154,12 +154,12 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownAxisNames_XImpl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownAxisNames::X();
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -169,12 +169,12 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownAxisNames_YImpl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownAxisNames::Y();
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -184,12 +184,12 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownAxisNames_ZImpl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownAxisNames::Z();
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -201,12 +201,12 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownUnitNames_MeterImpl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownUnitNames::Meter();
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -216,12 +216,12 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownUnitNames_MillisecondI
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownUnitNames::Millisecond();
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -231,12 +231,12 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownUnitNames_FootImpl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownUnitNames::Foot();
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -246,12 +246,12 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownUnitNames_USSurveyFoot
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownUnitNames::USSurveyFoot();
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -261,12 +261,12 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownUnitNames_SecondImpl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownUnitNames::Second();
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -276,12 +276,12 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownUnitNames_MetersPerSec
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownUnitNames::MetersPerSecond();
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -291,12 +291,12 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownUnitNames_FeetPerSecon
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownUnitNames::FeetPerSecond();
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -306,12 +306,12 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownUnitNames_USSurveyFeet
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownUnitNames::USSurveyFeetPerSecond();
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -321,12 +321,12 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownUnitNames_UnitlessImpl
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownUnitNames::Unitless();
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -338,12 +338,12 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownMetadata_CategorySurve
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::CategorySurveyCoordinateSystem();
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -353,13 +353,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SurveyCoordinateSystemOrigin();
-    auto context = HueJNI_createObjectContext(new OpenVDS::MetadataKey(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::MetadataKey(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -369,13 +369,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SurveyCoordinateSystemInlineSpacing();
-    auto context = HueJNI_createObjectContext(new OpenVDS::MetadataKey(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::MetadataKey(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -385,13 +385,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SurveyCoordinateSystemCrosslineSpacing();
-    auto context = HueJNI_createObjectContext(new OpenVDS::MetadataKey(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::MetadataKey(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -401,13 +401,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SurveyCoordinateSystemGridPoint0();
-    auto context = HueJNI_createObjectContext(new OpenVDS::MetadataKey(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::MetadataKey(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -417,13 +417,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SurveyCoordinateSystemGridPoint0Inline();
-    auto context = HueJNI_createObjectContext(new OpenVDS::MetadataKey(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::MetadataKey(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -433,13 +433,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SurveyCoordinateSystemGridPoint0Crossline();
-    auto context = HueJNI_createObjectContext(new OpenVDS::MetadataKey(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::MetadataKey(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -449,13 +449,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SurveyCoordinateSystemGridPoint1();
-    auto context = HueJNI_createObjectContext(new OpenVDS::MetadataKey(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::MetadataKey(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -465,13 +465,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SurveyCoordinateSystemGridPoint1Inline();
-    auto context = HueJNI_createObjectContext(new OpenVDS::MetadataKey(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::MetadataKey(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -481,13 +481,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SurveyCoordinateSystemGridPoint1Crossline();
-    auto context = HueJNI_createObjectContext(new OpenVDS::MetadataKey(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::MetadataKey(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -497,13 +497,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SurveyCoordinateSystemGridPoint2();
-    auto context = HueJNI_createObjectContext(new OpenVDS::MetadataKey(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::MetadataKey(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -513,13 +513,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SurveyCoordinateSystemGridPoint2Inline();
-    auto context = HueJNI_createObjectContext(new OpenVDS::MetadataKey(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::MetadataKey(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -529,13 +529,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SurveyCoordinateSystemGridPoint2Crossline();
-    auto context = HueJNI_createObjectContext(new OpenVDS::MetadataKey(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::MetadataKey(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -545,13 +545,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SurveyCoordinateSystemGridPoint3();
-    auto context = HueJNI_createObjectContext(new OpenVDS::MetadataKey(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::MetadataKey(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -561,13 +561,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SurveyCoordinateSystemGridPoint3Inline();
-    auto context = HueJNI_createObjectContext(new OpenVDS::MetadataKey(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::MetadataKey(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -577,13 +577,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SurveyCoordinateSystemGridPoint3Crossline();
-    auto context = HueJNI_createObjectContext(new OpenVDS::MetadataKey(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::MetadataKey(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -593,13 +593,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SurveyCoordinateSystemIJKOrigin();
-    auto context = HueJNI_createObjectContext(new OpenVDS::MetadataKey(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::MetadataKey(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -609,13 +609,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SurveyCoordinateSystemIStepVector();
-    auto context = HueJNI_createObjectContext(new OpenVDS::MetadataKey(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::MetadataKey(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -625,13 +625,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SurveyCoordinateSystemJStepVector();
-    auto context = HueJNI_createObjectContext(new OpenVDS::MetadataKey(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::MetadataKey(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -641,13 +641,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SurveyCoordinateSystemKStepVector();
-    auto context = HueJNI_createObjectContext(new OpenVDS::MetadataKey(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::MetadataKey(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -657,13 +657,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SurveyCoordinateSystemUnit();
-    auto context = HueJNI_createObjectContext(new OpenVDS::MetadataKey(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::MetadataKey(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -673,13 +673,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SurveyCoordinateSystemCRSWkt();
-    auto context = HueJNI_createObjectContext(new OpenVDS::MetadataKey(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::MetadataKey(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -689,12 +689,12 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownMetadata_CategoryTrace
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::CategoryTraceCoordinates();
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -704,13 +704,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_TracePositionsI
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::TracePositions();
-    auto context = HueJNI_createObjectContext(new OpenVDS::MetadataKey(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::MetadataKey(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -720,13 +720,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_TraceVerticalOf
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::TraceVerticalOffsets();
-    auto context = HueJNI_createObjectContext(new OpenVDS::MetadataKey(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::MetadataKey(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -736,13 +736,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_EnergySourcePoi
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::EnergySourcePointNumbers();
-    auto context = HueJNI_createObjectContext(new OpenVDS::MetadataKey(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::MetadataKey(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -752,13 +752,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_EnsembleNumbers
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::EnsembleNumbers();
-    auto context = HueJNI_createObjectContext(new OpenVDS::MetadataKey(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::MetadataKey(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -768,12 +768,12 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownMetadata_CategoryWritt
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::CategoryWrittenRegion();
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -783,13 +783,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_WrittenRegionIm
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::WrittenRegion();
-    auto context = HueJNI_createObjectContext(new OpenVDS::MetadataKey(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::MetadataKey(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -799,12 +799,12 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownMetadata_CategoryImpor
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::CategoryImportInformation();
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -814,13 +814,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_ImportInformati
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::ImportInformationDisplayName();
-    auto context = HueJNI_createObjectContext(new OpenVDS::MetadataKey(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::MetadataKey(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -830,13 +830,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_ImportInformati
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::ImportInformationInputFileName();
-    auto context = HueJNI_createObjectContext(new OpenVDS::MetadataKey(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::MetadataKey(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -846,13 +846,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_ImportInformati
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::ImportInformationInputFileSize();
-    auto context = HueJNI_createObjectContext(new OpenVDS::MetadataKey(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::MetadataKey(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -862,13 +862,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_ImportInformati
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::ImportInformationInputTimeStamp();
-    auto context = HueJNI_createObjectContext(new OpenVDS::MetadataKey(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::MetadataKey(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -878,13 +878,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_ImportInformati
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::ImportInformationImportTimeStamp();
-    auto context = HueJNI_createObjectContext(new OpenVDS::MetadataKey(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::MetadataKey(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -894,12 +894,12 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownMetadata_CategorySEGYI
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::CategorySEGY();
-    return HueJNI_newString(env, result);
+    return CPPJNI_newString(env, result);
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -909,13 +909,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SEGYTextHeaderI
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SEGYTextHeader();
-    auto context = HueJNI_createObjectContext(new OpenVDS::MetadataKey(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::MetadataKey(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -925,13 +925,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SEGYBinaryHeade
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SEGYBinaryHeader();
-    auto context = HueJNI_createObjectContext(new OpenVDS::MetadataKey(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::MetadataKey(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -941,13 +941,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SEGYEndiannessI
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SEGYEndianness();
-    auto context = HueJNI_createObjectContext(new OpenVDS::MetadataKey(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::MetadataKey(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -957,13 +957,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SEGYDataEndiann
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SEGYDataEndianness();
-    auto context = HueJNI_createObjectContext(new OpenVDS::MetadataKey(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::MetadataKey(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -973,13 +973,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SEGYDataSampleF
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SEGYDataSampleFormatCode();
-    auto context = HueJNI_createObjectContext(new OpenVDS::MetadataKey(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::MetadataKey(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
@@ -989,13 +989,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SEGYPrimaryKeyI
   JEnvPushPop
     stackitem(env);
 
-  HUE_JNI_TRY
+  CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SEGYPrimaryKey();
-    auto context = HueJNI_createObjectContext(new OpenVDS::MetadataKey(result));
+    auto context = CPPJNI_createObjectContext(new OpenVDS::MetadataKey(result));
     return context->handle();
   }
-  HUE_JNI_CATCH
+  CPPJNI_CATCH
   return 0;
 }
 
