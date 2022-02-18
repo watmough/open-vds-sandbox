@@ -749,7 +749,6 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_ClearMetadat
   }
   CPPJNI_CATCH
 }
-///AUTOGEN-FAIL: CXX_METHOD GetMetadataBLOB void (const char *, const char *, const void **, uint64_t *) const FUNCTIONPROTO
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_SetMetadataString2Impl
   (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name, jstring value)
@@ -779,6 +778,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_dtorImpl
 }
 
 
+///AUTOGEN-IGNORE: CXX_METHOD GetMetadataBLOB void (const char *, const char *, const void **, uint64_t *) const FUNCTIONPROTO
 
 #ifdef __cplusplus
 }

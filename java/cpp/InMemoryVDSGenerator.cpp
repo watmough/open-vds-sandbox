@@ -100,7 +100,8 @@ static OpenVDS::VDS *generateSimpleInMemory3DVDS(int32_t samplesX = 100, int32_t
   metadataContainer.SetMetadataDoubleVector3( "categoryDouble", "DoubleVector3", OpenVDS::DoubleVector3( 45.5, 78.75 , 72.75) );
   metadataContainer.SetMetadataDoubleVector4( "categoryDouble", "DoubleVector4", OpenVDS::DoubleVector4( 45.5, 78.75 , 72.75,84.1) );
   metadataContainer.SetMetadataString( "categoryString", "String", std::string( "Test string" ) );
-  //metadataContainer.SetMetadataBLOB("categoryBLOB", "BLOB", data, 4 );
+  char data[4] = { 1,2,3,4 };
+  metadataContainer.SetMetadataBLOB("categoryBLOB", "BLOB", data, sizeof(data));
 
   return OpenVDS::Create(options, layoutDescriptor, axisDescriptors, channelDescriptors, metadataContainer, error);
 }

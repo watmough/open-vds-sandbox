@@ -95,3 +95,26 @@ JNIEXPORT jobjectArray JNICALL Java_org_opengroup_openvds_MetadataReadAccess_Get
   return 0;
 }
 
+JNIEXPORT jbyteArray JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMetadataBLOBImpl
+  (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name)
+{
+  JEnvPushPop
+    stackitem(env);
+
+  CPPJNI_TRY
+  {
+    auto pInstance = CPPJNI_cast<OpenVDS::MetadataReadAccess>(native_handle);
+    std::vector<uint8_t> data;
+    pInstance->GetMetadataBLOB(CPPJNIStringWrapper(env, category), CPPJNIStringWrapper(env, name), data);
+    if (data.size() > UINT_MAX) 
+    {
+      throw std::runtime_error("BLOB is too big for Java bytearray.");
+    }
+    jbyteArray arr = env->NewByteArray((jsize)data.size());
+    env->SetByteArrayRegion(arr, 0, (jsize)data.size(), (jbyte const*)data.data());
+    return arr;
+  }
+  CPPJNI_CATCH
+  return 0;
+}
+

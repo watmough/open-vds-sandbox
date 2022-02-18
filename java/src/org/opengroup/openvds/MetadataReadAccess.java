@@ -383,4 +383,11 @@ public class MetadataReadAccess extends ManagedBase {
 
         return metadataKeys;
     }
+	
+	private static native byte[] GetMetadataBLOBImpl(long native_handle, String category, String name);
+	
+	public byte[] getMetadataBLOB(String category, String name) {
+		return GetMetadataBLOBImpl(getNativeObject(), category, name);
+	}
+	
 }

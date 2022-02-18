@@ -290,4 +290,7 @@
      * Get the default maxPages for VolumeDataPageAccessors
      */
     public static final int MaxPagesDefault = 8;
+	
+	///AUTOGEN-IGNORE: CXX_METHOD GetCurrentUploadError void (const char **, int *, const char **) FUNCTIONPROTO
+	///AUTOGEN-IGNORE: CXX_METHOD GetCurrentDownloadError void (int *, const char **) FUNCTIONPROTO	
 }}
