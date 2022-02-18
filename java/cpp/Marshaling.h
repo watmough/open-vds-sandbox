@@ -710,6 +710,10 @@ class Marshaling {
 public:
   static jobject CreateJavaObject(const char* type);
   static jobject CreateJavaObject(jclass clazz);
+  static jobjectArray CreateJavaArray(int elements, const char* elementType = nullptr, jobject initialElement = 0);
+
+  template<typename T>
+  static jobject CreatePODJavaObject(T const& value);
 
   static JNIEnv* GetJNIEnv() {
     assert(!JEnvPushPop::s_JNIEnvStack.empty());
@@ -732,6 +736,8 @@ public:
   static void Convert(jobject& to, OpenVDS::IJKGridDefinition const& from);
   static void Convert(OpenVDS::IJKGridDefinition& to, jobject from);
 };
+
+template<> jobject Marshaling::CreatePODJavaObject<int>(int const& value);
 
 template<typename T>
 inline void

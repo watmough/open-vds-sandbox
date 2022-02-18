@@ -125,6 +125,58 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
 ///AUTOGEN-IGNORE: CXX_METHOD GetCurrentUploadError void (const char **, int *, const char **) FUNCTIONPROTO
 ///AUTOGEN-IGNORE: CXX_METHOD GetCurrentDownloadError void (int *, const char **) FUNCTIONPROTO	
 
+JNIEXPORT jobjectArray JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_GetCurrentUploadErrorImpl
+  (JNIEnv * env, jobject object, jlong native_handle)
+{
+  JEnvPushPop
+    stackitem(env);
+
+  CPPJNI_TRY
+  {
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    const char* objectID = nullptr;
+    int32_t code = 0;
+    const char* errorString = nullptr;
+    pInstance->GetCurrentUploadError(&objectID, &code, &errorString);
+    auto arr = Marshaling::CreateJavaArray(3);
+    if (arr)
+    {
+      env->SetObjectArrayElement(arr, 0, env->NewStringUTF(objectID ? objectID : ""));
+      env->SetObjectArrayElement(arr, 1, Marshaling::CreatePODJavaObject<int>(code));
+      env->SetObjectArrayElement(arr, 2, env->NewStringUTF(errorString ? errorString : ""));
+
+    }
+    return arr;
+  }
+  CPPJNI_CATCH
+  return 0;
+}
+
+JNIEXPORT jobjectArray JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_GetCurrentDownloadErrorImpl
+  (JNIEnv * env, jobject object, jlong native_handle)
+{
+  JEnvPushPop
+    stackitem(env);
+
+  CPPJNI_TRY
+  {
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    int32_t code = 0;
+    const char* errorString = "";
+    pInstance->GetCurrentDownloadError(&code, &errorString);
+    auto arr = Marshaling::CreateJavaArray(2);
+    if (arr)
+    {
+      env->SetObjectArrayElement(arr, 0, Marshaling::CreatePODJavaObject<int>(code));
+      env->SetObjectArrayElement(arr, 1, env->NewStringUTF(errorString ? errorString : ""));
+
+    }
+    return arr;
+  }
+  CPPJNI_CATCH
+  return 0;
+}
+
 /* FIXME? DOES NOT EXIST IN OPENVDS 
 ///AUTOGEN-IGNORE: CXX_METHOD RequestVolumeTraceRanges std::shared_ptr<OpenVDS::VolumeDataRequest_t<float>> (OpenVDS::DimensionsND, int, int, float const (*)[6], int, OpenVDS::InterpolationMethod, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestVolumeTraceRangesImpl

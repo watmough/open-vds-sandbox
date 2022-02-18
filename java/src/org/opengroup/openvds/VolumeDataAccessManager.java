@@ -2763,4 +2763,17 @@ of the number of chunks in some of the dimensions. Do not change this from the d
 	
 	///AUTOGEN-IGNORE: CXX_METHOD GetCurrentUploadError void (const char **, int *, const char **) FUNCTIONPROTO
 	///AUTOGEN-IGNORE: CXX_METHOD GetCurrentDownloadError void (int *, const char **) FUNCTIONPROTO	
+	
+	private static native Object[] GetCurrentUploadErrorImpl(long native_instance);
+	private static native Object[] GetCurrentDownloadErrorImpl(long native_instance);
+	
+	public UploadError getCurrentUploadError() {
+		Object[] arr = GetCurrentUploadErrorImpl(getNativeObject());
+		return new UploadError(arr);
+	}
+	
+	public DownloadError getCurrentDownloadError() {
+		Object[] arr = GetCurrentDownloadErrorImpl(getNativeObject());
+		return new DownloadError(arr);
+	}
 }

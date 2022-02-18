@@ -58,7 +58,7 @@ jobject Marshaling::CreateJavaObject(const char* type) {
   if (clazz) {
     return CreateJavaObject(clazz);
   }
-  return NULL;
+  return nullptr;
 }
 
 jobject Marshaling::CreateJavaObject(jclass clazz) {
@@ -67,7 +67,30 @@ jobject Marshaling::CreateJavaObject(jclass clazz) {
     jobject obj = GetJNIEnv()->NewObject(clazz, methodID);
     return obj;
   }
-  return NULL;
+  return nullptr;
+}
+
+jobjectArray Marshaling::CreateJavaArray(int elementCount, const char* elementType, jobject initialElement) 
+{
+  jclass clazz = GetJNIEnv()->FindClass(elementType ? elementType : "java/lang/Object");
+  if (clazz) {
+    auto arr = GetJNIEnv()->NewObjectArray(elementCount, clazz, initialElement);
+    return arr;
+  }
+  return nullptr;
+}
+
+template<>
+jobject Marshaling::CreatePODJavaObject<int>(int const& value) 
+{
+  jclass clazz = GetJNIEnv()->FindClass("java/lang/Integer");
+  jmethodID methodID = GetJNIEnv()->GetMethodID(clazz, "<init>", "(I)V");
+  if (methodID)
+  {
+    jobject obj = GetJNIEnv()->NewObject(clazz, methodID, value);
+    return obj;
+  }
+  return nullptr;
 }
 
 int
