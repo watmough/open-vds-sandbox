@@ -89,7 +89,7 @@ function(Fetch3rdParty)
   set(FETCHCONTENT_QUIET OFF)
   include(FetchContent)
 
-  Fetch3rdParty_Git(aws-cpp-sdk           1.9.118    https://github.com/aws/aws-sdk-cpp.git                                               1.9.118)
+  Fetch3rdParty_Git(aws-cpp-sdk           1.9.197    https://github.com/aws/aws-sdk-cpp.git                                               1.9.197)
   Fetch3rdParty_Package(gtest             1.10.0     https://github.com/google/googletest/archive/release-1.10.0.tar.gz                   SHA256=9dc9157a9a1551ec7a7e43daea9a694a0bb5fb8bec81235d8a1e6ef64c716dcb)
   Fetch3rdParty_Package(jsoncpp           1.8.4      https://github.com/open-source-parsers/jsoncpp/archive/1.8.4.tar.gz                  MD5=fa47a3ab6b381869b6a5f20811198662)
   Fetch3rdParty_Package(fmt               7.1.3      https://github.com/fmtlib/fmt/archive/7.1.3.tar.gz                                   SHA256=5cae7072042b3043e12d53d50ef404bbb76949dad1de368d7f993a15c8c05ecc)
