@@ -25,7 +25,6 @@
 #include <OpenVDS/VolumeData.h>
 #include <OpenVDS/VolumeDataAccessManager.h>
 #include <OpenVDS/Vector.h>
-#include <OpenVDS/Error.h>
 
 #include <cstdint>
 #include <string>
@@ -555,6 +554,12 @@ struct VDSFileOpenOptions : OpenOptions
   /// The name of the VDS file
   /// </param>
   VDSFileOpenOptions(const std::string &fileName) : OpenOptions(VDSFile), fileName(fileName) {}
+};
+
+struct Error
+{
+  int code = 0;
+  std::string string;
 };
 
 template<typename T>

@@ -230,6 +230,13 @@ PyGlobal::initModule(py::module& m)
   VDSFileOpenOptions_.def(py::init<const std::string &           >(), py::arg("fileName").none(false), OPENVDS_DOCSTRING(VDSFileOpenOptions_VDSFileOpenOptions_2));
   VDSFileOpenOptions_.def_readwrite("fileName"                    , &VDSFileOpenOptions::fileName  , OPENVDS_DOCSTRING(VDSFileOpenOptions_fileName));
 
+  // Error
+  py::class_<Error> 
+    Error_(m,"Error", OPENVDS_DOCSTRING(Error));
+
+  Error_.def_readwrite("code"                        , &Error::code                   , OPENVDS_DOCSTRING(Error_code));
+  Error_.def_readwrite("string"                      , &Error::string                 , OPENVDS_DOCSTRING(Error_string));
+
   // StringWrapper
   py::class_<StringWrapper> 
     StringWrapper_(m,"StringWrapper", OPENVDS_DOCSTRING(StringWrapper));
@@ -285,6 +292,9 @@ PyGlobal::initModule(py::module& m)
   m.def("getOpenVDSVersion"           , static_cast<const char *(*)()>(&GetOpenVDSVersion), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(GetOpenVDSVersion));
   m.def("getOpenVDSRevision"          , static_cast<const char *(*)()>(&GetOpenVDSRevision), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(GetOpenVDSRevision));
 //AUTOGEN-END
+  Error_.def(py::init<>());
+  Error_.def("__repr__", [](native::Error const& self){ std::string tmp = std::to_string(self.code); return std::string("Error(code=") + tmp + ", string='" + self.string + "')"; });
+
   OpenOptions_.def("__repr__", [](OpenOptions const& self)
     {
       std::string conn = "Unknown";
