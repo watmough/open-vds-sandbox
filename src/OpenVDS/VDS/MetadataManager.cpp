@@ -270,7 +270,7 @@ void MetadataManager::UpdateMetadataStatus(int64_t uncompressedSize, int seriali
     m_metadataStatus.m_uncompressedSize += uncompressedSize;
   }
 
-  Wavelet_AccumulateAdaptiveLevelSizes(serializedSize, m_metadataStatus.m_adaptiveLevelSizes, subtract, targetLevels);
+  Wavelet::Wavelet_AccumulateAdaptiveLevelSizes(serializedSize, m_metadataStatus.m_adaptiveLevelSizes, subtract, targetLevels);
 }
 
 }

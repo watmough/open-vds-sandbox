@@ -18,14 +18,11 @@
 #ifndef WAVELETTYPES_H
 #define WAVELETTYPES_H
 
-#include <OpenVDS/Vector.h>
-#include <OpenVDS/Range.h>
-#include <OpenVDS/VolumeData.h>
-#include "DataBlock.h"
 #include <math.h>
 #include <assert.h>
-#include <vector>
 #include <algorithm>
+#include <stdexcept>
+#include <string>
 
 #define WAVELET_MIN_COMPRESSION_TOLERANCE 0.01f
 
@@ -39,16 +36,150 @@
 #define NORMAL_BLOCK_SIZE 8
 #define NORMAL_BLOCK_SIZE_FLOAT 8.0f
 
-#define WAVELET_MAX_PIXELSETPIXEL_SIZE (8 * 8 * 8 * (sizeof(OpenVDS::Wavelet_PixelSetPixel)))
-#define WAVELET_MAX_PIXELSETCHILDREN_SIZE (7 * 7 * 7 * 7 * (sizeof(OpenVDS::Wavelet_PixelSetChildren)))
+#define WAVELET_MAX_PIXELSETPIXEL_SIZE (8 * 8 * 8 * (sizeof(Wavelet::Wavelet_PixelSetPixel)))
+#define WAVELET_MAX_PIXELSETCHILDREN_SIZE (7 * 7 * 7 * 7 * (sizeof(Wavelet::Wavelet_PixelSetChildren)))
 
 #define ADAPTIVEWAVELET_ALIGNBUFFERSIZE 256
 #define DECODEITERATOR_MAXDECODEBITS    256
 
 #define WAVELET_ADAPTIVE_LEVELS 16
 
-namespace OpenVDS
+namespace Wavelet {
+
+enum class WaveletDataFormat
 {
+  Format_Any = -1, ///< Volume data can be in any format
+  Format_1Bit,     ///< Volume data is in packed 1-bit format
+  Format_U8,       ///< Volume data is in unsigned 8 bit
+  Format_U16,      ///< Volume data is in unsigned 16 bit
+  Format_R32,      ///< Volume data is in 32 bit float
+  Format_U32,      ///< Volume data is in unsigned 32 bit
+  Format_R64,      ///< Volume data is in 64 bit double
+  Format_U64,      ///< Volume data is in unsigned 64 bit
+};
+
+struct WaveletDataBlock
+{
+  enum Dimensionality
+  {
+    Dimensionality_1 = 1,
+    Dimensionality_2 = 2,
+    Dimensionality_3 = 3,
+    Dimensionality_4 = 4,
+    Dimensionality_Max = Dimensionality_4 
+  };
+
+  WaveletDataFormat Format;
+  enum Dimensionality Dimensionality;
+  int32_t Size[WaveletDataBlock::Dimensionality_Max];
+  int32_t AllocatedSize[WaveletDataBlock::Dimensionality_Max];
+  int32_t Pitch[WaveletDataBlock::Dimensionality_Max];
+
+  bool Initialize(WaveletDataFormat format, enum WaveletDataBlock::Dimensionality dimensionality, const int32_t(&size)[WaveletDataBlock::Dimensionality_Max], int& errorCode, std::string& errorString);
+};
+
+inline uint32_t GetElementSize(WaveletDataFormat format)
+{
+  switch(format)
+  {
+  default:
+    throw std::runtime_error("Illegal format");
+  case WaveletDataFormat::Format_1Bit:
+    return 1;
+  case WaveletDataFormat::Format_U8:
+    return 1;
+  case WaveletDataFormat::Format_U16:
+    return 2;
+  case WaveletDataFormat::Format_R32:
+  case WaveletDataFormat::Format_U32:
+    return 4;
+  case WaveletDataFormat::Format_U64:
+  case WaveletDataFormat::Format_R64:
+    return 8;
+  }
+}
+
+inline uint32_t GetElementSize(const WaveletDataBlock &datablock)
+{
+  return GetElementSize(datablock.Format);
+}
+
+inline uint32_t GetByteSize(const int32_t (&size)[WaveletDataBlock::Dimensionality_Max], WaveletDataFormat format, bool isBitSize = true)
+{
+  int byteSize = size[0] * GetElementSize(format);
+
+  if(format == WaveletDataFormat::Format_1Bit && isBitSize)
+  {
+    byteSize = (byteSize + 7) / 8;
+  }
+
+  for (int i = 1; i < WaveletDataBlock::Dimensionality_Max; i++)
+  {
+    byteSize *= size[i];
+  }
+
+  return byteSize;
+}
+
+inline uint32_t GetByteSize(const WaveletDataBlock &block)
+{
+  return GetByteSize(block.Size, block.Format);
+}
+
+inline uint32_t GetAllocatedByteSize(const WaveletDataBlock &block)
+{
+  return GetByteSize(block.AllocatedSize, block.Format, false);
+}
+
+struct FloatRange
+{
+  float Min;
+  float Max;
+
+  FloatRange() = default;
+  FloatRange(float min, float max) : Min(min), Max(max) {}
+  inline float Size() const { return Max - Min; }
+};
+
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
+#endif
+
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpedantic"
+#endif
+
+struct IntVector3
+{
+  typedef int32_t element_type;
+  enum { element_count = 3 };
+
+  union
+  {
+    struct
+    {
+      int32_t X, Y, Z;
+    };
+    int32_t data[3];
+  };
+
+  IntVector3() : X(), Y(), Z() {}
+  IntVector3(int32_t X, int32_t Y, int32_t Z) : X(X), Y(Y), Z(Z) {}
+
+  inline       int32_t& operator[] (size_t n) { return data[n]; }
+  inline const int32_t& operator[] (size_t n) const { return data[n]; }
+  inline void  Assign(int32_t X, int32_t Y, int32_t Z) { data[0] = X; data[1] = Y; data[2] = Z; }
+};
+
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif
+
+#if defined(__clang__)
+#pragma clang diagnostic pop
+#endif
 
 inline int Wavelet_GetEffectiveWaveletAdaptiveLoadLevel(float desiredTolerance, float compressionTolerance)
 {
@@ -151,18 +282,18 @@ enum Wavelet_IntegerInfo
 
 struct Wavelet_PixelSetPixel
 {
-  int32_t x;
-  int32_t y;
-  int32_t z;
+  int32_t X;
+  int32_t Y;
+  int32_t Z;
 };
 
 struct Wavelet_PixelSetChildren
 {
   uint32_t transformIteration;
 
-  int32_t x;
-  int32_t y;
-  int32_t z;
+  int32_t X;
+  int32_t Y;
+  int32_t Z;
 
   int32_t subBand;
 };
@@ -315,4 +446,5 @@ public:
 };
 
 }
+
 #endif

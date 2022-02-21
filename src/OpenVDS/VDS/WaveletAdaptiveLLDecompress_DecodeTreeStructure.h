@@ -24,21 +24,20 @@
 #include <math.h>
 #include <string.h>
 
-namespace OpenVDS
-{
+namespace Wavelet {
 
 template<bool isAllNormal>
 static inline void WaveletAdaptiveLL_InitializeInsignificantsKernel(int iElement, const WaveletAdaptiveLL_DecodeIterator& decodeIterator, const Wavelet_PixelSetChildren* pixelSetChildren)
 {
   if (isAllNormal)
   {
-    Wavelet_FastEncodeInsigAllNormal inSigChild(pixelSetChildren[iElement].x, pixelSetChildren[iElement].y, pixelSetChildren[iElement].z, pixelSetChildren[iElement].transformIteration);
+    Wavelet_FastEncodeInsigAllNormal inSigChild(pixelSetChildren[iElement].X, pixelSetChildren[iElement].Y, pixelSetChildren[iElement].Z, pixelSetChildren[iElement].transformIteration);
 
     ((Wavelet_FastEncodeInsigAllNormal*)decodeIterator.insig)[iElement] = inSigChild;
   }
   else
   {
-    Wavelet_FastEncodeInsig inSigChild(pixelSetChildren[iElement].x, pixelSetChildren[iElement].y, pixelSetChildren[iElement].z, pixelSetChildren[iElement].transformIteration, decodeIterator.firstSubBand[pixelSetChildren[iElement].subBand]);
+    Wavelet_FastEncodeInsig inSigChild(pixelSetChildren[iElement].X, pixelSetChildren[iElement].Y, pixelSetChildren[iElement].Z, pixelSetChildren[iElement].transformIteration, decodeIterator.firstSubBand[pixelSetChildren[iElement].subBand]);
     decodeIterator.insig[iElement] = inSigChild;
   }
 }
@@ -604,6 +603,7 @@ int WaveletAdaptiveLLDecompress_DecodeTreeStructure(const WaveletAdaptiveLL_Deco
   */
   return streamPos;
 }
+
 }
 
 #endif

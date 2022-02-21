@@ -18,14 +18,11 @@
 #ifndef WAVELETDECOMPRESS_H
 #define WAVELETDECOMPRESS_H
 
-#include <OpenVDS/VolumeData.h>
-#include <OpenVDS/Vector.h>
-#include "DataBlock.h"
 #include "WaveletTypes.h"
 #include <memory>
+#include <vector>
 
-namespace OpenVDS
-{
+namespace Wavelet {
 
 class WaveletDecompressor
 {
@@ -65,7 +62,7 @@ public:
   WaveletDecompressor(uint32_t integerInfo, void* compressedData, int32_t transformSizeX, int32_t transformSizeY, int32_t transformSizeZ, int32_t allocatedSizeX, int32_t allocatedSizeY, int32_t allocatedSizeZ, int32_t dimensions, int32_t dataVersion);
   void Init();
   
-  bool Decompress(bool isTransform, int32_t decompressInfo, float decompressSlice, int32_t decompressFlip, float *startThreshold, float *threshold, VolumeDataFormat dataBlockFormat, const FloatRange &originalValueRange, float integerScale, float integerOffset, bool isUseNoValue, float noValue, bool *isAnyNoValue, float *waveletNoValue, bool isNormalize, int decompressLevel, bool isLossless, int compressedAdaptiveDataSize, DataBlock &dataBlock, std::vector<uint8_t> &target, Error &error);
+  bool Decompress(bool isTransform, int32_t decompressInfo, float decompressSlice, int32_t decompressFlip, float *startThreshold, float *threshold, WaveletDataFormat dataBlockFormat, const FloatRange &originalValueRange, float integerScale, float integerOffset, bool isUseNoValue, float noValue, bool *isAnyNoValue, float *waveletNoValue, bool isNormalize, int decompressLevel, bool isLossless, int compressedAdaptiveDataSize, WaveletDataBlock &dataBlock, std::vector<uint8_t> &target, int& errorCode, std::string& errorString);
   void DecompressNoValuesHeader();
   void InverseTransform(float *source);
   void DecompressNoValues(float* noValue, std::vector<uint32_t> &buffer);
@@ -73,7 +70,7 @@ public:
 };
 
 bool Wavelet_IsCompressedDataAllNoValue(const void* pxCompressedData, int nCompressedAdaptiveDataSize);
-bool Wavelet_Decompress(void* compressedData, int nCompressedAdaptiveDataSize, VolumeDataFormat dataBlockFormat, const FloatRange& valueRange, float integerScale, float integerOffset, bool isUseNoValue, float noValue, bool isNormalize, int nDecompressLevel, bool isLossless, DataBlock& dataBlock, std::vector<uint8_t>& target, Error& error);
+bool Wavelet_Decompress(void* compressedData, int nCompressedAdaptiveDataSize, WaveletDataFormat dataBlockFormat, const FloatRange& valueRange, float integerScale, float integerOffset, bool isUseNoValue, float noValue, bool isNormalize, int nDecompressLevel, bool isLossless, WaveletDataBlock& dataBlock, std::vector<uint8_t>& target, int& errorCode, std::string& errorString);
 
 float Wavelet_GetNormalizedValue(float* normalizeField, int iX, int iY, int iZ, int nNormalizeX, int nNormalizeY, int nNormalizeZ);
 void WaveletDecompress_RleDecode(uint8_t* rleBytes, uint32_t* bitBuffer, int32_t intsToDecode);
@@ -110,6 +107,7 @@ inline bool WaveletDecompress_RleDecodeOneRun(uint8_t*& rleByte, uint32_t& setBi
 
   return value & 1;
 }
+
 }
 
 #endif

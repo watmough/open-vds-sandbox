@@ -24,6 +24,7 @@
 #include "VDS.h"
 #include "ParseVDSJson.h"
 #include "ParsedMetadata.h"
+#include "WaveletTypes.h"
 
 #include "WaveletTypes.h"
 
@@ -311,7 +312,7 @@ static IORange CalculateRangeHeaderImpl(const ParsedMetadata& parsedMetadata, co
 {
   if (!IsConstantChunkHash(parsedMetadata.m_chunkHash) && !parsedMetadata.m_adaptiveLevels.empty())
   {
-    int range = Wavelet_DecodeAdaptiveLevelsMetadata(parsedMetadata.m_chunkSize, adaptiveLevel, parsedMetadata.m_adaptiveLevels.data());
+    int range = Wavelet::Wavelet_DecodeAdaptiveLevelsMetadata(parsedMetadata.m_chunkSize, adaptiveLevel, parsedMetadata.m_adaptiveLevels.data());
     if (range && range != parsedMetadata.m_chunkSize)
     {
       return { int64_t(0) , int64_t(range - 1 ) };
@@ -665,11 +666,11 @@ CompressionInfo VolumeDataStoreIOManager::GetEffectiveAdaptiveLevel(VolumeDataLa
 
     if(waveletAdaptiveMode == WaveletAdaptiveMode::Tolerance)
     {
-      adaptiveLevel = Wavelet_GetEffectiveWaveletAdaptiveLoadLevel(tolerance, metadataStatus.m_compressionTolerance);
+      adaptiveLevel = Wavelet::Wavelet_GetEffectiveWaveletAdaptiveLoadLevel(tolerance, metadataStatus.m_compressionTolerance);
     }
     else if(waveletAdaptiveMode == WaveletAdaptiveMode::Ratio)
     {
-      adaptiveLevel = Wavelet_GetEffectiveWaveletAdaptiveLoadLevel(ratio, metadataStatus.m_adaptiveLevelSizes, metadataStatus.m_uncompressedSize);
+      adaptiveLevel = Wavelet::Wavelet_GetEffectiveWaveletAdaptiveLoadLevel(ratio, metadataStatus.m_adaptiveLevelSizes, metadataStatus.m_uncompressedSize);
     }
     else
     {

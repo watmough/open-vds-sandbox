@@ -37,8 +37,7 @@
 #define WAVELET_OPENMP_SSE_THREAD_COUNT 4
 #define WAVELET_OPENMP_MEMORY_THREAD_COUNT 2
 
-namespace OpenVDS
-{
+namespace Wavelet {
 
 inline int Wavelet_GetEffectiveOpenMPThreadCount(int wantedThreadCount)
 {

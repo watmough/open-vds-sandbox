@@ -18,17 +18,17 @@
 #ifndef WAVELETINVERSETRANSFORM_H
 #define WAVELETINVERSETRANSFORM_H
 
-#include <OpenVDS/Vector.h>
 #include "WaveletTypes.h"
 
-namespace OpenVDS
-{
+namespace Wavelet {
+
 void Wavelet_CreateTransformData(Wavelet_TransformData* transformData, IntVector3* bandSize, int* transformMask, int transformIterations);
 #ifdef ENABLE_SSE_TRANSFORM
 void WaveletTransform_InverseTransform(float* tempBuffer, int32_t tempBufferSize, float* source, int32_t transformIterations, const IntVector3(&bandSize)[TRANSFORM_MAX_ITERATIONS + 1], const int32_t(&transformMask)[TRANSFORM_MAX_ITERATIONS], int32_t allocatedSizeX, int32_t allocatedSizeXY, uint32_t integerInfo);
 #else
 void WaveletTransform_InverseTransform(float* source, int32_t transformIterations, const IntVector3(&bandSize)[TRANSFORM_MAX_ITERATIONS + 1], const int32_t(&transformMask)[TRANSFORM_MAX_ITERATIONS], int32_t allocatedSizeX, int32_t allocatedSizeXY, uint32_t integerInfo);
 #endif
+
 }
 
 #endif

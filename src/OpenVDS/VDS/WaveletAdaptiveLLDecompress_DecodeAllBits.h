@@ -22,8 +22,7 @@
 #include "WaveletOpenMP.h"
 #include <assert.h>
 
-namespace OpenVDS
-{
+namespace Wavelet {
 
 template<bool isMultiple, bool isAllNormal, int multiple, bool isPreventOverwrite>
 void WaveletAdaptiveLLDecompress_DecodeAllBits(const WaveletAdaptiveLL_DecodeIterator& decodeIterator, float threshold, const int* valueEncoding, const int* valuesAtLevel, const int values, const int startDecodeBits, const int maxDecodeLevel, int threads)
@@ -135,6 +134,7 @@ void WaveletAdaptiveLLDecompress_DecodeAllBits(const WaveletAdaptiveLL_DecodeIte
     }
   }
 }
+
 }
 
 #endif

@@ -21,8 +21,7 @@
 #include "WaveletTypes.h"
 #include <inttypes.h>
 
-namespace OpenVDS
-{
+namespace Wavelet {
 
 enum class DecompressAdaptiveMode
 {
@@ -102,6 +101,7 @@ int32_t WaveletAdaptiveLLDecompress_DecompressAdaptive(const WaveletAdaptiveLL_D
 int32_t WaveletAdaptiveLLDecompress_DecompressLossless(uint8_t *in, float *pic, int32_t sizeX, int32_t sizeY, int32_t sizeZ, int32_t allocatedSizeX, int32_t allocatedSizeXY);
 void WaveletAdaptiveLLDecompress_DecompressZerosAlongX(const unsigned char* in, void* pic, int elementSize, float replaceValue, int transformSizeX, int transformSizeY, int transformSizeZ, int allocatedSizeX, int allocatedSizeY, int allocatedSizeZ, unsigned char* tempBuffer);
 int32_t WaveletAdaptiveLLDecompress_CalculateBufferSizeNeeded(int maxPixels, int maxChildren);
+
 }
 
 #endif

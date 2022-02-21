@@ -37,8 +37,8 @@
   #undef __unaligned
 #endif
 
-namespace OpenVDS
-{
+namespace Wavelet {
+
 inline void Wavelet_UpdateCoarseSSEInt(float* write, float* readLow, const __m128& mm0, const __m128& mm1, const __m128& mm2, const __m128& mm3, const __m128& mmNine, const __m128& mmSign, const __m128& mmVal)
 {
   __m128 mmIntRounded = _mm_mul_ps(_mm_loadu_ps(readLow), mmVal);
@@ -795,7 +795,9 @@ Wavelet_InterleaveLine(float* write, float* readLow, float* readHigh, int32_t nL
     write[i] = readLow[i >> 1];
   }
 }
+
 }
+
 #endif //IFDEF ENABLE_SSE_TRANSFORM
 
 #endif //WAVELETINVERSETRANSFORMSSE_H

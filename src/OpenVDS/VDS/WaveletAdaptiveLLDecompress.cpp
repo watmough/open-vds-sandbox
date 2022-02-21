@@ -27,8 +27,7 @@
 
 #define DECODEITERATOR_MAXDECODEBITS       256
 
-namespace OpenVDS
-{
+namespace Wavelet {
 
 static uint8_t* AssignPtrAndIncrementOffset(int nSize, uint8_t*& workBuffer)
 {
@@ -358,11 +357,11 @@ static inline void ReadStartValuesKernel(const int value, float* picture, const 
   if (value >= pixelSetPixelInsignificantCount)
   {
     int read = value - pixelSetPixelInsignificantCount;
-    pos = pixelSetChildren[read].x + pixelSetChildren[read].y * sizeX + pixelSetChildren[read].z * sizeXY;
+    pos = pixelSetChildren[read].X + pixelSetChildren[read].Y * sizeX + pixelSetChildren[read].Z * sizeXY;
   }
   else
   {
-    pos = pixelSetPixelInSignificant[value].x + pixelSetPixelInSignificant[value].y * sizeX + pixelSetPixelInSignificant[value].z * sizeXY;
+    pos = pixelSetPixelInSignificant[value].X + pixelSetPixelInSignificant[value].Y * sizeX + pixelSetPixelInSignificant[value].Z * sizeXY;
   }
 
   picture[pos] = rw[value];
@@ -790,4 +789,5 @@ int32_t  WaveletAdaptiveLLDecompress_CalculateBufferSizeNeeded(int maxPixels, in
 
   return nSize;
 }
+
 }

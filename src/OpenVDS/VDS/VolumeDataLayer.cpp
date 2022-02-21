@@ -309,7 +309,7 @@ int32_t VolumeDataLayer::GetEffectiveWaveletAdaptiveLoadLevel() const
 
     assert(effectiveCompressionTolerance >= m_volumeDataLayout->GetCompressionTolerance());
 
-    int lodAdaptiveDifference = Wavelet_GetEffectiveWaveletAdaptiveLoadLevel(effectiveCompressionTolerance, m_volumeDataLayout->GetCompressionTolerance());
+    int lodAdaptiveDifference = Wavelet::Wavelet_GetEffectiveWaveletAdaptiveLoadLevel(effectiveCompressionTolerance, m_volumeDataLayout->GetCompressionTolerance());
 
     int adaptiveLODLevel = (m_volumeDataLayout->GetWaveletAdaptiveLoadLevel() - lodAdaptiveDifference);
 

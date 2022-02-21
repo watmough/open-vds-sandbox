@@ -24,12 +24,12 @@
 #include "FSE/fse.h"
 #include <assert.h>
 
-namespace OpenVDS
-{
+namespace Wavelet {
+
 template<typename T>
-void WaveletDecompress_ConvertFloatToIntegerType(const DataBlock &sourceDataBlock, const std::vector<uint8_t> &sourceData, const DataBlock &targetDataBlock, std::vector<uint8_t> &targetData)
+void WaveletDecompress_ConvertFloatToIntegerType(const WaveletDataBlock &sourceDataBlock, const std::vector<uint8_t> &sourceData, const WaveletDataBlock &targetDataBlock, std::vector<uint8_t> &targetData)
 {
-  assert(sourceDataBlock.Format == VolumeDataFormat::Format_R32);
+  assert(sourceDataBlock.Format == WaveletDataFormat::Format_R32);
 
   int32_t sourceSizeX = sourceDataBlock.Size[0];
   int32_t sourceSizeY = sourceDataBlock.Size[1];
@@ -56,7 +56,7 @@ void WaveletDecompress_ConvertFloatToIntegerType(const DataBlock &sourceDataBloc
   }
 }
 
-bool Wavelet_Decompress(void *compressedData, int nCompressedAdaptiveDataSize, VolumeDataFormat dataBlockFormat, const FloatRange &valueRange, float integerScale, float integerOffset, bool isUseNoValue, float noValue, bool isNormalize, int nDecompressLevel, bool isLossless, DataBlock &dataBlock, std::vector<uint8_t> &target, Error &error)
+bool Wavelet_Decompress(void *compressedData, int nCompressedAdaptiveDataSize, WaveletDataFormat dataBlockFormat, const FloatRange &valueRange, float integerScale, float integerOffset, bool isUseNoValue, float noValue, bool isNormalize, int nDecompressLevel, bool isLossless, WaveletDataBlock &dataBlock, std::vector<uint8_t> &target, int& errorCode, std::string& errorString)
 {
   if (isLossless)
   {
@@ -67,7 +67,7 @@ bool Wavelet_Decompress(void *compressedData, int nCompressedAdaptiveDataSize, V
   
   int32_t  dataVersion = intHeaderPtr[0];
 
-  int32_t createSize[DataBlock::Dimensionality_Max];
+  int32_t createSize[WaveletDataBlock::Dimensionality_Max];
   createSize[0] = intHeaderPtr[2];
   createSize[1] = intHeaderPtr[3];
   createSize[2] = intHeaderPtr[4];
@@ -86,13 +86,14 @@ bool Wavelet_Decompress(void *compressedData, int nCompressedAdaptiveDataSize, V
     createSize[2] < 0 ||
     createSize[2] > 512)
   {
-    error.code = 100;
-    error.string = "Invalid wavelet header";
+    errorCode = 100;
+    errorString = "Invalid wavelet header";
     return false;
   }
 
-  if (!InitializeDataBlock(VolumeDataFormat::Format_R32, VolumeDataComponents::Components_1, (enum DataBlock::Dimensionality)(dimensions), createSize, dataBlock, error))
+  if (!dataBlock.Initialize(WaveletDataFormat::Format_R32, (enum WaveletDataBlock::Dimensionality)(dimensions), createSize, errorCode, errorString))
     return false;
+
   target.resize(GetAllocatedByteSize(dataBlock));
   
   WaveletDecompressor wavelet(integerInfo, compressedData,
@@ -122,18 +123,18 @@ bool Wavelet_Decompress(void *compressedData, int nCompressedAdaptiveDataSize, V
 
   bool isAnyNoValue;
 
-  if (!wavelet.Decompress(true, -1, -1, -1, &startThreshold, &threshold, dataBlock.Format, valueRange, integerScale, integerOffset, isUseNoValue, noValue, &isAnyNoValue, &waveletNoValue, isNormalize, nDecompressLevel, isLossless, nCompressedAdaptiveDataSize, dataBlock, target, error))
+  if (!wavelet.Decompress(true, -1, -1, -1, &startThreshold, &threshold, dataBlock.Format, valueRange, integerScale, integerOffset, isUseNoValue, noValue, &isAnyNoValue, &waveletNoValue, isNormalize, nDecompressLevel, isLossless, nCompressedAdaptiveDataSize, dataBlock, target, errorCode, errorString))
     return false;
 
   if (dataBlock.Format != dataBlockFormat)
   {
-    DataBlock finalDataBlock;
-    if (!InitializeDataBlock(dataBlockFormat, VolumeDataComponents::Components_1, (enum DataBlock::Dimensionality)(dimensions), createSize, finalDataBlock, error))
+    WaveletDataBlock finalDataBlock;
+    if (!finalDataBlock.Initialize(dataBlockFormat, (enum WaveletDataBlock::Dimensionality)(dimensions), createSize, errorCode, errorString))
       return false;
     std::vector<uint8_t> finalDataTarget;
     finalDataTarget.resize(GetAllocatedByteSize(finalDataBlock));
 
-    if (finalDataBlock.Format == VolumeDataFormat::Format_U8)
+    if (finalDataBlock.Format == WaveletDataFormat::Format_U8)
     {
       WaveletDecompress_ConvertFloatToIntegerType<uint8_t>(dataBlock, target, finalDataBlock, finalDataTarget);
     }
@@ -272,18 +273,18 @@ WaveletDecompressor::WaveletDecompressor(uint32_t integerInfo, void *compressedD
 
 static inline void WaveletDecompress_CreatePixelSetChildren(Wavelet_PixelSetChildren *pixelSet, uint32_t iX, uint32_t iY, uint32_t iZ,  uint32_t uTransformIteration, int32_t iSubBand)
 {
-  pixelSet->x = iX;
-  pixelSet->y = iY;
-  pixelSet->z = iZ;
+  pixelSet->X = iX;
+  pixelSet->Y = iY;
+  pixelSet->Z = iZ;
   pixelSet->transformIteration = uTransformIteration;
   pixelSet->subBand = iSubBand;
 }
 
 static inline void WaveletDecompress_CreatePixelSetPixel(Wavelet_PixelSetPixel *pixelSet, uint32_t iX, uint32_t iY, uint32_t iZ)
 {
-  pixelSet->x = iX;
-  pixelSet->y = iY;
-  pixelSet->z = iZ;
+  pixelSet->X = iX;
+  pixelSet->Y = iY;
+  pixelSet->Z = iZ;
 }
 
 void WaveletDecompressor::Init()
@@ -563,7 +564,7 @@ static void WaveletDecompress_DecompressZerosAlongX(const uint8_t *in, void *pic
   }
 }
 
-bool WaveletDecompressor::Decompress(bool isTransform, int32_t decompressInfo, float decompressSlice, int32_t decompressFlip, float* startThreshold, float* threshold, VolumeDataFormat dataBlockFormat, const FloatRange& valueRange, float integerScale, float integerOffset, bool isUseNoValue, float noValue, bool* isAnyNoValue, float* waveletNoValue, bool isNormalize, int decompressLevel, bool isLossless, int compressedAdaptiveDataSize, DataBlock& dataBlock, std::vector<uint8_t>& target, Error& error)
+bool WaveletDecompressor::Decompress(bool isTransform, int32_t decompressInfo, float decompressSlice, int32_t decompressFlip, float* startThreshold, float* threshold, WaveletDataFormat dataBlockFormat, const FloatRange& valueRange, float integerScale, float integerOffset, bool isUseNoValue, float noValue, bool* isAnyNoValue, float* waveletNoValue, bool isNormalize, int decompressLevel, bool isLossless, int compressedAdaptiveDataSize, WaveletDataBlock& dataBlock, std::vector<uint8_t>& target, int& errorCode, std::string& errorString)
 {
   assert(m_dataVersion >= WAVELET_DATA_VERSION_1_4 && m_dataVersion <= WAVELET_DATA_VERSION_1_6);
   Init();
@@ -575,8 +576,8 @@ bool WaveletDecompressor::Decompress(bool isTransform, int32_t decompressInfo, f
   // no data?
   if (compressedSize < WAVELET_MIN_COMPRESSED_HEADER)
   {
-    error.string = "Invalid size of compressed wavlet data";
-    error.code = -1;
+    errorString = "Invalid size of compressed wavlet data";
+    errorCode = -1;
     *isAnyNoValue = false;
     *waveletNoValue = 0.0f;
     return false;
@@ -711,7 +712,7 @@ bool WaveletDecompressor::Decompress(bool isTransform, int32_t decompressInfo, f
   // Do lossless diff
   if (isLossless)
   {
-    assert(dataBlockFormat == VolumeDataFormat::Format_R32);
+    assert(dataBlockFormat == WaveletDataFormat::Format_R32);
 
     m_readCompressedData += (nAdaptiveSize + 3) / 4;
 
@@ -851,4 +852,5 @@ bool Wavelet_IsCompressedDataAllNoValue(const void *pxCompressedData, int nCompr
 
   return false;
 }
+
 }

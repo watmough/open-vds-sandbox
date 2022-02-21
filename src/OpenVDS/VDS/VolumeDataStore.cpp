@@ -80,6 +80,17 @@ static void CopyLinearBufferIntoDataBlock(const void *sourceBuffer, const DataBl
   }
 }
 
+inline static DataBlock ToDataBlock(const Wavelet::WaveletDataBlock &waveletDataBlock)
+{
+  DataBlock dataBlock;
+  dataBlock.Format = (VolumeDataFormat)waveletDataBlock.Format;
+  dataBlock.Dimensionality = (enum DataBlock::Dimensionality)waveletDataBlock.Dimensionality;
+  memcpy(dataBlock.Size, waveletDataBlock.Size, sizeof(waveletDataBlock.Size));
+  memcpy(dataBlock.AllocatedSize, waveletDataBlock.AllocatedSize, sizeof(waveletDataBlock.Size));
+  memcpy(dataBlock.Pitch, waveletDataBlock.Pitch, sizeof(waveletDataBlock.Size));
+  return dataBlock;
+}
+
 bool DeserializeVolumeData(const std::vector<uint8_t> &serializedData, VolumeDataChannelDescriptor::Format format, CompressionMethod compressionMethod, const FloatRange &valueRange, float integerScale, float integerOffset, bool isUseNoValue, float noValue, int32_t adaptiveLevel, DataBlock &dataBlock, std::vector<uint8_t> &destination, Error &error)
 {
   if(CompressionMethod_IsWavelet(compressionMethod))
@@ -117,8 +128,15 @@ bool DeserializeVolumeData(const std::vector<uint8_t> &serializedData, VolumeDat
       adaptiveLevel = 0;
     }
 
-    if (!Wavelet_Decompress(const_cast<void *>(data), int32_t(serializedData.size()), format, valueRange, integerScale, integerOffset, isUseNoValue, noValue, isNormalize, adaptiveLevel, isLossless, dataBlock, destination, error))
+    Wavelet::WaveletDataFormat waveletDataFormat = (Wavelet::WaveletDataFormat)format;
+    Wavelet::FloatRange waveletValueRange(valueRange.Min, valueRange.Max);
+    Wavelet::WaveletDataBlock waveletDataBlock;
+    
+    if (!Wavelet_Decompress(const_cast<void*>(data), int32_t(serializedData.size()), waveletDataFormat, waveletValueRange, integerScale, integerOffset, isUseNoValue, noValue, isNormalize, adaptiveLevel, isLossless, waveletDataBlock, destination, error.code, error.string))
       return false;
+
+    // Copy updated WaveletDataBlock to in/out DataBlock parameter
+    dataBlock = ToDataBlock(waveletDataBlock);
   }
   else if(compressionMethod == CompressionMethod::RLE)
   {

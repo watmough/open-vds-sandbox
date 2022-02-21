@@ -23,8 +23,7 @@
 
 #define WAVELET_MAX_DIMENSION_SIZE 4096
 
-namespace OpenVDS
-{
+namespace Wavelet {
 
 void Wavelet_CreateTransformData(Wavelet_TransformData *transformData, IntVector3 *bandSize, int *transformMask, int transformIterations)
 {
@@ -628,5 +627,5 @@ void WaveletTransform_InverseTransform(float* source, int32_t transformIteration
 }
 
 #endif
-}
 
+}

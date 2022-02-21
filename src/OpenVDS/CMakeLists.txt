@@ -4,6 +4,7 @@ set(WAVELET_SOURCES
       VDS/WaveletAdaptiveLLDecompress.cpp
       VDS/WaveletDecompress.cpp
       VDS/WaveletInverseTransform.cpp
+      VDS/WaveletTypes.cpp
       VDS/FSE/entropy_common.cpp
       VDS/FSE/fse_decompress.cpp
       VDS/Rle.cpp

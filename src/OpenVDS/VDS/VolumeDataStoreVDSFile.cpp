@@ -53,11 +53,11 @@ CompressionInfo VolumeDataStoreVDSFile::GetEffectiveAdaptiveLevel(VolumeDataLaye
 
     if(waveletAdaptiveMode == WaveletAdaptiveMode::Tolerance && layerFile->layerChunksWaveletAdaptive)
     {
-      adaptiveLevel = Wavelet_GetEffectiveWaveletAdaptiveLoadLevel(tolerance, layerFile->layerMetadata.m_compressionTolerance);
+      adaptiveLevel = Wavelet::Wavelet_GetEffectiveWaveletAdaptiveLoadLevel(tolerance, layerFile->layerMetadata.m_compressionTolerance);
     }
     else if(waveletAdaptiveMode == WaveletAdaptiveMode::Ratio && layerFile->layerChunksWaveletAdaptive)
     {
-      adaptiveLevel = Wavelet_GetEffectiveWaveletAdaptiveLoadLevel(ratio, layerFile->layerMetadata.m_adaptiveLevelSizes, layerFile->layerMetadata.m_uncompressedSize);
+      adaptiveLevel = Wavelet::Wavelet_GetEffectiveWaveletAdaptiveLoadLevel(ratio, layerFile->layerMetadata.m_adaptiveLevelSizes, layerFile->layerMetadata.m_uncompressedSize);
     }
     else
     {
@@ -113,7 +113,7 @@ bool VolumeDataStoreVDSFile::ReadChunkImpl(const VolumeDataChunk& chunk, int ada
       {
         assert(metadata.size() == sizeof(VDSWaveletAdaptiveLevelsChunkMetadata));
         auto waveletAdaptiveLevelsChunkMetadata = reinterpret_cast<VDSWaveletAdaptiveLevelsChunkMetadata *>(metadata.data());
-        indexEntry.m_length = Wavelet_DecodeAdaptiveLevelsMetadata(indexEntry.m_length, adaptiveLevel, waveletAdaptiveLevelsChunkMetadata->m_levels);
+        indexEntry.m_length = Wavelet::Wavelet_DecodeAdaptiveLevelsMetadata(indexEntry.m_length, adaptiveLevel, waveletAdaptiveLevelsChunkMetadata->m_levels);
       }
 
       HueBulkDataStore::Buffer *buffer = m_dataStore->ReadChunkData(indexEntry);
@@ -236,7 +236,7 @@ bool VolumeDataStoreVDSFile::WriteChunkImpl(const VolumeDataChunk& chunk, std::s
       if(layerFile->layerChunksWaveletAdaptive)
       {
         layerFile->layerMetadata.m_uncompressedSize += uncompressedSize;
-        Wavelet_AccumulateAdaptiveLevelSizes(indexEntry.m_length, layerFile->layerMetadata.m_adaptiveLevelSizes, false, newMetadata.m_levels);
+        Wavelet::Wavelet_AccumulateAdaptiveLevelSizes(indexEntry.m_length, layerFile->layerMetadata.m_adaptiveLevelSizes, false, newMetadata.m_levels);
       }
     }
 
@@ -245,7 +245,7 @@ bool VolumeDataStoreVDSFile::WriteChunkImpl(const VolumeDataChunk& chunk, std::s
       if(layerFile->layerChunksWaveletAdaptive)
       {
         layerFile->layerMetadata.m_uncompressedSize -= uncompressedSize;
-        Wavelet_AccumulateAdaptiveLevelSizes(oldSize, layerFile->layerMetadata.m_adaptiveLevelSizes, true, oldMetadata.m_levels);
+        Wavelet::Wavelet_AccumulateAdaptiveLevelSizes(oldSize, layerFile->layerMetadata.m_adaptiveLevelSizes, true, oldMetadata.m_levels);
       }
     }
   }
