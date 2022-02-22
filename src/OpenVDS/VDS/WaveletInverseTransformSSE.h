@@ -23,6 +23,7 @@
 #ifdef ENABLE_SSE_TRANSFORM
 
 #include <stdint.h>
+#include <string.h>
 
 #ifdef __EMSCRIPTEN__
   // Make the Emscripten SSE header file compile.
