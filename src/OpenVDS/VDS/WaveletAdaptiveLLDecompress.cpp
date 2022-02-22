@@ -661,11 +661,9 @@ static void WaveletAdaptiveLL_ReplaceZeroFromZeroCount(T * pxPic, int nTransform
 #pragma omp parallel for if(nTransformSizeZ == 1) num_threads(threadCount) schedule(static)
     for (int iY=0; iY<nTransformSizeY;iY++)
     {
-      T
-        *ptRead = pxPic + iY * nAllocatedSizeX + iZ * nAllocatedSizeX * nAllocatedSizeY;
+      T *ptRead = pxPic + iY * nAllocatedSizeX + iZ * nAllocatedSizeX * nAllocatedSizeY;
 
-      unsigned short
-        uCount = puCountLow[iY + iZ * nTransformSizeY];
+      uint16_t uCount = puCountLow[iY + iZ * nTransformSizeY];
       
       if (isHigh)
       {
