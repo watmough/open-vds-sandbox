@@ -1084,7 +1084,7 @@ public:
   void RetryableClose(Error &error) { if(m_VDS) { OpenVDS::RetryableClose(m_VDS, error); if(error.code == 0) m_VDS = VDSHandle(); } else { error = Error(); } }
 
   operator VDSHandle() const { return m_VDS; }
-  operator bool() const { return m_VDS; }
+  operator bool() const { return m_VDS != nullptr; }
   ScopedVDSHandle & operator=(VDSHandle const &VDS)  noexcept(true) { try { Close(); } catch(...) {} m_VDS = VDS; return *this; }
   ScopedVDSHandle & operator=(ScopedVDSHandle &&VDS) noexcept(true) { try { Close(); } catch(...) {} m_VDS = VDS; VDS.m_VDS = VDSHandle(); return *this; }
 };
