@@ -449,123 +449,6 @@ float Wavelet_GetNormalizedValue(float *normalizeField, int iX, int iY, int iZ, 
   return rVal;
 }
 
-template <class T, bool isHigh>
-static void WaveletDecompress_ReplaceZeroFromZeroCount(T *pic, int transformSizeY, int transformSizeZ, int allocatedSizeX, int allocatedSizeY, const uint8_t *countLow, const uint8_t *countHigh, T replaceValue)
-{
-  const int threadCount = Wavelet_GetEffectiveOpenMPThreadCount(WAVELET_OPENMP_SSE_THREAD_COUNT);
-
-#pragma omp parallel for if(transformSizeZ > 1) num_threads(threadCount) schedule(static)
-  for (int iZ=0; iZ<transformSizeZ;iZ++)
-  {
-#pragma omp parallel for if(transformSizeZ == 1) num_threads(threadCount) schedule(static)
-    for (int iY=0; iY<transformSizeY;iY++)
-    {
-      T *read = pic + iY * allocatedSizeX + iZ * allocatedSizeX * allocatedSizeY;
-
-      uint16_t count = countLow[iY + iZ * transformSizeY];
-      
-      if (isHigh)
-      {
-        count |= (countHigh[iY + iZ * transformSizeY] << 8);
-      }
-
-      for (int i=0;i<count;i++)
-      {
-        read[i] = replaceValue;
-      }
-    }
-  }
-}
-// This function decompresses how many zeros along X from X0 - using FSE to compress counts (
-static void WaveletDecompress_DecompressZerosAlongX(const uint8_t *in, void *pic, int elementSize, float replaceValue, int transformSizeX, int transformSizeY, int transformSizeZ, int allocatedSizeX, int allocatedSizeY, int allocatedSizeZ, unsigned char *temp)
-{
-  int totalSize = *((int *)in);
-  
-  in +=4;
-
-  assert(totalSize >= 4);
-
-  // No zero runs in data, return immediately and do nothing!!
-  if (totalSize == 4)
-  {
-    return;
-  }
-  
-  bool isHigh = transformSizeX >= 256;
-
-  int transformSizeYZ = transformSizeY * transformSizeZ;
-
-  uint8_t *countLow = temp; 
-  uint8_t *countHigh = temp + transformSizeYZ;
-
-  int *readSize = (int *)in;
-
-  in +=4;
- 
-  int size = *readSize++;
-  
-  if (size == 0)
-  {
-    int value = *readSize++;
-    memset(countLow, value, transformSizeYZ);
-    in += 4;
-  }
-  else if (size < 0)
-  {
-    memcpy(countLow, in, transformSizeYZ);
-    in += transformSizeYZ;
-    assert(-size == transformSizeYZ);
-  }
-  else
-  {
-    FSE_decompress(countLow, transformSizeYZ, in, size);
-    in+=size;
-  }
-
-  if (isHigh)
-  {
-    readSize = (int *)in;
-    in +=4;
-
-    size = *readSize++;
-  
-    if (size == 0)
-    {
-      int value = *readSize++;
-      memset(countHigh, value, transformSizeYZ);
-      in += 4;
-    }
-    else if (size < 0)
-    {
-      memcpy(countHigh, in, transformSizeYZ);
-      in += transformSizeYZ;
-      assert(-size == transformSizeYZ);
-    }
-    else
-    {
-      FSE_decompress(countHigh, transformSizeYZ, in, size);
-      in+=size;
-    }
-  }
-
-  if (elementSize == 1)
-  {
-    if (isHigh) WaveletDecompress_ReplaceZeroFromZeroCount<uint8_t, true>((uint8_t*)pic, transformSizeY, transformSizeZ, allocatedSizeX, allocatedSizeY, countLow, countHigh, (unsigned char)replaceValue);
-    else        WaveletDecompress_ReplaceZeroFromZeroCount<uint8_t, false>((unsigned char*)pic, transformSizeY, transformSizeZ, allocatedSizeX, allocatedSizeY, countLow, countHigh, (unsigned char)replaceValue);
-  }
-  else if (elementSize == 2)
-  {
-    if (isHigh) WaveletDecompress_ReplaceZeroFromZeroCount<uint16_t, true>((unsigned short*)pic, transformSizeY, transformSizeZ, allocatedSizeX, allocatedSizeY, countLow, countHigh, (unsigned short)replaceValue);
-    else        WaveletDecompress_ReplaceZeroFromZeroCount<uint16_t, false>((unsigned short*)pic, transformSizeY, transformSizeZ, allocatedSizeX, allocatedSizeY, countLow, countHigh, (unsigned short)replaceValue);
-  }
-  else
-  {
-    assert(elementSize == 4);
-    if (isHigh) WaveletDecompress_ReplaceZeroFromZeroCount<float, true>((float*)pic, transformSizeY, transformSizeZ, allocatedSizeX, allocatedSizeY, countLow, countHigh, replaceValue);
-    else        WaveletDecompress_ReplaceZeroFromZeroCount<float, false>((float*)pic, transformSizeY, transformSizeZ, allocatedSizeX, allocatedSizeY, countLow, countHigh, replaceValue);
-  }
-}
-
 bool WaveletDecompressor::Decompress(bool isTransform, int32_t decompressInfo, float decompressSlice, int32_t decompressFlip, float* startThreshold, float* threshold, WaveletDataFormat dataBlockFormat, const FloatRange& valueRange, float integerScale, float integerOffset, bool isUseNoValue, float noValue, bool* isAnyNoValue, float* waveletNoValue, bool isNormalize, int decompressLevel, bool isLossless, int compressedAdaptiveDataSize, WaveletDataBlock& dataBlock, std::vector<uint8_t>& target, int& errorCode, std::string& errorString)
 {
   assert(m_dataVersion >= WAVELET_DATA_VERSION_1_4 && m_dataVersion <= WAVELET_DATA_VERSION_1_6);
@@ -708,7 +591,7 @@ bool WaveletDecompressor::Decompress(bool isTransform, int32_t decompressInfo, f
     std::vector<uint8_t> buffer;
     buffer.resize(m_transformSizeY * m_transformSizeZ * int32_t(sizeof(unsigned short)));
 
-    WaveletDecompress_DecompressZerosAlongX(pnDecompressZeroSize, (void*)floatReadWriteData, 4, 0.0f, m_transformSizeX, m_transformSizeY, m_transformSizeZ, m_allocatedSizeX, m_allocatedSizeY, m_allocatedSizeZ, buffer.data());
+    WaveletAdaptiveLLDecompress_DecompressZerosAlongX(pnDecompressZeroSize, (void*)floatReadWriteData, 4, 0.0f, m_transformSizeX, m_transformSizeY, m_transformSizeZ, m_allocatedSizeX, m_allocatedSizeY, m_allocatedSizeZ, buffer.data());
   }
 
   // Do lossless diff
