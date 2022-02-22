@@ -452,10 +452,12 @@ float Wavelet_GetNormalizedValue(float *normalizeField, int iX, int iY, int iZ, 
 template <class T, bool isHigh>
 static void WaveletDecompress_ReplaceZeroFromZeroCount(T *pic, int transformSizeY, int transformSizeZ, int allocatedSizeX, int allocatedSizeY, const uint8_t *countLow, const uint8_t *countHigh, T replaceValue)
 {
-#pragma omp parallel for if(transformSizeZ > 1) num_threads(4) schedule(static)
+  const int threadCount = Wavelet_GetEffectiveOpenMPThreadCount(WAVELET_OPENMP_SSE_THREAD_COUNT);
+
+#pragma omp parallel for if(transformSizeZ > 1) num_threads(threadCount) schedule(static)
   for (int iZ=0; iZ<transformSizeZ;iZ++)
   {
-#pragma omp parallel for if(transformSizeZ == 1) num_threads(4) schedule(static)
+#pragma omp parallel for if(transformSizeZ == 1) num_threads(threadCount) schedule(static)
     for (int iY=0; iY<transformSizeY;iY++)
     {
       T *read = pic + iY * allocatedSizeX + iZ * allocatedSizeX * allocatedSizeY;
