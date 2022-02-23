@@ -141,9 +141,9 @@ JNIEXPORT jobjectArray JNICALL Java_org_opengroup_openvds_VolumeDataAccessManage
     auto arr = Marshaling::CreateJavaArray(3);
     if (arr)
     {
-      env->SetObjectArrayElement(arr, 0, env->NewStringUTF(objectID ? objectID : ""));
+      env->SetObjectArrayElement(arr, 0, env->NewStringUTF(objectID));
       env->SetObjectArrayElement(arr, 1, Marshaling::CreatePODJavaObject<int>(code));
-      env->SetObjectArrayElement(arr, 2, env->NewStringUTF(errorString ? errorString : ""));
+      env->SetObjectArrayElement(arr, 2, env->NewStringUTF(errorString));
 
     }
     return arr;
@@ -168,7 +168,7 @@ JNIEXPORT jobjectArray JNICALL Java_org_opengroup_openvds_VolumeDataAccessManage
     if (arr)
     {
       env->SetObjectArrayElement(arr, 0, Marshaling::CreatePODJavaObject<int>(code));
-      env->SetObjectArrayElement(arr, 1, env->NewStringUTF(errorString ? errorString : ""));
+      env->SetObjectArrayElement(arr, 1, env->NewStringUTF(errorString));
 
     }
     return arr;
