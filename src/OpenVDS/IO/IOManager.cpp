@@ -55,10 +55,10 @@ IOManager* IOManager::CreateIOManager(const OpenOptions& options, IOManager::Acc
   case OpenOptions::AWS:
 #ifndef OPENVDS_NO_AWS_IOMANAGER
   {
-    bool useAwsCurl = getBooleanEnvironmentVariable("OPENVDS_AWSCURL");
-    if (useAwsCurl)
-      return new IOManagerAWSCurl(static_cast<const AWSOpenOptions&>(options), error);
-    return new IOManagerAWS(static_cast<const AWSOpenOptions&>(options), error);
+    bool useAwsSdk = getBooleanEnvironmentVariable("OPENVDS_AWSSDK");
+    if (useAwsSdk)
+      return new IOManagerAWS(static_cast<const AWSOpenOptions&>(options), error);
+    return new IOManagerAWSCurl(static_cast<const AWSOpenOptions&>(options), error);
   }
 #endif
   break;
