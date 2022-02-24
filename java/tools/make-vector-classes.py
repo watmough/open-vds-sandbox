@@ -62,6 +62,21 @@ def createToArray(class_name: str, typename: str, count: int, composite_count: i
 """    
     return transformTemplate(contents, class_name, typename, count, composite_count)
 
+def createArrayCtor(class_name: str, typename: str, count: int, composite_count: int) -> str:
+    contents = """
+    public CLASSNAME(PRIMITIVETYPE[] array) {
+        if (array == null) {
+            throw new NullPointerException("array may not be null.");
+        }
+        if (array.length != VECTORCOUNT) {
+            throw new IllegalArgumentException("array must be of length VECTORCOUNT. ");
+        }
+        this.createByteBuffer(JAVATYPE.BYTES * VECTORCOUNT * COMPOSITECOUNT);
+        this.getByteBufferProxy().put(array);
+    }
+"""
+    return transformTemplate(contents, class_name, typename, count, composite_count)
+
 def createFullCtor(class_name: str, typename: str, count: int, composite_count: int) -> str:
     args = ", ".join([ f"PRIMITIVETYPE {MEMBERS[c]}" for c in range(0, count) ])
     init = ", ".join([ f"{MEMBERS[c]}" for c in range(0, count) ])
@@ -227,6 +242,7 @@ VECTOR_HANDLERS = [
     createFullCtor,
     createByteBufferCtor,
     createCopyCtor,
+    createArrayCtor,
     createEquals,
     createPutter,
     createSetter,
