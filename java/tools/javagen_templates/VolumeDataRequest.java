@@ -18,23 +18,12 @@
         return readOnlyBuffer;
     }}
 	
-    private String getErrorMessage() {{
-        return "Error!"; // SteinFIXME!
-    }}
-	
-	private int getErrorCode() {{
-		return 0; // SteinFIXME!
-	}}
-        
     private void ensureRequestCompleted() {{
 		if (!waitForCompletion()) {{
-			if (isCanceled() && getErrorCode() == 0) {{
-				throw new UnsupportedOperationException("Volume data request was canceled");
-			}} else {{
-				throw new RuntimeException(getErrorMessage() + ", Errorcode: " + Integer.toString(getErrorCode())); // SteinFIXME!
-			}}
+		    throw new RuntimeException("ensureRequestCompleted() failed.");
 		}}
     }}
+    
     
     /**
      * Wait for the VolumeDataRequest to complete successfully, and then get the buffer the request has written to.
