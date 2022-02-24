@@ -1,113 +1,118 @@
+# You can override the included template(s) by including variable overrides
+# SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
+# Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings
+# Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
+# Note that environment variables can be set in several places
+# See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
 stages:
-  - prepare
-  - build
-  - test
-  - deploy
-
+- prepare
+- build
+- test
+- deploy
 variables:
-    SHA_IMAGE_TAG: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA
-    CMAKE_OPTIONS: "-GNinja"
-
+  SHA_IMAGE_TAG: "$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA"
+  CMAKE_OPTIONS: "-GNinja"
 cache:
   paths:
-    - ccache
-    - 3rdparty
-# --------------------------------------------------------------------------------
-
+  - ccache
+  - 3rdparty
 devel-container:
   stage: prepare
   image: docker:19.03
-  tags: ['docker-runner']
+  tags:
+  - docker-runner
   script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build -t $SHA_IMAGE_TAG -f docker/alpine-gitlab-ci.Dockerfile .
-    - docker push $SHA_IMAGE_TAG
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  - docker build -t $SHA_IMAGE_TAG -f docker/alpine-gitlab-ci.Dockerfile .
+  - docker push $SHA_IMAGE_TAG
   only:
-    - master
-
+  - master
 devel-container-merge-request:
   stage: prepare
   image: docker:19.03
-  tags: ['docker-runner']
+  tags:
+  - docker-runner
   script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build -t $SHA_IMAGE_TAG -f docker/alpine-gitlab-ci.Dockerfile .
-    - docker push $SHA_IMAGE_TAG
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  - docker build -t $SHA_IMAGE_TAG -f docker/alpine-gitlab-ci.Dockerfile .
+  - docker push $SHA_IMAGE_TAG
   only:
-    - merge_requests
-
-# --------------------------------------------------------------------------------
-
+  - merge_requests
 compile:
   stage: build
-  image: $SHA_IMAGE_TAG
-  tags: ['docker-runner']
+  image: "$SHA_IMAGE_TAG"
+  tags:
+  - docker-runner
   artifacts:
     expire_in: 1 hr
     paths:
-      - build
+    - build
   before_script:
-    - export CCACHE_BASEDIR="$PWD"
-    - export CCACHE_DIR="$PWD/ccache"
-    - export CCACHE_COMPILERCHECK=content
-    - ccache --zero-stats || true
-    - ccache --show-stats || true
+  - export CCACHE_BASEDIR="$PWD"
+  - export CCACHE_DIR="$PWD/ccache"
+  - export CCACHE_COMPILERCHECK=content
+  - ccache --zero-stats || true
+  - ccache --show-stats || true
   script:
-    - mkdir -p build
-    - cd build
-    - cmake -DBUILD_DOCS=ON $CMAKE_OPTIONS ..
-    - ninja
+  - mkdir -p build
+  - cd build
+  - cmake -DBUILD_DOCS=ON $CMAKE_OPTIONS ..
+  - ninja
   after_script:
-    - export CCACHE_DIR="$PWD/ccache"
-    - ccache --show-stats
+  - export CCACHE_DIR="$PWD/ccache"
+  - ccache --show-stats
   only:
-    - master
-
+  - master
 compile-merge-request:
   stage: build
-  image: $SHA_IMAGE_TAG
-  tags: ['docker-runner']
+  image: "$SHA_IMAGE_TAG"
+  tags:
+  - docker-runner
   artifacts:
     expire_in: 1 hr
     paths:
-      - build
+    - build
   before_script:
-    - export CCACHE_BASEDIR="$PWD"
-    - export CCACHE_DIR="$PWD/ccache"
-    - export CCACHE_COMPILERCHECK=content
-    - ccache --zero-stats || true
-    - ccache --show-stats || true
+  - export CCACHE_BASEDIR="$PWD"
+  - export CCACHE_DIR="$PWD/ccache"
+  - export CCACHE_COMPILERCHECK=content
+  - ccache --zero-stats || true
+  - ccache --show-stats || true
   script:
-    - mkdir -p build
-    - cd build
-    - cmake $CMAKE_OPTIONS ..
-    - ninja
+  - mkdir -p build
+  - cd build
+  - cmake $CMAKE_OPTIONS ..
+  - ninja
   after_script:
-    - export CCACHE_DIR="$PWD/ccache"
-    - ccache --show-stats
+  - export CCACHE_DIR="$PWD/ccache"
+  - ccache --show-stats
   only:
-    - merge_requests
-
-# --------------------------------------------------------------------------------
-
+  - merge_requests
 unit-tests:
   stage: test
-  image: $SHA_IMAGE_TAG
-  tags: ['docker-runner']
+  image: "$SHA_IMAGE_TAG"
+  tags:
+  - docker-runner
   script:
-    - cd build
-    - ctest -V
+  - cd build
+  - ctest -V
   only:
-    - merge_requests
-
+  - merge_requests
 pages:
   stage: deploy
-  image: $SHA_IMAGE_TAG
-  tags: ['docker-runner']
+  image: "$SHA_IMAGE_TAG"
+  tags:
+  - docker-runner
   script:
-    - mv build/docs/html public
+  - mv build/docs/html public
   artifacts:
     paths:
-      - public
+    - public
   only:
-    - master
+  - master
+sast:
+  variables:
+    SAST_EXCLUDED_PATHS: 'examples, tests, docker, java, 3rdparty, common, docs, python '
+  stage: test
+include:
+- template: Security/SAST.gitlab-ci.yml
