@@ -29,6 +29,11 @@ public class ByteBufferProxy {
 		this.byteoffset = byteoffset;
 	}
 
+	public ByteBufferProxy(int capacity) {
+		this.bytebuffer = allocateBuffer(capacity);
+		this.byteoffset = 0;
+	}
+
 	/**
 	 * Allocate a direct buffer with native byte order.
 	 * @param capacity The new buffer's capacity, in bytes.
@@ -93,4 +98,39 @@ public class ByteBufferProxy {
 	public void putDouble(int offset, double value) {
 		this.bytebuffer.putDouble(this.byteoffset + offset, value);
 	}
+
+	public void put(byte[] array) {
+		for (int i = 0; i < array.length; ++i) {
+			put(i, array[i]);
+		}
+	}
+	public void put(short[] array) {
+		for (int i = 0; i < array.length; ++i) {
+			putShort(i, array[i]);
+		}
+	}
+
+	public void put(int[] array) {
+		for (int i = 0; i < array.length; ++i) {
+			putInt(i, array[i]);
+		}
+	}
+
+	public void put(long[] array) {
+		for (int i = 0; i < array.length; ++i) {
+			putLong(i, array[i]);
+		}
+	}
+	public void put(float[] array) {
+		for (int i = 0; i < array.length; ++i) {
+			putFloat(i, array[i]);
+		}
+	}
+
+	public void put(double[] array) {
+		for (int i = 0; i < array.length; ++i) {
+			putDouble(i, array[i]);
+		}
+	}
+
 }

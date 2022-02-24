@@ -40,6 +40,17 @@ public class IntVector3 extends ByteBufferBackedObject {
         this.set(rhs.getX(), rhs.getY(), rhs.getZ());
     }
 
+    public IntVector3(int[] array) {
+        if (array == null) {
+            throw new NullPointerException("array may not be null.");
+        }
+        if (array.length != 3) {
+            throw new IllegalArgumentException("array must be of length 3. ");
+        }
+        this.createByteBuffer(Integer.BYTES * 3 * 1);
+        this.getByteBufferProxy().put(array);
+    }
+
     public boolean equals(Object other) {
         if (other == this) return true;
         if (other == null) return false;

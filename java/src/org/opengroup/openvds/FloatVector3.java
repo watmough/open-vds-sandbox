@@ -40,6 +40,17 @@ public class FloatVector3 extends ByteBufferBackedObject {
         this.set(rhs.getX(), rhs.getY(), rhs.getZ());
     }
 
+    public FloatVector3(float[] array) {
+        if (array == null) {
+            throw new NullPointerException("array may not be null.");
+        }
+        if (array.length != 3) {
+            throw new IllegalArgumentException("array must be of length 3. ");
+        }
+        this.createByteBuffer(Float.BYTES * 3 * 1);
+        this.getByteBufferProxy().put(array);
+    }
+
     public boolean equals(Object other) {
         if (other == this) return true;
         if (other == null) return false;

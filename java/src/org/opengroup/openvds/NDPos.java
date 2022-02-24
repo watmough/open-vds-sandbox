@@ -40,6 +40,17 @@ public class NDPos extends ByteBufferBackedObject {
         this.set(rhs.getPos0(), rhs.getPos1(), rhs.getPos2(), rhs.getPos3(), rhs.getPos4(), rhs.getPos5());
     }
 
+    public NDPos(float[] array) {
+        if (array == null) {
+            throw new NullPointerException("array may not be null.");
+        }
+        if (array.length != 6) {
+            throw new IllegalArgumentException("array must be of length 6. ");
+        }
+        this.createByteBuffer(Float.BYTES * 6 * 1);
+        this.getByteBufferProxy().put(array);
+    }
+
     public boolean equals(Object other) {
         if (other == this) return true;
         if (other == null) return false;

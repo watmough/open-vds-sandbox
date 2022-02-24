@@ -40,6 +40,17 @@ public class IntRange extends ByteBufferBackedObject {
         this.set(rhs.getMin(), rhs.getMax());
     }
 
+    public IntRange(int[] array) {
+        if (array == null) {
+            throw new NullPointerException("array may not be null.");
+        }
+        if (array.length != 2) {
+            throw new IllegalArgumentException("array must be of length 2. ");
+        }
+        this.createByteBuffer(Integer.BYTES * 2 * 1);
+        this.getByteBufferProxy().put(array);
+    }
+
     public boolean equals(Object other) {
         if (other == this) return true;
         if (other == null) return false;

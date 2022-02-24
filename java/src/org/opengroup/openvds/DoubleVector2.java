@@ -40,6 +40,17 @@ public class DoubleVector2 extends ByteBufferBackedObject {
         this.set(rhs.getX(), rhs.getY());
     }
 
+    public DoubleVector2(double[] array) {
+        if (array == null) {
+            throw new NullPointerException("array may not be null.");
+        }
+        if (array.length != 2) {
+            throw new IllegalArgumentException("array must be of length 2. ");
+        }
+        this.createByteBuffer(Double.BYTES * 2 * 1);
+        this.getByteBufferProxy().put(array);
+    }
+
     public boolean equals(Object other) {
         if (other == this) return true;
         if (other == null) return false;
