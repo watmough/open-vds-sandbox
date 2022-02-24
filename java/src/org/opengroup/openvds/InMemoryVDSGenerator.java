@@ -47,4 +47,8 @@ public class InMemoryVDSGenerator implements AutoCloseable {
     public void close() {
         this.vds.close();
     }
+
+    public boolean isNull() {
+        return this.vds.isNull();
+    }
 }

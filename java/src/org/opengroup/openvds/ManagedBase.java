@@ -75,4 +75,6 @@ public abstract class ManagedBase {
 	public boolean isDisposed() {
 		return this.native_object == 0;
 	}
+
+	public boolean isNull() { return isDisposed(); }
 }

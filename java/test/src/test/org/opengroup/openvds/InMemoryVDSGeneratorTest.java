@@ -16,6 +16,11 @@
  
 package test.org.opengroup.openvds;
 
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
+
 import org.opengroup.openvds.*;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -31,6 +36,7 @@ import static org.opengroup.openvds.VolumeDataChannelDescriptor.Format.*;
 import static org.opengroup.openvds.VolumeDataLayoutDescriptor.BrickSize.BrickSize_32;
 import static org.opengroup.openvds.VolumeDataLayoutDescriptor.LODLevels.LODLevels_None;
 import static org.opengroup.openvds.VolumeDataChannelDescriptor.Components.*;
+
 public class InMemoryVDSGeneratorTest {
 
     GlobalState globalState;
@@ -56,9 +62,63 @@ public class InMemoryVDSGeneratorTest {
     public InMemoryVDSGeneratorTest() {
     }
 
-    /**
-     * Undocumented test
-     */
+    @Test
+    public void testOpenClose() throws IOException {
+        int nXSamples = 60, nYSamples = 60, nZSamples = 60;
+        VolumeDataChannelDescriptor.Format format = Format_U8;
+        InMemoryVDSGenerator generator = new InMemoryVDSGenerator(nXSamples, nYSamples, nZSamples, format);
+        assertTrue(!generator.isNull());
+        //assertTrue(generator.ownHandle());
+
+        assertTrue(!generator.getLayout().isNull());
+        assertTrue(!generator.getAccessManager().isNull());
+
+        generator.close();
+        assertTrue(generator.isNull());
+    }
+
+    @Test
+    public void testVolumeTracesVsSampleRequest() throws IOException {
+        int nXSamples = 60, nYSamples = 60, nZSamples = 60;
+        VolumeDataChannelDescriptor.Format format = Format_R32;
+        try (InMemoryVDSGenerator generator = new InMemoryVDSGenerator(nZSamples, nYSamples, nXSamples, format)) {
+            assertNotNull(generator);
+            try (VolumeDataAccessManager accessManager = generator.getAccessManager()) {
+                assertNotNull(accessManager);
+
+                ByteBuffer buffer1 = ByteBufferProxy.allocateBuffer(accessManager.getVolumeTracesBufferSize(nYSamples, 0));
+                assertTrue(buffer1.order() == ByteOrder.nativeOrder());
+                NDPosArray tracePositions = new NDPosArray(nYSamples);
+                NDPosArray samplePositions = new NDPosArray(nZSamples * nYSamples);
+                for (int j = 0; j < nYSamples; j++) {
+                    tracePositions.set(j, 0.5f, j + 0.5f, 0.5f, 0.5f, 0.5f, 0.5f);
+                    for (int k = 0; k < nZSamples; k++) {
+                        samplePositions.set(j * nYSamples + k, k + 0.5f, j + 0.5f, 0.5f, 0.5f, 0.5f, 0.5f);
+                    }
+                }
+                try (VolumeDataRequestFloat r_traces = accessManager.requestVolumeTraces(buffer1, DimensionsND.Dimensions_012, 0, 0, tracePositions, InterpolationMethod.Nearest, 0)) {
+                    r_traces.waitForCompletion();
+                }
+
+                ByteBuffer buffer0 = ByteBufferProxy.allocateBuffer(accessManager.getVolumeSamplesBufferSize(nZSamples * nYSamples));
+                assertTrue(buffer0.order() == ByteOrder.nativeOrder());
+                try (VolumeDataRequestFloat r_samples = accessManager.requestVolumeSamples(buffer0, DimensionsND.Dimensions_012, 0, 0, samplePositions, InterpolationMethod.Nearest)) {
+                    r_samples.waitForCompletion();
+                }
+
+                FloatBuffer floatBuffer0 = buffer0.asFloatBuffer();
+                FloatBuffer floatBuffer1 = buffer1.asFloatBuffer();
+
+                for (int i = 0; i < nZSamples * nYSamples; i++) {
+                    final float f1 = floatBuffer0.get(i);
+                    final float f2 = floatBuffer1.get(i);
+                    assertEquals( " value " + i + " is different", 0, Float.compare(f1, f2));
+                }
+            }
+        }
+    }
+
+
     @org.junit.Test
     public void testLayout() {
         int nXSamples = 60, nYSamples = 60, nZSamples = 60;

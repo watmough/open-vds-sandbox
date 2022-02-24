@@ -15,6 +15,7 @@
  */
 
 package org.opengroup.openvds;
+
 import java.nio.*;
 
 public class ByteBufferProxy {
@@ -27,7 +28,16 @@ public class ByteBufferProxy {
 		this.bytebuffer = bytebuffer;
 		this.byteoffset = byteoffset;
 	}
-	
+
+	/**
+	 * Allocate a direct buffer with native byte order.
+	 * @param capacity The new buffer's capacity, in bytes.
+	 * @return A new direct buffer with native byte order.
+	 */
+	public static ByteBuffer allocateBuffer(long capacity) {
+		return ByteBuffer.allocateDirect((int)capacity).order(ByteOrder.nativeOrder());
+	}
+
 	public ByteBuffer getByteBuffer() {
 		return this.bytebuffer;
 	}
