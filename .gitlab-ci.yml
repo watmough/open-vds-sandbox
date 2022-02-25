@@ -6,6 +6,7 @@ stages:
 variables:
   SHA_IMAGE_TAG: "$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA"
   CMAKE_OPTIONS: "-GNinja"
+  SAST_DISABLED: "true"
 cache:
   paths:
   - ccache
@@ -104,10 +105,17 @@ pages:
     - public
   only:
   - master
-sast:
-  variables:
-    SAST_EXCLUDED_ANALYZERS: "bandit, brakeman, eslint, flawfinder, gosec, kubesec, mobsf, nodejs-scan, phpcs-security-audit, pmd-apex, security-code-scan, semgrep, sobelow, spotbugs"
-    SAST_EXCLUDED_PATHS: "examples, tests, docker, java, 3rdparty, common, docs, python"
-  stage: test
+
 include:
-- template: Security/SAST.gitlab-ci.yml
+  - template: Security/SAST.gitlab-ci.yml
+
+flawfinder-sast:
+  stage: test
+  rules:
+    - if: $CI_COMMIT_BRANCH
+      exists:
+        - '**/*.c'
+        - '**/*.cpp'
+        - '**/*.h'
+  script:
+    - flawfinder src
