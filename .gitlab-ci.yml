@@ -6,6 +6,7 @@ stages:
 variables:
   SHA_IMAGE_TAG: "$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA"
   SHA_MANYLINUX_IMAGE_TAG: "$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:manylinux-$CI_COMMIT_SHA"
+  SHA_CENTOS7DEV7_IMAGE_TAG: "$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:centos7dev7-$CI_COMMIT_SHA"
   CMAKE_OPTIONS: "-GNinja -DCMAKE_BUILD_TYPE=Debug"
 cache:
   paths:
@@ -42,6 +43,17 @@ devel-container-manylinux-merge-request:
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   - docker build -t $SHA_MANYLINUX_IMAGE_TAG -f docker/manylinux-2014.Dockerfile .
   - docker push $SHA_MANYLINUX_IMAGE_TAG
+  only:
+  - merge_requests
+devel-container-centos7dev7-merge-request:
+  stage: prepare
+  image: docker:19.03
+  tags:
+  - docker-runner
+  script:
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  - docker build -t $SHA_CENTOS7DEV7_IMAGE_TAG -f docker/centos7.Dockerfile .
+  - docker push $SHA_CENTOS7DEV7_IMAGE_TAG
   only:
   - merge_requests
 compile:
@@ -121,6 +133,32 @@ compile-merge-request-manylinux:
   - ccache --show-stats
   only:
   - merge_requests
+compile-merge-request-centos7dev7:
+  stage: build
+  image: "$SHA_CENTOS7DEV7_IMAGE_TAG"
+  tags:
+  - docker-runner
+  artifacts:
+    expire_in: 1 hr
+    paths:
+    - build-centos7dev7
+  before_script:
+  - export CCACHE_BASEDIR="$PWD"
+  - export CCACHE_DIR="$PWD/ccache-centos7dev7"
+  - export CCACHE_COMPILERCHECK=content
+  - ccache --zero-stats || true
+  - ccache --show-stats || true
+  script:
+  - export CCACHE_DIR="$PWD/ccache-centos7dev7"
+  - mkdir -p build-centos7dev7
+  - cd build-centos7dev7
+  - cmake $CMAKE_OPTIONS -DBOOST_INCLUDEDIR=/usr/include/boost169 -DBOOST_LIBRARYDIR=/usr/lib64/boost169 ..
+  - ninja
+  after_script:
+  - export CCACHE_DIR="$PWD/ccache-centos7dev7"
+  - ccache --show-stats
+  only:
+  - merge_requests
 unit-tests:
   stage: test
   image: "$SHA_IMAGE_TAG"
@@ -138,6 +176,16 @@ unit-tests-manylinux:
   - docker-runner
   script:
   - cd build-manylinux
+  - ctest -V
+  only:
+  - merge_requests
+unit-tests-centos7dev7:
+  stage: test
+  image: "$SHA_CENTOS7DEV7_IMAGE_TAG"
+  tags:
+  - docker-runner
+  script:
+  - cd build-centos7dev7
   - ctest -V
   only:
   - merge_requests
