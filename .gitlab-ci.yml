@@ -5,7 +5,8 @@ stages:
 - deploy
 variables:
   SHA_IMAGE_TAG: "$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA"
-  CMAKE_OPTIONS: "-GNinja"
+  SHA_MANYLINUX_IMAGE_TAG: "$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:manylinux-$CI_COMMIT_SHA"
+  CMAKE_OPTIONS: "-GNinja -DCMAKE_BUILD_TYPE=Debug"
 cache:
   paths:
   - ccache
@@ -30,6 +31,17 @@ devel-container-merge-request:
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   - docker build -t $SHA_IMAGE_TAG -f docker/alpine-gitlab-ci.Dockerfile .
   - docker push $SHA_IMAGE_TAG
+  only:
+  - merge_requests
+devel-container-manylinux-merge-request:
+  stage: prepare
+  image: docker:19.03
+  tags:
+  - docker-runner
+  script:
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  - docker build -t $SHA_MANYLINUX_IMAGE_TAG -f docker/manylinux-2014.Dockerfile .
+  - docker push $SHA_MANYLINUX_IMAGE_TAG
   only:
   - merge_requests
 compile:
@@ -73,12 +85,39 @@ compile-merge-request:
   - ccache --zero-stats || true
   - ccache --show-stats || true
   script:
+  - export CCACHE_DIR="$PWD/ccache"
   - mkdir -p build
   - cd build
   - cmake $CMAKE_OPTIONS ..
   - ninja
   after_script:
   - export CCACHE_DIR="$PWD/ccache"
+  - ccache --show-stats
+  only:
+  - merge_requests
+compile-merge-request-manylinux:
+  stage: build
+  image: "$SHA_MANYLINUX_IMAGE_TAG"
+  tags:
+  - docker-runner
+  artifacts:
+    expire_in: 1 hr
+    paths:
+    - build-manylinux
+  before_script:
+  - export CCACHE_BASEDIR="$PWD"
+  - export CCACHE_DIR="$PWD/ccache-manylinux"
+  - export CCACHE_COMPILERCHECK=content
+  - ccache --zero-stats || true
+  - ccache --show-stats || true
+  script:
+  - export CCACHE_DIR="$PWD/ccache-manylinux"
+  - mkdir -p build-manylinux
+  - cd build-manylinux
+  - cmake $CMAKE_OPTIONS -DBOOST_INCLUDEDIR=/usr/include/boost169 -DBOOST_LIBRARYDIR=/usr/lib64/boost169 ..
+  - ninja
+  after_script:
+  - export CCACHE_DIR="$PWD/ccache-manylinux"
   - ccache --show-stats
   only:
   - merge_requests
@@ -89,6 +128,16 @@ unit-tests:
   - docker-runner
   script:
   - cd build
+  - ctest -V
+  only:
+  - merge_requests
+unit-tests-manylinux:
+  stage: test
+  image: "$SHA_MANYLINUX_IMAGE_TAG"
+  tags:
+  - docker-runner
+  script:
+  - cd build-manylinux
   - ctest -V
   only:
   - merge_requests
