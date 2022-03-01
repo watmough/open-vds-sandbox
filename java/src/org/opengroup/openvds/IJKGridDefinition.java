@@ -46,22 +46,22 @@ public class IJKGridDefinition extends ByteBufferBackedObject {
     }
 
     public void setOrigin(DoubleVector3 value) {
-          this.getOrigin().put(this.getByteBufferProxy(), this.getByteBufferOffset() + Double.BYTES * 3 * 0);
+          this.getOrigin().put(this.getManagedBuffer(), this.getByteBufferOffset() + Double.BYTES * 3 * 0);
     }
 
 
     public void setIUnitStep(DoubleVector3 value) {
-          this.getIUnitStep().put(this.getByteBufferProxy(), this.getByteBufferOffset() + Double.BYTES * 3 * 1);
+          this.getIUnitStep().put(this.getManagedBuffer(), this.getByteBufferOffset() + Double.BYTES * 3 * 1);
     }
 
 
     public void setJUnitStep(DoubleVector3 value) {
-          this.getJUnitStep().put(this.getByteBufferProxy(), this.getByteBufferOffset() + Double.BYTES * 3 * 2);
+          this.getJUnitStep().put(this.getManagedBuffer(), this.getByteBufferOffset() + Double.BYTES * 3 * 2);
     }
 
 
     public void setKUnitStep(DoubleVector3 value) {
-          this.getKUnitStep().put(this.getByteBufferProxy(), this.getByteBufferOffset() + Double.BYTES * 3 * 3);
+          this.getKUnitStep().put(this.getManagedBuffer(), this.getByteBufferOffset() + Double.BYTES * 3 * 3);
     }
 
     public String toString() {

@@ -48,7 +48,7 @@ public class FloatRange extends ByteBufferBackedObject {
             throw new IllegalArgumentException("array must be of length 2. ");
         }
         this.createByteBuffer(Float.BYTES * 2 * 1);
-        this.getByteBufferProxy().put(array);
+        this.getManagedBuffer().put(array);
     }
 
     public boolean equals(Object other) {
@@ -60,32 +60,32 @@ public class FloatRange extends ByteBufferBackedObject {
                 this.getMax() == real_other.getMax());
     }
 
-    void put(ByteBufferProxy bytebufferproxy, int byteoffset) {
-        bytebufferproxy.putFloat(0 * Float.BYTES + byteoffset, this.getMin());
-        bytebufferproxy.putFloat(1 * Float.BYTES + byteoffset, this.getMax());
+    void put(ManagedBuffer managedbuffer, int byteoffset) {
+        managedbuffer.putFloat(0 * Float.BYTES + byteoffset, this.getMin());
+        managedbuffer.putFloat(1 * Float.BYTES + byteoffset, this.getMax());
     }
 
     public void set(float min, float max) {
-        this.getByteBufferProxy().putFloat(0 * Float.BYTES, min);
-        this.getByteBufferProxy().putFloat(1 * Float.BYTES, max);
+        this.getManagedBuffer().putFloat(0 * Float.BYTES, min);
+        this.getManagedBuffer().putFloat(1 * Float.BYTES, max);
     }
 
     public void setMin(float value) {
-        this.getByteBufferProxy().putFloat(0 * Float.BYTES, value);
+        this.getManagedBuffer().putFloat(0 * Float.BYTES, value);
     }
 
 
     public void setMax(float value) {
-        this.getByteBufferProxy().putFloat(1 * Float.BYTES, value);
+        this.getManagedBuffer().putFloat(1 * Float.BYTES, value);
     }
 
     public float getMin() {
-        return this.getByteBufferProxy().getFloat(0 * Float.BYTES);
+        return this.getManagedBuffer().getFloat(0 * Float.BYTES);
     }
 
 
     public float getMax() {
-        return this.getByteBufferProxy().getFloat(1 * Float.BYTES);
+        return this.getManagedBuffer().getFloat(1 * Float.BYTES);
     }
 
     public String toString() {
@@ -94,7 +94,7 @@ public class FloatRange extends ByteBufferBackedObject {
         {
             if (i > 0)
                 value = value + ", ";
-            value = value + this.getByteBufferProxy().getFloat(i * Float.BYTES);
+            value = value + this.getManagedBuffer().getFloat(i * Float.BYTES);
         }
         value = value + ")";
         return value;

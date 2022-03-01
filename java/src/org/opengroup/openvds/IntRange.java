@@ -48,7 +48,7 @@ public class IntRange extends ByteBufferBackedObject {
             throw new IllegalArgumentException("array must be of length 2. ");
         }
         this.createByteBuffer(Integer.BYTES * 2 * 1);
-        this.getByteBufferProxy().put(array);
+        this.getManagedBuffer().put(array);
     }
 
     public boolean equals(Object other) {
@@ -60,32 +60,32 @@ public class IntRange extends ByteBufferBackedObject {
                 this.getMax() == real_other.getMax());
     }
 
-    void put(ByteBufferProxy bytebufferproxy, int byteoffset) {
-        bytebufferproxy.putInt(0 * Integer.BYTES + byteoffset, this.getMin());
-        bytebufferproxy.putInt(1 * Integer.BYTES + byteoffset, this.getMax());
+    void put(ManagedBuffer managedbuffer, int byteoffset) {
+        managedbuffer.putInt(0 * Integer.BYTES + byteoffset, this.getMin());
+        managedbuffer.putInt(1 * Integer.BYTES + byteoffset, this.getMax());
     }
 
     public void set(int min, int max) {
-        this.getByteBufferProxy().putInt(0 * Integer.BYTES, min);
-        this.getByteBufferProxy().putInt(1 * Integer.BYTES, max);
+        this.getManagedBuffer().putInt(0 * Integer.BYTES, min);
+        this.getManagedBuffer().putInt(1 * Integer.BYTES, max);
     }
 
     public void setMin(int value) {
-        this.getByteBufferProxy().putInt(0 * Integer.BYTES, value);
+        this.getManagedBuffer().putInt(0 * Integer.BYTES, value);
     }
 
 
     public void setMax(int value) {
-        this.getByteBufferProxy().putInt(1 * Integer.BYTES, value);
+        this.getManagedBuffer().putInt(1 * Integer.BYTES, value);
     }
 
     public int getMin() {
-        return this.getByteBufferProxy().getInt(0 * Integer.BYTES);
+        return this.getManagedBuffer().getInt(0 * Integer.BYTES);
     }
 
 
     public int getMax() {
-        return this.getByteBufferProxy().getInt(1 * Integer.BYTES);
+        return this.getManagedBuffer().getInt(1 * Integer.BYTES);
     }
 
     public String toString() {
@@ -94,7 +94,7 @@ public class IntRange extends ByteBufferBackedObject {
         {
             if (i > 0)
                 value = value + ", ";
-            value = value + this.getByteBufferProxy().getInt(i * Integer.BYTES);
+            value = value + this.getManagedBuffer().getInt(i * Integer.BYTES);
         }
         value = value + ")";
         return value;

@@ -17,12 +17,16 @@
 package org.opengroup.openvds;
 import java.nio.*;
 
+/**
+ * This is the base class for structured arithmetic types such as FloatVector3, FloatRange etc. used to
+ * interface with the native OpenVDS library.
+ */
 public class ByteBufferBackedObject {
 
-	private ByteBufferProxy bytebufferproxy;
+	private ManagedBuffer managedBuffer;
 	
 	public ByteBufferBackedObject() {
-		this.bytebufferproxy = new ByteBufferProxy(null, 0);
+		this.managedBuffer = new ManagedBuffer(null, 0);
 	}
 	
 	public ByteBufferBackedObject(ByteBuffer bytebuffer, int byteoffset, int bytesize) {
@@ -32,26 +36,26 @@ public class ByteBufferBackedObject {
 		if (bytebuffer.capacity() < byteoffset + bytesize) {
 			throw new IllegalArgumentException("Invalid byteoffset/bytesize for this ByteBuffer");
 		}
-		this.bytebufferproxy = new ByteBufferProxy(bytebuffer, byteoffset);
+		this.managedBuffer = new ManagedBuffer(bytebuffer, byteoffset);
 	}
 	
-	public ByteBufferProxy getByteBufferProxy() {
-		return this.bytebufferproxy;
+	public ManagedBuffer getManagedBuffer() {
+		return this.managedBuffer;
 	}
 	
 	public int getByteBufferOffset() {
-		return this.bytebufferproxy.getByteOffset();
+		return this.managedBuffer.getByteOffset();
 	}
 	
 	public ByteBuffer getBackingByteBuffer() {
-		return this.bytebufferproxy.getByteBuffer();
+		return this.managedBuffer.getByteBuffer();
 	}
 	
 	protected void setByteBuffer(ByteBuffer bytebuffer, int byteoffset) {
-		this.bytebufferproxy = new ByteBufferProxy(bytebuffer, byteoffset);
+		this.managedBuffer = new ManagedBuffer(bytebuffer, byteoffset);
 	}
 	
 	protected void createByteBuffer(int capacity) {
-		this.bytebufferproxy = new ByteBufferProxy(ByteBuffer.allocateDirect(capacity).order(ByteOrder.nativeOrder()), 0);
+		this.managedBuffer = new ManagedBuffer(ByteBuffer.allocateDirect(capacity).order(ByteOrder.nativeOrder()), 0);
 	}
 }

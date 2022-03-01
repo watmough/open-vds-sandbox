@@ -225,7 +225,18 @@ struct DirectBuffer
 
 extern "C" {
 
-JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_ByteBufferProxy_ctorImpl
+
+/**
+* The Java ManagedBuffer class inherits from ManagedBase and its constructor
+* calls the base class constructor with the native handle. To keep the
+* DirectByteBuffer alive, we create a GlobalRef to it, before it is
+* read out from the java side and finally the GlobalRef is destroyed so
+* that it won't be kept alive artificially. Seems cumbersome, but is there
+* a better way?
+* 
+*/
+
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_ManagedBuffer_ctorImpl
   (JNIEnv * env, jclass clazz, jlong capacity)
 {
   JEnvPushPop
@@ -242,7 +253,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_ByteBufferProxy_ctorImpl
   return 0;
 }
 
-JNIEXPORT jobject JNICALL Java_org_opengroup_openvds_ByteBufferProxy_getBufferRefImpl
+JNIEXPORT jobject JNICALL Java_org_opengroup_openvds_ManagedBuffer_getBufferRefImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   JEnvPushPop
@@ -257,7 +268,7 @@ JNIEXPORT jobject JNICALL Java_org_opengroup_openvds_ByteBufferProxy_getBufferRe
   return 0;
 }
 
-JNIEXPORT void JNICALL Java_org_opengroup_openvds_ByteBufferProxy_deleteBufferRefImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_ManagedBuffer_deleteBufferRefImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   JEnvPushPop
@@ -271,7 +282,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_ByteBufferProxy_deleteBufferRe
   CPPJNI_CATCH
 }
 
-JNIEXPORT void JNICALL Java_org_opengroup_openvds_ByteBufferProxy_dtorImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_ManagedBuffer_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   JEnvPushPop

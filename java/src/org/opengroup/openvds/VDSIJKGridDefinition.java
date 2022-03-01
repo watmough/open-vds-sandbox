@@ -16,7 +16,6 @@
  */
 
 package org.opengroup.openvds;
-import java.nio.*;
 
 public class VDSIJKGridDefinition extends IJKGridDefinition {
 
@@ -29,7 +28,7 @@ public class VDSIJKGridDefinition extends IJKGridDefinition {
     }
 
     public void setDimensionMap(IntVector3 value) {
-        value.put(this.getByteBufferProxy(), this.getByteBufferOffset() + IJKGridDefinition.BYTES);
+        value.put(this.getManagedBuffer(), this.getByteBufferOffset() + IJKGridDefinition.BYTES);
     }
 
     public String toString() {

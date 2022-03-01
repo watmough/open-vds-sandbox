@@ -24,9 +24,9 @@ public class DoubleMatrix3x3 extends ByteBufferBackedObject {
 
     public DoubleMatrix3x3() {
         this.createByteBuffer(Double.BYTES * 3 * 3);
-        getByteBufferProxy().putDouble(this.getByteBufferOffset() + DoubleVector3.BYTES * 0 + Double.BYTES * 0, 1.0);
-        getByteBufferProxy().putDouble(this.getByteBufferOffset() + DoubleVector3.BYTES * 1 + Double.BYTES * 1, 1.0);
-        getByteBufferProxy().putDouble(this.getByteBufferOffset() + DoubleVector3.BYTES * 2 + Double.BYTES * 2, 1.0);        
+        getManagedBuffer().putDouble(this.getByteBufferOffset() + DoubleVector3.BYTES * 0 + Double.BYTES * 0, 1.0);
+        getManagedBuffer().putDouble(this.getByteBufferOffset() + DoubleVector3.BYTES * 1 + Double.BYTES * 1, 1.0);
+        getManagedBuffer().putDouble(this.getByteBufferOffset() + DoubleVector3.BYTES * 2 + Double.BYTES * 2, 1.0);        
     }
 
     public DoubleVector3 getX() {
@@ -44,17 +44,17 @@ public class DoubleMatrix3x3 extends ByteBufferBackedObject {
     }
 
     public void setX(DoubleVector3 value) {
-          this.getX().put(this.getByteBufferProxy(), this.getByteBufferOffset() + Double.BYTES * 3 * 0);
+          this.getX().put(this.getManagedBuffer(), this.getByteBufferOffset() + Double.BYTES * 3 * 0);
     }
 
 
     public void setY(DoubleVector3 value) {
-          this.getY().put(this.getByteBufferProxy(), this.getByteBufferOffset() + Double.BYTES * 3 * 1);
+          this.getY().put(this.getManagedBuffer(), this.getByteBufferOffset() + Double.BYTES * 3 * 1);
     }
 
 
     public void setZ(DoubleVector3 value) {
-          this.getZ().put(this.getByteBufferProxy(), this.getByteBufferOffset() + Double.BYTES * 3 * 2);
+          this.getZ().put(this.getManagedBuffer(), this.getByteBufferOffset() + Double.BYTES * 3 * 2);
     }
 
     public String toString() {

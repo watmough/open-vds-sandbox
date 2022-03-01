@@ -15,7 +15,6 @@
  */
 
 package org.opengroup.openvds;
-import org.opengroup.openvds.*;
 import java.nio.*;
 
 public class NDPosArray extends ByteBufferBackedObject implements PODArray {
@@ -56,44 +55,44 @@ public class NDPosArray extends ByteBufferBackedObject implements PODArray {
         if (this.readOnly) {
             throw new UnsupportedOperationException("Object is read-only");
         } else {
-            this.getByteBufferProxy().putFloat(0 * Float.BYTES + index * 6 * Float.BYTES, pos0);
-            this.getByteBufferProxy().putFloat(1 * Float.BYTES + index * 6 * Float.BYTES, pos1);
-            this.getByteBufferProxy().putFloat(2 * Float.BYTES + index * 6 * Float.BYTES, pos2);
-            this.getByteBufferProxy().putFloat(3 * Float.BYTES + index * 6 * Float.BYTES, pos3);
-            this.getByteBufferProxy().putFloat(4 * Float.BYTES + index * 6 * Float.BYTES, pos4);
-            this.getByteBufferProxy().putFloat(5 * Float.BYTES + index * 6 * Float.BYTES, pos5);
+            this.getManagedBuffer().putFloat(0 * Float.BYTES + index * 6 * Float.BYTES, pos0);
+            this.getManagedBuffer().putFloat(1 * Float.BYTES + index * 6 * Float.BYTES, pos1);
+            this.getManagedBuffer().putFloat(2 * Float.BYTES + index * 6 * Float.BYTES, pos2);
+            this.getManagedBuffer().putFloat(3 * Float.BYTES + index * 6 * Float.BYTES, pos3);
+            this.getManagedBuffer().putFloat(4 * Float.BYTES + index * 6 * Float.BYTES, pos4);
+            this.getManagedBuffer().putFloat(5 * Float.BYTES + index * 6 * Float.BYTES, pos5);
         }
     }
 
     public float getPos0(int index) {
-        return this.getByteBufferProxy().getFloat(0 * Float.BYTES + index * 6 * Float.BYTES);
+        return this.getManagedBuffer().getFloat(0 * Float.BYTES + index * 6 * Float.BYTES);
     }
 
     public float getPos1(int index) {
-        return this.getByteBufferProxy().getFloat(1 * Float.BYTES + index * 6 * Float.BYTES);
+        return this.getManagedBuffer().getFloat(1 * Float.BYTES + index * 6 * Float.BYTES);
     }
 
     public float getPos2(int index) {
-        return this.getByteBufferProxy().getFloat(2 * Float.BYTES + index * 6 * Float.BYTES);
+        return this.getManagedBuffer().getFloat(2 * Float.BYTES + index * 6 * Float.BYTES);
     }
 
     public float getPos3(int index) {
-        return this.getByteBufferProxy().getFloat(3 * Float.BYTES + index * 6 * Float.BYTES);
+        return this.getManagedBuffer().getFloat(3 * Float.BYTES + index * 6 * Float.BYTES);
     }
 
     public float getPos4(int index) {
-        return this.getByteBufferProxy().getFloat(4 * Float.BYTES + index * 6 * Float.BYTES);
+        return this.getManagedBuffer().getFloat(4 * Float.BYTES + index * 6 * Float.BYTES);
     }
 
     public float getPos5(int index) {
-        return this.getByteBufferProxy().getFloat(5 * Float.BYTES + index * 6 * Float.BYTES);
+        return this.getManagedBuffer().getFloat(5 * Float.BYTES + index * 6 * Float.BYTES);
     }
 
     public void setPos0(int index, float value) {
         if (this.readOnly) {
             throw new UnsupportedOperationException("Object is read-only");
         } else {
-            this.getByteBufferProxy().putFloat(0 * Float.BYTES + index * 6 * Float.BYTES, value);
+            this.getManagedBuffer().putFloat(0 * Float.BYTES + index * 6 * Float.BYTES, value);
         }
     }
 
@@ -101,7 +100,7 @@ public class NDPosArray extends ByteBufferBackedObject implements PODArray {
         if (this.readOnly) {
             throw new UnsupportedOperationException("Object is read-only");
         } else {
-            this.getByteBufferProxy().putFloat(1 * Float.BYTES + index * 6 * Float.BYTES, value);
+            this.getManagedBuffer().putFloat(1 * Float.BYTES + index * 6 * Float.BYTES, value);
         }
     }
 
@@ -109,7 +108,7 @@ public class NDPosArray extends ByteBufferBackedObject implements PODArray {
         if (this.readOnly) {
             throw new UnsupportedOperationException("Object is read-only");
         } else {
-            this.getByteBufferProxy().putFloat(2 * Float.BYTES + index * 6 * Float.BYTES, value);
+            this.getManagedBuffer().putFloat(2 * Float.BYTES + index * 6 * Float.BYTES, value);
         }
     }
 
@@ -117,7 +116,7 @@ public class NDPosArray extends ByteBufferBackedObject implements PODArray {
         if (this.readOnly) {
             throw new UnsupportedOperationException("Object is read-only");
         } else {
-            this.getByteBufferProxy().putFloat(3 * Float.BYTES + index * 6 * Float.BYTES, value);
+            this.getManagedBuffer().putFloat(3 * Float.BYTES + index * 6 * Float.BYTES, value);
         }
     }
 
@@ -125,7 +124,7 @@ public class NDPosArray extends ByteBufferBackedObject implements PODArray {
         if (this.readOnly) {
             throw new UnsupportedOperationException("Object is read-only");
         } else {
-            this.getByteBufferProxy().putFloat(4 * Float.BYTES + index * 6 * Float.BYTES, value);
+            this.getManagedBuffer().putFloat(4 * Float.BYTES + index * 6 * Float.BYTES, value);
         }
     }
 
@@ -133,7 +132,7 @@ public class NDPosArray extends ByteBufferBackedObject implements PODArray {
         if (this.readOnly) {
             throw new UnsupportedOperationException("Object is read-only");
         } else {
-            this.getByteBufferProxy().putFloat(5 * Float.BYTES + index * 6 * Float.BYTES, value);
+            this.getManagedBuffer().putFloat(5 * Float.BYTES + index * 6 * Float.BYTES, value);
         }
     }
 
@@ -160,7 +159,7 @@ public class NDPosArray extends ByteBufferBackedObject implements PODArray {
             for (int i = 0; i < 6; ++i) {
                 if (i > 0)
                     value = value + ", ";
-                value = value + this.getByteBufferProxy().getFloat(i * Float.BYTES + index * 6 * Float.BYTES);
+                value = value + this.getManagedBuffer().getFloat(i * Float.BYTES + index * 6 * Float.BYTES);
             }
             value = value + ")";
         }

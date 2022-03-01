@@ -48,7 +48,7 @@ public class NDPos extends ByteBufferBackedObject {
             throw new IllegalArgumentException("array must be of length 6. ");
         }
         this.createByteBuffer(Float.BYTES * 6 * 1);
-        this.getByteBufferProxy().put(array);
+        this.getManagedBuffer().put(array);
     }
 
     public boolean equals(Object other) {
@@ -64,80 +64,80 @@ public class NDPos extends ByteBufferBackedObject {
                 this.getPos5() == real_other.getPos5());
     }
 
-    void put(ByteBufferProxy bytebufferproxy, int byteoffset) {
-        bytebufferproxy.putFloat(0 * Float.BYTES + byteoffset, this.getPos0());
-        bytebufferproxy.putFloat(1 * Float.BYTES + byteoffset, this.getPos1());
-        bytebufferproxy.putFloat(2 * Float.BYTES + byteoffset, this.getPos2());
-        bytebufferproxy.putFloat(3 * Float.BYTES + byteoffset, this.getPos3());
-        bytebufferproxy.putFloat(4 * Float.BYTES + byteoffset, this.getPos4());
-        bytebufferproxy.putFloat(5 * Float.BYTES + byteoffset, this.getPos5());
+    void put(ManagedBuffer managedbuffer, int byteoffset) {
+        managedbuffer.putFloat(0 * Float.BYTES + byteoffset, this.getPos0());
+        managedbuffer.putFloat(1 * Float.BYTES + byteoffset, this.getPos1());
+        managedbuffer.putFloat(2 * Float.BYTES + byteoffset, this.getPos2());
+        managedbuffer.putFloat(3 * Float.BYTES + byteoffset, this.getPos3());
+        managedbuffer.putFloat(4 * Float.BYTES + byteoffset, this.getPos4());
+        managedbuffer.putFloat(5 * Float.BYTES + byteoffset, this.getPos5());
     }
 
     public void set(float pos0, float pos1, float pos2, float pos3, float pos4, float pos5) {
-        this.getByteBufferProxy().putFloat(0 * Float.BYTES, pos0);
-        this.getByteBufferProxy().putFloat(1 * Float.BYTES, pos1);
-        this.getByteBufferProxy().putFloat(2 * Float.BYTES, pos2);
-        this.getByteBufferProxy().putFloat(3 * Float.BYTES, pos3);
-        this.getByteBufferProxy().putFloat(4 * Float.BYTES, pos4);
-        this.getByteBufferProxy().putFloat(5 * Float.BYTES, pos5);
+        this.getManagedBuffer().putFloat(0 * Float.BYTES, pos0);
+        this.getManagedBuffer().putFloat(1 * Float.BYTES, pos1);
+        this.getManagedBuffer().putFloat(2 * Float.BYTES, pos2);
+        this.getManagedBuffer().putFloat(3 * Float.BYTES, pos3);
+        this.getManagedBuffer().putFloat(4 * Float.BYTES, pos4);
+        this.getManagedBuffer().putFloat(5 * Float.BYTES, pos5);
     }
 
     public void setPos0(float value) {
-        this.getByteBufferProxy().putFloat(0 * Float.BYTES, value);
+        this.getManagedBuffer().putFloat(0 * Float.BYTES, value);
     }
 
 
     public void setPos1(float value) {
-        this.getByteBufferProxy().putFloat(1 * Float.BYTES, value);
+        this.getManagedBuffer().putFloat(1 * Float.BYTES, value);
     }
 
 
     public void setPos2(float value) {
-        this.getByteBufferProxy().putFloat(2 * Float.BYTES, value);
+        this.getManagedBuffer().putFloat(2 * Float.BYTES, value);
     }
 
 
     public void setPos3(float value) {
-        this.getByteBufferProxy().putFloat(3 * Float.BYTES, value);
+        this.getManagedBuffer().putFloat(3 * Float.BYTES, value);
     }
 
 
     public void setPos4(float value) {
-        this.getByteBufferProxy().putFloat(4 * Float.BYTES, value);
+        this.getManagedBuffer().putFloat(4 * Float.BYTES, value);
     }
 
 
     public void setPos5(float value) {
-        this.getByteBufferProxy().putFloat(5 * Float.BYTES, value);
+        this.getManagedBuffer().putFloat(5 * Float.BYTES, value);
     }
 
     public float getPos0() {
-        return this.getByteBufferProxy().getFloat(0 * Float.BYTES);
+        return this.getManagedBuffer().getFloat(0 * Float.BYTES);
     }
 
 
     public float getPos1() {
-        return this.getByteBufferProxy().getFloat(1 * Float.BYTES);
+        return this.getManagedBuffer().getFloat(1 * Float.BYTES);
     }
 
 
     public float getPos2() {
-        return this.getByteBufferProxy().getFloat(2 * Float.BYTES);
+        return this.getManagedBuffer().getFloat(2 * Float.BYTES);
     }
 
 
     public float getPos3() {
-        return this.getByteBufferProxy().getFloat(3 * Float.BYTES);
+        return this.getManagedBuffer().getFloat(3 * Float.BYTES);
     }
 
 
     public float getPos4() {
-        return this.getByteBufferProxy().getFloat(4 * Float.BYTES);
+        return this.getManagedBuffer().getFloat(4 * Float.BYTES);
     }
 
 
     public float getPos5() {
-        return this.getByteBufferProxy().getFloat(5 * Float.BYTES);
+        return this.getManagedBuffer().getFloat(5 * Float.BYTES);
     }
 
     public String toString() {
@@ -146,7 +146,7 @@ public class NDPos extends ByteBufferBackedObject {
         {
             if (i > 0)
                 value = value + ", ";
-            value = value + this.getByteBufferProxy().getFloat(i * Float.BYTES);
+            value = value + this.getManagedBuffer().getFloat(i * Float.BYTES);
         }
         value = value + ")";
         return value;

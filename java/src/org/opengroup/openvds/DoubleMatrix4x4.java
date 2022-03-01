@@ -24,10 +24,10 @@ public class DoubleMatrix4x4 extends ByteBufferBackedObject {
 
     public DoubleMatrix4x4() {
         this.createByteBuffer(Double.BYTES * 4 * 4);
-        getByteBufferProxy().putDouble(this.getByteBufferOffset() + DoubleVector4.BYTES * 0 + Double.BYTES * 0, 1.0);
-        getByteBufferProxy().putDouble(this.getByteBufferOffset() + DoubleVector4.BYTES * 1 + Double.BYTES * 1, 1.0);
-        getByteBufferProxy().putDouble(this.getByteBufferOffset() + DoubleVector4.BYTES * 2 + Double.BYTES * 2, 1.0);
-        getByteBufferProxy().putDouble(this.getByteBufferOffset() + DoubleVector4.BYTES * 3 + Double.BYTES * 3, 1.0);        
+        getManagedBuffer().putDouble(this.getByteBufferOffset() + DoubleVector4.BYTES * 0 + Double.BYTES * 0, 1.0);
+        getManagedBuffer().putDouble(this.getByteBufferOffset() + DoubleVector4.BYTES * 1 + Double.BYTES * 1, 1.0);
+        getManagedBuffer().putDouble(this.getByteBufferOffset() + DoubleVector4.BYTES * 2 + Double.BYTES * 2, 1.0);
+        getManagedBuffer().putDouble(this.getByteBufferOffset() + DoubleVector4.BYTES * 3 + Double.BYTES * 3, 1.0);        
     }
 
     public DoubleVector4 getX() {
@@ -50,22 +50,22 @@ public class DoubleMatrix4x4 extends ByteBufferBackedObject {
     }
 
     public void setX(DoubleVector4 value) {
-          this.getX().put(this.getByteBufferProxy(), this.getByteBufferOffset() + Double.BYTES * 4 * 0);
+          this.getX().put(this.getManagedBuffer(), this.getByteBufferOffset() + Double.BYTES * 4 * 0);
     }
 
 
     public void setY(DoubleVector4 value) {
-          this.getY().put(this.getByteBufferProxy(), this.getByteBufferOffset() + Double.BYTES * 4 * 1);
+          this.getY().put(this.getManagedBuffer(), this.getByteBufferOffset() + Double.BYTES * 4 * 1);
     }
 
 
     public void setZ(DoubleVector4 value) {
-          this.getZ().put(this.getByteBufferProxy(), this.getByteBufferOffset() + Double.BYTES * 4 * 2);
+          this.getZ().put(this.getManagedBuffer(), this.getByteBufferOffset() + Double.BYTES * 4 * 2);
     }
 
 
     public void setT(DoubleVector4 value) {
-          this.getT().put(this.getByteBufferProxy(), this.getByteBufferOffset() + Double.BYTES * 4 * 3);
+          this.getT().put(this.getManagedBuffer(), this.getByteBufferOffset() + Double.BYTES * 4 * 3);
     }
 
     public String toString() {

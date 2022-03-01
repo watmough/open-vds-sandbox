@@ -48,7 +48,7 @@ public class DoubleRange extends ByteBufferBackedObject {
             throw new IllegalArgumentException("array must be of length 2. ");
         }
         this.createByteBuffer(Double.BYTES * 2 * 1);
-        this.getByteBufferProxy().put(array);
+        this.getManagedBuffer().put(array);
     }
 
     public boolean equals(Object other) {
@@ -60,32 +60,32 @@ public class DoubleRange extends ByteBufferBackedObject {
                 this.getMax() == real_other.getMax());
     }
 
-    void put(ByteBufferProxy bytebufferproxy, int byteoffset) {
-        bytebufferproxy.putDouble(0 * Double.BYTES + byteoffset, this.getMin());
-        bytebufferproxy.putDouble(1 * Double.BYTES + byteoffset, this.getMax());
+    void put(ManagedBuffer managedbuffer, int byteoffset) {
+        managedbuffer.putDouble(0 * Double.BYTES + byteoffset, this.getMin());
+        managedbuffer.putDouble(1 * Double.BYTES + byteoffset, this.getMax());
     }
 
     public void set(double min, double max) {
-        this.getByteBufferProxy().putDouble(0 * Double.BYTES, min);
-        this.getByteBufferProxy().putDouble(1 * Double.BYTES, max);
+        this.getManagedBuffer().putDouble(0 * Double.BYTES, min);
+        this.getManagedBuffer().putDouble(1 * Double.BYTES, max);
     }
 
     public void setMin(double value) {
-        this.getByteBufferProxy().putDouble(0 * Double.BYTES, value);
+        this.getManagedBuffer().putDouble(0 * Double.BYTES, value);
     }
 
 
     public void setMax(double value) {
-        this.getByteBufferProxy().putDouble(1 * Double.BYTES, value);
+        this.getManagedBuffer().putDouble(1 * Double.BYTES, value);
     }
 
     public double getMin() {
-        return this.getByteBufferProxy().getDouble(0 * Double.BYTES);
+        return this.getManagedBuffer().getDouble(0 * Double.BYTES);
     }
 
 
     public double getMax() {
-        return this.getByteBufferProxy().getDouble(1 * Double.BYTES);
+        return this.getManagedBuffer().getDouble(1 * Double.BYTES);
     }
 
     public String toString() {
@@ -94,7 +94,7 @@ public class DoubleRange extends ByteBufferBackedObject {
         {
             if (i > 0)
                 value = value + ", ";
-            value = value + this.getByteBufferProxy().getDouble(i * Double.BYTES);
+            value = value + this.getManagedBuffer().getDouble(i * Double.BYTES);
         }
         value = value + ")";
         return value;

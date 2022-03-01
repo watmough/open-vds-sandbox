@@ -72,7 +72,7 @@ def createArrayCtor(class_name: str, typename: str, count: int, composite_count:
             throw new IllegalArgumentException("array must be of length VECTORCOUNT. ");
         }
         this.createByteBuffer(JAVATYPE.BYTES * VECTORCOUNT * COMPOSITECOUNT);
-        this.getByteBufferProxy().put(array);
+        this.getManagedBuffer().put(array);
     }
 """
     return transformTemplate(contents, class_name, typename, count, composite_count)
@@ -120,7 +120,7 @@ def createEquals(class_name: str, typename: str, count: int, composite_count: in
     return contents + f"return ({compare});\n    }}\n"
 
 def createSetter(class_name: str, typename: str, count: int, composite_count: int) -> str:
-    setters = "\n    ".join([f"    this.getByteBufferProxy().putTYPENAME({c} * JAVATYPE.BYTES, {MEMBERS[c]});" for c in range(0, count)])
+    setters = "\n    ".join([f"    this.getManagedBuffer().putTYPENAME({c} * JAVATYPE.BYTES, {MEMBERS[c]});" for c in range(0, count)])
     args = ", ".join([f"PRIMITIVETYPE {MEMBERS[c]}" for c in range(0, count)])
     contents = """
     public void set(ARGS) {
@@ -130,9 +130,9 @@ def createSetter(class_name: str, typename: str, count: int, composite_count: in
     return transformTemplate(contents, class_name, typename, count, composite_count)
 
 def createPutter(class_name: str, typename: str, count: int, composite_count: int) -> str:
-    setters = "\n    ".join([f"    bytebufferproxy.putTYPENAME({c} * JAVATYPE.BYTES + byteoffset, this.get{capfirst(MEMBERS[c])}());" for c in range(0, count)])
+    setters = "\n    ".join([f"    managedbuffer.putTYPENAME({c} * JAVATYPE.BYTES + byteoffset, this.get{capfirst(MEMBERS[c])}());" for c in range(0, count)])
     contents = """
-    void put(ByteBufferProxy bytebufferproxy, int byteoffset) {
+    void put(ManagedBuffer managedbuffer, int byteoffset) {
     SETTERS
     }
 """.replace("SETTERS", setters)
@@ -141,14 +141,14 @@ def createPutter(class_name: str, typename: str, count: int, composite_count: in
 def createSetters(class_name: str, typename: str, count: int, composite_count) -> str:
     contents = "\n".join([f"""
     public void set{capfirst(MEMBERS[c])}(PRIMITIVETYPE value) {{
-        this.getByteBufferProxy().putTYPENAME({c} * JAVATYPE.BYTES, value);
+        this.getManagedBuffer().putTYPENAME({c} * JAVATYPE.BYTES, value);
     }}\n""" for c in range(0, count)])
     return transformTemplate(contents, class_name, typename, count, composite_count)
 
 def createGetters(class_name: str, typename: str, count: int, composite_count: int) -> str:
     contents = "\n".join([f"""
     public PRIMITIVETYPE get{capfirst(MEMBERS[c])}() {{
-        return this.getByteBufferProxy().getTYPENAME({c} * JAVATYPE.BYTES);
+        return this.getManagedBuffer().getTYPENAME({c} * JAVATYPE.BYTES);
     }}\n""" for c in range(0, count)])
 
     return transformTemplate(contents, class_name, typename, count, composite_count)
@@ -161,7 +161,7 @@ def createToString(class_name: str, typename: str, count: int, composite_count: 
         {{
             if (i > 0)
                 value = value + ", ";
-            value = value + this.getByteBufferProxy().getTYPENAME(i * JAVATYPE.BYTES);
+            value = value + this.getManagedBuffer().getTYPENAME(i * JAVATYPE.BYTES);
         }}
         value = value + ")";
         return value;
@@ -182,7 +182,7 @@ def createCompositeSetters(class_name: str, typename: str, count: int, composite
     
     contents = "\n".join([f"""
     public void set{capfirst(MEMBERS[c])}(PRIMITIVETYPE value) {{
-          this.get{capfirst(MEMBERS[c])}().put(this.getByteBufferProxy(), this.getByteBufferOffset() + {typename}.BYTES * {count} * {c});
+          this.get{capfirst(MEMBERS[c])}().put(this.getManagedBuffer(), this.getByteBufferOffset() + {typename}.BYTES * {count} * {c});
     }}\n""".replace("PRIMITIVETYPE", vectortype) for c in range(0, composite_count)])
     return transformTemplate(contents, class_name, typename, count, composite_count)
 
@@ -216,7 +216,7 @@ def createCompositeEquals(class_name: str, typename: str, count: int, composite_
     return contents + f"return ({compare});\n    }}\n"
 
 def createMatrixDefaultCtor(class_name: str, typename: str, count: int, composite_count: int) -> str:
-    init = "\n".join([f'        getByteBufferProxy().put{typename}(this.getByteBufferOffset() + {typename}Vector{count}.BYTES * {c} + {typename}.BYTES * {str(c)}, 1.0);' for c in range(0, composite_count)])
+    init = "\n".join([f'        getManagedBuffer().put{typename}(this.getByteBufferOffset() + {typename}Vector{count}.BYTES * {c} + {typename}.BYTES * {str(c)}, 1.0);' for c in range(0, composite_count)])
     contents = f"""
     public CLASSNAME() {{
         this.createByteBuffer(JAVATYPE.BYTES * VECTORCOUNT * COMPOSITECOUNT);

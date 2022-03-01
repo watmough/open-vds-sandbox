@@ -26,14 +26,13 @@ import java.nio.ShortBuffer;
 import org.opengroup.openvds.*;
 import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import static org.junit.Assert.*;
 import static org.junit.Assume.assumeTrue;
-import org.junit.Rule;
+
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+
 import static org.opengroup.openvds.VolumeDataChannelDescriptor.Format.*;
 import static org.opengroup.openvds.VolumeDataLayoutDescriptor.BrickSize.BrickSize_32;
 import static org.opengroup.openvds.VolumeDataLayoutDescriptor.LODLevels.LODLevels_None;
@@ -86,8 +85,8 @@ public class InMemoryVDSGeneratorTest {
             assertNotNull(generator);
             try (VolumeDataAccessManager accessManager = generator.getAccessManager()) {
                 assertNotNull(accessManager);
-                try (ByteBufferProxy b1 = new ByteBufferProxy(accessManager.getVolumeTracesBufferSize(nYSamples, 0));
-                     ByteBufferProxy b0 = new ByteBufferProxy(accessManager.getVolumeSamplesBufferSize(nZSamples * nYSamples))
+                try (ManagedBuffer b1 = new ManagedBuffer(accessManager.getVolumeTracesBufferSize(nYSamples, 0));
+                     ManagedBuffer b0 = new ManagedBuffer(accessManager.getVolumeSamplesBufferSize(nZSamples * nYSamples))
                 ) {
                     assertTrue(b1.getByteBuffer().order() == ByteOrder.nativeOrder());
                     assertTrue(b0.getByteBuffer().order() == ByteOrder.nativeOrder());
@@ -130,8 +129,8 @@ public class InMemoryVDSGeneratorTest {
                 int[] min = new int[]{ 0,0,0,0,0,0 };
                 int[] max = new int[]{ nZSamples, nYSamples, 1, 0, 0, 0 };
                 long bufferSize = accessManager.getVolumeSubsetBufferSize(min, max, format, 0, 0);
-                ByteBuffer buffer1 = ByteBufferProxy.allocateBuffer(bufferSize);
-                ByteBuffer buffer0 = ByteBufferProxy.allocateBuffer(bufferSize);
+                ByteBuffer buffer1 = ManagedBuffer.allocateBuffer(bufferSize);
+                ByteBuffer buffer0 = ManagedBuffer.allocateBuffer(bufferSize);
                 final float channelNoValue = layout.getChannelNoValue(0);
                 try (VolumeDataRequestFloat r_subset1 = accessManager.requestVolumeSubsetFloat(buffer1, DimensionsND.Dimensions_012, 0, 0, min, max, null)) {
                     r_subset1.waitForCompletion();
@@ -163,8 +162,8 @@ public class InMemoryVDSGeneratorTest {
                 int[] min = new int[]{ 0,0,0,0,0,0 };
                 int[] max = new int[]{ nZSamples, nYSamples, 1, 0, 0, 0 };
                 long bufferSize = accessManager.getVolumeSubsetBufferSize(min, max, format, 0, 0);
-                ByteBuffer buffer1 = ByteBufferProxy.allocateBuffer(bufferSize);
-                ByteBuffer buffer0 = ByteBufferProxy.allocateBuffer(bufferSize);
+                ByteBuffer buffer1 = ManagedBuffer.allocateBuffer(bufferSize);
+                ByteBuffer buffer0 = ManagedBuffer.allocateBuffer(bufferSize);
                 final float channelNoValue = layout.getChannelNoValue(0);
                 try (VolumeDataRequest r_subset1 = accessManager.requestVolumeSubset(buffer1, DimensionsND.Dimensions_012, 0, 0, min, max, format, null)) {
                     r_subset1.waitForCompletion();
@@ -194,8 +193,8 @@ public class InMemoryVDSGeneratorTest {
                 int[] min = new int[]{ 0,0,0,0,0,0 };
                 int[] max = new int[]{ nZSamples, nYSamples, 1, 0, 0, 0 };
                 long bufferSize = accessManager.getVolumeSubsetBufferSize(min, max, format, 0, 0);
-                ByteBuffer buffer1 = ByteBufferProxy.allocateBuffer(bufferSize);
-                ByteBuffer buffer0 = ByteBufferProxy.allocateBuffer(bufferSize);
+                ByteBuffer buffer1 = ManagedBuffer.allocateBuffer(bufferSize);
+                ByteBuffer buffer0 = ManagedBuffer.allocateBuffer(bufferSize);
                 final float channelNoValue = layout.getChannelNoValue(0);
                 try (VolumeDataRequest r_subset1 = accessManager.requestVolumeSubset(buffer1, DimensionsND.Dimensions_012, 0, 0, min, max, format, null)) {
                     r_subset1.waitForCompletion();
@@ -227,8 +226,8 @@ public class InMemoryVDSGeneratorTest {
                 int[] min = new int[]{ 0,0,0,0,0,0 };
                 int[] max = new int[]{ nZSamples, nYSamples, 1, 0, 0, 0 };
                 long bufferSize = accessManager.getVolumeSubsetBufferSize(min, max, format, 0, 0);
-                ByteBuffer buffer1 = ByteBufferProxy.allocateBuffer(bufferSize);
-                ByteBuffer buffer0 = ByteBufferProxy.allocateBuffer(bufferSize);
+                ByteBuffer buffer1 = ManagedBuffer.allocateBuffer(bufferSize);
+                ByteBuffer buffer0 = ManagedBuffer.allocateBuffer(bufferSize);
                 final float channelNoValue = layout.getChannelNoValue(0);
                 try (VolumeDataRequest r_subset1 = accessManager.requestVolumeSubset(buffer1, DimensionsND.Dimensions_012, 0, 0, min, max, format, null)) {
                     r_subset1.waitForCompletion();

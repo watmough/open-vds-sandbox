@@ -19,13 +19,13 @@ package org.opengroup.openvds;
 
 import java.nio.*;
 
-public class ByteBufferProxy extends ManagedBase implements AutoCloseable {
+public class ManagedBuffer extends ManagedBase implements AutoCloseable {
 	
 	private ByteBuffer bytebuffer;
 	
 	private int byteoffset;
 
-	public ByteBufferProxy(ByteBuffer bytebuffer, int byteoffset) {
+	public ManagedBuffer(ByteBuffer bytebuffer, int byteoffset) {
 		super(0);
 		this.bytebuffer = bytebuffer;
 		this.byteoffset = byteoffset;
@@ -40,7 +40,7 @@ public class ByteBufferProxy extends ManagedBase implements AutoCloseable {
 	 * Create a ByteBufferProxy backed by a ByteBuffer whose memory will be free'd on close/dispose
 	 * @param capacity The new buffer's capacity, in bytes.
 	 */
-	public ByteBufferProxy(long capacity) {
+	public ManagedBuffer(long capacity) {
 		super(ctorImpl(capacity));
 		this.byteoffset = 0;
 		this.bytebuffer = getBufferRefImpl(getNativeObject());

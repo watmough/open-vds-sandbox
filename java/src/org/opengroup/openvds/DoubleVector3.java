@@ -48,7 +48,7 @@ public class DoubleVector3 extends ByteBufferBackedObject {
             throw new IllegalArgumentException("array must be of length 3. ");
         }
         this.createByteBuffer(Double.BYTES * 3 * 1);
-        this.getByteBufferProxy().put(array);
+        this.getManagedBuffer().put(array);
     }
 
     public boolean equals(Object other) {
@@ -61,44 +61,44 @@ public class DoubleVector3 extends ByteBufferBackedObject {
                 this.getZ() == real_other.getZ());
     }
 
-    void put(ByteBufferProxy bytebufferproxy, int byteoffset) {
-        bytebufferproxy.putDouble(0 * Double.BYTES + byteoffset, this.getX());
-        bytebufferproxy.putDouble(1 * Double.BYTES + byteoffset, this.getY());
-        bytebufferproxy.putDouble(2 * Double.BYTES + byteoffset, this.getZ());
+    void put(ManagedBuffer managedbuffer, int byteoffset) {
+        managedbuffer.putDouble(0 * Double.BYTES + byteoffset, this.getX());
+        managedbuffer.putDouble(1 * Double.BYTES + byteoffset, this.getY());
+        managedbuffer.putDouble(2 * Double.BYTES + byteoffset, this.getZ());
     }
 
     public void set(double x, double y, double z) {
-        this.getByteBufferProxy().putDouble(0 * Double.BYTES, x);
-        this.getByteBufferProxy().putDouble(1 * Double.BYTES, y);
-        this.getByteBufferProxy().putDouble(2 * Double.BYTES, z);
+        this.getManagedBuffer().putDouble(0 * Double.BYTES, x);
+        this.getManagedBuffer().putDouble(1 * Double.BYTES, y);
+        this.getManagedBuffer().putDouble(2 * Double.BYTES, z);
     }
 
     public void setX(double value) {
-        this.getByteBufferProxy().putDouble(0 * Double.BYTES, value);
+        this.getManagedBuffer().putDouble(0 * Double.BYTES, value);
     }
 
 
     public void setY(double value) {
-        this.getByteBufferProxy().putDouble(1 * Double.BYTES, value);
+        this.getManagedBuffer().putDouble(1 * Double.BYTES, value);
     }
 
 
     public void setZ(double value) {
-        this.getByteBufferProxy().putDouble(2 * Double.BYTES, value);
+        this.getManagedBuffer().putDouble(2 * Double.BYTES, value);
     }
 
     public double getX() {
-        return this.getByteBufferProxy().getDouble(0 * Double.BYTES);
+        return this.getManagedBuffer().getDouble(0 * Double.BYTES);
     }
 
 
     public double getY() {
-        return this.getByteBufferProxy().getDouble(1 * Double.BYTES);
+        return this.getManagedBuffer().getDouble(1 * Double.BYTES);
     }
 
 
     public double getZ() {
-        return this.getByteBufferProxy().getDouble(2 * Double.BYTES);
+        return this.getManagedBuffer().getDouble(2 * Double.BYTES);
     }
 
     public String toString() {
@@ -107,7 +107,7 @@ public class DoubleVector3 extends ByteBufferBackedObject {
         {
             if (i > 0)
                 value = value + ", ";
-            value = value + this.getByteBufferProxy().getDouble(i * Double.BYTES);
+            value = value + this.getManagedBuffer().getDouble(i * Double.BYTES);
         }
         value = value + ")";
         return value;

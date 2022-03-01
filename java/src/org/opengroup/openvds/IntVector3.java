@@ -48,7 +48,7 @@ public class IntVector3 extends ByteBufferBackedObject {
             throw new IllegalArgumentException("array must be of length 3. ");
         }
         this.createByteBuffer(Integer.BYTES * 3 * 1);
-        this.getByteBufferProxy().put(array);
+        this.getManagedBuffer().put(array);
     }
 
     public boolean equals(Object other) {
@@ -61,44 +61,44 @@ public class IntVector3 extends ByteBufferBackedObject {
                 this.getZ() == real_other.getZ());
     }
 
-    void put(ByteBufferProxy bytebufferproxy, int byteoffset) {
-        bytebufferproxy.putInt(0 * Integer.BYTES + byteoffset, this.getX());
-        bytebufferproxy.putInt(1 * Integer.BYTES + byteoffset, this.getY());
-        bytebufferproxy.putInt(2 * Integer.BYTES + byteoffset, this.getZ());
+    void put(ManagedBuffer managedbuffer, int byteoffset) {
+        managedbuffer.putInt(0 * Integer.BYTES + byteoffset, this.getX());
+        managedbuffer.putInt(1 * Integer.BYTES + byteoffset, this.getY());
+        managedbuffer.putInt(2 * Integer.BYTES + byteoffset, this.getZ());
     }
 
     public void set(int x, int y, int z) {
-        this.getByteBufferProxy().putInt(0 * Integer.BYTES, x);
-        this.getByteBufferProxy().putInt(1 * Integer.BYTES, y);
-        this.getByteBufferProxy().putInt(2 * Integer.BYTES, z);
+        this.getManagedBuffer().putInt(0 * Integer.BYTES, x);
+        this.getManagedBuffer().putInt(1 * Integer.BYTES, y);
+        this.getManagedBuffer().putInt(2 * Integer.BYTES, z);
     }
 
     public void setX(int value) {
-        this.getByteBufferProxy().putInt(0 * Integer.BYTES, value);
+        this.getManagedBuffer().putInt(0 * Integer.BYTES, value);
     }
 
 
     public void setY(int value) {
-        this.getByteBufferProxy().putInt(1 * Integer.BYTES, value);
+        this.getManagedBuffer().putInt(1 * Integer.BYTES, value);
     }
 
 
     public void setZ(int value) {
-        this.getByteBufferProxy().putInt(2 * Integer.BYTES, value);
+        this.getManagedBuffer().putInt(2 * Integer.BYTES, value);
     }
 
     public int getX() {
-        return this.getByteBufferProxy().getInt(0 * Integer.BYTES);
+        return this.getManagedBuffer().getInt(0 * Integer.BYTES);
     }
 
 
     public int getY() {
-        return this.getByteBufferProxy().getInt(1 * Integer.BYTES);
+        return this.getManagedBuffer().getInt(1 * Integer.BYTES);
     }
 
 
     public int getZ() {
-        return this.getByteBufferProxy().getInt(2 * Integer.BYTES);
+        return this.getManagedBuffer().getInt(2 * Integer.BYTES);
     }
 
     public String toString() {
@@ -107,7 +107,7 @@ public class IntVector3 extends ByteBufferBackedObject {
         {
             if (i > 0)
                 value = value + ", ";
-            value = value + this.getByteBufferProxy().getInt(i * Integer.BYTES);
+            value = value + this.getManagedBuffer().getInt(i * Integer.BYTES);
         }
         value = value + ")";
         return value;

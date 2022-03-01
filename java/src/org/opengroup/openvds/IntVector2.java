@@ -48,7 +48,7 @@ public class IntVector2 extends ByteBufferBackedObject {
             throw new IllegalArgumentException("array must be of length 2. ");
         }
         this.createByteBuffer(Integer.BYTES * 2 * 1);
-        this.getByteBufferProxy().put(array);
+        this.getManagedBuffer().put(array);
     }
 
     public boolean equals(Object other) {
@@ -60,32 +60,32 @@ public class IntVector2 extends ByteBufferBackedObject {
                 this.getY() == real_other.getY());
     }
 
-    void put(ByteBufferProxy bytebufferproxy, int byteoffset) {
-        bytebufferproxy.putInt(0 * Integer.BYTES + byteoffset, this.getX());
-        bytebufferproxy.putInt(1 * Integer.BYTES + byteoffset, this.getY());
+    void put(ManagedBuffer managedbuffer, int byteoffset) {
+        managedbuffer.putInt(0 * Integer.BYTES + byteoffset, this.getX());
+        managedbuffer.putInt(1 * Integer.BYTES + byteoffset, this.getY());
     }
 
     public void set(int x, int y) {
-        this.getByteBufferProxy().putInt(0 * Integer.BYTES, x);
-        this.getByteBufferProxy().putInt(1 * Integer.BYTES, y);
+        this.getManagedBuffer().putInt(0 * Integer.BYTES, x);
+        this.getManagedBuffer().putInt(1 * Integer.BYTES, y);
     }
 
     public void setX(int value) {
-        this.getByteBufferProxy().putInt(0 * Integer.BYTES, value);
+        this.getManagedBuffer().putInt(0 * Integer.BYTES, value);
     }
 
 
     public void setY(int value) {
-        this.getByteBufferProxy().putInt(1 * Integer.BYTES, value);
+        this.getManagedBuffer().putInt(1 * Integer.BYTES, value);
     }
 
     public int getX() {
-        return this.getByteBufferProxy().getInt(0 * Integer.BYTES);
+        return this.getManagedBuffer().getInt(0 * Integer.BYTES);
     }
 
 
     public int getY() {
-        return this.getByteBufferProxy().getInt(1 * Integer.BYTES);
+        return this.getManagedBuffer().getInt(1 * Integer.BYTES);
     }
 
     public String toString() {
@@ -94,7 +94,7 @@ public class IntVector2 extends ByteBufferBackedObject {
         {
             if (i > 0)
                 value = value + ", ";
-            value = value + this.getByteBufferProxy().getInt(i * Integer.BYTES);
+            value = value + this.getManagedBuffer().getInt(i * Integer.BYTES);
         }
         value = value + ")";
         return value;

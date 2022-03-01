@@ -48,7 +48,7 @@ public class FloatVector3 extends ByteBufferBackedObject {
             throw new IllegalArgumentException("array must be of length 3. ");
         }
         this.createByteBuffer(Float.BYTES * 3 * 1);
-        this.getByteBufferProxy().put(array);
+        this.getManagedBuffer().put(array);
     }
 
     public boolean equals(Object other) {
@@ -61,44 +61,44 @@ public class FloatVector3 extends ByteBufferBackedObject {
                 this.getZ() == real_other.getZ());
     }
 
-    void put(ByteBufferProxy bytebufferproxy, int byteoffset) {
-        bytebufferproxy.putFloat(0 * Float.BYTES + byteoffset, this.getX());
-        bytebufferproxy.putFloat(1 * Float.BYTES + byteoffset, this.getY());
-        bytebufferproxy.putFloat(2 * Float.BYTES + byteoffset, this.getZ());
+    void put(ManagedBuffer managedbuffer, int byteoffset) {
+        managedbuffer.putFloat(0 * Float.BYTES + byteoffset, this.getX());
+        managedbuffer.putFloat(1 * Float.BYTES + byteoffset, this.getY());
+        managedbuffer.putFloat(2 * Float.BYTES + byteoffset, this.getZ());
     }
 
     public void set(float x, float y, float z) {
-        this.getByteBufferProxy().putFloat(0 * Float.BYTES, x);
-        this.getByteBufferProxy().putFloat(1 * Float.BYTES, y);
-        this.getByteBufferProxy().putFloat(2 * Float.BYTES, z);
+        this.getManagedBuffer().putFloat(0 * Float.BYTES, x);
+        this.getManagedBuffer().putFloat(1 * Float.BYTES, y);
+        this.getManagedBuffer().putFloat(2 * Float.BYTES, z);
     }
 
     public void setX(float value) {
-        this.getByteBufferProxy().putFloat(0 * Float.BYTES, value);
+        this.getManagedBuffer().putFloat(0 * Float.BYTES, value);
     }
 
 
     public void setY(float value) {
-        this.getByteBufferProxy().putFloat(1 * Float.BYTES, value);
+        this.getManagedBuffer().putFloat(1 * Float.BYTES, value);
     }
 
 
     public void setZ(float value) {
-        this.getByteBufferProxy().putFloat(2 * Float.BYTES, value);
+        this.getManagedBuffer().putFloat(2 * Float.BYTES, value);
     }
 
     public float getX() {
-        return this.getByteBufferProxy().getFloat(0 * Float.BYTES);
+        return this.getManagedBuffer().getFloat(0 * Float.BYTES);
     }
 
 
     public float getY() {
-        return this.getByteBufferProxy().getFloat(1 * Float.BYTES);
+        return this.getManagedBuffer().getFloat(1 * Float.BYTES);
     }
 
 
     public float getZ() {
-        return this.getByteBufferProxy().getFloat(2 * Float.BYTES);
+        return this.getManagedBuffer().getFloat(2 * Float.BYTES);
     }
 
     public String toString() {
@@ -107,7 +107,7 @@ public class FloatVector3 extends ByteBufferBackedObject {
         {
             if (i > 0)
                 value = value + ", ";
-            value = value + this.getByteBufferProxy().getFloat(i * Float.BYTES);
+            value = value + this.getManagedBuffer().getFloat(i * Float.BYTES);
         }
         value = value + ")";
         return value;
