@@ -52,6 +52,6 @@ public class ByteBufferBackedObject {
 	}
 	
 	protected void createByteBuffer(int capacity) {
-		this.bytebufferproxy = new ByteBufferProxy(capacity);
+		this.bytebufferproxy = new ByteBufferProxy(ByteBuffer.allocateDirect(capacity).order(ByteOrder.nativeOrder()), 0);
 	}
 }

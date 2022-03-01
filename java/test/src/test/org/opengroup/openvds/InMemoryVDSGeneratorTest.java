@@ -70,7 +70,6 @@ public class InMemoryVDSGeneratorTest {
         VolumeDataChannelDescriptor.Format format = Format_U8;
         InMemoryVDSGenerator generator = new InMemoryVDSGenerator(nXSamples, nYSamples, nZSamples, format);
         assertTrue(!generator.isNull());
-        //assertTrue(generator.ownHandle());
 
         assertTrue(!generator.getLayout().isNull());
         assertTrue(!generator.getAccessManager().isNull());
@@ -87,33 +86,32 @@ public class InMemoryVDSGeneratorTest {
             assertNotNull(generator);
             try (VolumeDataAccessManager accessManager = generator.getAccessManager()) {
                 assertNotNull(accessManager);
-
-                ByteBuffer buffer1 = ByteBufferProxy.allocateBuffer(accessManager.getVolumeTracesBufferSize(nYSamples, 0));
-                assertTrue(buffer1.order() == ByteOrder.nativeOrder());
-                NDPosArray tracePositions = new NDPosArray(nYSamples);
-                NDPosArray samplePositions = new NDPosArray(nZSamples * nYSamples);
-                for (int j = 0; j < nYSamples; j++) {
-                    tracePositions.set(j, 0.5f, j + 0.5f, 0.5f, 0.5f, 0.5f, 0.5f);
-                    for (int k = 0; k < nZSamples; k++) {
-                        samplePositions.set(j * nYSamples + k, k + 0.5f, j + 0.5f, 0.5f, 0.5f, 0.5f, 0.5f);
+                try (ByteBufferProxy b1 = new ByteBufferProxy(accessManager.getVolumeTracesBufferSize(nYSamples, 0));
+                     ByteBufferProxy b0 = new ByteBufferProxy(accessManager.getVolumeSamplesBufferSize(nZSamples * nYSamples))
+                ) {
+                    assertTrue(b1.getByteBuffer().order() == ByteOrder.nativeOrder());
+                    assertTrue(b0.getByteBuffer().order() == ByteOrder.nativeOrder());
+                    NDPosArray tracePositions = new NDPosArray(nYSamples);
+                    NDPosArray samplePositions = new NDPosArray(nZSamples * nYSamples);
+                    for (int j = 0; j < nYSamples; j++) {
+                        tracePositions.set(j, 0.5f, j + 0.5f, 0.5f, 0.5f, 0.5f, 0.5f);
+                        for (int k = 0; k < nZSamples; k++) {
+                            samplePositions.set(j * nYSamples + k, k + 0.5f, j + 0.5f, 0.5f, 0.5f, 0.5f, 0.5f);
+                        }
                     }
-                }
-                try (VolumeDataRequestFloat r_traces = accessManager.requestVolumeTraces(buffer1, DimensionsND.Dimensions_012, 0, 0, tracePositions, InterpolationMethod.Nearest, 0)) {
-                    r_traces.waitForCompletion();
-                }
-
-                ByteBuffer buffer0 = ByteBufferProxy.allocateBuffer(accessManager.getVolumeSamplesBufferSize(nZSamples * nYSamples));
-                assertTrue(buffer0.order() == ByteOrder.nativeOrder());
-                try (VolumeDataRequestFloat r_samples = accessManager.requestVolumeSamples(buffer0, DimensionsND.Dimensions_012, 0, 0, samplePositions, InterpolationMethod.Nearest)) {
-                    r_samples.waitForCompletion();
-                }
-
-                FloatBuffer floatBuffer0 = buffer0.asFloatBuffer();
-                FloatBuffer floatBuffer1 = buffer1.asFloatBuffer();
-                for (int i = 0; i < nZSamples * nYSamples; i++) {
-                    final float f1 = floatBuffer0.get(i);
-                    final float f2 = floatBuffer1.get(i);
-                    assertEquals( " value " + i + " is different", 0, Float.compare(f1, f2));
+                    try (VolumeDataRequestFloat r_traces = accessManager.requestVolumeTraces(b1.getByteBuffer(), DimensionsND.Dimensions_012, 0, 0, tracePositions, InterpolationMethod.Nearest, 0);
+                         VolumeDataRequestFloat r_samples = accessManager.requestVolumeSamples(b0.getByteBuffer(), DimensionsND.Dimensions_012, 0, 0, samplePositions, InterpolationMethod.Nearest)
+                    ) {
+                        r_traces.waitForCompletion();
+                        r_samples.waitForCompletion();
+                        FloatBuffer floatBuffer0 = b0.asFloatBuffer();
+                        FloatBuffer floatBuffer1 = b1.asFloatBuffer();
+                        for (int i = 0; i < nZSamples * nYSamples; i++) {
+                            final float f1 = floatBuffer0.get(i);
+                            final float f2 = floatBuffer1.get(i);
+                            assertEquals(" value " + i + " is different", 0, Float.compare(f1, f2));
+                        }
+                    }
                 }
             }
         }

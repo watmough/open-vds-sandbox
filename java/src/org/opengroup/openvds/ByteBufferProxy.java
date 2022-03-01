@@ -1,5 +1,6 @@
 /*
- * Copyright 2021 The Open Group
+ * Copyright 2022 The Open Group
+ * Copyright 2022 Bluware, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,37 +19,94 @@ package org.opengroup.openvds;
 
 import java.nio.*;
 
-public class ByteBufferProxy {
+public class ByteBufferProxy extends ManagedBase implements AutoCloseable {
 	
 	private ByteBuffer bytebuffer;
 	
 	private int byteoffset;
 
 	public ByteBufferProxy(ByteBuffer bytebuffer, int byteoffset) {
+		super(0);
 		this.bytebuffer = bytebuffer;
 		this.byteoffset = byteoffset;
 	}
 
-	public ByteBufferProxy(int capacity) {
-		this.bytebuffer = allocateBuffer(capacity);
-		this.byteoffset = 0;
-	}
+	private native static long ctorImpl(long capacity);
+	private native ByteBuffer getBufferRefImpl(long native_object);
+	private native void deleteBufferRefImpl(long native_object);
+	private native void dtorImpl(long native_object, boolean is_disposing );
 
 	/**
-	 * Allocate a direct buffer with native byte order.
+	 * Create a ByteBufferProxy backed by a ByteBuffer whose memory will be free'd on close/dispose
 	 * @param capacity The new buffer's capacity, in bytes.
-	 * @return A new direct buffer with native byte order.
 	 */
-	public static ByteBuffer allocateBuffer(long capacity) {
-		return ByteBuffer.allocateDirect((int)capacity).order(ByteOrder.nativeOrder());
+	public ByteBufferProxy(long capacity) {
+		super(ctorImpl(capacity));
+		this.byteoffset = 0;
+		this.bytebuffer = getBufferRefImpl(getNativeObject());
+		this.bytebuffer.order(ByteOrder.nativeOrder());
+		deleteBufferRefImpl(getNativeObject());
+	}
+
+	@Override
+	protected void onDisposing(long native_object, boolean is_disposing) {
+		this.bytebuffer = null;
+		dtorImpl(native_object, is_disposing);
+	}
+
+	@Override
+	public synchronized void dispose() {
+		if (this.bytebuffer != null) {
+			ByteBuffer byteBuffer = this.bytebuffer;
+			this.bytebuffer = null;
+			if (super.isNull()) {
+				// ByteBuffer was not allocated by us, so try cleanup another way.
+				// Cleaner.tryRelease(byteBuffer);
+			} else {
+				super.dispose();
+			}
+		}
+	}
+
+	public void close() {
+		dispose();
 	}
 
 	public ByteBuffer getByteBuffer() {
+		if (this.bytebuffer == null) {
+			throw new RuntimeException("Object has been disposed");
+		}
 		return this.bytebuffer;
 	}
+
+	public static ByteBuffer allocateBuffer(long capacity) {
+		ByteBuffer b = ByteBuffer.allocateDirect((int)capacity);
+		b.order(ByteOrder.nativeOrder());
+		return b;
+	}
 	
-	public int getByteOffset() {
+	int getByteOffset() {
 		return this.byteoffset;
+	}
+	
+	public ShortBuffer asShortBuffer() {
+		return getByteBuffer().asShortBuffer();
+	}
+
+	public IntBuffer asIntBuffer() {
+		return getByteBuffer().asIntBuffer();
+	}
+
+	public LongBuffer asLongBuffer() {
+		return getByteBuffer().asLongBuffer();
+	}
+
+	public FloatBuffer asFloatBuffer() {
+		return getByteBuffer().asFloatBuffer();
+	}
+
+	public DoubleBuffer asDoubleBuffer() {
+		return getByteBuffer().asDoubleBuffer();
 	}
 	
 	public byte get(int offset) {

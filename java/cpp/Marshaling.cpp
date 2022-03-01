@@ -179,3 +179,110 @@ CPPJNI_HandleSharedLibraryException(struct JNIEnv_ *env, class OpenVDS::Exceptio
     CPPJNI_Throw(env, e.what(), JavaExceptionType::Exception);
   }
 }
+
+struct DirectBuffer 
+{
+  jobject m_Buffer;
+  void*   m_Memory;
+
+  DirectBuffer(jlong capacity) : m_Buffer(0), m_Memory(nullptr)
+  {
+    m_Memory = malloc(capacity);
+    if (m_Memory == nullptr)
+    {
+      throw std::bad_alloc();
+    }
+    jobject tmp = Marshaling::GetJNIEnv()->NewDirectByteBuffer(m_Memory, capacity);
+    if (tmp)
+    {
+      m_Buffer = Marshaling::GetJNIEnv()->NewGlobalRef(tmp);
+    }
+  }
+
+  jobject
+  GetBufferGlobalRef()
+  {
+    return m_Buffer;
+  }
+
+  void
+  DeleteBufferGlobalRef()
+  {
+    if (m_Buffer)
+    {
+      jobject buffer = m_Buffer;
+      m_Buffer = 0;
+      Marshaling::GetJNIEnv()->DeleteGlobalRef(buffer);
+    }
+  }
+
+  ~DirectBuffer()
+  {
+    DeleteBufferGlobalRef();
+    free(m_Memory);
+  }
+};
+
+extern "C" {
+
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_ByteBufferProxy_ctorImpl
+  (JNIEnv * env, jclass clazz, jlong capacity)
+{
+  JEnvPushPop
+    stackitem(env);
+
+  CPPJNI_TRY
+  {
+    auto directBuffer = new DirectBuffer(capacity);
+    auto context = new CPPJNIOwningObjectContext_t<DirectBuffer>(directBuffer);
+    auto native_handle = context->handle();
+    return native_handle;
+  }
+  CPPJNI_CATCH
+  return 0;
+}
+
+JNIEXPORT jobject JNICALL Java_org_opengroup_openvds_ByteBufferProxy_getBufferRefImpl
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
+{
+  JEnvPushPop
+    stackitem(env);
+
+  CPPJNI_TRY
+  {
+    auto buffer = CPPJNI_cast<DirectBuffer>(native_handle);
+    return buffer->GetBufferGlobalRef();
+  }
+  CPPJNI_CATCH
+  return 0;
+}
+
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_ByteBufferProxy_deleteBufferRefImpl
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
+{
+  JEnvPushPop
+    stackitem(env);
+
+  CPPJNI_TRY
+  {
+    auto buffer = CPPJNI_cast<DirectBuffer>(native_handle);
+    buffer->DeleteBufferGlobalRef();
+  }
+  CPPJNI_CATCH
+}
+
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_ByteBufferProxy_dtorImpl
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
+{
+  JEnvPushPop
+    stackitem(env);
+
+  CPPJNI_TRY
+  {
+    CPPJNI_destroyHandle<DirectBuffer>(env, native_handle);
+  }
+  CPPJNI_CATCH
+}
+
+}
+
