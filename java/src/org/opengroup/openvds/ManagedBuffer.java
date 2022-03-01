@@ -19,6 +19,9 @@ package org.opengroup.openvds;
 
 import java.nio.*;
 
+/**
+ * This class is intended as a RAII
+ */
 public class ManagedBuffer extends ManagedBase implements AutoCloseable {
 	
 	private ByteBuffer bytebuffer;
@@ -59,12 +62,7 @@ public class ManagedBuffer extends ManagedBase implements AutoCloseable {
 		if (this.bytebuffer != null) {
 			ByteBuffer byteBuffer = this.bytebuffer;
 			this.bytebuffer = null;
-			if (super.isNull()) {
-				// ByteBuffer was not allocated by us, so try cleanup another way.
-				// Cleaner.tryRelease(byteBuffer);
-			} else {
-				super.dispose();
-			}
+			super.dispose();
 		}
 	}
 
@@ -79,12 +77,6 @@ public class ManagedBuffer extends ManagedBase implements AutoCloseable {
 		return this.bytebuffer;
 	}
 
-	public static ByteBuffer allocateBuffer(long capacity) {
-		ByteBuffer b = ByteBuffer.allocateDirect((int)capacity);
-		b.order(ByteOrder.nativeOrder());
-		return b;
-	}
-	
 	int getByteOffset() {
 		return this.byteoffset;
 	}
