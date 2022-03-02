@@ -20,7 +20,10 @@ package org.opengroup.openvds;
 import java.nio.*;
 
 /**
- * This class is intended as a RAII
+ * This class maintains a ByteBuffer with natively allocated memory, intended
+ * for deterministic cleanup (aka try-with-resources). Using the ByteBuffer
+ * obtained from this class after it has been closed/disposed
+ * will result in undefined behavior, most likely crashing your program.
  */
 public class ManagedBuffer extends ManagedBase implements AutoCloseable {
 	
@@ -28,7 +31,7 @@ public class ManagedBuffer extends ManagedBase implements AutoCloseable {
 	
 	private int byteoffset;
 
-	public ManagedBuffer(ByteBuffer bytebuffer, int byteoffset) {
+	ManagedBuffer(ByteBuffer bytebuffer, int byteoffset) {
 		super(0);
 		this.bytebuffer = bytebuffer;
 		this.byteoffset = byteoffset;
@@ -40,7 +43,7 @@ public class ManagedBuffer extends ManagedBase implements AutoCloseable {
 	private native void dtorImpl(long native_object, boolean is_disposing );
 
 	/**
-	 * Create a ByteBufferProxy backed by a ByteBuffer whose memory will be free'd on close/dispose
+	 * Create aManagedBuffer backed by a ByteBuffer whose memory will be free'd on close/dispose
 	 * @param capacity The new buffer's capacity, in bytes.
 	 */
 	public ManagedBuffer(long capacity) {
