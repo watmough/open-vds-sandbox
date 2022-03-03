@@ -1,5 +1,7 @@
 /*
- * Copyright 2022 The Open Group
+ * Copyright 2019 The Open Group
+ * Copyright 2019 INT, Inc.
+ * Copyright 2022 Bluware, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +15,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 package test.org.opengroup.openvds;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
+
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
+import java.util.LinkedList;
+
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.stream.IntStream;
 
 import org.opengroup.openvds.*;
 import org.junit.After;
@@ -230,60 +239,43 @@ public class InMemoryVDSGeneratorTest {
 
      */
 
-    /*
     @Test
-    void testVolumeSubsetVsSampleRequest() throws IOException {
+    public void testVolumeSubsetVsSampleRequest() throws IOException {
         int nXSamples = 60, nYSamples = 60, nZSamples = 60;
-        VolumeDataChannelDescriptor.Format format = FORMAT_R32;
-        MemoryVdsGenerator generator = new MemoryVdsGenerator(nZSamples, nYSamples, nXSamples, format);
-        assertTrue(!generator.isNull());
-        assertTrue(generator.ownHandle());
+        VolumeDataChannelDescriptor.Format format = Format_R32;
+        try (InMemoryVDSGenerator generator = new InMemoryVDSGenerator(nZSamples, nYSamples, nXSamples, format)) {
+            assertNotNull(generator);
+            try (VolumeDataAccessManager accessManager = generator.getAccessManager()) {
+                assertNotNull(accessManager);
 
-        final VolumeDataLayout layout = generator.getLayout();
-        assertTrue(!layout.isNull());
+                final VolumeDataLayout layout = generator.getLayout();
+                assertTrue(!layout.isNull());
 
-        final VolumeDataAccessManager accessManager = generator.getAccessManager();
-        assertTrue(!accessManager.isNull());
+                NDPosArray samplePositions = new NDPosArray(nYSamples * nZSamples);
+                for (int j = 0; j < nYSamples; j++) {
+                    for (int k = 0; k < nZSamples; k++) {
+                        samplePositions.set(k + j * nYSamples, k + 0.5f, j + 0.5f, 0.5f, 0.5f, 0.5f, 0.5f);
+                    }
+                }
+                int[] min = new int[]{0, 0, 0, 0, 0, 0};
+                int[] max = new int[]{nZSamples, nYSamples, 1, 0, 0, 0};
+                try (VolumeDataRequest r_subset = accessManager.requestVolumeSubsetFloat(DimensionsND.Dimensions_012, 0, 0, min, max);
+                     VolumeDataRequest r_samples = accessManager.requestVolumeSamples(DimensionsND.Dimensions_012, 0, 0, samplePositions, InterpolationMethod.Nearest)
+                ) {
+                    r_subset.waitForCompletion();
+                    r_samples.waitForCompletion();
 
-        final FloatBuffer samplePositions = B.createFloatBuffer(nZSamples * nYSamples * VolumeDataAccessManager.Dimensionality_Max);
-        for (int j = 0; j < nYSamples; j++) {
-            for (int k = 0; k < nZSamples; k++) {
-                samplePositions.put(k + 0.5f);
-                samplePositions.put(j + 0.5f);
-                samplePositions.put(0.5f);
-                samplePositions.put(0.5f);
-                samplePositions.put(0.5f);
-                samplePositions.put(0.5f);
+                    FloatBuffer floatBuffer1 = r_subset.getBuffer().asFloatBuffer();
+                    FloatBuffer floatBuffer0 = r_samples.getBuffer().asFloatBuffer();
+                    for (int i = 0; i < nZSamples * nYSamples; i++) {
+                        final float f1 = floatBuffer0.get(i);
+                        final float f2 = floatBuffer1.get(i);
+                        assertEquals(" value " + i + " is different", 0, Float.compare(f1, f2));
+                    }
+                }
             }
         }
-
-        NDBox box = new NDBox(0, 0, 0, 0, 0, 0, nZSamples, nYSamples, 1, 0, 0, 0);
-
-        final FloatBuffer floatBuffer1 = B.createFloatBuffer(nZSamples * nYSamples);
-        final long requestSubsetId = accessManager.requestVolumeSubset(floatBuffer1, DimensionsND.DIMENSIONS_012, 0, 0, box);
-        accessManager.waitForCompletion(requestSubsetId);
-
-        final FloatBuffer floatBuffer0 = B.createFloatBuffer(nZSamples * nYSamples);
-        final long requestID0 = accessManager.requestVolumeSamples(
-                floatBuffer0, DimensionsND.DIMENSIONS_012, 0, 0,
-                samplePositions, nZSamples * nYSamples, InterpolationMethod.NEAREST);
-        accessManager.waitForCompletion(requestID0);
-
-        B.release(samplePositions);
-
-        for (int i = 0; i < nZSamples * nYSamples; i++) {
-            final float f1 = floatBuffer0.get(i);
-            final float f2 = floatBuffer1.get(i);
-            assertEquals(0, Float.compare(f1, f2), " value " + i + " is different");
-        }
-
-        B.release(floatBuffer0, floatBuffer1);
-
-        generator.close();
-        assertTrue(generator.isNull());
     }
-
-*/
 
 /*
     @Test
@@ -371,101 +363,83 @@ public class InMemoryVDSGeneratorTest {
 
      */
 
-/*
     @Test
-    void testVolumeSubsetRequestFloatMultiThread() throws IOException {
+    public void testVolumeSubsetRequestFloatMultiThread() throws IOException {
+        VolumeDataChannelDescriptor.Format format = Format_R32;
+        try (InMemoryVDSGenerator generator = new InMemoryVDSGenerator(60, 60, 60, format)) {
+            assertNotNull(generator);
+            final VolumeDataLayout layout = generator.getLayout();
+            LinkedList<Future> jobs = new LinkedList();
+            final int NB_TEST = 10000;
+            final int NB_THREAD = 16;
 
-        VolumeDataChannelDescriptor.Format format = FORMAT_R32;
-        final MemoryVdsGenerator generator = new MemoryVdsGenerator(60, 60, 60, format);
+            int nZSamples = layout.getDimensionNumSamples(0);
+            int nYSamples = layout.getDimensionNumSamples(1);
+            int nXSamples = layout.getDimensionNumSamples(2);
 
-        assertTrue(!generator.isNull());
-        assertTrue(generator.ownHandle());
-
-        final VolumeDataLayout layout = generator.getLayout();
-        assertTrue(!layout.isNull());
-
-        LinkedList<Future> jobs = new LinkedList();
-        final int NB_TEST = 10000;
-        final int NB_THREAD = 16;
-//        FloatBuffer[] samplesBuffers0 = IntStream.range(0, NB_THREAD).mapToObj(i -> BufferUtils.createFloatBuffer(nZSamples * nYSamples)).toArray(FloatBuffer[]::new);
-//        FloatBuffer[] samplesBuffers1 = IntStream.range(0, NB_THREAD).mapToObj(i -> BufferUtils.createFloatBuffer(nZSamples * nYSamples)).toArray(FloatBuffer[]::new);
-
-        int nZSamples = layout.getDimensionNumSamples(0);
-        int nYSamples = layout.getDimensionNumSamples(1);
-        int nXSamples = layout.getDimensionNumSamples(2);
-
-        final ExecutorService executorService = Executors.newFixedThreadPool(NB_THREAD);
-        IntStream
-                .range(0, NB_TEST)
-                .mapToObj(iTest -> {
-                    int iSlice = iTest % nXSamples;
-                    return new NDBox(
-                            0, 0, iSlice, 0, 0, 0,
-                            nZSamples, nYSamples, iSlice + 1, 0, 0, 0);
-                })
-                .forEach(box -> {
-                            if (jobs.size() >= NB_THREAD) {
-                                final Future future = jobs.pollFirst();
-                                try {
-                                    future.get();
-                                } catch (InterruptedException | ExecutionException e) {
-                                    throw new RuntimeException(e);
+            final ExecutorService executorService = Executors.newFixedThreadPool(NB_THREAD);
+            IntStream
+                    .range(0, NB_TEST)
+                    .mapToObj(iTest -> {
+                        int iSlice = iTest % nXSamples;
+                        return new int[][] {
+                                { 0, 0, iSlice, 0, 0, 0} ,
+                                { nZSamples, nYSamples, iSlice + 1, 0, 0, 0}};
+                    })
+                    .forEach(minmax -> {
+                                int[] min = minmax[0];
+                                int[] max = minmax[1];
+                                if (jobs.size() >= NB_THREAD) {
+                                    final Future future = jobs.pollFirst();
+                                    try {
+                                        future.get();
+                                    } catch (InterruptedException | ExecutionException e) {
+                                        throw new RuntimeException(e);
+                                    }
                                 }
+                                jobs.addLast(executorService.submit(() -> {
+                                    try (VolumeDataAccessManager accessManager = generator.getAccessManager()) {
+                                        assertTrue(!accessManager.isNull());
+                                        try (VolumeDataRequestFloat r_subset1 = accessManager.requestVolumeSubsetFloat(DimensionsND.Dimensions_012, 0, 0, min, max);
+                                             VolumeDataRequestFloat r_subset0 = accessManager.requestVolumeSubsetFloat(DimensionsND.Dimensions_012, 0, 0, min, max, layout.getChannelNoValue(0))
+                                        ) {
+                                            waitComplationAndDisplayProgress(r_subset1);
+                                            waitComplationAndDisplayProgress(r_subset0);
+                                            FloatBuffer floatBuffer1 = r_subset1.getFloatBuffer();
+                                            FloatBuffer floatBuffer0 = r_subset0.getFloatBuffer();
+                                            for (int i = 0; i < nZSamples * nYSamples; i++) {
+                                                final float f1 = floatBuffer0.get(i);
+                                                final float f2 = floatBuffer1.get(i);
+                                                assertEquals(" value " + i + " is different", 0, Float.compare(f1, f2));
+                                            }
+//                                            System.out.println("Done " + r_subset0.requestID() + " " + r_subset1.requestID());
+//                                            System.out.flush();
+                                        }
+                                    }
+                                    return null;
+                                }));
                             }
-                            jobs.addLast(executorService.submit(() -> {
-//                                final FloatBuffer floatBuffer1 = samplesBuffers0[box.getMin()[2] % NB_THREAD];
-//                                final FloatBuffer floatBuffer0 = samplesBuffers1[box.getMin()[2] % NB_THREAD];
-                                final FloatBuffer floatBuffer1 = BufferUtils.createFloatBuffer(nZSamples * nYSamples);
-                                final FloatBuffer floatBuffer0 = BufferUtils.createFloatBuffer(nZSamples * nYSamples);
-                                final VolumeDataAccessManager accessManager = generator.getAccessManager();
-                                assertTrue(!accessManager.isNull());
-//                                synchronized (accessManager) {
-                                final long requestID1 = accessManager.requestVolumeSubset(
-                                        floatBuffer1, DimensionsND.DIMENSIONS_012, 0, 0, box);
-                                final long requestID0 = accessManager.requestVolumeSubset(
-                                        floatBuffer0, DimensionsND.DIMENSIONS_012, 0, 0, box, layout.getChannelNoValue(0));
-
-                                waitComplationAndDisplayProgress(accessManager, requestID1);
-                                waitComplationAndDisplayProgress(accessManager, requestID0);
-
-                                for (int i = 0; i < nZSamples * nYSamples; i++) {
-                                    final float f1 = floatBuffer0.get(i);
-                                    final float f2 = floatBuffer1.get(i);
-                                    assertEquals(0, Float.compare(f1, f2), " value " + i + " is different");
-                                }
-
-                                B.release(floatBuffer0, floatBuffer1);
-
-//                                System.out.println("Done " + requestID0 + " " + requestID1);
-//                                System.out.flush();
-                                return null;
-                            }));
-                        }
-                );
-        jobs.forEach(future -> {
-            try {
-                future.get();
-            } catch (InterruptedException | ExecutionException e) {
-                throw new RuntimeException(e);
-            }
-        });
-
-        executorService.shutdown();
-        generator.close();
-        assertTrue(generator.isNull());
-    }
-
-    private static void waitComplationAndDisplayProgress(VolumeDataAccessManager accessManager, long request) {
-        while (!accessManager.waitForCompletion(request, 1000)) {
-            if (accessManager.isCanceled(request)) throw new RuntimeException("Cancelled job");
-
-            // Timeout, so let display progress
-            final float completionFactor = accessManager.getCompletionFactor(request);
-            System.out.println("Completion " + request + " : " + completionFactor * 100. + " %");
+                    );
+            jobs.forEach(future -> {
+                try {
+                    future.get();
+                } catch (InterruptedException | ExecutionException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            executorService.shutdown();
         }
     }
 
- */
+    private static void waitComplationAndDisplayProgress(VolumeDataRequest request) {
+        while (!request.waitForCompletion(1000)) {
+            if (request.isCanceled()) throw new RuntimeException("Cancelled job");
+
+            // Timeout, so let display progress
+            final float completionFactor = request.getCompletionFactor();
+            System.out.println("Completion " + request + " : " + completionFactor * 100. + " %");
+        }
+    }
 
     @Test
     public void testVolumeSubsetRequestFloat() throws IOException {
