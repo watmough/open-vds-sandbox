@@ -1293,6 +1293,33 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return GetVolumeSubsetBufferSizeImpl(getNativeObject(), minVoxelCoordinates, maxVoxelCoordinates, format.value(), LOD, channel);
     }
 
+    /**
+     * Compute the buffer size (in bytes) for a volume subset request.
+     * 
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @param format Voxel format of the destination buffer.
+     * @param LOD The LOD level the requested data is read from.
+     * @return The buffer size needed.
+     */
+
+    public long getVolumeSubsetBufferSize(int[] minVoxelCoordinates, int[] maxVoxelCoordinates, VolumeDataChannelDescriptor.Format format, int LOD) {
+        return getVolumeSubsetBufferSize(minVoxelCoordinates, maxVoxelCoordinates, format, LOD, /*channel=*/0);
+    }
+
+    /**
+     * Compute the buffer size (in bytes) for a volume subset request.
+     * 
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @param format Voxel format of the destination buffer.
+     * @return The buffer size needed.
+     */
+
+    public long getVolumeSubsetBufferSize(int[] minVoxelCoordinates, int[] maxVoxelCoordinates, VolumeDataChannelDescriptor.Format format) {
+        return getVolumeSubsetBufferSize(minVoxelCoordinates, maxVoxelCoordinates, format, /*LOD=*/0, /*channel=*/0);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD RequestVolumeSubset std::shared_ptr<OpenVDS::VolumeDataRequest> (void *, int64_t, OpenVDS::DimensionsND, int, int, int const (&)[6], int const (&)[6], OpenVDS::VolumeDataChannelDescriptor::Format, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long RequestVolumeSubsetImpl(long native_object, ByteBuffer buffer, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, long format, float replacementNoValue, boolean use_replacementNoValue);
 
@@ -1313,6 +1340,23 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         if (minVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"minVoxelCoordinates\" must have length 6");
         if (maxVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"maxVoxelCoordinates\" must have length 6");
         return VolumeDataRequest.fromNativeObject(RequestVolumeSubsetImpl(getNativeObject(), buffer, dimensionsND.value(), LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, format.value(), replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+    /**
+     * Request a subset of the input VDS.
+     * 
+     * @param buffer Pointer to a preallocated buffer holding at least as many elements of format as indicated by minVoxelCoordinates and maxVoxelCoordinates.
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @param format Voxel format of the destination buffer.
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+
+    public VolumeDataRequest requestVolumeSubset(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, VolumeDataChannelDescriptor.Format format) {
+        return requestVolumeSubset(buffer, dimensionsND, LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, format, /*replacementNoValue=*/null);
     }
 
     ///AUTOGEN-OK: CXX_METHOD RequestVolumeSubset1Bit std::shared_ptr<OpenVDS::VolumeDataRequest_t<unsigned char>> (unsigned char *, int64_t, OpenVDS::DimensionsND, int, int, int const (&)[6], int const (&)[6]) FUNCTIONPROTO
@@ -1356,6 +1400,22 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeDataRequest.fromNativeObject(RequestVolumeSubset3Impl(getNativeObject(), dimensionsND.value(), LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, format.value(), replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
+    /**
+     * Request a subset of the input VDS, using an automatically allocated buffer.
+     * 
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @param format Voxel format of the destination buffer.
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+
+    public VolumeDataRequest requestVolumeSubset(DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, VolumeDataChannelDescriptor.Format format) {
+        return requestVolumeSubset(dimensionsND, LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, format, /*replacementNoValue=*/null);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD RequestVolumeSubset1Bit std::shared_ptr<OpenVDS::VolumeDataRequest_t<unsigned char>> (OpenVDS::DimensionsND, int, int, int const (&)[6], int const (&)[6]) FUNCTIONPROTO
     native private long RequestVolumeSubset1Bit2Impl(long native_object, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates);
 
@@ -1395,6 +1455,35 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return GetProjectedVolumeSubsetBufferSizeImpl(getNativeObject(), minVoxelCoordinates, maxVoxelCoordinates, projectedDimensions.value(), format.value(), LOD, channel);
     }
 
+    /**
+     * Compute the buffer size (in bytes) for a projected volume subset request.
+     * 
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @param projectedDimensions The 2D dimension group that the plane in the source dimensiongroup is projected into. It must be a 2D subset of the source dimensions.
+     * @param format Voxel format of the destination buffer.
+     * @param LOD The LOD level the requested data is read from.
+     * @return The buffer size needed.
+     */
+
+    public long getProjectedVolumeSubsetBufferSize(int[] minVoxelCoordinates, int[] maxVoxelCoordinates, DimensionsND projectedDimensions, VolumeDataChannelDescriptor.Format format, int LOD) {
+        return getProjectedVolumeSubsetBufferSize(minVoxelCoordinates, maxVoxelCoordinates, projectedDimensions, format, LOD, /*channel=*/0);
+    }
+
+    /**
+     * Compute the buffer size (in bytes) for a projected volume subset request.
+     * 
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @param projectedDimensions The 2D dimension group that the plane in the source dimensiongroup is projected into. It must be a 2D subset of the source dimensions.
+     * @param format Voxel format of the destination buffer.
+     * @return The buffer size needed.
+     */
+
+    public long getProjectedVolumeSubsetBufferSize(int[] minVoxelCoordinates, int[] maxVoxelCoordinates, DimensionsND projectedDimensions, VolumeDataChannelDescriptor.Format format) {
+        return getProjectedVolumeSubsetBufferSize(minVoxelCoordinates, maxVoxelCoordinates, projectedDimensions, format, /*LOD=*/0, /*channel=*/0);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD RequestProjectedVolumeSubset std::shared_ptr<OpenVDS::VolumeDataRequest> (void *, int64_t, OpenVDS::DimensionsND, int, int, int const (&)[6], int const (&)[6], const OpenVDS::Vector<float, 4> &, OpenVDS::DimensionsND, OpenVDS::VolumeDataChannelDescriptor::Format, OpenVDS::InterpolationMethod, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long RequestProjectedVolumeSubsetImpl(long native_object, ByteBuffer buffer, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, ByteBuffer voxelPlane, long voxelPlane_byteoffset, long projectedDimensions, long format, long interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
 
@@ -1420,6 +1509,26 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeDataRequest.fromNativeObject(RequestProjectedVolumeSubsetImpl(getNativeObject(), buffer, dimensionsND.value(), LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, voxelPlane.getBackingByteBuffer(), voxelPlane.getByteBufferOffset(), projectedDimensions.value(), format.value(), interpolationMethod.value(), replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
+    /**
+     * Request a subset projected from an arbitrary 3D plane through the subset onto one of the sides of the subset.
+     * 
+     * @param buffer Pointer to a preallocated buffer holding at least as many elements of format as indicated by minVoxelCoordinates and maxVoxelCoordinates for the projected dimensions.
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @param voxelPlane The plane equation for the projection from the dimension source to the projected dimensions (which must be a 2D subset of the source dimensions).
+     * @param projectedDimensions The 2D dimension group that the plane in the source dimensiongroup is projected into. It must be a 2D subset of the source dimensions.
+     * @param interpolationMethod Interpolation method to use when sampling the buffer.
+     * @param format Voxel format of the destination buffer.
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+
+    public VolumeDataRequest requestProjectedVolumeSubset(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, FloatVector4 voxelPlane, DimensionsND projectedDimensions, VolumeDataChannelDescriptor.Format format, InterpolationMethod interpolationMethod) {
+        return requestProjectedVolumeSubset(buffer, dimensionsND, LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, voxelPlane, projectedDimensions, format, interpolationMethod, /*replacementNoValue=*/null);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD RequestProjectedVolumeSubset std::shared_ptr<OpenVDS::VolumeDataRequest> (OpenVDS::DimensionsND, int, int, int const (&)[6], int const (&)[6], const OpenVDS::Vector<float, 4> &, OpenVDS::DimensionsND, OpenVDS::VolumeDataChannelDescriptor::Format, OpenVDS::InterpolationMethod, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long RequestProjectedVolumeSubset2Impl(long native_object, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, ByteBuffer voxelPlane, long voxelPlane_byteoffset, long projectedDimensions, long format, long interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
 
@@ -1442,6 +1551,25 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         if (minVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"minVoxelCoordinates\" must have length 6");
         if (maxVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"maxVoxelCoordinates\" must have length 6");
         return VolumeDataRequest.fromNativeObject(RequestProjectedVolumeSubset2Impl(getNativeObject(), dimensionsND.value(), LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, voxelPlane.getBackingByteBuffer(), voxelPlane.getByteBufferOffset(), projectedDimensions.value(), format.value(), interpolationMethod.value(), replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+    /**
+     * Request a subset projected from an arbitrary 3D plane through the subset onto one of the sides of the subset, using an automatically allocated buffer.
+     * 
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param minVoxelCoordinates The minimum voxel coordinates to request in each dimension (inclusive).
+     * @param maxVoxelCoordinates The maximum voxel coordinates to request in each dimension (exclusive).
+     * @param voxelPlane The plane equation for the projection from the dimension source to the projected dimensions (which must be a 2D subset of the source dimensions).
+     * @param projectedDimensions The 2D dimension group that the plane in the source dimensiongroup is projected into. It must be a 2D subset of the source dimensions.
+     * @param format Voxel format of the destination buffer.
+     * @param interpolationMethod Interpolation method to use when sampling the buffer.
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+
+    public VolumeDataRequest requestProjectedVolumeSubset(DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, FloatVector4 voxelPlane, DimensionsND projectedDimensions, VolumeDataChannelDescriptor.Format format, InterpolationMethod interpolationMethod) {
+        return requestProjectedVolumeSubset(dimensionsND, LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, voxelPlane, projectedDimensions, format, interpolationMethod, /*replacementNoValue=*/null);
     }
 
     ///AUTOGEN-OK: CXX_METHOD GetVolumeSamplesBufferSize int64_t (int, int) FUNCTIONPROTO
