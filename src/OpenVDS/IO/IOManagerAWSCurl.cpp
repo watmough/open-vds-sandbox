@@ -56,6 +56,25 @@ static const std::string& empty_sha256()
   return empty;
 }
 
+static bool signRequest(Aws::Crt::Auth::Sigv4HttpRequestSigner &requestSign, Aws::Crt::Auth::AwsSigningConfig &signingConfig, std::shared_ptr<Aws::Crt::Http::HttpRequest> &request)
+{
+  std::mutex mutex;
+  std::unique_lock<std::mutex> lock(mutex);
+  std::condition_variable condition;
+  bool done = false;
+  int errorCode = 0;
+
+  requestSign.SignRequest(request, signingConfig, [&errorCode, &done, &condition](const std::shared_ptr<Aws::Crt::Http::HttpRequest>& request, int code)
+    {
+      errorCode = code;
+      done = true;
+      condition.notify_one();
+    });
+  condition.wait(lock, [&done] { return done; });
+
+  return errorCode == AWS_ERROR_SUCCESS;
+}
+
 static std::string GetBucketLocation(const std::shared_ptr<Aws::Crt::Auth::ICredentialsProvider> &credsProvider, const std::string &bucket, CurlHandler &curlHandler)
 {
   Aws::Crt::Auth::AwsSigningConfig signingConfig;
@@ -72,12 +91,7 @@ static std::string GetBucketLocation(const std::shared_ptr<Aws::Crt::Auth::ICred
   crtrequest->AddHeader(createHttpHeader("Host", host));
 
   Aws::Crt::Auth::Sigv4HttpRequestSigner requestSign;
-  int errorCode = 0;
-  requestSign.SignRequest(crtrequest, signingConfig, [&errorCode](const std::shared_ptr<Aws::Crt::Http::HttpRequest>& request, int code)
-  {
-    errorCode = code;
-  });
-  if (errorCode != AWS_ERROR_SUCCESS)
+  if (!signRequest(requestSign, signingConfig, crtrequest))
     return "";
 
   std::vector<std::string> headers;
@@ -187,6 +201,11 @@ IOManagerAWSCurl::IOManagerAWSCurl(const AWSOpenOptions& openOptions, Error& err
     m_host = fmt::format("{}.s3.{}.amazonaws.com", m_bucket, m_region);
   }
 
+  if (m_region.empty() && openOptions.endpointOverride.empty())
+  {
+    error.string = fmt::format("Could not resolve region for s3://{}", m_bucket);
+    error.code = -1;
+  }
 }
 
 IOManagerAWSCurl::~IOManagerAWSCurl()
@@ -228,11 +247,8 @@ static std::vector<std::string> signRequest(const std::string& host, const std::
       crtrequest->AddHeader(createHttpHeader(h.first, h.second));
  
     Aws::Crt::Auth::Sigv4HttpRequestSigner requestSign;
-    requestSign.SignRequest(crtrequest, signingConfig, [](const std::shared_ptr<Aws::Crt::Http::HttpRequest>& request, int code)
-    {
-      if (code != AWS_ERROR_SUCCESS)
+    if (!signRequest(requestSign, signingConfig, crtrequest))
         throw std::runtime_error("unexpected AWS signing failure");
-    });
 
     std::vector<std::string> headers;
     int headerCount = (int)crtrequest->GetHeaderCount();
