@@ -47,6 +47,7 @@ VolumeDataLayer::VolumeDataLayer(VolumeDataPartition const &volumeDataPartition,
   , m_lowerLOD(lowerLOD)
   , m_higherLOD(nullptr)
   , m_remapFromLayer(nullptr)
+  , m_writeLocked(false)
   , m_produceStatus(ProduceStatus_Unavailable)
 {
   assert(volumeDataLayout);
@@ -333,6 +334,42 @@ float VolumeDataLayer::GetIntegerScale() const
 float VolumeDataLayer::GetIntegerOffset() const
 {
   return m_volumeDataLayout->GetChannelIntegerOffset(m_channel);
+}
+
+bool
+VolumeDataLayer::AcquireWriteLock() const
+{
+  std::unique_lock<std::mutex>
+    lock(m_volumeDataLayout->m_layerWriteLockMutex);
+
+  if(m_writeLocked)
+  {
+    return false;
+  }
+  else
+  {
+    m_writeLocked = true;
+    return true;
+  }
+}
+
+void
+VolumeDataLayer::ReleaseWriteLock() const
+{
+  std::unique_lock<std::mutex>
+    lock(m_volumeDataLayout->m_layerWriteLockMutex);
+
+  assert(m_writeLocked);
+  m_writeLocked = false;
+}
+
+bool
+VolumeDataLayer::IsWriteLocked() const
+{
+  std::unique_lock<std::mutex>
+    lock(m_volumeDataLayout->m_layerWriteLockMutex);
+
+  return m_writeLocked;
 }
 
 void VolumeDataLayer::SetProduceStatus(ProduceStatus produceStatus)

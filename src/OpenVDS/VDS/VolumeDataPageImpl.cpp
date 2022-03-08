@@ -382,6 +382,9 @@ void* VolumeDataPageImpl::GetWritableBuffer(int(&pitch)[Dimensionality_Max])
     throw std::runtime_error("Trying to get a writable buffer from a read-only volume data page accessor");
   }
 
+  // This will throw if we can't acquire the write lock
+  m_volumeDataPageAccessor->AcquireLayerWriteLock();
+
   return GetBufferInternal(pitch, true);
 }
 void VolumeDataPageImpl::UpdateWrittenRegion(const int(&writtenMin)[Dimensionality_Max], const int(&writtenMax)[Dimensionality_Max])

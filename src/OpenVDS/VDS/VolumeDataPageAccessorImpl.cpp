@@ -46,6 +46,7 @@ VolumeDataPageAccessorImpl::VolumeDataPageAccessorImpl(VolumeDataAccessManagerIm
   , m_references(1)
   , m_isReadWrite(isReadWrite)
   , m_isCommitInProgress(false)
+  , m_isLayerWriteLocked(false)
   , m_lastUsed(std::chrono::steady_clock::now())
 {
 }
@@ -171,18 +172,6 @@ VolumeDataPage* VolumeDataPageAccessorImpl::CreatePage(int64_t chunk)
     return nullptr;
   }
 
-  if (m_layer->GetProduceStatus() == VolumeDataLayer::ProduceStatus_Unavailable)
-  {
-    fprintf(stderr, "The accessed dimension group or channel is unavailable (check produce status on VDS before accessing data)");
-    return nullptr;
-  }
-
-  auto page_it = std::find_if(m_pages.begin(), m_pages.end(), [chunk](VolumeDataPageImpl *page)->bool { return page->GetChunkIndex() == chunk; });
-  if(page_it != m_pages.end())
-  {
-    throw InvalidOperation("Cannot create a page that already exists");
-  }
-
   // Wait for commit to finish before inserting a new page
   while(m_isCommitInProgress)
   {
@@ -191,6 +180,15 @@ VolumeDataPage* VolumeDataPageAccessorImpl::CreatePage(int64_t chunk)
     {
       return nullptr;
     }
+  }
+
+  // This will throw if we can't acquire the write lock
+  AcquireLayerWriteLock();
+
+  auto page_it = std::find_if(m_pages.begin(), m_pages.end(), [chunk](VolumeDataPageImpl *page)->bool { return page->GetChunkIndex() == chunk; });
+  if(page_it != m_pages.end())
+  {
+    throw InvalidOperation("Cannot create a page that already exists");
   }
 
   // Create a new page
@@ -453,48 +451,47 @@ void VolumeDataPageAccessorImpl::CancelPreparedReadPage(VolumeDataPage* page)
   
 void VolumeDataPageAccessorImpl::CopyPage(int64_t chunkIndex, VolumeDataPageAccessor &source)
 {
-  std::unique_lock<std::mutex> pageListMutexLock(m_pagesMutex);
-
   if (!m_layer)
   {
-    Error error;
-    error.code = -1;
-    error.string = "CopyPage missing layer";
-
-    m_accessManager->AddUploadError(error, fmt::format("Chunk: {}", chunkIndex));
     return;
   }
 
-  if (m_layer->GetProduceStatus() == VolumeDataLayer::ProduceStatus_Unavailable)
+  auto const &sourceVolumeDataPageAccessor = static_cast<VolumeDataPageAccessorImpl const &>(source);
+
+  if(!sourceVolumeDataPageAccessor.m_layer || (sourceVolumeDataPageAccessor.m_layer->GetProduceStatus() == VolumeDataLayer::ProduceStatus_Unavailable))
   {
-    Error error;
-    error.code = -1;
-    error.string = "CopyPage The target dimension group or channel is unavailable (check produce status on VDS before accessing data)";
-    m_accessManager->AddUploadError(error, fmt::format("Chunk: {}, Channel: {} LOD: {}", chunkIndex, m_layer->GetChannelIndex(), m_layer->GetLOD()));
-    return;
+    throw InvalidOperation("The source volume data page accessor is not valid");
   }
 
-#ifndef NDEBUG
-  bool page_exists = false;
-  for (auto page_it = m_pages.begin(); page_it != m_pages.end(); ++page_it)
+  if(!(static_cast<VolumeDataPartition const &>(*sourceVolumeDataPageAccessor.m_layer) == static_cast<VolumeDataPartition const &>(*m_layer)))
   {
-    if ((*page_it)->GetChunkIndex() == chunkIndex)
-    {
-      page_exists = true;
-    }
+    throw InvalidOperation("The source volume data page accessor layout is not compatible with the layout of this volume data page accessor");
   }
-  if (page_exists)
-    fmt::print(stderr, "Warning: Copying chunk with existing Page instance.");
-#endif
-  auto sourceImpl = static_cast<VolumeDataPageAccessorImpl*>(&source);
+
+  if(!IsReadWrite())
+  {
+    throw InvalidOperation("Trying to copy a page to a read-only volume data page accessor");
+  }
+
   VolumeDataChunk chunk = m_layer->GetChunkFromIndex(chunkIndex);
-  m_accessManager->AddCopyPageJob(chunk, *this, *sourceImpl);
+  m_accessManager->AddCopyPageJob(chunk, *this, sourceVolumeDataPageAccessor);
   m_pagesWritten++;
 }
 
 VolumeDataPage* VolumeDataPageAccessorImpl::ReadPage(int64_t chunk)
 {
+  if(!m_layer)
+  {
+    return nullptr;
+  }
+
+  if(!m_isLayerWriteLocked && m_layer->IsWriteLocked())
+  {
+    throw InvalidOperation("Invalid read from write locked layer, please make sure all previously created VolumeDataPageAccessors have committed their writes.");
+  }
+
   Error error;
+
   VolumeDataPage *page = PrepareReadPage(chunk, error);
   if (page)
   {
@@ -621,6 +618,23 @@ int64_t VolumeDataPageAccessorImpl::RequestWritePage(int64_t chunk, const DataBl
 
   return m_accessManager->GetVolumeDataStore()->WriteChunk({ m_layer, chunk }, serializedData, metadata);
 }
+
+/////////////////////////////////////////////////////////////////////////////
+// AcquireLayerWriteLock
+
+void
+VolumeDataPageAccessorImpl::AcquireLayerWriteLock()
+{
+  if(!m_isLayerWriteLocked)
+  {
+    if(!m_layer->AcquireWriteLock())
+    {
+      throw InvalidOperation("Couldn't acquire write lock, please make sure all previously created VolumeDataPageAccessors have committed their writes.");
+    }
+    m_isLayerWriteLocked = true;
+  }
+}
+
 /////////////////////////////////////////////////////////////////////////////
 // Commit
 
@@ -668,6 +682,15 @@ void VolumeDataPageAccessorImpl::Commit()
       page->WriteBack(m_layer, pageListMutexLock);
       m_pagesWritten++;
     }
+  }
+
+  if(m_isLayerWriteLocked)
+  {
+    if(m_layer)
+    {
+      m_layer->ReleaseWriteLock();
+    }
+    m_isLayerWriteLocked = false;
   }
 
   m_isCommitInProgress = false;

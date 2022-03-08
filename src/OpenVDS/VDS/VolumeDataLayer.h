@@ -71,7 +71,9 @@ private:
   VolumeDataLayer * m_lowerLOD;
   VolumeDataLayer * m_higherLOD;
 
- mutable const VolumeDataLayer * m_remapFromLayer;
+  mutable const VolumeDataLayer * m_remapFromLayer;
+
+  mutable bool  m_writeLocked;
 
   ProduceStatus m_produceStatus;
 
@@ -207,6 +209,10 @@ public:
   float GetIntegerScale() const;
 
   float GetIntegerOffset() const;
+
+  bool AcquireWriteLock() const;
+  void ReleaseWriteLock() const;
+  bool IsWriteLocked() const;
 
   void SetProduceStatus(ProduceStatus produceStatus);
 };

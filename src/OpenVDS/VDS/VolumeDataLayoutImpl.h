@@ -75,6 +75,9 @@ class VolumeDataLayoutImpl : public VolumeDataLayout
                  m_remapInfoMutex;
   mutable bool   m_hasRemapInfo;
 
+  mutable std::mutex
+                 m_layerWriteLockMutex;
+
   VolumeDataLayer const *FindLayerToRemapFrom(VolumeDataLayer const *volumeDataLayer) const;
   void             InvalidateRemapInfoNoLock() const;
 

@@ -641,7 +641,7 @@ static bool isPureCopy(const VolumeDataChunk &a, const VolumeDataChunk &b)
   return false;
 }
 
-void VolumeDataAccessManagerImpl::AddCopyPageJob(VolumeDataChunk& chunk, VolumeDataPageAccessorImpl &destination, VolumeDataPageAccessorImpl &source)
+void VolumeDataAccessManagerImpl::AddCopyPageJob(VolumeDataChunk& chunk, VolumeDataPageAccessorImpl &destination, VolumeDataPageAccessorImpl const &source)
 {
   Error error;
   VolumeDataChunk sourceChunk = { source.GetLayer(), chunk.index };

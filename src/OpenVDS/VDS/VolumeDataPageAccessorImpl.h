@@ -49,6 +49,7 @@ private:
   std::atomic_int m_references;
   bool m_isReadWrite;
   bool m_isCommitInProgress;
+  bool m_isLayerWriteLocked;
   std::atomic<std::chrono::time_point<std::chrono::steady_clock>> m_lastUsed;
   std::list<VolumeDataPageImpl *> m_pages;
   std::condition_variable m_pageReadCondition;
@@ -97,6 +98,7 @@ public:
   VolumeDataPage *ReadPageAtPosition(const int (&position)[Dimensionality_Max]) override;
  
   int64_t RequestWritePage(int64_t chunk, const DataBlock &dataBlock, const std::vector<uint8_t> &data, uint64_t hash);
+  void AcquireLayerWriteLock();
 
   void  Commit() override;
 
