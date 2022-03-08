@@ -38,7 +38,7 @@ public class GlobalState extends ManagedBase {
      * @return Global number of bytes downloaded from the connection. This does not include any http header data.
      */
     public long getBytesDownloaded(OpenOptions.ConnectionType connectionType) {
-        return GetBytesDownloadedImpl(getNativeObject(), connectionType.value());
+        return GetBytesDownloadedImpl(getNativeObject(), ManagedBase.requireNonNull(connectionType, "connectionType may not be null").value());
     }
 
     ///AUTOGEN-OK: CXX_METHOD GetChunksDownloaded uint64_t (OpenVDS::OpenOptions::ConnectionType) FUNCTIONPROTO
@@ -51,7 +51,7 @@ public class GlobalState extends ManagedBase {
      * @return Number of chunks downloaded.
      */
     public long getChunksDownloaded(OpenOptions.ConnectionType connectionType) {
-        return GetChunksDownloadedImpl(getNativeObject(), connectionType.value());
+        return GetChunksDownloadedImpl(getNativeObject(), ManagedBase.requireNonNull(connectionType, "connectionType may not be null").value());
     }
 
     ///AUTOGEN-OK: CXX_METHOD GetBytesDecompressed uint64_t (OpenVDS::OpenOptions::ConnectionType) FUNCTIONPROTO
@@ -67,7 +67,7 @@ public class GlobalState extends ManagedBase {
      * @return Amount of decompressed bytes served the process.
      */
     public long getBytesDecompressed(OpenOptions.ConnectionType connectionType) {
-        return GetBytesDecompressedImpl(getNativeObject(), connectionType.value());
+        return GetBytesDecompressedImpl(getNativeObject(), ManagedBase.requireNonNull(connectionType, "connectionType may not be null").value());
     }
 
     ///AUTOGEN-OK: CXX_METHOD GetChunksDecompressed uint64_t (OpenVDS::OpenOptions::ConnectionType) FUNCTIONPROTO
@@ -80,7 +80,7 @@ public class GlobalState extends ManagedBase {
      * @return Number of chunks decompressed.
      */
     public long getChunksDecompressed(OpenOptions.ConnectionType connectionType) {
-        return GetChunksDecompressedImpl(getNativeObject(), connectionType.value());
+        return GetChunksDecompressedImpl(getNativeObject(), ManagedBase.requireNonNull(connectionType, "connectionType may not be null").value());
     }
 
     GlobalState(long nativeobject) {

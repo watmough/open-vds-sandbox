@@ -36,7 +36,7 @@ public class MetadataReadAccess extends ManagedBase {
      * 
      */
     public boolean isMetadataIntAvailable(String category, String name) {
-        return IsMetadataIntAvailableImpl(getNativeObject(), category, name);
+        return IsMetadataIntAvailableImpl(getNativeObject(), ManagedBase.requireNonNull(category, "category may not be null"), ManagedBase.requireNonNull(name, "name may not be null"));
     }
 
     ///AUTOGEN-OK: CXX_METHOD IsMetadataIntVector2Available bool (const char *, const char *) const FUNCTIONPROTO
@@ -47,7 +47,7 @@ public class MetadataReadAccess extends ManagedBase {
      * 
      */
     public boolean isMetadataIntVector2Available(String category, String name) {
-        return IsMetadataIntVector2AvailableImpl(getNativeObject(), category, name);
+        return IsMetadataIntVector2AvailableImpl(getNativeObject(), ManagedBase.requireNonNull(category, "category may not be null"), ManagedBase.requireNonNull(name, "name may not be null"));
     }
 
     ///AUTOGEN-OK: CXX_METHOD IsMetadataIntVector3Available bool (const char *, const char *) const FUNCTIONPROTO
@@ -58,7 +58,7 @@ public class MetadataReadAccess extends ManagedBase {
      * 
      */
     public boolean isMetadataIntVector3Available(String category, String name) {
-        return IsMetadataIntVector3AvailableImpl(getNativeObject(), category, name);
+        return IsMetadataIntVector3AvailableImpl(getNativeObject(), ManagedBase.requireNonNull(category, "category may not be null"), ManagedBase.requireNonNull(name, "name may not be null"));
     }
 
     ///AUTOGEN-OK: CXX_METHOD IsMetadataIntVector4Available bool (const char *, const char *) const FUNCTIONPROTO
@@ -69,7 +69,7 @@ public class MetadataReadAccess extends ManagedBase {
      * 
      */
     public boolean isMetadataIntVector4Available(String category, String name) {
-        return IsMetadataIntVector4AvailableImpl(getNativeObject(), category, name);
+        return IsMetadataIntVector4AvailableImpl(getNativeObject(), ManagedBase.requireNonNull(category, "category may not be null"), ManagedBase.requireNonNull(name, "name may not be null"));
     }
 
     ///AUTOGEN-OK: CXX_METHOD IsMetadataFloatAvailable bool (const char *, const char *) const FUNCTIONPROTO
@@ -80,7 +80,7 @@ public class MetadataReadAccess extends ManagedBase {
      * 
      */
     public boolean isMetadataFloatAvailable(String category, String name) {
-        return IsMetadataFloatAvailableImpl(getNativeObject(), category, name);
+        return IsMetadataFloatAvailableImpl(getNativeObject(), ManagedBase.requireNonNull(category, "category may not be null"), ManagedBase.requireNonNull(name, "name may not be null"));
     }
 
     ///AUTOGEN-OK: CXX_METHOD IsMetadataFloatVector2Available bool (const char *, const char *) const FUNCTIONPROTO
@@ -91,7 +91,7 @@ public class MetadataReadAccess extends ManagedBase {
      * 
      */
     public boolean isMetadataFloatVector2Available(String category, String name) {
-        return IsMetadataFloatVector2AvailableImpl(getNativeObject(), category, name);
+        return IsMetadataFloatVector2AvailableImpl(getNativeObject(), ManagedBase.requireNonNull(category, "category may not be null"), ManagedBase.requireNonNull(name, "name may not be null"));
     }
 
     ///AUTOGEN-OK: CXX_METHOD IsMetadataFloatVector3Available bool (const char *, const char *) const FUNCTIONPROTO
@@ -102,7 +102,7 @@ public class MetadataReadAccess extends ManagedBase {
      * 
      */
     public boolean isMetadataFloatVector3Available(String category, String name) {
-        return IsMetadataFloatVector3AvailableImpl(getNativeObject(), category, name);
+        return IsMetadataFloatVector3AvailableImpl(getNativeObject(), ManagedBase.requireNonNull(category, "category may not be null"), ManagedBase.requireNonNull(name, "name may not be null"));
     }
 
     ///AUTOGEN-OK: CXX_METHOD IsMetadataFloatVector4Available bool (const char *, const char *) const FUNCTIONPROTO
@@ -113,7 +113,7 @@ public class MetadataReadAccess extends ManagedBase {
      * 
      */
     public boolean isMetadataFloatVector4Available(String category, String name) {
-        return IsMetadataFloatVector4AvailableImpl(getNativeObject(), category, name);
+        return IsMetadataFloatVector4AvailableImpl(getNativeObject(), ManagedBase.requireNonNull(category, "category may not be null"), ManagedBase.requireNonNull(name, "name may not be null"));
     }
 
     ///AUTOGEN-OK: CXX_METHOD IsMetadataDoubleAvailable bool (const char *, const char *) const FUNCTIONPROTO
@@ -124,7 +124,7 @@ public class MetadataReadAccess extends ManagedBase {
      * 
      */
     public boolean isMetadataDoubleAvailable(String category, String name) {
-        return IsMetadataDoubleAvailableImpl(getNativeObject(), category, name);
+        return IsMetadataDoubleAvailableImpl(getNativeObject(), ManagedBase.requireNonNull(category, "category may not be null"), ManagedBase.requireNonNull(name, "name may not be null"));
     }
 
     ///AUTOGEN-OK: CXX_METHOD IsMetadataDoubleVector2Available bool (const char *, const char *) const FUNCTIONPROTO
@@ -135,7 +135,7 @@ public class MetadataReadAccess extends ManagedBase {
      * 
      */
     public boolean isMetadataDoubleVector2Available(String category, String name) {
-        return IsMetadataDoubleVector2AvailableImpl(getNativeObject(), category, name);
+        return IsMetadataDoubleVector2AvailableImpl(getNativeObject(), ManagedBase.requireNonNull(category, "category may not be null"), ManagedBase.requireNonNull(name, "name may not be null"));
     }
 
     ///AUTOGEN-OK: CXX_METHOD IsMetadataDoubleVector3Available bool (const char *, const char *) const FUNCTIONPROTO
@@ -146,7 +146,7 @@ public class MetadataReadAccess extends ManagedBase {
      * 
      */
     public boolean isMetadataDoubleVector3Available(String category, String name) {
-        return IsMetadataDoubleVector3AvailableImpl(getNativeObject(), category, name);
+        return IsMetadataDoubleVector3AvailableImpl(getNativeObject(), ManagedBase.requireNonNull(category, "category may not be null"), ManagedBase.requireNonNull(name, "name may not be null"));
     }
 
     ///AUTOGEN-OK: CXX_METHOD IsMetadataDoubleVector4Available bool (const char *, const char *) const FUNCTIONPROTO
@@ -157,7 +157,7 @@ public class MetadataReadAccess extends ManagedBase {
      * 
      */
     public boolean isMetadataDoubleVector4Available(String category, String name) {
-        return IsMetadataDoubleVector4AvailableImpl(getNativeObject(), category, name);
+        return IsMetadataDoubleVector4AvailableImpl(getNativeObject(), ManagedBase.requireNonNull(category, "category may not be null"), ManagedBase.requireNonNull(name, "name may not be null"));
     }
 
     ///AUTOGEN-OK: CXX_METHOD IsMetadataStringAvailable bool (const char *, const char *) const FUNCTIONPROTO
@@ -168,7 +168,7 @@ public class MetadataReadAccess extends ManagedBase {
      * 
      */
     public boolean isMetadataStringAvailable(String category, String name) {
-        return IsMetadataStringAvailableImpl(getNativeObject(), category, name);
+        return IsMetadataStringAvailableImpl(getNativeObject(), ManagedBase.requireNonNull(category, "category may not be null"), ManagedBase.requireNonNull(name, "name may not be null"));
     }
 
     ///AUTOGEN-OK: CXX_METHOD IsMetadataBLOBAvailable bool (const char *, const char *) const FUNCTIONPROTO
@@ -179,7 +179,7 @@ public class MetadataReadAccess extends ManagedBase {
      * 
      */
     public boolean isMetadataBLOBAvailable(String category, String name) {
-        return IsMetadataBLOBAvailableImpl(getNativeObject(), category, name);
+        return IsMetadataBLOBAvailableImpl(getNativeObject(), ManagedBase.requireNonNull(category, "category may not be null"), ManagedBase.requireNonNull(name, "name may not be null"));
     }
 
     ///AUTOGEN-OK: CXX_METHOD GetMetadataInt int (const char *, const char *) const FUNCTIONPROTO
@@ -190,7 +190,7 @@ public class MetadataReadAccess extends ManagedBase {
      * 
      */
     public int getMetadataInt(String category, String name) {
-        return GetMetadataIntImpl(getNativeObject(), category, name);
+        return GetMetadataIntImpl(getNativeObject(), ManagedBase.requireNonNull(category, "category may not be null"), ManagedBase.requireNonNull(name, "name may not be null"));
     }
 
     ///AUTOGEN-OK: CXX_METHOD GetMetadataIntVector2 OpenVDS::Vector<int, 2> (const char *, const char *) const FUNCTIONPROTO
@@ -202,7 +202,7 @@ public class MetadataReadAccess extends ManagedBase {
      */
     public IntVector2 getMetadataIntVector2(String category, String name) {
         IntVector2 result = new IntVector2();
-        GetMetadataIntVector2Impl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), category, name);
+        GetMetadataIntVector2Impl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), ManagedBase.requireNonNull(category, "category may not be null"), ManagedBase.requireNonNull(name, "name may not be null"));
         return result;
     }
 
@@ -215,7 +215,7 @@ public class MetadataReadAccess extends ManagedBase {
      */
     public IntVector3 getMetadataIntVector3(String category, String name) {
         IntVector3 result = new IntVector3();
-        GetMetadataIntVector3Impl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), category, name);
+        GetMetadataIntVector3Impl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), ManagedBase.requireNonNull(category, "category may not be null"), ManagedBase.requireNonNull(name, "name may not be null"));
         return result;
     }
 
@@ -228,7 +228,7 @@ public class MetadataReadAccess extends ManagedBase {
      */
     public IntVector4 getMetadataIntVector4(String category, String name) {
         IntVector4 result = new IntVector4();
-        GetMetadataIntVector4Impl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), category, name);
+        GetMetadataIntVector4Impl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), ManagedBase.requireNonNull(category, "category may not be null"), ManagedBase.requireNonNull(name, "name may not be null"));
         return result;
     }
 
@@ -240,7 +240,7 @@ public class MetadataReadAccess extends ManagedBase {
      * 
      */
     public float getMetadataFloat(String category, String name) {
-        return GetMetadataFloatImpl(getNativeObject(), category, name);
+        return GetMetadataFloatImpl(getNativeObject(), ManagedBase.requireNonNull(category, "category may not be null"), ManagedBase.requireNonNull(name, "name may not be null"));
     }
 
     ///AUTOGEN-OK: CXX_METHOD GetMetadataFloatVector2 OpenVDS::Vector<float, 2> (const char *, const char *) const FUNCTIONPROTO
@@ -252,7 +252,7 @@ public class MetadataReadAccess extends ManagedBase {
      */
     public FloatVector2 getMetadataFloatVector2(String category, String name) {
         FloatVector2 result = new FloatVector2();
-        GetMetadataFloatVector2Impl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), category, name);
+        GetMetadataFloatVector2Impl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), ManagedBase.requireNonNull(category, "category may not be null"), ManagedBase.requireNonNull(name, "name may not be null"));
         return result;
     }
 
@@ -265,7 +265,7 @@ public class MetadataReadAccess extends ManagedBase {
      */
     public FloatVector3 getMetadataFloatVector3(String category, String name) {
         FloatVector3 result = new FloatVector3();
-        GetMetadataFloatVector3Impl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), category, name);
+        GetMetadataFloatVector3Impl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), ManagedBase.requireNonNull(category, "category may not be null"), ManagedBase.requireNonNull(name, "name may not be null"));
         return result;
     }
 
@@ -278,7 +278,7 @@ public class MetadataReadAccess extends ManagedBase {
      */
     public FloatVector4 getMetadataFloatVector4(String category, String name) {
         FloatVector4 result = new FloatVector4();
-        GetMetadataFloatVector4Impl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), category, name);
+        GetMetadataFloatVector4Impl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), ManagedBase.requireNonNull(category, "category may not be null"), ManagedBase.requireNonNull(name, "name may not be null"));
         return result;
     }
 
@@ -290,7 +290,7 @@ public class MetadataReadAccess extends ManagedBase {
      * 
      */
     public double getMetadataDouble(String category, String name) {
-        return GetMetadataDoubleImpl(getNativeObject(), category, name);
+        return GetMetadataDoubleImpl(getNativeObject(), ManagedBase.requireNonNull(category, "category may not be null"), ManagedBase.requireNonNull(name, "name may not be null"));
     }
 
     ///AUTOGEN-OK: CXX_METHOD GetMetadataDoubleVector2 OpenVDS::Vector<double, 2> (const char *, const char *) const FUNCTIONPROTO
@@ -302,7 +302,7 @@ public class MetadataReadAccess extends ManagedBase {
      */
     public DoubleVector2 getMetadataDoubleVector2(String category, String name) {
         DoubleVector2 result = new DoubleVector2();
-        GetMetadataDoubleVector2Impl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), category, name);
+        GetMetadataDoubleVector2Impl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), ManagedBase.requireNonNull(category, "category may not be null"), ManagedBase.requireNonNull(name, "name may not be null"));
         return result;
     }
 
@@ -315,7 +315,7 @@ public class MetadataReadAccess extends ManagedBase {
      */
     public DoubleVector3 getMetadataDoubleVector3(String category, String name) {
         DoubleVector3 result = new DoubleVector3();
-        GetMetadataDoubleVector3Impl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), category, name);
+        GetMetadataDoubleVector3Impl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), ManagedBase.requireNonNull(category, "category may not be null"), ManagedBase.requireNonNull(name, "name may not be null"));
         return result;
     }
 
@@ -328,7 +328,7 @@ public class MetadataReadAccess extends ManagedBase {
      */
     public DoubleVector4 getMetadataDoubleVector4(String category, String name) {
         DoubleVector4 result = new DoubleVector4();
-        GetMetadataDoubleVector4Impl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), category, name);
+        GetMetadataDoubleVector4Impl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), ManagedBase.requireNonNull(category, "category may not be null"), ManagedBase.requireNonNull(name, "name may not be null"));
         return result;
     }
 
@@ -340,7 +340,7 @@ public class MetadataReadAccess extends ManagedBase {
      * 
      */
     public String getMetadataString(String category, String name) {
-        return GetMetadataStringImpl(getNativeObject(), category, name);
+        return GetMetadataStringImpl(getNativeObject(), ManagedBase.requireNonNull(category, "category may not be null"), ManagedBase.requireNonNull(name, "name may not be null"));
     }
 
     MetadataReadAccess(long nativeobject) {

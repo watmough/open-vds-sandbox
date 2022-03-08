@@ -40,7 +40,7 @@ public class InMemoryOpenOptions extends OpenOptions {
     
     public InMemoryOpenOptions(String name) {
     
-        super(ctor2Impl(name));
+        super(ctor2Impl(ManagedBase.requireNonNull(name, "name may not be null")));
     
     }
 

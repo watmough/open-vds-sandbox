@@ -42,7 +42,7 @@ public class IntVector3 extends ByteBufferBackedObject {
 
     public IntVector3(int[] array) {
         if (array == null) {
-            throw new NullPointerException("array may not be null.");
+            throw new IllegalArgumentException("array may not be null.");
         }
         if (array.length != 3) {
             throw new IllegalArgumentException("array must be of length 3. ");

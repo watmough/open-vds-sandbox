@@ -115,7 +115,7 @@ public class GoogleOpenOptions extends OpenOptions {
      */
     public GoogleOpenOptions(String bucket, String pathPrefix) {
     
-        super(ctor2Impl(bucket, pathPrefix));
+        super(ctor2Impl(ManagedBase.requireNonNull(bucket, "bucket may not be null"), ManagedBase.requireNonNull(pathPrefix, "pathPrefix may not be null")));
     
     }
 
@@ -123,7 +123,7 @@ public class GoogleOpenOptions extends OpenOptions {
     
     public GoogleOpenOptions(String bucket, String pathPrefix, GoogleCredentialsToken credentials) {
     
-        super(ctor3Impl(bucket, pathPrefix, credentials.getNativeObject()));
+        super(ctor3Impl(ManagedBase.requireNonNull(bucket, "bucket may not be null"), ManagedBase.requireNonNull(pathPrefix, "pathPrefix may not be null"), ManagedBase.requireNonNull(credentials, "credentials may not be null").getNativeObject()));
     
     }
 
@@ -131,7 +131,7 @@ public class GoogleOpenOptions extends OpenOptions {
     
     public GoogleOpenOptions(String bucket, String pathPrefix, GoogleCredentialsPath credentials) {
     
-        super(ctor4Impl(bucket, pathPrefix, credentials.getNativeObject()));
+        super(ctor4Impl(ManagedBase.requireNonNull(bucket, "bucket may not be null"), ManagedBase.requireNonNull(pathPrefix, "pathPrefix may not be null"), ManagedBase.requireNonNull(credentials, "credentials may not be null").getNativeObject()));
     
     }
 
@@ -139,7 +139,7 @@ public class GoogleOpenOptions extends OpenOptions {
     
     public GoogleOpenOptions(String bucket, String pathPrefix, GoogleCredentialsJson credentials) {
     
-        super(ctor5Impl(bucket, pathPrefix, credentials.getNativeObject()));
+        super(ctor5Impl(ManagedBase.requireNonNull(bucket, "bucket may not be null"), ManagedBase.requireNonNull(pathPrefix, "pathPrefix may not be null"), ManagedBase.requireNonNull(credentials, "credentials may not be null").getNativeObject()));
     
     }
 
@@ -147,7 +147,7 @@ public class GoogleOpenOptions extends OpenOptions {
     
     public GoogleOpenOptions(String bucket, String pathPrefix, GoogleCredentialsSignedUrl credentials) {
     
-        super(ctor6Impl(bucket, pathPrefix, credentials.getNativeObject()));
+        super(ctor6Impl(ManagedBase.requireNonNull(bucket, "bucket may not be null"), ManagedBase.requireNonNull(pathPrefix, "pathPrefix may not be null"), ManagedBase.requireNonNull(credentials, "credentials may not be null").getNativeObject()));
     
     }
 
@@ -155,7 +155,7 @@ public class GoogleOpenOptions extends OpenOptions {
     
     public GoogleOpenOptions(String bucket, String pathPrefix, GoogleCredentialsSignedUrlPath credentials) {
     
-        super(ctor7Impl(bucket, pathPrefix, credentials.getNativeObject()));
+        super(ctor7Impl(ManagedBase.requireNonNull(bucket, "bucket may not be null"), ManagedBase.requireNonNull(pathPrefix, "pathPrefix may not be null"), ManagedBase.requireNonNull(credentials, "credentials may not be null").getNativeObject()));
     
     }
 
@@ -163,7 +163,7 @@ public class GoogleOpenOptions extends OpenOptions {
     
     public GoogleOpenOptions(String bucket, String pathPrefix, GoogleCredentialsSignedUrlJson credentials) {
     
-        super(ctor8Impl(bucket, pathPrefix, credentials.getNativeObject()));
+        super(ctor8Impl(ManagedBase.requireNonNull(bucket, "bucket may not be null"), ManagedBase.requireNonNull(pathPrefix, "pathPrefix may not be null"), ManagedBase.requireNonNull(credentials, "credentials may not be null").getNativeObject()));
     
     }
 

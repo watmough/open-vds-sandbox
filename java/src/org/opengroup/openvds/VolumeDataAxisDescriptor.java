@@ -53,7 +53,7 @@ public class VolumeDataAxisDescriptor extends ManagedBase {
      */
     public VolumeDataAxisDescriptor(int numSamples, String name, String unit, float coordinateMin, float coordinateMax) {
     
-        super(ctor2Impl(numSamples, name, unit, coordinateMin, coordinateMax));
+        super(ctor2Impl(numSamples, ManagedBase.requireNonNull(name, "name may not be null"), ManagedBase.requireNonNull(unit, "unit may not be null"), coordinateMin, coordinateMax));
     
     }
 

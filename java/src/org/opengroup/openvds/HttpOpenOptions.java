@@ -53,7 +53,7 @@ public class HttpOpenOptions extends OpenOptions {
      */
     public HttpOpenOptions(String url) {
     
-        super(ctor2Impl(url));
+        super(ctor2Impl(ManagedBase.requireNonNull(url, "url may not be null")));
     
     }
 

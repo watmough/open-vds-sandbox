@@ -31,7 +31,7 @@ public class VolumeData2DReadWriteAccessor1Bit extends VolumeData2DReadAccessor1
     ///AUTOGEN-OK: CXX_METHOD SetValue void (type-parameter-0-0, type-parameter-0-1) FUNCTIONPROTO
     native private void SetValueImpl(long native_object, ByteBuffer index, long index_byteoffset, boolean value);
     public void setValue(IntVector2 index, boolean value) {
-        SetValueImpl(getNativeObject(), index.getBackingByteBuffer(), index.getByteBufferOffset(), value);
+        SetValueImpl(getNativeObject(), ManagedBase.requireNonNull(index, "index may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(index, "index may not be null").getByteBufferOffset(), value);
     }
 
     ///AUTOGEN-OK: CXX_METHOD Commit void () FUNCTIONPROTO

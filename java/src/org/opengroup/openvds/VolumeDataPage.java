@@ -34,7 +34,9 @@ public class VolumeDataPage extends ManagedBase implements AutoCloseable {
     ///AUTOGEN-OK: CXX_METHOD GetMinMax void (int (&)[6], int (&)[6]) const FUNCTIONPROTO
     native private void GetMinMaxImpl(long native_object, int[] min, int[] max);
     public void getMinMax(int[] min, int[] max) {
+        ManagedBase.requireNonNull(min, "min may not be null");
         if (min.length != 6) throw new IllegalArgumentException("Array \"min\" must have length 6");
+        ManagedBase.requireNonNull(max, "max may not be null");
         if (max.length != 6) throw new IllegalArgumentException("Array \"max\" must have length 6");
         GetMinMaxImpl(getNativeObject(), min, max);
     }
@@ -42,7 +44,9 @@ public class VolumeDataPage extends ManagedBase implements AutoCloseable {
     ///AUTOGEN-OK: CXX_METHOD GetMinMaxExcludingMargin void (int (&)[6], int (&)[6]) const FUNCTIONPROTO
     native private void GetMinMaxExcludingMarginImpl(long native_object, int[] minExcludingMargin, int[] maxExcludingMargin);
     public void getMinMaxExcludingMargin(int[] minExcludingMargin, int[] maxExcludingMargin) {
+        ManagedBase.requireNonNull(minExcludingMargin, "minExcludingMargin may not be null");
         if (minExcludingMargin.length != 6) throw new IllegalArgumentException("Array \"minExcludingMargin\" must have length 6");
+        ManagedBase.requireNonNull(maxExcludingMargin, "maxExcludingMargin may not be null");
         if (maxExcludingMargin.length != 6) throw new IllegalArgumentException("Array \"maxExcludingMargin\" must have length 6");
         GetMinMaxExcludingMarginImpl(getNativeObject(), minExcludingMargin, maxExcludingMargin);
     }
@@ -50,7 +54,9 @@ public class VolumeDataPage extends ManagedBase implements AutoCloseable {
     ///AUTOGEN-OK: CXX_METHOD UpdateWrittenRegion void (int const (&)[6], int const (&)[6]) FUNCTIONPROTO
     native private void UpdateWrittenRegionImpl(long native_object, int[] writtenMin, int[] writtenMax);
     public void updateWrittenRegion(int[] writtenMin, int[] writtenMax) {
+        ManagedBase.requireNonNull(writtenMin, "writtenMin may not be null");
         if (writtenMin.length != 6) throw new IllegalArgumentException("Array \"writtenMin\" must have length 6");
+        ManagedBase.requireNonNull(writtenMax, "writtenMax may not be null");
         if (writtenMax.length != 6) throw new IllegalArgumentException("Array \"writtenMax\" must have length 6");
         UpdateWrittenRegionImpl(getNativeObject(), writtenMin, writtenMax);
     }

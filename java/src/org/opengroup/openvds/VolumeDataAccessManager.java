@@ -57,7 +57,7 @@ public class VolumeDataAccessManager extends ManagedBase implements AutoCloseabl
      * @return The produce status for the specific DimensionsND/LOD/Channel combination.
      */
     public VDSProduceStatus getVDSProduceStatus(DimensionsND dimensionsND, int LOD, int channel) {
-        return VDSProduceStatus.fromInt((int)GetVDSProduceStatusImpl(getNativeObject(), dimensionsND.value(), LOD, channel));
+        return VDSProduceStatus.fromInt((int)GetVDSProduceStatusImpl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel));
     }
 
     ///AUTOGEN-OK: CXX_METHOD GetVDSChunkCount int64_t (OpenVDS::DimensionsND, int, int) const FUNCTIONPROTO
@@ -72,7 +72,7 @@ public class VolumeDataAccessManager extends ManagedBase implements AutoCloseabl
      * @return The chunk count for the specific DimensionsND/LOD/Channel combination.
      */
     public long getVDSChunkCount(DimensionsND dimensionsND, int LOD, int channel) {
-        return GetVDSChunkCountImpl(getNativeObject(), dimensionsND.value(), LOD, channel);
+        return GetVDSChunkCountImpl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel);
     }
 
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeDataPageAccessor OpenVDS::VolumeDataPageAccessor *(OpenVDS::DimensionsND, int, int, int, OpenVDS::VolumeDataPageAccessor::AccessMode, int) FUNCTIONPROTO
@@ -92,7 +92,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
      * @return A VolumeDataPageAccessor object for the VDS.
      */
     public VolumeDataPageAccessor createVolumeDataPageAccessor(DimensionsND dimensionsND, int LOD, int channel, int maxPages, VolumeDataPageAccessor.AccessMode accessMode, int chunkMetadataPageSize) {
-        return VolumeDataPageAccessor.fromNativeObject(CreateVolumeDataPageAccessorImpl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, accessMode.value(), chunkMetadataPageSize));
+        return VolumeDataPageAccessor.fromNativeObject(CreateVolumeDataPageAccessorImpl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, maxPages, ManagedBase.requireNonNull(accessMode, "accessMode may not be null").value(), chunkMetadataPageSize));
     }
 
     /**
@@ -119,13 +119,13 @@ of the number of chunks in some of the dimensions. Do not change this from the d
      * @param volumeDataPageAccessor The VolumeDataPageAccessor object to destroy.
      */
     public void destroyVolumeDataPageAccessor(VolumeDataPageAccessor volumeDataPageAccessor) {
-        DestroyVolumeDataPageAccessorImpl(getNativeObject(), volumeDataPageAccessor.getNativeObject());
+        DestroyVolumeDataPageAccessorImpl(getNativeObject(), ManagedBase.requireNonNull(volumeDataPageAccessor, "volumeDataPageAccessor may not be null").getNativeObject());
     }
 
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DInterpolatingAccessorR64 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 2>, double> (OpenVDS::DimensionsND, int, int, OpenVDS::InterpolationMethod, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData2DInterpolatingAccessorR64Impl(long native_object, long dimensionsND, int LOD, int channel, long interpolationMethod, int maxPages, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData2DInterpolatingAccessorR64 createVolumeData2DInterpolatingAccessorR64(DimensionsND dimensionsND, int LOD, int channel, InterpolationMethod interpolationMethod, int maxPages, Float replacementNoValue) {
-        return VolumeData2DInterpolatingAccessorR64.fromNativeObject(CreateVolumeData2DInterpolatingAccessorR64Impl(getNativeObject(), dimensionsND.value(), LOD, channel, interpolationMethod.value(), maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData2DInterpolatingAccessorR64.fromNativeObject(CreateVolumeData2DInterpolatingAccessorR64Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, ManagedBase.requireNonNull(interpolationMethod, "interpolationMethod may not be null").value(), maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -137,7 +137,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DInterpolatingAccessorR64 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 2>, double> (OpenVDS::DimensionsND, int, int, OpenVDS::InterpolationMethod, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData2DInterpolatingAccessorR642Impl(long native_object, long dimensionsND, int LOD, int channel, long interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData2DInterpolatingAccessorR64 createVolumeData2DInterpolatingAccessorR64(DimensionsND dimensionsND, int LOD, int channel, InterpolationMethod interpolationMethod, Float replacementNoValue) {
-        return VolumeData2DInterpolatingAccessorR64.fromNativeObject(CreateVolumeData2DInterpolatingAccessorR642Impl(getNativeObject(), dimensionsND.value(), LOD, channel, interpolationMethod.value(), replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData2DInterpolatingAccessorR64.fromNativeObject(CreateVolumeData2DInterpolatingAccessorR642Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, ManagedBase.requireNonNull(interpolationMethod, "interpolationMethod may not be null").value(), replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -149,7 +149,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DInterpolatingAccessorR32 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 2>, float> (OpenVDS::DimensionsND, int, int, OpenVDS::InterpolationMethod, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData2DInterpolatingAccessorR32Impl(long native_object, long dimensionsND, int LOD, int channel, long interpolationMethod, int maxPages, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData2DInterpolatingAccessorR32 createVolumeData2DInterpolatingAccessorR32(DimensionsND dimensionsND, int LOD, int channel, InterpolationMethod interpolationMethod, int maxPages, Float replacementNoValue) {
-        return VolumeData2DInterpolatingAccessorR32.fromNativeObject(CreateVolumeData2DInterpolatingAccessorR32Impl(getNativeObject(), dimensionsND.value(), LOD, channel, interpolationMethod.value(), maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData2DInterpolatingAccessorR32.fromNativeObject(CreateVolumeData2DInterpolatingAccessorR32Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, ManagedBase.requireNonNull(interpolationMethod, "interpolationMethod may not be null").value(), maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -161,7 +161,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DInterpolatingAccessorR32 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 2>, float> (OpenVDS::DimensionsND, int, int, OpenVDS::InterpolationMethod, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData2DInterpolatingAccessorR322Impl(long native_object, long dimensionsND, int LOD, int channel, long interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData2DInterpolatingAccessorR32 createVolumeData2DInterpolatingAccessorR32(DimensionsND dimensionsND, int LOD, int channel, InterpolationMethod interpolationMethod, Float replacementNoValue) {
-        return VolumeData2DInterpolatingAccessorR32.fromNativeObject(CreateVolumeData2DInterpolatingAccessorR322Impl(getNativeObject(), dimensionsND.value(), LOD, channel, interpolationMethod.value(), replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData2DInterpolatingAccessorR32.fromNativeObject(CreateVolumeData2DInterpolatingAccessorR322Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, ManagedBase.requireNonNull(interpolationMethod, "interpolationMethod may not be null").value(), replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -173,7 +173,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadAccessor1Bit OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, bool> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData2DReadAccessor1BitImpl(long native_object, long dimensionsND, int LOD, int channel, int maxPages, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData2DReadAccessor1Bit createVolumeData2DReadAccessor1Bit(DimensionsND dimensionsND, int LOD, int channel, int maxPages, Float replacementNoValue) {
-        return VolumeData2DReadAccessor1Bit.fromNativeObject(CreateVolumeData2DReadAccessor1BitImpl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData2DReadAccessor1Bit.fromNativeObject(CreateVolumeData2DReadAccessor1BitImpl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -185,7 +185,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadAccessor1Bit OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, bool> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData2DReadAccessor1Bit2Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData2DReadAccessor1Bit createVolumeData2DReadAccessor1Bit(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
-        return VolumeData2DReadAccessor1Bit.fromNativeObject(CreateVolumeData2DReadAccessor1Bit2Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData2DReadAccessor1Bit.fromNativeObject(CreateVolumeData2DReadAccessor1Bit2Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -197,7 +197,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadAccessorU8 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, unsigned char> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData2DReadAccessorU8Impl(long native_object, long dimensionsND, int LOD, int channel, int maxPages, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData2DReadAccessorU8 createVolumeData2DReadAccessorU8(DimensionsND dimensionsND, int LOD, int channel, int maxPages, Float replacementNoValue) {
-        return VolumeData2DReadAccessorU8.fromNativeObject(CreateVolumeData2DReadAccessorU8Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData2DReadAccessorU8.fromNativeObject(CreateVolumeData2DReadAccessorU8Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -209,7 +209,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadAccessorU8 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, unsigned char> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData2DReadAccessorU82Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData2DReadAccessorU8 createVolumeData2DReadAccessorU8(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
-        return VolumeData2DReadAccessorU8.fromNativeObject(CreateVolumeData2DReadAccessorU82Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData2DReadAccessorU8.fromNativeObject(CreateVolumeData2DReadAccessorU82Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -221,7 +221,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadAccessorU16 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, unsigned short> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData2DReadAccessorU16Impl(long native_object, long dimensionsND, int LOD, int channel, int maxPages, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData2DReadAccessorU16 createVolumeData2DReadAccessorU16(DimensionsND dimensionsND, int LOD, int channel, int maxPages, Float replacementNoValue) {
-        return VolumeData2DReadAccessorU16.fromNativeObject(CreateVolumeData2DReadAccessorU16Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData2DReadAccessorU16.fromNativeObject(CreateVolumeData2DReadAccessorU16Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -233,7 +233,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadAccessorU16 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, unsigned short> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData2DReadAccessorU162Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData2DReadAccessorU16 createVolumeData2DReadAccessorU16(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
-        return VolumeData2DReadAccessorU16.fromNativeObject(CreateVolumeData2DReadAccessorU162Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData2DReadAccessorU16.fromNativeObject(CreateVolumeData2DReadAccessorU162Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -245,7 +245,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadAccessorU32 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, unsigned int> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData2DReadAccessorU32Impl(long native_object, long dimensionsND, int LOD, int channel, int maxPages, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData2DReadAccessorU32 createVolumeData2DReadAccessorU32(DimensionsND dimensionsND, int LOD, int channel, int maxPages, Float replacementNoValue) {
-        return VolumeData2DReadAccessorU32.fromNativeObject(CreateVolumeData2DReadAccessorU32Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData2DReadAccessorU32.fromNativeObject(CreateVolumeData2DReadAccessorU32Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -257,7 +257,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadAccessorU32 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, unsigned int> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData2DReadAccessorU322Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData2DReadAccessorU32 createVolumeData2DReadAccessorU32(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
-        return VolumeData2DReadAccessorU32.fromNativeObject(CreateVolumeData2DReadAccessorU322Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData2DReadAccessorU32.fromNativeObject(CreateVolumeData2DReadAccessorU322Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -269,7 +269,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadAccessorU64 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, uint64_t> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData2DReadAccessorU64Impl(long native_object, long dimensionsND, int LOD, int channel, int maxPages, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData2DReadAccessorU64 createVolumeData2DReadAccessorU64(DimensionsND dimensionsND, int LOD, int channel, int maxPages, Float replacementNoValue) {
-        return VolumeData2DReadAccessorU64.fromNativeObject(CreateVolumeData2DReadAccessorU64Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData2DReadAccessorU64.fromNativeObject(CreateVolumeData2DReadAccessorU64Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -281,7 +281,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadAccessorU64 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, uint64_t> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData2DReadAccessorU642Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData2DReadAccessorU64 createVolumeData2DReadAccessorU64(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
-        return VolumeData2DReadAccessorU64.fromNativeObject(CreateVolumeData2DReadAccessorU642Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData2DReadAccessorU64.fromNativeObject(CreateVolumeData2DReadAccessorU642Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -293,7 +293,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadAccessorR32 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, float> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData2DReadAccessorR32Impl(long native_object, long dimensionsND, int LOD, int channel, int maxPages, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData2DReadAccessorR32 createVolumeData2DReadAccessorR32(DimensionsND dimensionsND, int LOD, int channel, int maxPages, Float replacementNoValue) {
-        return VolumeData2DReadAccessorR32.fromNativeObject(CreateVolumeData2DReadAccessorR32Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData2DReadAccessorR32.fromNativeObject(CreateVolumeData2DReadAccessorR32Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -305,7 +305,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadAccessorR32 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, float> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData2DReadAccessorR322Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData2DReadAccessorR32 createVolumeData2DReadAccessorR32(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
-        return VolumeData2DReadAccessorR32.fromNativeObject(CreateVolumeData2DReadAccessorR322Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData2DReadAccessorR32.fromNativeObject(CreateVolumeData2DReadAccessorR322Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -317,7 +317,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadAccessorR64 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, double> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData2DReadAccessorR64Impl(long native_object, long dimensionsND, int LOD, int channel, int maxPages, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData2DReadAccessorR64 createVolumeData2DReadAccessorR64(DimensionsND dimensionsND, int LOD, int channel, int maxPages, Float replacementNoValue) {
-        return VolumeData2DReadAccessorR64.fromNativeObject(CreateVolumeData2DReadAccessorR64Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData2DReadAccessorR64.fromNativeObject(CreateVolumeData2DReadAccessorR64Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -329,7 +329,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadAccessorR64 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, double> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData2DReadAccessorR642Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData2DReadAccessorR64 createVolumeData2DReadAccessorR64(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
-        return VolumeData2DReadAccessorR64.fromNativeObject(CreateVolumeData2DReadAccessorR642Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData2DReadAccessorR64.fromNativeObject(CreateVolumeData2DReadAccessorR642Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -341,7 +341,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadWriteAccessor1Bit OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, bool> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData2DReadWriteAccessor1BitImpl(long native_object, long dimensionsND, int LOD, int channel, int maxPages, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData2DReadWriteAccessor1Bit createVolumeData2DReadWriteAccessor1Bit(DimensionsND dimensionsND, int LOD, int channel, int maxPages, Float replacementNoValue) {
-        return VolumeData2DReadWriteAccessor1Bit.fromNativeObject(CreateVolumeData2DReadWriteAccessor1BitImpl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData2DReadWriteAccessor1Bit.fromNativeObject(CreateVolumeData2DReadWriteAccessor1BitImpl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -353,7 +353,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadWriteAccessor1Bit OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, bool> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData2DReadWriteAccessor1Bit2Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData2DReadWriteAccessor1Bit createVolumeData2DReadWriteAccessor1Bit(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
-        return VolumeData2DReadWriteAccessor1Bit.fromNativeObject(CreateVolumeData2DReadWriteAccessor1Bit2Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData2DReadWriteAccessor1Bit.fromNativeObject(CreateVolumeData2DReadWriteAccessor1Bit2Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -365,7 +365,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadWriteAccessorU8 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, unsigned char> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData2DReadWriteAccessorU8Impl(long native_object, long dimensionsND, int LOD, int channel, int maxPages, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData2DReadWriteAccessorU8 createVolumeData2DReadWriteAccessorU8(DimensionsND dimensionsND, int LOD, int channel, int maxPages, Float replacementNoValue) {
-        return VolumeData2DReadWriteAccessorU8.fromNativeObject(CreateVolumeData2DReadWriteAccessorU8Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData2DReadWriteAccessorU8.fromNativeObject(CreateVolumeData2DReadWriteAccessorU8Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -377,7 +377,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadWriteAccessorU8 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, unsigned char> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData2DReadWriteAccessorU82Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData2DReadWriteAccessorU8 createVolumeData2DReadWriteAccessorU8(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
-        return VolumeData2DReadWriteAccessorU8.fromNativeObject(CreateVolumeData2DReadWriteAccessorU82Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData2DReadWriteAccessorU8.fromNativeObject(CreateVolumeData2DReadWriteAccessorU82Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -389,7 +389,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadWriteAccessorU16 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, unsigned short> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData2DReadWriteAccessorU16Impl(long native_object, long dimensionsND, int LOD, int channel, int maxPages, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData2DReadWriteAccessorU16 createVolumeData2DReadWriteAccessorU16(DimensionsND dimensionsND, int LOD, int channel, int maxPages, Float replacementNoValue) {
-        return VolumeData2DReadWriteAccessorU16.fromNativeObject(CreateVolumeData2DReadWriteAccessorU16Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData2DReadWriteAccessorU16.fromNativeObject(CreateVolumeData2DReadWriteAccessorU16Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -401,7 +401,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadWriteAccessorU16 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, unsigned short> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData2DReadWriteAccessorU162Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData2DReadWriteAccessorU16 createVolumeData2DReadWriteAccessorU16(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
-        return VolumeData2DReadWriteAccessorU16.fromNativeObject(CreateVolumeData2DReadWriteAccessorU162Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData2DReadWriteAccessorU16.fromNativeObject(CreateVolumeData2DReadWriteAccessorU162Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -413,7 +413,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadWriteAccessorU32 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, unsigned int> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData2DReadWriteAccessorU32Impl(long native_object, long dimensionsND, int LOD, int channel, int maxPages, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData2DReadWriteAccessorU32 createVolumeData2DReadWriteAccessorU32(DimensionsND dimensionsND, int LOD, int channel, int maxPages, Float replacementNoValue) {
-        return VolumeData2DReadWriteAccessorU32.fromNativeObject(CreateVolumeData2DReadWriteAccessorU32Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData2DReadWriteAccessorU32.fromNativeObject(CreateVolumeData2DReadWriteAccessorU32Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -425,7 +425,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadWriteAccessorU32 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, unsigned int> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData2DReadWriteAccessorU322Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData2DReadWriteAccessorU32 createVolumeData2DReadWriteAccessorU32(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
-        return VolumeData2DReadWriteAccessorU32.fromNativeObject(CreateVolumeData2DReadWriteAccessorU322Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData2DReadWriteAccessorU32.fromNativeObject(CreateVolumeData2DReadWriteAccessorU322Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -437,7 +437,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadWriteAccessorU64 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, uint64_t> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData2DReadWriteAccessorU64Impl(long native_object, long dimensionsND, int LOD, int channel, int maxPages, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData2DReadWriteAccessorU64 createVolumeData2DReadWriteAccessorU64(DimensionsND dimensionsND, int LOD, int channel, int maxPages, Float replacementNoValue) {
-        return VolumeData2DReadWriteAccessorU64.fromNativeObject(CreateVolumeData2DReadWriteAccessorU64Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData2DReadWriteAccessorU64.fromNativeObject(CreateVolumeData2DReadWriteAccessorU64Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -449,7 +449,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadWriteAccessorU64 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, uint64_t> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData2DReadWriteAccessorU642Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData2DReadWriteAccessorU64 createVolumeData2DReadWriteAccessorU64(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
-        return VolumeData2DReadWriteAccessorU64.fromNativeObject(CreateVolumeData2DReadWriteAccessorU642Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData2DReadWriteAccessorU64.fromNativeObject(CreateVolumeData2DReadWriteAccessorU642Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -461,7 +461,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadWriteAccessorR32 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, float> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData2DReadWriteAccessorR32Impl(long native_object, long dimensionsND, int LOD, int channel, int maxPages, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData2DReadWriteAccessorR32 createVolumeData2DReadWriteAccessorR32(DimensionsND dimensionsND, int LOD, int channel, int maxPages, Float replacementNoValue) {
-        return VolumeData2DReadWriteAccessorR32.fromNativeObject(CreateVolumeData2DReadWriteAccessorR32Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData2DReadWriteAccessorR32.fromNativeObject(CreateVolumeData2DReadWriteAccessorR32Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -473,7 +473,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadWriteAccessorR32 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, float> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData2DReadWriteAccessorR322Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData2DReadWriteAccessorR32 createVolumeData2DReadWriteAccessorR32(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
-        return VolumeData2DReadWriteAccessorR32.fromNativeObject(CreateVolumeData2DReadWriteAccessorR322Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData2DReadWriteAccessorR32.fromNativeObject(CreateVolumeData2DReadWriteAccessorR322Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -485,7 +485,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadWriteAccessorR64 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, double> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData2DReadWriteAccessorR64Impl(long native_object, long dimensionsND, int LOD, int channel, int maxPages, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData2DReadWriteAccessorR64 createVolumeData2DReadWriteAccessorR64(DimensionsND dimensionsND, int LOD, int channel, int maxPages, Float replacementNoValue) {
-        return VolumeData2DReadWriteAccessorR64.fromNativeObject(CreateVolumeData2DReadWriteAccessorR64Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData2DReadWriteAccessorR64.fromNativeObject(CreateVolumeData2DReadWriteAccessorR64Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -497,7 +497,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DReadWriteAccessorR64 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, double> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData2DReadWriteAccessorR642Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData2DReadWriteAccessorR64 createVolumeData2DReadWriteAccessorR64(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
-        return VolumeData2DReadWriteAccessorR64.fromNativeObject(CreateVolumeData2DReadWriteAccessorR642Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData2DReadWriteAccessorR64.fromNativeObject(CreateVolumeData2DReadWriteAccessorR642Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -509,7 +509,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DInterpolatingAccessorR64 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 3>, double> (OpenVDS::DimensionsND, int, int, OpenVDS::InterpolationMethod, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData3DInterpolatingAccessorR64Impl(long native_object, long dimensionsND, int LOD, int channel, long interpolationMethod, int maxPages, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData3DInterpolatingAccessorR64 createVolumeData3DInterpolatingAccessorR64(DimensionsND dimensionsND, int LOD, int channel, InterpolationMethod interpolationMethod, int maxPages, Float replacementNoValue) {
-        return VolumeData3DInterpolatingAccessorR64.fromNativeObject(CreateVolumeData3DInterpolatingAccessorR64Impl(getNativeObject(), dimensionsND.value(), LOD, channel, interpolationMethod.value(), maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData3DInterpolatingAccessorR64.fromNativeObject(CreateVolumeData3DInterpolatingAccessorR64Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, ManagedBase.requireNonNull(interpolationMethod, "interpolationMethod may not be null").value(), maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -521,7 +521,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DInterpolatingAccessorR64 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 3>, double> (OpenVDS::DimensionsND, int, int, OpenVDS::InterpolationMethod, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData3DInterpolatingAccessorR642Impl(long native_object, long dimensionsND, int LOD, int channel, long interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData3DInterpolatingAccessorR64 createVolumeData3DInterpolatingAccessorR64(DimensionsND dimensionsND, int LOD, int channel, InterpolationMethod interpolationMethod, Float replacementNoValue) {
-        return VolumeData3DInterpolatingAccessorR64.fromNativeObject(CreateVolumeData3DInterpolatingAccessorR642Impl(getNativeObject(), dimensionsND.value(), LOD, channel, interpolationMethod.value(), replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData3DInterpolatingAccessorR64.fromNativeObject(CreateVolumeData3DInterpolatingAccessorR642Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, ManagedBase.requireNonNull(interpolationMethod, "interpolationMethod may not be null").value(), replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -533,7 +533,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DInterpolatingAccessorR32 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 3>, float> (OpenVDS::DimensionsND, int, int, OpenVDS::InterpolationMethod, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData3DInterpolatingAccessorR32Impl(long native_object, long dimensionsND, int LOD, int channel, long interpolationMethod, int maxPages, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData3DInterpolatingAccessorR32 createVolumeData3DInterpolatingAccessorR32(DimensionsND dimensionsND, int LOD, int channel, InterpolationMethod interpolationMethod, int maxPages, Float replacementNoValue) {
-        return VolumeData3DInterpolatingAccessorR32.fromNativeObject(CreateVolumeData3DInterpolatingAccessorR32Impl(getNativeObject(), dimensionsND.value(), LOD, channel, interpolationMethod.value(), maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData3DInterpolatingAccessorR32.fromNativeObject(CreateVolumeData3DInterpolatingAccessorR32Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, ManagedBase.requireNonNull(interpolationMethod, "interpolationMethod may not be null").value(), maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -545,7 +545,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DInterpolatingAccessorR32 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 3>, float> (OpenVDS::DimensionsND, int, int, OpenVDS::InterpolationMethod, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData3DInterpolatingAccessorR322Impl(long native_object, long dimensionsND, int LOD, int channel, long interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData3DInterpolatingAccessorR32 createVolumeData3DInterpolatingAccessorR32(DimensionsND dimensionsND, int LOD, int channel, InterpolationMethod interpolationMethod, Float replacementNoValue) {
-        return VolumeData3DInterpolatingAccessorR32.fromNativeObject(CreateVolumeData3DInterpolatingAccessorR322Impl(getNativeObject(), dimensionsND.value(), LOD, channel, interpolationMethod.value(), replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData3DInterpolatingAccessorR32.fromNativeObject(CreateVolumeData3DInterpolatingAccessorR322Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, ManagedBase.requireNonNull(interpolationMethod, "interpolationMethod may not be null").value(), replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -557,7 +557,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadAccessor1Bit OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, bool> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData3DReadAccessor1BitImpl(long native_object, long dimensionsND, int LOD, int channel, int maxPages, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData3DReadAccessor1Bit createVolumeData3DReadAccessor1Bit(DimensionsND dimensionsND, int LOD, int channel, int maxPages, Float replacementNoValue) {
-        return VolumeData3DReadAccessor1Bit.fromNativeObject(CreateVolumeData3DReadAccessor1BitImpl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData3DReadAccessor1Bit.fromNativeObject(CreateVolumeData3DReadAccessor1BitImpl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -569,7 +569,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadAccessor1Bit OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, bool> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData3DReadAccessor1Bit2Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData3DReadAccessor1Bit createVolumeData3DReadAccessor1Bit(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
-        return VolumeData3DReadAccessor1Bit.fromNativeObject(CreateVolumeData3DReadAccessor1Bit2Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData3DReadAccessor1Bit.fromNativeObject(CreateVolumeData3DReadAccessor1Bit2Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -581,7 +581,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadAccessorU8 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, unsigned char> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData3DReadAccessorU8Impl(long native_object, long dimensionsND, int LOD, int channel, int maxPages, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData3DReadAccessorU8 createVolumeData3DReadAccessorU8(DimensionsND dimensionsND, int LOD, int channel, int maxPages, Float replacementNoValue) {
-        return VolumeData3DReadAccessorU8.fromNativeObject(CreateVolumeData3DReadAccessorU8Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData3DReadAccessorU8.fromNativeObject(CreateVolumeData3DReadAccessorU8Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -593,7 +593,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadAccessorU8 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, unsigned char> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData3DReadAccessorU82Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData3DReadAccessorU8 createVolumeData3DReadAccessorU8(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
-        return VolumeData3DReadAccessorU8.fromNativeObject(CreateVolumeData3DReadAccessorU82Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData3DReadAccessorU8.fromNativeObject(CreateVolumeData3DReadAccessorU82Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -605,7 +605,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadAccessorU16 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, unsigned short> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData3DReadAccessorU16Impl(long native_object, long dimensionsND, int LOD, int channel, int maxPages, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData3DReadAccessorU16 createVolumeData3DReadAccessorU16(DimensionsND dimensionsND, int LOD, int channel, int maxPages, Float replacementNoValue) {
-        return VolumeData3DReadAccessorU16.fromNativeObject(CreateVolumeData3DReadAccessorU16Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData3DReadAccessorU16.fromNativeObject(CreateVolumeData3DReadAccessorU16Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -617,7 +617,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadAccessorU16 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, unsigned short> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData3DReadAccessorU162Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData3DReadAccessorU16 createVolumeData3DReadAccessorU16(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
-        return VolumeData3DReadAccessorU16.fromNativeObject(CreateVolumeData3DReadAccessorU162Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData3DReadAccessorU16.fromNativeObject(CreateVolumeData3DReadAccessorU162Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -629,7 +629,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadAccessorU32 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, unsigned int> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData3DReadAccessorU32Impl(long native_object, long dimensionsND, int LOD, int channel, int maxPages, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData3DReadAccessorU32 createVolumeData3DReadAccessorU32(DimensionsND dimensionsND, int LOD, int channel, int maxPages, Float replacementNoValue) {
-        return VolumeData3DReadAccessorU32.fromNativeObject(CreateVolumeData3DReadAccessorU32Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData3DReadAccessorU32.fromNativeObject(CreateVolumeData3DReadAccessorU32Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -641,7 +641,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadAccessorU32 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, unsigned int> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData3DReadAccessorU322Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData3DReadAccessorU32 createVolumeData3DReadAccessorU32(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
-        return VolumeData3DReadAccessorU32.fromNativeObject(CreateVolumeData3DReadAccessorU322Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData3DReadAccessorU32.fromNativeObject(CreateVolumeData3DReadAccessorU322Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -653,7 +653,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadAccessorU64 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, uint64_t> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData3DReadAccessorU64Impl(long native_object, long dimensionsND, int LOD, int channel, int maxPages, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData3DReadAccessorU64 createVolumeData3DReadAccessorU64(DimensionsND dimensionsND, int LOD, int channel, int maxPages, Float replacementNoValue) {
-        return VolumeData3DReadAccessorU64.fromNativeObject(CreateVolumeData3DReadAccessorU64Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData3DReadAccessorU64.fromNativeObject(CreateVolumeData3DReadAccessorU64Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -665,7 +665,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadAccessorU64 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, uint64_t> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData3DReadAccessorU642Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData3DReadAccessorU64 createVolumeData3DReadAccessorU64(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
-        return VolumeData3DReadAccessorU64.fromNativeObject(CreateVolumeData3DReadAccessorU642Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData3DReadAccessorU64.fromNativeObject(CreateVolumeData3DReadAccessorU642Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -677,7 +677,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadAccessorR32 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, float> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData3DReadAccessorR32Impl(long native_object, long dimensionsND, int LOD, int channel, int maxPages, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData3DReadAccessorR32 createVolumeData3DReadAccessorR32(DimensionsND dimensionsND, int LOD, int channel, int maxPages, Float replacementNoValue) {
-        return VolumeData3DReadAccessorR32.fromNativeObject(CreateVolumeData3DReadAccessorR32Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData3DReadAccessorR32.fromNativeObject(CreateVolumeData3DReadAccessorR32Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -689,7 +689,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadAccessorR32 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, float> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData3DReadAccessorR322Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData3DReadAccessorR32 createVolumeData3DReadAccessorR32(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
-        return VolumeData3DReadAccessorR32.fromNativeObject(CreateVolumeData3DReadAccessorR322Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData3DReadAccessorR32.fromNativeObject(CreateVolumeData3DReadAccessorR322Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -701,7 +701,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadAccessorR64 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, double> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData3DReadAccessorR64Impl(long native_object, long dimensionsND, int LOD, int channel, int maxPages, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData3DReadAccessorR64 createVolumeData3DReadAccessorR64(DimensionsND dimensionsND, int LOD, int channel, int maxPages, Float replacementNoValue) {
-        return VolumeData3DReadAccessorR64.fromNativeObject(CreateVolumeData3DReadAccessorR64Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData3DReadAccessorR64.fromNativeObject(CreateVolumeData3DReadAccessorR64Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -713,7 +713,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadAccessorR64 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, double> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData3DReadAccessorR642Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData3DReadAccessorR64 createVolumeData3DReadAccessorR64(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
-        return VolumeData3DReadAccessorR64.fromNativeObject(CreateVolumeData3DReadAccessorR642Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData3DReadAccessorR64.fromNativeObject(CreateVolumeData3DReadAccessorR642Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -725,7 +725,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadWriteAccessor1Bit OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, bool> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData3DReadWriteAccessor1BitImpl(long native_object, long dimensionsND, int LOD, int channel, int maxPages, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData3DReadWriteAccessor1Bit createVolumeData3DReadWriteAccessor1Bit(DimensionsND dimensionsND, int LOD, int channel, int maxPages, Float replacementNoValue) {
-        return VolumeData3DReadWriteAccessor1Bit.fromNativeObject(CreateVolumeData3DReadWriteAccessor1BitImpl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData3DReadWriteAccessor1Bit.fromNativeObject(CreateVolumeData3DReadWriteAccessor1BitImpl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -737,7 +737,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadWriteAccessor1Bit OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, bool> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData3DReadWriteAccessor1Bit2Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData3DReadWriteAccessor1Bit createVolumeData3DReadWriteAccessor1Bit(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
-        return VolumeData3DReadWriteAccessor1Bit.fromNativeObject(CreateVolumeData3DReadWriteAccessor1Bit2Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData3DReadWriteAccessor1Bit.fromNativeObject(CreateVolumeData3DReadWriteAccessor1Bit2Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -749,7 +749,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadWriteAccessorU8 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, unsigned char> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData3DReadWriteAccessorU8Impl(long native_object, long dimensionsND, int LOD, int channel, int maxPages, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData3DReadWriteAccessorU8 createVolumeData3DReadWriteAccessorU8(DimensionsND dimensionsND, int LOD, int channel, int maxPages, Float replacementNoValue) {
-        return VolumeData3DReadWriteAccessorU8.fromNativeObject(CreateVolumeData3DReadWriteAccessorU8Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData3DReadWriteAccessorU8.fromNativeObject(CreateVolumeData3DReadWriteAccessorU8Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -761,7 +761,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadWriteAccessorU8 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, unsigned char> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData3DReadWriteAccessorU82Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData3DReadWriteAccessorU8 createVolumeData3DReadWriteAccessorU8(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
-        return VolumeData3DReadWriteAccessorU8.fromNativeObject(CreateVolumeData3DReadWriteAccessorU82Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData3DReadWriteAccessorU8.fromNativeObject(CreateVolumeData3DReadWriteAccessorU82Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -773,7 +773,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadWriteAccessorU16 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, unsigned short> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData3DReadWriteAccessorU16Impl(long native_object, long dimensionsND, int LOD, int channel, int maxPages, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData3DReadWriteAccessorU16 createVolumeData3DReadWriteAccessorU16(DimensionsND dimensionsND, int LOD, int channel, int maxPages, Float replacementNoValue) {
-        return VolumeData3DReadWriteAccessorU16.fromNativeObject(CreateVolumeData3DReadWriteAccessorU16Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData3DReadWriteAccessorU16.fromNativeObject(CreateVolumeData3DReadWriteAccessorU16Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -785,7 +785,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadWriteAccessorU16 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, unsigned short> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData3DReadWriteAccessorU162Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData3DReadWriteAccessorU16 createVolumeData3DReadWriteAccessorU16(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
-        return VolumeData3DReadWriteAccessorU16.fromNativeObject(CreateVolumeData3DReadWriteAccessorU162Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData3DReadWriteAccessorU16.fromNativeObject(CreateVolumeData3DReadWriteAccessorU162Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -797,7 +797,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadWriteAccessorU32 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, unsigned int> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData3DReadWriteAccessorU32Impl(long native_object, long dimensionsND, int LOD, int channel, int maxPages, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData3DReadWriteAccessorU32 createVolumeData3DReadWriteAccessorU32(DimensionsND dimensionsND, int LOD, int channel, int maxPages, Float replacementNoValue) {
-        return VolumeData3DReadWriteAccessorU32.fromNativeObject(CreateVolumeData3DReadWriteAccessorU32Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData3DReadWriteAccessorU32.fromNativeObject(CreateVolumeData3DReadWriteAccessorU32Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -809,7 +809,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadWriteAccessorU32 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, unsigned int> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData3DReadWriteAccessorU322Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData3DReadWriteAccessorU32 createVolumeData3DReadWriteAccessorU32(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
-        return VolumeData3DReadWriteAccessorU32.fromNativeObject(CreateVolumeData3DReadWriteAccessorU322Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData3DReadWriteAccessorU32.fromNativeObject(CreateVolumeData3DReadWriteAccessorU322Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -821,7 +821,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadWriteAccessorU64 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, uint64_t> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData3DReadWriteAccessorU64Impl(long native_object, long dimensionsND, int LOD, int channel, int maxPages, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData3DReadWriteAccessorU64 createVolumeData3DReadWriteAccessorU64(DimensionsND dimensionsND, int LOD, int channel, int maxPages, Float replacementNoValue) {
-        return VolumeData3DReadWriteAccessorU64.fromNativeObject(CreateVolumeData3DReadWriteAccessorU64Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData3DReadWriteAccessorU64.fromNativeObject(CreateVolumeData3DReadWriteAccessorU64Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -833,7 +833,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadWriteAccessorU64 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, uint64_t> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData3DReadWriteAccessorU642Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData3DReadWriteAccessorU64 createVolumeData3DReadWriteAccessorU64(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
-        return VolumeData3DReadWriteAccessorU64.fromNativeObject(CreateVolumeData3DReadWriteAccessorU642Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData3DReadWriteAccessorU64.fromNativeObject(CreateVolumeData3DReadWriteAccessorU642Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -845,7 +845,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadWriteAccessorR32 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, float> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData3DReadWriteAccessorR32Impl(long native_object, long dimensionsND, int LOD, int channel, int maxPages, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData3DReadWriteAccessorR32 createVolumeData3DReadWriteAccessorR32(DimensionsND dimensionsND, int LOD, int channel, int maxPages, Float replacementNoValue) {
-        return VolumeData3DReadWriteAccessorR32.fromNativeObject(CreateVolumeData3DReadWriteAccessorR32Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData3DReadWriteAccessorR32.fromNativeObject(CreateVolumeData3DReadWriteAccessorR32Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -857,7 +857,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadWriteAccessorR32 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, float> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData3DReadWriteAccessorR322Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData3DReadWriteAccessorR32 createVolumeData3DReadWriteAccessorR32(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
-        return VolumeData3DReadWriteAccessorR32.fromNativeObject(CreateVolumeData3DReadWriteAccessorR322Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData3DReadWriteAccessorR32.fromNativeObject(CreateVolumeData3DReadWriteAccessorR322Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -869,7 +869,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadWriteAccessorR64 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, double> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData3DReadWriteAccessorR64Impl(long native_object, long dimensionsND, int LOD, int channel, int maxPages, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData3DReadWriteAccessorR64 createVolumeData3DReadWriteAccessorR64(DimensionsND dimensionsND, int LOD, int channel, int maxPages, Float replacementNoValue) {
-        return VolumeData3DReadWriteAccessorR64.fromNativeObject(CreateVolumeData3DReadWriteAccessorR64Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData3DReadWriteAccessorR64.fromNativeObject(CreateVolumeData3DReadWriteAccessorR64Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -881,7 +881,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData3DReadWriteAccessorR64 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, double> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData3DReadWriteAccessorR642Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData3DReadWriteAccessorR64 createVolumeData3DReadWriteAccessorR64(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
-        return VolumeData3DReadWriteAccessorR64.fromNativeObject(CreateVolumeData3DReadWriteAccessorR642Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData3DReadWriteAccessorR64.fromNativeObject(CreateVolumeData3DReadWriteAccessorR642Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -893,7 +893,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DInterpolatingAccessorR64 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 4>, double> (OpenVDS::DimensionsND, int, int, OpenVDS::InterpolationMethod, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData4DInterpolatingAccessorR64Impl(long native_object, long dimensionsND, int LOD, int channel, long interpolationMethod, int maxPages, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData4DInterpolatingAccessorR64 createVolumeData4DInterpolatingAccessorR64(DimensionsND dimensionsND, int LOD, int channel, InterpolationMethod interpolationMethod, int maxPages, Float replacementNoValue) {
-        return VolumeData4DInterpolatingAccessorR64.fromNativeObject(CreateVolumeData4DInterpolatingAccessorR64Impl(getNativeObject(), dimensionsND.value(), LOD, channel, interpolationMethod.value(), maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData4DInterpolatingAccessorR64.fromNativeObject(CreateVolumeData4DInterpolatingAccessorR64Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, ManagedBase.requireNonNull(interpolationMethod, "interpolationMethod may not be null").value(), maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -905,7 +905,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DInterpolatingAccessorR64 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 4>, double> (OpenVDS::DimensionsND, int, int, OpenVDS::InterpolationMethod, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData4DInterpolatingAccessorR642Impl(long native_object, long dimensionsND, int LOD, int channel, long interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData4DInterpolatingAccessorR64 createVolumeData4DInterpolatingAccessorR64(DimensionsND dimensionsND, int LOD, int channel, InterpolationMethod interpolationMethod, Float replacementNoValue) {
-        return VolumeData4DInterpolatingAccessorR64.fromNativeObject(CreateVolumeData4DInterpolatingAccessorR642Impl(getNativeObject(), dimensionsND.value(), LOD, channel, interpolationMethod.value(), replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData4DInterpolatingAccessorR64.fromNativeObject(CreateVolumeData4DInterpolatingAccessorR642Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, ManagedBase.requireNonNull(interpolationMethod, "interpolationMethod may not be null").value(), replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -917,7 +917,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DInterpolatingAccessorR32 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 4>, float> (OpenVDS::DimensionsND, int, int, OpenVDS::InterpolationMethod, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData4DInterpolatingAccessorR32Impl(long native_object, long dimensionsND, int LOD, int channel, long interpolationMethod, int maxPages, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData4DInterpolatingAccessorR32 createVolumeData4DInterpolatingAccessorR32(DimensionsND dimensionsND, int LOD, int channel, InterpolationMethod interpolationMethod, int maxPages, Float replacementNoValue) {
-        return VolumeData4DInterpolatingAccessorR32.fromNativeObject(CreateVolumeData4DInterpolatingAccessorR32Impl(getNativeObject(), dimensionsND.value(), LOD, channel, interpolationMethod.value(), maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData4DInterpolatingAccessorR32.fromNativeObject(CreateVolumeData4DInterpolatingAccessorR32Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, ManagedBase.requireNonNull(interpolationMethod, "interpolationMethod may not be null").value(), maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -929,7 +929,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DInterpolatingAccessorR32 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 4>, float> (OpenVDS::DimensionsND, int, int, OpenVDS::InterpolationMethod, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData4DInterpolatingAccessorR322Impl(long native_object, long dimensionsND, int LOD, int channel, long interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData4DInterpolatingAccessorR32 createVolumeData4DInterpolatingAccessorR32(DimensionsND dimensionsND, int LOD, int channel, InterpolationMethod interpolationMethod, Float replacementNoValue) {
-        return VolumeData4DInterpolatingAccessorR32.fromNativeObject(CreateVolumeData4DInterpolatingAccessorR322Impl(getNativeObject(), dimensionsND.value(), LOD, channel, interpolationMethod.value(), replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData4DInterpolatingAccessorR32.fromNativeObject(CreateVolumeData4DInterpolatingAccessorR322Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, ManagedBase.requireNonNull(interpolationMethod, "interpolationMethod may not be null").value(), replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -941,7 +941,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadAccessor1Bit OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, bool> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData4DReadAccessor1BitImpl(long native_object, long dimensionsND, int LOD, int channel, int maxPages, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData4DReadAccessor1Bit createVolumeData4DReadAccessor1Bit(DimensionsND dimensionsND, int LOD, int channel, int maxPages, Float replacementNoValue) {
-        return VolumeData4DReadAccessor1Bit.fromNativeObject(CreateVolumeData4DReadAccessor1BitImpl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData4DReadAccessor1Bit.fromNativeObject(CreateVolumeData4DReadAccessor1BitImpl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -953,7 +953,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadAccessor1Bit OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, bool> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData4DReadAccessor1Bit2Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData4DReadAccessor1Bit createVolumeData4DReadAccessor1Bit(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
-        return VolumeData4DReadAccessor1Bit.fromNativeObject(CreateVolumeData4DReadAccessor1Bit2Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData4DReadAccessor1Bit.fromNativeObject(CreateVolumeData4DReadAccessor1Bit2Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -965,7 +965,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadAccessorU8 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, unsigned char> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData4DReadAccessorU8Impl(long native_object, long dimensionsND, int LOD, int channel, int maxPages, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData4DReadAccessorU8 createVolumeData4DReadAccessorU8(DimensionsND dimensionsND, int LOD, int channel, int maxPages, Float replacementNoValue) {
-        return VolumeData4DReadAccessorU8.fromNativeObject(CreateVolumeData4DReadAccessorU8Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData4DReadAccessorU8.fromNativeObject(CreateVolumeData4DReadAccessorU8Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -977,7 +977,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadAccessorU8 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, unsigned char> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData4DReadAccessorU82Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData4DReadAccessorU8 createVolumeData4DReadAccessorU8(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
-        return VolumeData4DReadAccessorU8.fromNativeObject(CreateVolumeData4DReadAccessorU82Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData4DReadAccessorU8.fromNativeObject(CreateVolumeData4DReadAccessorU82Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -989,7 +989,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadAccessorU16 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, unsigned short> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData4DReadAccessorU16Impl(long native_object, long dimensionsND, int LOD, int channel, int maxPages, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData4DReadAccessorU16 createVolumeData4DReadAccessorU16(DimensionsND dimensionsND, int LOD, int channel, int maxPages, Float replacementNoValue) {
-        return VolumeData4DReadAccessorU16.fromNativeObject(CreateVolumeData4DReadAccessorU16Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData4DReadAccessorU16.fromNativeObject(CreateVolumeData4DReadAccessorU16Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -1001,7 +1001,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadAccessorU16 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, unsigned short> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData4DReadAccessorU162Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData4DReadAccessorU16 createVolumeData4DReadAccessorU16(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
-        return VolumeData4DReadAccessorU16.fromNativeObject(CreateVolumeData4DReadAccessorU162Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData4DReadAccessorU16.fromNativeObject(CreateVolumeData4DReadAccessorU162Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -1013,7 +1013,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadAccessorU32 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, unsigned int> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData4DReadAccessorU32Impl(long native_object, long dimensionsND, int LOD, int channel, int maxPages, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData4DReadAccessorU32 createVolumeData4DReadAccessorU32(DimensionsND dimensionsND, int LOD, int channel, int maxPages, Float replacementNoValue) {
-        return VolumeData4DReadAccessorU32.fromNativeObject(CreateVolumeData4DReadAccessorU32Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData4DReadAccessorU32.fromNativeObject(CreateVolumeData4DReadAccessorU32Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -1025,7 +1025,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadAccessorU32 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, unsigned int> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData4DReadAccessorU322Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData4DReadAccessorU32 createVolumeData4DReadAccessorU32(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
-        return VolumeData4DReadAccessorU32.fromNativeObject(CreateVolumeData4DReadAccessorU322Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData4DReadAccessorU32.fromNativeObject(CreateVolumeData4DReadAccessorU322Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -1037,7 +1037,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadAccessorU64 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, uint64_t> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData4DReadAccessorU64Impl(long native_object, long dimensionsND, int LOD, int channel, int maxPages, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData4DReadAccessorU64 createVolumeData4DReadAccessorU64(DimensionsND dimensionsND, int LOD, int channel, int maxPages, Float replacementNoValue) {
-        return VolumeData4DReadAccessorU64.fromNativeObject(CreateVolumeData4DReadAccessorU64Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData4DReadAccessorU64.fromNativeObject(CreateVolumeData4DReadAccessorU64Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -1049,7 +1049,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadAccessorU64 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, uint64_t> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData4DReadAccessorU642Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData4DReadAccessorU64 createVolumeData4DReadAccessorU64(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
-        return VolumeData4DReadAccessorU64.fromNativeObject(CreateVolumeData4DReadAccessorU642Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData4DReadAccessorU64.fromNativeObject(CreateVolumeData4DReadAccessorU642Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -1061,7 +1061,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadAccessorR32 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, float> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData4DReadAccessorR32Impl(long native_object, long dimensionsND, int LOD, int channel, int maxPages, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData4DReadAccessorR32 createVolumeData4DReadAccessorR32(DimensionsND dimensionsND, int LOD, int channel, int maxPages, Float replacementNoValue) {
-        return VolumeData4DReadAccessorR32.fromNativeObject(CreateVolumeData4DReadAccessorR32Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData4DReadAccessorR32.fromNativeObject(CreateVolumeData4DReadAccessorR32Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -1073,7 +1073,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadAccessorR32 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, float> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData4DReadAccessorR322Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData4DReadAccessorR32 createVolumeData4DReadAccessorR32(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
-        return VolumeData4DReadAccessorR32.fromNativeObject(CreateVolumeData4DReadAccessorR322Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData4DReadAccessorR32.fromNativeObject(CreateVolumeData4DReadAccessorR322Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -1085,7 +1085,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadAccessorR64 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, double> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData4DReadAccessorR64Impl(long native_object, long dimensionsND, int LOD, int channel, int maxPages, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData4DReadAccessorR64 createVolumeData4DReadAccessorR64(DimensionsND dimensionsND, int LOD, int channel, int maxPages, Float replacementNoValue) {
-        return VolumeData4DReadAccessorR64.fromNativeObject(CreateVolumeData4DReadAccessorR64Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData4DReadAccessorR64.fromNativeObject(CreateVolumeData4DReadAccessorR64Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -1097,7 +1097,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadAccessorR64 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, double> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData4DReadAccessorR642Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData4DReadAccessorR64 createVolumeData4DReadAccessorR64(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
-        return VolumeData4DReadAccessorR64.fromNativeObject(CreateVolumeData4DReadAccessorR642Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData4DReadAccessorR64.fromNativeObject(CreateVolumeData4DReadAccessorR642Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -1109,7 +1109,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadWriteAccessor1Bit OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, bool> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData4DReadWriteAccessor1BitImpl(long native_object, long dimensionsND, int LOD, int channel, int maxPages, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData4DReadWriteAccessor1Bit createVolumeData4DReadWriteAccessor1Bit(DimensionsND dimensionsND, int LOD, int channel, int maxPages, Float replacementNoValue) {
-        return VolumeData4DReadWriteAccessor1Bit.fromNativeObject(CreateVolumeData4DReadWriteAccessor1BitImpl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData4DReadWriteAccessor1Bit.fromNativeObject(CreateVolumeData4DReadWriteAccessor1BitImpl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -1121,7 +1121,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadWriteAccessor1Bit OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, bool> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData4DReadWriteAccessor1Bit2Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData4DReadWriteAccessor1Bit createVolumeData4DReadWriteAccessor1Bit(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
-        return VolumeData4DReadWriteAccessor1Bit.fromNativeObject(CreateVolumeData4DReadWriteAccessor1Bit2Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData4DReadWriteAccessor1Bit.fromNativeObject(CreateVolumeData4DReadWriteAccessor1Bit2Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -1133,7 +1133,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadWriteAccessorU8 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, unsigned char> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData4DReadWriteAccessorU8Impl(long native_object, long dimensionsND, int LOD, int channel, int maxPages, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData4DReadWriteAccessorU8 createVolumeData4DReadWriteAccessorU8(DimensionsND dimensionsND, int LOD, int channel, int maxPages, Float replacementNoValue) {
-        return VolumeData4DReadWriteAccessorU8.fromNativeObject(CreateVolumeData4DReadWriteAccessorU8Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData4DReadWriteAccessorU8.fromNativeObject(CreateVolumeData4DReadWriteAccessorU8Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -1145,7 +1145,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadWriteAccessorU8 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, unsigned char> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData4DReadWriteAccessorU82Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData4DReadWriteAccessorU8 createVolumeData4DReadWriteAccessorU8(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
-        return VolumeData4DReadWriteAccessorU8.fromNativeObject(CreateVolumeData4DReadWriteAccessorU82Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData4DReadWriteAccessorU8.fromNativeObject(CreateVolumeData4DReadWriteAccessorU82Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -1157,7 +1157,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadWriteAccessorU16 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, unsigned short> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData4DReadWriteAccessorU16Impl(long native_object, long dimensionsND, int LOD, int channel, int maxPages, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData4DReadWriteAccessorU16 createVolumeData4DReadWriteAccessorU16(DimensionsND dimensionsND, int LOD, int channel, int maxPages, Float replacementNoValue) {
-        return VolumeData4DReadWriteAccessorU16.fromNativeObject(CreateVolumeData4DReadWriteAccessorU16Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData4DReadWriteAccessorU16.fromNativeObject(CreateVolumeData4DReadWriteAccessorU16Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -1169,7 +1169,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadWriteAccessorU16 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, unsigned short> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData4DReadWriteAccessorU162Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData4DReadWriteAccessorU16 createVolumeData4DReadWriteAccessorU16(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
-        return VolumeData4DReadWriteAccessorU16.fromNativeObject(CreateVolumeData4DReadWriteAccessorU162Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData4DReadWriteAccessorU16.fromNativeObject(CreateVolumeData4DReadWriteAccessorU162Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -1181,7 +1181,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadWriteAccessorU32 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, unsigned int> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData4DReadWriteAccessorU32Impl(long native_object, long dimensionsND, int LOD, int channel, int maxPages, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData4DReadWriteAccessorU32 createVolumeData4DReadWriteAccessorU32(DimensionsND dimensionsND, int LOD, int channel, int maxPages, Float replacementNoValue) {
-        return VolumeData4DReadWriteAccessorU32.fromNativeObject(CreateVolumeData4DReadWriteAccessorU32Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData4DReadWriteAccessorU32.fromNativeObject(CreateVolumeData4DReadWriteAccessorU32Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -1193,7 +1193,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadWriteAccessorU32 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, unsigned int> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData4DReadWriteAccessorU322Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData4DReadWriteAccessorU32 createVolumeData4DReadWriteAccessorU32(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
-        return VolumeData4DReadWriteAccessorU32.fromNativeObject(CreateVolumeData4DReadWriteAccessorU322Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData4DReadWriteAccessorU32.fromNativeObject(CreateVolumeData4DReadWriteAccessorU322Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -1205,7 +1205,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadWriteAccessorU64 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, uint64_t> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData4DReadWriteAccessorU64Impl(long native_object, long dimensionsND, int LOD, int channel, int maxPages, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData4DReadWriteAccessorU64 createVolumeData4DReadWriteAccessorU64(DimensionsND dimensionsND, int LOD, int channel, int maxPages, Float replacementNoValue) {
-        return VolumeData4DReadWriteAccessorU64.fromNativeObject(CreateVolumeData4DReadWriteAccessorU64Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData4DReadWriteAccessorU64.fromNativeObject(CreateVolumeData4DReadWriteAccessorU64Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -1217,7 +1217,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadWriteAccessorU64 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, uint64_t> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData4DReadWriteAccessorU642Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData4DReadWriteAccessorU64 createVolumeData4DReadWriteAccessorU64(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
-        return VolumeData4DReadWriteAccessorU64.fromNativeObject(CreateVolumeData4DReadWriteAccessorU642Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData4DReadWriteAccessorU64.fromNativeObject(CreateVolumeData4DReadWriteAccessorU642Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -1229,7 +1229,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadWriteAccessorR32 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, float> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData4DReadWriteAccessorR32Impl(long native_object, long dimensionsND, int LOD, int channel, int maxPages, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData4DReadWriteAccessorR32 createVolumeData4DReadWriteAccessorR32(DimensionsND dimensionsND, int LOD, int channel, int maxPages, Float replacementNoValue) {
-        return VolumeData4DReadWriteAccessorR32.fromNativeObject(CreateVolumeData4DReadWriteAccessorR32Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData4DReadWriteAccessorR32.fromNativeObject(CreateVolumeData4DReadWriteAccessorR32Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -1241,7 +1241,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadWriteAccessorR32 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, float> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData4DReadWriteAccessorR322Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData4DReadWriteAccessorR32 createVolumeData4DReadWriteAccessorR32(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
-        return VolumeData4DReadWriteAccessorR32.fromNativeObject(CreateVolumeData4DReadWriteAccessorR322Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData4DReadWriteAccessorR32.fromNativeObject(CreateVolumeData4DReadWriteAccessorR322Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -1253,7 +1253,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadWriteAccessorR64 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, double> (OpenVDS::DimensionsND, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData4DReadWriteAccessorR64Impl(long native_object, long dimensionsND, int LOD, int channel, int maxPages, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData4DReadWriteAccessorR64 createVolumeData4DReadWriteAccessorR64(DimensionsND dimensionsND, int LOD, int channel, int maxPages, Float replacementNoValue) {
-        return VolumeData4DReadWriteAccessorR64.fromNativeObject(CreateVolumeData4DReadWriteAccessorR64Impl(getNativeObject(), dimensionsND.value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData4DReadWriteAccessorR64.fromNativeObject(CreateVolumeData4DReadWriteAccessorR64Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, maxPages, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -1265,7 +1265,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData4DReadWriteAccessorR64 OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, double> (OpenVDS::DimensionsND, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData4DReadWriteAccessorR642Impl(long native_object, long dimensionsND, int LOD, int channel, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData4DReadWriteAccessorR64 createVolumeData4DReadWriteAccessorR64(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) {
-        return VolumeData4DReadWriteAccessorR64.fromNativeObject(CreateVolumeData4DReadWriteAccessorR642Impl(getNativeObject(), dimensionsND.value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeData4DReadWriteAccessorR64.fromNativeObject(CreateVolumeData4DReadWriteAccessorR642Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
 
@@ -1288,9 +1288,11 @@ of the number of chunks in some of the dimensions. Do not change this from the d
      * @return The buffer size needed.
      */
     public long getVolumeSubsetBufferSize(int[] minVoxelCoordinates, int[] maxVoxelCoordinates, VolumeDataChannelDescriptor.Format format, int LOD, int channel) {
+        ManagedBase.requireNonNull(minVoxelCoordinates, "minVoxelCoordinates may not be null");
         if (minVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"minVoxelCoordinates\" must have length 6");
+        ManagedBase.requireNonNull(maxVoxelCoordinates, "maxVoxelCoordinates may not be null");
         if (maxVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"maxVoxelCoordinates\" must have length 6");
-        return GetVolumeSubsetBufferSizeImpl(getNativeObject(), minVoxelCoordinates, maxVoxelCoordinates, format.value(), LOD, channel);
+        return GetVolumeSubsetBufferSizeImpl(getNativeObject(), minVoxelCoordinates, maxVoxelCoordinates, ManagedBase.requireNonNull(format, "format may not be null").value(), LOD, channel);
     }
 
     /**
@@ -1337,9 +1339,11 @@ of the number of chunks in some of the dimensions. Do not change this from the d
      * @return A VolumeDataRequest instance encapsulating the request status and buffer.
      */
     public VolumeDataRequest requestVolumeSubset(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, VolumeDataChannelDescriptor.Format format, Float replacementNoValue) {
+        ManagedBase.requireNonNull(minVoxelCoordinates, "minVoxelCoordinates may not be null");
         if (minVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"minVoxelCoordinates\" must have length 6");
+        ManagedBase.requireNonNull(maxVoxelCoordinates, "maxVoxelCoordinates may not be null");
         if (maxVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"maxVoxelCoordinates\" must have length 6");
-        return VolumeDataRequest.fromNativeObject(RequestVolumeSubsetImpl(getNativeObject(), buffer, dimensionsND.value(), LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, format.value(), replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeDataRequest.fromNativeObject(RequestVolumeSubsetImpl(getNativeObject(), ManagedBase.requireNonNull(buffer, "buffer may not be null"), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, ManagedBase.requireNonNull(format, "format may not be null").value(), replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
     /**
@@ -1374,9 +1378,11 @@ of the number of chunks in some of the dimensions. Do not change this from the d
      * @return A VolumeDataRequest instance encapsulating the request status and buffer.
      */
     public VolumeDataRequest1Bit requestVolumeSubset1Bit(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates) {
+        ManagedBase.requireNonNull(minVoxelCoordinates, "minVoxelCoordinates may not be null");
         if (minVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"minVoxelCoordinates\" must have length 6");
+        ManagedBase.requireNonNull(maxVoxelCoordinates, "maxVoxelCoordinates may not be null");
         if (maxVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"maxVoxelCoordinates\" must have length 6");
-        return VolumeDataRequest1Bit.fromNativeObject(RequestVolumeSubset1BitImpl(getNativeObject(), buffer, dimensionsND.value(), LOD, channel, minVoxelCoordinates, maxVoxelCoordinates));
+        return VolumeDataRequest1Bit.fromNativeObject(RequestVolumeSubset1BitImpl(getNativeObject(), ManagedBase.requireNonNull(buffer, "buffer may not be null"), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, minVoxelCoordinates, maxVoxelCoordinates));
     }
 
     ///AUTOGEN-OK: CXX_METHOD RequestVolumeSubset std::shared_ptr<OpenVDS::VolumeDataRequest> (OpenVDS::DimensionsND, int, int, int const (&)[6], int const (&)[6], OpenVDS::VolumeDataChannelDescriptor::Format, OpenVDS::optional<float>) FUNCTIONPROTO
@@ -1395,9 +1401,11 @@ of the number of chunks in some of the dimensions. Do not change this from the d
      * @return A VolumeDataRequest instance encapsulating the request status and buffer.
      */
     public VolumeDataRequest requestVolumeSubset(DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, VolumeDataChannelDescriptor.Format format, Float replacementNoValue) {
+        ManagedBase.requireNonNull(minVoxelCoordinates, "minVoxelCoordinates may not be null");
         if (minVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"minVoxelCoordinates\" must have length 6");
+        ManagedBase.requireNonNull(maxVoxelCoordinates, "maxVoxelCoordinates may not be null");
         if (maxVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"maxVoxelCoordinates\" must have length 6");
-        return VolumeDataRequest.fromNativeObject(RequestVolumeSubset3Impl(getNativeObject(), dimensionsND.value(), LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, format.value(), replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeDataRequest.fromNativeObject(RequestVolumeSubset3Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, ManagedBase.requireNonNull(format, "format may not be null").value(), replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
     /**
@@ -1430,9 +1438,11 @@ of the number of chunks in some of the dimensions. Do not change this from the d
      * @return A VolumeDataRequest instance encapsulating the request status and buffer.
      */
     public VolumeDataRequest1Bit requestVolumeSubset1Bit(DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates) {
+        ManagedBase.requireNonNull(minVoxelCoordinates, "minVoxelCoordinates may not be null");
         if (minVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"minVoxelCoordinates\" must have length 6");
+        ManagedBase.requireNonNull(maxVoxelCoordinates, "maxVoxelCoordinates may not be null");
         if (maxVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"maxVoxelCoordinates\" must have length 6");
-        return VolumeDataRequest1Bit.fromNativeObject(RequestVolumeSubset1Bit2Impl(getNativeObject(), dimensionsND.value(), LOD, channel, minVoxelCoordinates, maxVoxelCoordinates));
+        return VolumeDataRequest1Bit.fromNativeObject(RequestVolumeSubset1Bit2Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, minVoxelCoordinates, maxVoxelCoordinates));
     }
 
     ///AUTOGEN-OK: CXX_METHOD GetProjectedVolumeSubsetBufferSize int64_t (int const (&)[6], int const (&)[6], OpenVDS::DimensionsND, OpenVDS::VolumeDataChannelDescriptor::Format, int, int) FUNCTIONPROTO
@@ -1450,9 +1460,11 @@ of the number of chunks in some of the dimensions. Do not change this from the d
      * @return The buffer size needed.
      */
     public long getProjectedVolumeSubsetBufferSize(int[] minVoxelCoordinates, int[] maxVoxelCoordinates, DimensionsND projectedDimensions, VolumeDataChannelDescriptor.Format format, int LOD, int channel) {
+        ManagedBase.requireNonNull(minVoxelCoordinates, "minVoxelCoordinates may not be null");
         if (minVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"minVoxelCoordinates\" must have length 6");
+        ManagedBase.requireNonNull(maxVoxelCoordinates, "maxVoxelCoordinates may not be null");
         if (maxVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"maxVoxelCoordinates\" must have length 6");
-        return GetProjectedVolumeSubsetBufferSizeImpl(getNativeObject(), minVoxelCoordinates, maxVoxelCoordinates, projectedDimensions.value(), format.value(), LOD, channel);
+        return GetProjectedVolumeSubsetBufferSizeImpl(getNativeObject(), minVoxelCoordinates, maxVoxelCoordinates, ManagedBase.requireNonNull(projectedDimensions, "projectedDimensions may not be null").value(), ManagedBase.requireNonNull(format, "format may not be null").value(), LOD, channel);
     }
 
     /**
@@ -1504,9 +1516,11 @@ of the number of chunks in some of the dimensions. Do not change this from the d
      * @return A VolumeDataRequest instance encapsulating the request status and buffer.
      */
     public VolumeDataRequest requestProjectedVolumeSubset(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, FloatVector4 voxelPlane, DimensionsND projectedDimensions, VolumeDataChannelDescriptor.Format format, InterpolationMethod interpolationMethod, Float replacementNoValue) {
+        ManagedBase.requireNonNull(minVoxelCoordinates, "minVoxelCoordinates may not be null");
         if (minVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"minVoxelCoordinates\" must have length 6");
+        ManagedBase.requireNonNull(maxVoxelCoordinates, "maxVoxelCoordinates may not be null");
         if (maxVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"maxVoxelCoordinates\" must have length 6");
-        return VolumeDataRequest.fromNativeObject(RequestProjectedVolumeSubsetImpl(getNativeObject(), buffer, dimensionsND.value(), LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, voxelPlane.getBackingByteBuffer(), voxelPlane.getByteBufferOffset(), projectedDimensions.value(), format.value(), interpolationMethod.value(), replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeDataRequest.fromNativeObject(RequestProjectedVolumeSubsetImpl(getNativeObject(), ManagedBase.requireNonNull(buffer, "buffer may not be null"), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, ManagedBase.requireNonNull(voxelPlane, "voxelPlane may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(voxelPlane, "voxelPlane may not be null").getByteBufferOffset(), ManagedBase.requireNonNull(projectedDimensions, "projectedDimensions may not be null").value(), ManagedBase.requireNonNull(format, "format may not be null").value(), ManagedBase.requireNonNull(interpolationMethod, "interpolationMethod may not be null").value(), replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
     /**
@@ -1548,9 +1562,11 @@ of the number of chunks in some of the dimensions. Do not change this from the d
      * @return A VolumeDataRequest instance encapsulating the request status and buffer.
      */
     public VolumeDataRequest requestProjectedVolumeSubset(DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, FloatVector4 voxelPlane, DimensionsND projectedDimensions, VolumeDataChannelDescriptor.Format format, InterpolationMethod interpolationMethod, Float replacementNoValue) {
+        ManagedBase.requireNonNull(minVoxelCoordinates, "minVoxelCoordinates may not be null");
         if (minVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"minVoxelCoordinates\" must have length 6");
+        ManagedBase.requireNonNull(maxVoxelCoordinates, "maxVoxelCoordinates may not be null");
         if (maxVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"maxVoxelCoordinates\" must have length 6");
-        return VolumeDataRequest.fromNativeObject(RequestProjectedVolumeSubset2Impl(getNativeObject(), dimensionsND.value(), LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, voxelPlane.getBackingByteBuffer(), voxelPlane.getByteBufferOffset(), projectedDimensions.value(), format.value(), interpolationMethod.value(), replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeDataRequest.fromNativeObject(RequestProjectedVolumeSubset2Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, ManagedBase.requireNonNull(voxelPlane, "voxelPlane may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(voxelPlane, "voxelPlane may not be null").getByteBufferOffset(), ManagedBase.requireNonNull(projectedDimensions, "projectedDimensions may not be null").value(), ManagedBase.requireNonNull(format, "format may not be null").value(), ManagedBase.requireNonNull(interpolationMethod, "interpolationMethod may not be null").value(), replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
     /**
@@ -1651,7 +1667,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
      * @return A VolumeDataRequest instance encapsulating the request status.
      */
     public VolumeDataRequest prefetchVolumeChunk(DimensionsND dimensionsND, int LOD, int channel, long chunkIndex) {
-        return VolumeDataRequest.fromNativeObject(PrefetchVolumeChunkImpl(getNativeObject(), dimensionsND.value(), LOD, channel, chunkIndex));
+        return VolumeDataRequest.fromNativeObject(PrefetchVolumeChunkImpl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, chunkIndex));
     }
 
     ///AUTOGEN-OK: CXX_METHOD FlushUploadQueue void (bool) FUNCTIONPROTO

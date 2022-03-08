@@ -28,6 +28,26 @@
 extern "C" {
 #endif
 
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_MetadataContainer_ctorImpl
+  (JNIEnv * env, jclass cls)
+{
+  JEnvPushPop
+    stackitem(env);
+
+  CPPJNI_TRY
+  {
+    auto context = new CPPJNIObjectContext_t<OpenVDS::MetadataContainer>();
+
+    auto native_handle = context->handle();
+    context->setObject(new OpenVDS::MetadataContainer());
+
+    return native_handle;
+  }
+  CPPJNI_CATCH
+  return 0;
+}
+
+
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataContainer_IsMetadataIntAvailableImpl
   (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name)
 {

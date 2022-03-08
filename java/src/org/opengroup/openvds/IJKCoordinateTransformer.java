@@ -66,7 +66,7 @@ public class IJKCoordinateTransformer extends ManagedBase {
     
     public IJKCoordinateTransformer(IJKGridDefinition ijkGridDefinition, IntVector3 ijkSize) {
     
-        super(ctor2Impl(ijkGridDefinition.getBackingByteBuffer(), ijkGridDefinition.getByteBufferOffset(), ijkSize.getBackingByteBuffer(), ijkSize.getByteBufferOffset()));
+        super(ctor2Impl(ManagedBase.requireNonNull(ijkGridDefinition, "ijkGridDefinition may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(ijkGridDefinition, "ijkGridDefinition may not be null").getByteBufferOffset(), ManagedBase.requireNonNull(ijkSize, "ijkSize may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(ijkSize, "ijkSize may not be null").getByteBufferOffset()));
     
     }
 
@@ -74,7 +74,7 @@ public class IJKCoordinateTransformer extends ManagedBase {
     
     public IJKCoordinateTransformer(IJKGridDefinition ijkGridDefinition, IntVector3 ijkSize, IntVector3 ijkToVoxelDimensionMap) {
     
-        super(ctor3Impl(ijkGridDefinition.getBackingByteBuffer(), ijkGridDefinition.getByteBufferOffset(), ijkSize.getBackingByteBuffer(), ijkSize.getByteBufferOffset(), ijkToVoxelDimensionMap.getBackingByteBuffer(), ijkToVoxelDimensionMap.getByteBufferOffset()));
+        super(ctor3Impl(ManagedBase.requireNonNull(ijkGridDefinition, "ijkGridDefinition may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(ijkGridDefinition, "ijkGridDefinition may not be null").getByteBufferOffset(), ManagedBase.requireNonNull(ijkSize, "ijkSize may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(ijkSize, "ijkSize may not be null").getByteBufferOffset(), ManagedBase.requireNonNull(ijkToVoxelDimensionMap, "ijkToVoxelDimensionMap may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(ijkToVoxelDimensionMap, "ijkToVoxelDimensionMap may not be null").getByteBufferOffset()));
     
     }
 
@@ -82,7 +82,7 @@ public class IJKCoordinateTransformer extends ManagedBase {
     
     public IJKCoordinateTransformer(VDSIJKGridDefinition vdsIJKGridDefinition, IntVector3 ijkSize) {
     
-        super(ctor4Impl(vdsIJKGridDefinition.getBackingByteBuffer(), vdsIJKGridDefinition.getByteBufferOffset(), ijkSize.getBackingByteBuffer(), ijkSize.getByteBufferOffset()));
+        super(ctor4Impl(ManagedBase.requireNonNull(vdsIJKGridDefinition, "vdsIJKGridDefinition may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(vdsIJKGridDefinition, "vdsIJKGridDefinition may not be null").getByteBufferOffset(), ManagedBase.requireNonNull(ijkSize, "ijkSize may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(ijkSize, "ijkSize may not be null").getByteBufferOffset()));
     
     }
 
@@ -90,7 +90,7 @@ public class IJKCoordinateTransformer extends ManagedBase {
     
     public IJKCoordinateTransformer(IJKGridDefinition ijkGridDefinition, IntVector3 ijkSize, DoubleVector3 ijkAnnotationStart, DoubleVector3 ijkAnnotationEnd) {
     
-        super(ctor5Impl(ijkGridDefinition.getBackingByteBuffer(), ijkGridDefinition.getByteBufferOffset(), ijkSize.getBackingByteBuffer(), ijkSize.getByteBufferOffset(), ijkAnnotationStart.getBackingByteBuffer(), ijkAnnotationStart.getByteBufferOffset(), ijkAnnotationEnd.getBackingByteBuffer(), ijkAnnotationEnd.getByteBufferOffset()));
+        super(ctor5Impl(ManagedBase.requireNonNull(ijkGridDefinition, "ijkGridDefinition may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(ijkGridDefinition, "ijkGridDefinition may not be null").getByteBufferOffset(), ManagedBase.requireNonNull(ijkSize, "ijkSize may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(ijkSize, "ijkSize may not be null").getByteBufferOffset(), ManagedBase.requireNonNull(ijkAnnotationStart, "ijkAnnotationStart may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(ijkAnnotationStart, "ijkAnnotationStart may not be null").getByteBufferOffset(), ManagedBase.requireNonNull(ijkAnnotationEnd, "ijkAnnotationEnd may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(ijkAnnotationEnd, "ijkAnnotationEnd may not be null").getByteBufferOffset()));
     
     }
 
@@ -98,7 +98,7 @@ public class IJKCoordinateTransformer extends ManagedBase {
     
     public IJKCoordinateTransformer(IJKGridDefinition ijkGridDefinition, IntVector3 ijkSize, IntVector3 ijkToVoxelDimensionMap, DoubleVector3 ijkAnnotationStart, DoubleVector3 ijkAnnotationEnd) {
     
-        super(ctor6Impl(ijkGridDefinition.getBackingByteBuffer(), ijkGridDefinition.getByteBufferOffset(), ijkSize.getBackingByteBuffer(), ijkSize.getByteBufferOffset(), ijkToVoxelDimensionMap.getBackingByteBuffer(), ijkToVoxelDimensionMap.getByteBufferOffset(), ijkAnnotationStart.getBackingByteBuffer(), ijkAnnotationStart.getByteBufferOffset(), ijkAnnotationEnd.getBackingByteBuffer(), ijkAnnotationEnd.getByteBufferOffset()));
+        super(ctor6Impl(ManagedBase.requireNonNull(ijkGridDefinition, "ijkGridDefinition may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(ijkGridDefinition, "ijkGridDefinition may not be null").getByteBufferOffset(), ManagedBase.requireNonNull(ijkSize, "ijkSize may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(ijkSize, "ijkSize may not be null").getByteBufferOffset(), ManagedBase.requireNonNull(ijkToVoxelDimensionMap, "ijkToVoxelDimensionMap may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(ijkToVoxelDimensionMap, "ijkToVoxelDimensionMap may not be null").getByteBufferOffset(), ManagedBase.requireNonNull(ijkAnnotationStart, "ijkAnnotationStart may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(ijkAnnotationStart, "ijkAnnotationStart may not be null").getByteBufferOffset(), ManagedBase.requireNonNull(ijkAnnotationEnd, "ijkAnnotationEnd may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(ijkAnnotationEnd, "ijkAnnotationEnd may not be null").getByteBufferOffset()));
     
     }
 
@@ -106,7 +106,7 @@ public class IJKCoordinateTransformer extends ManagedBase {
     
     public IJKCoordinateTransformer(VDSIJKGridDefinition vdsIJKGridDefinition, IntVector3 ijkSize, DoubleVector3 ijkAnnotationStart, DoubleVector3 ijkAnnotationEnd) {
     
-        super(ctor7Impl(vdsIJKGridDefinition.getBackingByteBuffer(), vdsIJKGridDefinition.getByteBufferOffset(), ijkSize.getBackingByteBuffer(), ijkSize.getByteBufferOffset(), ijkAnnotationStart.getBackingByteBuffer(), ijkAnnotationStart.getByteBufferOffset(), ijkAnnotationEnd.getBackingByteBuffer(), ijkAnnotationEnd.getByteBufferOffset()));
+        super(ctor7Impl(ManagedBase.requireNonNull(vdsIJKGridDefinition, "vdsIJKGridDefinition may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(vdsIJKGridDefinition, "vdsIJKGridDefinition may not be null").getByteBufferOffset(), ManagedBase.requireNonNull(ijkSize, "ijkSize may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(ijkSize, "ijkSize may not be null").getByteBufferOffset(), ManagedBase.requireNonNull(ijkAnnotationStart, "ijkAnnotationStart may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(ijkAnnotationStart, "ijkAnnotationStart may not be null").getByteBufferOffset(), ManagedBase.requireNonNull(ijkAnnotationEnd, "ijkAnnotationEnd may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(ijkAnnotationEnd, "ijkAnnotationEnd may not be null").getByteBufferOffset()));
     
     }
 
@@ -221,7 +221,7 @@ public class IJKCoordinateTransformer extends ManagedBase {
      */
     public DoubleVector3 IJKPositionToWorld(DoubleVector3 ijkPosition) {
         DoubleVector3 result = new DoubleVector3();
-        IJKPositionToWorldImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), ijkPosition.getBackingByteBuffer(), ijkPosition.getByteBufferOffset());
+        IJKPositionToWorldImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), ManagedBase.requireNonNull(ijkPosition, "ijkPosition may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(ijkPosition, "ijkPosition may not be null").getByteBufferOffset());
         return result;
     }
 
@@ -234,7 +234,7 @@ public class IJKCoordinateTransformer extends ManagedBase {
      */
     public DoubleVector3 IJKIndexToWorld(IntVector3 ijkIndex) {
         DoubleVector3 result = new DoubleVector3();
-        IJKIndexToWorldImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), ijkIndex.getBackingByteBuffer(), ijkIndex.getByteBufferOffset());
+        IJKIndexToWorldImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), ManagedBase.requireNonNull(ijkIndex, "ijkIndex may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(ijkIndex, "ijkIndex may not be null").getByteBufferOffset());
         return result;
     }
 
@@ -247,7 +247,7 @@ public class IJKCoordinateTransformer extends ManagedBase {
      */
     public DoubleVector3 IJKPositionToAnnotation(DoubleVector3 ijkPosition) {
         DoubleVector3 result = new DoubleVector3();
-        IJKPositionToAnnotationImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), ijkPosition.getBackingByteBuffer(), ijkPosition.getByteBufferOffset());
+        IJKPositionToAnnotationImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), ManagedBase.requireNonNull(ijkPosition, "ijkPosition may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(ijkPosition, "ijkPosition may not be null").getByteBufferOffset());
         return result;
     }
 
@@ -260,7 +260,7 @@ public class IJKCoordinateTransformer extends ManagedBase {
      */
     public DoubleVector3 IJKIndexToAnnotation(IntVector3 ijkIndex) {
         DoubleVector3 result = new DoubleVector3();
-        IJKIndexToAnnotationImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), ijkIndex.getBackingByteBuffer(), ijkIndex.getByteBufferOffset());
+        IJKIndexToAnnotationImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), ManagedBase.requireNonNull(ijkIndex, "ijkIndex may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(ijkIndex, "ijkIndex may not be null").getByteBufferOffset());
         return result;
     }
 
@@ -273,7 +273,7 @@ public class IJKCoordinateTransformer extends ManagedBase {
      */
     public DoubleVector3 IJKPositionToVoxelPosition(DoubleVector3 ijkPosition) {
         DoubleVector3 result = new DoubleVector3();
-        IJKPositionToVoxelPositionImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), ijkPosition.getBackingByteBuffer(), ijkPosition.getByteBufferOffset());
+        IJKPositionToVoxelPositionImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), ManagedBase.requireNonNull(ijkPosition, "ijkPosition may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(ijkPosition, "ijkPosition may not be null").getByteBufferOffset());
         return result;
     }
 
@@ -286,7 +286,7 @@ public class IJKCoordinateTransformer extends ManagedBase {
      */
     public IntVector3 IJKIndexToVoxelIndex(IntVector3 ijkIndex) {
         IntVector3 result = new IntVector3();
-        IJKIndexToVoxelIndexImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), ijkIndex.getBackingByteBuffer(), ijkIndex.getByteBufferOffset());
+        IJKIndexToVoxelIndexImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), ManagedBase.requireNonNull(ijkIndex, "ijkIndex may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(ijkIndex, "ijkIndex may not be null").getByteBufferOffset());
         return result;
     }
 
@@ -299,7 +299,7 @@ public class IJKCoordinateTransformer extends ManagedBase {
      */
     public DoubleVector3 worldToIJKPosition(DoubleVector3 worldPosition) {
         DoubleVector3 result = new DoubleVector3();
-        WorldToIJKPositionImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), worldPosition.getBackingByteBuffer(), worldPosition.getByteBufferOffset());
+        WorldToIJKPositionImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), ManagedBase.requireNonNull(worldPosition, "worldPosition may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(worldPosition, "worldPosition may not be null").getByteBufferOffset());
         return result;
     }
 
@@ -312,7 +312,7 @@ public class IJKCoordinateTransformer extends ManagedBase {
      */
     public IntVector3 worldToIJKIndex(DoubleVector3 worldPosition) {
         IntVector3 result = new IntVector3();
-        WorldToIJKIndexImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), worldPosition.getBackingByteBuffer(), worldPosition.getByteBufferOffset());
+        WorldToIJKIndexImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), ManagedBase.requireNonNull(worldPosition, "worldPosition may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(worldPosition, "worldPosition may not be null").getByteBufferOffset());
         return result;
     }
 
@@ -325,7 +325,7 @@ public class IJKCoordinateTransformer extends ManagedBase {
      */
     public DoubleVector3 worldToAnnotation(DoubleVector3 worldPosition) {
         DoubleVector3 result = new DoubleVector3();
-        WorldToAnnotationImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), worldPosition.getBackingByteBuffer(), worldPosition.getByteBufferOffset());
+        WorldToAnnotationImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), ManagedBase.requireNonNull(worldPosition, "worldPosition may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(worldPosition, "worldPosition may not be null").getByteBufferOffset());
         return result;
     }
 
@@ -338,7 +338,7 @@ public class IJKCoordinateTransformer extends ManagedBase {
      */
     public DoubleVector3 worldToVoxelPosition(DoubleVector3 worldPosition) {
         DoubleVector3 result = new DoubleVector3();
-        WorldToVoxelPositionImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), worldPosition.getBackingByteBuffer(), worldPosition.getByteBufferOffset());
+        WorldToVoxelPositionImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), ManagedBase.requireNonNull(worldPosition, "worldPosition may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(worldPosition, "worldPosition may not be null").getByteBufferOffset());
         return result;
     }
 
@@ -351,7 +351,7 @@ public class IJKCoordinateTransformer extends ManagedBase {
      */
     public IntVector3 worldToVoxelIndex(DoubleVector3 worldPosition) {
         IntVector3 result = new IntVector3();
-        WorldToVoxelIndexImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), worldPosition.getBackingByteBuffer(), worldPosition.getByteBufferOffset());
+        WorldToVoxelIndexImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), ManagedBase.requireNonNull(worldPosition, "worldPosition may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(worldPosition, "worldPosition may not be null").getByteBufferOffset());
         return result;
     }
 
@@ -364,7 +364,7 @@ public class IJKCoordinateTransformer extends ManagedBase {
      */
     public DoubleVector3 annotationToIJKPosition(DoubleVector3 annotationPosition) {
         DoubleVector3 result = new DoubleVector3();
-        AnnotationToIJKPositionImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), annotationPosition.getBackingByteBuffer(), annotationPosition.getByteBufferOffset());
+        AnnotationToIJKPositionImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), ManagedBase.requireNonNull(annotationPosition, "annotationPosition may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(annotationPosition, "annotationPosition may not be null").getByteBufferOffset());
         return result;
     }
 
@@ -377,7 +377,7 @@ public class IJKCoordinateTransformer extends ManagedBase {
      */
     public IntVector3 annotationToIJKIndex(DoubleVector3 annotationPosition) {
         IntVector3 result = new IntVector3();
-        AnnotationToIJKIndexImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), annotationPosition.getBackingByteBuffer(), annotationPosition.getByteBufferOffset());
+        AnnotationToIJKIndexImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), ManagedBase.requireNonNull(annotationPosition, "annotationPosition may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(annotationPosition, "annotationPosition may not be null").getByteBufferOffset());
         return result;
     }
 
@@ -390,7 +390,7 @@ public class IJKCoordinateTransformer extends ManagedBase {
      */
     public DoubleVector3 annotationToWorld(DoubleVector3 annotationPosition) {
         DoubleVector3 result = new DoubleVector3();
-        AnnotationToWorldImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), annotationPosition.getBackingByteBuffer(), annotationPosition.getByteBufferOffset());
+        AnnotationToWorldImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), ManagedBase.requireNonNull(annotationPosition, "annotationPosition may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(annotationPosition, "annotationPosition may not be null").getByteBufferOffset());
         return result;
     }
 
@@ -403,7 +403,7 @@ public class IJKCoordinateTransformer extends ManagedBase {
      */
     public DoubleVector3 annotationToVoxelPosition(DoubleVector3 annotationPosition) {
         DoubleVector3 result = new DoubleVector3();
-        AnnotationToVoxelPositionImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), annotationPosition.getBackingByteBuffer(), annotationPosition.getByteBufferOffset());
+        AnnotationToVoxelPositionImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), ManagedBase.requireNonNull(annotationPosition, "annotationPosition may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(annotationPosition, "annotationPosition may not be null").getByteBufferOffset());
         return result;
     }
 
@@ -416,7 +416,7 @@ public class IJKCoordinateTransformer extends ManagedBase {
      */
     public IntVector3 annotationToVoxelIndex(DoubleVector3 annotationPosition) {
         IntVector3 result = new IntVector3();
-        AnnotationToVoxelIndexImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), annotationPosition.getBackingByteBuffer(), annotationPosition.getByteBufferOffset());
+        AnnotationToVoxelIndexImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), ManagedBase.requireNonNull(annotationPosition, "annotationPosition may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(annotationPosition, "annotationPosition may not be null").getByteBufferOffset());
         return result;
     }
 
@@ -429,7 +429,7 @@ public class IJKCoordinateTransformer extends ManagedBase {
      */
     public DoubleVector3 voxelPositionToIJKPosition(DoubleVector3 voxelPosition) {
         DoubleVector3 result = new DoubleVector3();
-        VoxelPositionToIJKPositionImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), voxelPosition.getBackingByteBuffer(), voxelPosition.getByteBufferOffset());
+        VoxelPositionToIJKPositionImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), ManagedBase.requireNonNull(voxelPosition, "voxelPosition may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(voxelPosition, "voxelPosition may not be null").getByteBufferOffset());
         return result;
     }
 
@@ -442,7 +442,7 @@ public class IJKCoordinateTransformer extends ManagedBase {
      */
     public IntVector3 voxelIndexToIJKIndex(IntVector3 voxelIndex) {
         IntVector3 result = new IntVector3();
-        VoxelIndexToIJKIndexImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), voxelIndex.getBackingByteBuffer(), voxelIndex.getByteBufferOffset());
+        VoxelIndexToIJKIndexImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), ManagedBase.requireNonNull(voxelIndex, "voxelIndex may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(voxelIndex, "voxelIndex may not be null").getByteBufferOffset());
         return result;
     }
 
@@ -455,7 +455,7 @@ public class IJKCoordinateTransformer extends ManagedBase {
      */
     public DoubleVector3 voxelPositionToWorld(DoubleVector3 voxelPosition) {
         DoubleVector3 result = new DoubleVector3();
-        VoxelPositionToWorldImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), voxelPosition.getBackingByteBuffer(), voxelPosition.getByteBufferOffset());
+        VoxelPositionToWorldImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), ManagedBase.requireNonNull(voxelPosition, "voxelPosition may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(voxelPosition, "voxelPosition may not be null").getByteBufferOffset());
         return result;
     }
 
@@ -468,7 +468,7 @@ public class IJKCoordinateTransformer extends ManagedBase {
      */
     public DoubleVector3 voxelIndexToWorld(IntVector3 voxelIndex) {
         DoubleVector3 result = new DoubleVector3();
-        VoxelIndexToWorldImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), voxelIndex.getBackingByteBuffer(), voxelIndex.getByteBufferOffset());
+        VoxelIndexToWorldImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), ManagedBase.requireNonNull(voxelIndex, "voxelIndex may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(voxelIndex, "voxelIndex may not be null").getByteBufferOffset());
         return result;
     }
 
@@ -481,7 +481,7 @@ public class IJKCoordinateTransformer extends ManagedBase {
      */
     public DoubleVector3 voxelPositionToAnnotation(DoubleVector3 voxelPosition) {
         DoubleVector3 result = new DoubleVector3();
-        VoxelPositionToAnnotationImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), voxelPosition.getBackingByteBuffer(), voxelPosition.getByteBufferOffset());
+        VoxelPositionToAnnotationImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), ManagedBase.requireNonNull(voxelPosition, "voxelPosition may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(voxelPosition, "voxelPosition may not be null").getByteBufferOffset());
         return result;
     }
 
@@ -494,7 +494,7 @@ public class IJKCoordinateTransformer extends ManagedBase {
      */
     public DoubleVector3 voxelIndexToAnnotation(IntVector3 voxelIndex) {
         DoubleVector3 result = new DoubleVector3();
-        VoxelIndexToAnnotationImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), voxelIndex.getBackingByteBuffer(), voxelIndex.getByteBufferOffset());
+        VoxelIndexToAnnotationImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), ManagedBase.requireNonNull(voxelIndex, "voxelIndex may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(voxelIndex, "voxelIndex may not be null").getByteBufferOffset());
         return result;
     }
 
@@ -506,7 +506,7 @@ public class IJKCoordinateTransformer extends ManagedBase {
      * 
      */
     public boolean isIJKPositionOutOfRange(DoubleVector3 ijkPosition) {
-        return IsIJKPositionOutOfRangeImpl(getNativeObject(), ijkPosition.getBackingByteBuffer(), ijkPosition.getByteBufferOffset());
+        return IsIJKPositionOutOfRangeImpl(getNativeObject(), ManagedBase.requireNonNull(ijkPosition, "ijkPosition may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(ijkPosition, "ijkPosition may not be null").getByteBufferOffset());
     }
 
     ///AUTOGEN-OK: CXX_METHOD IsIJKIndexOutOfRange bool (const OpenVDS::Vector<int, 3> &) const FUNCTIONPROTO
@@ -517,7 +517,7 @@ public class IJKCoordinateTransformer extends ManagedBase {
      * 
      */
     public boolean isIJKIndexOutOfRange(IntVector3 ijkIndex) {
-        return IsIJKIndexOutOfRangeImpl(getNativeObject(), ijkIndex.getBackingByteBuffer(), ijkIndex.getByteBufferOffset());
+        return IsIJKIndexOutOfRangeImpl(getNativeObject(), ManagedBase.requireNonNull(ijkIndex, "ijkIndex may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(ijkIndex, "ijkIndex may not be null").getByteBufferOffset());
     }
 
     ///AUTOGEN-OK: CXX_METHOD IsVoxelPositionOutOfRange bool (const OpenVDS::Vector<double, 3> &) const FUNCTIONPROTO
@@ -528,7 +528,7 @@ public class IJKCoordinateTransformer extends ManagedBase {
      * 
      */
     public boolean isVoxelPositionOutOfRange(DoubleVector3 voxelPosition) {
-        return IsVoxelPositionOutOfRangeImpl(getNativeObject(), voxelPosition.getBackingByteBuffer(), voxelPosition.getByteBufferOffset());
+        return IsVoxelPositionOutOfRangeImpl(getNativeObject(), ManagedBase.requireNonNull(voxelPosition, "voxelPosition may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(voxelPosition, "voxelPosition may not be null").getByteBufferOffset());
     }
 
     ///AUTOGEN-OK: CXX_METHOD IsVoxelIndexOutOfRange bool (const OpenVDS::Vector<int, 3> &) const FUNCTIONPROTO
@@ -539,7 +539,7 @@ public class IJKCoordinateTransformer extends ManagedBase {
      * 
      */
     public boolean isVoxelIndexOutOfRange(IntVector3 voxelIndex) {
-        return IsVoxelIndexOutOfRangeImpl(getNativeObject(), voxelIndex.getBackingByteBuffer(), voxelIndex.getByteBufferOffset());
+        return IsVoxelIndexOutOfRangeImpl(getNativeObject(), ManagedBase.requireNonNull(voxelIndex, "voxelIndex may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(voxelIndex, "voxelIndex may not be null").getByteBufferOffset());
     }
 
     ///AUTOGEN-OK: CXX_METHOD ConvertIJKPositionToIndex OpenVDS::Vector<int, 3> (const OpenVDS::Vector<double, 3> &) const FUNCTIONPROTO
@@ -552,7 +552,7 @@ public class IJKCoordinateTransformer extends ManagedBase {
      */
     public IntVector3 convertIJKPositionToIndex(DoubleVector3 ijkPosition) {
         IntVector3 result = new IntVector3();
-        ConvertIJKPositionToIndexImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), ijkPosition.getBackingByteBuffer(), ijkPosition.getByteBufferOffset());
+        ConvertIJKPositionToIndexImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), ManagedBase.requireNonNull(ijkPosition, "ijkPosition may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(ijkPosition, "ijkPosition may not be null").getByteBufferOffset());
         return result;
     }
 
@@ -566,7 +566,7 @@ public class IJKCoordinateTransformer extends ManagedBase {
      */
     public IntVector3 convertVoxelPositionToIndex(DoubleVector3 voxelPosition) {
         IntVector3 result = new IntVector3();
-        ConvertVoxelPositionToIndexImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), voxelPosition.getBackingByteBuffer(), voxelPosition.getByteBufferOffset());
+        ConvertVoxelPositionToIndexImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset(), ManagedBase.requireNonNull(voxelPosition, "voxelPosition may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(voxelPosition, "voxelPosition may not be null").getByteBufferOffset());
         return result;
     }
 
@@ -587,13 +587,13 @@ public class IJKCoordinateTransformer extends ManagedBase {
     ///AUTOGEN-OK: CXX_METHOD ErrorCodeIfIJKPositionOutOfRange int (const OpenVDS::Vector<double, 3> &) const FUNCTIONPROTO
     native private int ErrorCodeIfIJKPositionOutOfRangeImpl(long native_object, ByteBuffer ijkPosition, long ijkPosition_byteoffset);
     public int errorCodeIfIJKPositionOutOfRange(DoubleVector3 ijkPosition) {
-        return ErrorCodeIfIJKPositionOutOfRangeImpl(getNativeObject(), ijkPosition.getBackingByteBuffer(), ijkPosition.getByteBufferOffset());
+        return ErrorCodeIfIJKPositionOutOfRangeImpl(getNativeObject(), ManagedBase.requireNonNull(ijkPosition, "ijkPosition may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(ijkPosition, "ijkPosition may not be null").getByteBufferOffset());
     }
 
     ///AUTOGEN-OK: CXX_METHOD ErrorCodeIfVoxelPositionOutOfRange int (const OpenVDS::Vector<double, 3> &) const FUNCTIONPROTO
     native private int ErrorCodeIfVoxelPositionOutOfRangeImpl(long native_object, ByteBuffer voxelPosition, long voxelPosition_byteoffset);
     public int errorCodeIfVoxelPositionOutOfRange(DoubleVector3 voxelPosition) {
-        return ErrorCodeIfVoxelPositionOutOfRangeImpl(getNativeObject(), voxelPosition.getBackingByteBuffer(), voxelPosition.getByteBufferOffset());
+        return ErrorCodeIfVoxelPositionOutOfRangeImpl(getNativeObject(), ManagedBase.requireNonNull(voxelPosition, "voxelPosition may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(voxelPosition, "voxelPosition may not be null").getByteBufferOffset());
     }
 
     IJKCoordinateTransformer(long nativeobject) {

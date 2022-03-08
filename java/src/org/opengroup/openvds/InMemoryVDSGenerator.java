@@ -19,6 +19,10 @@
 package org.opengroup.openvds;
 
 public class InMemoryVDSGenerator implements AutoCloseable {
+    static {
+        ManagedBuffer.staticInit();
+    }
+
     static private native long CreateVDSImpl(int nXSamples, int nYSamples, int nZSamples, long format);
 
     protected VDS vds;

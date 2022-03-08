@@ -77,6 +77,7 @@ public class VolumeDataPageAccessor extends ManagedBase {
     ///AUTOGEN-OK: CXX_METHOD GetNumSamples void (int (&)[6]) const FUNCTIONPROTO
     native private void GetNumSamplesImpl(long native_object, int[] numSamples);
     public void getNumSamples(int[] numSamples) {
+        ManagedBase.requireNonNull(numSamples, "numSamples may not be null");
         if (numSamples.length != 6) throw new IllegalArgumentException("Array \"numSamples\" must have length 6");
         GetNumSamplesImpl(getNativeObject(), numSamples);
     }
@@ -90,7 +91,9 @@ public class VolumeDataPageAccessor extends ManagedBase {
     ///AUTOGEN-OK: CXX_METHOD GetChunkMinMax void (int64_t, int (&)[6], int (&)[6]) const FUNCTIONPROTO
     native private void GetChunkMinMaxImpl(long native_object, long chunk, int[] min, int[] max);
     public void getChunkMinMax(long chunk, int[] min, int[] max) {
+        ManagedBase.requireNonNull(min, "min may not be null");
         if (min.length != 6) throw new IllegalArgumentException("Array \"min\" must have length 6");
+        ManagedBase.requireNonNull(max, "max may not be null");
         if (max.length != 6) throw new IllegalArgumentException("Array \"max\" must have length 6");
         GetChunkMinMaxImpl(getNativeObject(), chunk, min, max);
     }
@@ -98,7 +101,9 @@ public class VolumeDataPageAccessor extends ManagedBase {
     ///AUTOGEN-OK: CXX_METHOD GetChunkMinMaxExcludingMargin void (int64_t, int (&)[6], int (&)[6]) const FUNCTIONPROTO
     native private void GetChunkMinMaxExcludingMarginImpl(long native_object, long chunk, int[] minExcludingMargin, int[] maxExcludingMargin);
     public void getChunkMinMaxExcludingMargin(long chunk, int[] minExcludingMargin, int[] maxExcludingMargin) {
+        ManagedBase.requireNonNull(minExcludingMargin, "minExcludingMargin may not be null");
         if (minExcludingMargin.length != 6) throw new IllegalArgumentException("Array \"minExcludingMargin\" must have length 6");
+        ManagedBase.requireNonNull(maxExcludingMargin, "maxExcludingMargin may not be null");
         if (maxExcludingMargin.length != 6) throw new IllegalArgumentException("Array \"maxExcludingMargin\" must have length 6");
         GetChunkMinMaxExcludingMarginImpl(getNativeObject(), chunk, minExcludingMargin, maxExcludingMargin);
     }
@@ -106,6 +111,7 @@ public class VolumeDataPageAccessor extends ManagedBase {
     ///AUTOGEN-OK: CXX_METHOD GetChunkIndex int64_t (int const (&)[6]) const FUNCTIONPROTO
     native private long GetChunkIndexImpl(long native_object, int[] position);
     public long getChunkIndex(int[] position) {
+        ManagedBase.requireNonNull(position, "position may not be null");
         if (position.length != 6) throw new IllegalArgumentException("Array \"position\" must have length 6");
         return GetChunkIndexImpl(getNativeObject(), position);
     }
@@ -179,6 +185,7 @@ public class VolumeDataPageAccessor extends ManagedBase {
     ///AUTOGEN-OK: CXX_METHOD ReadPageAtPosition OpenVDS::VolumeDataPage *(int const (&)[6]) FUNCTIONPROTO
     native private long ReadPageAtPositionImpl(long native_object, int[] position);
     public VolumeDataPage readPageAtPosition(int[] position) {
+        ManagedBase.requireNonNull(position, "position may not be null");
         if (position.length != 6) throw new IllegalArgumentException("Array \"position\" must have length 6");
         return VolumeDataPage.fromNativeObject(ReadPageAtPositionImpl(getNativeObject(), position));
     }

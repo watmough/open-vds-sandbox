@@ -42,7 +42,7 @@ public class FloatRange extends ByteBufferBackedObject {
 
     public FloatRange(float[] array) {
         if (array == null) {
-            throw new NullPointerException("array may not be null.");
+            throw new IllegalArgumentException("array may not be null.");
         }
         if (array.length != 2) {
             throw new IllegalArgumentException("array must be of length 2. ");

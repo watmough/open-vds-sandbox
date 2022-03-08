@@ -142,7 +142,7 @@ public class VolumeDataLayoutDescriptor extends ManagedBase {
     
     public VolumeDataLayoutDescriptor(VolumeDataLayoutDescriptor.BrickSize brickSize, int negativeMargin, int positiveMargin, int brickSize2DMultiplier, VolumeDataLayoutDescriptor.LODLevels lodLevels, VolumeDataLayoutDescriptor.Options options, int fullResolutionDimension) {
     
-        super(ctor2Impl(brickSize.value(), negativeMargin, positiveMargin, brickSize2DMultiplier, lodLevels.value(), options.value(), fullResolutionDimension));
+        super(ctor2Impl(ManagedBase.requireNonNull(brickSize, "brickSize may not be null").value(), negativeMargin, positiveMargin, brickSize2DMultiplier, ManagedBase.requireNonNull(lodLevels, "lodLevels may not be null").value(), ManagedBase.requireNonNull(options, "options may not be null").value(), fullResolutionDimension));
     
     }
 

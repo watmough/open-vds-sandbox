@@ -71,7 +71,7 @@ public class VolumeDataLayout extends MetadataReadAccess {
      * 
      */
     public boolean isChannelAvailable(String channelName) {
-        return IsChannelAvailableImpl(getNativeObject(), channelName);
+        return IsChannelAvailableImpl(getNativeObject(), ManagedBase.requireNonNull(channelName, "channelName may not be null"));
     }
 
     ///AUTOGEN-OK: CXX_METHOD GetChannelIndex int (const char *) const FUNCTIONPROTO
@@ -82,7 +82,7 @@ public class VolumeDataLayout extends MetadataReadAccess {
      * 
      */
     public int getChannelIndex(String channelName) {
-        return GetChannelIndexImpl(getNativeObject(), channelName);
+        return GetChannelIndexImpl(getNativeObject(), ManagedBase.requireNonNull(channelName, "channelName may not be null"));
     }
 
     ///AUTOGEN-OK: CXX_METHOD GetLayoutDescriptor OpenVDS::VolumeDataLayoutDescriptor () const FUNCTIONPROTO

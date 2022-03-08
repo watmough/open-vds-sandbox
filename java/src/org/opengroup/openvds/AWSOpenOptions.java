@@ -128,7 +128,7 @@ public class AWSOpenOptions extends OpenOptions {
      */
     public AWSOpenOptions(String bucket, String key, String region, String endpointOverride, int connectionTimeoutMs, int requestTimeoutMs, boolean disableInitApi) {
     
-        super(ctor2Impl(bucket, key, region, endpointOverride, connectionTimeoutMs, requestTimeoutMs, disableInitApi));
+        super(ctor2Impl(ManagedBase.requireNonNull(bucket, "bucket may not be null"), ManagedBase.requireNonNull(key, "key may not be null"), ManagedBase.requireNonNull(region, "region may not be null"), ManagedBase.requireNonNull(endpointOverride, "endpointOverride may not be null"), connectionTimeoutMs, requestTimeoutMs, disableInitApi));
     
     }
 

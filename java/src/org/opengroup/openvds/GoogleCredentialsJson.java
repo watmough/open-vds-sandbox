@@ -39,7 +39,7 @@ public class GoogleCredentialsJson extends ManagedBase {
      */
     public GoogleCredentialsJson(String json) {
     
-        super(ctorImpl(json));
+        super(ctorImpl(ManagedBase.requireNonNull(json, "json may not be null")));
     
     }
 

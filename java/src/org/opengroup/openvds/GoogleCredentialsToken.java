@@ -39,7 +39,7 @@ public class GoogleCredentialsToken extends ManagedBase {
      */
     public GoogleCredentialsToken(String token) {
     
-        super(ctorImpl(token));
+        super(ctorImpl(ManagedBase.requireNonNull(token, "token may not be null")));
     
     }
 

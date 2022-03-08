@@ -39,7 +39,7 @@ public class GoogleCredentialsPath extends ManagedBase {
      */
     public GoogleCredentialsPath(String path) {
     
-        super(ctorImpl(path));
+        super(ctorImpl(ManagedBase.requireNonNull(path, "path may not be null")));
     
     }
 

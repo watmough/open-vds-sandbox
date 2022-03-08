@@ -37,7 +37,7 @@ public class DMSOpenOptions extends OpenOptions {
     
     public DMSOpenOptions(String sdAuthorityUrl, String sdApiKey, String sdToken, String datasetPath, int logLevel, String authTokenUrl, String refreshToken, String clientId, String clientSecret, String scopes, boolean useFileNameForSingleFileDatasets) {
     
-        super(ctor2Impl(sdAuthorityUrl, sdApiKey, sdToken, datasetPath, logLevel, authTokenUrl, refreshToken, clientId, clientSecret, scopes, useFileNameForSingleFileDatasets));
+        super(ctor2Impl(ManagedBase.requireNonNull(sdAuthorityUrl, "sdAuthorityUrl may not be null"), ManagedBase.requireNonNull(sdApiKey, "sdApiKey may not be null"), ManagedBase.requireNonNull(sdToken, "sdToken may not be null"), ManagedBase.requireNonNull(datasetPath, "datasetPath may not be null"), logLevel, ManagedBase.requireNonNull(authTokenUrl, "authTokenUrl may not be null"), ManagedBase.requireNonNull(refreshToken, "refreshToken may not be null"), ManagedBase.requireNonNull(clientId, "clientId may not be null"), ManagedBase.requireNonNull(clientSecret, "clientSecret may not be null"), ManagedBase.requireNonNull(scopes, "scopes may not be null"), useFileNameForSingleFileDatasets));
     
     }
 

@@ -53,7 +53,7 @@ public class IndexRegionIntVector2 extends ManagedBase {
     
     public IndexRegionIntVector2(IntVector2 Min, IntVector2 Max) {
     
-        super(ctor2Impl(Min.getBackingByteBuffer(), Min.getByteBufferOffset(), Max.getBackingByteBuffer(), Max.getByteBufferOffset()));
+        super(ctor2Impl(ManagedBase.requireNonNull(Min, "Min may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(Min, "Min may not be null").getByteBufferOffset(), ManagedBase.requireNonNull(Max, "Max may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(Max, "Max may not be null").getByteBufferOffset()));
     
     }
 

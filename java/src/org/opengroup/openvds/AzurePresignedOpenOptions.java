@@ -58,7 +58,7 @@ public class AzurePresignedOpenOptions extends OpenOptions {
      */
     public AzurePresignedOpenOptions(String baseUrl, String urlSuffix) {
     
-        super(ctor2Impl(baseUrl, urlSuffix));
+        super(ctor2Impl(ManagedBase.requireNonNull(baseUrl, "baseUrl may not be null"), ManagedBase.requireNonNull(urlSuffix, "urlSuffix may not be null")));
     
     }
 

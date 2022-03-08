@@ -89,7 +89,7 @@ public class AzureOpenOptions extends OpenOptions {
      */
     public AzureOpenOptions(String connectionString, String container, String blob) {
     
-        super(ctor2Impl(connectionString, container, blob));
+        super(ctor2Impl(ManagedBase.requireNonNull(connectionString, "connectionString may not be null"), ManagedBase.requireNonNull(container, "container may not be null"), ManagedBase.requireNonNull(blob, "blob may not be null")));
     
     }
 
@@ -106,7 +106,7 @@ public class AzureOpenOptions extends OpenOptions {
      */
     public AzureOpenOptions(String connectionString, String container, String blob, int parallelism_factor, int max_execution_time) {
     
-        super(ctor3Impl(connectionString, container, blob, parallelism_factor, max_execution_time));
+        super(ctor3Impl(ManagedBase.requireNonNull(connectionString, "connectionString may not be null"), ManagedBase.requireNonNull(container, "container may not be null"), ManagedBase.requireNonNull(blob, "blob may not be null"), parallelism_factor, max_execution_time));
     
     }
 
@@ -122,7 +122,7 @@ public class AzureOpenOptions extends OpenOptions {
      * @return A valid AzureOpenOptions
      */
     public static AzureOpenOptions azureOpenOptionsBearer(String accountName, String bearerToken, String container, String blob) {
-        return AzureOpenOptions.fromNativeObject(AzureOpenOptionsBearerImpl(accountName, bearerToken, container, blob));
+        return AzureOpenOptions.fromNativeObject(AzureOpenOptionsBearerImpl(ManagedBase.requireNonNull(accountName, "accountName may not be null"), ManagedBase.requireNonNull(bearerToken, "bearerToken may not be null"), ManagedBase.requireNonNull(container, "container may not be null"), ManagedBase.requireNonNull(blob, "blob may not be null")));
     }
 
     AzureOpenOptions(long nativeobject) {

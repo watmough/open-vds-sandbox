@@ -39,7 +39,7 @@ public class GoogleCredentialsSignedUrl extends ManagedBase {
      */
     public GoogleCredentialsSignedUrl(String region) {
     
-        super(ctorImpl(region));
+        super(ctorImpl(ManagedBase.requireNonNull(region, "region may not be null")));
     
     }
 

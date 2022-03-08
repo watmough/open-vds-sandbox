@@ -42,7 +42,7 @@ public class NDPos extends ByteBufferBackedObject {
 
     public NDPos(float[] array) {
         if (array == null) {
-            throw new NullPointerException("array may not be null.");
+            throw new IllegalArgumentException("array may not be null.");
         }
         if (array.length != 6) {
             throw new IllegalArgumentException("array must be of length 6. ");

@@ -27,6 +27,13 @@ public abstract class ManagedBase {
         }
     }
 
+    public static <T> T requireNonNull(T obj, String message) {
+        if (obj == null) {
+            throw new IllegalArgumentException(message);
+        }
+        return obj;
+    }
+
     public static class ObjectDisposedException extends RuntimeException {
         public ObjectDisposedException() {
             super("Accessing disposed object");

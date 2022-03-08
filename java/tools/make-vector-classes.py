@@ -66,7 +66,7 @@ def createArrayCtor(class_name: str, typename: str, count: int, composite_count:
     contents = """
     public CLASSNAME(PRIMITIVETYPE[] array) {
         if (array == null) {
-            throw new NullPointerException("array may not be null.");
+            throw new IllegalArgumentException("array may not be null.");
         }
         if (array.length != VECTORCOUNT) {
             throw new IllegalArgumentException("array must be of length VECTORCOUNT. ");

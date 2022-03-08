@@ -42,7 +42,7 @@ public class DoubleVector4 extends ByteBufferBackedObject {
 
     public DoubleVector4(double[] array) {
         if (array == null) {
-            throw new NullPointerException("array may not be null.");
+            throw new IllegalArgumentException("array may not be null.");
         }
         if (array.length != 4) {
             throw new IllegalArgumentException("array must be of length 4. ");

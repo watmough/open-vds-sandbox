@@ -40,7 +40,7 @@ public class GoogleCredentialsSignedUrlPath extends ManagedBase {
      */
     public GoogleCredentialsSignedUrlPath(String region, String path) {
     
-        super(ctorImpl(region, path));
+        super(ctorImpl(ManagedBase.requireNonNull(region, "region may not be null"), ManagedBase.requireNonNull(path, "path may not be null")));
     
     }
 

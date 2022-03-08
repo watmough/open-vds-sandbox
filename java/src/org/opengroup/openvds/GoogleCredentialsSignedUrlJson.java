@@ -40,7 +40,7 @@ public class GoogleCredentialsSignedUrlJson extends ManagedBase {
      */
     public GoogleCredentialsSignedUrlJson(String region, String json) {
     
-        super(ctorImpl(region, json));
+        super(ctorImpl(ManagedBase.requireNonNull(region, "region may not be null"), ManagedBase.requireNonNull(json, "json may not be null")));
     
     }
 

@@ -165,7 +165,7 @@ public class VolumeDataChannelDescriptor extends ManagedBase {
     
     public VolumeDataChannelDescriptor(VolumeDataChannelDescriptor.Format format, VolumeDataChannelDescriptor.Components components, String name, String unit, float valueRangeMin, float valueRangeMax) {
     
-        super(ctor2Impl(format.value(), components.value(), name, unit, valueRangeMin, valueRangeMax));
+        super(ctor2Impl(ManagedBase.requireNonNull(format, "format may not be null").value(), ManagedBase.requireNonNull(components, "components may not be null").value(), ManagedBase.requireNonNull(name, "name may not be null"), ManagedBase.requireNonNull(unit, "unit may not be null"), valueRangeMin, valueRangeMax));
     
     }
 
@@ -182,7 +182,7 @@ public class VolumeDataChannelDescriptor extends ManagedBase {
      */
     public VolumeDataChannelDescriptor(VolumeDataChannelDescriptor.Format format, VolumeDataChannelDescriptor.Components components, String name, String unit, float valueRangeMin, float valueRangeMax, VolumeDataMapping mapping) {
     
-        super(ctor3Impl(format.value(), components.value(), name, unit, valueRangeMin, valueRangeMax, mapping.value()));
+        super(ctor3Impl(ManagedBase.requireNonNull(format, "format may not be null").value(), ManagedBase.requireNonNull(components, "components may not be null").value(), ManagedBase.requireNonNull(name, "name may not be null"), ManagedBase.requireNonNull(unit, "unit may not be null"), valueRangeMin, valueRangeMax, ManagedBase.requireNonNull(mapping, "mapping may not be null").value()));
     
     }
 
@@ -199,7 +199,7 @@ public class VolumeDataChannelDescriptor extends ManagedBase {
      */
     public VolumeDataChannelDescriptor(VolumeDataChannelDescriptor.Format format, VolumeDataChannelDescriptor.Components components, String name, String unit, float valueRangeMin, float valueRangeMax, VolumeDataChannelDescriptor.Flags flags) {
     
-        super(ctor4Impl(format.value(), components.value(), name, unit, valueRangeMin, valueRangeMax, flags.value()));
+        super(ctor4Impl(ManagedBase.requireNonNull(format, "format may not be null").value(), ManagedBase.requireNonNull(components, "components may not be null").value(), ManagedBase.requireNonNull(name, "name may not be null"), ManagedBase.requireNonNull(unit, "unit may not be null"), valueRangeMin, valueRangeMax, ManagedBase.requireNonNull(flags, "flags may not be null").value()));
     
     }
 
@@ -217,7 +217,7 @@ public class VolumeDataChannelDescriptor extends ManagedBase {
      */
     public VolumeDataChannelDescriptor(VolumeDataChannelDescriptor.Format format, VolumeDataChannelDescriptor.Components components, String name, String unit, float valueRangeMin, float valueRangeMax, VolumeDataMapping mapping, VolumeDataChannelDescriptor.Flags flags) {
     
-        super(ctor5Impl(format.value(), components.value(), name, unit, valueRangeMin, valueRangeMax, mapping.value(), flags.value()));
+        super(ctor5Impl(ManagedBase.requireNonNull(format, "format may not be null").value(), ManagedBase.requireNonNull(components, "components may not be null").value(), ManagedBase.requireNonNull(name, "name may not be null"), ManagedBase.requireNonNull(unit, "unit may not be null"), valueRangeMin, valueRangeMax, ManagedBase.requireNonNull(mapping, "mapping may not be null").value(), ManagedBase.requireNonNull(flags, "flags may not be null").value()));
     
     }
 
@@ -238,7 +238,7 @@ public class VolumeDataChannelDescriptor extends ManagedBase {
      */
     public VolumeDataChannelDescriptor(VolumeDataChannelDescriptor.Format format, VolumeDataChannelDescriptor.Components components, String name, String unit, float valueRangeMin, float valueRangeMax, VolumeDataMapping mapping, int mappedValueCount, VolumeDataChannelDescriptor.Flags flags, float integerScale, float integerOffset) {
     
-        super(ctor6Impl(format.value(), components.value(), name, unit, valueRangeMin, valueRangeMax, mapping.value(), mappedValueCount, flags.value(), integerScale, integerOffset));
+        super(ctor6Impl(ManagedBase.requireNonNull(format, "format may not be null").value(), ManagedBase.requireNonNull(components, "components may not be null").value(), ManagedBase.requireNonNull(name, "name may not be null"), ManagedBase.requireNonNull(unit, "unit may not be null"), valueRangeMin, valueRangeMax, ManagedBase.requireNonNull(mapping, "mapping may not be null").value(), mappedValueCount, ManagedBase.requireNonNull(flags, "flags may not be null").value(), integerScale, integerOffset));
     
     }
 
@@ -255,7 +255,7 @@ public class VolumeDataChannelDescriptor extends ManagedBase {
      */
     public VolumeDataChannelDescriptor(VolumeDataChannelDescriptor.Format format, VolumeDataChannelDescriptor.Components components, String name, String unit, float valueRangeMin, float valueRangeMax, float noValue) {
     
-        super(ctor7Impl(format.value(), components.value(), name, unit, valueRangeMin, valueRangeMax, noValue));
+        super(ctor7Impl(ManagedBase.requireNonNull(format, "format may not be null").value(), ManagedBase.requireNonNull(components, "components may not be null").value(), ManagedBase.requireNonNull(name, "name may not be null"), ManagedBase.requireNonNull(unit, "unit may not be null"), valueRangeMin, valueRangeMax, noValue));
     
     }
 
@@ -274,7 +274,7 @@ public class VolumeDataChannelDescriptor extends ManagedBase {
      */
     public VolumeDataChannelDescriptor(VolumeDataChannelDescriptor.Format format, VolumeDataChannelDescriptor.Components components, String name, String unit, float valueRangeMin, float valueRangeMax, float noValue, VolumeDataMapping mapping, VolumeDataChannelDescriptor.Flags flags) {
     
-        super(ctor8Impl(format.value(), components.value(), name, unit, valueRangeMin, valueRangeMax, noValue, mapping.value(), flags.value()));
+        super(ctor8Impl(ManagedBase.requireNonNull(format, "format may not be null").value(), ManagedBase.requireNonNull(components, "components may not be null").value(), ManagedBase.requireNonNull(name, "name may not be null"), ManagedBase.requireNonNull(unit, "unit may not be null"), valueRangeMin, valueRangeMax, noValue, ManagedBase.requireNonNull(mapping, "mapping may not be null").value(), ManagedBase.requireNonNull(flags, "flags may not be null").value()));
     
     }
 
@@ -296,7 +296,7 @@ public class VolumeDataChannelDescriptor extends ManagedBase {
      */
     public VolumeDataChannelDescriptor(VolumeDataChannelDescriptor.Format format, VolumeDataChannelDescriptor.Components components, String name, String unit, float valueRangeMin, float valueRangeMax, VolumeDataMapping mapping, int mappedValueCount, VolumeDataChannelDescriptor.Flags flags, float noValue, float integerScale, float integerOffset) {
     
-        super(ctor9Impl(format.value(), components.value(), name, unit, valueRangeMin, valueRangeMax, mapping.value(), mappedValueCount, flags.value(), noValue, integerScale, integerOffset));
+        super(ctor9Impl(ManagedBase.requireNonNull(format, "format may not be null").value(), ManagedBase.requireNonNull(components, "components may not be null").value(), ManagedBase.requireNonNull(name, "name may not be null"), ManagedBase.requireNonNull(unit, "unit may not be null"), valueRangeMin, valueRangeMax, ManagedBase.requireNonNull(mapping, "mapping may not be null").value(), mappedValueCount, ManagedBase.requireNonNull(flags, "flags may not be null").value(), noValue, integerScale, integerOffset));
     
     }
 
@@ -407,13 +407,13 @@ public class VolumeDataChannelDescriptor extends ManagedBase {
     ///AUTOGEN-OK: CXX_METHOD TraceMappedVolumeDataChannelDescriptor static OpenVDS::VolumeDataChannelDescriptor (OpenVDS::VolumeDataChannelDescriptor::Format, OpenVDS::VolumeDataChannelDescriptor::Components, const char *, const char *, float, float, int, OpenVDS::VolumeDataChannelDescriptor::Flags) FUNCTIONPROTO
     native private static long TraceMappedVolumeDataChannelDescriptorImpl(long format, long components, String name, String unit, float valueRangeMin, float valueRangeMax, int mappedValueCount, long flags);
     public static VolumeDataChannelDescriptor traceMappedVolumeDataChannelDescriptor(VolumeDataChannelDescriptor.Format format, VolumeDataChannelDescriptor.Components components, String name, String unit, float valueRangeMin, float valueRangeMax, int mappedValueCount, VolumeDataChannelDescriptor.Flags flags) {
-        return VolumeDataChannelDescriptor.fromNativeObject(TraceMappedVolumeDataChannelDescriptorImpl(format.value(), components.value(), name, unit, valueRangeMin, valueRangeMax, mappedValueCount, flags.value()));
+        return VolumeDataChannelDescriptor.fromNativeObject(TraceMappedVolumeDataChannelDescriptorImpl(ManagedBase.requireNonNull(format, "format may not be null").value(), ManagedBase.requireNonNull(components, "components may not be null").value(), ManagedBase.requireNonNull(name, "name may not be null"), ManagedBase.requireNonNull(unit, "unit may not be null"), valueRangeMin, valueRangeMax, mappedValueCount, ManagedBase.requireNonNull(flags, "flags may not be null").value()));
     }
 
     ///AUTOGEN-OK: CXX_METHOD TraceMappedVolumeDataChannelDescriptor static OpenVDS::VolumeDataChannelDescriptor (OpenVDS::VolumeDataChannelDescriptor::Format, OpenVDS::VolumeDataChannelDescriptor::Components, const char *, const char *, float, float, int, OpenVDS::VolumeDataChannelDescriptor::Flags, float) FUNCTIONPROTO
     native private static long TraceMappedVolumeDataChannelDescriptor2Impl(long format, long components, String name, String unit, float valueRangeMin, float valueRangeMax, int mappedValueCount, long flags, float noValue);
     public static VolumeDataChannelDescriptor traceMappedVolumeDataChannelDescriptor(VolumeDataChannelDescriptor.Format format, VolumeDataChannelDescriptor.Components components, String name, String unit, float valueRangeMin, float valueRangeMax, int mappedValueCount, VolumeDataChannelDescriptor.Flags flags, float noValue) {
-        return VolumeDataChannelDescriptor.fromNativeObject(TraceMappedVolumeDataChannelDescriptor2Impl(format.value(), components.value(), name, unit, valueRangeMin, valueRangeMax, mappedValueCount, flags.value(), noValue));
+        return VolumeDataChannelDescriptor.fromNativeObject(TraceMappedVolumeDataChannelDescriptor2Impl(ManagedBase.requireNonNull(format, "format may not be null").value(), ManagedBase.requireNonNull(components, "components may not be null").value(), ManagedBase.requireNonNull(name, "name may not be null"), ManagedBase.requireNonNull(unit, "unit may not be null"), valueRangeMin, valueRangeMax, mappedValueCount, ManagedBase.requireNonNull(flags, "flags may not be null").value(), noValue));
     }
 
     VolumeDataChannelDescriptor(long nativeobject) {

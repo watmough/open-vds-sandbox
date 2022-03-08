@@ -49,7 +49,7 @@ public class VolumeData2DReadAccessorU32 extends ManagedBase implements AutoClos
     ///AUTOGEN-OK: CXX_METHOD RegionFromIndex int64_t (type-parameter-0-0) FUNCTIONPROTO
     native private long RegionFromIndexImpl(long native_object, ByteBuffer index, long index_byteoffset);
     public long regionFromIndex(IntVector2 index) {
-        return RegionFromIndexImpl(getNativeObject(), index.getBackingByteBuffer(), index.getByteBufferOffset());
+        return RegionFromIndexImpl(getNativeObject(), ManagedBase.requireNonNull(index, "index may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(index, "index may not be null").getByteBufferOffset());
     }
 
     ///AUTOGEN-OK: CXX_METHOD CurrentRegion IndexRegion<type-parameter-0-0> () const FUNCTIONPROTO
@@ -61,7 +61,7 @@ public class VolumeData2DReadAccessorU32 extends ManagedBase implements AutoClos
     ///AUTOGEN-OK: CXX_METHOD GetValue type-parameter-0-1 (type-parameter-0-0) const FUNCTIONPROTO
     native private int GetValueImpl(long native_object, ByteBuffer index, long index_byteoffset);
     public int getValue(IntVector2 index) {
-        return GetValueImpl(getNativeObject(), index.getBackingByteBuffer(), index.getByteBufferOffset());
+        return GetValueImpl(getNativeObject(), ManagedBase.requireNonNull(index, "index may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(index, "index may not be null").getByteBufferOffset());
     }
 
     native private static long ctorImpl();

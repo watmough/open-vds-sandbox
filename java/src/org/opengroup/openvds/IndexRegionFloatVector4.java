@@ -53,7 +53,7 @@ public class IndexRegionFloatVector4 extends ManagedBase {
     
     public IndexRegionFloatVector4(FloatVector4 Min, FloatVector4 Max) {
     
-        super(ctor2Impl(Min.getBackingByteBuffer(), Min.getByteBufferOffset(), Max.getBackingByteBuffer(), Max.getByteBufferOffset()));
+        super(ctor2Impl(ManagedBase.requireNonNull(Min, "Min may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(Min, "Min may not be null").getByteBufferOffset(), ManagedBase.requireNonNull(Max, "Max may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(Max, "Max may not be null").getByteBufferOffset()));
     
     }
 

@@ -51,7 +51,7 @@ public class MetadataKey extends ManagedBase {
      */
     public MetadataKey(MetadataType type, String category, String name) {
     
-        super(ctor2Impl(type.value(), category, name));
+        super(ctor2Impl(ManagedBase.requireNonNull(type, "type may not be null").value(), ManagedBase.requireNonNull(category, "category may not be null"), ManagedBase.requireNonNull(name, "name may not be null")));
     
     }
 

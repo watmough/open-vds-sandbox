@@ -710,6 +710,10 @@ def find_enum_type(real_return_type: str) -> Scope:
     result = g_root.try_find(real_return_type)
     return result if result and result.is_enum else None
 
+def is_string_type(arg: Param) -> bool:
+    assert isinstance(arg, Param)
+    return cpp_to_java_type(arg.canonical_type, arg.typename) == "String"
+    
 def is_enum_type(arg: Param) -> bool:
     assert isinstance(arg, Param)
     return True if find_enum_type(arg.canonical_type) else False
@@ -971,6 +975,9 @@ def create_java_arglist(args: List[Param]) -> str:
             arglist.append(f'{nativetype_} {name_}')
     return ", ".join(arglist)        
 
+def add_parameter_null_check(type_: str, name_: str) -> str:
+    return f'ManagedBase.requireNonNull({name_}, "{name_} may not be null")'
+
 def transform_java_functioncall_args(class_name: str, args: List[Param], is_include_proxyinterface_arg: bool=False, is_static_method: bool=False, used_arglist = []) -> Tuple[str, str, str]:
     arglist = []
     if not is_static_method:
@@ -983,6 +990,7 @@ def transform_java_functioncall_args(class_name: str, args: List[Param], is_incl
     for arg in p:
         type_, name_ = arg.canonical_type, arg.name
         if is_array(type_):
+            prologue.append(add_parameter_null_check(type_, name_) + ';')
             array_size = get_array_size(type_)
             if array_size > 0:
                 prologue.append(f'if ({name_}.length != {array_size}) throw new IllegalArgumentException("Array \\"{name_}\\" must have length {array_size}");')
@@ -997,31 +1005,31 @@ def transform_java_functioncall_args(class_name: str, args: List[Param], is_incl
         epilogue.append(f'return {name_};')
     for arg in p:
         type_, alias_, name_ = arg.canonical_type, arg.typename, arg.name
+        checked_name_ = add_parameter_null_check(type_, name_)
         type_ = resolve_typealias(type_, alias_)
         used_arglist.append(name_)
         if is_enum_type(arg):
-            arglist.append(f'{name_}.value()')
-        elif  is_vector_type(type_) and is_pass_by_handle(clean_typename(get_template_arg0(type_))):
-            prologue.append(f'if ({name_} == null) {{')
-            prologue.append(f'    throw new NullPointerException("{name_}");')
-            prologue.append(f'}}')
-            prologue.append(f'long[] {name_}tmp = new long[{name_}.length];')
+            arglist.append(f'{checked_name_}.value()')
+        elif is_vector_type(type_) and is_pass_by_handle(clean_typename(get_template_arg0(type_))):
+            prologue.append(f'long[] {name_}tmp = new long[{checked_name_}.length];')
             prologue.append(f'for (int i = 0; i < {name_}.length; ++i) {{')
             prologue.append(f'    {name_}tmp[i] = {name_}[i].getNativeObject();')
             prologue.append(f'}}')
             arglist.append(f'{name_}tmp')
         elif is_marshaled_valuetype(type_):
-            arglist.append(name_)
+            arglist.append(checked_name_)
         elif is_bytebuffer_backed(type_):
-            arglist.append(f'{name_}.getBackingByteBuffer(), {name_}.getByteBufferOffset()')
+            arglist.append(f'{checked_name_}.getBackingByteBuffer(), {checked_name_}.getByteBufferOffset()')
         elif use_buffer_protocol([arg, p.peek(None)]):
-            arglist.append(f'{name_}')
+            arglist.append(f'{checked_name_}')
             next(p)
         elif is_optional_type(type_):
             otype = get_template_arg0(type_)
             arglist.append(f'{name_} == null ? ({otype})0 : ({otype}){name_}, {name_} != null')
         elif is_pass_by_handle(type_):
-            arglist.append(f"{name_}.getNativeObject()")
+            arglist.append(f"{checked_name_}.getNativeObject()")
+        elif is_string_type(arg):
+            arglist.append(checked_name_)
         else:
             arglist.append(name_)
     _args = ", ".join(arglist)
@@ -1502,7 +1510,7 @@ def create_java_class(scope: Scope, template: str, override_name: str = '', temp
             # create package private ctor used by fromNativeObject()
             ctor    =  f'    {class_name}(long nativeobject) {{\n'
             ctor    += f'        if (nativeobject == 0)\n'
-            ctor    += f'            throw new NullPointerException("nativeobject");\n'
+            ctor    += f'            throw new IllegalArgumentException("nativeobject handle may not be null");\n'
             ctor    += f'        this.native_object = nativeobject;\n'
             ctor    += f'    }}'
         # construct instance from native object handle

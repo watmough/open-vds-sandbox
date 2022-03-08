@@ -33,14 +33,13 @@ import java.util.concurrent.Future;
 import java.util.stream.IntStream;
 
 import org.opengroup.openvds.*;
+import org.junit.Test;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import static org.junit.Assert.*;
-import static org.junit.Assume.assumeTrue;
 
-import org.junit.Test;
 
 import static org.opengroup.openvds.VolumeDataChannelDescriptor.Format.*;
 import static org.opengroup.openvds.VolumeDataLayoutDescriptor.BrickSize.BrickSize_32;

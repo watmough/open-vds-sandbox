@@ -51,7 +51,7 @@ public class VDSFileOpenOptions extends OpenOptions {
      */
     public VDSFileOpenOptions(String fileName) {
     
-        super(ctor2Impl(fileName));
+        super(ctor2Impl(ManagedBase.requireNonNull(fileName, "fileName may not be null")));
     
     }
 
