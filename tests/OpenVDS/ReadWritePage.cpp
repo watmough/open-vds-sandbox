@@ -358,3 +358,106 @@ TEST(OpenVDS_integration, ReadWriteReadMultiPageAccessorPage)
 
 }
 
+TEST(OpenVDS_integration, CreateMultiplePageAccessors)
+{
+  OpenVDS::Error error;
+  int negativeMargin = 4;
+  int positiveMargin = 4;
+  int brickSize2DMultiplier = 4;
+  auto lodLevels = OpenVDS::VolumeDataLayoutDescriptor::LODLevels_None;
+  auto layoutOptions = OpenVDS::VolumeDataLayoutDescriptor::Options_None;
+  OpenVDS::VolumeDataLayoutDescriptor layoutDescriptor(OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, negativeMargin, positiveMargin, brickSize2DMultiplier, lodLevels, layoutOptions);
+
+  std::vector<OpenVDS::VolumeDataAxisDescriptor> axisDescriptors;
+  axisDescriptors.emplace_back(63, KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_AXISNAME_SAMPLE, "ms", 0.0f, 4.f);
+  axisDescriptors.emplace_back(32, KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_AXISNAME_CROSSLINE, "", 1932.f, 2536.f);
+  axisDescriptors.emplace_back(32, KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_AXISNAME_INLINE,    "", 9985.f, 10369.f);
+
+  std::vector<OpenVDS::VolumeDataChannelDescriptor> channelDescriptors;
+  float rangeMin = -0.1234f;
+  float rangeMax = 0.1234f;
+  float intScale;
+  float intOffset;
+  getScaleOffsetForFormat(rangeMin, rangeMax, true, OpenVDS::VolumeDataChannelDescriptor::Format_U32, intScale, intOffset);
+  channelDescriptors.push_back(OpenVDS::VolumeDataChannelDescriptor(OpenVDS::VolumeDataChannelDescriptor::Format_U32, OpenVDS::VolumeDataChannelDescriptor::Components_1, AMPLITUDE_ATTRIBUTE_NAME, "", rangeMin, rangeMax, OpenVDS::VolumeDataMapping::Direct, 1, OpenVDS::VolumeDataChannelDescriptor::Default, 0.f, intScale, intOffset));
+
+  OpenVDS::MetadataContainer metadataContainer;
+
+  std::string in_memory_name = fmt::format("inmemory://{}", "CreateMultiplePageAccessors");
+  auto handle = OpenVDS::Create(in_memory_name, std::string(""), layoutDescriptor, axisDescriptors, channelDescriptors, metadataContainer, error);
+  OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle);
+  
+  {
+    OpenVDS::VolumeDataPageAccessor* pageAccessor0 = accessManager.CreateVolumeDataPageAccessor(
+      OpenVDS::Dimensions_012, 0, 0, 100, OpenVDS::VolumeDataAccessManager::AccessMode_Create);
+    accessManager.DestroyVolumeDataPageAccessor(pageAccessor0);
+  }
+
+  {
+    OpenVDS::VolumeDataPageAccessor* pageAccessor1 = accessManager.CreateVolumeDataPageAccessor(
+      OpenVDS::Dimensions_012, 0, 0, 100, OpenVDS::VolumeDataAccessManager::AccessMode_Create);
+    accessManager.DestroyVolumeDataPageAccessor(pageAccessor1);
+  }
+
+  OpenVDS::Close(handle);
+}
+
+TEST(OpenVDS_integration, CreateMultiplePageAccessorsAndWriteData)
+{
+  OpenVDS::Error error;
+  int negativeMargin = 4;
+  int positiveMargin = 4;
+  int brickSize2DMultiplier = 4;
+  auto lodLevels = OpenVDS::VolumeDataLayoutDescriptor::LODLevels_None;
+  auto layoutOptions = OpenVDS::VolumeDataLayoutDescriptor::Options_None;
+  OpenVDS::VolumeDataLayoutDescriptor layoutDescriptor(OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, negativeMargin, positiveMargin, brickSize2DMultiplier, lodLevels, layoutOptions);
+
+  std::vector<OpenVDS::VolumeDataAxisDescriptor> axisDescriptors;
+  axisDescriptors.emplace_back(63, KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_AXISNAME_SAMPLE, "ms", 0.0f, 4.f);
+  axisDescriptors.emplace_back(32, KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_AXISNAME_CROSSLINE, "", 1932.f, 2536.f);
+  axisDescriptors.emplace_back(32, KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_AXISNAME_INLINE,    "", 9985.f, 10369.f);
+
+  std::vector<OpenVDS::VolumeDataChannelDescriptor> channelDescriptors;
+  float rangeMin = -0.1234f;
+  float rangeMax = 0.1234f;
+  float intScale;
+  float intOffset;
+  getScaleOffsetForFormat(rangeMin, rangeMax, true, OpenVDS::VolumeDataChannelDescriptor::Format_U32, intScale, intOffset);
+  channelDescriptors.push_back(OpenVDS::VolumeDataChannelDescriptor(OpenVDS::VolumeDataChannelDescriptor::Format_U32, OpenVDS::VolumeDataChannelDescriptor::Components_1, AMPLITUDE_ATTRIBUTE_NAME, "", rangeMin, rangeMax, OpenVDS::VolumeDataMapping::Direct, 1, OpenVDS::VolumeDataChannelDescriptor::Default, 0.f, intScale, intOffset));
+
+  OpenVDS::MetadataContainer metadataContainer;
+
+  std::string in_memory_name = fmt::format("inmemory://{}", "CreateMultiplePageAccessorsAndWriteData");
+  auto handle = OpenVDS::Create(in_memory_name, std::string(""), layoutDescriptor, axisDescriptors, channelDescriptors, metadataContainer, error);
+  OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle);
+  
+  OpenVDS::VolumeDataPageAccessor* pageAccessor = accessManager.CreateVolumeDataPageAccessor(
+    OpenVDS::Dimensions_012, 0, 0, 100, OpenVDS::VolumeDataAccessManager::AccessMode_Create);
+
+  OpenVDS::VolumeDataPageAccessor* pageAccessor2 = accessManager.CreateVolumeDataPageAccessor(
+    OpenVDS::Dimensions_012, 0, 0, 100, OpenVDS::VolumeDataAccessManager::AccessMode_Create);
+
+  OpenVDS::VolumeDataPage *page =  pageAccessor->CreatePage(0);
+  int pitch[OpenVDS::VolumeDataLayout::Dimensionality_Max];
+  auto buffer = reinterpret_cast<float *>(page->GetWritableBuffer(pitch));
+  int min[OpenVDS::VolumeDataLayout::Dimensionality_Max], max[OpenVDS::VolumeDataLayout::Dimensionality_Max];
+  page->GetMinMax(min, max);
+  for(int i = min[2]; i < max[2]; i++)
+  for(int j = min[1]; j < max[1]; j++)
+  for(int k = min[0]; k < max[0]; k++)
+  {
+    size_t offset = (i - min[2]) * pitch[2] + (j - min[1]) * pitch[1] + (k - min[0]) * pitch[0];
+    buffer[offset] = float(i + j + k);
+  }
+  page->Release();
+
+  EXPECT_THROW(page =  pageAccessor2->ReadPage(0), OpenVDS::InvalidOperation);
+  pageAccessor->Commit();
+  EXPECT_NO_THROW(page =  pageAccessor2->ReadPage(0));
+  page->Release();
+
+  accessManager.DestroyVolumeDataPageAccessor(pageAccessor);
+  accessManager.DestroyVolumeDataPageAccessor(pageAccessor2);
+
+  OpenVDS::Close(handle);
+}
