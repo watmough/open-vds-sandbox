@@ -31,6 +31,7 @@ namespace OpenVDS
 class MetadataContainer : public MetadataReadAccess, public MetadataWriteAccess
 {
 public:
+              MetadataContainer() = default; 
   bool        IsMetadataIntAvailable(const char* category, const char* name) const override           { MetadataKey key = { MetadataType::Int,           category, name }; return m_intData.find(key) != m_intData.end(); }
   bool        IsMetadataIntVector2Available(const char* category, const char* name) const override    { MetadataKey key = { MetadataType::IntVector2,    category, name }; return m_intVector2Data.find(key) != m_intVector2Data.end(); }
   bool        IsMetadataIntVector3Available(const char* category, const char* name) const override    { MetadataKey key = { MetadataType::IntVector3,    category, name }; return m_intVector3Data.find(key) != m_intVector3Data.end(); }
