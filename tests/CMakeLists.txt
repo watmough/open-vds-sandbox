@@ -114,9 +114,6 @@ add_test_executable(openvds_integration_tests
   OpenVDS/RequestVolumeError.cpp
   OpenVDS/IJKCoordinateTransformerTest.cpp
   OpenVDS/MultiComponent.cpp
-  )
-
-add_test_executable(read_write_page
   OpenVDS/ReadWritePage.cpp
   )
 
