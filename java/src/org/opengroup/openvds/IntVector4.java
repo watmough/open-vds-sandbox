@@ -48,7 +48,7 @@ public class IntVector4 extends ByteBufferBackedObject {
             throw new IllegalArgumentException("array must be of length 4. ");
         }
         this.createByteBuffer(Integer.BYTES * 4 * 1);
-        this.getManagedBuffer().put(array);
+        this.getManagedBuffer().put(0, array);
     }
 
     public boolean equals(Object other) {

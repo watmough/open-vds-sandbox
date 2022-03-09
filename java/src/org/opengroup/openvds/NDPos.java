@@ -48,7 +48,7 @@ public class NDPos extends ByteBufferBackedObject {
             throw new IllegalArgumentException("array must be of length 6. ");
         }
         this.createByteBuffer(Float.BYTES * 6 * 1);
-        this.getManagedBuffer().put(array);
+        this.getManagedBuffer().put(0, array);
     }
 
     public boolean equals(Object other) {

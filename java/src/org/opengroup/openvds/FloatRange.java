@@ -48,7 +48,7 @@ public class FloatRange extends ByteBufferBackedObject {
             throw new IllegalArgumentException("array must be of length 2. ");
         }
         this.createByteBuffer(Float.BYTES * 2 * 1);
-        this.getManagedBuffer().put(array);
+        this.getManagedBuffer().put(0, array);
     }
 
     public boolean equals(Object other) {

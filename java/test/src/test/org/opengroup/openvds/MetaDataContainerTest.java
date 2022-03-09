@@ -218,7 +218,7 @@ public class MetaDataContainerTest {
         assertThrows(IllegalArgumentException.class, () -> metaData.setMetadataString("categoryString", "nullMetaData", null));
     }
 
-//    @Test
+    @Test
     public void testCreateVDSWithMetaData() {
         try {
             int i1 = 1337;
@@ -270,39 +270,39 @@ public class MetaDataContainerTest {
             assertEquals(mdInt, i1);
 
             int[] mdIntVector2 = createdVDS.getLayout().getMetadataIntVector2("categoryInt", "IntV2").toArray();
-            assertEquals(vec2i, mdIntVector2);
+            assertArrayEquals(vec2i, mdIntVector2);
 
             int[] mdIntVector3 = createdVDS.getLayout().getMetadataIntVector3("categoryInt", "IntV3").toArray();
-            assertEquals(vec3i, mdIntVector3);
+            assertArrayEquals(vec3i, mdIntVector3);
 
             int[] mdIntVector4 = createdVDS.getLayout().getMetadataIntVector4("categoryInt", "IntV4").toArray();
-            assertEquals(vec4i, mdIntVector4);
+            assertArrayEquals(vec4i, mdIntVector4);
 
             // float
             float mdFloat = createdVDS.getLayout().getMetadataFloat("categoryFloat", "singleFloat");
-            assertEquals(mdFloat, f1);
+            assertEquals(mdFloat, f1, 0);
 
             float[] mdFloatVector2 = createdVDS.getLayout().getMetadataFloatVector2("categoryFloat", "FloatV2").toArray();
-            assertEquals(vec2f, mdFloatVector2);
+            assertArrayEquals(vec2f, mdFloatVector2, 0f);
 
             float[] mdFloatVector3 = createdVDS.getLayout().getMetadataFloatVector3("categoryFloat", "FloatV3").toArray();
-            assertEquals(vec3f, mdFloatVector3);
+            assertArrayEquals(vec3f, mdFloatVector3, 0f);
 
             float[] mdFloatVector4 = createdVDS.getLayout().getMetadataFloatVector4("categoryFloat", "FloatV4").toArray();
-            assertEquals(vec4f, mdFloatVector4);
+            assertArrayEquals(vec4f, mdFloatVector4, 0f);
 
             // double
             double mdDouble = createdVDS.getLayout().getMetadataDouble("categoryDouble", "singleDouble");
-            assertEquals(mdDouble, d1);
+            assertEquals(mdDouble, d1, 0f);
 
             double[] mdDoubleVector2 = createdVDS.getLayout().getMetadataDoubleVector2("categoryDouble", "DoubleV2").toArray();
-            assertEquals(vec2d, mdDoubleVector2);
+            assertArrayEquals(vec2d, mdDoubleVector2, 0);
 
             double[] mdDoubleVector3 = createdVDS.getLayout().getMetadataDoubleVector3("categoryDouble", "DoubleV3").toArray();
-            assertEquals(vec3d, mdDoubleVector3);
+            assertArrayEquals(vec3d, mdDoubleVector3, 0);
 
             double[] mdDoubleVector4 = createdVDS.getLayout().getMetadataDoubleVector4("categoryDouble", "DoubleV4").toArray();
-            assertEquals(vec4d, mdDoubleVector4);
+            assertArrayEquals(vec4d, mdDoubleVector4, 0);
 
             // String
             String mdS = createdVDS.getLayout().getMetadataString("categoryString", "String");

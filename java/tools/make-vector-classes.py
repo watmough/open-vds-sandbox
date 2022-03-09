@@ -72,7 +72,7 @@ def createArrayCtor(class_name: str, typename: str, count: int, composite_count:
             throw new IllegalArgumentException("array must be of length VECTORCOUNT. ");
         }
         this.createByteBuffer(JAVATYPE.BYTES * VECTORCOUNT * COMPOSITECOUNT);
-        this.getManagedBuffer().put(array);
+        this.getManagedBuffer().put(0, array);
     }
 """
     return transformTemplate(contents, class_name, typename, count, composite_count)

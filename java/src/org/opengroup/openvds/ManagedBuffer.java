@@ -182,38 +182,37 @@ public class ManagedBuffer extends ManagedBase implements AutoCloseable {
 		this.bytebuffer.putDouble(this.byteoffset + offset, value);
 	}
 
-	public void put(byte[] array) {
+	public void put(int offset, byte[] array) {
 		for (int i = 0; i < array.length; ++i) {
-			put(i, array[i]);
+			put(i * Byte.BYTES + offset, array[i]);
 		}
 	}
-	public void put(short[] array) {
+	public void put(int offset, short[] array) {
 		for (int i = 0; i < array.length; ++i) {
-			putShort(i, array[i]);
-		}
-	}
-
-	public void put(int[] array) {
-		for (int i = 0; i < array.length; ++i) {
-			putInt(i, array[i]);
+			putShort(i * Short.BYTES + offset, array[i]);
 		}
 	}
 
-	public void put(long[] array) {
+	public void put(int offset, int[] array) {
 		for (int i = 0; i < array.length; ++i) {
-			putLong(i, array[i]);
-		}
-	}
-	public void put(float[] array) {
-		for (int i = 0; i < array.length; ++i) {
-			putFloat(i, array[i]);
+			putInt(i * Integer.BYTES + offset, array[i]);
 		}
 	}
 
-	public void put(double[] array) {
+	public void put(int offset, long[] array) {
 		for (int i = 0; i < array.length; ++i) {
-			putDouble(i, array[i]);
+			putLong(i * Long.BYTES + offset, array[i]);
+		}
+	}
+	public void put(int offset, float[] array) {
+		for (int i = 0; i < array.length; ++i) {
+			putFloat(i * Float.BYTES + offset, array[i]);
 		}
 	}
 
+	public void put(int offset, double[] array) {
+		for (int i = 0; i < array.length; ++i) {
+			putDouble(i * Double.BYTES + offset, array[i]);
+		}
+	}
 }
