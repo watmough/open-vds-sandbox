@@ -1343,7 +1343,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         if (minVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"minVoxelCoordinates\" must have length 6");
         ManagedBase.requireNonNull(maxVoxelCoordinates, "maxVoxelCoordinates may not be null");
         if (maxVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"maxVoxelCoordinates\" must have length 6");
-        return VolumeDataRequest.fromNativeObject(RequestVolumeSubsetImpl(getNativeObject(), ManagedBase.requireNonNull(buffer, "buffer may not be null"), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, ManagedBase.requireNonNull(format, "format may not be null").value(), replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeDataRequest.fromNativeObject(RequestVolumeSubsetImpl(getNativeObject(), ManagedBuffer.ensureByteBufferValid(buffer), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, ManagedBase.requireNonNull(format, "format may not be null").value(), replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
     /**
@@ -1382,7 +1382,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         if (minVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"minVoxelCoordinates\" must have length 6");
         ManagedBase.requireNonNull(maxVoxelCoordinates, "maxVoxelCoordinates may not be null");
         if (maxVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"maxVoxelCoordinates\" must have length 6");
-        return VolumeDataRequest1Bit.fromNativeObject(RequestVolumeSubset1BitImpl(getNativeObject(), ManagedBase.requireNonNull(buffer, "buffer may not be null"), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, minVoxelCoordinates, maxVoxelCoordinates));
+        return VolumeDataRequest1Bit.fromNativeObject(RequestVolumeSubset1BitImpl(getNativeObject(), ManagedBuffer.ensureByteBufferValid(buffer), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, minVoxelCoordinates, maxVoxelCoordinates));
     }
 
     ///AUTOGEN-OK: CXX_METHOD RequestVolumeSubset std::shared_ptr<OpenVDS::VolumeDataRequest> (OpenVDS::DimensionsND, int, int, int const (&)[6], int const (&)[6], OpenVDS::VolumeDataChannelDescriptor::Format, OpenVDS::optional<float>) FUNCTIONPROTO
@@ -1520,7 +1520,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         if (minVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"minVoxelCoordinates\" must have length 6");
         ManagedBase.requireNonNull(maxVoxelCoordinates, "maxVoxelCoordinates may not be null");
         if (maxVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"maxVoxelCoordinates\" must have length 6");
-        return VolumeDataRequest.fromNativeObject(RequestProjectedVolumeSubsetImpl(getNativeObject(), ManagedBase.requireNonNull(buffer, "buffer may not be null"), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, ManagedBase.requireNonNull(voxelPlane, "voxelPlane may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(voxelPlane, "voxelPlane may not be null").getByteBufferOffset(), ManagedBase.requireNonNull(projectedDimensions, "projectedDimensions may not be null").value(), ManagedBase.requireNonNull(format, "format may not be null").value(), ManagedBase.requireNonNull(interpolationMethod, "interpolationMethod may not be null").value(), replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+        return VolumeDataRequest.fromNativeObject(RequestProjectedVolumeSubsetImpl(getNativeObject(), ManagedBuffer.ensureByteBufferValid(buffer), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, ManagedBase.requireNonNull(voxelPlane, "voxelPlane may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(voxelPlane, "voxelPlane may not be null").getByteBufferOffset(), ManagedBase.requireNonNull(projectedDimensions, "projectedDimensions may not be null").value(), ManagedBase.requireNonNull(format, "format may not be null").value(), ManagedBase.requireNonNull(interpolationMethod, "interpolationMethod may not be null").value(), replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
     /**

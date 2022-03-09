@@ -31,9 +31,39 @@ public class ManagedBuffer extends ManagedBase implements AutoCloseable {
 	
 	private int byteoffset;
 
+	public static ByteBuffer ensureByteBufferValid(ByteBuffer buffer, int byteoffset) {
+		ManagedBase.requireNonNull(buffer, "buffer may not be null");
+		if (buffer.capacity() <= 0) {
+			throw new IllegalArgumentException("buffer has no valid capacity");
+		}
+		if (byteoffset >= buffer.capacity()) {
+			throw new IllegalArgumentException("byteoffset greater than buffer capacity");
+		}
+		if (!buffer.isDirect()) {
+			throw new IllegalArgumentException("buffer is not direct");
+		}
+		return buffer;
+	}
+
+	public static ByteBuffer ensureByteBufferValid(ByteBuffer buffer) {
+		return ensureByteBufferValid(buffer, 0);
+	}
+
+	public static ByteBuffer ensureByteBufferValidOrNull(ByteBuffer buffer, int byteoffset) {
+		if (buffer == null) {
+			return null;
+		} else {
+			return ensureByteBufferValid(buffer, byteoffset);
+		}
+	}
+
+	public static ByteBuffer ensureByteBufferValidOrNull(ByteBuffer buffer) {
+		return ensureByteBufferValidOrNull(buffer , 0);
+	}
+
 	ManagedBuffer(ByteBuffer bytebuffer, int byteoffset) {
 		super(0);
-		this.bytebuffer = bytebuffer;
+		this.bytebuffer = ensureByteBufferValidOrNull(bytebuffer, byteoffset);
 		this.byteoffset = byteoffset;
 	}
 

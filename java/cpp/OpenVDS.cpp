@@ -1905,6 +1905,26 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VDSFileOpenOptions_dtorImpl
 
 
 
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_Error_ctorImpl
+  (JNIEnv * env, jclass cls)
+{
+  JEnvPushPop
+    stackitem(env);
+
+  CPPJNI_TRY
+  {
+    auto context = new CPPJNIObjectContext_t<OpenVDS::Error>();
+
+    auto native_handle = context->handle();
+    context->setObject(new OpenVDS::Error());
+
+    return native_handle;
+  }
+  CPPJNI_CATCH
+  return 0;
+}
+
+
 JNIEXPORT jint JNICALL Java_org_opengroup_openvds_Error_getCodeImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {

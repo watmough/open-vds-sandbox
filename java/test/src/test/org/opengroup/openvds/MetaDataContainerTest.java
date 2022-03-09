@@ -17,7 +17,6 @@
 
 package test.org.opengroup.openvds;
 
-
 import java.io.File;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
@@ -29,6 +28,8 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.opengroup.openvds.Error;
+
 import static org.junit.Assert.*;
 
 public class MetaDataContainerTest {
@@ -97,118 +98,118 @@ public class MetaDataContainerTest {
     @Test
     public void testNullCheckIntV2() {
         MetadataContainer metaData = new MetadataContainer();
-        assertThrows(IllegalArgumentException.class, () -> metaData.setMetadataIntVector2("categoryArray", "nullArray", null));
+        assertThrows(IllegalArgumentException.class, () -> metaData.setMetadataIntVector2("categoryArray", "nullArray", (int[])null));
     }
 
     @Test
     public void testNullCheckIntV3() {
         MetadataContainer metaData = new MetadataContainer();
-        assertThrows(IllegalArgumentException.class, () -> metaData.setMetadataIntVector3("categoryArray", "nullArray", null));
+        assertThrows(IllegalArgumentException.class, () -> metaData.setMetadataIntVector3("categoryArray", "nullArray", (int[])null));
     }
 
     @Test
     public void testNullCheckIntV4() {
         MetadataContainer metaData = new MetadataContainer();
-        assertThrows(IllegalArgumentException.class, () -> metaData.setMetadataIntVector4("categoryArray", "nullArray", null));
+        assertThrows(IllegalArgumentException.class, () -> metaData.setMetadataIntVector4("categoryArray", "nullArray", (int[])null));
     }
 
     @Test
     public void testNullCheckFloatV2() {
         MetadataContainer metaData = new MetadataContainer();
-        assertThrows(IllegalArgumentException.class, () -> metaData.setMetadataFloatVector2("categoryArray", "nullArray", null));
+        assertThrows(IllegalArgumentException.class, () -> metaData.setMetadataFloatVector2("categoryArray", "nullArray", (float[])null));
     }
 
     @Test
     public void testNullCheckFloatV3() {
         MetadataContainer metaData = new MetadataContainer();
-        assertThrows(IllegalArgumentException.class, () -> metaData.setMetadataFloatVector3("categoryArray", "nullArray", null));
+        assertThrows(IllegalArgumentException.class, () -> metaData.setMetadataFloatVector3("categoryArray", "nullArray", (float[])null));
     }
 
     @Test
     public void testNullCheckFloatV4() {
         MetadataContainer metaData = new MetadataContainer();
-        assertThrows(IllegalArgumentException.class, () -> metaData.setMetadataFloatVector4("categoryArray", "nullArray", null));
+        assertThrows(IllegalArgumentException.class, () -> metaData.setMetadataFloatVector4("categoryArray", "nullArray", (float[])null));
     }
 
     @Test
     public void testNullCheckDoubleV2() {
         MetadataContainer metaData = new MetadataContainer();
-        assertThrows(IllegalArgumentException.class, () -> metaData.setMetadataDoubleVector2("categoryArray", "nullArray", null));
+        assertThrows(IllegalArgumentException.class, () -> metaData.setMetadataDoubleVector2("categoryArray", "nullArray", (double[])null));
     }
 
     @Test
     public void testNullCheckDoubleV3() {
         MetadataContainer metaData = new MetadataContainer();
-        assertThrows(IllegalArgumentException.class, () -> metaData.setMetadataDoubleVector3("categoryArray", "nullArray", null));
+        assertThrows(IllegalArgumentException.class, () -> metaData.setMetadataDoubleVector3("categoryArray", "nullArray", (double[])null));
     }
 
     @Test
     public void testNullCheckDoubleV4() {
         MetadataContainer metaData = new MetadataContainer();
-        assertThrows(IllegalArgumentException.class, () -> metaData.setMetadataDoubleVector4("categoryArray", "nullArray", null));
+        assertThrows(IllegalArgumentException.class, () -> metaData.setMetadataDoubleVector4("categoryArray", "nullArray", (double[])null));
     }
 
     @Test
     public void testSizeCheckIntV2() {
         int[] vec3i = new int[] {54, 76, 99};
         MetadataContainer metaData = new MetadataContainer();
-        assertThrows(IllegalArgumentException.class, () -> metaData.setMetadataIntVector2("categoryInt", "IntV2", new IntVector2(vec3i)));
+        assertThrows(IllegalArgumentException.class, () -> metaData.setMetadataIntVector2("categoryInt", "IntV2", vec3i));
     }
 
     @Test
     public void testSizeCheckIntV3() {
         int[] vec2i = new int[] {54, 76};
         MetadataContainer metaData = new MetadataContainer();
-        assertThrows(IllegalArgumentException.class, () -> metaData.setMetadataIntVector3("categoryInt", "IntV3", new IntVector3(vec2i)));
+        assertThrows(IllegalArgumentException.class, () -> metaData.setMetadataIntVector3("categoryInt", "IntV3", vec2i));
     }
 
     @Test
     public void testSizeCheckIntV4() {
         int[] vec2i = new int[] {54, 76};
         MetadataContainer metaData = new MetadataContainer();
-        assertThrows(IllegalArgumentException.class, () -> metaData.setMetadataIntVector4("categoryInt", "IntV3", new IntVector4(vec2i)));
+        assertThrows(IllegalArgumentException.class, () -> metaData.setMetadataIntVector4("categoryInt", "IntV3", vec2i));
     }
 
     @Test
     public void testSizeCheckFloatV2() {
         float[] vec3f = new float[] {54f, 76f, 99f};
         MetadataContainer metaData = new MetadataContainer();
-        assertThrows(IllegalArgumentException.class, () -> metaData.setMetadataFloatVector2("categoryFloat", "FloatV2", new FloatVector2(vec3f)));
+        assertThrows(IllegalArgumentException.class, () -> metaData.setMetadataFloatVector2("categoryFloat", "FloatV2", vec3f));
     }
 
     @Test
     public void testSizeCheckFloatV3() {
         float[] vec2f = new float[] {54f, 76f};
         MetadataContainer metaData = new MetadataContainer();
-        assertThrows(IllegalArgumentException.class, () -> metaData.setMetadataFloatVector3("categoryFloat", "FloatV3", new FloatVector3(vec2f)));
+        assertThrows(IllegalArgumentException.class, () -> metaData.setMetadataFloatVector3("categoryFloat", "FloatV3", vec2f));
     }
 
     @Test
     public void testSizeCheckFloatV4() {
         float[] vec5f = new float[] {54f, 76f, 55f, 50f, 88f};
         MetadataContainer metaData = new MetadataContainer();
-        assertThrows(IllegalArgumentException.class, () -> metaData.setMetadataFloatVector4("categoryFloat", "FloatV4", new FloatVector4(vec5f)));
+        assertThrows(IllegalArgumentException.class, () -> metaData.setMetadataFloatVector4("categoryFloat", "FloatV4", vec5f));
     }
 
     @Test
     public void testSizeCheckDoubleV2() {
         double[] vec3d = new double[] {54d, 76d, 99d};
         MetadataContainer metaData = new MetadataContainer();
-        assertThrows(IllegalArgumentException.class, () -> metaData.setMetadataDoubleVector2("categoryDouble", "DoubleV2", new DoubleVector2(vec3d)));
+        assertThrows(IllegalArgumentException.class, () -> metaData.setMetadataDoubleVector2("categoryDouble", "DoubleV2", vec3d));
     }
 
     @Test
     public void testSizeCheckDoubleV3() {
         double[] vec2f = new double[] {54d, 76d};
         MetadataContainer metaData = new MetadataContainer();
-        assertThrows(IllegalArgumentException.class, () -> metaData.setMetadataDoubleVector3("categoryDouble", "DoubleV3", new DoubleVector3(vec2f)));
+        assertThrows(IllegalArgumentException.class, () -> metaData.setMetadataDoubleVector3("categoryDouble", "DoubleV3", vec2f));
     }
 
     @Test
     public void testSizeCheckDoubleV4() {
         double[] vec5d = new double[] {54d, 76d, 55d, 50d, 88d};
         MetadataContainer metaData = new MetadataContainer();
-        assertThrows(IllegalArgumentException.class, () -> metaData.setMetadataDoubleVector4("categoryDouble", "DoubleV4", new DoubleVector4(vec5d)));
+        assertThrows(IllegalArgumentException.class, () -> metaData.setMetadataDoubleVector4("categoryDouble", "DoubleV4", vec5d));
     }
 
     @Test
@@ -217,8 +218,7 @@ public class MetaDataContainerTest {
         assertThrows(IllegalArgumentException.class, () -> metaData.setMetadataString("categoryString", "nullMetaData", null));
     }
 
-    /*
-    @Test
+//    @Test
     public void testCreateVDSWithMetaData() {
         try {
             int i1 = 1337;
@@ -261,54 +261,53 @@ public class MetaDataContainerTest {
             String tempFilePath = tempDir + File.separator + TEMP_FILE_NAME;
 
             VDSFileOpenOptions options = new VDSFileOpenOptions(tempFilePath);
-            VdsError vdsError = new VdsError();
-            OpenVDS createdVDS = OpenVDS.create(options, ld, vda, vdc, metaData);
+            VDSError vdsError = new VDSError();
+            VDS createdVDS = OpenVDS.create(options, ld, vda, vdc, metaData, vdsError);
 
             // test meta data
             // int
             int mdInt = createdVDS.getLayout().getMetadataInt("categoryInt", "singleInt");
             assertEquals(mdInt, i1);
 
-            int[] mdIntVector2 = createdVDS.getLayout().getMetadataIntVector2("categoryInt", "IntV2");
+            int[] mdIntVector2 = createdVDS.getLayout().getMetadataIntVector2("categoryInt", "IntV2").toArray();
             assertEquals(vec2i, mdIntVector2);
 
-            int[] mdIntVector3 = createdVDS.getLayout().getMetadataIntVector3("categoryInt", "IntV3");
+            int[] mdIntVector3 = createdVDS.getLayout().getMetadataIntVector3("categoryInt", "IntV3").toArray();
             assertEquals(vec3i, mdIntVector3);
 
-            int[] mdIntVector4 = createdVDS.getLayout().getMetadataIntVector4("categoryInt", "IntV4");
+            int[] mdIntVector4 = createdVDS.getLayout().getMetadataIntVector4("categoryInt", "IntV4").toArray();
             assertEquals(vec4i, mdIntVector4);
 
             // float
             float mdFloat = createdVDS.getLayout().getMetadataFloat("categoryFloat", "singleFloat");
             assertEquals(mdFloat, f1);
 
-            float[] mdFloatVector2 = createdVDS.getLayout().getMetadataFloatVector2("categoryFloat", "FloatV2");
+            float[] mdFloatVector2 = createdVDS.getLayout().getMetadataFloatVector2("categoryFloat", "FloatV2").toArray();
             assertEquals(vec2f, mdFloatVector2);
 
-            float[] mdFloatVector3 = createdVDS.getLayout().getMetadataFloatVector3("categoryFloat", "FloatV3");
+            float[] mdFloatVector3 = createdVDS.getLayout().getMetadataFloatVector3("categoryFloat", "FloatV3").toArray();
             assertEquals(vec3f, mdFloatVector3);
 
-            float[] mdFloatVector4 = createdVDS.getLayout().getMetadataFloatVector4("categoryFloat", "FloatV4");
+            float[] mdFloatVector4 = createdVDS.getLayout().getMetadataFloatVector4("categoryFloat", "FloatV4").toArray();
             assertEquals(vec4f, mdFloatVector4);
 
             // double
             double mdDouble = createdVDS.getLayout().getMetadataDouble("categoryDouble", "singleDouble");
             assertEquals(mdDouble, d1);
 
-            double[] mdDoubleVector2 = createdVDS.getLayout().getMetadataDoubleVector2("categoryDouble", "DoubleV2");
+            double[] mdDoubleVector2 = createdVDS.getLayout().getMetadataDoubleVector2("categoryDouble", "DoubleV2").toArray();
             assertEquals(vec2d, mdDoubleVector2);
 
-            double[] mdDoubleVector3 = createdVDS.getLayout().getMetadataDoubleVector3("categoryDouble", "DoubleV3");
+            double[] mdDoubleVector3 = createdVDS.getLayout().getMetadataDoubleVector3("categoryDouble", "DoubleV3").toArray();
             assertEquals(vec3d, mdDoubleVector3);
 
-            double[] mdDoubleVector4 = createdVDS.getLayout().getMetadataDoubleVector4("categoryDouble", "DoubleV4");
+            double[] mdDoubleVector4 = createdVDS.getLayout().getMetadataDoubleVector4("categoryDouble", "DoubleV4").toArray();
             assertEquals(vec4d, mdDoubleVector4);
 
             // String
             String mdS = createdVDS.getLayout().getMetadataString("categoryString", "String");
             assertEquals(mdS, mdString);
-        }
-        catch (java.io.IOException e) {
+        } catch (Exception e) {
             System.out.println(e.getMessage());
             fail();
         }
@@ -324,9 +323,9 @@ public class MetaDataContainerTest {
 
         metaData.setMetadataBLOB("Blob data", "blob array", blobArray);
 
-        Assert.assertTrue(metaData.isMetadataBLOBAvailable("Blob data", "blob array"));
+        assertTrue(metaData.isMetadataBLOBAvailable("Blob data", "blob array"));
         byte[] metadataBLOBArray = metaData.getMetadataBLOB("Blob data", "blob array");
-        Assert.assertEquals(blobArray, metadataBLOBArray);
+        assertArrayEquals(blobArray, metadataBLOBArray);
     }
 
     @Test
@@ -340,11 +339,11 @@ public class MetaDataContainerTest {
         ByteBuffer blobBuffer = ByteBuffer.wrap(blobArray);
         metaData.setMetadataBLOB("Blob data", "blob array", blobBuffer);
 
-        Assert.assertTrue(metaData.isMetadataBLOBAvailable("Blob data", "blob array"));
+        assertTrue(metaData.isMetadataBLOBAvailable("Blob data", "blob array"));
         ByteBuffer metadataBLOBBuffer = metaData.getMetadataBLOBAsBuffer("Blob data", "blob array");
 
         // compares buffer
-        Assert.assertTrue(metadataBLOBBuffer.equals(blobBuffer));
+        assertTrue(metadataBLOBBuffer.equals(blobBuffer));
     }
 
     @Test
@@ -364,7 +363,7 @@ public class MetaDataContainerTest {
         metaData.setMetadataBLOB("Blob data", "blob array", byteBuffer);
 
         // reread and compare
-        Assert.assertTrue(metaData.isMetadataBLOBAvailable("Blob data", "blob array"));
+        assertTrue(metaData.isMetadataBLOBAvailable("Blob data", "blob array"));
         ByteBuffer metadataBLOBBuffer = metaData.getMetadataBLOBAsBuffer("Blob data", "blob array");
         FloatBuffer metaDataFB = metadataBLOBBuffer.asFloatBuffer();
         int size = metaDataFB.remaining();
@@ -372,10 +371,8 @@ public class MetaDataContainerTest {
         metaDataFB.get(readFloats);
 
         // compares buffer
-        Assert.assertEquals(blobFloatArray, readFloats);
+        assertArrayEquals(blobFloatArray, readFloats, 0.0f);
     }
-
-     */
 }
 
 

@@ -713,7 +713,7 @@ def find_enum_type(real_return_type: str) -> Scope:
 def is_string_type(arg: Param) -> bool:
     assert isinstance(arg, Param)
     return cpp_to_java_type(arg.canonical_type, arg.typename) == "String"
-    
+
 def is_enum_type(arg: Param) -> bool:
     assert isinstance(arg, Param)
     return True if find_enum_type(arg.canonical_type) else False
@@ -1021,7 +1021,7 @@ def transform_java_functioncall_args(class_name: str, args: List[Param], is_incl
         elif is_bytebuffer_backed(type_):
             arglist.append(f'{checked_name_}.getBackingByteBuffer(), {checked_name_}.getByteBufferOffset()')
         elif use_buffer_protocol([arg, p.peek(None)]):
-            arglist.append(f'{checked_name_}')
+            arglist.append(f'ManagedBuffer.ensureByteBufferValid({name_})')
             next(p)
         elif is_optional_type(type_):
             otype = get_template_arg0(type_)

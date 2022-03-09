@@ -25,6 +25,14 @@ import java.nio.ByteBuffer;
 
 public class Error extends ManagedBase {
 
+    native private static long ctorImpl();
+    
+    public Error() {
+    
+        super(ctorImpl());
+    
+    }
+
     ///AUTOGEN-OK: FIELD_DECL code int INT
     native private int getCodeImpl(long native_object);
     public int getCode() {

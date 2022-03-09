@@ -327,6 +327,11 @@ struct CPPJNIAsyncBuffer
 
   CPPJNIAsyncBuffer(JNIEnv* env, jobject bytebuffer, jlong byteoffset = 0) : m_BufferSize(), m_Offset(byteoffset), m_Buffer()
   {
+    m_Buffer = (uint8_t*)env->GetDirectBufferAddress(bytebuffer);
+    if (m_Buffer == nullptr) 
+    {
+      throw std::runtime_error("No ByteBuffer direct access");
+    }
     if (byteoffset < 0)
     {
       throw std::runtime_error("Negative ByteBuffer offset.");
@@ -336,7 +341,6 @@ struct CPPJNIAsyncBuffer
     {
       throw std::runtime_error("ByteBuffer offset greater than capacity.");
     }
-    m_Buffer = (uint8_t*)env->GetDirectBufferAddress(bytebuffer);
   }
 
   T*      
