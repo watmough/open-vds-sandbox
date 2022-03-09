@@ -306,13 +306,11 @@ TEST(OpenVDS_integration, WriteReadMultiPageAccessorPage)
   OpenVDS::ScopedVDSHandle handle(OpenVDS::Open(slowIOManager, error));
   OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle);
   
-  auto writePageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, 0, 0, 1024, OpenVDS::VolumeDataAccessManager::AccessMode_ReadWrite);
-  writeBuffer(writePageAccessor, Read, 2, 1234.5f);
-  writePageAccessor->SetMaxPages(0);
-  
-  auto readPageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, 0, 0, 1024, OpenVDS::VolumeDataAccessManager::AccessMode_ReadOnly);
-  ASSERT_TRUE(compareBuffer(readPageAccessor, 2, 1234.5f));
+  auto readWritePageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, 0, 0, 1024, OpenVDS::VolumeDataAccessManager::AccessMode_ReadWrite);
+  writeBuffer(readWritePageAccessor, Read, 2, 1234.5f);
+  readWritePageAccessor->SetMaxPages(0); // Make sure the buffer is flushed to the write queue, without committing
 
+  ASSERT_TRUE(compareBuffer(readWritePageAccessor, 2, 1234.5f));
 }
 
 TEST(OpenVDS_integration, ReadWriteReadMultiPageAccessorPage)
@@ -330,7 +328,7 @@ TEST(OpenVDS_integration, ReadWriteReadMultiPageAccessorPage)
   OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle);
 
   auto readPageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, 0, 0, 1024, OpenVDS::VolumeDataAccessManager::AccessMode_ReadOnly);
-  auto writePageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, 0, 0, 1024, OpenVDS::VolumeDataAccessManager::AccessMode_ReadWrite);
+  auto readWritePageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, 0, 0, 1024, OpenVDS::VolumeDataAccessManager::AccessMode_ReadWrite);
   {
     std::thread threadRead([&readPageAccessor]
       {
@@ -342,20 +340,17 @@ TEST(OpenVDS_integration, ReadWriteReadMultiPageAccessorPage)
 
       });
   
-    std::thread threadWrite([&writePageAccessor]
+    std::thread threadWrite([&readWritePageAccessor]
       {
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
-        writeBuffer(writePageAccessor, Create, 2, 1234.5f);
-        writePageAccessor->SetMaxPages(0);
+        writeBuffer(readWritePageAccessor, Create, 2, 1234.5f);
+        readWritePageAccessor->SetMaxPages(0); // Make sure the buffer is flushed to the write queue, without committing
       });
     threadRead.join();
     threadWrite.join();
   }
 
-  
-  auto readPageAccessor2 = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, 0, 0, 1024, OpenVDS::VolumeDataAccessManager::AccessMode_ReadOnly);
-  ASSERT_TRUE(compareBuffer(readPageAccessor2, 2, 1234.5f));
-
+  ASSERT_TRUE(compareBuffer(readWritePageAccessor, 2, 1234.5f));
 }
 
 TEST(OpenVDS_integration, CreateMultiplePageAccessors)
