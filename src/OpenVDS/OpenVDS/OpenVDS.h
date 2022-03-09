@@ -569,6 +569,8 @@ struct VDSFileOpenOptions : OpenOptions
 
 struct Error
 {
+  Error() = default;
+  
   int code = 0;
   std::string string;
 };
