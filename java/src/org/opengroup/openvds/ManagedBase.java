@@ -38,7 +38,6 @@ public abstract class ManagedBase {
         public ObjectDisposedException() {
             super("Accessing disposed object");
         }
-
         public ObjectDisposedException(String msg) {
             super("Accessing disposed object: " + msg);
         }
@@ -49,12 +48,15 @@ public abstract class ManagedBase {
 
 	private long native_object;
 
+    private boolean is_disposed;
+
     public ManagedBase(long native_object) {
         this.native_object = native_object;
+        this.is_disposed = false;
     }
 	
     long getNativeObject() {
-        if (this.native_object == 0)
+        if (this.is_disposed)
            throw new ObjectDisposedException();
         return this.native_object;
     }
@@ -63,6 +65,7 @@ public abstract class ManagedBase {
 	}
 
 	private synchronized void dispose(boolean isDisposing) {
+        this.is_disposed = true;
 		if (this.native_object != 0) {
 			long native_object = this.native_object;
 			this.native_object = 0;
@@ -80,8 +83,8 @@ public abstract class ManagedBase {
     }
 	
 	public boolean isDisposed() {
-		return this.native_object == 0;
+		return this.is_disposed;
 	}
 
-	public boolean isNull() { return isDisposed(); }
+	public boolean isNull() { return this.native_object == 0; }
 }

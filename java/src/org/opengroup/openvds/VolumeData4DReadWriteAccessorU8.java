@@ -65,6 +65,9 @@ public class VolumeData4DReadWriteAccessorU8 extends VolumeData4DReadAccessorU8 
     }
 
     static VolumeData4DReadWriteAccessorU8 fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
         return new VolumeData4DReadWriteAccessorU8(nativeobject);
     }
 

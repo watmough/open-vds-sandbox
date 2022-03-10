@@ -65,6 +65,9 @@ public class VolumeData3DReadWriteAccessorU16 extends VolumeData3DReadAccessorU1
     }
 
     static VolumeData3DReadWriteAccessorU16 fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
         return new VolumeData3DReadWriteAccessorU16(nativeobject);
     }
 

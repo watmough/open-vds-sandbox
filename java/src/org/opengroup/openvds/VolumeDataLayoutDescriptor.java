@@ -211,6 +211,9 @@ public class VolumeDataLayoutDescriptor extends ManagedBase {
     }
 
     static VolumeDataLayoutDescriptor fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
         return new VolumeDataLayoutDescriptor(nativeobject);
     }
 

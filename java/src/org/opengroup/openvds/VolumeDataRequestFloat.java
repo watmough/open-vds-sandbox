@@ -42,6 +42,9 @@ public class VolumeDataRequestFloat extends VolumeDataRequest {
     }
 
     static VolumeDataRequestFloat fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
         return new VolumeDataRequestFloat(nativeobject);
     }
 

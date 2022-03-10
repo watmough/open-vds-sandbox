@@ -427,6 +427,9 @@ public class VolumeDataChannelDescriptor extends ManagedBase {
     }
 
     static VolumeDataChannelDescriptor fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
         return new VolumeDataChannelDescriptor(nativeobject);
     }
 

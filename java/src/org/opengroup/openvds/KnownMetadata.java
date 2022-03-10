@@ -504,6 +504,9 @@ public class KnownMetadata extends ManagedBase {
     }
 
     static KnownMetadata fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
         return new KnownMetadata(nativeobject);
     }
 

@@ -68,6 +68,9 @@ public class HttpOpenOptions extends OpenOptions {
     }
 
     static HttpOpenOptions fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
         return new HttpOpenOptions(nativeobject);
     }
 

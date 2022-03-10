@@ -1515,13 +1515,16 @@ def create_java_class(scope: Scope, template: str, override_name: str = '', temp
             ctor    += f'    }}'
         # construct instance from native object handle
         factory =  f'    static {class_name} fromNativeObject(long nativeobject) {{\n'
+        factory += f'        if (nativeobject == 0) {{\n'
+        factory += f'           return null;\n'
+        factory += f'        }}\n'
         factory += f'        return new {class_name}(nativeobject);\n'
         factory += f'    }}\n'
         factory += f'\n'
         if not bases:
             factory += f'    long getNativeObject() {{\n'
-            factory += f'        if (this.native_object == 0)\n'
-            factory += f'           throw new RuntimeException("Accessing disposed object");\n'
+            factory += f'        if (this.isNull())\n'
+            factory += f'           throw new RuntimeException("Accessing null object");\n'
             factory += f'        return this.native_object;\n'
             factory += f'    }}'
         print(f"\n{ctor}", file=methods)

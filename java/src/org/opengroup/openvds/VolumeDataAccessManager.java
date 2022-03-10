@@ -1682,6 +1682,15 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         FlushUploadQueueImpl(getNativeObject(), writeUpdatedLayerStatus);
     }
 
+    /**
+     * Flush any pending writes and write updated layer status
+     * 
+     */
+
+    public void flushUploadQueue() {
+        flushUploadQueue(/*writeUpdatedLayerStatus=*/true);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD ClearUploadErrors void () FUNCTIONPROTO
     native private void ClearUploadErrorsImpl(long native_object);
 
@@ -2217,6 +2226,9 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     }
 
     static VolumeDataAccessManager fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
         return new VolumeDataAccessManager(nativeobject);
     }
 
@@ -2920,4 +2932,5 @@ of the number of chunks in some of the dimensions. Do not change this from the d
 		Object[] arr = GetCurrentDownloadErrorImpl(getNativeObject());
 		return new DownloadError(arr);
 	}
+
 }

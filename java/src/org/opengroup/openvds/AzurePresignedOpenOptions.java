@@ -73,6 +73,9 @@ public class AzurePresignedOpenOptions extends OpenOptions {
     }
 
     static AzurePresignedOpenOptions fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
         return new AzurePresignedOpenOptions(nativeobject);
     }
 

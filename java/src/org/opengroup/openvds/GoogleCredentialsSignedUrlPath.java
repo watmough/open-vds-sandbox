@@ -58,6 +58,9 @@ public class GoogleCredentialsSignedUrlPath extends ManagedBase {
     }
 
     static GoogleCredentialsSignedUrlPath fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
         return new GoogleCredentialsSignedUrlPath(nativeobject);
     }
 

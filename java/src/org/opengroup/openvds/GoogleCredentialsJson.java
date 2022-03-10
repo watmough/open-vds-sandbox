@@ -55,6 +55,9 @@ public class GoogleCredentialsJson extends ManagedBase {
     }
 
     static GoogleCredentialsJson fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
         return new GoogleCredentialsJson(nativeobject);
     }
 

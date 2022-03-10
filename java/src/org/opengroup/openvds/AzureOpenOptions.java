@@ -136,6 +136,9 @@ public class AzureOpenOptions extends OpenOptions {
     }
 
     static AzureOpenOptions fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
         return new AzureOpenOptions(nativeobject);
     }
 

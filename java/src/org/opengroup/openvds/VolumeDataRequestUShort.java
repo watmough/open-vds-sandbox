@@ -42,6 +42,9 @@ public class VolumeDataRequestUShort extends VolumeDataRequest {
     }
 
     static VolumeDataRequestUShort fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
         return new VolumeDataRequestUShort(nativeobject);
     }
 

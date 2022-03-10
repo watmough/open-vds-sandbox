@@ -68,6 +68,9 @@ public class VolumeDataPage extends ManagedBase implements AutoCloseable {
 
 
     static VolumeDataPage fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
         return new VolumeDataPage(nativeobject);
     }
 

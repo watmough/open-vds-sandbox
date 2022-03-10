@@ -65,6 +65,9 @@ public class VolumeData2DReadWriteAccessorR64 extends VolumeData2DReadAccessorR6
     }
 
     static VolumeData2DReadWriteAccessorR64 fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
         return new VolumeData2DReadWriteAccessorR64(nativeobject);
     }
 

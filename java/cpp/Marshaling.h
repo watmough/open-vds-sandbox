@@ -51,6 +51,13 @@ struct ObsoleteObjectException
 {
 };
 
+// Thrown by CPPJNIObjectContext if the object parameter is null.
+// This is to prevent an invalid object context to be created.
+// Handled by CPPJNI_CATCH and treated as a no-op.
+struct ObjectNullException
+{
+};
+
 template<typename T>
 struct CPPJNIArrayAccessor;
 
@@ -397,8 +404,16 @@ struct CPPJNIObjectContext
   std::vector<jobject> m_GlobalRefs;
   int m_SharedLibraryGeneration;
 
+  CPPJNIObjectContext() : m_MagicNumber(MAGIC_NUMBER), m_OpaqueObject(nullptr), m_SharedLibraryGeneration(getSharedLibraryGeneration())
+  {
+  }
+
   CPPJNIObjectContext(void* object) : m_MagicNumber(MAGIC_NUMBER), m_OpaqueObject(object), m_SharedLibraryGeneration(getSharedLibraryGeneration())
   {
+    if (object == nullptr) 
+    {
+      throw ObjectNullException();
+    }
   }
   
   static int  getSharedLibraryGeneration();
@@ -484,7 +499,11 @@ struct CPPJNIObjectContext_t : public CPPJNIObjectContext
   bool m_IsOwner;
   std::shared_ptr<T> m_SharedPtr;
 
-  CPPJNIObjectContext_t() : CPPJNIObjectContext_t(nullptr, false)
+  CPPJNIObjectContext_t(T* object, bool isOwner, std::shared_ptr<T> sharedPtr = std::shared_ptr<T>()) : CPPJNIObjectContext(object), m_IsOwner(isOwner), m_SharedPtr(sharedPtr)
+  {
+  }
+
+  CPPJNIObjectContext_t() : m_IsOwner(false)
   {
   }
 
@@ -493,10 +512,6 @@ struct CPPJNIObjectContext_t : public CPPJNIObjectContext
   }
 
   CPPJNIObjectContext_t(std::shared_ptr<T> sharedPtr) : CPPJNIObjectContext_t(sharedPtr.get(), false, sharedPtr)
-  {
-  }
-
-  CPPJNIObjectContext_t(T* object, bool isOwner, std::shared_ptr<T> sharedPtr = std::shared_ptr<T>()) : CPPJNIObjectContext(object), m_IsOwner(isOwner), m_SharedPtr(sharedPtr)
   {
   }
 
@@ -509,6 +524,10 @@ struct CPPJNIObjectContext_t : public CPPJNIObjectContext
   void
   setObject(T* object, bool owned = true)
   {
+    if (object == nullptr)
+    {
+      throw std::runtime_error("cannot set null opaque object");
+    }
     m_OpaqueObject = object;
     m_IsOwner = owned;
   }
@@ -516,6 +535,10 @@ struct CPPJNIObjectContext_t : public CPPJNIObjectContext
   T* 
   getObject() 
   {
+    if (m_OpaqueObject == nullptr) 
+    {
+      throw std::runtime_error("opaque object is null");
+    }
     return (T*)m_OpaqueObject;
   }
 
@@ -603,6 +626,7 @@ void CPPJNI_HandleStdException(JNIEnv *env, std::exception& e);
 #define CPPJNI_TRY try
 #define CPPJNI_CATCH \
  catch(ObsoleteObjectException&) { /* No-op. See comment for ObsoleteObjectException */ } \
+ catch(ObjectNullException&) { /* No-op. See comment for ObjectNullException */ } \
  catch(OpenVDS::Exception& e) { CPPJNI_HandleSharedLibraryException(env, e); } \
  catch(std::runtime_error& e) { CPPJNI_HandleStdRuntimeError(env, e); } \
  catch(std::exception& e) { CPPJNI_HandleStdException(env, e); }

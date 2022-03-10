@@ -362,6 +362,9 @@ public class VolumeDataLayout extends MetadataReadAccess {
     }
 
     static VolumeDataLayout fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
         return new VolumeDataLayout(nativeobject);
     }
 

@@ -55,6 +55,9 @@ public class GoogleCredentialsSignedUrl extends ManagedBase {
     }
 
     static GoogleCredentialsSignedUrl fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
         return new GoogleCredentialsSignedUrl(nativeobject);
     }
 

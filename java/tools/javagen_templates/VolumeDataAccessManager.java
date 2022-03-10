@@ -285,6 +285,7 @@
     ///AUTOGEN-ADD-OVERLOAD: VolumeData4DReadWriteAccessorR32 createVolumeData4DReadWriteAccessorR32(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) -> replacementNoValue=null
     ///AUTOGEN-ADD-OVERLOAD: VolumeData4DReadWriteAccessorR64 createVolumeData4DReadWriteAccessorR64(DimensionsND dimensionsND, int LOD, int channel, int maxPages, Float replacementNoValue) -> replacementNoValue=null
     ///AUTOGEN-ADD-OVERLOAD: VolumeData4DReadWriteAccessorR64 createVolumeData4DReadWriteAccessorR64(DimensionsND dimensionsND, int LOD, int channel, Float replacementNoValue) -> replacementNoValue=null
+	///AUTOGEN-ADD-OVERLOAD: void flushUploadQueue(boolean writeUpdatedLayerStatus) -> writeUpdatedLayerStatus=true	
 
     /**
      * Get the default maxPages for VolumeDataPageAccessors
@@ -306,4 +307,5 @@
 		Object[] arr = GetCurrentDownloadErrorImpl(getNativeObject());
 		return new DownloadError(arr);
 	}}
+
 }}

@@ -179,6 +179,9 @@ public class VolumeDataAxisDescriptor extends ManagedBase {
     }
 
     static VolumeDataAxisDescriptor fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
         return new VolumeDataAxisDescriptor(nativeobject);
     }
 

@@ -157,6 +157,9 @@ public class KnownAxisNames extends ManagedBase {
     }
 
     static KnownAxisNames fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
         return new KnownAxisNames(nativeobject);
     }
 

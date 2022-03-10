@@ -55,6 +55,9 @@ public class GoogleCredentialsPath extends ManagedBase {
     }
 
     static GoogleCredentialsPath fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
         return new GoogleCredentialsPath(nativeobject);
     }
 

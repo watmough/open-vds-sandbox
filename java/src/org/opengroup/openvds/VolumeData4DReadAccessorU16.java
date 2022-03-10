@@ -87,6 +87,9 @@ public class VolumeData4DReadAccessorU16 extends ManagedBase implements AutoClos
     }
 
     static VolumeData4DReadAccessorU16 fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
         return new VolumeData4DReadAccessorU16(nativeobject);
     }
 

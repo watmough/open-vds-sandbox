@@ -607,6 +607,9 @@ public class IJKCoordinateTransformer extends ManagedBase {
     }
 
     static IJKCoordinateTransformer fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
         return new IJKCoordinateTransformer(nativeobject);
     }
 

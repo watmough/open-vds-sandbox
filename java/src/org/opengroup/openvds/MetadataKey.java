@@ -116,6 +116,9 @@ public class MetadataKey extends ManagedBase {
     }
 
     static MetadataKey fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
         return new MetadataKey(nativeobject);
     }
 

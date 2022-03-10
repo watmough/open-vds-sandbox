@@ -68,6 +68,9 @@ public class IndexRegionIntVector2 extends ManagedBase {
     }
 
     static IndexRegionIntVector2 fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
         return new IndexRegionIntVector2(nativeobject);
     }
 

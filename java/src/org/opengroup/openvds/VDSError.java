@@ -22,4 +22,13 @@ public class VDSError extends Error {
     public VDSError() {
         super();
     }
+
+    public String toString() {
+        int code = getCode();
+        if (code != 0) {
+            return "ERROR (" + code + ") : " + getString();
+        } else {
+            return "<OK>";
+        }
+    }
 }

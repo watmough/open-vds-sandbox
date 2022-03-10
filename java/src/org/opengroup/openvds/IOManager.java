@@ -44,6 +44,9 @@ public class IOManager extends ManagedBase {
     }
 
     static IOManager fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
         return new IOManager(nativeobject);
     }
 

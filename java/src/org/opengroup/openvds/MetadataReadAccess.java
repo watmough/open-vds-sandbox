@@ -354,6 +354,9 @@ public class MetadataReadAccess extends ManagedBase {
     }
 
     static MetadataReadAccess fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
         return new MetadataReadAccess(nativeobject);
     }
 

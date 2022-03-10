@@ -87,6 +87,9 @@ public class VolumeData3DInterpolatingAccessorR32 extends ManagedBase implements
     }
 
     static VolumeData3DInterpolatingAccessorR32 fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
         return new VolumeData3DInterpolatingAccessorR32(nativeobject);
     }
 

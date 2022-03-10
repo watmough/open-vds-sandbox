@@ -182,6 +182,9 @@ Whenever WaitForCompletion returns false you need to call IsCanceled() to know i
     }
 
     static VolumeDataRequest fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
         return new VolumeDataRequest(nativeobject);
     }
 

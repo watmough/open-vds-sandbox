@@ -118,6 +118,9 @@ public class DMSOpenOptions extends OpenOptions {
     }
 
     static DMSOpenOptions fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
         return new DMSOpenOptions(nativeobject);
     }
 

@@ -42,6 +42,9 @@ public class VolumeDataRequestDouble extends VolumeDataRequest {
     }
 
     static VolumeDataRequestDouble fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
         return new VolumeDataRequestDouble(nativeobject);
     }
 

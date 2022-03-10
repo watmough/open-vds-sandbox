@@ -55,6 +55,9 @@ public class GoogleCredentialsToken extends ManagedBase {
     }
 
     static GoogleCredentialsToken fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
         return new GoogleCredentialsToken(nativeobject);
     }
 

@@ -42,6 +42,9 @@ public class VolumeDataRequestByte extends VolumeDataRequest {
     }
 
     static VolumeDataRequestByte fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
         return new VolumeDataRequestByte(nativeobject);
     }
 

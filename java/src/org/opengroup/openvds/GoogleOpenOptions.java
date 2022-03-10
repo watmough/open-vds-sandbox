@@ -184,6 +184,9 @@ public class GoogleOpenOptions extends OpenOptions {
     }
 
     static GoogleOpenOptions fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
         return new GoogleOpenOptions(nativeobject);
     }
 

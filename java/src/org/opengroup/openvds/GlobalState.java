@@ -94,6 +94,9 @@ public class GlobalState extends ManagedBase {
     }
 
     static GlobalState fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
         return new GlobalState(nativeobject);
     }
 

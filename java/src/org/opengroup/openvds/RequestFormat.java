@@ -36,6 +36,9 @@ public class RequestFormat extends ManagedBase {
     }
 
     static RequestFormat fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
         return new RequestFormat(nativeobject);
     }
 

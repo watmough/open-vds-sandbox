@@ -207,6 +207,9 @@ public class VolumeDataPageAccessor extends ManagedBase {
     }
 
     static VolumeDataPageAccessor fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
         return new VolumeDataPageAccessor(nativeobject);
     }
 

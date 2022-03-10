@@ -65,6 +65,9 @@ public class VolumeData4DReadWriteAccessorR64 extends VolumeData4DReadAccessorR6
     }
 
     static VolumeData4DReadWriteAccessorR64 fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
         return new VolumeData4DReadWriteAccessorR64(nativeobject);
     }
 

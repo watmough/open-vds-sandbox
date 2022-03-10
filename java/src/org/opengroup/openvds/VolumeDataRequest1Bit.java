@@ -42,6 +42,9 @@ public class VolumeDataRequest1Bit extends VolumeDataRequest {
     }
 
     static VolumeDataRequest1Bit fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
         return new VolumeDataRequest1Bit(nativeobject);
     }
 

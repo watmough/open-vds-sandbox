@@ -62,6 +62,9 @@ public class InMemoryOpenOptions extends OpenOptions {
     }
 
     static InMemoryOpenOptions fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
         return new InMemoryOpenOptions(nativeobject);
     }
 

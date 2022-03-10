@@ -135,6 +135,9 @@ public class KnownUnitNames extends ManagedBase {
     }
 
     static KnownUnitNames fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
         return new KnownUnitNames(nativeobject);
     }
 

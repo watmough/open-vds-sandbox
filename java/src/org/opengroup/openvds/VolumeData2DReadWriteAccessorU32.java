@@ -65,6 +65,9 @@ public class VolumeData2DReadWriteAccessorU32 extends VolumeData2DReadAccessorU3
     }
 
     static VolumeData2DReadWriteAccessorU32 fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
         return new VolumeData2DReadWriteAccessorU32(nativeobject);
     }
 

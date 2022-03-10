@@ -42,6 +42,9 @@ public class VolumeDataRequestULong extends VolumeDataRequest {
     }
 
     static VolumeDataRequestULong fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
         return new VolumeDataRequestULong(nativeobject);
     }
 

@@ -335,6 +335,9 @@ public class MetadataContainer extends MetadataReadAccess {
     }
 
     static MetadataContainer fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
         return new MetadataContainer(nativeobject);
     }
 

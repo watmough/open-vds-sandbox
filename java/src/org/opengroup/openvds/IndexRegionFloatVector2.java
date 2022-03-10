@@ -68,6 +68,9 @@ public class IndexRegionFloatVector2 extends ManagedBase {
     }
 
     static IndexRegionFloatVector2 fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
         return new IndexRegionFloatVector2(nativeobject);
     }
 

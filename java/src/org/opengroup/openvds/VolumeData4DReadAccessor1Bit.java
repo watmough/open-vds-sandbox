@@ -87,6 +87,9 @@ public class VolumeData4DReadAccessor1Bit extends ManagedBase implements AutoClo
     }
 
     static VolumeData4DReadAccessor1Bit fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
         return new VolumeData4DReadAccessor1Bit(nativeobject);
     }
 

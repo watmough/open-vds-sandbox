@@ -58,6 +58,9 @@ public class GoogleCredentialsSignedUrlJson extends ManagedBase {
     }
 
     static GoogleCredentialsSignedUrlJson fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
         return new GoogleCredentialsSignedUrlJson(nativeobject);
     }
 

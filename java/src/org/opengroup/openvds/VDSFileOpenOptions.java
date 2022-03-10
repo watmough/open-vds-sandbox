@@ -66,6 +66,9 @@ public class VDSFileOpenOptions extends OpenOptions {
     }
 
     static VDSFileOpenOptions fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
         return new VDSFileOpenOptions(nativeobject);
     }
 

@@ -87,6 +87,9 @@ public class VolumeData2DReadAccessorU32 extends ManagedBase implements AutoClos
     }
 
     static VolumeData2DReadAccessorU32 fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
         return new VolumeData2DReadAccessorU32(nativeobject);
     }
 

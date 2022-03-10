@@ -65,6 +65,9 @@ public class VolumeData3DReadWriteAccessor1Bit extends VolumeData3DReadAccessor1
     }
 
     static VolumeData3DReadWriteAccessor1Bit fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
         return new VolumeData3DReadWriteAccessor1Bit(nativeobject);
     }
 

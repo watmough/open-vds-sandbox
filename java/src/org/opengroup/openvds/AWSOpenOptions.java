@@ -143,6 +143,9 @@ public class AWSOpenOptions extends OpenOptions {
     }
 
     static AWSOpenOptions fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
         return new AWSOpenOptions(nativeobject);
     }
 

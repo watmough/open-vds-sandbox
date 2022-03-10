@@ -48,6 +48,9 @@ public class VDS extends ManagedBase implements AutoCloseable {
     }
 
     static VDS fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
         return new VDS(nativeobject);
     }
 

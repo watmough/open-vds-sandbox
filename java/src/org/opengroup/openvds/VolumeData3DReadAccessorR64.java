@@ -87,6 +87,9 @@ public class VolumeData3DReadAccessorR64 extends ManagedBase implements AutoClos
     }
 
     static VolumeData3DReadAccessorR64 fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
         return new VolumeData3DReadAccessorR64(nativeobject);
     }
 
