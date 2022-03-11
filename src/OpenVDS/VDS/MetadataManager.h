@@ -94,6 +94,7 @@ namespace OpenVDS
   {
     IOManager *m_iomanager;
     std::string m_layerUrl;
+    std::string m_channelName;
 
     MetadataStatus m_metadataStatus;
 
@@ -109,11 +110,12 @@ namespace OpenVDS
 
     void LimitPages();
   public:
-    MetadataManager(IOManager *iomanager, std::string const &layerURL, MetadataStatus const &MetadataStatus, int pageLimit);
+    MetadataManager(IOManager *iomanager, std::string const &layerURL, std::string const &channelName, MetadataStatus const &MetadataStatus, int pageLimit);
     ~MetadataManager();
 
     const char *LayerUrl() const { return m_layerUrl.c_str(); }
     const std::string &LayerUrlStr() const { return m_layerUrl; }
+    const std::string &ChannelName() const { return m_channelName; }
 
     MetadataPage *LockPage(int pageIndex, bool *InitiateTransfer);
 

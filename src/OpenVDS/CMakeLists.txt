@@ -126,6 +126,7 @@ else()
     VDS/ConnectionStringParser.h
     VDS/GlobalStateImpl.h
     VDS/StringToDouble.h
+    VDS/LayerMetadataContainer.h
     ${WAVELET_HEADERS}
     ${COMMON_DIR}/Base64/Base64.h
     ${COMMON_DIR}/ThreadPool/ThreadPool.h
