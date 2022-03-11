@@ -40,13 +40,6 @@
 namespace OpenVDS
 {
 
-class LayerMetadataContainer
-{
-public:
-  virtual bool GetMetadataStatus(std::string const &layerName, MetadataStatus &metadataStatus) const = 0;
-  virtual void SetMetadataStatus(std::string const &layerName, MetadataStatus &metadataStatus, int pageLimit) = 0;
-};
-
 class DescriptorStringContainer
 {
   std::vector<std::unique_ptr<char[]>> m_descriptorStrings;

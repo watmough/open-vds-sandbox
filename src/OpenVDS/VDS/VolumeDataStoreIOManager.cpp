@@ -303,7 +303,8 @@ VolumeDataStoreIOManager::AddLayer(VolumeDataLayer* volumeDataLayer, int chunkMe
 
   int pageLimit = volumeDataLayer->GetLayout()->GetDimensionality() <= 3 ? 64 : 1024;
 
-  SetMetadataStatus(GetLayerName(*volumeDataLayer), metadataStatus, pageLimit);
+  std::string channelName = volumeDataLayer->GetLayout()->GetChannelName(volumeDataLayer->GetChannelIndex());;
+  SetMetadataStatus(GetLayerName(*volumeDataLayer), channelName, metadataStatus, pageLimit);
   return true;
 }
 
@@ -858,14 +859,30 @@ VolumeDataStoreIOManager::GetMetadataStatus(std::string const &layerName, Metada
   }
 }
 
+bool
+VolumeDataStoreIOManager::IsChannelZipped(std::string const& channelName, bool isPrimaryChannel) const
+{
+  (void)isPrimaryChannel;
+  std::unique_lock<std::mutex> lock(m_mutex);
+  for (auto& metadataManager : m_metadataManagers)
+  {
+    const std::string &metaChannelName = metadataManager.second->ChannelName();
+    if (metaChannelName == channelName)
+    {
+      return metadataManager.second->GetMetadataStatus().m_compressionMethod == CompressionMethod::Zip;
+    }
+  }
+  return false;
+}
+
 void
-VolumeDataStoreIOManager::SetMetadataStatus(std::string const &layerName, MetadataStatus &metadataStatus, int pageLimit)
+VolumeDataStoreIOManager::SetMetadataStatus(std::string const &layerName, std::string const &channelName, MetadataStatus &metadataStatus, int pageLimit)
 {
   std::unique_lock<std::mutex> lock(m_mutex);
 
   if (m_metadataManagers.find(layerName) == m_metadataManagers.end())
   {
-    m_metadataManagers.insert(std::make_pair(layerName, std::unique_ptr<MetadataManager>(new MetadataManager(m_ioManager.get(), layerName, metadataStatus, pageLimit))));
+    m_metadataManagers.insert(std::make_pair(layerName, std::unique_ptr<MetadataManager>(new MetadataManager(m_ioManager.get(), layerName, channelName, metadataStatus, pageLimit))));
   }
 }
 

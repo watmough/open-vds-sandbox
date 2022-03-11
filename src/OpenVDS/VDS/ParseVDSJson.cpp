@@ -910,7 +910,7 @@ bool DownloadAndParseVolumeDataLayoutAndLayerStatus(VDS& vds, Error& error)
 
   try
   {
-    if (!ParseVolumeDataLayout(serializedVolumeDataLayout, vds.layoutDescriptor, vds.axisDescriptors, vds.channelDescriptors, vds.descriptorStrings, vds.metadataContainer, error))
+    if (!ParseVolumeDataLayout(serializedVolumeDataLayout, vds.layoutDescriptor, vds.axisDescriptors, vds.channelDescriptors, vds.descriptorStrings, vds.metadataContainer, vds.volumeDataStore->GetLayerMetadataContainer(), error))
       return false;
   }
 
@@ -926,7 +926,7 @@ bool DownloadAndParseVolumeDataLayoutAndLayerStatus(VDS& vds, Error& error)
   return true;
 }
 
-bool ParseVolumeDataLayout(const std::vector<uint8_t> &json, VolumeDataLayoutDescriptor &layoutDescriptor, std::vector<VolumeDataAxisDescriptor> &axisDescriptors, std::vector<VolumeDataChannelDescriptor> &channelDescriptors, DescriptorStringContainer &descriptorStrings, MetadataContainer &metadataContainer, Error &error)
+bool ParseVolumeDataLayout(const std::vector<uint8_t> &json, VolumeDataLayoutDescriptor &layoutDescriptor, std::vector<VolumeDataAxisDescriptor> &axisDescriptors, std::vector<VolumeDataChannelDescriptor> &channelDescriptors, DescriptorStringContainer &descriptorStrings, MetadataContainer &metadataContainer, const LayerMetadataContainer &layerMetadaContainer, Error &error)
 {
   Json::Value root;
 
@@ -968,8 +968,11 @@ bool ParseVolumeDataLayout(const std::vector<uint8_t> &json, VolumeDataLayoutDes
       axisDescriptors.push_back(axisDescriptor);
     }
 
+    bool primary = true;
     for (const Json::Value &channelDescriptorJson : root["channelDescriptors"])
     {
+      bool noLossyCompressionUseZip = layerMetadaContainer.IsChannelZipped(channelDescriptorJson["name"].asString(), primary) && !channelDescriptorJson["allowLossyCompression"].asBool();
+      primary = false;
       if (channelDescriptorJson["useNoValue"].asBool())
       {
         VolumeDataChannelDescriptor
@@ -983,7 +986,8 @@ bool ParseVolumeDataLayout(const std::vector<uint8_t> &json, VolumeDataLayoutDes
                             channelDescriptorJson["mappedValues"].asInt(),
                             (channelDescriptorJson["discrete"].asBool() ? VolumeDataChannelDescriptor::DiscreteData : VolumeDataChannelDescriptor::Default) |
                             (channelDescriptorJson["renderable"].asBool() ? VolumeDataChannelDescriptor::Default : VolumeDataChannelDescriptor::NotRenderable) |
-                            (channelDescriptorJson["allowLossyCompression"].asBool() ? VolumeDataChannelDescriptor::Default : VolumeDataChannelDescriptor::NoLossyCompression),
+                            (channelDescriptorJson["allowLossyCompression"].asBool() ? VolumeDataChannelDescriptor::Default : VolumeDataChannelDescriptor::NoLossyCompression) |
+                            (noLossyCompressionUseZip ? VolumeDataChannelDescriptor::NoLossyCompressionUseZip : VolumeDataChannelDescriptor::Default),
                             channelDescriptorJson["noValue"].asFloat(),
                             channelDescriptorJson["integerScale"].asFloat(),
                             channelDescriptorJson["integerOffset"].asFloat());
@@ -1003,7 +1007,8 @@ bool ParseVolumeDataLayout(const std::vector<uint8_t> &json, VolumeDataLayoutDes
                             channelDescriptorJson["mappedValues"].asInt(),
                             (channelDescriptorJson["discrete"].asBool() ? VolumeDataChannelDescriptor::DiscreteData : VolumeDataChannelDescriptor::Default) |
                             (channelDescriptorJson["renderable"].asBool() ? VolumeDataChannelDescriptor::Default : VolumeDataChannelDescriptor::NotRenderable) |
-                            (channelDescriptorJson["allowLossyCompression"].asBool() ? VolumeDataChannelDescriptor::Default : VolumeDataChannelDescriptor::NoLossyCompression),
+                            (channelDescriptorJson["allowLossyCompression"].asBool() ? VolumeDataChannelDescriptor::Default : VolumeDataChannelDescriptor::NoLossyCompression) |
+                            (noLossyCompressionUseZip ? VolumeDataChannelDescriptor::NoLossyCompressionUseZip : VolumeDataChannelDescriptor::Default),
                             channelDescriptorJson["integerScale"].asFloat(),
                             channelDescriptorJson["integerOffset"].asFloat());
 
@@ -1159,12 +1164,14 @@ bool ParseLayerStatus(const std::vector<uint8_t> &json, VDS &vds, LayerMetadataC
 
       std::string
         layerName = layerStatus["layerName"].asString();
+      std::string
+        channelName = layerStatus["channelName"].asString();
 
       if (hasChunkMetadataPages)
       {
         int pageLimit = vds.axisDescriptors.size() <= 3 ? 64 : 1024;
 
-        layerMetadataContainer.SetMetadataStatus(layerName, metadataStatus, pageLimit);
+        layerMetadataContainer.SetMetadataStatus(layerName, channelName, metadataStatus, pageLimit);
       }
     }
   }

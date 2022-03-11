@@ -103,6 +103,7 @@ set (PRIVATE_HEADER_FILES
   VDS/ConnectionStringParser.h
   VDS/GlobalStateImpl.h
   VDS/StringToDouble.h
+  VDS/LayerMetadataContainer.h
   ${COMMON_DIR}/Base64/Base64.h
   ${COMMON_DIR}/ThreadPool/ThreadPool.h
   json_cpp_include.h)

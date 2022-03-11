@@ -69,9 +69,10 @@ MetadataPage *metadataPage;
 std::vector<uint8_t> metadata;
 };
 
-MetadataManager::MetadataManager(IOManager* iomanager, std::string const& layerUrl, MetadataStatus const& metadataStatus, int pageLimit)
+MetadataManager::MetadataManager(IOManager *iomanager, std::string const &layerUrl, std::string const &channelName, MetadataStatus const &metadataStatus, int pageLimit)
   : m_iomanager(iomanager)
   , m_layerUrl(layerUrl)
+  , m_channelName(channelName)
   , m_metadataStatus(metadataStatus)
   , m_pageLimit(pageLimit)
 {

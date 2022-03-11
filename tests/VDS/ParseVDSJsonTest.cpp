@@ -68,8 +68,10 @@ public:
       return false;
     }
   }
-  void SetMetadataStatus(std::string const &layerName, OpenVDS::MetadataStatus &metadataStatus, int /*pageLimit*/) override
+  bool IsChannelZipped(std::string const&, bool) const override { return false; }
+  void SetMetadataStatus(std::string const &layerName, std::string const &channelName, OpenVDS::MetadataStatus &metadataStatus, int /*pageLimit*/) override
   {
+    (void)channelName;
     m_metadataStatusMap[layerName] = metadataStatus;
   }
 };
@@ -130,12 +132,12 @@ GTEST_TEST(VDS_integration, ParseVolumeDataLayoutAndLayerStatus)
   // Clear error
   error = OpenVDS::Error();
 
-  // Parse volume data layout
-  OpenVDS::ParseVolumeDataLayout(serializedVolumeDataLayoutReference, handle.layoutDescriptor, handle.axisDescriptors, handle.channelDescriptors, handle.descriptorStrings, handle.metadataContainer, error);
-  EXPECT_EQ(error.code, 0);
-
   // Parse layer status
   OpenVDS::ParseLayerStatus(serializedLayerStatusReference, handle, layerMetadataContainer, error);
+  EXPECT_EQ(error.code, 0);
+
+  // Parse volume data layout
+  OpenVDS::ParseVolumeDataLayout(serializedVolumeDataLayoutReference, handle.layoutDescriptor, handle.axisDescriptors, handle.channelDescriptors, handle.descriptorStrings, handle.metadataContainer, layerMetadataContainer, error);
   EXPECT_EQ(error.code, 0);
 
   // Create volume data layout from descriptors

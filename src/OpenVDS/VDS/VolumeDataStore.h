@@ -28,6 +28,7 @@
 #include "VolumeDataHash.h"
 #include "ParsedMetadata.h"
 #include "GlobalStateImpl.h"
+#include "LayerMetadataContainer.h"
 
 #include <vector>
 #include <map>
@@ -71,6 +72,8 @@ public:
   virtual bool          WriteSerializedVolumeDataLayout(const std::vector<uint8_t>& serializedVolumeDataLayout, Error &error) = 0;
   virtual bool          AddLayer(VolumeDataLayer* volumeDataLayer, int chunkMetadataPageSize) = 0;
   virtual bool          RemoveLayer(VolumeDataLayer* volumeDataLayer) = 0;
+  virtual const LayerMetadataContainer &
+                        GetLayerMetadataContainer() const = 0;
 
   bool DeserializeVolumeData(const VolumeDataChunk &volumeDataChunk, const std::vector<uint8_t>& serializedData, const std::vector<uint8_t>& metadata, CompressionMethod compressionMethod, int32_t adaptiveLevel, VolumeDataChannelDescriptor::Format loadFormat, DataBlock &dataBlock, std::vector<uint8_t>& target, Error& error);
 
