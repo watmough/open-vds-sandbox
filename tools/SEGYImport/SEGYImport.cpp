@@ -3284,7 +3284,7 @@ main(int argc, char* argv[])
   {
     int fileIndex;
     const auto& representativeSegment = findRepresentativeSegment(fileInfo, primaryStep, fileIndex);
-    assert(fileIndex < dataProviders.size());
+    assert(fileIndex < int(dataProviders.size()));
     switch (fileInfo.m_dataSampleFormatCode)
     {
     case SEGY::BinaryHeader::DataSampleFormatCode::IBMFloat:
@@ -3682,7 +3682,7 @@ main(int argc, char* argv[])
 
     for (size_t fileIndex = 0; fileIndex < segmentInfoListsSize; ++fileIndex)
     {
-      assert(fileInfo.IsOffsetSorted() ? chunkInfo.min[1] < gatherOffsetValues.size() : true);
+      assert(fileInfo.IsOffsetSorted() ? chunkInfo.min[1] < int(gatherOffsetValues.size()) : true);
 
       const int
         offsetSortedOffsetValue = fileInfo.IsOffsetSorted() ? gatherOffsetValues[chunkInfo.min[1]] : 0;
@@ -3905,7 +3905,7 @@ main(int argc, char* argv[])
         continue;
       }
 
-      assert(fileInfo.IsOffsetSorted() ? chunkInfo.min[1] < gatherOffsetValues.size() : true);
+      assert(fileInfo.IsOffsetSorted() ? chunkInfo.min[1] < int(gatherOffsetValues.size()) : true);
 
       const int
         offsetSortedOffsetValue = fileInfo.IsOffsetSorted() ? gatherOffsetValues[chunkInfo.min[1]] : 0;
