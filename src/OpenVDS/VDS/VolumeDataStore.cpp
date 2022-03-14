@@ -84,6 +84,7 @@ inline static DataBlock ToDataBlock(const Wavelet::WaveletDataBlock &waveletData
 {
   DataBlock dataBlock;
   dataBlock.Format = (VolumeDataFormat)waveletDataBlock.Format;
+  dataBlock.Components = VolumeDataChannelDescriptor::Components_1;
   dataBlock.Dimensionality = (enum DataBlock::Dimensionality)waveletDataBlock.Dimensionality;
   memcpy(dataBlock.Size, waveletDataBlock.Size, sizeof(waveletDataBlock.Size));
   memcpy(dataBlock.AllocatedSize, waveletDataBlock.AllocatedSize, sizeof(waveletDataBlock.Size));
