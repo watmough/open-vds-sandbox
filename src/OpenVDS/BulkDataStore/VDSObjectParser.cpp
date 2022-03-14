@@ -113,6 +113,11 @@ size_t GetVDSObjectJsonString(const Parser *parser, char *jsonStringBuffer, size
   return oss.str().size();
 }
 
+static bool TranslateBoolean(Json::Value const & root, const char *member)
+{
+  return root.isMember(member) && root[member].asString() != "FALSE";
+}
+
 Json::Value TranslateVolumeDataLayoutDescriptor(Json::Value const & root)
 {
   int brickSize = 0;
@@ -128,8 +133,8 @@ Json::Value TranslateVolumeDataLayoutDescriptor(Json::Value const & root)
   layoutDescriptorJson["positiveMargin"] = root["PositiveMargin"].asInt();
   layoutDescriptorJson["brickSize2DMultiplier"] = 4; // FIXME: Check if object type is VDSSpread and set to 1 in that case
   layoutDescriptorJson["lodLevels"] = (lodLevels == 0) ? std::string("LODLevels_None") : fmt::format("LODLevels_{}", lodLevels);
-  layoutDescriptorJson["create2DLODs"] = (root["Create2DLODs"].asString() != "FALSE");
-  layoutDescriptorJson["forceFullResolutionDimension"] = (root["ForceFullResolutionDimension"].asString() != "FALSE");
+  layoutDescriptorJson["create2DLODs"] = TranslateBoolean(root, "Create2DLODs");
+  layoutDescriptorJson["forceFullResolutionDimension"] = TranslateBoolean(root, "ForceFullResolutionDimension");
   layoutDescriptorJson["fullResolutionDimension"] = root["FullResolutionDimension"].asInt();
   return layoutDescriptorJson;
 }
@@ -190,10 +195,10 @@ Json::Value TranslateChannelDescriptor(Json::Value const & root, bool isPrimaryC
   channelDescriptorJson["valueRange"] = valueRangeJson;
   channelDescriptorJson["channelMapping"] = isPrimaryChannel ? "Direct" : (root["ChannelMapping"].asInt64() == 1976800267773298824LL ? "PerTrace" : "Direct");
   channelDescriptorJson["mappedValues"] = isPrimaryChannel ? 0 : root["MappedValues"].asInt();
-  channelDescriptorJson["discrete"] = (root["DiscreteData"].asString() != "FALSE");
-  channelDescriptorJson["renderable"] = isPrimaryChannel ? true : (root["Renderable"].asString() != "FALSE");
-  channelDescriptorJson["allowLossyCompression"] = isPrimaryChannel ? !(root["DiscreteData"].asString() != "FALSE") : (root["AllowLossyCompression"].asString() != "FALSE");
-  channelDescriptorJson["useNoValue"] = (root["UseNoValue"].asString() != "FALSE");
+  channelDescriptorJson["discrete"] = TranslateBoolean(root, "DiscreteData");
+  channelDescriptorJson["renderable"] = isPrimaryChannel ? true : TranslateBoolean(root, "Renderable");
+  channelDescriptorJson["allowLossyCompression"] = isPrimaryChannel ? !TranslateBoolean(root, "DiscreteData") : TranslateBoolean(root, "AllowLossyCompression");
+  channelDescriptorJson["useNoValue"] = TranslateBoolean(root, "UseNoValue");
   channelDescriptorJson["noValue"] = root["NoValue"].asFloat();
   channelDescriptorJson["integerScale"] = root["IntegerScale"].asFloat();
   channelDescriptorJson["integerOffset"] = root["IntegerOffset"].asFloat();
