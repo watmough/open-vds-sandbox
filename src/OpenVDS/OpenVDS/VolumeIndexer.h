@@ -1012,11 +1012,11 @@ private:
 
 };
 
-typedef VolumeIndexerBase<2> VolumeIndexer2D;
-typedef VolumeIndexerBase<3> VolumeIndexer3D;
-typedef VolumeIndexerBase<4> VolumeIndexer4D;
-typedef VolumeIndexerBase<5> VolumeIndexer5D;
-typedef VolumeIndexerBase<6> VolumeIndexer6D;
+using VolumeIndexer2D = VolumeIndexerBase<2>;
+using VolumeIndexer3D = VolumeIndexerBase<3>;
+using VolumeIndexer4D = VolumeIndexerBase<4>;
+using VolumeIndexer5D = VolumeIndexerBase<5>;
+using VolumeIndexer6D = VolumeIndexerBase<6>;
 
 }
 
