@@ -360,13 +360,10 @@ def register_instantiate_with_parameters(canonical: str, instantiate_args: List[
         elif alias and '<' in alias:
             used_template_args = get_template_args(alias)
         if used_template_args:
-            if len(canonical_template_args) == len(used_template_args):
-                args_dict = get_template_args_dict(instantiate_args, used_template_args)
-                substituted_template_args = substitute_template_args(canonical_template_args, args_dict)
-                canonical = typename_substitute_template_args(canonical, substituted_template_args)
-                alias = make_template_instantiated_name(get_template_name(canonical), substituted_template_args)
-            else:
-                raise NotImplementedError("Failed to deduce template parameters")
+            args_dict = get_template_args_dict(instantiate_args, used_template_args)
+            substituted_template_args = substitute_template_args(canonical_template_args, args_dict)
+            canonical = typename_substitute_template_args(canonical, substituted_template_args)
+            alias = make_template_instantiated_name(get_template_name(canonical), substituted_template_args)
         else:
             raise NotImplementedError("Failed to deduce template parameters")
         if canonical in g_canonical_to_alias:
@@ -1227,7 +1224,7 @@ def make_template_instantiated_name(fullname: str, substituted_template_args: Li
 def get_template_arg_names(template_args: List[str], template_arg_names: List[str] = None) -> List[str]:
     assert template_args
     if template_arg_names:
-        assert len(template_arg_names) == len(template_args)
+#        assert len(template_arg_names) == len(template_args)
         return template_arg_names
     else:
         return [f'type-parameter-0-{i}' for i in range(len(template_args))]
@@ -1273,13 +1270,23 @@ def get_template_args_dict(instantiate_args: List[str], names: List[str] = None)
     args_dict = dict(zip(genparam(names), instantiate_args))
     return args_dict
 
-def param_subsitute_template_args(param: Param, template_args: List[str]) -> Param:
+def param_subsitute_template_args(param: Param, instantiate_args: List[str]) -> Param:
     # FIXME! Don't assume 'type-parameter-0-XXX' format. Accept list of names or args dict?
-    if template_args and 'type-parameter-0-' in param.canonical_type:
+    if instantiate_args and 'type-parameter-0-' in param.canonical_type:
         typename = param.canonical_type
-        for i in range(len(template_args)):
-            typename = typename.replace(f'type-parameter-0-{i}', template_args[i])
+        for i in range(len(instantiate_args)):
+            typename = typename.replace(f'type-parameter-0-{i}', instantiate_args[i])
         result = Param(typename, param.name, node=param.typenode)
+        result.is_out = param.is_out
+        return result
+    elif instantiate_args and '<' in param.typename:
+        canonical = param.canonical_type
+        canonical_template_args = get_template_args(canonical)
+        used_template_args = typename_get_used_template_args(param.typename, instantiate_args, canonical_template_args)
+        args_dict = get_template_args_dict(instantiate_args, used_template_args)
+        substituted_template_args = substitute_template_args(canonical_template_args, args_dict)
+        canonical = typename_substitute_template_args(canonical, substituted_template_args)
+        result = Param(canonical, param.name, node=param.typenode)
         result.is_out = param.is_out
         return result
     else:
@@ -1922,7 +1929,7 @@ header_list = [
     'VolumeDataChannelDescriptor.h',
     'VolumeDataLayout.h',
     'VolumeDataLayoutDescriptor.h',
-#   'VolumeIndexer.h',  #Do we need this???
+#  'VolumeIndexer.h',  #Do we need this???
     'VolumeSampler.h',
 ]
 
