@@ -3,7 +3,7 @@ import io
 import os
 import traceback
 import re
-from typing import Tuple, List, Dict, Set
+from typing import Tuple, List, Dict, Set, Union
 from xmlrpc.client import boolean
 from clang.cindex import Cursor, Type
 from more_itertools import peekable
@@ -251,12 +251,14 @@ def get_template_name(typename: str) -> str:
     assert is_templated(typename)
     return typename[:typename.index('<')]
 
-def get_template_args(templated_name: str) -> str:
+def get_template_args(templated_name: str) -> List[str]:
     assert is_templated(templated_name)
-    return templated_name[templated_name.index('<')+1 : templated_name.rindex('>')]
+    args = templated_name[templated_name.index('<')+1 : templated_name.rindex('>')].split(',')
+    args_clean = [a.strip() for a in args]
+    return args_clean
 
 def get_template_arg0(templated_name: str) -> str:
-    return get_template_args(templated_name).split(',') [0] # nasty
+    return get_template_args(templated_name)[0] # nasty
 
 def get_pointee(typename: str) -> str:
     if is_smartptr_type(typename):
@@ -286,6 +288,12 @@ def strip_prefixes(typename: str) -> str:
             return typename[len(p) + 2:]
     return typename
 
+def apply_prefixes(stripped_typename: str, prefixed_typename: str) -> str:
+    for p in _prefixes:
+        if prefixed_typename.startswith(p):
+            return p + '::' + stripped_typename
+    return stripped_typename
+
 def clean_typename(typename: str) -> str:
     return typename.replace("const", "").replace("*", "").replace("&", "").strip()
 
@@ -294,15 +302,6 @@ def create_type_nice_name(typename: str) -> str:
         return typename[0].upper() + typename[1:]
     else:
         return typename
-
-def make_template_instantiated_name(base_name: str, template_args: List[str]) -> str:
-    # This function uses a pretty primitive scheme for generating the name, but it will suffice for now.
-    names = [ create_type_nice_name(strip_prefixes(typename_substitute_template_args(arg, template_args))) for arg in template_args ]
-    namecheck = all([ n[0].isupper() for n in names])
-    assert namecheck, "Now is the time to make a better naming scheme!"
-    names.insert(0, base_name)
-    name = ''.join(names).replace(' ', '')
-    return name
 
 def already_generated(class_name: str):
     global g_generated_classes
@@ -324,7 +323,7 @@ def register_typealias(alias: str, canonical_type: str):
         assert g_alias_to_canonical[alias] == canonical_type
     else:
         g_alias_to_canonical[alias] = canonical_type
-    if not already_generated(alias) and alias not in g_instantiate_nodes:
+    if not already_generated(alias) and alias not in g_instantiate_nodes and not inhibit_generation(alias):
         g_instantiate_nodes[alias] = canonical_type
 
 def lookup_canonical_type(canonical_type: str) -> str:
@@ -339,36 +338,52 @@ def lookup_typealias(alias: str) -> str:
     else:
         return alias
 
-def register_instantiate(node: Type, template_args: List[str]) -> str:
+def register_instantiate(node: Type, instantiate_args: List[str]) -> str:
     assert isinstance(node, Type)
     global g_instantiate_nodes
     global g_generated_classes
     typename = node.spelling
-    if template_args:
+    if instantiate_args:
         name = node.get_canonical().spelling
         canonical = Scope.get_node_fullname(node, strip_prefixes(name))
         assert '<' in canonical
         if 'type-parameter-' in canonical:
             assert '<' in typename
-            used_template_args = typename_get_used_template_args(canonical, template_args)
-            canonical = typename_substitute_template_args(canonical, template_args)
-            typename = make_template_instantiated_name(get_template_name(canonical), used_template_args)
+            canonical_template_args = get_template_args(canonical)
+            used_template_args = typename_get_used_template_args(canonical, instantiate_args)
+            args_dict = get_template_args_dict(instantiate_args)
+            substituted_template_args = substitute_template_args(canonical_template_args, args_dict)
+            canonical = typename_substitute_template_args(canonical, substituted_template_args)
+            typename = make_template_instantiated_name(get_template_name(canonical), substituted_template_args)
             register_typealias(typename, canonical)
+        elif '<' in typename:
+#            canonical_template_args = get_template_args(canonical)
+#            used_template_args = get_template_args(typename)
+#            if len(used_template_args) == len(instantiate_args):
+#                args_dict = get_template_args_dict(instantiate_args, used_template_args)
+#                substituted_template_args = substitute_template_args(canonical_template_args, args_dict)
+#                canonical = typename_substitute_template_args(canonical, substituted_template_args)
+#                typename = make_template_instantiated_name(get_template_name(canonical), substituted_template_args)
+#                register_typealias(typename, canonical)
+#            else:
+                raise NotImplementedError("Failed to deduce template parameters")
         else:
-            assert not '<' in typename
             register_typealias(typename, canonical)
     return typename
 
-def register_instantiate_with_parameters(canonical: str, template_args: List[str]) -> str:
+def register_instantiate_with_parameters(canonical: str, instantiate_args: List[str]) -> str:
     assert isinstance(canonical, str)
     global g_instantiate_nodes
     global g_canonical_to_alias
-    used_template_args = typename_get_used_template_args(canonical, template_args)
-    canonical = typename_substitute_template_args(canonical, template_args)
+    canonical_template_args = get_template_args(canonical)
+    used_template_args = typename_get_used_template_args(canonical, instantiate_args)
+    args_dict = get_template_args_dict(instantiate_args, used_template_args)
+    substituted_template_args = substitute_template_args(canonical_template_args, args_dict)
+    canonical = typename_substitute_template_args(canonical, substituted_template_args)
     if canonical in g_canonical_to_alias:
         typename = g_canonical_to_alias[canonical]
     else:
-        typename = make_template_instantiated_name(get_template_name(canonical), used_template_args)
+        typename = make_template_instantiated_name(get_template_name(canonical), substituted_template_args)
         register_typealias(typename, canonical)
     return typename
 
@@ -376,7 +391,7 @@ def param_to_real_type(param: Param, template_args: List[str]) -> str:
     if is_templated(param.canonical_type):
         if not is_smartptr_type(param.canonical_type):
             if not 'std' in param.canonical_type: # eeh..
-                return register_instantiate(param.typenode, template_args)
+                  return register_instantiate(param.typenode, template_args)
             return param.typename
     if is_smartptr_type(param.canonical_type):
         return param.typename
@@ -1182,6 +1197,7 @@ def is_ctor_valid(child: Scope) -> bool:
         return True
 
 def format_docstring(scope: Scope, indent='', used_arglist: List[str] = []) -> str:
+    # TODO: Fix multiline descriptions
     doc = scope.get_doc()
     if doc:
         lines = doc.summary.splitlines()
@@ -1202,19 +1218,72 @@ def format_docstring(scope: Scope, indent='', used_arglist: List[str] = []) -> s
     else:
         return ''
 
-def typename_get_used_template_args(typename: str, template_args: List[str]) -> str:
+def make_template_instantiated_name(fullname: str, substituted_template_args: List[str]) -> str:
+    # This function uses a pretty primitive scheme for generating the name, but it will suffice for now.
+    base_name = strip_prefixes(fullname)
+    names = [ create_type_nice_name(strip_prefixes(arg)) for arg in substituted_template_args ]
+    namecheck = all([ not n[0].islower() for n in names]) # digits are neither upper or lower case!
+    assert namecheck, "Now is the time to make a better naming scheme!"
+    if len(names) == 2 and names[1].isdigit():
+        # Assume (Float|Int|Double|...)(Vector|Range)(2|3|4|...) etc...
+        names.insert(1, base_name)
+    else:
+        names.insert(0, base_name)
+    name = ''.join(names).replace(' ', '')
+    name = apply_prefixes(name, fullname)
+    return name
+
+def get_template_arg_names(template_args: List[str], template_arg_names: List[str] = None) -> List[str]:
+    assert template_args
+    if template_arg_names:
+        assert len(template_arg_names) == len(template_args)
+        return template_arg_names
+    else:
+        return [f'type-parameter-0-{i}' for i in range(len(template_args))]
+
+def typename_get_used_template_args(typename: str, template_args: List[str], template_arg_names: List[str] = None) -> List[str]:
     used_template_args = []
-    for i in range(len(template_args)):
-        if f'type-parameter-0-{i}' in typename:
-            used_template_args.append(template_args[i])
+    check_names = get_template_arg_names(template_args, template_arg_names)
+    check_args = get_template_args(typename)
+    for n in check_names:
+        if n in check_args:
+            used_template_args.append(n)
     return used_template_args
 
-def typename_substitute_template_args(typename: str, template_args: List[str]) -> str:
-    for i in range(len(template_args)):
-        typename = typename.replace(f'type-parameter-0-{i}', template_args[i])
+def substitute_template_args(template_args: List[str], args_dict: Dict[str, str]) -> List[str]:
+    result: List[str] = []
+    for arg in template_args:
+        if arg in args_dict:
+            result.append(args_dict[arg])
+        else:
+            result.append(arg)
+    return result
+
+def typename_substitute_template_args(typename: str, substituted_template_args: List[str]) -> str:
+    if is_templated(typename):
+        typename = get_template_name(typename)
+        typename = typename + '<' + ', '.join(substituted_template_args) + '>'
     return typename
 
+def get_template_args_dict(instantiate_args: List[str], names: List[str] = None) -> Dict[str, str]:
+    def genparam(names: List[str] = None):
+        if names:
+            it = iter(names)
+            while True:
+                try:
+                    yield next(it)
+                except StopIteration:
+                    yield '-'
+        else:
+            i = -1
+            while True:
+                i += 1
+                yield f'type-parameter-0-{i}'
+    args_dict = dict(zip(genparam(names), instantiate_args))
+    return args_dict
+
 def param_subsitute_template_args(param: Param, template_args: List[str]) -> Param:
+    # FIXME! Don't assume 'type-parameter-0-XXX' format. Accept list of names or args dict?
     if template_args and 'type-parameter-0-' in param.canonical_type:
         typename = param.canonical_type
         for i in range(len(template_args)):
@@ -1226,6 +1295,7 @@ def param_subsitute_template_args(param: Param, template_args: List[str]) -> Par
         return param
 
 def arglist_substitute_template_args(arglist: List[Param], template_args: List[str]) -> List[Param]:
+    # FIXME! Don't assume 'type-parameter-0-XXX' format. Accept list of names or args dict?
     if template_args:
         newargs = []
         for arg in arglist:
@@ -1689,14 +1759,18 @@ def load_template(cls: Scope, ext: str, alias_name: str = '') -> str:
             pass
     raise ValueError(f"No template found in '{template_dir}'")
 
-def inhibit_generation(item: Scope) -> bool:
-    if item.fullname in _ignore_types:
+def inhibit_generation(item: Union[Scope, str]) -> bool:
+    if isinstance(item, Scope):
+        fullname = item.fullname
+    else:
+        fullname = item
+    if fullname in _ignore_types:
         return True
-    elif item.fullname in _marshaled_value_types:
+    elif fullname in _marshaled_value_types:
         return True
-    elif item.fullname in _cppjava_typemap:
+    elif fullname in _cppjava_typemap:
         return True
-    elif item.fullname in _bytebuffer_backed:
+    elif fullname in _bytebuffer_backed:
         return True
     else:
         return False
@@ -1736,12 +1810,9 @@ def parse_and_generate(input_header, jni_dir, java_dir):
             if item.is_record:
                 if item.is_typealias:
                     if item.is_explicit_instantiation:
-                        # this should be moved to parse_cpp_header.py
-                        assert hasattr(item.node, 'type')
-                        assert item.node.type.get_num_template_arguments() != -1
-                        _template_params = [item.node.type.get_template_argument_type(i) for i in range(0, item.node.type.get_num_template_arguments())]
+                        _template_params = item.get_template_parameters()
                         _template_class = Scope.get_node_fullname(next(item.node.get_children()).canonical)
-                        _template_param_list = ', '.join([p.spelling for p in _template_params])
+                        _template_param_list = ', '.join([p for p in _template_params])
                         _alias_name = f'{_template_class}<{_template_param_list}>' 
                         register_typealias(item.fullname, _alias_name)
         # Now process nodes
@@ -1790,6 +1861,8 @@ def parse_and_generate(input_header, jni_dir, java_dir):
             for name in instantiate_nodes:
                 canonical = instantiate_nodes[name]
                 class_name = strip_prefixes(name)
+                if already_generated(class_name):
+                    continue
                 assert not '<' in class_name
                 template_name = canonical[:canonical.index('<')]
                 template_args = canonical[canonical.index('<') + 1: -1].split(', ')
@@ -1858,7 +1931,7 @@ header_list = [
     'VolumeDataChannelDescriptor.h',
     'VolumeDataLayout.h',
     'VolumeDataLayoutDescriptor.h',
-#    'VolumeIndexer.h',  Do we need this???
+#   'VolumeIndexer.h',  #Do we need this???
     'VolumeSampler.h',
 ]
 

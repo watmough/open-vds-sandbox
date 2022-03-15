@@ -42,6 +42,7 @@ _remap_canonical_types = {
     'unsigned long':      'uint32_t',
     'long':               'int32_t',
     'std::basic_string<char, std::char_traits<char>, std::allocator<char>>': 'std::string',
+    'std::basic_string<char>': 'std::string',
 #    'unsigned int':       'uint32_t',
 #    'int':                'int32_t',
 }
@@ -519,6 +520,15 @@ class Scope(OrderedDict):
     def type_get_canonical_name(node: Type) -> str:
         name = node.get_canonical().spelling
         return Scope.typename_get_canonical_name(name)
+
+    def get_template_parameters(self) -> List[str]:
+        assert hasattr(self.node, 'type')
+        assert self.node.type.get_num_template_arguments() != -1
+        assert self.typename.index('<') < self.typename.rindex('>')
+        param_list = self.typename[self.typename.index('<')+1:self.typename.rindex('>')]
+        param_items = [i.strip() for i in param_list.split(',')]
+        _template_params = [self.node.type.get_template_argument_type(i).spelling or param_items[i] for i in range(0, self.node.type.get_num_template_arguments())]
+        return _template_params
 
     def get_base_classes(self) -> List[Tuple['Scope', str]] :
         """Returns a list of 2-tuples where the first is the class node and the second is either an empty string OR a list of template parameters in the form '<type-parameter-0-0, ...>"""
