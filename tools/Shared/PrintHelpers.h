@@ -62,11 +62,11 @@ printInfo(PrintConfig config, const std::string title, const std::string &str)
     Json::StreamWriterBuilder wbuilder;
     wbuilder["indentation"] = "  ";
     std::string document = Json::writeString(wbuilder, info);
-    fmt::print(stdout, "{}", document);
+    fmt::print(stdout, "{}\n", document);
   }
   else
   {
-    fmt::print(stdout, "{}", str);
+    fmt::print(stdout, "{}\n", str);
   }
 }
 
