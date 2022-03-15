@@ -1015,8 +1015,10 @@ private:
 using VolumeIndexer2D = VolumeIndexerBase<2>;
 using VolumeIndexer3D = VolumeIndexerBase<3>;
 using VolumeIndexer4D = VolumeIndexerBase<4>;
+#ifndef JAVA_WRAPPER_GENERATOR // There are no 5D or 6D vector types in Java API
 using VolumeIndexer5D = VolumeIndexerBase<5>;
 using VolumeIndexer6D = VolumeIndexerBase<6>;
+#endif
 
 }
 
