@@ -317,6 +317,7 @@ def register_typealias(alias: str, canonical_type: str):
     global g_alias_to_canonical
     global g_instantiate_nodes
     assert 'long long' not in canonical_type
+    assert 'type-parameter-' not in canonical_type
     if not canonical_type in g_canonical_to_alias:
         g_canonical_to_alias[canonical_type] = alias
     if alias in g_alias_to_canonical:
@@ -342,50 +343,40 @@ def register_instantiate(node: Type, instantiate_args: List[str]) -> str:
     assert isinstance(node, Type)
     global g_instantiate_nodes
     global g_generated_classes
-    typename = node.spelling
+    alias = node.spelling
+    name = node.get_canonical().spelling
+    canonical = Scope.get_node_fullname(node, strip_prefixes(name))
+    return register_instantiate_with_parameters(canonical, instantiate_args, alias)
+
+def register_instantiate_with_parameters(canonical: str, instantiate_args: List[str], alias: str = None) -> str:
+    assert '<' in canonical
+    assert isinstance(canonical, str)
+    assert is_templated(canonical)
     if instantiate_args:
-        name = node.get_canonical().spelling
-        canonical = Scope.get_node_fullname(node, strip_prefixes(name))
-        assert '<' in canonical
+        canonical_template_args = get_template_args(canonical)
+        used_template_args = []
         if 'type-parameter-' in canonical:
-            assert '<' in typename
-            canonical_template_args = get_template_args(canonical)
             used_template_args = typename_get_used_template_args(canonical, instantiate_args)
-            args_dict = get_template_args_dict(instantiate_args)
-            substituted_template_args = substitute_template_args(canonical_template_args, args_dict)
-            canonical = typename_substitute_template_args(canonical, substituted_template_args)
-            typename = make_template_instantiated_name(get_template_name(canonical), substituted_template_args)
-            register_typealias(typename, canonical)
-        elif '<' in typename:
-#            canonical_template_args = get_template_args(canonical)
-#            used_template_args = get_template_args(typename)
-#            if len(used_template_args) == len(instantiate_args):
-#                args_dict = get_template_args_dict(instantiate_args, used_template_args)
-#                substituted_template_args = substitute_template_args(canonical_template_args, args_dict)
-#                canonical = typename_substitute_template_args(canonical, substituted_template_args)
-#                typename = make_template_instantiated_name(get_template_name(canonical), substituted_template_args)
-#                register_typealias(typename, canonical)
-#            else:
+        elif alias and '<' in alias:
+            used_template_args = get_template_args(alias)
+        if used_template_args:
+            if len(canonical_template_args) == len(used_template_args):
+                args_dict = get_template_args_dict(instantiate_args, used_template_args)
+                substituted_template_args = substitute_template_args(canonical_template_args, args_dict)
+                canonical = typename_substitute_template_args(canonical, substituted_template_args)
+                alias = make_template_instantiated_name(get_template_name(canonical), substituted_template_args)
+            else:
                 raise NotImplementedError("Failed to deduce template parameters")
         else:
-            register_typealias(typename, canonical)
-    return typename
-
-def register_instantiate_with_parameters(canonical: str, instantiate_args: List[str]) -> str:
-    assert isinstance(canonical, str)
-    global g_instantiate_nodes
-    global g_canonical_to_alias
-    canonical_template_args = get_template_args(canonical)
-    used_template_args = typename_get_used_template_args(canonical, instantiate_args)
-    args_dict = get_template_args_dict(instantiate_args, used_template_args)
-    substituted_template_args = substitute_template_args(canonical_template_args, args_dict)
-    canonical = typename_substitute_template_args(canonical, substituted_template_args)
-    if canonical in g_canonical_to_alias:
-        typename = g_canonical_to_alias[canonical]
-    else:
-        typename = make_template_instantiated_name(get_template_name(canonical), substituted_template_args)
-        register_typealias(typename, canonical)
-    return typename
+            raise NotImplementedError("Failed to deduce template parameters")
+        if canonical in g_canonical_to_alias:
+            alias = g_canonical_to_alias[canonical]
+        else:
+            alias = make_template_instantiated_name(get_template_name(canonical), substituted_template_args)
+            register_typealias(alias, canonical)
+    if not alias:
+        raise NotImplementedError("Failed to deduce template parameters")
+    return alias
 
 def param_to_real_type(param: Param, template_args: List[str]) -> str:
     if is_templated(param.canonical_type):
