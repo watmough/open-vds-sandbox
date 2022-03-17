@@ -257,7 +257,7 @@ WaveletAdaptiveLL_DecodeIterator WaveletAdaptiveLLDecompress_CreateDecodeIterato
     decodeIterator.children[iTransform] = child;
   }
 
-  int secondTransformMask = decodeIterator.transformMask[1];
+  int secondTransformMask = (transformDataCount > 1) ? decodeIterator.transformMask[1] : 0;
 
   int displacement = 0;
 
