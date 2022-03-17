@@ -433,6 +433,20 @@ public:
   virtual bool  IsCanceled(int64_t requestID) = 0;
 
   /// <summary>
+  /// Check if a request was canceled (e.g. the VDS was invalidated before the request was processed). If the request was canceled, the buffer does not contain valid data.
+  /// </summary>
+  /// <param name="requestID">
+  /// The RequestID to check for cancellation.
+  /// </param>
+  /// <param name="error">
+  /// This out parameter will be set to the error that caused the cancellation.
+  /// </param>
+  /// <returns>
+  /// Either IsCompleted, IsCanceled or WaitForCompletion will return true a single time, after that the request is taken out of the system.
+  /// </returns>
+  virtual bool  IsCanceled(int64_t requestID, ReadErrorException* error) = 0;
+
+  /// <summary>
   /// Wait for a request to complete successfully. If the request completed, the buffer now contains valid data.
   /// </summary>
   /// <param name="requestID">
@@ -502,6 +516,15 @@ public:
   virtual IVolumeDataAccessManager* GetVolumeDataAccessManager() = 0;
 };
 
+/// <summary>
+/// A VolumeDataRequest encapsulates an asynchronous request for volume data from a VDS object instance.
+/// 
+/// When created by a VolumeDataAccessManager a VolumeDataRequest will be <em>active</em>.
+/// The request remains active until either IsCompleted(), IsCanceled() or WaitForCompletion() returns true.
+/// 
+/// It is supported to access a VolumeDataRequest from a different thread than where it was created, but concurrent access
+/// to the same instance from multiple threads can result in race conditions. 
+/// </summary>
 class VolumeDataRequest
 {
 protected:
@@ -512,12 +535,12 @@ protected:
                           m_Manager;
   void*                   m_Buffer;
   int64_t                 m_BufferByteSize;
-  VolumeDataFormat
-                          m_BufferDataType;
+  VolumeDataFormat        m_BufferDataType;
   bool                    m_IsCompleted;
   bool                    m_IsCanceled;
   int64_t                 m_JobID;
   std::vector<uint8_t>    m_Data;
+  ReadErrorException      m_Error;
 
   static void
   Deleter(VolumeDataRequest* pcThis)
@@ -548,27 +571,30 @@ protected:
   }
 
 public:
-  VolumeDataRequest() : m_Manager(nullptr), m_Buffer(nullptr), m_BufferByteSize(0), m_BufferDataType(VolumeDataFormat::Format_U8), m_IsCompleted(false), m_IsCanceled(false), m_JobID(0)
+  VolumeDataRequest() : m_Manager(nullptr), m_Buffer(nullptr), m_BufferByteSize(0), m_BufferDataType(VolumeDataFormat::Format_U8), m_IsCompleted(false), m_IsCanceled(false), m_JobID(0), m_Error(nullptr, 0)
   {
   }
 
-  VolumeDataRequest(IVolumeDataAccessManager* manager) : m_Manager(manager), m_Buffer(nullptr), m_BufferByteSize(0), m_BufferDataType(VolumeDataFormat::Format_Any), m_IsCompleted(false), m_IsCanceled(false), m_JobID(0)
-  {
-    m_Manager->AddRef();
-  }
-
-  VolumeDataRequest(IVolumeDataAccessManager* manager, void* buffer, int64_t bufferByteSize, VolumeDataFormat bufferDataType) : m_Manager(manager), m_Buffer(buffer), m_BufferByteSize(bufferByteSize), m_BufferDataType(bufferDataType), m_IsCompleted(false), m_IsCanceled(false), m_JobID(0)
+  VolumeDataRequest(IVolumeDataAccessManager* manager) : m_Manager(manager), m_Buffer(nullptr), m_BufferByteSize(0), m_BufferDataType(VolumeDataFormat::Format_U8), m_IsCompleted(false), m_IsCanceled(false), m_JobID(0), m_Error(nullptr, 0)
   {
     m_Manager->AddRef();
   }
 
-  VolumeDataRequest(IVolumeDataAccessManager* manager, int64_t bufferByteSize, VolumeDataFormat bufferDataType) : m_Manager(manager), m_Buffer(nullptr), m_BufferByteSize(bufferByteSize), m_BufferDataType(bufferDataType), m_IsCompleted(false), m_IsCanceled(false), m_JobID(0)
+  VolumeDataRequest(IVolumeDataAccessManager* manager, void* buffer, int64_t bufferByteSize, VolumeDataFormat bufferDataType) : m_Manager(manager), m_Buffer(buffer), m_BufferByteSize(bufferByteSize), m_BufferDataType(bufferDataType), m_IsCompleted(false), m_IsCanceled(false), m_JobID(0), m_Error(nullptr, 0)
+  {
+    m_Manager->AddRef();
+  }
+
+  VolumeDataRequest(IVolumeDataAccessManager* manager, int64_t bufferByteSize, VolumeDataFormat bufferDataType) : m_Manager(manager), m_Buffer(nullptr), m_BufferByteSize(bufferByteSize), m_BufferDataType(bufferDataType), m_IsCompleted(false), m_IsCanceled(false), m_JobID(0), m_Error(nullptr, 0)
   {
     m_Manager->AddRef();
     m_Data.resize(bufferByteSize);
     m_Buffer = &m_Data[0];
   }
 
+  /// <summary>
+  /// Destructor will automatically cancel the request if it is still active.
+  /// </summary>
   virtual ~VolumeDataRequest()
   {
     CancelInternal();
@@ -631,7 +657,7 @@ public:
     ValidateRequest();
     if (!m_IsCompleted && !m_IsCanceled)
     {
-      m_IsCanceled = m_Manager->IsCanceled(m_JobID);
+      m_IsCanceled = m_Manager->IsCanceled(m_JobID, &m_Error);
     }
     return m_IsCanceled;
   }
@@ -689,6 +715,33 @@ public:
   }
 
   /// <summary>
+  /// Get the error code of a request that has been cancelled.
+  /// </summary>
+  /// <returns>
+  /// The error code. If the error code is positive, it corresponds to the enum values in Hue::HueSpaceLib::ErrorCode. 
+  /// Compute plugins may set their own negative error code, which causes the return value of this method to be a plain
+  /// int value that does not correspond to one of the enum values.
+  /// </returns>
+  int
+  GetErrorCode()
+  {
+    return m_Error.GetErrorCode();
+  }
+
+  /// <summary>
+  /// Get the error string of a request that has been cancelled.
+  /// </summary>
+  /// <returns>
+  /// The error string.
+  /// </returns>
+  /// 
+  std::string
+  GetErrorMessage()
+  {
+    return std::string(m_Error.GetErrorMessage());
+  }
+
+  /// <summary>
   /// Get the completion factor (between 0 and 1) of the request.
   /// </summary>
   /// <returns>
@@ -740,6 +793,7 @@ public:
   {
     return m_BufferDataType;
   }
+
 };
 
 template<> struct VolumeDataRequest::RequestFormat<uint8_t>  { static constexpr VolumeDataFormat format = VolumeDataFormat::Format_U8;   };
@@ -776,7 +830,15 @@ protected:
   {
     if (!WaitForCompletion() || IsCanceled())
     {
-      throw InvalidOperation("Volume data request was canceled");
+      if (m_IsCanceled)
+      {
+        if (m_Error.GetErrorCode() == 0)
+        {
+          throw InvalidOperation("Volume data request was canceled");
+        }
+      }
+
+      throw m_Error;
     }
   }
 
@@ -792,7 +854,7 @@ public:
   {
     if (!IsDataOwner())
     {
-      throw InvalidOperation("buffer is not owner by request.");
+      throw InvalidOperation("buffer is not owned by request.");
     }
     EnsureRequestCompleted();
     return m_TypedData;

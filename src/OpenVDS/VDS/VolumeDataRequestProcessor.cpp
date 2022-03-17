@@ -2590,7 +2590,7 @@ bool  VolumeDataRequestProcessor::IsCompleted(int64_t jobID)
   return false;
 }
 
-bool VolumeDataRequestProcessor::IsCanceled(int64_t jobID)
+bool VolumeDataRequestProcessor::IsCanceled(int64_t jobID, Error &error)
 {
   std::unique_lock<std::mutex> lock(m_mutex);
   m_manager.SetCurrentDownloadError(Error());
@@ -2617,6 +2617,7 @@ bool VolumeDataRequestProcessor::IsCanceled(int64_t jobID)
     }
     SetErrorForJob(job);
     m_manager.SetCurrentDownloadError(job->completedError);
+    error = job->completedError;
     m_jobs.erase(job_it);
     return true;
   }

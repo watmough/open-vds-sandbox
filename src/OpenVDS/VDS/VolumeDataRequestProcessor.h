@@ -123,7 +123,7 @@ public:
   int64_t AddJob(const std::vector<VolumeDataChunk> &chunks, std::function<bool(VolumeDataPageImpl *page, const VolumeDataChunk &volumeDataChunk, Error &error)> processor, bool singleThread = false);
   bool  IsActive(int64_t requestID);
   bool  IsCompleted(int64_t requestID);
-  bool  IsCanceled(int64_t requestID);
+  bool  IsCanceled(int64_t requestID, Error &error);
   bool  WaitForCompletion(int64_t requestID, int millisecondsBeforeTimeout = 0);
   void  Cancel(int64_t requestID);
   float GetCompletionFactor(int64_t requestID);

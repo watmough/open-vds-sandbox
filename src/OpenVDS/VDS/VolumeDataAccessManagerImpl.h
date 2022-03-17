@@ -79,7 +79,8 @@ public:
   IVolumeDataAccessor * CloneVolumeDataAccessor(IVolumeDataAccessor const &accessor) override;
 
   bool  IsCompleted(int64_t requestID) override;
-  bool  IsCanceled(int64_t requestID) override; 
+  bool  IsCanceled(int64_t requestID) override;
+  bool  IsCanceled(int64_t requestID, ReadErrorException* error) override;
   bool  WaitForCompletion(int64_t requestID, int millisecondsBeforeTimeout = 0) override;
   void  Cancel(int64_t requestID) override;
   void  CancelAndWaitForCompletion(int64_t requestID) override;

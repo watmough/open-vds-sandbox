@@ -524,11 +524,25 @@ VolumeDataAccessManagerImpl::IsCompleted(int64_t requestID)
   return m_requestProcessor->IsCompleted(requestID);
 }
 
-bool    
+bool
 VolumeDataAccessManagerImpl::IsCanceled(int64_t requestID)
 {
   ValidateRequest(requestID);
-  return m_requestProcessor->IsCanceled(requestID);
+  Error error;
+  return m_requestProcessor->IsCanceled(requestID, error);
+}
+
+bool
+VolumeDataAccessManagerImpl::IsCanceled(int64_t requestID, ReadErrorException* readErrorException)
+{
+  ValidateRequest(requestID);
+  Error error;
+  bool isCanceled = m_requestProcessor->IsCanceled(requestID, error);
+  if(error.code != 0 && readErrorException)
+  {
+    *readErrorException = ReadErrorException(error.string.c_str(), error.code);
+  }
+  return isCanceled;
 }
 
 bool    
@@ -551,13 +565,14 @@ VolumeDataAccessManagerImpl::CancelAndWaitForCompletion(int64_t requestID)
   if (m_invalidated)
     return;
   ValidateRequest(requestID);
-  if(!m_requestProcessor->IsCanceled(requestID))
+  Error error;
+  if(!m_requestProcessor->IsCanceled(requestID, error))
   {
     Cancel(requestID);
 
     while(!WaitForCompletion(requestID, 0))
     {
-      if(m_requestProcessor->IsCanceled(requestID))
+      if(m_requestProcessor->IsCanceled(requestID, error))
       {
         return;
       }

@@ -800,9 +800,15 @@ static const char *__doc_OpenVDS_DotProduct_2 = R"doc()doc";
 
 static const char *__doc_OpenVDS_Error = R"doc()doc";
 
+static const char *__doc_OpenVDS_Error_2 = R"doc()doc";
+
 static const char *__doc_OpenVDS_Error_code = R"doc()doc";
 
+static const char *__doc_OpenVDS_Error_code_2 = R"doc()doc";
+
 static const char *__doc_OpenVDS_Error_string = R"doc()doc";
+
+static const char *__doc_OpenVDS_Error_string_2 = R"doc()doc";
 
 static const char *__doc_OpenVDS_Exception = R"doc()doc";
 
@@ -1745,6 +1751,27 @@ Parameters:
 
 requestID :
     The RequestID to check for cancellation.
+
+Returns:
+--------
+    Either IsCompleted, IsCanceled or WaitForCompletion will return
+    True a single time, after that the request is taken out of the
+    system.)doc";
+
+static const char *__doc_OpenVDS_IVolumeDataAccessManager_IsCanceled_2 =
+R"doc(Check if a request was canceled (e.g. the VDS was invalidated before
+the request was processed). If the request was canceled, the buffer
+does not contain valid data.
+
+Parameters:
+-----------
+
+requestID :
+    The RequestID to check for cancellation.
+
+error :
+    This out parameter will be set to the error that caused the
+    cancellation.
 
 Returns:
 --------
@@ -3073,9 +3100,19 @@ static const char *__doc_OpenVDS_Scale = R"doc()doc";
 
 static const char *__doc_OpenVDS_ScopedVDSHandle = R"doc()doc";
 
-static const char *__doc_OpenVDS_ScopedVDSHandle_Close = R"doc()doc";
+static const char *__doc_OpenVDS_ScopedVDSHandle_Close =
+R"doc(Close the VDS and free up all associated resources. If an error
+occurs, an exception will be thrown.)doc";
 
-static const char *__doc_OpenVDS_ScopedVDSHandle_Close_2 = R"doc()doc";
+static const char *__doc_OpenVDS_ScopedVDSHandle_Close_2 = R"doc(Close the VDS and free up all associated resources.)doc";
+
+static const char *__doc_OpenVDS_ScopedVDSHandle_RetryableClose =
+R"doc(Close the VDS and free up all associated resources if the close
+succeeds. If an error occurs, an exception will be thrown.)doc";
+
+static const char *__doc_OpenVDS_ScopedVDSHandle_RetryableClose_2 =
+R"doc(Close the VDS and free up all associated resources if the close
+succeeds.)doc";
 
 static const char *__doc_OpenVDS_ScopedVDSHandle_ScopedVDSHandle = R"doc()doc";
 
@@ -5110,7 +5147,17 @@ static const char *__doc_OpenVDS_VolumeDataReadWriteAccessor_VolumeDataReadWrite
 
 static const char *__doc_OpenVDS_VolumeDataReadWriteAccessor_VolumeDataReadWriteAccessor_3 = R"doc()doc";
 
-static const char *__doc_OpenVDS_VolumeDataRequest = R"doc()doc";
+static const char *__doc_OpenVDS_VolumeDataRequest =
+R"doc(A VolumeDataRequest encapsulates an asynchronous request for volume
+data from a VDS object instance.
+
+When created by a VolumeDataAccessManager a VolumeDataRequest will be
+*active*. The request remains active until either IsCompleted(),
+IsCanceled() or WaitForCompletion() returns True.
+
+It is supported to access a VolumeDataRequest from a different thread
+than where it was created, but concurrent access to the same instance
+from multiple threads can result in race conditions.)doc";
 
 static const char *__doc_OpenVDS_VolumeDataRequest_Buffer =
 R"doc(Get the pointer to the buffer the request is writing to.
@@ -5156,6 +5203,24 @@ Returns:
 --------
     A factor (between 0 and 1) indicating how much of the request has
     been completed.)doc";
+
+static const char *__doc_OpenVDS_VolumeDataRequest_GetErrorCode =
+R"doc(Get the error code of a request that has been cancelled.
+
+Returns:
+--------
+    The error code. If the error code is positive, it corresponds to
+    the enum values in Hue::HueSpaceLib::ErrorCode. Compute plugins
+    may set their own negative error code, which causes the return
+    value of this method to be a plain int value that does not
+    correspond to one of the enum values.)doc";
+
+static const char *__doc_OpenVDS_VolumeDataRequest_GetErrorMessage =
+R"doc(Get the error string of a request that has been cancelled.
+
+Returns:
+--------
+    The error string.)doc";
 
 static const char *__doc_OpenVDS_VolumeDataRequest_IsCanceled =
 R"doc(Check if the request was canceled (e.g. the VDS was invalidated before
@@ -5231,6 +5296,8 @@ static const char *__doc_OpenVDS_VolumeDataRequest_m_BufferByteSize = R"doc()doc
 static const char *__doc_OpenVDS_VolumeDataRequest_m_BufferDataType = R"doc()doc";
 
 static const char *__doc_OpenVDS_VolumeDataRequest_m_Data = R"doc()doc";
+
+static const char *__doc_OpenVDS_VolumeDataRequest_m_Error = R"doc()doc";
 
 static const char *__doc_OpenVDS_VolumeDataRequest_m_IsCanceled = R"doc()doc";
 
