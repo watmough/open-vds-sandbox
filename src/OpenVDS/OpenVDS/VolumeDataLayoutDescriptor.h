@@ -86,6 +86,8 @@ public:
 
   bool                IsCreate2DLODs()                 const { return (m_options & Options_Create2DLODs) != 0; }
   bool                IsForceFullResolutionDimension() const { return (m_options & Options_ForceFullResolutionDimension) != 0; }
+  VolumeDataLayoutDescriptor::Options             
+                      GetOptions()                     const { return m_options; }
 
   int                 GetFullResolutionDimension() const { return m_fullResolutionDimension; }
 };

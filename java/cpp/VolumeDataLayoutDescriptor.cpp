@@ -203,6 +203,22 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor
   return 0;
 }
 
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor_GetOptionsImpl
+  (JNIEnv * env, jobject object, jlong native_handle)
+{
+  JEnvPushPop
+    stackitem(env);
+
+  CPPJNI_TRY
+  {
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataLayoutDescriptor>(native_handle);
+    auto result = pInstance->GetOptions();
+    return (jlong)result;
+  }
+  CPPJNI_CATCH
+  return 0;
+}
+
 JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor_GetFullResolutionDimensionImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {

@@ -128,6 +128,27 @@ public class VolumeDataLayoutDescriptor extends ManagedBase {
             return Options.values()[0];
         }
     
+    
+        static EnumSet<Options> setFromInt(int value) {
+            if (value == 0) {
+                return EnumSet.noneOf(Options.class);
+            }
+            List<Options> enumList = new ArrayList<>();
+            if ((value & 0) != 0) enumList.add(Options_None);
+            if ((value & 1) != 0) enumList.add(Options_Create2DLODs);
+            if ((value & 2) != 0) enumList.add(Options_ForceFullResolutionDimension);
+            return EnumSet.copyOf(enumList);
+        }
+    
+        static int valueFromSet(EnumSet<Options> enumSet) {
+            int tmpvalue = 0;
+            for (Options e: enumSet) {
+                tmpvalue |= e.value;
+            }
+            return tmpvalue;
+        }
+    
+    
     }
 
     native private static long ctorImpl();
@@ -140,9 +161,9 @@ public class VolumeDataLayoutDescriptor extends ManagedBase {
 
     native private static long ctor2Impl(long brickSize, int negativeMargin, int positiveMargin, int brickSize2DMultiplier, long lodLevels, long options, int fullResolutionDimension);
     
-    public VolumeDataLayoutDescriptor(VolumeDataLayoutDescriptor.BrickSize brickSize, int negativeMargin, int positiveMargin, int brickSize2DMultiplier, VolumeDataLayoutDescriptor.LODLevels lodLevels, VolumeDataLayoutDescriptor.Options options, int fullResolutionDimension) {
+    public VolumeDataLayoutDescriptor(VolumeDataLayoutDescriptor.BrickSize brickSize, int negativeMargin, int positiveMargin, int brickSize2DMultiplier, VolumeDataLayoutDescriptor.LODLevels lodLevels, EnumSet<VolumeDataLayoutDescriptor.Options> options, int fullResolutionDimension) {
     
-        super(ctor2Impl(ManagedBase.requireNonNull(brickSize, "brickSize may not be null").value(), negativeMargin, positiveMargin, brickSize2DMultiplier, ManagedBase.requireNonNull(lodLevels, "lodLevels may not be null").value(), ManagedBase.requireNonNull(options, "options may not be null").value(), fullResolutionDimension));
+        super(ctor2Impl(ManagedBase.requireNonNull(brickSize, "brickSize may not be null").value(), negativeMargin, positiveMargin, brickSize2DMultiplier, ManagedBase.requireNonNull(lodLevels, "lodLevels may not be null").value(), VolumeDataLayoutDescriptor.Options.valueFromSet(ManagedBase.requireNonNull(options, "options may not be null")), fullResolutionDimension));
     
     }
 
@@ -192,6 +213,12 @@ public class VolumeDataLayoutDescriptor extends ManagedBase {
     native private boolean IsForceFullResolutionDimensionImpl(long native_object);
     public boolean isForceFullResolutionDimension() {
         return IsForceFullResolutionDimensionImpl(getNativeObject());
+    }
+
+    ///AUTOGEN-OK: CXX_METHOD GetOptions OpenVDS::VolumeDataLayoutDescriptor::Options () const FUNCTIONPROTO
+    native private long GetOptionsImpl(long native_object);
+    public EnumSet<VolumeDataLayoutDescriptor.Options> getOptions() {
+        return VolumeDataLayoutDescriptor.Options.setFromInt((int)GetOptionsImpl(getNativeObject()));
     }
 
     ///AUTOGEN-OK: CXX_METHOD GetFullResolutionDimension int () const FUNCTIONPROTO

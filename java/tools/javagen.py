@@ -54,6 +54,11 @@ _ignore_types = [
 _marshaled_value_types = [
 ]
 
+_enumset_types = [
+    "OpenVDS::VolumeDataLayoutDescriptor::Options",
+]
+
+
 _prefixes = [ "OpenVDS" ]
 
 _explicit_add_get_prefix = {
@@ -393,6 +398,8 @@ def resolve_typealias(typename: str, alias: str) -> str:
 def _cpp_to_java_type(typename: str, alias: str) -> str:
     typename = resolve_typealias(typename, alias)
     if find_enum_type(typename):
+        if typename in _enumset_types:
+            return "EnumSet<" + strip_prefixes(clean_typename(typename)).replace('::', '.') + ">"
         if typename in _cppjava_typemap:
             return _cppjava_typemap[typename]
         else:
@@ -721,6 +728,13 @@ def is_enum_type(arg: Param) -> bool:
     assert isinstance(arg, Param)
     return True if find_enum_type(arg.canonical_type) else False
 
+def is_enumset_type(arg: Param) -> bool:
+    assert isinstance(arg, Param)
+    if is_enum_type(arg):
+        if arg.canonical_type in _enumset_types:
+            return True
+    return False
+
 def is_scoped_enum_type(arg: Param) -> bool:
     t = find_enum_type(arg.canonical_type)
     if t:
@@ -1011,7 +1025,10 @@ def transform_java_functioncall_args(class_name: str, args: List[Param], is_incl
         checked_name_ = add_parameter_null_check(type_, name_)
         type_ = resolve_typealias(type_, alias_)
         used_arglist.append(name_)
-        if is_enum_type(arg):
+        if is_enumset_type(arg):
+            _javatype = cpp_to_java_type(arg.typename).replace('EnumSet<', '').replace('>', '')
+            arglist.append(f'{_javatype}.valueFromSet({checked_name_})')
+        elif is_enum_type(arg):
             arglist.append(f'{checked_name_}.value()')
         elif is_vector_type(type_) and is_pass_by_handle(clean_typename(get_template_arg0(type_))):
             prologue.append(f'long[] {name_}tmp = new long[{checked_name_}.length];')
@@ -1123,11 +1140,13 @@ _java_enum_integral_types = {
     'uint64_t':     ('long', 'jlong', 'L' ),
 }
 
-def create_java_enum(scope, template):
+def create_java_enum(scope: Scope, template):
+    assert scope.is_enum
     enum_name = scope.name
     if scope.enum_integral_type not in _java_enum_integral_types:
         raise NotImplementedError(f'enum integral type {scope.enum_integral_type} not supported')
     int_type, jni_type, literal_suffix = _java_enum_integral_types[scope.enum_integral_type]
+    is_enumset = scope.fullname in _enumset_types
     values = scope.get_enum_values()
     is_remove_all_caps_enum_values = _is_any_not_all_caps_enum_value(values)
     unique = scope.get_unique_enum_values()
@@ -1161,6 +1180,28 @@ def create_java_enum(scope, template):
         {enum_cases};
         return {enum_name}.values()[0];
     }}
+"""
+    if is_enumset:
+        enum_cases = ";\n        ".join([f'if ((value & {v}{literal_suffix}) != 0) enumList.add({n})' for n,v,_ in unique])
+        class_body += f"""
+
+    static EnumSet<{enum_name}> setFromInt(int value) {{
+        if (value == 0) {{
+            return EnumSet.noneOf({enum_name}.class);
+        }}
+        List<{enum_name}> enumList = new ArrayList<>();
+        {enum_cases};
+        return EnumSet.copyOf(enumList);
+    }}
+
+    static int valueFromSet(EnumSet<{enum_name}> enumSet) {{
+        {int_type} tmpvalue = 0;
+        for ({enum_name} e: enumSet) {{
+            tmpvalue |= e.value;
+        }}
+        return tmpvalue;
+    }}
+
 """
     class_type = 'enum'
     class_name = enum_name
@@ -1450,7 +1491,7 @@ def create_java_class(scope: Scope, template: str, override_name: str = '', temp
                         real_return_type = param_to_real_type(result_param, template_args)
                         return_type = cpp_to_java_type(real_return_type)
                         native_return_type = cpp_to_native_type(native_result_param.canonical_type)
-                        if is_templated(return_type):
+                        if is_templated(return_type) and is_templated(real_return_type): # We don't want false positives, like EnumSet<>
                             raise NotImplementedError('Unhandled templated result type')
                         is_function_already_renamed = False
                         if result_param.canonical_type != "void" and not function_name.startswith("Get"):
@@ -1497,7 +1538,12 @@ def create_java_class(scope: Scope, template: str, override_name: str = '', temp
                                 print(f'        {jni_function_name}Impl({transformed_args});', file=methods)
                                 print(f'{epilogue}', file=methods)
                             else:
-                                if is_enum_type(result_param):
+                                if is_enumset_type(result_param):
+                                    _et = find_enum_type(result_param.canonical_type)
+                                    enum_int_type,_,_ = _java_enum_integral_types[_et.enum_integral_type]
+                                    _rt = return_type.replace('EnumSet<', '').replace('>', '')
+                                    print(f'        {return_txt}{_rt}.setFromInt(({enum_int_type}){jni_function_name}Impl({transformed_args}));', file=methods)
+                                elif is_enum_type(result_param):
                                     _et = find_enum_type(result_param.canonical_type)
                                     enum_int_type,_,_ = _java_enum_integral_types[_et.enum_integral_type]
                                     print(f'        {return_txt}{return_type}.fromInt(({enum_int_type}){jni_function_name}Impl({transformed_args}));', file=methods)
@@ -1929,7 +1975,7 @@ header_list = [
     'VolumeDataChannelDescriptor.h',
     'VolumeDataLayout.h',
     'VolumeDataLayoutDescriptor.h',
-#  'VolumeIndexer.h',  #Do we need this???
+#   'VolumeIndexer.h',  #Do we need this???
     'VolumeSampler.h',
 ]
 
