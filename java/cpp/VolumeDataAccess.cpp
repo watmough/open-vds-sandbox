@@ -152,16 +152,21 @@ VolumeDataPage_GetWritableBufferImpl(JNIEnv * env, jobject object, jlong native_
       throw std::runtime_error("Illegal format");
     case OpenVDS::VolumeDataChannelDescriptor::Format::Format_1Bit:
       itemSize = 1;
+	  break;
     case OpenVDS::VolumeDataChannelDescriptor::Format::Format_U8:
       itemSize = 1 * components;
+	  break;
     case OpenVDS::VolumeDataChannelDescriptor::Format::Format_U16:
       itemSize = 2 * components;
+	  break;
     case OpenVDS::VolumeDataChannelDescriptor::Format::Format_R32:
     case OpenVDS::VolumeDataChannelDescriptor::Format::Format_U32:
       itemSize = 4 * components;
+	  break;
     case OpenVDS::VolumeDataChannelDescriptor::Format::Format_U64:
     case OpenVDS::VolumeDataChannelDescriptor::Format::Format_R64:
       itemSize = 8 * components;
+	  break;
     }
     jlong nBufferSize = 1;
     for (int i = 0; i < VolumeDataLayout::Dimensionality_Max; ++i)

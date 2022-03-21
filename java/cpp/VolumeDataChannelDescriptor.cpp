@@ -546,6 +546,22 @@ JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_
   return 0;
 }
 
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_GetFlagsImpl
+  (JNIEnv * env, jobject object, jlong native_handle)
+{
+  JEnvPushPop
+    stackitem(env);
+
+  CPPJNI_TRY
+  {
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataChannelDescriptor>(native_handle);
+    auto result = pInstance->GetFlags();
+    return (jlong)result;
+  }
+  CPPJNI_CATCH
+  return 0;
+}
+
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_TraceMappedVolumeDataChannelDescriptorImpl
   (JNIEnv * env, jclass cls, jlong format, jlong components, jstring name, jstring unit, jfloat valueRangeMin, jfloat valueRangeMax, jint mappedValueCount, jlong flags)
 {

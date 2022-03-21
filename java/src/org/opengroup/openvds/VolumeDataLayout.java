@@ -371,4 +371,5 @@ public class VolumeDataLayout extends MetadataReadAccess {
 
 
 
+	public static final int Dimensionality_Max = 6;
 }
