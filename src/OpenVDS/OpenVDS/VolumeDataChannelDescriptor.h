@@ -189,6 +189,8 @@ public:
 
   float       GetIntegerScale()                 const { return m_integerScale; }
   float       GetIntegerOffset()                const { return m_integerOffset; }
+  VolumeDataChannelDescriptor::Flags 
+              GetFlags()                        const { return m_flags; }
 
   /// Named constructor for a trace mapped channel
   /// \param format the data format for this channel
