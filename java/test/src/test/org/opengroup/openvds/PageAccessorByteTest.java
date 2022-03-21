@@ -24,13 +24,13 @@ import static org.junit.Assert.*;
 import static org.junit.Assert.assertThrows;
 import java.io.File;
 import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
+import java.nio.ByteBuffer;
 
 
-public class PageAccessorFloatTest {
+public class PageAccessorByteTest {
 
     private static String TEMP_FILE_NAME_VOL_INDEX = "volIndexer";
-    private static String TEMP_FILE_NAME_COPY = "vdsFloatCopy";
+    private static String TEMP_FILE_NAME_COPY = "vdsByteCopy";
 
     public String url;
     public VolumeDataLayoutDescriptor ld;
@@ -46,7 +46,7 @@ public class PageAccessorFloatTest {
 
     @Before
     public void init() {
-        vds = new InMemoryVDSGenerator(200, 200, 200, VolumeDataChannelDescriptor.Format.R32);
+        vds = new InMemoryVDSGenerator(200, 200, 200, VolumeDataChannelDescriptor.Format.U8);
         url = "inmemory://create_test";
         VolumeDataLayout volumeDataLayout = vds.getLayout();
 
@@ -200,9 +200,9 @@ public class PageAccessorFloatTest {
                 VolumeDataPage inputPage = pageAccessorInput.readPage(chunk);
                 VolumeDataPage page = pageAccessor.createPage(chunk);
                 ByteBuffer readBuffer = inputPage.getBuffer(pitch);
-//                float[] data = inputPage.readFloatBuffer(pitch);
+//                byte[] data = inputPage.readByteBuffer(pitch);
                  ByteBuffer writeBuffer = page.getWritableBuffer(pitch);
-//                page.writeFloatBuffer(data, pitch);
+//                page.writeByteBuffer(data, pitch);
                 writeBuffer.put(readBuffer);
                 inputPage.release();
                 page.release();
@@ -255,12 +255,12 @@ public class PageAccessorFloatTest {
             for (long chunk = 0 ; chunk < chunkCount ; ++chunk) {
                 VolumeDataPage inputPage = pageAccessorInput.readPage(chunk);
                 VolumeDataPage page = pageAccessor.readPage(chunk);
-//                float[] dataIn = inputPage.readFloatBuffer(pitchInput);
-                FloatBuffer dataInB = inputPage.getBuffer(pitchInput).asFloatBuffer();
-//                float[] dataOut = page.readFloatBuffer(pitchOutput);
-                FloatBuffer dataOutB = page.getBuffer(pitchOutput).asFloatBuffer();
-                float[] dataIn = new float[dataInB.remaining()];
-                float[] dataOut = new float[dataOutB.remaining()];
+//                byte[] dataIn = inputPage.readByteBuffer(pitchInput);
+                ByteBuffer dataInB = inputPage.getBuffer(pitchInput);
+//                byte[] dataOut = page.readByteBuffer(pitchOutput);
+                ByteBuffer dataOutB = page.getBuffer(pitchOutput);
+                byte[] dataIn = new byte[dataInB.remaining()];
+                byte[] dataOut = new byte[dataOutB.remaining()];
                 dataInB.get(dataIn);
                 dataOutB.get(dataOut);
 
@@ -268,7 +268,7 @@ public class PageAccessorFloatTest {
                 page.release();
 
                 Assert.assertArrayEquals(pitchInput, pitchOutput);
-                Assert.assertArrayEquals(dataIn, dataOut, 0.0f);
+                Assert.assertArrayEquals(dataIn, dataOut);
             }
 
             accessManager.destroyVolumeDataPageAccessor(pageAccessor);
