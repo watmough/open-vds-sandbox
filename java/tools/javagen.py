@@ -56,6 +56,7 @@ _marshaled_value_types = [
 
 _enumset_types = [
     "OpenVDS::VolumeDataLayoutDescriptor::Options",
+    "OpenVDS::VolumeDataChannelDescriptor::Flags",
 ]
 
 
@@ -1026,7 +1027,7 @@ def transform_java_functioncall_args(class_name: str, args: List[Param], is_incl
         type_ = resolve_typealias(type_, alias_)
         used_arglist.append(name_)
         if is_enumset_type(arg):
-            _javatype = cpp_to_java_type(arg.typename).replace('EnumSet<', '').replace('>', '')
+            _javatype = cpp_to_java_type(arg.canonical_type).replace('EnumSet<', '').replace('>', '')
             arglist.append(f'{_javatype}.valueFromSet({checked_name_})')
         elif is_enum_type(arg):
             arglist.append(f'{checked_name_}.value()')
@@ -1141,8 +1142,19 @@ _java_enum_integral_types = {
 }
 
 def create_java_enum(scope: Scope, template):
+    def fix_enum_name(n: str) -> str:
+        if n.startswith(enum_name):
+            fixed = n.replace(enum_name + '_', '')
+            if fixed[0].isnumeric():
+                return '_' + fixed
+            else:
+                return fixed
+        return n
+
     assert scope.is_enum
     enum_name = scope.name
+    if 'AccessMode' in enum_name:
+        debug = 0
     if scope.enum_integral_type not in _java_enum_integral_types:
         raise NotImplementedError(f'enum integral type {scope.enum_integral_type} not supported')
     int_type, jni_type, literal_suffix = _java_enum_integral_types[scope.enum_integral_type]
@@ -1150,10 +1162,11 @@ def create_java_enum(scope: Scope, template):
     values = scope.get_enum_values()
     is_remove_all_caps_enum_values = _is_any_not_all_caps_enum_value(values)
     unique = scope.get_unique_enum_values()
-    unique_names = [n for n,v,d in unique]
+    unique_names = [fix_enum_name(n) for n,v,d in unique] # Remove redundant prefix in enum values.
     class_docstring = format_docstring(scope)
     decls = []
     for n,v,d in values:
+        n = fix_enum_name(n)
         if is_remove_all_caps_enum_values and _is_all_caps_enum_value(n) and not n in unique_names:
             continue
         ev = ''
@@ -1162,7 +1175,7 @@ def create_java_enum(scope: Scope, template):
         ev += f'    {n}({v}{literal_suffix})'
         decls.append(ev)
     enum_values = ",\n    ".join(decls)
-    enum_cases = ";\n        ".join([f'if (value == {v}{literal_suffix}) return {n}' for n,v,_ in unique])
+    enum_cases = ";\n        ".join([f'if (value == {v}{literal_suffix}) return {fix_enum_name(n)}' for n,v,_ in unique])
     class_body = f"""
     {enum_values};
 
@@ -1182,7 +1195,7 @@ def create_java_enum(scope: Scope, template):
     }}
 """
     if is_enumset:
-        enum_cases = ";\n        ".join([f'if ((value & {v}{literal_suffix}) != 0) enumList.add({n})' for n,v,_ in unique])
+        enum_cases = ";\n        ".join([f'if ((value & {v}{literal_suffix}) != 0) enumList.add({fix_enum_name(n)})' for n,v,_ in unique])
         class_body += f"""
 
     static EnumSet<{enum_name}> setFromInt(int value) {{

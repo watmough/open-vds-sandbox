@@ -27,14 +27,14 @@ public class VolumeDataLayoutDescriptor extends ManagedBase {
     
     public enum BrickSize {
     
-            BrickSize_32(5),
-            BrickSize_64(6),
-            BrickSize_128(7),
-            BrickSize_256(8),
-            BrickSize_512(9),
-            BrickSize_1024(10),
-            BrickSize_2048(11),
-            BrickSize_4096(12);
+            _32(5),
+            _64(6),
+            _128(7),
+            _256(8),
+            _512(9),
+            _1024(10),
+            _2048(11),
+            _4096(12);
     
         private final int value;
     
@@ -47,14 +47,14 @@ public class VolumeDataLayoutDescriptor extends ManagedBase {
         }
     
         public static BrickSize fromInt(int value) {
-            if (value == 5) return BrickSize_32;
-            if (value == 6) return BrickSize_64;
-            if (value == 7) return BrickSize_128;
-            if (value == 8) return BrickSize_256;
-            if (value == 9) return BrickSize_512;
-            if (value == 10) return BrickSize_1024;
-            if (value == 11) return BrickSize_2048;
-            if (value == 12) return BrickSize_4096;
+            if (value == 5) return _32;
+            if (value == 6) return _64;
+            if (value == 7) return _128;
+            if (value == 8) return _256;
+            if (value == 9) return _512;
+            if (value == 10) return _1024;
+            if (value == 11) return _2048;
+            if (value == 12) return _4096;
             return BrickSize.values()[0];
         }
     
@@ -62,19 +62,19 @@ public class VolumeDataLayoutDescriptor extends ManagedBase {
     
     public enum LODLevels {
     
-            LODLevels_None(0),
-            LODLevels_1(1),
-            LODLevels_2(2),
-            LODLevels_3(3),
-            LODLevels_4(4),
-            LODLevels_5(5),
-            LODLevels_6(6),
-            LODLevels_7(7),
-            LODLevels_8(8),
-            LODLevels_9(9),
-            LODLevels_10(10),
-            LODLevels_11(11),
-            LODLevels_12(12);
+            None(0),
+            _1(1),
+            _2(2),
+            _3(3),
+            _4(4),
+            _5(5),
+            _6(6),
+            _7(7),
+            _8(8),
+            _9(9),
+            _10(10),
+            _11(11),
+            _12(12);
     
         private final int value;
     
@@ -87,19 +87,19 @@ public class VolumeDataLayoutDescriptor extends ManagedBase {
         }
     
         public static LODLevels fromInt(int value) {
-            if (value == 0) return LODLevels_None;
-            if (value == 1) return LODLevels_1;
-            if (value == 2) return LODLevels_2;
-            if (value == 3) return LODLevels_3;
-            if (value == 4) return LODLevels_4;
-            if (value == 5) return LODLevels_5;
-            if (value == 6) return LODLevels_6;
-            if (value == 7) return LODLevels_7;
-            if (value == 8) return LODLevels_8;
-            if (value == 9) return LODLevels_9;
-            if (value == 10) return LODLevels_10;
-            if (value == 11) return LODLevels_11;
-            if (value == 12) return LODLevels_12;
+            if (value == 0) return None;
+            if (value == 1) return _1;
+            if (value == 2) return _2;
+            if (value == 3) return _3;
+            if (value == 4) return _4;
+            if (value == 5) return _5;
+            if (value == 6) return _6;
+            if (value == 7) return _7;
+            if (value == 8) return _8;
+            if (value == 9) return _9;
+            if (value == 10) return _10;
+            if (value == 11) return _11;
+            if (value == 12) return _12;
             return LODLevels.values()[0];
         }
     
@@ -107,9 +107,9 @@ public class VolumeDataLayoutDescriptor extends ManagedBase {
     
     public enum Options {
     
-            Options_None(0),
-            Options_Create2DLODs(1),
-            Options_ForceFullResolutionDimension(2);
+            None(0),
+            Create2DLODs(1),
+            ForceFullResolutionDimension(2);
     
         private final int value;
     
@@ -122,9 +122,9 @@ public class VolumeDataLayoutDescriptor extends ManagedBase {
         }
     
         public static Options fromInt(int value) {
-            if (value == 0) return Options_None;
-            if (value == 1) return Options_Create2DLODs;
-            if (value == 2) return Options_ForceFullResolutionDimension;
+            if (value == 0) return None;
+            if (value == 1) return Create2DLODs;
+            if (value == 2) return ForceFullResolutionDimension;
             return Options.values()[0];
         }
     
@@ -134,9 +134,9 @@ public class VolumeDataLayoutDescriptor extends ManagedBase {
                 return EnumSet.noneOf(Options.class);
             }
             List<Options> enumList = new ArrayList<>();
-            if ((value & 0) != 0) enumList.add(Options_None);
-            if ((value & 1) != 0) enumList.add(Options_Create2DLODs);
-            if ((value & 2) != 0) enumList.add(Options_ForceFullResolutionDimension);
+            if ((value & 0) != 0) enumList.add(None);
+            if ((value & 1) != 0) enumList.add(Create2DLODs);
+            if ((value & 2) != 0) enumList.add(ForceFullResolutionDimension);
             return EnumSet.copyOf(enumList);
         }
     

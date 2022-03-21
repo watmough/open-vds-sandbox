@@ -46,7 +46,7 @@ public class PageAccessorFloatTest {
 
     @Before
     public void init() {
-        vds = new InMemoryVDSGenerator(200, 200, 200, VolumeDataChannelDescriptor.Format.Format_R32);
+        vds = new InMemoryVDSGenerator(200, 200, 200, VolumeDataChannelDescriptor.Format.R32);
         url = "inmemory://create_test";
         VolumeDataLayout volumeDataLayout = vds.getLayout();
 
@@ -115,7 +115,7 @@ public class PageAccessorFloatTest {
                 0, // lod
                 channel, // channel
                 100, // max pages
-                VolumeDataPageAccessor.AccessMode.AccessMode_Create); // access mode
+                VolumeDataPageAccessor.AccessMode.Create); // access mode
 
         VolumeDataPage page = pageAccessor.createPage(0);
 /*
@@ -182,7 +182,7 @@ public class PageAccessorFloatTest {
                     0, // lod
                     channel, // channel
                     100, // max pages
-                    VolumeDataPageAccessor.AccessMode.AccessMode_Create); // access mode
+                    VolumeDataPageAccessor.AccessMode.Create); // access mode
 
             // get input manager
             VolumeDataAccessManager inputAM = vds.getAccessManager();
@@ -191,7 +191,7 @@ public class PageAccessorFloatTest {
                     0, // lod
                     channel, // channel
                     100, // max pages
-                    VolumeDataPageAccessor.AccessMode.AccessMode_ReadOnly); // access mode
+                    VolumeDataPageAccessor.AccessMode.ReadOnly); // access mode
 
             // copy file
             int[] pitch = new int[VolumeDataLayout.Dimensionality_Max];
@@ -236,7 +236,7 @@ public class PageAccessorFloatTest {
                     0, // lod
                     channel, // channel
                     20, // max pages
-                    VolumeDataPageAccessor.AccessMode.AccessMode_ReadOnly); // access mode
+                    VolumeDataPageAccessor.AccessMode.ReadOnly); // access mode
 
             // get input manager
             VolumeDataAccessManager inputAM = vds.getAccessManager();
@@ -245,7 +245,7 @@ public class PageAccessorFloatTest {
                     0, // lod
                     channel, // channel
                     20, // max pages
-                    VolumeDataPageAccessor.AccessMode.AccessMode_ReadOnly); // access mode
+                    VolumeDataPageAccessor.AccessMode.ReadOnly); // access mode
 
             // compares block data
             int[] pitchInput = new int[VolumeDataLayout.Dimensionality_Max];
@@ -298,7 +298,7 @@ public class PageAccessorFloatTest {
                     0, // lod
                     channel, // channel
                     20, // max pages
-                    VolumeDataPageAccessor.AccessMode.AccessMode_ReadOnly); // access mode
+                    VolumeDataPageAccessor.AccessMode.ReadOnly); // access mode
 
             // compares block data
             int[] chunkMin = new int[VolumeDataLayout.Dimensionality_Max];

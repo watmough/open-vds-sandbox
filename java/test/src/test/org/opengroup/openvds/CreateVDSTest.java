@@ -26,10 +26,15 @@ import org.junit.BeforeClass;
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertThrows;
 
+import static org.opengroup.openvds.VolumeDataChannelDescriptor.Format;
+import static org.opengroup.openvds.VolumeDataLayoutDescriptor.BrickSize;
+import static org.opengroup.openvds.VolumeDataLayoutDescriptor.LODLevels;
+import static org.opengroup.openvds.VolumeDataChannelDescriptor.Components;
+
 public class CreateVDSTest {
     @Before
     public void init() {
-        vds = new InMemoryVDSGenerator(16, 16, 16, VolumeDataChannelDescriptor.Format.Format_U8);
+        vds = new InMemoryVDSGenerator(16, 16, 16, Format.U8);
         url = "inmemory://create_test";
         o = new AzureOpenOptions();
         error = new VDSError();
@@ -67,7 +72,7 @@ public class CreateVDSTest {
 
         assertEquals(layout.getDimensionality(), 3);
         assertEquals(layout.getChannelCount(), 1);
-        assertEquals(layout.getChannelFormat(0), VolumeDataChannelDescriptor.Format.Format_U8);
+        assertEquals(layout.getChannelFormat(0), Format.U8);
         assertEquals(layout.getDimensionName(1), openvds1.getLayout().getDimensionName(1));
     }
 

@@ -97,35 +97,35 @@ public class VolumeDataChannelDescriptor extends ManagedBase {
         /**
          * The DataBlock can be in any format
          */
-        Format_Any(-1),
+        Any(-1),
         /**
          * data is in packed 1-bit format
          */
-        Format_1Bit(0),
+        _1Bit(0),
         /**
          * data is in unsigned 8 bit
          */
-        Format_U8(1),
+        U8(1),
         /**
          * data is in unsigned 16 bit
          */
-        Format_U16(2),
+        U16(2),
         /**
          * data is in 32 bit float
          */
-        Format_R32(3),
+        R32(3),
         /**
          * data is in unsigned 32 bit
          */
-        Format_U32(4),
+        U32(4),
         /**
          * data is in 64 bit double
          */
-        Format_R64(5),
+        R64(5),
         /**
          * data is in unsigned 64 bit
          */
-        Format_U64(6);
+        U64(6);
     
         private final int value;
     
@@ -138,14 +138,14 @@ public class VolumeDataChannelDescriptor extends ManagedBase {
         }
     
         public static Format fromInt(int value) {
-            if (value == -1) return Format_Any;
-            if (value == 0) return Format_1Bit;
-            if (value == 1) return Format_U8;
-            if (value == 2) return Format_U16;
-            if (value == 3) return Format_R32;
-            if (value == 4) return Format_U32;
-            if (value == 5) return Format_R64;
-            if (value == 6) return Format_U64;
+            if (value == -1) return Any;
+            if (value == 0) return _1Bit;
+            if (value == 1) return U8;
+            if (value == 2) return U16;
+            if (value == 3) return R32;
+            if (value == 4) return U32;
+            if (value == 5) return R64;
+            if (value == 6) return U64;
             return Format.values()[0];
         }
     
@@ -153,9 +153,9 @@ public class VolumeDataChannelDescriptor extends ManagedBase {
     
     public enum Components {
     
-            Components_1(1),
-            Components_2(2),
-            Components_4(4);
+            _1(1),
+            _2(2),
+            _4(4);
     
         private final int value;
     
@@ -168,9 +168,9 @@ public class VolumeDataChannelDescriptor extends ManagedBase {
         }
     
         public static Components fromInt(int value) {
-            if (value == 1) return Components_1;
-            if (value == 2) return Components_2;
-            if (value == 4) return Components_4;
+            if (value == 1) return _1;
+            if (value == 2) return _2;
+            if (value == 4) return _4;
             return Components.values()[0];
         }
     
