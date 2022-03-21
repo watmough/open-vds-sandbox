@@ -169,6 +169,12 @@ unit-tests:
   - ctest -V
   only:
   - merge_requests
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - build/test_results/*.xml
+        - build/test_results_java/junitreports/*.xml
 unit-tests-manylinux:
   stage: test
   image: "$SHA_MANYLINUX_IMAGE_TAG"
@@ -179,6 +185,12 @@ unit-tests-manylinux:
   - ctest -V
   only:
   - merge_requests
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - build-manylinux/test_results/*.xml
+        - build-manylinux/test_results_java/junitreports/*.xml
 unit-tests-centos7dev7:
   stage: test
   image: "$SHA_CENTOS7DEV7_IMAGE_TAG"
@@ -189,6 +201,12 @@ unit-tests-centos7dev7:
   - ctest -V
   only:
   - merge_requests
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - build-centos7dev7/test_results/*.xml
+        - build-centos7dev7/test_results_java/junitreports/*.xml
 pages:
   stage: deploy
   image: "$SHA_IMAGE_TAG"

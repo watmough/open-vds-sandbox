@@ -25,7 +25,10 @@ function(add_test_executable name)
   addSystemHeadersToTarget(${name} "${include_3rdparty}")
   target_compile_definitions(${name} PRIVATE openvds_EXPORTS)
   add_dependencies(${name} TestRootTarget)
-  gtest_discover_tests(${name} DISCOVERY_TIMEOUT 15)
+  gtest_discover_tests(${name}
+    DISCOVERY_TIMEOUT 25
+    XML_OUTPUT_DIR ${PROJECT_BINARY_DIR}/test_results
+  )
   setCommonTargetProperties(${name})
   set_target_properties(${name} PROPERTIES FOLDER tests)
   get_target_property(fmt_INCLUDE fmt::fmt INTERFACE_INCLUDE_DIRECTORIES)
