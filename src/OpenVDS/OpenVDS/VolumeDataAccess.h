@@ -209,7 +209,7 @@ public:
   /// <param name="source">
   /// The VolumeDataPageAccessor to copy data from
   /// </param>
-  virtual void  CopyPage(int64_t chunkIndex, VolumeDataPageAccessor &source) = 0;
+  virtual void  CopyPage(int64_t chunkIndex, VolumeDataPageAccessor const &source) = 0;
   virtual VolumeDataPage *ReadPage(int64_t chunkIndex) = 0;
   virtual VolumeDataPage *ReadPageAtPosition(const int (&position)[Dimensionality_Max]) = 0;
 

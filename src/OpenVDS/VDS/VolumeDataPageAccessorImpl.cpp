@@ -449,7 +449,7 @@ void VolumeDataPageAccessorImpl::CancelPreparedReadPage(VolumeDataPage* page)
   m_pageReadCondition.notify_all();
 }
   
-void VolumeDataPageAccessorImpl::CopyPage(int64_t chunkIndex, VolumeDataPageAccessor &source)
+void VolumeDataPageAccessorImpl::CopyPage(int64_t chunkIndex, VolumeDataPageAccessor const &source)
 {
   if (!m_layer)
   {
