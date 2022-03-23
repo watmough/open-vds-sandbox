@@ -28,8 +28,6 @@
 namespace OpenVDS
 {
 
-static const bool curl_verbose_output = false;
-
 inline char asciitolower(char in)
 {
   if (in <= 'Z' && in >= 'A')
@@ -189,8 +187,8 @@ static void addDownloadCB(uv_async_t *handle)
       curl_easy_setopt(downloadRequest->curlEasy, CURLOPT_NOBODY, 1L);
     }
     curl_easy_setopt(downloadRequest->curlEasy, CURLOPT_DEBUGFUNCTION, curl_easy_debug_callback);
-    if (curl_verbose_output)
-    curl_easy_setopt(downloadRequest->curlEasy, CURLOPT_VERBOSE, 1L);
+    if (eventLoopData->verboseOutput)
+      curl_easy_setopt(downloadRequest->curlEasy, CURLOPT_VERBOSE, 1L);
   }
   
   eventLoopData->queuedRequests.insert(eventLoopData->queuedRequests.end(), downloadRequests.begin(), downloadRequests.end());
@@ -292,7 +290,7 @@ static void addUploadCB(uv_async_t *handle)
     }
     curl_easy_setopt(uploadRequest->curlEasy, CURLOPT_INFILESIZE_LARGE, filesize);
     curl_easy_setopt(uploadRequest->curlEasy, CURLOPT_DEBUGFUNCTION, curl_easy_debug_callback);
-    if (curl_verbose_output)
+    if (eventLoopData->verboseOutput)
       curl_easy_setopt(uploadRequest->curlEasy, CURLOPT_VERBOSE, 1L);
   }
   
@@ -787,8 +785,9 @@ struct Barrier
   std::condition_variable wait;
 };
 
-CurlHandler::CurlHandler(Error& error)
+CurlHandler::CurlHandler(Error& error, bool verboseOutput)
 {
+  m_eventLoopData.verboseOutput = verboseOutput;
   error.code = curl_global_init(CURL_GLOBAL_ALL);
   if (error.code)
   {
