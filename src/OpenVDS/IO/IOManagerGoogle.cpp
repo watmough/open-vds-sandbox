@@ -163,7 +163,7 @@ namespace OpenVDS
 
   IOManagerGoogle::IOManagerGoogle(const GoogleOpenOptions& openOptions, Error &error)
     : IOManager(OpenOptions::GoogleStorage)
-    , m_curlHandler(error)
+    , m_curlHandler(error, false)
     , m_bucket(openOptions.bucket)
     , m_pathPrefix(openOptions.pathPrefix)
     , m_storageClass(openOptions.storageClass)

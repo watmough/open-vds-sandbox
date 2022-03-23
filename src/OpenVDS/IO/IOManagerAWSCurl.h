@@ -41,7 +41,8 @@ namespace OpenVDS
       Aws::Crt::Io::DefaultHostResolver m_hostResolver;
       Aws::Crt::Io::ClientBootstrap m_clientBootstrap;
       std::shared_ptr<Aws::Crt::Auth::ICredentialsProvider> m_credentialsProvider;
-      Aws::Crt::Auth::AwsSigningConfig m_signingConfig;
+      bool m_useVirtualAddressing;
+      bool m_secureSocket;
       std::string m_region;
       std::string m_bucket;
       std::string m_path;
