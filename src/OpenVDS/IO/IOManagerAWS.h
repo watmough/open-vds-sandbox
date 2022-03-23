@@ -59,9 +59,35 @@ namespace OpenVDS
   {
   public:
     VectorBuf(std::vector<uint8_t>& vec)
+      : offset(0)
+      , vec(vec)
     {
-      setg((char *) vec.data(), (char *) vec.data(), (char *) vec.data() + vec.size());
+      setg((char*)vec.data(), (char*)vec.data(), (char*)vec.data() + vec.size());
     }
+    pos_type seekoff(off_type off, std::ios_base::seekdir dir, std::ios_base::openmode which) override
+    {
+      assert(which == std::ios_base::in);
+      if (dir == std::ios_base::beg)
+        offset = off;
+      else if (dir == std::ios_base::cur)
+        offset += off;
+      else
+        offset = vec.size() - off;
+
+      setg(((char*)vec.data()), ((char*)vec.data()) + offset, (char*)vec.data() + vec.size());
+      return offset;
+    }
+    
+    pos_type seekpos(pos_type pos, std::ios_base::openmode which) override
+    {
+      assert(which == std::ios_base::in);
+      offset = pos;
+      setg(((char*)vec.data()), ((char*)vec.data()) + offset, (char*)vec.data() + vec.size());
+      return offset;
+    }
+
+    off_type offset;
+    std::vector<uint8_t>& vec;
   };
 
   class IOStream : public Aws::IOStream

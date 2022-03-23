@@ -414,6 +414,7 @@ namespace OpenVDS
       }
     }
 
+    Aws::Client::AWSAuthV4Signer::PayloadSigningPolicy payloadSigningPolicy = Aws::Client::AWSAuthV4Signer::PayloadSigningPolicy::Never;
     Aws::Client::ClientConfiguration clientConfig;
     clientConfig.scheme = Aws::Http::Scheme::HTTPS;
     if (m_region.size())
@@ -425,11 +426,17 @@ namespace OpenVDS
     {
       clientConfig.endpointOverride = convertStdString(openOptions.endpointOverride);
       useVirtualAddressing = false;
+      clientConfig.enableEndpointDiscovery = false;
+      if (openOptions.endpointOverride.rfind("http://", 0) == 0)
+      {
+        clientConfig.scheme = Aws::Http::Scheme::HTTP;
+        payloadSigningPolicy = Aws::Client::AWSAuthV4Signer::PayloadSigningPolicy::Always;
+      }
     }
     if (m_region.empty() && openOptions.endpointOverride.empty())
     {
       clientConfig.region = "us-west-1"; // workaround bug: https://github.com/aws/aws-sdk-cpp/issues/1339 should be fixed in 1.8
-      m_s3Client.reset(new Aws::S3::S3Client(credentials, clientConfig, Aws::Client::AWSAuthV4Signer::PayloadSigningPolicy::Never, useVirtualAddressing));
+      m_s3Client.reset(new Aws::S3::S3Client(credentials, clientConfig, payloadSigningPolicy, useVirtualAddressing));
       Aws::S3::Model::GetBucketLocationRequest bucketLocationRequest;
       bucketLocationRequest.SetBucket(convertStdString(m_bucket));
       auto outcome = m_s3Client->GetBucketLocation(bucketLocationRequest);
@@ -439,12 +446,12 @@ namespace OpenVDS
       {
         m_region = convertAwsString(Aws::S3::Model::BucketLocationConstraintMapper::GetNameForBucketLocationConstraint(location));
         clientConfig.region = convertStdString(m_region);
-        m_s3Client.reset(new Aws::S3::S3Client(credentials, clientConfig, Aws::Client::AWSAuthV4Signer::PayloadSigningPolicy::Never, useVirtualAddressing));
+        m_s3Client.reset(new Aws::S3::S3Client(credentials, clientConfig, payloadSigningPolicy, useVirtualAddressing));
       }
     }
     else
     {
-      m_s3Client.reset(new Aws::S3::S3Client(credentials, clientConfig, Aws::Client::AWSAuthV4Signer::PayloadSigningPolicy::Never, useVirtualAddressing));
+      m_s3Client.reset(new Aws::S3::S3Client(credentials, clientConfig, payloadSigningPolicy, useVirtualAddressing));
     }
 
     //We do this to use a symbol from the transfermanager so we get the linker chain working on linux
