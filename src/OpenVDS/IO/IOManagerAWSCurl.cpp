@@ -393,6 +393,8 @@ std::shared_ptr<Request> IOManagerAWSCurl::WriteObject(const std::string& object
   std::string url = getUrl(m_useVirtualAddressing, m_protocol, m_host, m_bucket, m_path, objectName);
   std::shared_ptr<UploadRequestCurl> request = std::make_shared<UploadRequestCurl>(objectName, completedCallback);
   std::map<std::string, std::string> headerMap;
+  for (auto& header : metadataHeader)
+      headerMap[fmt::format("x-amz-meta-{}", header.first)] = header.second;
   Error error;
   auto headers = signRequest(m_host, url, m_credentialsProvider, m_region, "PUT", hashData(*data, m_secureSocket), headerMap, error);
   if (error.code)
