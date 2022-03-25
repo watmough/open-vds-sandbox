@@ -787,4 +787,6 @@ ReverseEndianness(char* data)
   }
 }
 
+std::string JStringToString(JNIEnv* env, jstring str);
+
 #endif

@@ -223,6 +223,15 @@ struct DirectBuffer
   }
 };
 
+std::string 
+JStringToString(JNIEnv* env, jstring str)
+{
+  const char* utfChars = env->GetStringUTFChars(str, nullptr);
+  auto result = std::string(utfChars);
+  env->ReleaseStringUTFChars(str, utfChars);
+  return result;
+}
+
 extern "C" {
 
 

@@ -167,6 +167,7 @@ if exist "%_RELEASE_DIR%openvds.dll" copy "%_RELEASE_DIR%*.dll" test_bin\
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\AzureVdsGenerator.cpp" />
     <ClCompile Include="..\CoordinateTransformer.cpp" />
     <ClCompile Include="..\Exceptions.cpp" />
     <ClCompile Include="..\GlobalMetadataCommon.cpp" />
@@ -181,6 +182,7 @@ if exist "%_RELEASE_DIR%openvds.dll" copy "%_RELEASE_DIR%*.dll" test_bin\
     <ClCompile Include="..\OpenVDS.cpp" />
     <ClCompile Include="..\Optional.cpp" />
     <ClCompile Include="..\ValueConversion.cpp" />
+    <ClCompile Include="..\VDSWriteData.cpp" />
     <ClCompile Include="..\VolumeData.cpp" />
     <ClCompile Include="..\VolumeDataAccess.cpp" />
     <ClCompile Include="..\VolumeDataAccessManager.cpp" />
@@ -192,6 +194,7 @@ if exist "%_RELEASE_DIR%openvds.dll" copy "%_RELEASE_DIR%*.dll" test_bin\
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Marshaling.h" />
+    <ClInclude Include="..\NDVector.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
