@@ -34,7 +34,6 @@
 #include <stdexcept>
 #include <type_traits>
 
-
 using OpenVDS::VDSHandle;
 
 // Work-around for MSVC
@@ -49,7 +48,7 @@ typename std::enable_if<std::is_integral<T>::value, bool>::type check_isfinite(T
 }
 
 template <int DIMENSIONS, typename T_src, typename T_dst>
-static void copy_data_to_chunk_nd(OpenVDS::VolumeDataPageAccessor *p_access, const T_src *src,
+static void copy_data_to_chunk_nd(OpenVDS::VolumeDataPageAccessor *p_access, const T_src *src, size_t src_length,
                                const OpenVDS::VolumeDataLayout *layout, int chunk)
 {
   using Vec_t = ndvec::NDVec<DIMENSIONS, int>;
@@ -63,16 +62,21 @@ static void copy_data_to_chunk_nd(OpenVDS::VolumeDataPageAccessor *p_access, con
   OpenVDS::VolumeDataPage *page(p_access->CreatePage(chunk));
 
   T_dst *dest = reinterpret_cast<T_dst *>(page->GetWritableBuffer(chunk_pitch));
-  p_access->GetChunkMinMax(chunk, min, max);
+  Vec_t chunkPitch = Vec_t::create(chunk_pitch, OpenVDS::Dimensionality_Max);
 
+  p_access->GetChunkMinMax(chunk, min, max);
   Vec_t pos = Vec_t::create(min, OpenVDS::Dimensionality_Max);
   Vec_t shape = Vec_t::create(max, OpenVDS::Dimensionality_Max) - pos;
   Vec_t srcShape;
   for (int i = 0; i < DIMENSIONS; ++i) {
     srcShape.Val[i] = layout->GetAxisDescriptor(i).GetNumSamples();
   }
-  auto destIterator = Iterator_t(shape);
-  auto srcIterator = Iterator_t(shape, pos, srcShape);
+  if (src_length < srcShape.size()) {
+    throw std::invalid_argument("Source array too small.");
+  }
+
+  auto destIterator = Iterator_t(shape, chunkPitch);
+  auto srcIterator = Iterator_t(shape, srcShape.to_pitch(), pos);
 
   assert(destIterator.size() == srcIterator.size());
 
@@ -87,25 +91,11 @@ static void copy_data_to_chunk_nd(OpenVDS::VolumeDataPageAccessor *p_access, con
   page->Release();
 }
 
-template <typename T_src, typename T_dst>
-static void copy_data_to_chunk_2d(OpenVDS::VolumeDataPageAccessor *p_access, const T_src *src,
-                               const OpenVDS::VolumeDataLayout *layout, int chunk)
-{
-  copy_data_to_chunk_nd<2, T_src, T_dst>(p_access, src, layout, chunk);
-}
-
-template <typename T_src, typename T_dst>
-static void copy_data_to_chunk_3d(OpenVDS::VolumeDataPageAccessor *p_access, const T_src *src,
-                               const OpenVDS::VolumeDataLayout *layout, int chunk)
-{
-  copy_data_to_chunk_nd<3, T_src, T_dst>(p_access, src, layout, chunk);
-}
-
 template <typename T>
-using copy_fcn_t = std::function<void(OpenVDS::VolumeDataPageAccessor *, const T *, const OpenVDS::VolumeDataLayout *, int)>;
+using copy_fcn_t = std::function<void(OpenVDS::VolumeDataPageAccessor *, const T *, size_t, const OpenVDS::VolumeDataLayout *, int)>;
 
-template <typename T>
-static copy_fcn_t<T> getCopyFunction_2d(OpenVDS::VolumeDataChannelDescriptor::Format format)
+template <int DIMENSIONS, typename T>
+static copy_fcn_t<T> getCopyFunction_nd(OpenVDS::VolumeDataChannelDescriptor::Format format)
 {
     using OpenVDS::VolumeDataChannelDescriptor;
 
@@ -113,54 +103,26 @@ static copy_fcn_t<T> getCopyFunction_2d(OpenVDS::VolumeDataChannelDescriptor::Fo
         case VolumeDataChannelDescriptor::Format::Format_1Bit:
             // [[fallthrough]]
         case VolumeDataChannelDescriptor::Format::Format_U8:
-            return &copy_data_to_chunk_2d<T, std::uint8_t>;
+            return &copy_data_to_chunk_nd<DIMENSIONS, T, std::uint8_t>;
         case VolumeDataChannelDescriptor::Format::Format_U16:
-            return &copy_data_to_chunk_2d<T, std::uint16_t>;
+            return &copy_data_to_chunk_nd<DIMENSIONS, T, std::uint16_t>;
         case VolumeDataChannelDescriptor::Format::Format_R32:
-            return &copy_data_to_chunk_2d<T, float>;
+            return &copy_data_to_chunk_nd<DIMENSIONS, T, float>;
         case VolumeDataChannelDescriptor::Format::Format_U32:
-            return &copy_data_to_chunk_2d<T, std::uint32_t>;
+            return &copy_data_to_chunk_nd<DIMENSIONS, T, std::uint32_t>;
         case VolumeDataChannelDescriptor::Format::Format_R64:
-            return &copy_data_to_chunk_2d<T, double>;
+            return &copy_data_to_chunk_nd<DIMENSIONS, T, double>;
         case VolumeDataChannelDescriptor::Format::Format_U64:
-            return &copy_data_to_chunk_2d<T, std::uint64_t>;
+            return &copy_data_to_chunk_nd<DIMENSIONS, T, std::uint64_t>;
         case VolumeDataChannelDescriptor::Format::Format_Any:
             // [[fallthrough]]
         default:
             throw std::runtime_error("Cannot process format 'any'");
     }
 }
-
-template <typename T>
-static copy_fcn_t<T> getCopyFunction_3d(OpenVDS::VolumeDataChannelDescriptor::Format format)
-{
-    using OpenVDS::VolumeDataChannelDescriptor;
-
-    switch(format) {
-        case VolumeDataChannelDescriptor::Format::Format_1Bit:
-            // [[fallthrough]]
-        case VolumeDataChannelDescriptor::Format::Format_U8:
-            return &copy_data_to_chunk_3d<T, std::uint8_t>;
-        case VolumeDataChannelDescriptor::Format::Format_U16:
-            return &copy_data_to_chunk_3d<T, std::uint16_t>;
-        case VolumeDataChannelDescriptor::Format::Format_R32:
-            return &copy_data_to_chunk_3d<T, float>;
-        case VolumeDataChannelDescriptor::Format::Format_U32:
-            return &copy_data_to_chunk_3d<T, std::uint32_t>;
-        case VolumeDataChannelDescriptor::Format::Format_R64:
-            return &copy_data_to_chunk_3d<T, double>;
-        case VolumeDataChannelDescriptor::Format::Format_U64:
-            return &copy_data_to_chunk_3d<T, std::uint64_t>;
-        case VolumeDataChannelDescriptor::Format::Format_Any:
-            // [[fallthrough]]
-        default:
-            throw std::runtime_error("Cannot process format 'any'");
-    }
-}
-
 
 template <class T>
-void copy_data(const VDSHandle handle, const T *src, const std::string& channelName)
+void copy_data(const VDSHandle handle, const T *src, size_t src_length, const std::string& channelName)
 {
     auto accessManager = OpenVDS::GetAccessManager(handle);
     const auto *layout = accessManager.GetVolumeDataLayout();
@@ -174,11 +136,11 @@ void copy_data(const VDSHandle handle, const T *src, const std::string& channelN
 
     switch (layout->GetDimensionality()) {
     case 2:
-        copy_fcn = getCopyFunction_2d<T>(layout->GetChannelFormat(channel));
+        copy_fcn = getCopyFunction_nd<2, T>(layout->GetChannelFormat(channel));
         dim = OpenVDS::DimensionsND::Dimensions_01;
         break;
     case 3:
-        copy_fcn = getCopyFunction_3d<T>(layout->GetChannelFormat(channel));
+        copy_fcn = getCopyFunction_nd<3, T>(layout->GetChannelFormat(channel));
         dim = OpenVDS::DimensionsND::Dimensions_012;
         break;
     default:
@@ -189,157 +151,114 @@ void copy_data(const VDSHandle handle, const T *src, const std::string& channelN
                                                                    OpenVDS::VolumeDataAccessManager::AccessMode_Create);
 
     for (int chunk = 0; chunk < pageAccessor->GetChunkCount(); chunk++) {
-        copy_fcn(pageAccessor, src, layout, chunk);
+        copy_fcn(pageAccessor, src, src_length, layout, chunk);
     }
 
     pageAccessor->Commit();
 }
 
-
-static VDSHandle getVdsHandle(JNIEnv *env, jobject jni_ptr)
-{
-    jclass obj_class = env->GetObjectClass(jni_ptr);
-    jmethodID mid = env->GetMethodID(obj_class, "handle", "()J");
-    jlong ptr = env->CallLongMethod(jni_ptr, mid);
-
-    return reinterpret_cast<VDSHandle>(ptr);
-}
-
-
 #ifdef __cplusplus
 extern "C" {
 #endif
-    /*
-     * Class:     org_opengroup_openvds_OpenVDS
-     * Method:    cpWriteData_r32
-     * Signature: (Lorg/opengroup/openvds/JniPointer;[DLjava/lang/String;)V
-     */
-   JNIEXPORT void JNICALL Java_org_opengroup_openvds_OpenVDS_cpWriteData_1r32(JNIEnv *env, jclass, jobject jJNI_ptr,
-                                                                              jfloatArray jSrc, jstring jChannel)
-    {
-        CPPJNI_TRY {
-            VDSHandle vds = getVdsHandle(env, jJNI_ptr);
-            float* src = reinterpret_cast<float*>(env->GetFloatArrayElements(jSrc, 0));
-            std::string channelName = JStringToString(env, jChannel);
-            copy_data(vds, src, channelName);
-            env->ReleaseFloatArrayElements(jSrc, src, 0);
-        }
 
-        CPPJNI_CATCH;
-    }
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_OpenVDS_writeArrayR32Impl(JNIEnv *env, jclass, jlong native_object, jfloatArray jSrc, jstring jChannel)
+{
+  CPPJNI_TRY 
+  {
+    auto vds = CPPJNI_cast<OpenVDS::VDS>(native_object);
+    float* src = reinterpret_cast<float*>(env->GetFloatArrayElements(jSrc, 0));
+    size_t src_length = env->GetArrayLength(jSrc);
+    std::string channelName = JStringToString(env, jChannel);
+    copy_data(vds, src, src_length, channelName);
+    env->ReleaseFloatArrayElements(jSrc, src, 0);
+  }
+  CPPJNI_CATCH;
+}
 
-    /*
-     * Class:     org_opengroup_openvds_OpenVDS
-     * Method:    cpWriteData_r64
-     * Signature: (Lorg/opengroup/openvds/JniPointer;[DLjava/lang/String;)V
-     */
-    JNIEXPORT void JNICALL Java_org_opengroup_openvds_OpenVDS_cpWriteData_1r64(JNIEnv *env, jclass, jobject jJNI_ptr,
-                                                                               jdoubleArray jSrc, jstring jChannel)
-    {
-        CPPJNI_TRY {
-            VDSHandle vds = getVdsHandle(env, jJNI_ptr);
-            double* src = reinterpret_cast<double*>(env->GetDoubleArrayElements(jSrc, 0));
-            std::string channelName = JStringToString(env, jChannel);
-            copy_data(vds, src, channelName);
-            env->ReleaseDoubleArrayElements(jSrc, src, 0);
-        }
-        CPPJNI_CATCH;
-    }
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_OpenVDS_writeArrayR64Impl(JNIEnv *env, jclass, jlong native_object, jdoubleArray jSrc, jstring jChannel)
+{
+  CPPJNI_TRY 
+  {
+    auto vds = CPPJNI_cast<OpenVDS::VDS>(native_object);
+    double* src = reinterpret_cast<double*>(env->GetDoubleArrayElements(jSrc, 0));
+    size_t src_length = env->GetArrayLength(jSrc);
+    std::string channelName = JStringToString(env, jChannel);
+    copy_data(vds, src, src_length, channelName);
+    env->ReleaseDoubleArrayElements(jSrc, src, 0);
+  }
+  CPPJNI_CATCH;
+}
 
-    /*
-     * Class:     org_opengroup_openvds_OpenVDS
-     * Method:    cpWriteData_bool
-     * Signature: (Lorg/opengroup/openvds/JniPointer;[ZLjava/lang/String;)V
-     */
-    JNIEXPORT void JNICALL Java_org_opengroup_openvds_OpenVDS_cpWriteData_1bool(JNIEnv *env, jclass, jobject jJNI_ptr,
-                                                                                jbooleanArray jSrc, jstring jChannel)
-    {
-        CPPJNI_TRY {
-            VDSHandle vds = getVdsHandle(env, jJNI_ptr);
-            std::uint8_t* src = reinterpret_cast<std::uint8_t *>(env->GetBooleanArrayElements(jSrc, 0));
-            std::string channelName = JStringToString(env, jChannel);
-            copy_data(vds, src, channelName);
-            env->ReleaseBooleanArrayElements(jSrc, src, 0);
-        }
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_OpenVDS_writeArrayBoolImpl(JNIEnv *env, jclass, jlong native_object, jbooleanArray jSrc, jstring jChannel)
+{
+  CPPJNI_TRY 
+  {
+    auto vds = CPPJNI_cast<OpenVDS::VDS>(native_object);
+    std::uint8_t* src = reinterpret_cast<std::uint8_t *>(env->GetBooleanArrayElements(jSrc, 0));
+    size_t src_length = env->GetArrayLength(jSrc);
+    std::string channelName = JStringToString(env, jChannel);
+    copy_data(vds, src, src_length, channelName);
+    env->ReleaseBooleanArrayElements(jSrc, src, 0);
+  }
+  CPPJNI_CATCH;
+}
 
-        CPPJNI_CATCH;
-    }
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_OpenVDS_writeArrayU8Impl(JNIEnv *env, jclass, jlong native_object, jbyteArray jSrc, jstring jChannel)
+{
+  CPPJNI_TRY 
+  {
+    auto vds = CPPJNI_cast<OpenVDS::VDS>(native_object);
+    std::int8_t* src = reinterpret_cast<std::int8_t *>(env->GetByteArrayElements(jSrc, 0));
+    size_t src_length = env->GetArrayLength(jSrc);
+    std::string channelName = JStringToString(env, jChannel);
+    copy_data(vds, src, src_length, channelName);
+    env->ReleaseByteArrayElements(jSrc, src, 0);
+  }
+  CPPJNI_CATCH;
+}
 
-    /*
-     * Class:     org_opengroup_openvds_OpenVDS
-     * Method:    cpWriteData_u8
-     * Signature: (Lorg/opengroup/openvds/JniPointer;[BLjava/lang/String;)V
-     */
-    JNIEXPORT void JNICALL Java_org_opengroup_openvds_OpenVDS_cpWriteData_1u8(JNIEnv *env, jclass, jobject jJNI_ptr,
-                                                                              jbyteArray jSrc, jstring jChannel)
-    {
-        CPPJNI_TRY {
-            VDSHandle vds = getVdsHandle(env, jJNI_ptr);
-            std::int8_t* src = reinterpret_cast<std::int8_t *>(env->GetByteArrayElements(jSrc, 0));
-            std::string channelName = JStringToString(env, jChannel);
-            copy_data(vds, src, channelName);
-            env->ReleaseByteArrayElements(jSrc, src, 0);
-        }
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_OpenVDS_writeArrayU16Impl(JNIEnv *env, jclass, jlong native_object, jshortArray jSrc, jstring jChannel)
+{
+  CPPJNI_TRY 
+  {
+    auto vds = CPPJNI_cast<OpenVDS::VDS>(native_object);
+    std::int16_t* src = reinterpret_cast<std::int16_t *>(env->GetShortArrayElements(jSrc, 0));
+    size_t src_length = env->GetArrayLength(jSrc);
+    std::string channelName = JStringToString(env, jChannel);
+    copy_data(vds, src, src_length, channelName);
+    env->ReleaseShortArrayElements(jSrc, src, 0);
+  }
+  CPPJNI_CATCH;
+}
 
-        CPPJNI_CATCH;
-    }
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_OpenVDS_writeArrayU32Impl(JNIEnv *env, jclass, jlong native_object, jintArray jSrc, jstring jChannel)
+{
+  CPPJNI_TRY 
+  {
+    auto vds = CPPJNI_cast<OpenVDS::VDS>(native_object);
+    std::int32_t* src = reinterpret_cast<std::int32_t *>(env->GetIntArrayElements(jSrc, 0));
+    size_t src_length = env->GetArrayLength(jSrc);
+    std::string channelName = JStringToString(env, jChannel);
+    copy_data(vds, src, src_length, channelName);
+    env->ReleaseIntArrayElements(jSrc, (jint *) src, 0);
+  }
+  CPPJNI_CATCH;
+}
 
-    /*
-     * Class:     org_opengroup_openvds_OpenVDS
-     * Method:    cpWriteData_u16
-     * Signature: (Lorg/opengroup/openvds/JniPointer;[SLjava/lang/String;)V
-     */
-    JNIEXPORT void JNICALL Java_org_opengroup_openvds_OpenVDS_cpWriteData_1u16(JNIEnv *env, jclass, jobject jJNI_ptr,
-                                                                               jshortArray jSrc, jstring jChannel)
-    {
-        CPPJNI_TRY {
-            VDSHandle vds = getVdsHandle(env, jJNI_ptr);
-            std::int16_t* src = reinterpret_cast<std::int16_t *>(env->GetShortArrayElements(jSrc, 0));
-            std::string channelName = JStringToString(env, jChannel);
-            copy_data(vds, src, channelName);
-            env->ReleaseShortArrayElements(jSrc, src, 0);
-        }
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_OpenVDS_writeArrayU64Impl(JNIEnv *env, jclass, jlong native_object, jlongArray jSrc, jstring jChannel)
+{
+  CPPJNI_TRY 
+  {
+    auto vds = CPPJNI_cast<OpenVDS::VDS>(native_object);
+    std::int64_t* src = reinterpret_cast<std::int64_t *>(env->GetLongArrayElements(jSrc, 0));
+    size_t src_length = env->GetArrayLength(jSrc);
+    std::string channelName = JStringToString(env, jChannel);
+    copy_data(vds, src, src_length, channelName);
+    env->ReleaseLongArrayElements(jSrc, src, 0);
+  }
+  CPPJNI_CATCH;
+}
 
-        CPPJNI_CATCH;
-    }
-
-    /*
-     * Class:     org_opengroup_openvds_OpenVDS
-     * Method:    cpWriteData_u32
-     * Signature: (Lorg/opengroup/openvds/JniPointer;[ILjava/lang/String;)V
-     */
-    JNIEXPORT void JNICALL Java_org_opengroup_openvds_OpenVDS_cpWriteData_1u32(JNIEnv *env, jclass, jobject jJNI_ptr,
-                                                                               jintArray jSrc, jstring jChannel)
-    {
-        CPPJNI_TRY {
-            VDSHandle vds = getVdsHandle(env, jJNI_ptr);
-            std::int32_t* src = reinterpret_cast<std::int32_t *>(env->GetIntArrayElements(jSrc, 0));
-            std::string channelName = JStringToString(env, jChannel);
-            copy_data(vds, src, channelName);
-            env->ReleaseIntArrayElements(jSrc, (jint *) src, 0);
-        }
-
-        CPPJNI_CATCH;
-    }
-
-    /*
-     * Class:     org_opengroup_openvds_OpenVDS
-     * Method:    cpWriteData_u64
-     * Signature: (Lorg/opengroup/openvds/JniPointer;[JLjava/lang/String;)V
-     */
-    JNIEXPORT void JNICALL Java_org_opengroup_openvds_OpenVDS_cpWriteData_1u64(JNIEnv *env, jclass, jobject jJNI_ptr,
-                                                                               jlongArray jSrc, jstring jChannel)
-    {
-        CPPJNI_TRY {
-            VDSHandle vds = getVdsHandle(env, jJNI_ptr);
-            std::int64_t* src = reinterpret_cast<std::int64_t *>(env->GetLongArrayElements(jSrc, 0));
-            std::string channelName = JStringToString(env, jChannel);
-            copy_data(vds, src, channelName);
-            env->ReleaseLongArrayElements(jSrc, src, 0);
-        }
-
-        CPPJNI_CATCH;
-    }
 #ifdef __cplusplus
 }
 #endif
