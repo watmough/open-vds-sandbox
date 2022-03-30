@@ -21,13 +21,12 @@ import org.junit.*;
 import org.opengroup.openvds.*;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertThrows;
-import java.io.File;
-import java.nio.ByteBuffer;
-import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 
-import static org.opengroup.openvds.VolumeDataChannelDescriptor.Format;
+import static org.opengroup.openvds.VolumeDataFormat.*;
+import static org.opengroup.openvds.VolumeDataComponents.*;
+import static org.opengroup.openvds.VolumeDataLayoutDescriptor.BrickSize;
+import static org.opengroup.openvds.VolumeDataLayoutDescriptor.LODLevels;
 
 public class WriteDataTest {
     @Test
@@ -38,7 +37,7 @@ public class WriteDataTest {
         VDS vds;
         VDSError vdsError = new VDSError();
         String[] names = new String[]{"chan1", "chan2"};
-        VolumeDataChannelDescriptor.Format f = VolumeDataChannelDescriptor.Format.R32;
+        VolumeDataFormat f = Format_R32;
         OpenOptions options;
 
         String connectionString = System.getenv("CONNECTION_STRING");
@@ -71,7 +70,7 @@ public class WriteDataTest {
             int[] max = new int[]{nz, nx, 0, 0, 0, 0};
             int channel = layout.getChannelIndex("chan1");
             DimensionsND dims = DimensionsND.Dimensions_01;
-            try (VolumeDataRequest req = access.requestVolumeSubset(dims, 0, channel, min, max, Format.R32)) {
+            try (VolumeDataRequest req = access.requestVolumeSubset(dims, 0, channel, min, max, Format_R32)) {
                 req.waitForCompletion();
                 FloatBuffer outbuf = req.getBuffer().asFloatBuffer();
                 float[] arr = new float[outbuf.remaining()];
@@ -98,7 +97,7 @@ public class WriteDataTest {
         OpenOptions options;
 
         String connectionString = System.getenv("CONNECTION_STRING");
-        VolumeDataChannelDescriptor.Format f = VolumeDataChannelDescriptor.Format.R32;
+        VolumeDataFormat f = Format_R32;
         if (connectionString == null) {
             options = new InMemoryOpenOptions("rtrip_3d");
             vds = CreateVDSTest.createVDS(nz, ny, nx, f, options, CreateVDSTest.createDefaultChannelDescriptors(names, f), vdsError);
@@ -130,7 +129,7 @@ public class WriteDataTest {
             int[] max = new int[]{nz, ny, nx, 0, 0, 0};
             int channel = layout.getChannelIndex("chan2");
             DimensionsND dims = DimensionsND.Dimensions_012;
-            try (VolumeDataRequest req = access.requestVolumeSubset(dims, 0, channel, min, max, Format.R32)) {
+            try (VolumeDataRequest req = access.requestVolumeSubset(dims, 0, channel, min, max, Format_R32)) {
                 req.waitForCompletion();
                 FloatBuffer outbuf = req.getBuffer().asFloatBuffer();
                 float[] arr = new float[outbuf.remaining()];

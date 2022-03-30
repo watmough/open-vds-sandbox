@@ -118,26 +118,26 @@ public class VolumeDataLayout extends MetadataReadAccess {
         return VolumeDataAxisDescriptor.fromNativeObject(GetAxisDescriptorImpl(getNativeObject(), dimension));
     }
 
-    ///AUTOGEN-OK: CXX_METHOD GetChannelFormat OpenVDS::VolumeDataChannelDescriptor::Format (int) const FUNCTIONPROTO
+    ///AUTOGEN-OK: CXX_METHOD GetChannelFormat OpenVDS::VolumeDataFormat (int) const FUNCTIONPROTO
     native private long GetChannelFormatImpl(long native_object, int channel);
 
     /**
      * get the format for the given channel index
      * 
      */
-    public VolumeDataChannelDescriptor.Format getChannelFormat(int channel) {
-        return VolumeDataChannelDescriptor.Format.fromInt((int)GetChannelFormatImpl(getNativeObject(), channel));
+    public VolumeDataFormat getChannelFormat(int channel) {
+        return VolumeDataFormat.fromInt((int)GetChannelFormatImpl(getNativeObject(), channel));
     }
 
-    ///AUTOGEN-OK: CXX_METHOD GetChannelComponents OpenVDS::VolumeDataChannelDescriptor::Components (int) const FUNCTIONPROTO
+    ///AUTOGEN-OK: CXX_METHOD GetChannelComponents OpenVDS::VolumeDataComponents (int) const FUNCTIONPROTO
     native private long GetChannelComponentsImpl(long native_object, int channel);
 
     /**
      * get the vector count for the given channel index
      * 
      */
-    public VolumeDataChannelDescriptor.Components getChannelComponents(int channel) {
-        return VolumeDataChannelDescriptor.Components.fromInt((int)GetChannelComponentsImpl(getNativeObject(), channel));
+    public VolumeDataComponents getChannelComponents(int channel) {
+        return VolumeDataComponents.fromInt((int)GetChannelComponentsImpl(getNativeObject(), channel));
     }
 
     ///AUTOGEN-OK: CXX_METHOD GetChannelName const char *(int) const FUNCTIONPROTO

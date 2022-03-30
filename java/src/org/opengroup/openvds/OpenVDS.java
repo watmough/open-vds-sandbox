@@ -424,12 +424,50 @@ Available schemes are s3:// azure://
     native private static void CloseImpl(long handle);
 
     /**
-     * Close a VDS and free up all associated resources
+     * Close a VDS and free up all associated resources. If an error occurs, an exception will be thrown.
      * 
      * @param handle The handle of the VDS
      */
     public static void close(VDS handle) {
         CloseImpl(ManagedBase.requireNonNull(handle, "handle may not be null").getNativeObject());
+    }
+
+    ///AUTOGEN-OK: FUNCTION_DECL Close void (OpenVDS::VDS *, OpenVDS::Error &) FUNCTIONPROTO
+    native private static void Close2Impl(long handle, long error);
+
+    /**
+     * Close a VDS and free up all associated resources
+     * 
+     * @param handle The handle of the VDS
+     * @param error If an error occured, the error code and message will be written to this output parameter
+     */
+    public static void close(VDS handle, Error error) {
+        Close2Impl(ManagedBase.requireNonNull(handle, "handle may not be null").getNativeObject(), ManagedBase.requireNonNull(error, "error may not be null").getNativeObject());
+    }
+
+    ///AUTOGEN-OK: FUNCTION_DECL RetryableClose void (OpenVDS::VDS *) FUNCTIONPROTO
+    native private static void RetryableCloseImpl(long handle);
+
+    /**
+     * Close a VDS and free up all associated resources if the close succeeds. If an error occurs, an exception will be thrown.
+     * 
+     * @param handle The handle of the VDS
+     */
+    public static void retryableClose(VDS handle) {
+        RetryableCloseImpl(ManagedBase.requireNonNull(handle, "handle may not be null").getNativeObject());
+    }
+
+    ///AUTOGEN-OK: FUNCTION_DECL RetryableClose void (OpenVDS::VDS *, OpenVDS::Error &) FUNCTIONPROTO
+    native private static void RetryableClose2Impl(long handle, long error);
+
+    /**
+     * Close a VDS and free up all associated resources if the close succeeds
+     * 
+     * @param handle The handle of the VDS
+     * @param error If an error occured, the error code and message will be written to this output parameter
+     */
+    public static void retryableClose(VDS handle, Error error) {
+        RetryableClose2Impl(ManagedBase.requireNonNull(handle, "handle may not be null").getNativeObject(), ManagedBase.requireNonNull(error, "error may not be null").getNativeObject());
     }
 
     ///AUTOGEN-OK: FUNCTION_DECL GetGlobalState OpenVDS::GlobalState *() FUNCTIONPROTO

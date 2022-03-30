@@ -1274,7 +1274,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return createVolumeData4DReadWriteAccessorR64(dimensionsND, LOD, channel, /*replacementNoValue=*/null);
     }
 
-    ///AUTOGEN-OK: CXX_METHOD GetVolumeSubsetBufferSize int64_t (int const (&)[6], int const (&)[6], OpenVDS::VolumeDataChannelDescriptor::Format, int, int) FUNCTIONPROTO
+    ///AUTOGEN-OK: CXX_METHOD GetVolumeSubsetBufferSize int64_t (int const (&)[6], int const (&)[6], OpenVDS::VolumeDataFormat, int, int) FUNCTIONPROTO
     native private long GetVolumeSubsetBufferSizeImpl(long native_object, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, long format, int LOD, int channel);
 
     /**
@@ -1287,7 +1287,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
      * @param channel The channel index the requested data is read from.
      * @return The buffer size needed.
      */
-    public long getVolumeSubsetBufferSize(int[] minVoxelCoordinates, int[] maxVoxelCoordinates, VolumeDataChannelDescriptor.Format format, int LOD, int channel) {
+    public long getVolumeSubsetBufferSize(int[] minVoxelCoordinates, int[] maxVoxelCoordinates, VolumeDataFormat format, int LOD, int channel) {
         ManagedBase.requireNonNull(minVoxelCoordinates, "minVoxelCoordinates may not be null");
         if (minVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"minVoxelCoordinates\" must have length 6");
         ManagedBase.requireNonNull(maxVoxelCoordinates, "maxVoxelCoordinates may not be null");
@@ -1305,7 +1305,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
      * @return The buffer size needed.
      */
 
-    public long getVolumeSubsetBufferSize(int[] minVoxelCoordinates, int[] maxVoxelCoordinates, VolumeDataChannelDescriptor.Format format, int LOD) {
+    public long getVolumeSubsetBufferSize(int[] minVoxelCoordinates, int[] maxVoxelCoordinates, VolumeDataFormat format, int LOD) {
         return getVolumeSubsetBufferSize(minVoxelCoordinates, maxVoxelCoordinates, format, LOD, /*channel=*/0);
     }
 
@@ -1318,11 +1318,11 @@ of the number of chunks in some of the dimensions. Do not change this from the d
      * @return The buffer size needed.
      */
 
-    public long getVolumeSubsetBufferSize(int[] minVoxelCoordinates, int[] maxVoxelCoordinates, VolumeDataChannelDescriptor.Format format) {
+    public long getVolumeSubsetBufferSize(int[] minVoxelCoordinates, int[] maxVoxelCoordinates, VolumeDataFormat format) {
         return getVolumeSubsetBufferSize(minVoxelCoordinates, maxVoxelCoordinates, format, /*LOD=*/0, /*channel=*/0);
     }
 
-    ///AUTOGEN-OK: CXX_METHOD RequestVolumeSubset std::shared_ptr<OpenVDS::VolumeDataRequest> (void *, int64_t, OpenVDS::DimensionsND, int, int, int const (&)[6], int const (&)[6], OpenVDS::VolumeDataChannelDescriptor::Format, OpenVDS::optional<float>) FUNCTIONPROTO
+    ///AUTOGEN-OK: CXX_METHOD RequestVolumeSubset std::shared_ptr<OpenVDS::VolumeDataRequest> (void *, int64_t, OpenVDS::DimensionsND, int, int, int const (&)[6], int const (&)[6], OpenVDS::VolumeDataFormat, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long RequestVolumeSubsetImpl(long native_object, ByteBuffer buffer, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, long format, float replacementNoValue, boolean use_replacementNoValue);
 
     /**
@@ -1338,7 +1338,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
      * @param replacementNoValue If specified, this value is used to replace regions of the input VDS that has no data.
      * @return A VolumeDataRequest instance encapsulating the request status and buffer.
      */
-    public VolumeDataRequest requestVolumeSubset(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, VolumeDataChannelDescriptor.Format format, Float replacementNoValue) {
+    public VolumeDataRequest requestVolumeSubset(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, VolumeDataFormat format, Float replacementNoValue) {
         ManagedBase.requireNonNull(minVoxelCoordinates, "minVoxelCoordinates may not be null");
         if (minVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"minVoxelCoordinates\" must have length 6");
         ManagedBase.requireNonNull(maxVoxelCoordinates, "maxVoxelCoordinates may not be null");
@@ -1359,7 +1359,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
      * @return A VolumeDataRequest instance encapsulating the request status and buffer.
      */
 
-    public VolumeDataRequest requestVolumeSubset(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, VolumeDataChannelDescriptor.Format format) {
+    public VolumeDataRequest requestVolumeSubset(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, VolumeDataFormat format) {
         return requestVolumeSubset(buffer, dimensionsND, LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, format, /*replacementNoValue=*/null);
     }
 
@@ -1385,7 +1385,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeDataRequest1Bit.fromNativeObject(RequestVolumeSubset1BitImpl(getNativeObject(), ManagedBuffer.ensureByteBufferValid(buffer), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, minVoxelCoordinates, maxVoxelCoordinates));
     }
 
-    ///AUTOGEN-OK: CXX_METHOD RequestVolumeSubset std::shared_ptr<OpenVDS::VolumeDataRequest> (OpenVDS::DimensionsND, int, int, int const (&)[6], int const (&)[6], OpenVDS::VolumeDataChannelDescriptor::Format, OpenVDS::optional<float>) FUNCTIONPROTO
+    ///AUTOGEN-OK: CXX_METHOD RequestVolumeSubset std::shared_ptr<OpenVDS::VolumeDataRequest> (OpenVDS::DimensionsND, int, int, int const (&)[6], int const (&)[6], OpenVDS::VolumeDataFormat, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long RequestVolumeSubset3Impl(long native_object, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, long format, float replacementNoValue, boolean use_replacementNoValue);
 
     /**
@@ -1400,7 +1400,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
      * @param replacementNoValue If specified, this value is used to replace regions of the input VDS that has no data.
      * @return A VolumeDataRequest instance encapsulating the request status and buffer.
      */
-    public VolumeDataRequest requestVolumeSubset(DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, VolumeDataChannelDescriptor.Format format, Float replacementNoValue) {
+    public VolumeDataRequest requestVolumeSubset(DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, VolumeDataFormat format, Float replacementNoValue) {
         ManagedBase.requireNonNull(minVoxelCoordinates, "minVoxelCoordinates may not be null");
         if (minVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"minVoxelCoordinates\" must have length 6");
         ManagedBase.requireNonNull(maxVoxelCoordinates, "maxVoxelCoordinates may not be null");
@@ -1420,7 +1420,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
      * @return A VolumeDataRequest instance encapsulating the request status and buffer.
      */
 
-    public VolumeDataRequest requestVolumeSubset(DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, VolumeDataChannelDescriptor.Format format) {
+    public VolumeDataRequest requestVolumeSubset(DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, VolumeDataFormat format) {
         return requestVolumeSubset(dimensionsND, LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, format, /*replacementNoValue=*/null);
     }
 
@@ -1445,7 +1445,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeDataRequest1Bit.fromNativeObject(RequestVolumeSubset1Bit2Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, minVoxelCoordinates, maxVoxelCoordinates));
     }
 
-    ///AUTOGEN-OK: CXX_METHOD GetProjectedVolumeSubsetBufferSize int64_t (int const (&)[6], int const (&)[6], OpenVDS::DimensionsND, OpenVDS::VolumeDataChannelDescriptor::Format, int, int) FUNCTIONPROTO
+    ///AUTOGEN-OK: CXX_METHOD GetProjectedVolumeSubsetBufferSize int64_t (int const (&)[6], int const (&)[6], OpenVDS::DimensionsND, OpenVDS::VolumeDataFormat, int, int) FUNCTIONPROTO
     native private long GetProjectedVolumeSubsetBufferSizeImpl(long native_object, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, long projectedDimensions, long format, int LOD, int channel);
 
     /**
@@ -1459,7 +1459,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
      * @param channel The channel index the requested data is read from.
      * @return The buffer size needed.
      */
-    public long getProjectedVolumeSubsetBufferSize(int[] minVoxelCoordinates, int[] maxVoxelCoordinates, DimensionsND projectedDimensions, VolumeDataChannelDescriptor.Format format, int LOD, int channel) {
+    public long getProjectedVolumeSubsetBufferSize(int[] minVoxelCoordinates, int[] maxVoxelCoordinates, DimensionsND projectedDimensions, VolumeDataFormat format, int LOD, int channel) {
         ManagedBase.requireNonNull(minVoxelCoordinates, "minVoxelCoordinates may not be null");
         if (minVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"minVoxelCoordinates\" must have length 6");
         ManagedBase.requireNonNull(maxVoxelCoordinates, "maxVoxelCoordinates may not be null");
@@ -1478,7 +1478,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
      * @return The buffer size needed.
      */
 
-    public long getProjectedVolumeSubsetBufferSize(int[] minVoxelCoordinates, int[] maxVoxelCoordinates, DimensionsND projectedDimensions, VolumeDataChannelDescriptor.Format format, int LOD) {
+    public long getProjectedVolumeSubsetBufferSize(int[] minVoxelCoordinates, int[] maxVoxelCoordinates, DimensionsND projectedDimensions, VolumeDataFormat format, int LOD) {
         return getProjectedVolumeSubsetBufferSize(minVoxelCoordinates, maxVoxelCoordinates, projectedDimensions, format, LOD, /*channel=*/0);
     }
 
@@ -1492,11 +1492,11 @@ of the number of chunks in some of the dimensions. Do not change this from the d
      * @return The buffer size needed.
      */
 
-    public long getProjectedVolumeSubsetBufferSize(int[] minVoxelCoordinates, int[] maxVoxelCoordinates, DimensionsND projectedDimensions, VolumeDataChannelDescriptor.Format format) {
+    public long getProjectedVolumeSubsetBufferSize(int[] minVoxelCoordinates, int[] maxVoxelCoordinates, DimensionsND projectedDimensions, VolumeDataFormat format) {
         return getProjectedVolumeSubsetBufferSize(minVoxelCoordinates, maxVoxelCoordinates, projectedDimensions, format, /*LOD=*/0, /*channel=*/0);
     }
 
-    ///AUTOGEN-OK: CXX_METHOD RequestProjectedVolumeSubset std::shared_ptr<OpenVDS::VolumeDataRequest> (void *, int64_t, OpenVDS::DimensionsND, int, int, int const (&)[6], int const (&)[6], const OpenVDS::Vector<float, 4> &, OpenVDS::DimensionsND, OpenVDS::VolumeDataChannelDescriptor::Format, OpenVDS::InterpolationMethod, OpenVDS::optional<float>) FUNCTIONPROTO
+    ///AUTOGEN-OK: CXX_METHOD RequestProjectedVolumeSubset std::shared_ptr<OpenVDS::VolumeDataRequest> (void *, int64_t, OpenVDS::DimensionsND, int, int, int const (&)[6], int const (&)[6], const OpenVDS::Vector<float, 4> &, OpenVDS::DimensionsND, OpenVDS::VolumeDataFormat, OpenVDS::InterpolationMethod, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long RequestProjectedVolumeSubsetImpl(long native_object, ByteBuffer buffer, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, ByteBuffer voxelPlane, long voxelPlane_byteoffset, long projectedDimensions, long format, long interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
 
     /**
@@ -1515,7 +1515,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
      * @param replacementNoValue If specified, this value is used to replace regions of the input VDS that has no data.
      * @return A VolumeDataRequest instance encapsulating the request status and buffer.
      */
-    public VolumeDataRequest requestProjectedVolumeSubset(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, FloatVector4 voxelPlane, DimensionsND projectedDimensions, VolumeDataChannelDescriptor.Format format, InterpolationMethod interpolationMethod, Float replacementNoValue) {
+    public VolumeDataRequest requestProjectedVolumeSubset(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, FloatVector4 voxelPlane, DimensionsND projectedDimensions, VolumeDataFormat format, InterpolationMethod interpolationMethod, Float replacementNoValue) {
         ManagedBase.requireNonNull(minVoxelCoordinates, "minVoxelCoordinates may not be null");
         if (minVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"minVoxelCoordinates\" must have length 6");
         ManagedBase.requireNonNull(maxVoxelCoordinates, "maxVoxelCoordinates may not be null");
@@ -1539,11 +1539,11 @@ of the number of chunks in some of the dimensions. Do not change this from the d
      * @return A VolumeDataRequest instance encapsulating the request status and buffer.
      */
 
-    public VolumeDataRequest requestProjectedVolumeSubset(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, FloatVector4 voxelPlane, DimensionsND projectedDimensions, VolumeDataChannelDescriptor.Format format, InterpolationMethod interpolationMethod) {
+    public VolumeDataRequest requestProjectedVolumeSubset(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, FloatVector4 voxelPlane, DimensionsND projectedDimensions, VolumeDataFormat format, InterpolationMethod interpolationMethod) {
         return requestProjectedVolumeSubset(buffer, dimensionsND, LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, voxelPlane, projectedDimensions, format, interpolationMethod, /*replacementNoValue=*/null);
     }
 
-    ///AUTOGEN-OK: CXX_METHOD RequestProjectedVolumeSubset std::shared_ptr<OpenVDS::VolumeDataRequest> (OpenVDS::DimensionsND, int, int, int const (&)[6], int const (&)[6], const OpenVDS::Vector<float, 4> &, OpenVDS::DimensionsND, OpenVDS::VolumeDataChannelDescriptor::Format, OpenVDS::InterpolationMethod, OpenVDS::optional<float>) FUNCTIONPROTO
+    ///AUTOGEN-OK: CXX_METHOD RequestProjectedVolumeSubset std::shared_ptr<OpenVDS::VolumeDataRequest> (OpenVDS::DimensionsND, int, int, int const (&)[6], int const (&)[6], const OpenVDS::Vector<float, 4> &, OpenVDS::DimensionsND, OpenVDS::VolumeDataFormat, OpenVDS::InterpolationMethod, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long RequestProjectedVolumeSubset2Impl(long native_object, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, ByteBuffer voxelPlane, long voxelPlane_byteoffset, long projectedDimensions, long format, long interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
 
     /**
@@ -1561,7 +1561,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
      * @param replacementNoValue If specified, this value is used to replace regions of the input VDS that has no data.
      * @return A VolumeDataRequest instance encapsulating the request status and buffer.
      */
-    public VolumeDataRequest requestProjectedVolumeSubset(DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, FloatVector4 voxelPlane, DimensionsND projectedDimensions, VolumeDataChannelDescriptor.Format format, InterpolationMethod interpolationMethod, Float replacementNoValue) {
+    public VolumeDataRequest requestProjectedVolumeSubset(DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, FloatVector4 voxelPlane, DimensionsND projectedDimensions, VolumeDataFormat format, InterpolationMethod interpolationMethod, Float replacementNoValue) {
         ManagedBase.requireNonNull(minVoxelCoordinates, "minVoxelCoordinates may not be null");
         if (minVoxelCoordinates.length != 6) throw new IllegalArgumentException("Array \"minVoxelCoordinates\" must have length 6");
         ManagedBase.requireNonNull(maxVoxelCoordinates, "maxVoxelCoordinates may not be null");
@@ -1584,7 +1584,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
      * @return A VolumeDataRequest instance encapsulating the request status and buffer.
      */
 
-    public VolumeDataRequest requestProjectedVolumeSubset(DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, FloatVector4 voxelPlane, DimensionsND projectedDimensions, VolumeDataChannelDescriptor.Format format, InterpolationMethod interpolationMethod) {
+    public VolumeDataRequest requestProjectedVolumeSubset(DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, FloatVector4 voxelPlane, DimensionsND projectedDimensions, VolumeDataFormat format, InterpolationMethod interpolationMethod) {
         return requestProjectedVolumeSubset(dimensionsND, LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, voxelPlane, projectedDimensions, format, interpolationMethod, /*replacementNoValue=*/null);
     }
 

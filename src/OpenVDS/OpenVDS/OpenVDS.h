@@ -1073,7 +1073,7 @@ OPENVDS_EXPORT const char *GetOpenVDSVersion();
 /// </returnes>
 OPENVDS_EXPORT const char *GetOpenVDSRevision();
 
-#ifndef PYTHON_WRAPPER_GENERATOR
+#if !defined(PYTHON_WRAPPER_GENERATOR) && !defined(JAVA_WRAPPER_GENERATOR)
 class ScopedVDSHandle
 {
   VDSHandle m_VDS;

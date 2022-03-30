@@ -27,11 +27,11 @@ public class InMemoryVDSGenerator implements AutoCloseable {
 
     protected VDS vds;
 
-    public static VDS createVDS(int nXSamples, int nYSamples, int nZSamples, VolumeDataChannelDescriptor.Format format) {
+    public static VDS createVDS(int nXSamples, int nYSamples, int nZSamples, VolumeDataFormat format) {
         return VDS.fromNativeObject(CreateVDSImpl(nXSamples, nYSamples, nZSamples, format.value()));
     }
 
-    public InMemoryVDSGenerator(int nXSamples, int nYSamples, int nZSamples, VolumeDataChannelDescriptor.Format format) {
+    public InMemoryVDSGenerator(int nXSamples, int nYSamples, int nZSamples, VolumeDataFormat format) {
         this.vds = createVDS(nXSamples, nYSamples, nZSamples, format);
     }
 

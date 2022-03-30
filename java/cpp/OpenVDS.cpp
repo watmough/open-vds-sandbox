@@ -1488,6 +1488,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_DMSOpenOptions_ctor2Impl
   return 0;
 }
 
+///AUTOGEN-FAIL: CONSTRUCTOR DMSOpenOptions void (const std::string &, const std::string &, const std::string &, std::string (*)(const void *), const void *, int, bool) FUNCTIONPROTO
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_DMSOpenOptions_getSdAuthorityUrlImpl
   (JNIEnv * env, jobject object, jlong native_handle)
@@ -1664,6 +1665,8 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_DMSOpenOptions_getUseFileN
   CPPJNI_CATCH
   return 0;
 }
+///AUTOGEN-FAIL: FIELD_DECL authProviderCallback std::string (*)(const void *) POINTER
+///AUTOGEN-FAIL: FIELD_DECL authProviderCallbackData const void * POINTER
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_DMSOpenOptions_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
@@ -2383,6 +2386,45 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_OpenVDS_CloseImpl
   CPPJNI_TRY
   {
     OpenVDS::Close(CPPJNI_cast<OpenVDS::VDS>(handle));
+  }
+  CPPJNI_CATCH
+}
+
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_OpenVDS_Close2Impl
+  (JNIEnv * env, jclass cls, jlong handle, jlong error)
+{
+  JEnvPushPop
+    stackitem(env);
+
+  CPPJNI_TRY
+  {
+    OpenVDS::Close(CPPJNI_cast<OpenVDS::VDS>(handle), *CPPJNI_cast<OpenVDS::Error>(error));
+  }
+  CPPJNI_CATCH
+}
+
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_OpenVDS_RetryableCloseImpl
+  (JNIEnv * env, jclass cls, jlong handle)
+{
+  JEnvPushPop
+    stackitem(env);
+
+  CPPJNI_TRY
+  {
+    OpenVDS::RetryableClose(CPPJNI_cast<OpenVDS::VDS>(handle));
+  }
+  CPPJNI_CATCH
+}
+
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_OpenVDS_RetryableClose2Impl
+  (JNIEnv * env, jclass cls, jlong handle, jlong error)
+{
+  JEnvPushPop
+    stackitem(env);
+
+  CPPJNI_TRY
+  {
+    OpenVDS::RetryableClose(CPPJNI_cast<OpenVDS::VDS>(handle), *CPPJNI_cast<OpenVDS::Error>(error));
   }
   CPPJNI_CATCH
 }

@@ -22,7 +22,12 @@ import org.opengroup.openvds.*;
 import java.util.*;
 import java.nio.ByteBuffer;
 
-
+/**
+ * A VolumeDataRequest encapsulates an asynchronous request for volume data from a VDS object instance.
+ * 
+ * When created by a VolumeDataAccessManager a VolumeDataRequest will be
+ * 
+ */
 public class VolumeDataRequest extends ManagedBase implements AutoCloseable {
 
     native private static long ctorImpl();
@@ -131,6 +136,32 @@ Whenever WaitForCompletion returns false you need to call IsCanceled() to know i
         CancelAndWaitForCompletionImpl(getNativeObject());
     }
 
+    ///AUTOGEN-OK: CXX_METHOD GetErrorCode int () FUNCTIONPROTO
+    native private int GetErrorCodeImpl(long native_object);
+
+    /**
+     * Get the error code of a request that has been cancelled.
+     * 
+     * @return The error code. If the error code is positive, it corresponds to the enum values in Hue::HueSpaceLib::ErrorCode.
+Compute plugins may set their own negative error code, which causes the return value of this method to be a plain
+int value that does not correspond to one of the enum values.
+     */
+    public int getErrorCode() {
+        return GetErrorCodeImpl(getNativeObject());
+    }
+
+    ///AUTOGEN-OK: CXX_METHOD GetErrorMessage std::string () FUNCTIONPROTO
+    native private String GetErrorMessageImpl(long native_object);
+
+    /**
+     * Get the error string of a request that has been cancelled.
+     * 
+     * @return The error string.
+     */
+    public String getErrorMessage() {
+        return GetErrorMessageImpl(getNativeObject());
+    }
+
     ///AUTOGEN-OK: CXX_METHOD GetCompletionFactor float () FUNCTIONPROTO
     native private float GetCompletionFactorImpl(long native_object);
 
@@ -155,7 +186,7 @@ Whenever WaitForCompletion returns false you need to call IsCanceled() to know i
         return BufferByteSizeImpl(getNativeObject());
     }
 
-    ///AUTOGEN-OK: CXX_METHOD BufferDataType OpenVDS::VolumeDataChannelDescriptor::Format () const FUNCTIONPROTO
+    ///AUTOGEN-OK: CXX_METHOD BufferDataType OpenVDS::VolumeDataFormat () const FUNCTIONPROTO
     native private long BufferDataTypeImpl(long native_object);
 
     /**
@@ -163,8 +194,8 @@ Whenever WaitForCompletion returns false you need to call IsCanceled() to know i
      * 
      * @return The volume data format of the buffer the request is writing to.
      */
-    public VolumeDataChannelDescriptor.Format bufferDataType() {
-        return VolumeDataChannelDescriptor.Format.fromInt((int)BufferDataTypeImpl(getNativeObject()));
+    public VolumeDataFormat bufferDataType() {
+        return VolumeDataFormat.fromInt((int)BufferDataTypeImpl(getNativeObject()));
     }
 
     VolumeDataRequest(long nativeobject) {

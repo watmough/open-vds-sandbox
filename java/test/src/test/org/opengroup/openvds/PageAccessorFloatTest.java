@@ -20,12 +20,13 @@ package test.org.opengroup.openvds;
 import org.junit.*;
 import org.opengroup.openvds.*;
 
-import static org.junit.Assert.*;
-import static org.junit.Assert.assertThrows;
 import java.io.File;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
-
+import static org.opengroup.openvds.VolumeDataFormat.*;
+import static org.opengroup.openvds.VolumeDataComponents.*;
+import static org.opengroup.openvds.VolumeDataLayoutDescriptor.BrickSize;
+import static org.opengroup.openvds.VolumeDataLayoutDescriptor.LODLevels;
 
 public class PageAccessorFloatTest {
 
@@ -46,7 +47,7 @@ public class PageAccessorFloatTest {
 
     @Before
     public void init() {
-        vds = new InMemoryVDSGenerator(200, 200, 200, VolumeDataChannelDescriptor.Format.R32);
+        vds = new InMemoryVDSGenerator(200, 200, 200, Format_R32);
         url = "inmemory://create_test";
         VolumeDataLayout volumeDataLayout = vds.getLayout();
 

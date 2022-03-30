@@ -176,6 +176,19 @@ public class VolumeDataPageAccessor extends ManagedBase {
         return VolumeDataPage.fromNativeObject(CreatePageImpl(getNativeObject(), chunkIndex));
     }
 
+    ///AUTOGEN-OK: CXX_METHOD CopyPage void (int64_t, const OpenVDS::VolumeDataPageAccessor &) FUNCTIONPROTO
+    native private void CopyPageImpl(long native_object, long chunkIndex, long source);
+
+    /**
+     * Copy a page of data from another VolumeDataPageAccessor with a compatible layout. This method is not blocking so if you want to access the copied data you need to call ReadPage which will block until the copy is done and return the copied data.
+     * 
+     * @param chunkIndex The chunk index to copy
+     * @param source The VolumeDataPageAccessor to copy data from
+     */
+    public void copyPage(long chunkIndex, VolumeDataPageAccessor source) {
+        CopyPageImpl(getNativeObject(), chunkIndex, ManagedBase.requireNonNull(source, "source may not be null").getNativeObject());
+    }
+
     ///AUTOGEN-OK: CXX_METHOD ReadPage OpenVDS::VolumeDataPage *(int64_t) FUNCTIONPROTO
     native private long ReadPageImpl(long native_object, long chunkIndex);
     public VolumeDataPage readPage(long chunkIndex) {

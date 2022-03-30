@@ -60,8 +60,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_c
 
     auto native_handle = context->handle();
     context->setObject(new OpenVDS::VolumeDataChannelDescriptor(
-                               (enum OpenVDS::VolumeDataChannelDescriptor::Format)format, 
-                               (enum OpenVDS::VolumeDataChannelDescriptor::Components)components, 
+                               (OpenVDS::VolumeDataFormat)format, 
+                               (OpenVDS::VolumeDataComponents)components, 
                                CPPJNIStringWrapper(env, name), 
                                CPPJNIStringWrapper(env, unit), 
                                valueRangeMin, 
@@ -86,8 +86,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_c
 
     auto native_handle = context->handle();
     context->setObject(new OpenVDS::VolumeDataChannelDescriptor(
-                               (enum OpenVDS::VolumeDataChannelDescriptor::Format)format, 
-                               (enum OpenVDS::VolumeDataChannelDescriptor::Components)components, 
+                               (OpenVDS::VolumeDataFormat)format, 
+                               (OpenVDS::VolumeDataComponents)components, 
                                CPPJNIStringWrapper(env, name), 
                                CPPJNIStringWrapper(env, unit), 
                                valueRangeMin, 
@@ -113,8 +113,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_c
 
     auto native_handle = context->handle();
     context->setObject(new OpenVDS::VolumeDataChannelDescriptor(
-                               (enum OpenVDS::VolumeDataChannelDescriptor::Format)format, 
-                               (enum OpenVDS::VolumeDataChannelDescriptor::Components)components, 
+                               (OpenVDS::VolumeDataFormat)format, 
+                               (OpenVDS::VolumeDataComponents)components, 
                                CPPJNIStringWrapper(env, name), 
                                CPPJNIStringWrapper(env, unit), 
                                valueRangeMin, 
@@ -140,8 +140,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_c
 
     auto native_handle = context->handle();
     context->setObject(new OpenVDS::VolumeDataChannelDescriptor(
-                               (enum OpenVDS::VolumeDataChannelDescriptor::Format)format, 
-                               (enum OpenVDS::VolumeDataChannelDescriptor::Components)components, 
+                               (OpenVDS::VolumeDataFormat)format, 
+                               (OpenVDS::VolumeDataComponents)components, 
                                CPPJNIStringWrapper(env, name), 
                                CPPJNIStringWrapper(env, unit), 
                                valueRangeMin, 
@@ -168,8 +168,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_c
 
     auto native_handle = context->handle();
     context->setObject(new OpenVDS::VolumeDataChannelDescriptor(
-                               (enum OpenVDS::VolumeDataChannelDescriptor::Format)format, 
-                               (enum OpenVDS::VolumeDataChannelDescriptor::Components)components, 
+                               (OpenVDS::VolumeDataFormat)format, 
+                               (OpenVDS::VolumeDataComponents)components, 
                                CPPJNIStringWrapper(env, name), 
                                CPPJNIStringWrapper(env, unit), 
                                valueRangeMin, 
@@ -199,8 +199,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_c
 
     auto native_handle = context->handle();
     context->setObject(new OpenVDS::VolumeDataChannelDescriptor(
-                               (enum OpenVDS::VolumeDataChannelDescriptor::Format)format, 
-                               (enum OpenVDS::VolumeDataChannelDescriptor::Components)components, 
+                               (OpenVDS::VolumeDataFormat)format, 
+                               (OpenVDS::VolumeDataComponents)components, 
                                CPPJNIStringWrapper(env, name), 
                                CPPJNIStringWrapper(env, unit), 
                                valueRangeMin, 
@@ -226,8 +226,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_c
 
     auto native_handle = context->handle();
     context->setObject(new OpenVDS::VolumeDataChannelDescriptor(
-                               (enum OpenVDS::VolumeDataChannelDescriptor::Format)format, 
-                               (enum OpenVDS::VolumeDataChannelDescriptor::Components)components, 
+                               (OpenVDS::VolumeDataFormat)format, 
+                               (OpenVDS::VolumeDataComponents)components, 
                                CPPJNIStringWrapper(env, name), 
                                CPPJNIStringWrapper(env, unit), 
                                valueRangeMin, 
@@ -255,8 +255,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_c
 
     auto native_handle = context->handle();
     context->setObject(new OpenVDS::VolumeDataChannelDescriptor(
-                               (enum OpenVDS::VolumeDataChannelDescriptor::Format)format, 
-                               (enum OpenVDS::VolumeDataChannelDescriptor::Components)components, 
+                               (OpenVDS::VolumeDataFormat)format, 
+                               (OpenVDS::VolumeDataComponents)components, 
                                CPPJNIStringWrapper(env, name), 
                                CPPJNIStringWrapper(env, unit), 
                                valueRangeMin, 
@@ -571,8 +571,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_T
   CPPJNI_TRY
   {
     auto result = OpenVDS::VolumeDataChannelDescriptor::TraceMappedVolumeDataChannelDescriptor(
-                               (enum OpenVDS::VolumeDataChannelDescriptor::Format)format, 
-                               (enum OpenVDS::VolumeDataChannelDescriptor::Components)components, 
+                               (OpenVDS::VolumeDataFormat)format, 
+                               (OpenVDS::VolumeDataComponents)components, 
                                CPPJNIStringWrapper(env, name), 
                                CPPJNIStringWrapper(env, unit), 
                                valueRangeMin, 
@@ -595,8 +595,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_T
   CPPJNI_TRY
   {
     auto result = OpenVDS::VolumeDataChannelDescriptor::TraceMappedVolumeDataChannelDescriptor(
-                               (enum OpenVDS::VolumeDataChannelDescriptor::Format)format, 
-                               (enum OpenVDS::VolumeDataChannelDescriptor::Components)components, 
+                               (OpenVDS::VolumeDataFormat)format, 
+                               (OpenVDS::VolumeDataComponents)components, 
                                CPPJNIStringWrapper(env, name), 
                                CPPJNIStringWrapper(env, unit), 
                                valueRangeMin, 

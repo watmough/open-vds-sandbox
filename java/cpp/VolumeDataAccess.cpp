@@ -463,6 +463,20 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_Create
   return 0;
 }
 
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_CopyPageImpl
+  (JNIEnv * env, jobject object, jlong native_handle, jlong chunkIndex, jlong source)
+{
+  JEnvPushPop
+    stackitem(env);
+
+  CPPJNI_TRY
+  {
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataPageAccessor>(native_handle);
+    pInstance->CopyPage(chunkIndex, *CPPJNI_cast<OpenVDS::VolumeDataPageAccessor>(source));
+  }
+  CPPJNI_CATCH
+}
+
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_ReadPageImpl
   (JNIEnv * env, jobject object, jlong native_handle, jlong chunkIndex)
 {

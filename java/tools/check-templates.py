@@ -7,8 +7,9 @@ ILLEGAL_PATTERNS = [
 ]
 
 REPLACE_PATTERNS = {
-    'VolumeDataFormat': 'VolumeDataChannelDescriptor::Format',
-    'VCVoxelFormat': 'VolumeDataChannelDescriptor.Format',
+    'VolumeDataChannelDescriptor.Format': 'VolumeDataFormat',
+#    'VolumeDataFormat': 'VolumeDataChannelDescriptor::Format',
+#    'VCVoxelFormat': 'VolumeDataChannelDescriptor.Format',
     'Hue::Util': 'OpenVDS',
     'Hue::HueSpaceLib': 'OpenVDS',
     'int dimensionsND': 'long dimensionsND',

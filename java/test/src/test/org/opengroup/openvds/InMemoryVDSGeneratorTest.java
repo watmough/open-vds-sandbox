@@ -40,10 +40,10 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import static org.junit.Assert.*;
 
-import static org.opengroup.openvds.VolumeDataChannelDescriptor.Format;
+import static org.opengroup.openvds.VolumeDataFormat.*;
 import static org.opengroup.openvds.VolumeDataLayoutDescriptor.BrickSize;
 import static org.opengroup.openvds.VolumeDataLayoutDescriptor.LODLevels;
-import static org.opengroup.openvds.VolumeDataChannelDescriptor.Components;
+import static org.opengroup.openvds.VolumeDataComponents.*;
 
 public class InMemoryVDSGeneratorTest {
 
@@ -73,7 +73,7 @@ public class InMemoryVDSGeneratorTest {
     @Test
     public void testOpenClose() throws IOException {
         int nXSamples = 60, nYSamples = 60, nZSamples = 60;
-        Format format = Format.U8;
+        VolumeDataFormat format = Format_U8;
         InMemoryVDSGenerator generator = new InMemoryVDSGenerator(nXSamples, nYSamples, nZSamples, format);
         assertTrue(!generator.isNull());
 
@@ -87,7 +87,7 @@ public class InMemoryVDSGeneratorTest {
     @Test
     public void testVolumeTracesVsSampleRequest() throws IOException {
         int nXSamples = 60, nYSamples = 60, nZSamples = 60;
-        Format format = Format.R32;
+        VolumeDataFormat format = Format_R32;
         try (InMemoryVDSGenerator generator = new InMemoryVDSGenerator(nZSamples, nYSamples, nXSamples, format)) {
             assertNotNull(generator);
             try (VolumeDataAccessManager accessManager = generator.getAccessManager()) {
@@ -126,7 +126,7 @@ public class InMemoryVDSGeneratorTest {
     @Test
     public void testVolumeTraces() throws IOException {
         int nXSamples = 60, nYSamples = 60, nZSamples = 60;
-        VolumeDataChannelDescriptor.Format format = Format.R32;
+        VolumeDataFormat format = Format_R32;
         try (InMemoryVDSGenerator generator = new InMemoryVDSGenerator(nZSamples, nYSamples, nXSamples, format)) {
             assertNotNull(generator);
             try (VolumeDataAccessManager accessManager = generator.getAccessManager()) {
@@ -240,7 +240,7 @@ public class InMemoryVDSGeneratorTest {
     @Test
     public void testVolumeSubsetVsSampleRequest() throws IOException {
         int nXSamples = 60, nYSamples = 60, nZSamples = 60;
-        VolumeDataChannelDescriptor.Format format = Format.R32;
+        VolumeDataFormat format = Format_R32;
         try (InMemoryVDSGenerator generator = new InMemoryVDSGenerator(nZSamples, nYSamples, nXSamples, format)) {
             assertNotNull(generator);
             try (VolumeDataAccessManager accessManager = generator.getAccessManager()) {
@@ -363,7 +363,7 @@ public class InMemoryVDSGeneratorTest {
 
     @Test
     public void testVolumeSubsetRequestFloatMultiThread() throws IOException {
-        VolumeDataChannelDescriptor.Format format = Format.R32;
+        VolumeDataFormat format = Format_R32;
         try (InMemoryVDSGenerator generator = new InMemoryVDSGenerator(60, 60, 60, format)) {
             assertNotNull(generator);
             final VolumeDataLayout layout = generator.getLayout();
@@ -442,7 +442,7 @@ public class InMemoryVDSGeneratorTest {
     @Test
     public void testVolumeSubsetRequestFloat() throws IOException {
         int nXSamples = 60, nYSamples = 60, nZSamples = 60;
-        VolumeDataChannelDescriptor.Format format = Format.R32;
+        VolumeDataFormat format = Format_R32;
         try (InMemoryVDSGenerator generator = new InMemoryVDSGenerator(nZSamples, nYSamples, nXSamples, format)) {
             assertNotNull(generator);
             final VolumeDataLayout layout = generator.getLayout();
@@ -477,7 +477,7 @@ public class InMemoryVDSGeneratorTest {
     @Test
     public void testVolumeSubsetRequestByte() throws IOException {
         int nXSamples = 60, nYSamples = 60, nZSamples = 60;
-        VolumeDataChannelDescriptor.Format format = Format.U8;
+        VolumeDataFormat format = Format_U8;
         try (InMemoryVDSGenerator generator = new InMemoryVDSGenerator(nZSamples, nYSamples, nXSamples, format)) {
             assertNotNull(generator);
             final VolumeDataLayout layout = generator.getLayout();
@@ -510,7 +510,7 @@ public class InMemoryVDSGeneratorTest {
     @Test
     public void testVolumeSubsetRequestInteger() throws IOException {
         int nXSamples = 60, nYSamples = 60, nZSamples = 60;
-        VolumeDataChannelDescriptor.Format format = Format.U32;
+        VolumeDataFormat format = Format_U32;
         try (InMemoryVDSGenerator generator = new InMemoryVDSGenerator(nZSamples, nYSamples, nXSamples, format)) {
             assertNotNull(generator);
             final VolumeDataLayout layout = generator.getLayout();
@@ -545,7 +545,7 @@ public class InMemoryVDSGeneratorTest {
     @Test
     public void testVolumeSubsetRequestShort() throws IOException {
         int nXSamples = 60, nYSamples = 60, nZSamples = 60;
-        VolumeDataChannelDescriptor.Format format = Format.U16;
+        VolumeDataFormat format = Format_U16;
         try (InMemoryVDSGenerator generator = new InMemoryVDSGenerator(nZSamples, nYSamples, nXSamples, format)) {
             assertNotNull(generator);
             final VolumeDataLayout layout = generator.getLayout();
@@ -580,7 +580,7 @@ public class InMemoryVDSGeneratorTest {
     @org.junit.Test
     public void testLayout() {
         int nXSamples = 60, nYSamples = 60, nZSamples = 60;
-        VolumeDataChannelDescriptor.Format format = Format.U8;
+        VolumeDataFormat format = Format_U8;
         InMemoryVDSGenerator generator = new InMemoryVDSGenerator(nXSamples, nYSamples, nZSamples, format);
         final VolumeDataLayout layout = generator.getLayout();
         assertNotNull(layout);
@@ -591,10 +591,18 @@ public class InMemoryVDSGeneratorTest {
             for (int channel = 0; channel < nbChannel; channel++) {
                 for (DimensionsND dimGroup : DimensionsND.values()) {
                     VDSProduceStatus vdsProduceStatus = accessManager.getVDSProduceStatus(dimGroup, l.ordinal(), channel);
-                    if (channel == 0 && LODLevels.None.equals(l) && DimensionsND.Dimensions_012.equals(dimGroup))
+                    if (channel == 0 && LODLevels.None.equals(l) && DimensionsND.Dimensions_012.equals(dimGroup)) {
                         assertEquals(VDSProduceStatus.Normal, vdsProduceStatus);
-                    else
+                    } else if (channel == 0 && LODLevels.None.equals(l) && (
+                            DimensionsND.Dimensions_01.equals(dimGroup) ||
+                            DimensionsND.Dimensions_02.equals(dimGroup) ||
+                            DimensionsND.Dimensions_12.equals(dimGroup)
+                            )
+                    ) {
+                        assertEquals(VDSProduceStatus.Remapped, vdsProduceStatus);
+                    } else {
                         assertEquals(VDSProduceStatus.Unavailable, vdsProduceStatus);
+                    }
                 }
             }
         }
@@ -640,8 +648,8 @@ public class InMemoryVDSGeneratorTest {
         assertTrue(layout.getChannelUnit(channelIndex).isEmpty());
         assertTrue(layout.isChannelAvailable(channelName));
         assertEquals(0, layout.getChannelIndex(channelName));
-        assertEquals(Format.U8, layout.getChannelFormat(channelIndex));
-        assertEquals(Components._1, layout.getChannelComponents(channelIndex));
+        assertEquals(Format_U8, layout.getChannelFormat(channelIndex));
+        assertEquals(Components_1, layout.getChannelComponents(channelIndex));
         assertEquals(-0.1234f, layout.getChannelValueRangeMin(channelIndex), 0f);
         assertEquals(0.1234f, layout.getChannelValueRangeMax(channelIndex), 0f);
         assertTrue(!layout.isChannelDiscrete(channelIndex));
@@ -698,7 +706,7 @@ public class InMemoryVDSGeneratorTest {
 
     @org.junit.Test
     public void testErrors() {
-        try (InMemoryVDSGenerator generator = new InMemoryVDSGenerator(100, 100, 100, Format.U8)) {
+        try (InMemoryVDSGenerator generator = new InMemoryVDSGenerator(100, 100, 100, Format_U8)) {
             UploadError ul = generator.getAccessManager().getCurrentUploadError();
             assertTrue("".equals(ul.ObjectID));
             assertTrue("".equals(ul.ErrorString));

@@ -4,12 +4,12 @@
 
     ///AUTOGEN-ADD-OVERLOAD: VolumeDataPageAccessor createVolumeDataPageAccessor(DimensionsND dimensionsND, int LOD, int channel, int maxPages, VolumeDataPageAccessor.AccessMode accessMode, int chunkMetadataPageSize) -> chunkMetadataPageSize = 1024
 
-    ///AUTOGEN-ADD-OVERLOAD: long getVolumeSubsetBufferSize(int[] minVoxelCoordinates, int[] maxVoxelCoordinates, VolumeDataChannelDescriptor.Format format, int LOD, int channel) -> channel = 0
-    ///AUTOGEN-ADD-OVERLOAD: long getVolumeSubsetBufferSize(int[] minVoxelCoordinates, int[] maxVoxelCoordinates, VolumeDataChannelDescriptor.Format format, int LOD, int channel) -> LOD = 0, channel = 0
+    ///AUTOGEN-ADD-OVERLOAD: long getVolumeSubsetBufferSize(int[] minVoxelCoordinates, int[] maxVoxelCoordinates, VolumeDataFormat format, int LOD, int channel) -> channel = 0
+    ///AUTOGEN-ADD-OVERLOAD: long getVolumeSubsetBufferSize(int[] minVoxelCoordinates, int[] maxVoxelCoordinates, VolumeDataFormat format, int LOD, int channel) -> LOD = 0, channel = 0
 
-    ///AUTOGEN-ADD-OVERLOAD: VolumeDataRequest requestVolumeSubset(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, VolumeDataChannelDescriptor.Format format, Float replacementNoValue) -> replacementNoValue=null
+    ///AUTOGEN-ADD-OVERLOAD: VolumeDataRequest requestVolumeSubset(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, VolumeDataFormat format, Float replacementNoValue) -> replacementNoValue=null
 
-    ///AUTOGEN-ADD-OVERLOAD: VolumeDataRequest requestVolumeSubset(DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, VolumeDataChannelDescriptor.Format format, Float replacementNoValue) -> replacementNoValue=null
+    ///AUTOGEN-ADD-OVERLOAD: VolumeDataRequest requestVolumeSubset(DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, VolumeDataFormat format, Float replacementNoValue) -> replacementNoValue=null
     
     ///AUTOGEN-INCLUDE: VolumeDataAccessManager.RequestVolumeSubsetTyped.java, <DataType> -> Byte
     ///AUTOGEN-INCLUDE: VolumeDataAccessManager.RequestVolumeSubsetTyped.java, <DataType> -> UShort
@@ -18,12 +18,12 @@
     ///AUTOGEN-INCLUDE: VolumeDataAccessManager.RequestVolumeSubsetTyped.java, <DataType> -> Float
     ///AUTOGEN-INCLUDE: VolumeDataAccessManager.RequestVolumeSubsetTyped.java, <DataType> -> Double
 
-    ///AUTOGEN-ADD-OVERLOAD: long getProjectedVolumeSubsetBufferSize(int[] minVoxelCoordinates, int[] maxVoxelCoordinates, DimensionsND projectedDimensions, VolumeDataChannelDescriptor.Format format, int LOD, int channel) -> channel = 0
-    ///AUTOGEN-ADD-OVERLOAD: long getProjectedVolumeSubsetBufferSize(int[] minVoxelCoordinates, int[] maxVoxelCoordinates, DimensionsND projectedDimensions, VolumeDataChannelDescriptor.Format format, int LOD, int channel) -> LOD = 0, channel = 0
+    ///AUTOGEN-ADD-OVERLOAD: long getProjectedVolumeSubsetBufferSize(int[] minVoxelCoordinates, int[] maxVoxelCoordinates, DimensionsND projectedDimensions, VolumeDataFormat format, int LOD, int channel) -> channel = 0
+    ///AUTOGEN-ADD-OVERLOAD: long getProjectedVolumeSubsetBufferSize(int[] minVoxelCoordinates, int[] maxVoxelCoordinates, DimensionsND projectedDimensions, VolumeDataFormat format, int LOD, int channel) -> LOD = 0, channel = 0
 
-    ///AUTOGEN-ADD-OVERLOAD: VolumeDataRequest requestProjectedVolumeSubset(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, FloatVector4 voxelPlane, DimensionsND projectedDimensions, VolumeDataChannelDescriptor.Format format, InterpolationMethod interpolationMethod, Float replacementNoValue) -> replacementNoValue=null
+    ///AUTOGEN-ADD-OVERLOAD: VolumeDataRequest requestProjectedVolumeSubset(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, FloatVector4 voxelPlane, DimensionsND projectedDimensions, VolumeDataFormat format, InterpolationMethod interpolationMethod, Float replacementNoValue) -> replacementNoValue=null
     
-    ///AUTOGEN-ADD-OVERLOAD: VolumeDataRequest requestProjectedVolumeSubset(DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, FloatVector4 voxelPlane, DimensionsND projectedDimensions, VolumeDataChannelDescriptor.Format format, InterpolationMethod interpolationMethod, Float replacementNoValue) -> replacementNoValue=null
+    ///AUTOGEN-ADD-OVERLOAD: VolumeDataRequest requestProjectedVolumeSubset(DimensionsND dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, FloatVector4 voxelPlane, DimensionsND projectedDimensions, VolumeDataFormat format, InterpolationMethod interpolationMethod, Float replacementNoValue) -> replacementNoValue=null
     
     ///AUTOGEN-INCLUDE: VolumeDataAccessManager.RequestProjectedVolumeSubsetTyped.java, <DataType> -> Byte
     ///AUTOGEN-INCLUDE: VolumeDataAccessManager.RequestProjectedVolumeSubsetTyped.java, <DataType> -> UShort

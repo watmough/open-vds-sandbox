@@ -31,10 +31,10 @@ import java.util.EnumSet;
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertThrows;
 
-import static org.opengroup.openvds.VolumeDataChannelDescriptor.Format;
+import static org.opengroup.openvds.VolumeDataFormat.*;
+import static org.opengroup.openvds.VolumeDataComponents.*;
 import static org.opengroup.openvds.VolumeDataLayoutDescriptor.BrickSize;
 import static org.opengroup.openvds.VolumeDataLayoutDescriptor.LODLevels;
-import static org.opengroup.openvds.VolumeDataChannelDescriptor.Components;
 
 public class CreateVDSTest {
 
@@ -51,50 +51,49 @@ public class CreateVDSTest {
         }
     }
 
-    public static FloatScaleAndOffset getScaleOffsetForFormat(float min, float max, boolean usingNovalue, VolumeDataChannelDescriptor.Format format)
+    public static FloatScaleAndOffset getScaleOffsetForFormat(float min, float max, boolean usingNovalue, VolumeDataFormat format)
     {
         float novalue = usingNovalue ? 1.0f : 0.0f;
         float scale = 1.0f;
         float offset = 0.0f;
         switch (format) {
-            case U8:
+            case Format_U8:
             scale = 1.f / (255.f - novalue) * (max - min);
                 offset = min;
                 break;
-            case U16:
+            case Format_U16:
             scale = 1.f/(65535.f - novalue) * (max - min);
                 offset = min;
                 break;
-            case R32:
-            case U32:
-            case R64:
-            case U64:
-            case _1Bit:
-            case Any:
+            case Format_R32:
+            case Format_U32:
+            case Format_R64:
+            case Format_U64:
+            case Format_1Bit:
+            case Format_Any:
                 scale = 1.0f;
                 offset = 0.0f;
         }
         return new FloatScaleAndOffset(scale, offset);
     }
 
-    public static VolumeDataChannelDescriptor[] createDefaultChannelDescriptors(String[] channelNames, VolumeDataChannelDescriptor.Format format) {
+    public static VolumeDataChannelDescriptor[] createDefaultChannelDescriptors(String[] channelNames, VolumeDataFormat format) {
         ArrayList<VolumeDataChannelDescriptor> channelDescriptors = new ArrayList<>();
         for (String channel: channelNames) {
             float rangeMin = -0.1234f;
             float rangeMax = 0.1234f;
             EnumSet<VolumeDataChannelDescriptor.Flags> channelFlags = EnumSet.noneOf(VolumeDataChannelDescriptor.Flags.class);
             FloatScaleAndOffset scaleAndOffset = getScaleOffsetForFormat(rangeMin, rangeMax, true, format);
-            channelDescriptors.add(new VolumeDataChannelDescriptor(format, VolumeDataChannelDescriptor.Components._1,  channel, "", rangeMin, rangeMax, VolumeDataMapping.Direct, 1, channelFlags, 0.f, scaleAndOffset.scale, scaleAndOffset.offset));
+            channelDescriptors.add(new VolumeDataChannelDescriptor(format, Components_1,  channel, "", rangeMin, rangeMax, VolumeDataMapping.Direct, 1, channelFlags, 0.f, scaleAndOffset.scale, scaleAndOffset.offset));
         }
         return channelDescriptors.toArray(new VolumeDataChannelDescriptor[channelDescriptors.size()]);
     }
 
-    public static VolumeDataChannelDescriptor[] createDefaultChannelDescriptors(String channelName, VolumeDataChannelDescriptor.Format format) {
+    public static VolumeDataChannelDescriptor[] createDefaultChannelDescriptors(String channelName, VolumeDataFormat format) {
         return createDefaultChannelDescriptors(new String[] { channelName }, format);
     }
 
-
-    public static VDS createVDS(int samplesX, int samplesY, int samplesZ, VolumeDataChannelDescriptor.Format format, OpenOptions options, VolumeDataChannelDescriptor[] channelDescriptors,  VDSError error) {
+    public static VDS createVDS(int samplesX, int samplesY, int samplesZ, VolumeDataFormat format, OpenOptions options, VolumeDataChannelDescriptor[] channelDescriptors,  VDSError error) {
         if (options == null) {
             options = new InMemoryOpenOptions();
         }
@@ -102,7 +101,7 @@ public class CreateVDSTest {
             error = new VDSError();
         }
         if (channelDescriptors == null) {
-            channelDescriptors = createDefaultChannelDescriptors("Amplitude", Format.R32);
+            channelDescriptors = createDefaultChannelDescriptors("Amplitude", Format_R32);
         }
         LODLevels lodLevels = LODLevels.None;
         BrickSize brickSize = (samplesZ == 0) ? BrickSize._1024 : BrickSize._128;
@@ -140,17 +139,17 @@ public class CreateVDSTest {
         return OpenVDS.create(options, layoutDescriptor, axisDescriptors.toArray(new VolumeDataAxisDescriptor[axisDescriptors.size()]), channelDescriptors, metadataContainer, error);
     }
 
-    public static VDS createVDS(int samplesX, int samplesY, VolumeDataChannelDescriptor.Format format, OpenOptions options, VolumeDataChannelDescriptor[] channelDescriptors, VDSError error) {
+    public static VDS createVDS(int samplesX, int samplesY, VolumeDataFormat format, OpenOptions options, VolumeDataChannelDescriptor[] channelDescriptors, VDSError error) {
         return createVDS(samplesX, samplesY, 0, format, options, channelDescriptors, error);
     }
 
-    public static VDS createVDS(int samplesX, int samplesY, VolumeDataChannelDescriptor.Format format, OpenOptions options, VDSError error) {
+    public static VDS createVDS(int samplesX, int samplesY, VolumeDataFormat format, OpenOptions options, VDSError error) {
         return createVDS(samplesX, samplesY, 0, format, options, createDefaultChannelDescriptors("Amplitude", format), error);
     }
 
     @Before
     public void init() {
-        vds = new InMemoryVDSGenerator(16, 16, 16, Format.U8);
+        vds = new InMemoryVDSGenerator(16, 16, 16, Format_U8);
         url = "inmemory://create_test";
         o = new AzureOpenOptions();
         error = new VDSError();
@@ -188,7 +187,7 @@ public class CreateVDSTest {
 
         assertEquals(layout.getDimensionality(), 3);
         assertEquals(layout.getChannelCount(), 1);
-        assertEquals(layout.getChannelFormat(0), Format.U8);
+        assertEquals(layout.getChannelFormat(0), Format_U8);
         assertEquals(layout.getDimensionName(1), openvds1.getLayout().getDimensionName(1));
     }
 

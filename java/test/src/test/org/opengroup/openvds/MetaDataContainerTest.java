@@ -30,10 +30,10 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.opengroup.openvds.Error;
 
-import static org.opengroup.openvds.VolumeDataChannelDescriptor.Format;
+import static org.opengroup.openvds.VolumeDataFormat.*;
 import static org.opengroup.openvds.VolumeDataLayoutDescriptor.BrickSize;
 import static org.opengroup.openvds.VolumeDataLayoutDescriptor.LODLevels;
-import static org.opengroup.openvds.VolumeDataChannelDescriptor.Components;
+import static org.opengroup.openvds.VolumeDataComponents.*;
 
 import static org.junit.Assert.*;
 
@@ -50,7 +50,7 @@ public class MetaDataContainerTest {
 
     @Before
     public void init() {
-        vds = new InMemoryVDSGenerator(16, 16, 16, Format.U8);
+        vds = new InMemoryVDSGenerator(16, 16, 16, Format_U8);
         url = "inmemory://create_test";
         VolumeDataLayout volumeDataLayout = vds.getLayout();
 

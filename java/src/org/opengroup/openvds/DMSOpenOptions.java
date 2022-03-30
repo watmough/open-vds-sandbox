@@ -41,6 +41,8 @@ public class DMSOpenOptions extends OpenOptions {
     
     }
 
+    ///AUTOGEN-FAIL: CONSTRUCTOR DMSOpenOptions void (const std::string &, const std::string &, const std::string &, std::string (*)(const void *), const void *, int, bool) FUNCTIONPROTO
+
     ///AUTOGEN-OK: FIELD_DECL sdAuthorityUrl std::string RECORD
     native private String getSdAuthorityUrlImpl(long native_object);
     public String getSdAuthorityUrl() {
@@ -106,6 +108,10 @@ public class DMSOpenOptions extends OpenOptions {
     public boolean getUseFileNameForSingleFileDatasets() {
         return getUseFileNameForSingleFileDatasetsImpl(getNativeObject());
     }
+
+    ///AUTOGEN-FAIL: FIELD_DECL authProviderCallback std::string (*)(const void *) POINTER
+
+    ///AUTOGEN-FAIL: FIELD_DECL authProviderCallbackData const void * POINTER
 
     DMSOpenOptions(long nativeobject) {
         super(nativeobject);

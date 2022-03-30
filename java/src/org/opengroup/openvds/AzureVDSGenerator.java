@@ -28,22 +28,22 @@ public class AzureVDSGenerator implements AutoCloseable {
 
     protected VDS vds;
 
-	public static VDS createVDS(AzureOpenOptions o, int nXSamples, int nYSamples, int nZSamples, VolumeDataChannelDescriptor.Format format, String[] channels, String[] units) {
+	public static VDS createVDS(AzureOpenOptions o, int nXSamples, int nYSamples, int nZSamples, VolumeDataFormat format, String[] channels, String[] units) {
 		return VDS.fromNativeObject(CreateVDSImpl(o.getNativeObject(), nXSamples, nYSamples, nZSamples, format.value(), channels, units));
 	}
 	
-    public AzureVDSGenerator(AzureOpenOptions o, int nXSamples, int nYSamples, int nZSamples, VolumeDataChannelDescriptor.Format format, String[] channels) {
+    public AzureVDSGenerator(AzureOpenOptions o, int nXSamples, int nYSamples, int nZSamples, VolumeDataFormat format, String[] channels) {
 		this.vds = createVDS(o, nXSamples, nYSamples, nZSamples, format, channels, null);
     }
 
-    public AzureVDSGenerator(AzureOpenOptions o, int nXSamples, int nYSamples, int nZSamples, VolumeDataChannelDescriptor.Format format, String[] channels, String[] units) {
+    public AzureVDSGenerator(AzureOpenOptions o, int nXSamples, int nYSamples, int nZSamples, VolumeDataFormat format, String[] channels, String[] units) {
 		this.vds = createVDS(o, nXSamples, nYSamples, nZSamples, format, channels, units);
     }
 
-    public AzureVDSGenerator(AzureOpenOptions o, int nXSamples, int nYSamples, VolumeDataChannelDescriptor.Format format, String[] channels, String[] units) {
+    public AzureVDSGenerator(AzureOpenOptions o, int nXSamples, int nYSamples, VolumeDataFormat format, String[] channels, String[] units) {
 		this.vds = createVDS(o, nXSamples, nYSamples, 0, format, channels, units);
     }
-    public AzureVDSGenerator(AzureOpenOptions o, int nXSamples, int nYSamples, VolumeDataChannelDescriptor.Format format, String[] channels) {
+    public AzureVDSGenerator(AzureOpenOptions o, int nXSamples, int nYSamples, VolumeDataFormat format, String[] channels) {
         this.vds = createVDS(o, nXSamples, nYSamples, 0, format, channels, null);
     }
 

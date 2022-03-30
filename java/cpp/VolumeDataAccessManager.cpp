@@ -154,6 +154,38 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataRequest_CancelAndWai
   CPPJNI_CATCH
 }
 
+JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataRequest_GetErrorCodeImpl
+  (JNIEnv * env, jobject object, jlong native_handle)
+{
+  JEnvPushPop
+    stackitem(env);
+
+  CPPJNI_TRY
+  {
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataRequest>(native_handle);
+    auto result = pInstance->GetErrorCode();
+    return result;
+  }
+  CPPJNI_CATCH
+  return 0;
+}
+
+JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_VolumeDataRequest_GetErrorMessageImpl
+  (JNIEnv * env, jobject object, jlong native_handle)
+{
+  JEnvPushPop
+    stackitem(env);
+
+  CPPJNI_TRY
+  {
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataRequest>(native_handle);
+    auto result = pInstance->GetErrorMessage();
+    return CPPJNI_newString(env, result);
+  }
+  CPPJNI_CATCH
+  return 0;
+}
+
 JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataRequest_GetCompletionFactorImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
@@ -2440,7 +2472,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_GetVo
     auto result = pInstance->GetVolumeSubsetBufferSize(
                                tmpminVoxelCoordinates.getArray(), 
                                tmpmaxVoxelCoordinates.getArray(), 
-                               (enum OpenVDS::VolumeDataChannelDescriptor::Format)format, 
+                               (OpenVDS::VolumeDataFormat)format, 
                                LOD, 
                                channel);
     return result;
@@ -2468,7 +2500,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                channel, 
                                tmpminVoxelCoordinates.getArray(), 
                                tmpmaxVoxelCoordinates.getArray(), 
-                               (enum OpenVDS::VolumeDataChannelDescriptor::Format)format, 
+                               (OpenVDS::VolumeDataFormat)format, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
     auto context = CPPJNI_createObjectContext(result);
     context->registerGlobalRef(env, buffer);
@@ -2522,7 +2554,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                channel, 
                                tmpminVoxelCoordinates.getArray(), 
                                tmpmaxVoxelCoordinates.getArray(), 
-                               (enum OpenVDS::VolumeDataChannelDescriptor::Format)format, 
+                               (OpenVDS::VolumeDataFormat)format, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
     auto context = CPPJNI_createObjectContext(result);
     return context->handle();
@@ -2570,7 +2602,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_GetPr
                                tmpminVoxelCoordinates.getArray(), 
                                tmpmaxVoxelCoordinates.getArray(), 
                                (OpenVDS::DimensionsND)projectedDimensions, 
-                               (enum OpenVDS::VolumeDataChannelDescriptor::Format)format, 
+                               (OpenVDS::VolumeDataFormat)format, 
                                LOD, 
                                channel);
     return result;
@@ -2600,7 +2632,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                tmpmaxVoxelCoordinates.getArray(), 
                                CPPJNIByteBufferAdapter<OpenVDS::FloatVector4>(env, voxelPlanebytebuffer, voxelPlanebyteoffset), 
                                (OpenVDS::DimensionsND)projectedDimensions, 
-                               (enum OpenVDS::VolumeDataChannelDescriptor::Format)format, 
+                               (OpenVDS::VolumeDataFormat)format, 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
     auto context = CPPJNI_createObjectContext(result);
@@ -2630,7 +2662,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                tmpmaxVoxelCoordinates.getArray(), 
                                CPPJNIByteBufferAdapter<OpenVDS::FloatVector4>(env, voxelPlanebytebuffer, voxelPlanebyteoffset), 
                                (OpenVDS::DimensionsND)projectedDimensions, 
-                               (enum OpenVDS::VolumeDataChannelDescriptor::Format)format, 
+                               (OpenVDS::VolumeDataFormat)format, 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
     auto context = CPPJNI_createObjectContext(result);
