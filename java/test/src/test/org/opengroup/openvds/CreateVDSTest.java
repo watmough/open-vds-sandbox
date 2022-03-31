@@ -19,17 +19,12 @@
 package test.org.opengroup.openvds;
 
 import org.opengroup.openvds.*;
-import org.junit.Test;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
 
-import static org.junit.Assert.*;
-import static org.junit.Assert.assertThrows;
+import static org.testng.Assert.*;
+import org.testng.annotations.*;
 
 import static org.opengroup.openvds.VolumeDataFormat.*;
 import static org.opengroup.openvds.VolumeDataComponents.*;
@@ -147,7 +142,7 @@ public class CreateVDSTest {
         return createVDS(samplesX, samplesY, 0, format, options, createDefaultChannelDescriptors("Amplitude", format), error);
     }
 
-    @Before
+    @BeforeClass
     public void init() {
         vds = new InMemoryVDSGenerator(16, 16, 16, Format_U8);
         url = "inmemory://create_test";
@@ -191,6 +186,7 @@ public class CreateVDSTest {
         assertEquals(layout.getDimensionName(1), openvds1.getLayout().getDimensionName(1));
     }
 
+    /*
     @Test
     public void testException1() {
         assertThrows(IllegalArgumentException.class, () -> { OpenVDS.create((OpenOptions)null, ld, vda, vdc, md, error); });
@@ -219,6 +215,56 @@ public class CreateVDSTest {
     @Test
     public void testException6() {
         assertThrows(IllegalArgumentException.class, () -> { OpenVDS.create(o, ld, vda, vdc, md, null); });
+    }*/
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testException1() {
+  //      try {
+            AWSOpenOptions o = null;
+            OpenVDS.create(o, ld, vda, vdc, md, error);
+  //      } catch (java.io.IOException e) {
+  //          fail();
+  //      }
+    }
+
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testException2() {
+//        try {
+            OpenVDS.create(o, null, vda, vdc, md, error);
+//        } catch (java.io.IOException e) {
+//            fail();
+//        }
+    }
+
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testException3() {
+//        try {
+            OpenVDS.create(o, ld, null, vdc, md, error);
+//        } catch (java.io.IOException e) {
+//            fail();
+//        }
+    }
+
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testException4() {
+//        try {
+            OpenVDS.create(o, ld, vda, null, md, error);
+//        } catch (java.io.IOException e) {
+//            fail();
+//        }
+    }
+
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testException5() {
+//        try {
+            OpenVDS.create(o, ld, vda, vdc, null, error);
+//        } catch (java.io.IOException e) {
+//            fail();
+//        }
     }
 
     public AzureOpenOptions o;

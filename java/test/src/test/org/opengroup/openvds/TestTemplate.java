@@ -17,46 +17,30 @@
 package test.org.opengroup.openvds;
 
 import org.opengroup.openvds.*;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import static org.junit.Assert.*;
-import static org.junit.Assume.assumeTrue;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+
+import static org.testng.Assert.*;
+import org.testng.annotations.*;
 
 public class TestTemplate {
 
     GlobalState globalState;
 
     @BeforeClass
-    public static void setUpClass() {
+    public void setUpClass() {
+        this.globalState = OpenVDS.getGlobalState();
     }
 
     @AfterClass
     public static void tearDownClass() {
-
     }
 
-    @Before
-    public void setUp() {
-        this.globalState = OpenVDS.getGlobalState();
-    }
-
-    @After
-    public void tearDown() {
-    }
-    
     public TestTemplate() {
     }
 
     /**
      * Undocumented test
      */
-    @org.junit.Test
+    @Test
     public void test1() {
         assertNotNull(this.globalState);
         long dlcount = this.globalState.getBytesDownloaded(OpenOptions.ConnectionType.Other);

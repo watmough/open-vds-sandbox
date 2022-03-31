@@ -16,9 +16,10 @@
  */
 
 package test.org.opengroup.openvds;
-
-import org.junit.*;
 import org.opengroup.openvds.*;
+
+import static org.testng.Assert.*;
+import org.testng.annotations.*;
 
 import java.io.File;
 import java.nio.ByteBuffer;
@@ -46,7 +47,7 @@ public class PageAccessorShortTest {
     private String tempVolIndexerFileName;
     private String tempVdsCopyFileName;
 
-    @Before
+    @BeforeClass
     public void init() {
         vds = new InMemoryVDSGenerator(200, 200, 200, Format_U16);
         url = "inmemory://create_test";
@@ -81,7 +82,7 @@ public class PageAccessorShortTest {
         tempVdsCopyFileName = TEMP_FILE_NAME_COPY + "_" + ms + ".vds";
     }
 
-    @After
+    @AfterClass
     public void cleanFiles() {
         String tempDir = System.getProperty("java.io.tmpdir");
         String fileVolIndexPath = tempDir + File.separator + tempVolIndexerFileName;
@@ -130,7 +131,6 @@ public class PageAccessorShortTest {
 
     @Test
     public void testCopyPageAccessor() {
-
             String tmpDir = System.getProperty("java.io.tmpdir");
             String vdsPath = tmpDir + File.separator + tempVdsCopyFileName;
             VDSFileOpenOptions options = new VDSFileOpenOptions(vdsPath);
@@ -222,9 +222,6 @@ public class PageAccessorShortTest {
 
     @Test
     public void testCopyPageAccessorValidation() {
-
-            testCopyPageAccessor();
-
             String tmpDir = System.getProperty("java.io.tmpdir");
             String vdsPath = tmpDir + File.separator + tempVdsCopyFileName;
             VDSFileOpenOptions options = new VDSFileOpenOptions(vdsPath);
@@ -269,8 +266,8 @@ public class PageAccessorShortTest {
                 inputPage.release();
                 page.release();
 
-                Assert.assertArrayEquals(pitchInput, pitchOutput);
-                Assert.assertArrayEquals(dataIn, dataOut);
+                assertEquals(pitchInput, pitchOutput);
+                assertEquals(dataIn, dataOut);
             }
 
             accessManager.destroyVolumeDataPageAccessor(pageAccessor);
@@ -284,9 +281,6 @@ public class PageAccessorShortTest {
 
     @Test
     public void testCopyPageAccessorValidationChunkIndex() {
-
-            testCopyPageAccessor();
-
             String tmpDir = System.getProperty("java.io.tmpdir");
             String vdsPath = tmpDir + File.separator + tempVdsCopyFileName;
             VDSFileOpenOptions options = new VDSFileOpenOptions(vdsPath);
@@ -319,8 +313,8 @@ public class PageAccessorShortTest {
                 long idxChMin = pageAccessor.getChunkIndex(chunkMin);
                 long idxChMax = pageAccessor.getChunkIndex(chunkMaxPos);
 
-                Assert.assertEquals(chunk, idxChMin);
-                Assert.assertEquals(idxChMin, idxChMax);
+                assertEquals(chunk, idxChMin);
+                assertEquals(idxChMin, idxChMax);
 
                 inputPage.release();
             }

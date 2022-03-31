@@ -16,13 +16,18 @@
  */
 
 package test.org.opengroup.openvds;
-
-import org.junit.*;
 import org.opengroup.openvds.*;
+
+import static org.testng.Assert.*;
+
+import org.testng.Assert;
+import org.testng.annotations.*;
 
 import java.io.File;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+
 import static org.opengroup.openvds.VolumeDataFormat.*;
 import static org.opengroup.openvds.VolumeDataComponents.*;
 import static org.opengroup.openvds.VolumeDataLayoutDescriptor.BrickSize;
@@ -45,7 +50,7 @@ public class PageAccessorFloatTest {
     private String tempVolIndexerFileName;
     private String tempVdsCopyFileName;
 
-    @Before
+    @BeforeClass
     public void init() {
         vds = new InMemoryVDSGenerator(200, 200, 200, Format_R32);
         url = "inmemory://create_test";
@@ -80,7 +85,7 @@ public class PageAccessorFloatTest {
         tempVdsCopyFileName = TEMP_FILE_NAME_COPY + "_" + ms + ".vds";
     }
 
-    @After
+    @AfterClass
     public void cleanFiles() {
         String tempDir = System.getProperty("java.io.tmpdir");
         String fileVolIndexPath = tempDir + File.separator + tempVolIndexerFileName;
@@ -129,7 +134,6 @@ public class PageAccessorFloatTest {
 
     @Test
     public void testCopyPageAccessor() {
-
             String tmpDir = System.getProperty("java.io.tmpdir");
             String vdsPath = tmpDir + File.separator + tempVdsCopyFileName;
             VDSFileOpenOptions options = new VDSFileOpenOptions(vdsPath);
@@ -221,9 +225,6 @@ public class PageAccessorFloatTest {
 
     @Test
     public void testCopyPageAccessorValidation() {
-
-            testCopyPageAccessor();
-
             String tmpDir = System.getProperty("java.io.tmpdir");
             String vdsPath = tmpDir + File.separator + tempVdsCopyFileName;
             VDSFileOpenOptions options = new VDSFileOpenOptions(vdsPath);
@@ -256,20 +257,25 @@ public class PageAccessorFloatTest {
             for (long chunk = 0 ; chunk < chunkCount ; ++chunk) {
                 VolumeDataPage inputPage = pageAccessorInput.readPage(chunk);
                 VolumeDataPage page = pageAccessor.readPage(chunk);
-//                float[] dataIn = inputPage.readFloatBuffer(pitchInput);
-                FloatBuffer dataInB = inputPage.getBuffer(pitchInput).asFloatBuffer();
-//                float[] dataOut = page.readFloatBuffer(pitchOutput);
-                FloatBuffer dataOutB = page.getBuffer(pitchOutput).asFloatBuffer();
-                float[] dataIn = new float[dataInB.remaining()];
-                float[] dataOut = new float[dataOutB.remaining()];
+
+                // Because of a bug in testng (https://github.com/cbeust/testng/issues/1734),
+                // we read the data as ints.
+//                FloatBuffer dataInB = inputPage.getBuffer(pitchInput).asFloatBuffer();
+//                FloatBuffer dataOutB = page.getBuffer(pitchOutput).asFloatBuffer();
+//                float[] dataIn = new float[dataInB.remaining()];
+//                float[] dataOut = new float[dataOutB.remaining()];
+                IntBuffer dataInB = inputPage.getBuffer(pitchInput).asIntBuffer();
+                IntBuffer dataOutB = page.getBuffer(pitchOutput).asIntBuffer();
+                int[] dataIn = new int[dataInB.remaining()];
+                int[] dataOut = new int[dataOutB.remaining()];
                 dataInB.get(dataIn);
                 dataOutB.get(dataOut);
 
                 inputPage.release();
                 page.release();
 
-                Assert.assertArrayEquals(pitchInput, pitchOutput);
-                Assert.assertArrayEquals(dataIn, dataOut, 0.0f);
+                Assert.assertEquals(pitchInput, pitchOutput);
+                Assert.assertEquals(dataIn, dataOut);
             }
 
             accessManager.destroyVolumeDataPageAccessor(pageAccessor);
@@ -283,9 +289,6 @@ public class PageAccessorFloatTest {
 
     @Test
     public void testCopyPageAccessorValidationChunkIndex() {
-
-            testCopyPageAccessor();
-
             String tmpDir = System.getProperty("java.io.tmpdir");
             String vdsPath = tmpDir + File.separator + tempVdsCopyFileName;
             VDSFileOpenOptions options = new VDSFileOpenOptions(vdsPath);

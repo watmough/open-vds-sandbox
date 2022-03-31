@@ -32,13 +32,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.stream.IntStream;
 
+import static org.testng.Assert.*;
+import org.testng.annotations.*;
+
 import org.opengroup.openvds.*;
-import org.junit.Test;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import static org.junit.Assert.*;
 
 import static org.opengroup.openvds.VolumeDataFormat.*;
 import static org.opengroup.openvds.VolumeDataLayoutDescriptor.BrickSize;
@@ -46,29 +43,6 @@ import static org.opengroup.openvds.VolumeDataLayoutDescriptor.LODLevels;
 import static org.opengroup.openvds.VolumeDataComponents.*;
 
 public class InMemoryVDSGeneratorTest {
-
-    GlobalState globalState;
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-
-    }
-
-    @Before
-    public void setUp() {
-        this.globalState = OpenVDS.getGlobalState();
-    }
-
-    @After
-    public void tearDown() {
-    }
-    
-    public InMemoryVDSGeneratorTest() {
-    }
 
     @Test
     public void testOpenClose() throws IOException {
@@ -115,7 +89,7 @@ public class InMemoryVDSGeneratorTest {
                         for (int i = 0; i < nZSamples * nYSamples; i++) {
                             final float f1 = floatBuffer0.get(i);
                             final float f2 = floatBuffer1.get(i);
-                            assertEquals(" value " + i + " is different", 0, Float.compare(f1, f2));
+                            assertEquals(0, Float.compare(f1, f2), " value " + i + " is different");
                         }
                     }
                 }
@@ -151,7 +125,7 @@ public class InMemoryVDSGeneratorTest {
                         for (int i = 0; i < nZSamples * nYSamples; i++) {
                             final float f1 = floatBuffer0.get(i);
                             final float f2 = floatBuffer1.get(i);
-                            assertEquals(" value " + i + " is different", 0, Float.compare(f1, f2));
+                            assertEquals(0, Float.compare(f1, f2), " value " + i + " is different");
                         }
                     }
                 }
@@ -268,7 +242,7 @@ public class InMemoryVDSGeneratorTest {
                     for (int i = 0; i < nZSamples * nYSamples; i++) {
                         final float f1 = floatBuffer0.get(i);
                         final float f2 = floatBuffer1.get(i);
-                        assertEquals(" value " + i + " is different", 0, Float.compare(f1, f2));
+                        assertEquals(0, Float.compare(f1, f2), " value " + i + " is different");
                     }
                 }
             }
@@ -408,7 +382,7 @@ public class InMemoryVDSGeneratorTest {
                                             for (int i = 0; i < nZSamples * nYSamples; i++) {
                                                 final float f1 = floatBuffer0.get(i);
                                                 final float f2 = floatBuffer1.get(i);
-                                                assertEquals(" value " + i + " is different", 0, Float.compare(f1, f2));
+                                                assertEquals(0, Float.compare(f1, f2), " value " + i + " is different");
                                             }
 //                                            System.out.println("Done " + r_subset0.requestID() + " " + r_subset1.requestID());
 //                                            System.out.flush();
@@ -466,7 +440,7 @@ public class InMemoryVDSGeneratorTest {
                         for (int i = 0; i < nZSamples * nYSamples; i++) {
                             final float f1 = floatBuffer0.get(i);
                             final float f2 = floatBuffer1.get(i);
-                            assertEquals(" value " + i + " is different", 0, Float.compare(f1, f2));
+                            assertEquals(0, Float.compare(f1, f2), " value " + i + " is different");
                         }
                     }
                 }
@@ -499,7 +473,7 @@ public class InMemoryVDSGeneratorTest {
                         for (int i = 0; i < nZSamples * nYSamples; i++) {
                             final float f1 = buffer0.get(i);
                             final float f2 = buffer1.get(i);
-                            assertEquals(" value " + i + " is different", 0, Float.compare(f1, f2));
+                            assertEquals(0, Float.compare(f1, f2), " value " + i + " is different");
                         }
                     }
                 }
@@ -534,7 +508,7 @@ public class InMemoryVDSGeneratorTest {
                         for (int i = 0; i < nZSamples * nYSamples; i++) {
                             final float f1 = typedBuffer0.get(i);
                             final float f2 = typedBuffer1.get(i);
-                            assertEquals(" value " + i + " is different", 0, Float.compare(f1, f2));
+                            assertEquals(0, Float.compare(f1, f2), " value " + i + " is different");
                         }
                     }
                 }
@@ -569,7 +543,7 @@ public class InMemoryVDSGeneratorTest {
                         for (int i = 0; i < nZSamples * nYSamples; i++) {
                             final float f1 = typedBuffer0.get(i);
                             final float f2 = typedBuffer1.get(i);
-                            assertEquals(" value " + i + " is different", 0, Float.compare(f1, f2));
+                            assertEquals(0, Float.compare(f1, f2), " value " + i + " is different");
                         }
                     }
                 }
@@ -577,7 +551,7 @@ public class InMemoryVDSGeneratorTest {
         }
     }
 
-    @org.junit.Test
+    @Test
     public void testLayout() {
         int nXSamples = 60, nYSamples = 60, nZSamples = 60;
         VolumeDataFormat format = Format_U8;
@@ -670,41 +644,40 @@ public class InMemoryVDSGeneratorTest {
         assertTrue(layout.isMetadataIntAvailable("categoryInt", "Int"));
         assertEquals(123, layout.getMetadataInt("categoryInt", "Int"));
         assertTrue(layout.isMetadataIntVector2Available("categoryInt", "IntVector2"));
-        assertArrayEquals(new int[]{45, 78}, layout.getMetadataIntVector2("categoryInt", "IntVector2").toArray());
+        assertEquals(new int[]{45, 78}, layout.getMetadataIntVector2("categoryInt", "IntVector2").toArray());
         assertTrue(layout.isMetadataIntVector3Available("categoryInt", "IntVector3"));
-        assertArrayEquals(new int[]{45, 78, 72}, layout.getMetadataIntVector3("categoryInt", "IntVector3").toArray());
+        assertEquals(new int[]{45, 78, 72}, layout.getMetadataIntVector3("categoryInt", "IntVector3").toArray());
         assertTrue(layout.isMetadataIntVector4Available("categoryInt", "IntVector4"));
-        assertArrayEquals(new int[]{45, 78, 72, 84}, layout.getMetadataIntVector4("categoryInt", "IntVector4").toArray());
+        assertEquals(new int[]{45, 78, 72, 84}, layout.getMetadataIntVector4("categoryInt", "IntVector4").toArray());
 
         assertTrue(layout.isMetadataFloatAvailable("categoryFloat", "Float"));
         assertEquals(123f, layout.getMetadataFloat("categoryFloat", "Float"), 0f);
         assertTrue(layout.isMetadataFloatVector2Available("categoryFloat", "FloatVector2"));
-        assertArrayEquals(new float[]{45.5f, 78.75f}, layout.getMetadataFloatVector2("categoryFloat", "FloatVector2").toArray(), 0f);
+        assertEquals(new float[]{45.5f, 78.75f}, layout.getMetadataFloatVector2("categoryFloat", "FloatVector2").toArray());
         assertTrue(layout.isMetadataFloatVector3Available("categoryFloat", "FloatVector3"));
-        assertArrayEquals(new float[]{45.5f, 78.75f, 72.75f}, layout.getMetadataFloatVector3("categoryFloat", "FloatVector3").toArray(), 0f);
+        assertEquals(new float[]{45.5f, 78.75f, 72.75f}, layout.getMetadataFloatVector3("categoryFloat", "FloatVector3").toArray());
         assertTrue(layout.isMetadataFloatVector4Available("categoryFloat", "FloatVector4"));
-        assertArrayEquals(new float[]{45.5f, 78.75f, 72.75f, 84.1f}, layout.getMetadataFloatVector4("categoryFloat", "FloatVector4").toArray(), 0f);
+        assertEquals(new float[]{45.5f, 78.75f, 72.75f, 84.1f}, layout.getMetadataFloatVector4("categoryFloat", "FloatVector4").toArray());
 
         assertTrue(layout.isMetadataDoubleAvailable("categoryDouble", "Double"));
         assertEquals(123., layout.getMetadataDouble("categoryDouble", "Double"), 0f);
         assertTrue(layout.isMetadataDoubleVector2Available("categoryDouble", "DoubleVector2"));
-        assertArrayEquals(new double[]{45.5, 78.75}, layout.getMetadataDoubleVector2("categoryDouble", "DoubleVector2").toArray(), 0f);
+        assertEquals(new double[]{45.5, 78.75}, layout.getMetadataDoubleVector2("categoryDouble", "DoubleVector2").toArray());
         assertTrue(layout.isMetadataDoubleVector3Available("categoryDouble", "DoubleVector3"));
-        assertArrayEquals(new double[]{45.5, 78.75, 72.75}, layout.getMetadataDoubleVector3("categoryDouble", "DoubleVector3").toArray(), 0f);
+        assertEquals(new double[]{45.5, 78.75, 72.75}, layout.getMetadataDoubleVector3("categoryDouble", "DoubleVector3").toArray());
         assertTrue(layout.isMetadataDoubleVector4Available("categoryDouble", "DoubleVector4"));
-        assertArrayEquals(new double[]{45.5, 78.75, 72.75, 84.1}, layout.getMetadataDoubleVector4("categoryDouble", "DoubleVector4").toArray(), 0f);
+        assertEquals(new double[]{45.5, 78.75, 72.75, 84.1}, layout.getMetadataDoubleVector4("categoryDouble", "DoubleVector4").toArray());
 
         assertTrue(layout.isMetadataStringAvailable("categoryString", "String"));
         assertEquals("Test string", layout.getMetadataString("categoryString", "String"));
 
         assertTrue(layout.isMetadataBLOBAvailable("categoryBLOB", "BLOB"));
-        assertArrayEquals(new byte[]{1,2,3,4}, layout.getMetadataBLOB("categoryBLOB", "BLOB"));
+        assertEquals(new byte[]{1,2,3,4}, layout.getMetadataBLOB("categoryBLOB", "BLOB"));
 
         generator.close();
-
     }
 
-    @org.junit.Test
+    @Test
     public void testErrors() {
         try (InMemoryVDSGenerator generator = new InMemoryVDSGenerator(100, 100, 100, Format_U8)) {
             UploadError ul = generator.getAccessManager().getCurrentUploadError();
@@ -717,7 +690,6 @@ public class InMemoryVDSGeneratorTest {
             assertTrue(dl.ErrorCode == 0);
 
         }
-
     }
     
 }

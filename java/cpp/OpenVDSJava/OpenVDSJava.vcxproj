@@ -81,10 +81,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$([MSBuild]::GetRegistryValueFromView('HKEY_LOCAL_MACHINE\SOFTWARE\JavaSoft\Java Development Kit\1.8', 'JavaHome', null, RegistryView.Registry64))\include;$([MSBuild]::GetRegistryValueFromView('HKEY_LOCAL_MACHINE\SOFTWARE\JavaSoft\Java Development Kit\1.8', 'JavaHome', null, RegistryView.Registry64))\include\win32;$(IncludePath)</IncludePath>
+    <TargetName>openvds-javacpp</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$([MSBuild]::GetRegistryValueFromView('HKEY_LOCAL_MACHINE\SOFTWARE\JavaSoft\Java Development Kit\1.8', 'JavaHome', null, RegistryView.Registry64))\include;$([MSBuild]::GetRegistryValueFromView('HKEY_LOCAL_MACHINE\SOFTWARE\JavaSoft\Java Development Kit\1.8', 'JavaHome', null, RegistryView.Registry64))\include\win32;$(IncludePath)</IncludePath>
+    <TargetName>openvds-javacpp</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

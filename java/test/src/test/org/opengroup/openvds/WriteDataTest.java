@@ -16,11 +16,11 @@
  */
 
 package test.org.opengroup.openvds;
-
-import org.junit.*;
 import org.opengroup.openvds.*;
 
-import static org.junit.Assert.*;
+import static org.testng.Assert.*;
+import org.testng.annotations.*;
+
 import java.nio.FloatBuffer;
 
 import static org.opengroup.openvds.VolumeDataFormat.*;

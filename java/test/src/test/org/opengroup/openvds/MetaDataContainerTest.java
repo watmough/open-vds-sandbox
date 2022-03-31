@@ -23,19 +23,15 @@ import java.nio.FloatBuffer;
 import java.util.Objects;
 import java.util.Random;
 import org.opengroup.openvds.*;
-import org.junit.Test;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.opengroup.openvds.Error;
+
+import static org.testng.Assert.*;
+import org.testng.annotations.*;
 
 import static org.opengroup.openvds.VolumeDataFormat.*;
 import static org.opengroup.openvds.VolumeDataLayoutDescriptor.BrickSize;
 import static org.opengroup.openvds.VolumeDataLayoutDescriptor.LODLevels;
 import static org.opengroup.openvds.VolumeDataComponents.*;
-
-import static org.junit.Assert.*;
 
 public class MetaDataContainerTest {
 
@@ -48,7 +44,7 @@ public class MetaDataContainerTest {
     public MetadataReadAccess md;
     public InMemoryVDSGenerator vds;
 
-    @Before
+    @BeforeClass
     public void init() {
         vds = new InMemoryVDSGenerator(16, 16, 16, Format_U8);
         url = "inmemory://create_test";
@@ -74,7 +70,7 @@ public class MetaDataContainerTest {
         ld = volumeDataLayout.getLayoutDescriptor();
     }
 
-    @After
+    @AfterClass
     public void cleanTempFile() {
         String tempDir = System.getProperty("java.io.tmpdir");
         String tempFilePath = tempDir + File.separator + TEMP_FILE_NAME;
@@ -275,39 +271,39 @@ public class MetaDataContainerTest {
             assertEquals(mdInt, i1);
 
             int[] mdIntVector2 = createdVDS.getLayout().getMetadataIntVector2("categoryInt", "IntV2").toArray();
-            assertArrayEquals(vec2i, mdIntVector2);
+            assertEquals(vec2i, mdIntVector2);
 
             int[] mdIntVector3 = createdVDS.getLayout().getMetadataIntVector3("categoryInt", "IntV3").toArray();
-            assertArrayEquals(vec3i, mdIntVector3);
+            assertEquals(vec3i, mdIntVector3);
 
             int[] mdIntVector4 = createdVDS.getLayout().getMetadataIntVector4("categoryInt", "IntV4").toArray();
-            assertArrayEquals(vec4i, mdIntVector4);
+            assertEquals(vec4i, mdIntVector4);
 
             // float
             float mdFloat = createdVDS.getLayout().getMetadataFloat("categoryFloat", "singleFloat");
             assertEquals(mdFloat, f1, 0);
 
             float[] mdFloatVector2 = createdVDS.getLayout().getMetadataFloatVector2("categoryFloat", "FloatV2").toArray();
-            assertArrayEquals(vec2f, mdFloatVector2, 0f);
+            assertEquals(vec2f, mdFloatVector2);
 
             float[] mdFloatVector3 = createdVDS.getLayout().getMetadataFloatVector3("categoryFloat", "FloatV3").toArray();
-            assertArrayEquals(vec3f, mdFloatVector3, 0f);
+            assertEquals(vec3f, mdFloatVector3);
 
             float[] mdFloatVector4 = createdVDS.getLayout().getMetadataFloatVector4("categoryFloat", "FloatV4").toArray();
-            assertArrayEquals(vec4f, mdFloatVector4, 0f);
+            assertEquals(vec4f, mdFloatVector4);
 
             // double
             double mdDouble = createdVDS.getLayout().getMetadataDouble("categoryDouble", "singleDouble");
             assertEquals(mdDouble, d1, 0f);
 
             double[] mdDoubleVector2 = createdVDS.getLayout().getMetadataDoubleVector2("categoryDouble", "DoubleV2").toArray();
-            assertArrayEquals(vec2d, mdDoubleVector2, 0);
+            assertEquals(vec2d, mdDoubleVector2);
 
             double[] mdDoubleVector3 = createdVDS.getLayout().getMetadataDoubleVector3("categoryDouble", "DoubleV3").toArray();
-            assertArrayEquals(vec3d, mdDoubleVector3, 0);
+            assertEquals(vec3d, mdDoubleVector3);
 
             double[] mdDoubleVector4 = createdVDS.getLayout().getMetadataDoubleVector4("categoryDouble", "DoubleV4").toArray();
-            assertArrayEquals(vec4d, mdDoubleVector4, 0);
+            assertEquals(vec4d, mdDoubleVector4);
 
             // String
             String mdS = createdVDS.getLayout().getMetadataString("categoryString", "String");
@@ -330,7 +326,7 @@ public class MetaDataContainerTest {
 
         assertTrue(metaData.isMetadataBLOBAvailable("Blob data", "blob array"));
         byte[] metadataBLOBArray = metaData.getMetadataBLOB("Blob data", "blob array");
-        assertArrayEquals(blobArray, metadataBLOBArray);
+        assertEquals(blobArray, metadataBLOBArray);
     }
 
     @Test
@@ -376,7 +372,7 @@ public class MetaDataContainerTest {
         metaDataFB.get(readFloats);
 
         // compares buffer
-        assertArrayEquals(blobFloatArray, readFloats, 0.0f);
+        assertEquals(blobFloatArray, readFloats);
     }
 }
 

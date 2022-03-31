@@ -21,7 +21,7 @@ public abstract class ManagedBase {
 
     static {
         try {
-            System.loadLibrary("OpenVDSJava");
+            System.loadLibrary("openvds-javacpp");
         } catch (Throwable e) {
             Logger.getLogger(ManagedBase.class.getName()).log(Level.SEVERE, "Failed to load JNI library.", e);
         }
