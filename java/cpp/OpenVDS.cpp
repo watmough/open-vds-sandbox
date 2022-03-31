@@ -1488,7 +1488,6 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_DMSOpenOptions_ctor2Impl
   return 0;
 }
 
-///AUTOGEN-FAIL: CONSTRUCTOR DMSOpenOptions void (const std::string &, const std::string &, const std::string &, std::string (*)(const void *), const void *, int, bool) FUNCTIONPROTO
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_DMSOpenOptions_getSdAuthorityUrlImpl
   (JNIEnv * env, jobject object, jlong native_handle)
@@ -1665,8 +1664,6 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_DMSOpenOptions_getUseFileN
   CPPJNI_CATCH
   return 0;
 }
-///AUTOGEN-FAIL: FIELD_DECL authProviderCallback std::string (*)(const void *) POINTER
-///AUTOGEN-FAIL: FIELD_DECL authProviderCallbackData const void * POINTER
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_DMSOpenOptions_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
@@ -1678,7 +1675,9 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_DMSOpenOptions_dtorImpl
   CPPJNI_CATCH
 }
 
-
+///AUTOGEN-IGNORE: CONSTRUCTOR DMSOpenOptions void (const std::string &, const std::string &, const std::string &, std::string (*)(const void *), const void *, int, bool) FUNCTIONPROTO
+///AUTOGEN-IGNORE: FIELD_DECL authProviderCallback std::string (*)(const void *) POINTER
+///AUTOGEN-IGNORE: FIELD_DECL authProviderCallbackData const void * POINTER
 
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_HttpOpenOptions_getUrlImpl
