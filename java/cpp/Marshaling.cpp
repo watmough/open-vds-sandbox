@@ -135,6 +135,11 @@ enum class JavaExceptionType
 void
 CPPJNI_Throw(struct JNIEnv_ *env, const char* message, JavaExceptionType exceptionType)
 {
+  if (env->ExceptionCheck())
+  { // We don't want to override any pending exceptions
+    return;
+  }
+
   const char* 
     ex = "java/lang/Exception";
 
@@ -180,49 +185,6 @@ CPPJNI_HandleSharedLibraryException(struct JNIEnv_ *env, class OpenVDS::Exceptio
   }
 }
 
-struct DirectBuffer 
-{
-  jobject m_Buffer;
-  void*   m_Memory;
-
-  DirectBuffer(jlong capacity) : m_Buffer(0), m_Memory(nullptr)
-  {
-    m_Memory = malloc(capacity);
-    if (m_Memory == nullptr)
-    {
-      throw std::bad_alloc();
-    }
-    jobject tmp = Marshaling::GetJNIEnv()->NewDirectByteBuffer(m_Memory, capacity);
-    if (tmp)
-    {
-      m_Buffer = Marshaling::GetJNIEnv()->NewGlobalRef(tmp);
-    }
-  }
-
-  jobject
-  GetBufferGlobalRef()
-  {
-    return m_Buffer;
-  }
-
-  void
-  DeleteBufferGlobalRef()
-  {
-    if (m_Buffer)
-    {
-      jobject buffer = m_Buffer;
-      m_Buffer = 0;
-      Marshaling::GetJNIEnv()->DeleteGlobalRef(buffer);
-    }
-  }
-
-  ~DirectBuffer()
-  {
-    DeleteBufferGlobalRef();
-    free(m_Memory);
-  }
-};
-
 std::string 
 JStringToString(JNIEnv* env, jstring str)
 {
@@ -230,6 +192,69 @@ JStringToString(JNIEnv* env, jstring str)
   auto result = std::string(utfChars);
   env->ReleaseStringUTFChars(str, utfChars);
   return result;
+}
+
+JNIDirectBuffer::JNIDirectBuffer(jlong capacity) : m_Buffer(0), m_Memory(nullptr)
+{
+  m_Memory = malloc(capacity);
+  if (m_Memory == nullptr)
+  {
+    throw std::bad_alloc();
+  }
+  jobject tmp = JNIDirectBuffer::CreateDirectBuffer(m_Memory, capacity);
+  if (tmp)
+  {
+    m_Buffer = Marshaling::GetJNIEnv()->NewGlobalRef(tmp);
+  }
+}
+
+JNIDirectBuffer::~JNIDirectBuffer()
+{
+  DeleteBufferGlobalRef();
+  free(m_Memory);
+}
+
+// Create a new DirectByteBuffer with native byte order.
+jobject
+JNIDirectBuffer::CreateDirectBuffer(void* mem, jlong capacity) 
+{
+  auto env = Marshaling::GetJNIEnv();
+  jobject tmp = env->NewDirectByteBuffer(mem, capacity);
+  CPPJNI_ensureNotNull(tmp, "Failed to create DirectByteBuffer");
+
+  // Call "ByteOrder.nativeOrder()"
+  jclass byteOrderClass = env->FindClass("java/nio/ByteOrder");
+  CPPJNI_ensureNotNull(byteOrderClass);
+  jmethodID nativeOrdermethodID = env->GetStaticMethodID(byteOrderClass, "nativeOrder", "()Ljava/nio/ByteOrder;");
+  CPPJNI_ensureNotNull(nativeOrdermethodID);
+  jobject nativeOrder = env->CallStaticObjectMethod(byteOrderClass, nativeOrdermethodID);
+  CPPJNI_ensureNotNull(nativeOrder);
+
+  // Call order() with the ByteOrder obtained in the previous step to ensure native byte order.
+  jclass directByteBufferClass = env->GetObjectClass(tmp);
+  CPPJNI_ensureNotNull(directByteBufferClass);
+  jmethodID orderMethodID = env->GetMethodID(directByteBufferClass, "order", "(Ljava/nio/ByteOrder;)Ljava/nio/ByteBuffer;");
+  CPPJNI_ensureNotNull(orderMethodID);
+  jobject byteBuffer = env->CallObjectMethod(tmp, orderMethodID, nativeOrder);
+  CPPJNI_ensureNotNull(byteBuffer);
+  return byteBuffer;
+}
+
+jobject
+JNIDirectBuffer::GetBufferGlobalRef()
+{
+  return m_Buffer;
+}
+
+  void
+JNIDirectBuffer::DeleteBufferGlobalRef()
+{
+  if (m_Buffer)
+  {
+    jobject buffer = m_Buffer;
+    m_Buffer = 0;
+    Marshaling::GetJNIEnv()->DeleteGlobalRef(buffer);
+  }
 }
 
 extern "C" {
@@ -253,8 +278,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_ManagedBuffer_ctorImpl
 
   CPPJNI_TRY
   {
-    auto directBuffer = new DirectBuffer(capacity);
-    auto context = new CPPJNIOwningObjectContext_t<DirectBuffer>(directBuffer);
+    auto directBuffer = new JNIDirectBuffer(capacity);
+    auto context = new CPPJNIOwningObjectContext_t<JNIDirectBuffer>(directBuffer);
     auto native_handle = context->handle();
     return native_handle;
   }
@@ -270,7 +295,7 @@ JNIEXPORT jobject JNICALL Java_org_opengroup_openvds_ManagedBuffer_getBufferRefI
 
   CPPJNI_TRY
   {
-    auto buffer = CPPJNI_cast<DirectBuffer>(native_handle);
+    auto buffer = CPPJNI_cast<JNIDirectBuffer>(native_handle);
     return buffer->GetBufferGlobalRef();
   }
   CPPJNI_CATCH
@@ -285,7 +310,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_ManagedBuffer_deleteBufferRefI
 
   CPPJNI_TRY
   {
-    auto buffer = CPPJNI_cast<DirectBuffer>(native_handle);
+    auto buffer = CPPJNI_cast<JNIDirectBuffer>(native_handle);
     buffer->DeleteBufferGlobalRef();
   }
   CPPJNI_CATCH
@@ -299,7 +324,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_ManagedBuffer_dtorImpl
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<DirectBuffer>(env, native_handle);
+    CPPJNI_destroyHandle<JNIDirectBuffer>(env, native_handle);
   }
   CPPJNI_CATCH
 }

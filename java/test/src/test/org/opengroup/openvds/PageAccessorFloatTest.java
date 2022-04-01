@@ -25,6 +25,7 @@ import org.testng.annotations.*;
 
 import java.io.File;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
@@ -49,6 +50,14 @@ public class PageAccessorFloatTest {
 
     private String tempVolIndexerFileName;
     private String tempVdsCopyFileName;
+
+    static void assertWithinRange(float[] values, float min, float max) {
+        for (float val : values) {
+            assertFalse(Float.isInfinite(val));
+            assertFalse(Float.isNaN(val));
+            assertTrue(val >= min && val <= max);
+        }
+    }
 
     @BeforeClass
     public void init() {
@@ -205,8 +214,10 @@ public class PageAccessorFloatTest {
                 VolumeDataPage inputPage = pageAccessorInput.readPage(chunk);
                 VolumeDataPage page = pageAccessor.createPage(chunk);
                 ByteBuffer readBuffer = inputPage.getBuffer(pitch);
+                assertTrue(readBuffer.order() == ByteOrder.nativeOrder());
 //                float[] data = inputPage.readFloatBuffer(pitch);
                  ByteBuffer writeBuffer = page.getWritableBuffer(pitch);
+                assertTrue(writeBuffer.order() == ByteOrder.nativeOrder());
 //                page.writeFloatBuffer(data, pitch);
                 writeBuffer.put(readBuffer);
                 inputPage.release();
@@ -225,6 +236,7 @@ public class PageAccessorFloatTest {
 
     @Test
     public void testCopyPageAccessorValidation() {
+//        testCopyPageAccessor(); // Uncomment this line if running separately
             String tmpDir = System.getProperty("java.io.tmpdir");
             String vdsPath = tmpDir + File.separator + tempVdsCopyFileName;
             VDSFileOpenOptions options = new VDSFileOpenOptions(vdsPath);
@@ -257,17 +269,10 @@ public class PageAccessorFloatTest {
             for (long chunk = 0 ; chunk < chunkCount ; ++chunk) {
                 VolumeDataPage inputPage = pageAccessorInput.readPage(chunk);
                 VolumeDataPage page = pageAccessor.readPage(chunk);
-
-                // Because of a bug in testng (https://github.com/cbeust/testng/issues/1734),
-                // we read the data as ints.
-//                FloatBuffer dataInB = inputPage.getBuffer(pitchInput).asFloatBuffer();
-//                FloatBuffer dataOutB = page.getBuffer(pitchOutput).asFloatBuffer();
-//                float[] dataIn = new float[dataInB.remaining()];
-//                float[] dataOut = new float[dataOutB.remaining()];
-                IntBuffer dataInB = inputPage.getBuffer(pitchInput).asIntBuffer();
-                IntBuffer dataOutB = page.getBuffer(pitchOutput).asIntBuffer();
-                int[] dataIn = new int[dataInB.remaining()];
-                int[] dataOut = new int[dataOutB.remaining()];
+                FloatBuffer dataInB = inputPage.getBuffer(pitchInput).asFloatBuffer();
+                FloatBuffer dataOutB = page.getBuffer(pitchOutput).asFloatBuffer();
+                float[] dataIn = new float[dataInB.remaining()];
+                float[] dataOut = new float[dataOutB.remaining()];
                 dataInB.get(dataIn);
                 dataOutB.get(dataOut);
 
@@ -276,6 +281,8 @@ public class PageAccessorFloatTest {
 
                 Assert.assertEquals(pitchInput, pitchOutput);
                 Assert.assertEquals(dataIn, dataOut);
+                assertWithinRange(dataIn, -1.0f, 1.0f);
+                assertWithinRange(dataOut, -1.0f, 1.0f);
             }
 
             accessManager.destroyVolumeDataPageAccessor(pageAccessor);
@@ -289,6 +296,7 @@ public class PageAccessorFloatTest {
 
     @Test
     public void testCopyPageAccessorValidationChunkIndex() {
+//        testCopyPageAccessor(); // Uncomment this line if running separately
             String tmpDir = System.getProperty("java.io.tmpdir");
             String vdsPath = tmpDir + File.separator + tempVdsCopyFileName;
             VDSFileOpenOptions options = new VDSFileOpenOptions(vdsPath);

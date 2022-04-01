@@ -623,6 +623,15 @@ void CPPJNI_HandleSharedLibraryException(JNIEnv* env, OpenVDS::Exception& e);
 void CPPJNI_HandleStdRuntimeError(JNIEnv *env, std::runtime_error& e);
 void CPPJNI_HandleStdException(JNIEnv *env, std::exception& e);
 
+template<typename T>
+void CPPJNI_ensureNotNull(T value, const char* failMessage=nullptr) 
+{
+  if (!value)
+  {
+    throw std::runtime_error(failMessage ? failMessage : "Unexpected null values");
+  }
+}
+
 #define CPPJNI_TRY try
 #define CPPJNI_CATCH \
  catch(ObsoleteObjectException&) { /* No-op. See comment for ObsoleteObjectException */ } \
@@ -734,6 +743,19 @@ struct CPPJNIStringWrapper
   }
 };
 
+struct JNIDirectBuffer 
+{
+  jobject m_Buffer;
+  void*   m_Memory;
+
+                  JNIDirectBuffer(jlong capacity);
+                  ~JNIDirectBuffer();
+  static jobject  CreateDirectBuffer(void* mem, jlong capacity);
+  jobject         GetBufferGlobalRef();
+  void            DeleteBufferGlobalRef();
+
+};
+
 class Marshaling {
 public:
   static jobject CreateJavaObject(const char* type);
@@ -763,6 +785,7 @@ public:
 
   static void Convert(jobject& to, OpenVDS::IJKGridDefinition const& from);
   static void Convert(OpenVDS::IJKGridDefinition& to, jobject from);
+
 };
 
 template<> jobject Marshaling::CreatePODJavaObject<int>(int const& value);

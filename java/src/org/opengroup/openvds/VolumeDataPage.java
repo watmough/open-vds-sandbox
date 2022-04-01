@@ -89,8 +89,7 @@ public class VolumeDataPage extends ManagedBase implements AutoCloseable {
     public ByteBuffer getBuffer(int[] pitch) {
         if (pitch.length != 6) throw new IllegalArgumentException("Array \"pitch\" must have length 6");
         ByteBuffer buffer = GetBufferImpl(getNativeObject(), pitch);
-        buffer.order(java.nio.ByteOrder.nativeOrder());
-        return buffer.asReadOnlyBuffer();
+        return buffer.asReadOnlyBuffer().order(java.nio.ByteOrder.nativeOrder());
     }
 
 ///AUTOGEN-IGNORE: CXX_METHOD GetWritableBuffer void *(int (&)[6]) FUNCTIONPROTO
@@ -106,8 +105,7 @@ public class VolumeDataPage extends ManagedBase implements AutoCloseable {
     public ByteBuffer getWritableBuffer(int[] pitch) {
         if (pitch.length != 6) throw new IllegalArgumentException("Array \"pitch\" must have length 6");
         ByteBuffer buffer = GetWritableBufferImpl(getNativeObject(), pitch);
-        buffer.order(java.nio.ByteOrder.nativeOrder());
-        return buffer;
+        return buffer.order(java.nio.ByteOrder.nativeOrder());
     }
 	
 ///AUTOGEN-IGNORE: CXX_METHOD Release void () FUNCTIONPROTO

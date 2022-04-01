@@ -177,7 +177,7 @@ VolumeDataPage_GetWritableBufferImpl(JNIEnv * env, jobject object, jlong native_
       }
     }
     nBufferSize *= itemSize;
-    return env->NewDirectByteBuffer(buffer, nBufferSize);
+    return JNIDirectBuffer::CreateDirectBuffer(buffer, nBufferSize);
   }
   CPPJNI_CATCH
   return 0;

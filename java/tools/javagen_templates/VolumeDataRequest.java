@@ -13,9 +13,7 @@
      */
     public ByteBuffer getBuffer() {{
         ByteBuffer buffer = GetBufferImpl(getNativeObject());
-        ByteBuffer readOnlyBuffer = buffer.asReadOnlyBuffer();
-        readOnlyBuffer.order(java.nio.ByteOrder.nativeOrder());
-        return readOnlyBuffer;
+        return buffer.asReadOnlyBuffer().order(java.nio.ByteOrder.nativeOrder());
     }}
 	
     private void ensureRequestCompleted() {{

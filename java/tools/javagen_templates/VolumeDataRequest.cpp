@@ -15,7 +15,7 @@ JNIEXPORT jobject JNICALL Java_org_opengroup_openvds_VolumeDataRequest_GetBuffer
     void *buffer = pInstance->Buffer();
     jlong nBufferSize = pInstance->BufferByteSize();
 
-    return env->NewDirectByteBuffer(buffer, nBufferSize);
+    return JNIDirectBuffer::CreateDirectBuffer(buffer, nBufferSize);
   }
   CPPJNI_CATCH
   return 0;
