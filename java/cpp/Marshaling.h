@@ -645,28 +645,30 @@ class JEnvPushPop
   friend class Marshaling;
 
   static thread_local std::stack<JNIEnv*>
-    s_JNIEnvStack;
+    ts_JNIEnvStack;
 
-  static void checkInit();
+  static JavaVM* s_JavaVM;
 
+  static void checkInit(JNIEnv* env);
+
+  bool isThreadAttach;
+
+  static void     pop();
+  static void     push(JNIEnv* env);
+  static JNIEnv*  top();
 public:
-  JEnvPushPop(JNIEnv* env)
-  {
-    checkInit();
-    assert(env != NULL);
-    s_JNIEnvStack.push(env);
-  }
 
-  ~JEnvPushPop()
-  {
-    FlushStrings();
-    s_JNIEnvStack.pop();
-  }
+                  JEnvPushPop();
+                  JEnvPushPop(JNIEnv* env);
+                  ~JEnvPushPop();
+
+  static bool     isJNIEnvValid();
+  static JNIEnv*  getJNIEnv();
 
   const char* GetStringUTFChars(jstring value) {
     jboolean is_copy = false;
-    assert(!s_JNIEnvStack.empty());
-    JNIEnv* env = s_JNIEnvStack.top();
+    assert(!isJNIEnvValid());
+    JNIEnv* env = getJNIEnv();
     const char* utf8 = env->GetStringUTFChars(value, &is_copy);
     m_lUtf8Chars.push_back(StringRecord(env, value, utf8));
     return utf8;
@@ -766,12 +768,12 @@ public:
   static jobject CreatePODJavaObject(T const& value);
 
   static JNIEnv* GetJNIEnv() {
-    assert(!JEnvPushPop::s_JNIEnvStack.empty());
-    return JEnvPushPop::s_JNIEnvStack.top();
+    assert(JEnvPushPop::isJNIEnvValid());
+    return JEnvPushPop::getJNIEnv();
   }
 
   static bool IsJavaContextActive() {
-    return !JEnvPushPop::s_JNIEnvStack.empty();
+    return JEnvPushPop::isJNIEnvValid();
   }
 
   static void Convert(jobject& to, OpenVDS::VolumeDataChannelDescriptor const& from);

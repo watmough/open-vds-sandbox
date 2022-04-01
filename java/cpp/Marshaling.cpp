@@ -29,12 +29,93 @@
 static std::mutex
   s_FinalizerMutex;
 
+JavaVM*
+  JEnvPushPop::s_JavaVM;
+
 thread_local std::stack<JNIEnv*>
-JEnvPushPop::s_JNIEnvStack;
+  JEnvPushPop::ts_JNIEnvStack;
+
+
+void
+JEnvPushPop::push(JNIEnv* env)
+{
+  assert(env);
+  ts_JNIEnvStack.push(env);
+}
+
+JNIEnv*
+JEnvPushPop::top()
+{
+  assert(!ts_JNIEnvStack.empty());
+  return ts_JNIEnvStack.top();
+}
+
+void
+JEnvPushPop::pop()
+{
+  assert(!ts_JNIEnvStack.empty());
+  ts_JNIEnvStack.pop();
+}
+
+
+JEnvPushPop::JEnvPushPop() : isThreadAttach(false)
+{
+  assert(s_JavaVM != nullptr);
+  if (isJNIEnvValid())
+  {
+    push(getJNIEnv());
+  }
+  else
+  {
+    JNIEnv* env = nullptr;
+    s_JavaVM->AttachCurrentThread((void**)&env, nullptr);
+    if (env == nullptr) 
+    {
+      throw std::runtime_error("Unable to attach to JavaVM");
+    }
+    isThreadAttach = true;
+    push(env);
+  } 
+}
+
+JEnvPushPop::JEnvPushPop(JNIEnv* env) : isThreadAttach(false)
+{
+  checkInit(env);
+  assert(env != NULL);
+  push(env);
+  assert(isJNIEnvValid());
+}
+
+JEnvPushPop::~JEnvPushPop()
+{
+  assert(isJNIEnvValid());
+  FlushStrings();
+  pop();
+  if (isThreadAttach)
+  {
+    s_JavaVM->DetachCurrentThread();
+    assert(!isJNIEnvValid());
+  }
+}
+
+bool 
+JEnvPushPop::isJNIEnvValid() 
+{
+  return !ts_JNIEnvStack.empty();
+}
+
+JNIEnv* 
+JEnvPushPop::getJNIEnv() {
+  return top();
+}
 
 void 
-JEnvPushPop::checkInit()
+JEnvPushPop::checkInit(JNIEnv* env)
 {
+  if (s_JavaVM == nullptr)
+  {
+    env->GetJavaVM(&s_JavaVM);
+  }
 #ifdef ENABLE_DEBUGGER_ATTACH
   {
     static bool s_IsCancel;
