@@ -199,8 +199,8 @@ extern "C" {
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_InMemoryVDSGenerator_CreateVDSImpl
 (JNIEnv *env, jclass, jint nXSamples, jint nYSamples, jint nZSamples, jlong format)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY 
   {

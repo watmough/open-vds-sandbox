@@ -8,6 +8,8 @@ ILLEGAL_PATTERNS = [
 
 REPLACE_PATTERNS = {
     'VolumeDataChannelDescriptor.Format': 'VolumeDataFormat',
+    'JEnvPushPop': 'JNIEnvGuard',
+    'stackitem': 'envGuard',
 #    'VolumeDataFormat': 'VolumeDataChannelDescriptor::Format',
 #    'VCVoxelFormat': 'VolumeDataChannelDescriptor.Format',
     'Hue::Util': 'OpenVDS',

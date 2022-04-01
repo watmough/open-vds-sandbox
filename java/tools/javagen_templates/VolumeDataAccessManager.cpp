@@ -17,8 +17,8 @@
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestVolumeSamplesImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject buffer, jlong dimensionsND, jint LOD, jint channel, jobject samplePositionsbytebuffer, jlong interpolationMethod, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -45,8 +45,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestVolumeSamples2Impl
   (JNIEnv * env, jobject object, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jobject samplePositionsbytebuffer, jlong interpolationMethod, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -70,8 +70,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestVolumeTracesImpl
   (JNIEnv * env, jobject object, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jobject tracePositionsbytebuffer, jlong interpolationMethod, jint traceDimension, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -96,8 +96,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestVolumeTraces2Impl
   (JNIEnv * env, jobject object, jlong native_handle, jobject buffer, jlong dimensionsND, jint LOD, jint channel, jobject tracePositionsbytebuffer, jlong interpolationMethod, jint traceDimension, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -128,8 +128,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
 JNIEXPORT jobjectArray JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_GetCurrentUploadErrorImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -155,8 +155,8 @@ JNIEXPORT jobjectArray JNICALL Java_org_opengroup_openvds_VolumeDataAccessManage
 JNIEXPORT jobjectArray JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_GetCurrentDownloadErrorImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -182,8 +182,8 @@ JNIEXPORT jobjectArray JNICALL Java_org_opengroup_openvds_VolumeDataAccessManage
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestVolumeTraceRangesImpl
   (JNIEnv * env, jobject object, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jobject tracePositionsbytebuffer, jlong interpolationMethod, jint traceDimension, jint traceMin, jint traceMax, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -210,8 +210,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestVolumeTraceRanges2Impl
   (JNIEnv * env, jobject object, jlong native_handle, jobject buffer, jlong dimensionsND, jint LOD, jint channel, jobject tracePositionsbytebuffer, jlong interpolationMethod, jint traceDimension, jint traceMin, jint traceMax, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {

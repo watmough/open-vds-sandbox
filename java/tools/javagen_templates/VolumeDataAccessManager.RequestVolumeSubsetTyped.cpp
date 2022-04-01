@@ -2,8 +2,8 @@
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestVolumeSubset<DataType>Impl
   (JNIEnv * env, jobject object, jlong native_handle, jobject buffer, jlong dimensionsND, jint LOD, jint channel, jintArray minVoxelCoordinates, jintArray maxVoxelCoordinates, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -30,8 +30,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestVolumeSubset<DataType>2Impl
   (JNIEnv * env, jobject object, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jintArray minVoxelCoordinates, jintArray maxVoxelCoordinates, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {

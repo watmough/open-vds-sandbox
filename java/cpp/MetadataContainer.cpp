@@ -31,8 +31,8 @@ extern "C" {
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_MetadataContainer_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -51,8 +51,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_MetadataContainer_ctorImpl
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataContainer_IsMetadataIntAvailableImpl
   (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -67,8 +67,8 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataContainer_IsMetada
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataContainer_IsMetadataIntVector2AvailableImpl
   (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -83,8 +83,8 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataContainer_IsMetada
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataContainer_IsMetadataIntVector3AvailableImpl
   (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -99,8 +99,8 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataContainer_IsMetada
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataContainer_IsMetadataIntVector4AvailableImpl
   (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -115,8 +115,8 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataContainer_IsMetada
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataContainer_IsMetadataFloatAvailableImpl
   (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -131,8 +131,8 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataContainer_IsMetada
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataContainer_IsMetadataFloatVector2AvailableImpl
   (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -147,8 +147,8 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataContainer_IsMetada
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataContainer_IsMetadataFloatVector3AvailableImpl
   (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -163,8 +163,8 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataContainer_IsMetada
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataContainer_IsMetadataFloatVector4AvailableImpl
   (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -179,8 +179,8 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataContainer_IsMetada
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataContainer_IsMetadataDoubleAvailableImpl
   (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -195,8 +195,8 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataContainer_IsMetada
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataContainer_IsMetadataDoubleVector2AvailableImpl
   (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -211,8 +211,8 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataContainer_IsMetada
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataContainer_IsMetadataDoubleVector3AvailableImpl
   (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -227,8 +227,8 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataContainer_IsMetada
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataContainer_IsMetadataDoubleVector4AvailableImpl
   (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -243,8 +243,8 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataContainer_IsMetada
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataContainer_IsMetadataStringAvailableImpl
   (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -259,8 +259,8 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataContainer_IsMetada
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataContainer_IsMetadataBLOBAvailableImpl
   (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -275,8 +275,8 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataContainer_IsMetada
 JNIEXPORT jint JNICALL Java_org_opengroup_openvds_MetadataContainer_GetMetadataIntImpl
   (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -291,8 +291,8 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_MetadataContainer_GetMetadataI
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_GetMetadataIntVector2Impl
   (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jstring category, jstring name)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -308,8 +308,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_GetMetadataI
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_GetMetadataIntVector3Impl
   (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jstring category, jstring name)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -325,8 +325,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_GetMetadataI
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_GetMetadataIntVector4Impl
   (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jstring category, jstring name)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -342,8 +342,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_GetMetadataI
 JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_MetadataContainer_GetMetadataFloatImpl
   (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -358,8 +358,8 @@ JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_MetadataContainer_GetMetadat
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_GetMetadataFloatVector2Impl
   (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jstring category, jstring name)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -375,8 +375,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_GetMetadataF
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_GetMetadataFloatVector3Impl
   (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jstring category, jstring name)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -392,8 +392,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_GetMetadataF
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_GetMetadataFloatVector4Impl
   (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jstring category, jstring name)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -409,8 +409,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_GetMetadataF
 JNIEXPORT jdouble JNICALL Java_org_opengroup_openvds_MetadataContainer_GetMetadataDoubleImpl
   (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -425,8 +425,8 @@ JNIEXPORT jdouble JNICALL Java_org_opengroup_openvds_MetadataContainer_GetMetada
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_GetMetadataDoubleVector2Impl
   (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jstring category, jstring name)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -442,8 +442,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_GetMetadataD
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_GetMetadataDoubleVector3Impl
   (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jstring category, jstring name)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -459,8 +459,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_GetMetadataD
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_GetMetadataDoubleVector4Impl
   (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jstring category, jstring name)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -476,8 +476,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_GetMetadataD
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_MetadataContainer_GetMetadataStringImpl
   (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -492,8 +492,8 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_MetadataContainer_GetMetada
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_SetMetadataIntImpl
   (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name, jint value)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -509,8 +509,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_SetMetadataI
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_SetMetadataIntVector2Impl
   (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name, jobject valuebytebuffer, jlong valuebyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -526,8 +526,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_SetMetadataI
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_SetMetadataIntVector3Impl
   (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name, jobject valuebytebuffer, jlong valuebyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -543,8 +543,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_SetMetadataI
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_SetMetadataIntVector4Impl
   (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name, jobject valuebytebuffer, jlong valuebyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -560,8 +560,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_SetMetadataI
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_SetMetadataFloatImpl
   (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name, jfloat value)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -577,8 +577,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_SetMetadataF
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_SetMetadataFloatVector2Impl
   (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name, jobject valuebytebuffer, jlong valuebyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -594,8 +594,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_SetMetadataF
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_SetMetadataFloatVector3Impl
   (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name, jobject valuebytebuffer, jlong valuebyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -611,8 +611,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_SetMetadataF
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_SetMetadataFloatVector4Impl
   (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name, jobject valuebytebuffer, jlong valuebyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -628,8 +628,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_SetMetadataF
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_SetMetadataDoubleImpl
   (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name, jdouble value)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -645,8 +645,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_SetMetadataD
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_SetMetadataDoubleVector2Impl
   (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name, jobject valuebytebuffer, jlong valuebyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -662,8 +662,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_SetMetadataD
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_SetMetadataDoubleVector3Impl
   (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name, jobject valuebytebuffer, jlong valuebyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -679,8 +679,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_SetMetadataD
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_SetMetadataDoubleVector4Impl
   (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name, jobject valuebytebuffer, jlong valuebyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -696,8 +696,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_SetMetadataD
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_SetMetadataStringImpl
   (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name, jstring value)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -713,8 +713,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_SetMetadataS
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_CopyMetadataImpl
   (JNIEnv * env, jobject object, jlong native_handle, jstring category, jlong metadataReadAccess)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -727,8 +727,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_CopyMetadata
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_ClearMetadataImpl
   (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -741,8 +741,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_ClearMetadat
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_ClearMetadata2Impl
   (JNIEnv * env, jobject object, jlong native_handle, jstring category)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -755,8 +755,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_ClearMetadat
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_SetMetadataString2Impl
   (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name, jstring value)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -785,8 +785,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_dtorImpl
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_SetMetadataBLOBImpl
   (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name, jbyteArray data)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {

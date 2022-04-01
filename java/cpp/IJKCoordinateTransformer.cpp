@@ -31,8 +31,8 @@ extern "C" {
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -51,8 +51,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_ctor
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_ctor2Impl
   (JNIEnv * env, jclass cls, jobject ijkGridDefinitionbytebuffer, jlong ijkGridDefinitionbyteoffset, jobject ijkSizebytebuffer, jlong ijkSizebyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -71,8 +71,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_ctor
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_ctor3Impl
   (JNIEnv * env, jclass cls, jobject ijkGridDefinitionbytebuffer, jlong ijkGridDefinitionbyteoffset, jobject ijkSizebytebuffer, jlong ijkSizebyteoffset, jobject ijkToVoxelDimensionMapbytebuffer, jlong ijkToVoxelDimensionMapbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -94,8 +94,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_ctor
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_ctor4Impl
   (JNIEnv * env, jclass cls, jobject vdsIJKGridDefinitionbytebuffer, jlong vdsIJKGridDefinitionbyteoffset, jobject ijkSizebytebuffer, jlong ijkSizebyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -114,8 +114,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_ctor
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_ctor5Impl
   (JNIEnv * env, jclass cls, jobject ijkGridDefinitionbytebuffer, jlong ijkGridDefinitionbyteoffset, jobject ijkSizebytebuffer, jlong ijkSizebyteoffset, jobject ijkAnnotationStartbytebuffer, jlong ijkAnnotationStartbyteoffset, jobject ijkAnnotationEndbytebuffer, jlong ijkAnnotationEndbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -138,8 +138,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_ctor
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_ctor6Impl
   (JNIEnv * env, jclass cls, jobject ijkGridDefinitionbytebuffer, jlong ijkGridDefinitionbyteoffset, jobject ijkSizebytebuffer, jlong ijkSizebyteoffset, jobject ijkToVoxelDimensionMapbytebuffer, jlong ijkToVoxelDimensionMapbyteoffset, jobject ijkAnnotationStartbytebuffer, jlong ijkAnnotationStartbyteoffset, jobject ijkAnnotationEndbytebuffer, jlong ijkAnnotationEndbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -163,8 +163,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_ctor
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_ctor7Impl
   (JNIEnv * env, jclass cls, jobject vdsIJKGridDefinitionbytebuffer, jlong vdsIJKGridDefinitionbyteoffset, jobject ijkSizebytebuffer, jlong ijkSizebyteoffset, jobject ijkAnnotationStartbytebuffer, jlong ijkAnnotationStartbyteoffset, jobject ijkAnnotationEndbytebuffer, jlong ijkAnnotationEndbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -187,8 +187,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_ctor
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKGridImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -202,8 +202,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKGr
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKSizeImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -217,8 +217,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKSi
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKToVoxelDimensionMapImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -232,8 +232,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKTo
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKToWorldTransformImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -247,8 +247,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKTo
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_WorldToIJKTransformImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -262,8 +262,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_World
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKAnnotationStartImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -277,8 +277,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKAn
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKAnnotationEndImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -292,8 +292,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKAn
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_AnnotationsDefinedImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -308,8 +308,8 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_A
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKPositionToWorldImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jobject ijkPositionbytebuffer, jlong ijkPositionbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -323,8 +323,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKPo
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKIndexToWorldImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jobject ijkIndexbytebuffer, jlong ijkIndexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -338,8 +338,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKIn
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKPositionToAnnotationImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jobject ijkPositionbytebuffer, jlong ijkPositionbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -353,8 +353,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKPo
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKIndexToAnnotationImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jobject ijkIndexbytebuffer, jlong ijkIndexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -368,8 +368,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKIn
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKPositionToVoxelPositionImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jobject ijkPositionbytebuffer, jlong ijkPositionbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -383,8 +383,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKPo
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKIndexToVoxelIndexImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jobject ijkIndexbytebuffer, jlong ijkIndexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -398,8 +398,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IJKIn
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_WorldToIJKPositionImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jobject worldPositionbytebuffer, jlong worldPositionbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -413,8 +413,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_World
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_WorldToIJKIndexImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jobject worldPositionbytebuffer, jlong worldPositionbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -428,8 +428,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_World
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_WorldToAnnotationImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jobject worldPositionbytebuffer, jlong worldPositionbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -443,8 +443,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_World
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_WorldToVoxelPositionImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jobject worldPositionbytebuffer, jlong worldPositionbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -458,8 +458,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_World
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_WorldToVoxelIndexImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jobject worldPositionbytebuffer, jlong worldPositionbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -473,8 +473,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_World
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_AnnotationToIJKPositionImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jobject annotationPositionbytebuffer, jlong annotationPositionbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -488,8 +488,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_Annot
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_AnnotationToIJKIndexImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jobject annotationPositionbytebuffer, jlong annotationPositionbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -503,8 +503,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_Annot
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_AnnotationToWorldImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jobject annotationPositionbytebuffer, jlong annotationPositionbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -518,8 +518,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_Annot
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_AnnotationToVoxelPositionImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jobject annotationPositionbytebuffer, jlong annotationPositionbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -533,8 +533,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_Annot
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_AnnotationToVoxelIndexImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jobject annotationPositionbytebuffer, jlong annotationPositionbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -548,8 +548,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_Annot
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_VoxelPositionToIJKPositionImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jobject voxelPositionbytebuffer, jlong voxelPositionbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -563,8 +563,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_Voxel
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_VoxelIndexToIJKIndexImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jobject voxelIndexbytebuffer, jlong voxelIndexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -578,8 +578,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_Voxel
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_VoxelPositionToWorldImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jobject voxelPositionbytebuffer, jlong voxelPositionbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -593,8 +593,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_Voxel
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_VoxelIndexToWorldImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jobject voxelIndexbytebuffer, jlong voxelIndexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -608,8 +608,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_Voxel
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_VoxelPositionToAnnotationImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jobject voxelPositionbytebuffer, jlong voxelPositionbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -623,8 +623,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_Voxel
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_VoxelIndexToAnnotationImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jobject voxelIndexbytebuffer, jlong voxelIndexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -638,8 +638,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_Voxel
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IsIJKPositionOutOfRangeImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject ijkPositionbytebuffer, jlong ijkPositionbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -654,8 +654,8 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_I
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IsIJKIndexOutOfRangeImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject ijkIndexbytebuffer, jlong ijkIndexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -670,8 +670,8 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_I
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IsVoxelPositionOutOfRangeImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject voxelPositionbytebuffer, jlong voxelPositionbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -686,8 +686,8 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_I
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_IsVoxelIndexOutOfRangeImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject voxelIndexbytebuffer, jlong voxelIndexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -702,8 +702,8 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_I
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_ConvertIJKPositionToIndexImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jobject ijkPositionbytebuffer, jlong ijkPositionbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -717,8 +717,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_Conve
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_ConvertVoxelPositionToIndexImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset, jobject voxelPositionbytebuffer, jlong voxelPositionbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -746,8 +746,8 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_o
 JNIEXPORT jint JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_ErrorCodeIfIJKPositionOutOfRangeImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject ijkPositionbytebuffer, jlong ijkPositionbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -762,8 +762,8 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_Error
 JNIEXPORT jint JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_ErrorCodeIfVoxelPositionOutOfRangeImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject voxelPositionbytebuffer, jlong voxelPositionbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {

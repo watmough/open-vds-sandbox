@@ -11,8 +11,8 @@ VolumeDataPage_GetWritableBufferImpl(JNIEnv * env, jobject object, jlong native_
 {
   using namespace OpenVDS;
 
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {

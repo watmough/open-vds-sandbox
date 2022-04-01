@@ -31,8 +31,8 @@ extern "C" {
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_MetadataKey_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -51,8 +51,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_MetadataKey_ctorImpl
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_MetadataKey_ctor2Impl
   (JNIEnv * env, jclass cls, jlong type, jstring category, jstring name)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -74,8 +74,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_MetadataKey_ctor2Impl
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_MetadataKey_GetTypeImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -90,8 +90,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_MetadataKey_GetTypeImpl
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_MetadataKey_GetCategoryImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -106,8 +106,8 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_MetadataKey_GetCategoryImpl
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_MetadataKey_GetNameImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {

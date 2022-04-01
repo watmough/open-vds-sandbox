@@ -669,8 +669,8 @@ def create_jni_ctor(scope: Scope, ctor: Scope, class_name: str, class_canonical_
     args, prologue, epilogue = transform_jni_functioncall_args(extra_args, is_static_method=True)
     body = f"""
 {{
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {{
@@ -818,7 +818,7 @@ def create_jni_methods(scope: Scope, template: str, override_name: str = '', tem
                             declare_result = 'auto& result = '
                         retval = ''
                         print("{", file=local_output)
-                        print("  JEnvPushPop\n    stackitem(env);\n", file=local_output)
+                        print("  JNIEnvGuard\n    envGuard(env);\n", file=local_output)
                         print("  CPPJNI_TRY\n  {", file=local_output)
                         invoke_args, prologue, epilogue = transform_jni_functioncall_args(args, is_static_method=is_static_method)
                         if prologue:

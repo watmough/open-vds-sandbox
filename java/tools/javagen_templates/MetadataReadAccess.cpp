@@ -6,8 +6,8 @@ JNIEXPORT jintArray JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMet
 {
   using namespace OpenVDS;
 
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -38,8 +38,8 @@ JNIEXPORT jobjectArray JNICALL Java_org_opengroup_openvds_MetadataReadAccess_Get
 {
   using namespace OpenVDS;
 
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -69,8 +69,8 @@ JNIEXPORT jobjectArray JNICALL Java_org_opengroup_openvds_MetadataReadAccess_Get
 {
   using namespace OpenVDS;
 
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -98,8 +98,8 @@ JNIEXPORT jobjectArray JNICALL Java_org_opengroup_openvds_MetadataReadAccess_Get
 JNIEXPORT jbyteArray JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMetadataBLOBImpl
   (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {

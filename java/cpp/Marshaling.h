@@ -640,7 +640,7 @@ void CPPJNI_ensureNotNull(T value, const char* failMessage=nullptr)
  catch(std::runtime_error& e) { CPPJNI_HandleStdRuntimeError(env, e); } \
  catch(std::exception& e) { CPPJNI_HandleStdException(env, e); }
 
-class JEnvPushPop
+class JNIEnvGuard
 {
   friend class Marshaling;
 
@@ -658,9 +658,9 @@ class JEnvPushPop
   static JNIEnv*  top();
 public:
 
-                  JEnvPushPop();
-                  JEnvPushPop(JNIEnv* env);
-                  ~JEnvPushPop();
+                  JNIEnvGuard();
+                  JNIEnvGuard(JNIEnv* env);
+                  ~JNIEnvGuard();
 
   static bool     isJNIEnvValid();
   static JNIEnv*  getJNIEnv();
@@ -768,12 +768,12 @@ public:
   static jobject CreatePODJavaObject(T const& value);
 
   static JNIEnv* GetJNIEnv() {
-    assert(JEnvPushPop::isJNIEnvValid());
-    return JEnvPushPop::getJNIEnv();
+    assert(JNIEnvGuard::isJNIEnvValid());
+    return JNIEnvGuard::getJNIEnv();
   }
 
   static bool IsJavaContextActive() {
-    return JEnvPushPop::isJNIEnvValid();
+    return JNIEnvGuard::isJNIEnvValid();
   }
 
   static void Convert(jobject& to, OpenVDS::VolumeDataChannelDescriptor const& from);

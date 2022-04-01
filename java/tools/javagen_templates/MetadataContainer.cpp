@@ -4,8 +4,8 @@
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_SetMetadataBLOBImpl
   (JNIEnv * env, jobject object, jlong native_handle, jstring category, jstring name, jbyteArray data)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {

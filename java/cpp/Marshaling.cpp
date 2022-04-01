@@ -30,35 +30,35 @@ static std::mutex
   s_FinalizerMutex;
 
 JavaVM*
-  JEnvPushPop::s_JavaVM;
+  JNIEnvGuard::s_JavaVM;
 
 thread_local std::stack<JNIEnv*>
-  JEnvPushPop::ts_JNIEnvStack;
+  JNIEnvGuard::ts_JNIEnvStack;
 
 
 void
-JEnvPushPop::push(JNIEnv* env)
+JNIEnvGuard::push(JNIEnv* env)
 {
   assert(env);
   ts_JNIEnvStack.push(env);
 }
 
 JNIEnv*
-JEnvPushPop::top()
+JNIEnvGuard::top()
 {
   assert(!ts_JNIEnvStack.empty());
   return ts_JNIEnvStack.top();
 }
 
 void
-JEnvPushPop::pop()
+JNIEnvGuard::pop()
 {
   assert(!ts_JNIEnvStack.empty());
   ts_JNIEnvStack.pop();
 }
 
 
-JEnvPushPop::JEnvPushPop() : isThreadAttach(false)
+JNIEnvGuard::JNIEnvGuard() : isThreadAttach(false)
 {
   assert(s_JavaVM != nullptr);
   if (isJNIEnvValid())
@@ -78,7 +78,7 @@ JEnvPushPop::JEnvPushPop() : isThreadAttach(false)
   } 
 }
 
-JEnvPushPop::JEnvPushPop(JNIEnv* env) : isThreadAttach(false)
+JNIEnvGuard::JNIEnvGuard(JNIEnv* env) : isThreadAttach(false)
 {
   checkInit(env);
   assert(env != NULL);
@@ -86,7 +86,7 @@ JEnvPushPop::JEnvPushPop(JNIEnv* env) : isThreadAttach(false)
   assert(isJNIEnvValid());
 }
 
-JEnvPushPop::~JEnvPushPop()
+JNIEnvGuard::~JNIEnvGuard()
 {
   assert(isJNIEnvValid());
   FlushStrings();
@@ -99,18 +99,18 @@ JEnvPushPop::~JEnvPushPop()
 }
 
 bool 
-JEnvPushPop::isJNIEnvValid() 
+JNIEnvGuard::isJNIEnvValid() 
 {
   return !ts_JNIEnvStack.empty();
 }
 
 JNIEnv* 
-JEnvPushPop::getJNIEnv() {
+JNIEnvGuard::getJNIEnv() {
   return top();
 }
 
 void 
-JEnvPushPop::checkInit(JNIEnv* env)
+JNIEnvGuard::checkInit(JNIEnv* env)
 {
   if (s_JavaVM == nullptr)
   {
@@ -354,8 +354,8 @@ extern "C" {
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_ManagedBuffer_ctorImpl
   (JNIEnv * env, jclass clazz, jlong capacity)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -371,8 +371,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_ManagedBuffer_ctorImpl
 JNIEXPORT jobject JNICALL Java_org_opengroup_openvds_ManagedBuffer_getBufferRefImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -386,8 +386,8 @@ JNIEXPORT jobject JNICALL Java_org_opengroup_openvds_ManagedBuffer_getBufferRefI
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_ManagedBuffer_deleteBufferRefImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -400,8 +400,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_ManagedBuffer_deleteBufferRefI
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_ManagedBuffer_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {

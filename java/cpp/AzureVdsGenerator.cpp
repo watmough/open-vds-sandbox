@@ -99,8 +99,8 @@ jlong JNICALL Java_org_opengroup_openvds_AzureVDSGenerator_CreateVDSImpl(JNIEnv 
         jlong azureOptions, jint nXSamples, jint nYSamples, jint nZSamples, jlong format,
         jobjectArray jChannelNames, jobjectArray jUnitNames)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {

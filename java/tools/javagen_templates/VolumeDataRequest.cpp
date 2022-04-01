@@ -5,8 +5,8 @@ JNIEXPORT jobject JNICALL Java_org_opengroup_openvds_VolumeDataRequest_GetBuffer
 {
   using namespace OpenVDS;
 
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {

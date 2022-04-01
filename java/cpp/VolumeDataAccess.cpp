@@ -31,8 +31,8 @@ extern "C" {
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataPage_GetVolumeDataPageAccessorImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -48,8 +48,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataPage_GetVolumeDataP
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataPage_GetMinMaxImpl
   (JNIEnv * env, jobject object, jlong native_handle, jintArray min, jintArray max)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -64,8 +64,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataPage_GetMinMaxImpl
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataPage_GetMinMaxExcludingMarginImpl
   (JNIEnv * env, jobject object, jlong native_handle, jintArray minExcludingMargin, jintArray maxExcludingMargin)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -80,8 +80,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataPage_GetMinMaxExclud
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataPage_UpdateWrittenRegionImpl
   (JNIEnv * env, jobject object, jlong native_handle, jintArray writtenMin, jintArray writtenMax)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -96,8 +96,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataPage_UpdateWrittenRe
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataPage_ReleaseImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -130,8 +130,8 @@ VolumeDataPage_GetWritableBufferImpl(JNIEnv * env, jobject object, jlong native_
 {
   using namespace OpenVDS;
 
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -203,8 +203,8 @@ JNIEXPORT jobject JNICALL Java_org_opengroup_openvds_VolumeDataPage_GetBufferImp
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_GetLayoutImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -220,8 +220,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_GetLay
 JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_GetLODImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -236,8 +236,8 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_GetLODI
 JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_GetChannelIndexImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -252,8 +252,8 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_GetChan
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_GetChannelDescriptorImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -269,8 +269,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_GetCha
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_GetNumSamplesImpl
   (JNIEnv * env, jobject object, jlong native_handle, jintArray numSamples)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -284,8 +284,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_GetNumS
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_GetChunkCountImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -300,8 +300,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_GetChu
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_GetChunkMinMaxImpl
   (JNIEnv * env, jobject object, jlong native_handle, jlong chunk, jintArray min, jintArray max)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -319,8 +319,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_GetChun
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_GetChunkMinMaxExcludingMarginImpl
   (JNIEnv * env, jobject object, jlong native_handle, jlong chunk, jintArray minExcludingMargin, jintArray maxExcludingMargin)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -338,8 +338,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_GetChun
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_GetChunkIndexImpl
   (JNIEnv * env, jobject object, jlong native_handle, jintArray position)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -355,8 +355,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_GetChu
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_GetMappedChunkIndexImpl
   (JNIEnv * env, jobject object, jlong native_handle, jlong primaryChannelChunkIndex)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -371,8 +371,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_GetMap
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_GetPrimaryChannelChunkIndexImpl
   (JNIEnv * env, jobject object, jlong native_handle, jlong chunkIndex)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -387,8 +387,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_GetPri
 JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_AddReferenceImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -403,8 +403,8 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_AddRefe
 JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_RemoveReferenceImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -419,8 +419,8 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_RemoveR
 JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_GetMaxPagesImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -435,8 +435,8 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_GetMaxP
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_SetMaxPagesImpl
   (JNIEnv * env, jobject object, jlong native_handle, jint maxPages)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -449,8 +449,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_SetMaxP
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_CreatePageImpl
   (JNIEnv * env, jobject object, jlong native_handle, jlong chunkIndex)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -466,8 +466,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_Create
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_CopyPageImpl
   (JNIEnv * env, jobject object, jlong native_handle, jlong chunkIndex, jlong source)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -480,8 +480,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_CopyPag
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_ReadPageImpl
   (JNIEnv * env, jobject object, jlong native_handle, jlong chunkIndex)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -497,8 +497,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_ReadPa
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_ReadPageAtPositionImpl
   (JNIEnv * env, jobject object, jlong native_handle, jintArray position)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -515,8 +515,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_ReadPa
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_CommitImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -542,8 +542,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_dtorImp
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DInterpolatingAccessorR64_GetLayoutImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -559,8 +559,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DInterpolatingAcce
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DInterpolatingAccessorR64_RegionCountImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -575,8 +575,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DInterpolatingAcce
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DInterpolatingAccessorR64_RegionImpl
   (JNIEnv * env, jobject object, jlong native_handle, jlong region)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -592,8 +592,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DInterpolatingAcce
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DInterpolatingAccessorR64_RegionFromIndexImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -608,8 +608,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DInterpolatingAcce
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DInterpolatingAccessorR64_CurrentRegionImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -625,8 +625,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DInterpolatingAcce
 JNIEXPORT jdouble JNICALL Java_org_opengroup_openvds_VolumeData2DInterpolatingAccessorR64_GetValueImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -641,8 +641,8 @@ JNIEXPORT jdouble JNICALL Java_org_opengroup_openvds_VolumeData2DInterpolatingAc
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DInterpolatingAccessorR64_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -674,8 +674,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DInterpolatingAcces
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DInterpolatingAccessorR32_GetLayoutImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -691,8 +691,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DInterpolatingAcce
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DInterpolatingAccessorR32_RegionCountImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -707,8 +707,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DInterpolatingAcce
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DInterpolatingAccessorR32_RegionImpl
   (JNIEnv * env, jobject object, jlong native_handle, jlong region)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -724,8 +724,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DInterpolatingAcce
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DInterpolatingAccessorR32_RegionFromIndexImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -740,8 +740,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DInterpolatingAcce
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DInterpolatingAccessorR32_CurrentRegionImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -757,8 +757,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DInterpolatingAcce
 JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeData2DInterpolatingAccessorR32_GetValueImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -773,8 +773,8 @@ JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeData2DInterpolatingAcc
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DInterpolatingAccessorR32_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -806,8 +806,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DInterpolatingAcces
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorR64_GetLayoutImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -823,8 +823,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorR64_G
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorR64_RegionCountImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -839,8 +839,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorR64_R
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorR64_RegionImpl
   (JNIEnv * env, jobject object, jlong native_handle, jlong region)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -856,8 +856,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorR64_R
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorR64_RegionFromIndexImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -872,8 +872,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorR64_R
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorR64_CurrentRegionImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -889,8 +889,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorR64_C
 JNIEXPORT jdouble JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorR64_GetValueImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -905,8 +905,8 @@ JNIEXPORT jdouble JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorR64
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorR64_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -938,8 +938,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorR64_dt
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU64_GetLayoutImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -955,8 +955,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU64_G
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU64_RegionCountImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -971,8 +971,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU64_R
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU64_RegionImpl
   (JNIEnv * env, jobject object, jlong native_handle, jlong region)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -988,8 +988,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU64_R
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU64_RegionFromIndexImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1004,8 +1004,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU64_R
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU64_CurrentRegionImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1021,8 +1021,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU64_C
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU64_GetValueImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1037,8 +1037,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU64_G
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU64_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1070,8 +1070,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU64_dt
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorR32_GetLayoutImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1087,8 +1087,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorR32_G
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorR32_RegionCountImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1103,8 +1103,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorR32_R
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorR32_RegionImpl
   (JNIEnv * env, jobject object, jlong native_handle, jlong region)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1120,8 +1120,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorR32_R
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorR32_RegionFromIndexImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1136,8 +1136,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorR32_R
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorR32_CurrentRegionImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1153,8 +1153,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorR32_C
 JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorR32_GetValueImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1169,8 +1169,8 @@ JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorR32_
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorR32_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1202,8 +1202,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorR32_dt
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU32_GetLayoutImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1219,8 +1219,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU32_G
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU32_RegionCountImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1235,8 +1235,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU32_R
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU32_RegionImpl
   (JNIEnv * env, jobject object, jlong native_handle, jlong region)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1252,8 +1252,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU32_R
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU32_RegionFromIndexImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1268,8 +1268,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU32_R
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU32_CurrentRegionImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1285,8 +1285,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU32_C
 JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU32_GetValueImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1301,8 +1301,8 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU32_Ge
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU32_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1334,8 +1334,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU32_dt
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU16_GetLayoutImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1351,8 +1351,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU16_G
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU16_RegionCountImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1367,8 +1367,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU16_R
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU16_RegionImpl
   (JNIEnv * env, jobject object, jlong native_handle, jlong region)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1384,8 +1384,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU16_R
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU16_RegionFromIndexImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1400,8 +1400,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU16_R
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU16_CurrentRegionImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1417,8 +1417,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU16_C
 JNIEXPORT jshort JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU16_GetValueImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1433,8 +1433,8 @@ JNIEXPORT jshort JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU16_
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU16_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1466,8 +1466,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU16_dt
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU8_GetLayoutImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1483,8 +1483,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU8_Ge
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU8_RegionCountImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1499,8 +1499,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU8_Re
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU8_RegionImpl
   (JNIEnv * env, jobject object, jlong native_handle, jlong region)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1516,8 +1516,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU8_Re
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU8_RegionFromIndexImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1532,8 +1532,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU8_Re
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU8_CurrentRegionImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1549,8 +1549,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU8_Cu
 JNIEXPORT jbyte JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU8_GetValueImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1565,8 +1565,8 @@ JNIEXPORT jbyte JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU8_Ge
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU8_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1598,8 +1598,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU8_dto
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessor1Bit_GetLayoutImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1615,8 +1615,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessor1Bit_
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessor1Bit_RegionCountImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1631,8 +1631,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessor1Bit_
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessor1Bit_RegionImpl
   (JNIEnv * env, jobject object, jlong native_handle, jlong region)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1648,8 +1648,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessor1Bit_
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessor1Bit_RegionFromIndexImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1664,8 +1664,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessor1Bit_
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessor1Bit_CurrentRegionImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1681,8 +1681,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessor1Bit_
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessor1Bit_GetValueImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1697,8 +1697,8 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessor1B
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessor1Bit_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1730,8 +1730,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessor1Bit_d
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorR64_SetValueImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset, jdouble value)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1744,8 +1744,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorR
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorR64_CommitImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1758,8 +1758,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorR
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorR64_CancelImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1772,8 +1772,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorR
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorR64_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1805,8 +1805,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorR
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorU64_SetValueImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset, jlong value)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1819,8 +1819,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorU
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorU64_CommitImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1833,8 +1833,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorU
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorU64_CancelImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1847,8 +1847,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorU
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorU64_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1880,8 +1880,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorU
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorR32_SetValueImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset, jfloat value)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1894,8 +1894,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorR
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorR32_CommitImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1908,8 +1908,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorR
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorR32_CancelImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1922,8 +1922,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorR
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorR32_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1955,8 +1955,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorR
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorU32_SetValueImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset, jint value)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1969,8 +1969,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorU
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorU32_CommitImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1983,8 +1983,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorU
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorU32_CancelImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -1997,8 +1997,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorU
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorU32_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2030,8 +2030,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorU
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorU16_SetValueImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset, jshort value)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2044,8 +2044,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorU
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorU16_CommitImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2058,8 +2058,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorU
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorU16_CancelImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2072,8 +2072,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorU
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorU16_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2105,8 +2105,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorU
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorU8_SetValueImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset, jbyte value)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2119,8 +2119,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorU
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorU8_CommitImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2133,8 +2133,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorU
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorU8_CancelImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2147,8 +2147,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorU
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorU8_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2180,8 +2180,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorU
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessor1Bit_SetValueImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset, jboolean value)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2194,8 +2194,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessor1
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessor1Bit_CommitImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2208,8 +2208,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessor1
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessor1Bit_CancelImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2222,8 +2222,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessor1
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessor1Bit_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2255,8 +2255,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessor1
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DInterpolatingAccessorR64_GetLayoutImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2272,8 +2272,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DInterpolatingAcce
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DInterpolatingAccessorR64_RegionCountImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2288,8 +2288,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DInterpolatingAcce
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DInterpolatingAccessorR64_RegionImpl
   (JNIEnv * env, jobject object, jlong native_handle, jlong region)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2305,8 +2305,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DInterpolatingAcce
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DInterpolatingAccessorR64_RegionFromIndexImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2321,8 +2321,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DInterpolatingAcce
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DInterpolatingAccessorR64_CurrentRegionImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2338,8 +2338,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DInterpolatingAcce
 JNIEXPORT jdouble JNICALL Java_org_opengroup_openvds_VolumeData3DInterpolatingAccessorR64_GetValueImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2354,8 +2354,8 @@ JNIEXPORT jdouble JNICALL Java_org_opengroup_openvds_VolumeData3DInterpolatingAc
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DInterpolatingAccessorR64_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2387,8 +2387,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DInterpolatingAcces
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DInterpolatingAccessorR32_GetLayoutImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2404,8 +2404,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DInterpolatingAcce
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DInterpolatingAccessorR32_RegionCountImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2420,8 +2420,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DInterpolatingAcce
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DInterpolatingAccessorR32_RegionImpl
   (JNIEnv * env, jobject object, jlong native_handle, jlong region)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2437,8 +2437,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DInterpolatingAcce
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DInterpolatingAccessorR32_RegionFromIndexImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2453,8 +2453,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DInterpolatingAcce
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DInterpolatingAccessorR32_CurrentRegionImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2470,8 +2470,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DInterpolatingAcce
 JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeData3DInterpolatingAccessorR32_GetValueImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2486,8 +2486,8 @@ JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeData3DInterpolatingAcc
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DInterpolatingAccessorR32_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2519,8 +2519,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DInterpolatingAcces
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorR64_GetLayoutImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2536,8 +2536,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorR64_G
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorR64_RegionCountImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2552,8 +2552,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorR64_R
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorR64_RegionImpl
   (JNIEnv * env, jobject object, jlong native_handle, jlong region)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2569,8 +2569,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorR64_R
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorR64_RegionFromIndexImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2585,8 +2585,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorR64_R
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorR64_CurrentRegionImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2602,8 +2602,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorR64_C
 JNIEXPORT jdouble JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorR64_GetValueImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2618,8 +2618,8 @@ JNIEXPORT jdouble JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorR64
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorR64_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2651,8 +2651,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorR64_dt
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU64_GetLayoutImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2668,8 +2668,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU64_G
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU64_RegionCountImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2684,8 +2684,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU64_R
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU64_RegionImpl
   (JNIEnv * env, jobject object, jlong native_handle, jlong region)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2701,8 +2701,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU64_R
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU64_RegionFromIndexImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2717,8 +2717,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU64_R
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU64_CurrentRegionImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2734,8 +2734,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU64_C
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU64_GetValueImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2750,8 +2750,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU64_G
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU64_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2783,8 +2783,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU64_dt
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorR32_GetLayoutImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2800,8 +2800,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorR32_G
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorR32_RegionCountImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2816,8 +2816,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorR32_R
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorR32_RegionImpl
   (JNIEnv * env, jobject object, jlong native_handle, jlong region)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2833,8 +2833,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorR32_R
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorR32_RegionFromIndexImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2849,8 +2849,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorR32_R
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorR32_CurrentRegionImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2866,8 +2866,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorR32_C
 JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorR32_GetValueImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2882,8 +2882,8 @@ JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorR32_
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorR32_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2915,8 +2915,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorR32_dt
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU32_GetLayoutImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2932,8 +2932,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU32_G
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU32_RegionCountImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2948,8 +2948,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU32_R
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU32_RegionImpl
   (JNIEnv * env, jobject object, jlong native_handle, jlong region)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2965,8 +2965,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU32_R
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU32_RegionFromIndexImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2981,8 +2981,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU32_R
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU32_CurrentRegionImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -2998,8 +2998,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU32_C
 JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU32_GetValueImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -3014,8 +3014,8 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU32_Ge
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU32_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -3047,8 +3047,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU32_dt
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU16_GetLayoutImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -3064,8 +3064,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU16_G
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU16_RegionCountImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -3080,8 +3080,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU16_R
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU16_RegionImpl
   (JNIEnv * env, jobject object, jlong native_handle, jlong region)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -3097,8 +3097,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU16_R
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU16_RegionFromIndexImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -3113,8 +3113,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU16_R
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU16_CurrentRegionImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -3130,8 +3130,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU16_C
 JNIEXPORT jshort JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU16_GetValueImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -3146,8 +3146,8 @@ JNIEXPORT jshort JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU16_
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU16_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -3179,8 +3179,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU16_dt
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU8_GetLayoutImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -3196,8 +3196,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU8_Ge
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU8_RegionCountImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -3212,8 +3212,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU8_Re
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU8_RegionImpl
   (JNIEnv * env, jobject object, jlong native_handle, jlong region)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -3229,8 +3229,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU8_Re
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU8_RegionFromIndexImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -3245,8 +3245,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU8_Re
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU8_CurrentRegionImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -3262,8 +3262,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU8_Cu
 JNIEXPORT jbyte JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU8_GetValueImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -3278,8 +3278,8 @@ JNIEXPORT jbyte JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU8_Ge
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU8_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -3311,8 +3311,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU8_dto
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessor1Bit_GetLayoutImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -3328,8 +3328,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessor1Bit_
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessor1Bit_RegionCountImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -3344,8 +3344,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessor1Bit_
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessor1Bit_RegionImpl
   (JNIEnv * env, jobject object, jlong native_handle, jlong region)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -3361,8 +3361,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessor1Bit_
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessor1Bit_RegionFromIndexImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -3377,8 +3377,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessor1Bit_
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessor1Bit_CurrentRegionImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -3394,8 +3394,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessor1Bit_
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessor1Bit_GetValueImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -3410,8 +3410,8 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessor1B
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessor1Bit_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -3443,8 +3443,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessor1Bit_d
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorR64_SetValueImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset, jdouble value)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -3457,8 +3457,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorR
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorR64_CommitImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -3471,8 +3471,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorR
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorR64_CancelImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -3485,8 +3485,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorR
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorR64_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -3518,8 +3518,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorR
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorU64_SetValueImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset, jlong value)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -3532,8 +3532,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorU
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorU64_CommitImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -3546,8 +3546,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorU
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorU64_CancelImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -3560,8 +3560,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorU
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorU64_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -3593,8 +3593,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorU
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorR32_SetValueImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset, jfloat value)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -3607,8 +3607,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorR
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorR32_CommitImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -3621,8 +3621,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorR
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorR32_CancelImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -3635,8 +3635,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorR
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorR32_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -3668,8 +3668,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorR
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorU32_SetValueImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset, jint value)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -3682,8 +3682,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorU
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorU32_CommitImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -3696,8 +3696,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorU
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorU32_CancelImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -3710,8 +3710,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorU
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorU32_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -3743,8 +3743,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorU
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorU16_SetValueImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset, jshort value)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -3757,8 +3757,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorU
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorU16_CommitImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -3771,8 +3771,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorU
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorU16_CancelImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -3785,8 +3785,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorU
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorU16_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -3818,8 +3818,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorU
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorU8_SetValueImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset, jbyte value)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -3832,8 +3832,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorU
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorU8_CommitImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -3846,8 +3846,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorU
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorU8_CancelImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -3860,8 +3860,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorU
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorU8_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -3893,8 +3893,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorU
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessor1Bit_SetValueImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset, jboolean value)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -3907,8 +3907,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessor1
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessor1Bit_CommitImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -3921,8 +3921,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessor1
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessor1Bit_CancelImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -3935,8 +3935,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessor1
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessor1Bit_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -3968,8 +3968,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessor1
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DInterpolatingAccessorR64_GetLayoutImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -3985,8 +3985,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DInterpolatingAcce
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DInterpolatingAccessorR64_RegionCountImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4001,8 +4001,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DInterpolatingAcce
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DInterpolatingAccessorR64_RegionImpl
   (JNIEnv * env, jobject object, jlong native_handle, jlong region)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4018,8 +4018,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DInterpolatingAcce
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DInterpolatingAccessorR64_RegionFromIndexImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4034,8 +4034,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DInterpolatingAcce
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DInterpolatingAccessorR64_CurrentRegionImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4051,8 +4051,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DInterpolatingAcce
 JNIEXPORT jdouble JNICALL Java_org_opengroup_openvds_VolumeData4DInterpolatingAccessorR64_GetValueImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4067,8 +4067,8 @@ JNIEXPORT jdouble JNICALL Java_org_opengroup_openvds_VolumeData4DInterpolatingAc
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DInterpolatingAccessorR64_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4100,8 +4100,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DInterpolatingAcces
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DInterpolatingAccessorR32_GetLayoutImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4117,8 +4117,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DInterpolatingAcce
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DInterpolatingAccessorR32_RegionCountImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4133,8 +4133,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DInterpolatingAcce
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DInterpolatingAccessorR32_RegionImpl
   (JNIEnv * env, jobject object, jlong native_handle, jlong region)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4150,8 +4150,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DInterpolatingAcce
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DInterpolatingAccessorR32_RegionFromIndexImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4166,8 +4166,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DInterpolatingAcce
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DInterpolatingAccessorR32_CurrentRegionImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4183,8 +4183,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DInterpolatingAcce
 JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeData4DInterpolatingAccessorR32_GetValueImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4199,8 +4199,8 @@ JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeData4DInterpolatingAcc
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DInterpolatingAccessorR32_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4232,8 +4232,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DInterpolatingAcces
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorR64_GetLayoutImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4249,8 +4249,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorR64_G
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorR64_RegionCountImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4265,8 +4265,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorR64_R
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorR64_RegionImpl
   (JNIEnv * env, jobject object, jlong native_handle, jlong region)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4282,8 +4282,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorR64_R
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorR64_RegionFromIndexImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4298,8 +4298,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorR64_R
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorR64_CurrentRegionImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4315,8 +4315,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorR64_C
 JNIEXPORT jdouble JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorR64_GetValueImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4331,8 +4331,8 @@ JNIEXPORT jdouble JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorR64
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorR64_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4364,8 +4364,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorR64_dt
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU64_GetLayoutImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4381,8 +4381,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU64_G
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU64_RegionCountImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4397,8 +4397,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU64_R
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU64_RegionImpl
   (JNIEnv * env, jobject object, jlong native_handle, jlong region)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4414,8 +4414,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU64_R
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU64_RegionFromIndexImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4430,8 +4430,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU64_R
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU64_CurrentRegionImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4447,8 +4447,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU64_C
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU64_GetValueImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4463,8 +4463,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU64_G
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU64_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4496,8 +4496,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU64_dt
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorR32_GetLayoutImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4513,8 +4513,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorR32_G
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorR32_RegionCountImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4529,8 +4529,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorR32_R
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorR32_RegionImpl
   (JNIEnv * env, jobject object, jlong native_handle, jlong region)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4546,8 +4546,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorR32_R
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorR32_RegionFromIndexImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4562,8 +4562,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorR32_R
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorR32_CurrentRegionImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4579,8 +4579,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorR32_C
 JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorR32_GetValueImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4595,8 +4595,8 @@ JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorR32_
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorR32_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4628,8 +4628,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorR32_dt
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU32_GetLayoutImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4645,8 +4645,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU32_G
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU32_RegionCountImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4661,8 +4661,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU32_R
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU32_RegionImpl
   (JNIEnv * env, jobject object, jlong native_handle, jlong region)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4678,8 +4678,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU32_R
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU32_RegionFromIndexImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4694,8 +4694,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU32_R
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU32_CurrentRegionImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4711,8 +4711,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU32_C
 JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU32_GetValueImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4727,8 +4727,8 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU32_Ge
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU32_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4760,8 +4760,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU32_dt
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU16_GetLayoutImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4777,8 +4777,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU16_G
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU16_RegionCountImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4793,8 +4793,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU16_R
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU16_RegionImpl
   (JNIEnv * env, jobject object, jlong native_handle, jlong region)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4810,8 +4810,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU16_R
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU16_RegionFromIndexImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4826,8 +4826,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU16_R
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU16_CurrentRegionImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4843,8 +4843,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU16_C
 JNIEXPORT jshort JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU16_GetValueImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4859,8 +4859,8 @@ JNIEXPORT jshort JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU16_
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU16_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4892,8 +4892,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU16_dt
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU8_GetLayoutImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4909,8 +4909,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU8_Ge
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU8_RegionCountImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4925,8 +4925,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU8_Re
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU8_RegionImpl
   (JNIEnv * env, jobject object, jlong native_handle, jlong region)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4942,8 +4942,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU8_Re
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU8_RegionFromIndexImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4958,8 +4958,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU8_Re
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU8_CurrentRegionImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4975,8 +4975,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU8_Cu
 JNIEXPORT jbyte JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU8_GetValueImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -4991,8 +4991,8 @@ JNIEXPORT jbyte JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU8_Ge
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU8_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -5024,8 +5024,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU8_dto
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessor1Bit_GetLayoutImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -5041,8 +5041,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessor1Bit_
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessor1Bit_RegionCountImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -5057,8 +5057,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessor1Bit_
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessor1Bit_RegionImpl
   (JNIEnv * env, jobject object, jlong native_handle, jlong region)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -5074,8 +5074,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessor1Bit_
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessor1Bit_RegionFromIndexImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -5090,8 +5090,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessor1Bit_
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessor1Bit_CurrentRegionImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -5107,8 +5107,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessor1Bit_
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessor1Bit_GetValueImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -5123,8 +5123,8 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessor1B
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessor1Bit_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -5156,8 +5156,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessor1Bit_d
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorR64_SetValueImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset, jdouble value)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -5170,8 +5170,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorR
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorR64_CommitImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -5184,8 +5184,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorR
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorR64_CancelImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -5198,8 +5198,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorR
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorR64_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -5231,8 +5231,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorR
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorU64_SetValueImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset, jlong value)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -5245,8 +5245,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorU
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorU64_CommitImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -5259,8 +5259,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorU
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorU64_CancelImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -5273,8 +5273,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorU
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorU64_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -5306,8 +5306,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorU
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorR32_SetValueImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset, jfloat value)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -5320,8 +5320,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorR
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorR32_CommitImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -5334,8 +5334,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorR
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorR32_CancelImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -5348,8 +5348,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorR
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorR32_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -5381,8 +5381,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorR
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorU32_SetValueImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset, jint value)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -5395,8 +5395,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorU
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorU32_CommitImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -5409,8 +5409,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorU
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorU32_CancelImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -5423,8 +5423,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorU
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorU32_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -5456,8 +5456,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorU
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorU16_SetValueImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset, jshort value)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -5470,8 +5470,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorU
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorU16_CommitImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -5484,8 +5484,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorU
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorU16_CancelImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -5498,8 +5498,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorU
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorU16_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -5531,8 +5531,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorU
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorU8_SetValueImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset, jbyte value)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -5545,8 +5545,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorU
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorU8_CommitImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -5559,8 +5559,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorU
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorU8_CancelImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -5573,8 +5573,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorU
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorU8_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -5606,8 +5606,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorU
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessor1Bit_SetValueImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject indexbytebuffer, jlong indexbyteoffset, jboolean value)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -5620,8 +5620,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessor1
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessor1Bit_CommitImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -5634,8 +5634,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessor1
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessor1Bit_CancelImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -5648,8 +5648,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessor1
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessor1Bit_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -5681,8 +5681,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessor1
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector2_getMinImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -5696,8 +5696,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector2_getMin
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector2_getMaxImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -5711,8 +5711,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector2_getMax
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector2_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -5731,8 +5731,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector2_ctorI
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector2_ctor2Impl
   (JNIEnv * env, jclass cls, jobject Minbytebuffer, jlong Minbyteoffset, jobject Maxbytebuffer, jlong Maxbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -5764,8 +5764,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector2_dtorIm
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionIntVector2_getMinImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -5779,8 +5779,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionIntVector2_getMinIm
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionIntVector2_getMaxImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -5794,8 +5794,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionIntVector2_getMaxIm
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IndexRegionIntVector2_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -5814,8 +5814,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IndexRegionIntVector2_ctorImp
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IndexRegionIntVector2_ctor2Impl
   (JNIEnv * env, jclass cls, jobject Minbytebuffer, jlong Minbyteoffset, jobject Maxbytebuffer, jlong Maxbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -5847,8 +5847,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionIntVector2_dtorImpl
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector3_getMinImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -5862,8 +5862,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector3_getMin
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector3_getMaxImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -5877,8 +5877,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector3_getMax
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector3_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -5897,8 +5897,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector3_ctorI
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector3_ctor2Impl
   (JNIEnv * env, jclass cls, jobject Minbytebuffer, jlong Minbyteoffset, jobject Maxbytebuffer, jlong Maxbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -5930,8 +5930,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector3_dtorIm
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionIntVector3_getMinImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -5945,8 +5945,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionIntVector3_getMinIm
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionIntVector3_getMaxImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -5960,8 +5960,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionIntVector3_getMaxIm
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IndexRegionIntVector3_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -5980,8 +5980,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IndexRegionIntVector3_ctorImp
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IndexRegionIntVector3_ctor2Impl
   (JNIEnv * env, jclass cls, jobject Minbytebuffer, jlong Minbyteoffset, jobject Maxbytebuffer, jlong Maxbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -6013,8 +6013,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionIntVector3_dtorImpl
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector4_getMinImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -6028,8 +6028,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector4_getMin
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector4_getMaxImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -6043,8 +6043,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector4_getMax
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector4_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -6063,8 +6063,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector4_ctorI
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector4_ctor2Impl
   (JNIEnv * env, jclass cls, jobject Minbytebuffer, jlong Minbyteoffset, jobject Maxbytebuffer, jlong Maxbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -6096,8 +6096,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector4_dtorIm
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionIntVector4_getMinImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -6111,8 +6111,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionIntVector4_getMinIm
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionIntVector4_getMaxImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject resultbytebuffer, jlong resultbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -6126,8 +6126,8 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionIntVector4_getMaxIm
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IndexRegionIntVector4_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -6146,8 +6146,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IndexRegionIntVector4_ctorImp
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IndexRegionIntVector4_ctor2Impl
   (JNIEnv * env, jclass cls, jobject Minbytebuffer, jlong Minbyteoffset, jobject Maxbytebuffer, jlong Maxbyteoffset)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {

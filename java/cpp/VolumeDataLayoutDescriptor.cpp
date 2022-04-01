@@ -31,8 +31,8 @@ extern "C" {
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor_ctorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -51,8 +51,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor_ct
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor_ctor2Impl
   (JNIEnv * env, jclass cls, jlong brickSize, jint negativeMargin, jint positiveMargin, jint brickSize2DMultiplier, jlong lodLevels, jlong options, jint fullResolutionDimension)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -78,8 +78,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor_ct
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor_IsValidImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -94,8 +94,8 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor_GetBrickSizeImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -110,8 +110,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor_Ge
 JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor_GetNegativeMarginImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -126,8 +126,8 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor_Get
 JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor_GetPositiveMarginImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -142,8 +142,8 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor_Get
 JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor_GetBrickSizeMultiplier2DImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -158,8 +158,8 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor_Get
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor_GetLODLevelsImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -174,8 +174,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor_Ge
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor_IsCreate2DLODsImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -190,8 +190,8 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor_IsForceFullResolutionDimensionImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -206,8 +206,8 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor_GetOptionsImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -222,8 +222,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor_Ge
 JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor_GetFullResolutionDimensionImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {

@@ -31,8 +31,8 @@ extern "C" {
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownAxisNames_InlineImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -46,8 +46,8 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownAxisNames_InlineImpl
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownAxisNames_CrosslineImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -61,8 +61,8 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownAxisNames_CrosslineImp
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownAxisNames_TimeImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -76,8 +76,8 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownAxisNames_TimeImpl
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownAxisNames_DepthImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -91,8 +91,8 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownAxisNames_DepthImpl
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownAxisNames_SampleImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -106,8 +106,8 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownAxisNames_SampleImpl
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownAxisNames_IImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -121,8 +121,8 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownAxisNames_IImpl
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownAxisNames_JImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -136,8 +136,8 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownAxisNames_JImpl
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownAxisNames_KImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -151,8 +151,8 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownAxisNames_KImpl
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownAxisNames_XImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -166,8 +166,8 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownAxisNames_XImpl
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownAxisNames_YImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -181,8 +181,8 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownAxisNames_YImpl
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownAxisNames_ZImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -198,8 +198,8 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownAxisNames_ZImpl
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownUnitNames_MeterImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -213,8 +213,8 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownUnitNames_MeterImpl
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownUnitNames_MillisecondImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -228,8 +228,8 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownUnitNames_MillisecondI
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownUnitNames_FootImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -243,8 +243,8 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownUnitNames_FootImpl
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownUnitNames_USSurveyFootImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -258,8 +258,8 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownUnitNames_USSurveyFoot
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownUnitNames_SecondImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -273,8 +273,8 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownUnitNames_SecondImpl
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownUnitNames_MetersPerSecondImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -288,8 +288,8 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownUnitNames_MetersPerSec
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownUnitNames_FeetPerSecondImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -303,8 +303,8 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownUnitNames_FeetPerSecon
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownUnitNames_USSurveyFeetPerSecondImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -318,8 +318,8 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownUnitNames_USSurveyFeet
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownUnitNames_UnitlessImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -335,8 +335,8 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownUnitNames_UnitlessImpl
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownMetadata_CategorySurveyCoordinateSystemImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -350,8 +350,8 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownMetadata_CategorySurve
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinateSystemOriginImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -366,8 +366,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinateSystemInlineSpacingImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -382,8 +382,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinateSystemCrosslineSpacingImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -398,8 +398,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinateSystemGridPoint0Impl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -414,8 +414,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinateSystemGridPoint0InlineImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -430,8 +430,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinateSystemGridPoint0CrosslineImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -446,8 +446,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinateSystemGridPoint1Impl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -462,8 +462,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinateSystemGridPoint1InlineImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -478,8 +478,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinateSystemGridPoint1CrosslineImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -494,8 +494,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinateSystemGridPoint2Impl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -510,8 +510,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinateSystemGridPoint2InlineImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -526,8 +526,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinateSystemGridPoint2CrosslineImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -542,8 +542,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinateSystemGridPoint3Impl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -558,8 +558,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinateSystemGridPoint3InlineImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -574,8 +574,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinateSystemGridPoint3CrosslineImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -590,8 +590,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinateSystemIJKOriginImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -606,8 +606,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinateSystemIStepVectorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -622,8 +622,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinateSystemJStepVectorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -638,8 +638,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinateSystemKStepVectorImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -654,8 +654,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinateSystemUnitImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -670,8 +670,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinateSystemCRSWktImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -686,8 +686,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownMetadata_CategoryTraceCoordinatesImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -701,8 +701,8 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownMetadata_CategoryTrace
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_TracePositionsImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -717,8 +717,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_TracePositionsI
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_TraceVerticalOffsetsImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -733,8 +733,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_TraceVerticalOf
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_EnergySourcePointNumbersImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -749,8 +749,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_EnergySourcePoi
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_EnsembleNumbersImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -765,8 +765,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_EnsembleNumbers
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownMetadata_CategoryWrittenRegionImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -780,8 +780,8 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownMetadata_CategoryWritt
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_WrittenRegionImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -796,8 +796,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_WrittenRegionIm
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownMetadata_CategoryImportInformationImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -811,8 +811,8 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownMetadata_CategoryImpor
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_ImportInformationDisplayNameImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -827,8 +827,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_ImportInformati
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_ImportInformationInputFileNameImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -843,8 +843,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_ImportInformati
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_ImportInformationInputFileSizeImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -859,8 +859,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_ImportInformati
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_ImportInformationInputTimeStampImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -875,8 +875,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_ImportInformati
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_ImportInformationImportTimeStampImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -891,8 +891,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_ImportInformati
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownMetadata_CategorySEGYImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -906,8 +906,8 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownMetadata_CategorySEGYI
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SEGYTextHeaderImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -922,8 +922,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SEGYTextHeaderI
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SEGYBinaryHeaderImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -938,8 +938,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SEGYBinaryHeade
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SEGYEndiannessImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -954,8 +954,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SEGYEndiannessI
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SEGYDataEndiannessImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -970,8 +970,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SEGYDataEndiann
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SEGYDataSampleFormatCodeImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
@@ -986,8 +986,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SEGYDataSampleF
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SEGYPrimaryKeyImpl
   (JNIEnv * env, jclass cls)
 {
-  JEnvPushPop
-    stackitem(env);
+  JNIEnvGuard
+    envGuard(env);
 
   CPPJNI_TRY
   {
