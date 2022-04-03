@@ -85,7 +85,7 @@ void TraceInfo2DManagerImpl::Clear()
   m_previousEnsembleNumber = -1;
 }
 
-void TraceInfo2DManagerImpl::AddTraceInfo(const char* traceHeader)
+void TraceInfo2DManagerImpl::AddTraceInfo(const char* traceHeader, int64_t traceNumber)
 {
   double coordScaleFactor = 1.0;
 
@@ -113,6 +113,7 @@ void TraceInfo2DManagerImpl::AddTraceInfo(const char* traceHeader)
   traceInfo.x = coordScaleFactor * SEGY::ReadFieldFromHeader(traceHeader, m_xCoordinateHeaderField, m_endianness);
   traceInfo.y = coordScaleFactor * SEGY::ReadFieldFromHeader(traceHeader, m_yCoordinateHeaderField, m_endianness);
   traceInfo.startTime = SEGY::ReadFieldFromHeader(traceHeader, m_startTimeHeaderField, m_endianness);
+  traceInfo.traceNumber = traceNumber;
 
   if (m_previousEnsembleNumber != traceInfo.ensembleNumber)
   {

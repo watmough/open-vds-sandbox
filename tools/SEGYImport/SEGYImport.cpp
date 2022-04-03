@@ -1117,7 +1117,7 @@ analyzeSegment(DataProvider &dataProvider, SEGYFileInfo const& fileInfo, SEGYSeg
       continue;
     }
 
-    pTraceInfo2DManager->AddTraceInfo(static_cast<const char *>(header));
+    pTraceInfo2DManager->AddTraceInfo(static_cast<const char *>(header), trace);
 
     if(gatherFold > 0 && traceSecondaryKey == gatherSecondaryKey)
     {
@@ -2371,6 +2371,33 @@ TraceIndex2DToEnsembleNumber(TraceInfo2DManager * pTraceInfo2DManager, int trace
   }
 
   return pTraceInfo2DManager->Get(traceIndex).ensembleNumber;
+}
+
+int64_t
+EnsembleIndex2DToTraceNumber(TraceInfo2DManager* pTraceInfo2DManager, int ensembleIndex, OpenVDS::Error& error)
+{
+  assert(pTraceInfo2DManager != nullptr);
+
+  error = {};
+
+  if (pTraceInfo2DManager == nullptr)
+  {
+    error.code = -1;
+    error.string = "EnsembleNumber2DToTraceNumber:  2D trace information is missing";
+    return 0;
+  }
+
+  assert(ensembleIndex >= 0);
+  assert(ensembleIndex < pTraceInfo2DManager->Count());
+  if (ensembleIndex < 0 || ensembleIndex >= pTraceInfo2DManager->Count())
+  {
+    error.code = -1;
+    error.string = "EnsembleIndex2DToTraceNumber:  Requested trace index is missing from 2D trace info";
+    return 0;
+  }
+
+  const auto& info = pTraceInfo2DManager->Get(ensembleIndex);
+  return info.traceNumber;
 }
 
 int
@@ -3660,8 +3687,8 @@ main(int argc, char* argv[])
 
     OpenVDS::Error traceIndexError;
 
-    chunkInfo.secondaryKeyStart = fileInfo.Is2D() ? TraceIndex2DToEnsembleNumber(traceInfo2DManager.get(), chunkInfo.min[secondaryKeyDimension], traceIndexError) : (int)floorf(layout->GetAxisDescriptor(secondaryKeyDimension).SampleIndexToCoordinate(chunkInfo.min[secondaryKeyDimension]) + 0.5f);
-    chunkInfo.secondaryKeyStop = fileInfo.Is2D() ? TraceIndex2DToEnsembleNumber(traceInfo2DManager.get(), chunkInfo.max[secondaryKeyDimension] - 1, traceIndexError) : (int)floorf(layout->GetAxisDescriptor(secondaryKeyDimension).SampleIndexToCoordinate(chunkInfo.max[secondaryKeyDimension] - 1) + 0.5f);
+    chunkInfo.secondaryKeyStart = (int)floorf(layout->GetAxisDescriptor(secondaryKeyDimension).SampleIndexToCoordinate(chunkInfo.min[secondaryKeyDimension]) + 0.5f);
+    chunkInfo.secondaryKeyStop = (int)floorf(layout->GetAxisDescriptor(secondaryKeyDimension).SampleIndexToCoordinate(chunkInfo.max[secondaryKeyDimension] - 1) + 0.5f);
 
     if (fileInfo.Is2D() && traceIndexError.code != 0)
     {
@@ -3921,11 +3948,22 @@ main(int argc, char* argv[])
       for (auto segment = lower; segment != upper && error.code == 0; ++segment)
       {
         int64_t firstTrace;
-        if (fileInfo.IsUnbinned())
+        if (fileInfo.IsUnbinned() || fileInfo.m_segyType == SEGY::SEGYType::Poststack2D)
         {
           // For unbinned gathers the secondary key is the 1-based index of the trace, so to get the
           // first trace we convert the index to 0-based and add that to the segment's start trace.
-          firstTrace = segment->m_traceStart + (chunkInfo.secondaryKeyStart - 1L);
+          // Similarly, for Poststack2D the secondary key is also the 1-based trace index.
+          firstTrace = segment->m_traceStart + (static_cast<int64_t>(chunkInfo.secondaryKeyStart) - 1L);
+        }
+        else if (fileInfo.m_segyType == SEGY::SEGYType::Prestack2D)
+        {
+          // For 2D prestack convert 1-based secondary key to 0-based index, then use that to lookup the ensemble's first trace number
+          firstTrace = EnsembleIndex2DToTraceNumber(traceInfo2DManager.get(), chunkInfo.secondaryKeyStart - 1, error);
+          if (error.code)
+          {
+            OpenVDS::printWarning(printConfig, "IO", "Could not map EnsembleNumber to trace number", fmt::format("{}", error.code), error.string);
+            break;
+          }
         }
         else
         {
@@ -3962,7 +4000,20 @@ main(int argc, char* argv[])
           const void* data = header + SEGY::TraceHeaderSize;
 
           int primaryTest = fileInfo.Is2D() ? 0 : SEGY::ReadFieldFromHeader(header, fileInfo.m_primaryKey, fileInfo.m_headerEndianness),
-            secondaryTest = fileInfo.IsUnbinned() ? static_cast<int>(trace - segment->m_traceStart + 1) : SEGY::ReadFieldFromHeader(header, fileInfo.m_secondaryKey, fileInfo.m_headerEndianness);
+            secondaryTest;
+          if (fileInfo.IsUnbinned() || fileInfo.m_segyType == SEGY::SEGYType::Poststack2D)
+          {
+            secondaryTest = static_cast<int>(trace - segment->m_traceStart + 1);
+          }
+          else
+          {
+            secondaryTest = SEGY::ReadFieldFromHeader(header, fileInfo.m_secondaryKey, fileInfo.m_headerEndianness);
+            if (fileInfo.m_segyType == SEGY::SEGYType::Prestack2D)
+            {
+              // For 2D prestack convert the EnsembleNumber to the 1..N value used on secondary key axis
+              secondaryTest = traceInfo2DManager->GetIndexOfEnsembleNumber(secondaryTest) + 1;
+            }
+          }
 
           // Check if the trace is outside the secondary range and go to the next segment if it is
           if (primaryTest == segment->m_primaryKey && secondaryTest > chunkInfo.secondaryKeyStop)
@@ -4001,7 +4052,7 @@ main(int argc, char* argv[])
           if (fileInfo.Is2D())
           {
             primaryIndex = 0;
-            secondaryIndex = traceInfo2DManager->GetIndexOfEnsembleNumber(secondaryTest);
+            secondaryIndex = secondaryTest - 1;
           }
           else if (fileInfo.IsUnbinned())
           {
