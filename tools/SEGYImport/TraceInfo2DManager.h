@@ -27,6 +27,7 @@ struct TraceInfo2D
   double    x;
   double    y;
   int       startTime;
+  int64_t   traceNumber;
 };
 
 class TraceInfo2DManager
@@ -36,7 +37,7 @@ public:
 
   virtual void Clear() {}
 
-  virtual void AddTraceInfo(const char* traceHeader) {}
+  virtual void AddTraceInfo(const char* traceHeader, int64_t traceNumber) {}
 
   virtual int Count() { return 0; }
 
@@ -84,7 +85,7 @@ public:
 
   void Clear() override;
 
-  void AddTraceInfo(const char* traceHeader) override;
+  void AddTraceInfo(const char* traceHeader, int64_t traceNumber) override;
 
 private:
   SEGY::Endianness          m_endianness;

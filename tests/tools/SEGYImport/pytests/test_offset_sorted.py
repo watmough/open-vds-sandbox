@@ -102,14 +102,20 @@ def test_produce_status(offset_sorted_executor):
     with openvds.open(output_vds.filename, "") as handle:
         access_manager = openvds.getAccessManager(handle)
 
-        assert access_manager.getVDSProduceStatus(openvds.DimensionsND.Dimensions_023) != openvds.VDSProduceStatus.Unavailable
+        assert access_manager.getVDSProduceStatus(
+            openvds.DimensionsND.Dimensions_023) != openvds.VDSProduceStatus.Unavailable
 
-        assert access_manager.getVDSProduceStatus(openvds.DimensionsND.Dimensions_02) == openvds.VDSProduceStatus.Unavailable
+        assert access_manager.getVDSProduceStatus(
+            openvds.DimensionsND.Dimensions_02) == openvds.VDSProduceStatus.Remapped
 
-        assert access_manager.getVDSProduceStatus(openvds.DimensionsND.Dimensions_01) == openvds.VDSProduceStatus.Unavailable
-        assert access_manager.getVDSProduceStatus(openvds.DimensionsND.Dimensions_03) == openvds.VDSProduceStatus.Unavailable
-        assert access_manager.getVDSProduceStatus(openvds.DimensionsND.Dimensions_012) == openvds.VDSProduceStatus.Unavailable
-        assert access_manager.getVDSProduceStatus(openvds.DimensionsND.Dimensions_013) == openvds.VDSProduceStatus.Unavailable
+        assert access_manager.getVDSProduceStatus(
+            openvds.DimensionsND.Dimensions_01) == openvds.VDSProduceStatus.Unavailable
+        assert access_manager.getVDSProduceStatus(
+            openvds.DimensionsND.Dimensions_03) == openvds.VDSProduceStatus.Remapped
+        assert access_manager.getVDSProduceStatus(
+            openvds.DimensionsND.Dimensions_012) == openvds.VDSProduceStatus.Unavailable
+        assert access_manager.getVDSProduceStatus(
+            openvds.DimensionsND.Dimensions_013) == openvds.VDSProduceStatus.Unavailable
 
 
 def test_survey_coordinate_system(offset_sorted_executor):

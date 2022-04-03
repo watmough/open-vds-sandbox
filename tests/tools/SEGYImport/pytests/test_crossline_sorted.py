@@ -264,9 +264,9 @@ def test_dimensions_and_produce_status(crossline_output_vds,
             assert access_manager.getVDSProduceStatus(
                 openvds.DimensionsND.Dimensions_013) != openvds.VDSProduceStatus.Unavailable
 
-            # These dimensions (and others) should be unavailable
+            # These dimensions (and others) should be remapped
             assert access_manager.getVDSProduceStatus(
-                openvds.DimensionsND.Dimensions_01) == openvds.VDSProduceStatus.Unavailable
+                openvds.DimensionsND.Dimensions_01) == openvds.VDSProduceStatus.Remapped
             assert access_manager.getVDSProduceStatus(
                 openvds.DimensionsND.Dimensions_012) == openvds.VDSProduceStatus.Unavailable
         elif dimensions == 3:
@@ -274,9 +274,9 @@ def test_dimensions_and_produce_status(crossline_output_vds,
             assert access_manager.getVDSProduceStatus(
                 openvds.DimensionsND.Dimensions_012) != openvds.VDSProduceStatus.Unavailable
 
-            # These dimensions (and others) should be unavailable
+            # These dimensions (and others) should be remapped
             assert access_manager.getVDSProduceStatus(
-                openvds.DimensionsND.Dimensions_01) == openvds.VDSProduceStatus.Unavailable
+                openvds.DimensionsND.Dimensions_01) == openvds.VDSProduceStatus.Remapped
         else:
             assert False, f"Invalid number of VDS dimensions: {dimensions}"
 
