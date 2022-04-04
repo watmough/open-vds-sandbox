@@ -18,6 +18,36 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\AzureVdsGenerator.cpp" />
+    <ClCompile Include="..\src\CoordinateTransformer.cpp" />
+    <ClCompile Include="..\src\Exceptions.cpp" />
+    <ClCompile Include="..\src\GlobalMetadataCommon.cpp" />
+    <ClCompile Include="..\src\GlobalState.cpp" />
+    <ClCompile Include="..\src\IJKCoordinateTransformer.cpp" />
+    <ClCompile Include="..\src\InMemoryVDSGenerator.cpp" />
+    <ClCompile Include="..\src\KnownMetadata.cpp" />
+    <ClCompile Include="..\src\Marshaling.cpp" />
+    <ClCompile Include="..\src\MetadataAccess.cpp" />
+    <ClCompile Include="..\src\MetadataContainer.cpp" />
+    <ClCompile Include="..\src\MetadataKey.cpp" />
+    <ClCompile Include="..\src\OpenVDS.cpp" />
+    <ClCompile Include="..\src\Optional.cpp" />
+    <ClCompile Include="..\src\ValueConversion.cpp" />
+    <ClCompile Include="..\src\VDSWriteData.cpp" />
+    <ClCompile Include="..\src\VolumeData.cpp" />
+    <ClCompile Include="..\src\VolumeDataAccess.cpp" />
+    <ClCompile Include="..\src\VolumeDataAccessManager.cpp" />
+    <ClCompile Include="..\src\VolumeDataAxisDescriptor.cpp" />
+    <ClCompile Include="..\src\VolumeDataChannelDescriptor.cpp" />
+    <ClCompile Include="..\src\VolumeDataLayout.cpp" />
+    <ClCompile Include="..\src\VolumeDataLayoutDescriptor.cpp" />
+    <ClCompile Include="..\src\VolumeSampler.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\Marshaling.h" />
+    <ClInclude Include="..\src\NDVector.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -168,36 +198,6 @@ if exist "%_RELEASE_DIR%openvds.dll" copy "%_RELEASE_DIR%*.dll" test_bin\
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="..\AzureVdsGenerator.cpp" />
-    <ClCompile Include="..\CoordinateTransformer.cpp" />
-    <ClCompile Include="..\Exceptions.cpp" />
-    <ClCompile Include="..\GlobalMetadataCommon.cpp" />
-    <ClCompile Include="..\GlobalState.cpp" />
-    <ClCompile Include="..\IJKCoordinateTransformer.cpp" />
-    <ClCompile Include="..\KnownMetadata.cpp" />
-    <ClCompile Include="..\Marshaling.cpp" />
-    <ClCompile Include="..\InMemoryVDSGenerator.cpp" />
-    <ClCompile Include="..\MetadataAccess.cpp" />
-    <ClCompile Include="..\MetadataContainer.cpp" />
-    <ClCompile Include="..\MetadataKey.cpp" />
-    <ClCompile Include="..\OpenVDS.cpp" />
-    <ClCompile Include="..\Optional.cpp" />
-    <ClCompile Include="..\ValueConversion.cpp" />
-    <ClCompile Include="..\VDSWriteData.cpp" />
-    <ClCompile Include="..\VolumeData.cpp" />
-    <ClCompile Include="..\VolumeDataAccess.cpp" />
-    <ClCompile Include="..\VolumeDataAccessManager.cpp" />
-    <ClCompile Include="..\VolumeDataAxisDescriptor.cpp" />
-    <ClCompile Include="..\VolumeDataChannelDescriptor.cpp" />
-    <ClCompile Include="..\VolumeDataLayout.cpp" />
-    <ClCompile Include="..\VolumeDataLayoutDescriptor.cpp" />
-    <ClCompile Include="..\VolumeSampler.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\Marshaling.h" />
-    <ClInclude Include="..\NDVector.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

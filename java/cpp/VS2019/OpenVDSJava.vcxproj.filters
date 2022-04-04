@@ -15,85 +15,85 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\GlobalMetadataCommon.cpp">
+    <ClCompile Include="..\src\AzureVdsGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\GlobalState.cpp">
+    <ClCompile Include="..\src\CoordinateTransformer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\IJKCoordinateTransformer.cpp">
+    <ClCompile Include="..\src\Exceptions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\KnownMetadata.cpp">
+    <ClCompile Include="..\src\GlobalMetadataCommon.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\MetadataAccess.cpp">
+    <ClCompile Include="..\src\GlobalState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\MetadataContainer.cpp">
+    <ClCompile Include="..\src\IJKCoordinateTransformer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\MetadataKey.cpp">
+    <ClCompile Include="..\src\InMemoryVDSGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\OpenVDS.cpp">
+    <ClCompile Include="..\src\KnownMetadata.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Optional.cpp">
+    <ClCompile Include="..\src\Marshaling.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\ValueConversion.cpp">
+    <ClCompile Include="..\src\MetadataAccess.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\VolumeData.cpp">
+    <ClCompile Include="..\src\MetadataContainer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\VolumeDataAccess.cpp">
+    <ClCompile Include="..\src\MetadataKey.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\VolumeDataAccessManager.cpp">
+    <ClCompile Include="..\src\OpenVDS.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\VolumeDataAxisDescriptor.cpp">
+    <ClCompile Include="..\src\Optional.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\VolumeDataChannelDescriptor.cpp">
+    <ClCompile Include="..\src\ValueConversion.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\VolumeDataLayout.cpp">
+    <ClCompile Include="..\src\VDSWriteData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\VolumeDataLayoutDescriptor.cpp">
+    <ClCompile Include="..\src\VolumeData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\VolumeSampler.cpp">
+    <ClCompile Include="..\src\VolumeDataAccess.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\CoordinateTransformer.cpp">
+    <ClCompile Include="..\src\VolumeDataAccessManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Exceptions.cpp">
+    <ClCompile Include="..\src\VolumeDataAxisDescriptor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Marshaling.cpp">
+    <ClCompile Include="..\src\VolumeDataChannelDescriptor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\InMemoryVDSGenerator.cpp">
+    <ClCompile Include="..\src\VolumeDataLayout.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\AzureVdsGenerator.cpp">
+    <ClCompile Include="..\src\VolumeDataLayoutDescriptor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\VDSWriteData.cpp">
+    <ClCompile Include="..\src\VolumeSampler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Marshaling.h">
+    <ClInclude Include="..\src\Marshaling.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\NDVector.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\src\NDVector.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

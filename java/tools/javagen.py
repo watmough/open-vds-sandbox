@@ -1991,7 +1991,7 @@ header_list = [
 dont_output_list = []
 
 # Write generated cpp files here:
-jni_output_dir = '../cpp'
+jni_output_dir = '../cpp/src'
 
 # Write generated java files here:
 java_output_dir = '../java/src/org/opengroup/openvds'
