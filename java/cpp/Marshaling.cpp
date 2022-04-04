@@ -35,6 +35,8 @@ JavaVM*
 thread_local std::stack<JNIEnv*>
   JNIEnvGuard::ts_JNIEnvStack;
 
+thread_local std::vector<struct JNIEnvGuard::StringRecord>
+  JNIEnvGuard::ts_TempStringRecords;
 
 void
 JNIEnvGuard::push(JNIEnv* env)
@@ -54,11 +56,36 @@ void
 JNIEnvGuard::pop()
 {
   assert(!ts_JNIEnvStack.empty());
+  if (ts_JNIEnvStack.size() == 1) 
+  {
+    flushStrings();
+  }
   ts_JNIEnvStack.pop();
 }
 
+const char* 
+JNIEnvGuard::getStringUTFChars(jstring value) 
+{
+  assert(isJNIEnvValid());
+  JNIEnv* env = getJNIEnv();
+  const char* utf8 = env->GetStringUTFChars(value, nullptr);
+  ts_TempStringRecords.emplace_back(StringRecord(value, utf8));
+  return utf8;
+}
 
-JNIEnvGuard::JNIEnvGuard() : isThreadAttach(false)
+void 
+JNIEnvGuard::flushStrings() 
+{
+  assert(isJNIEnvValid());
+  JNIEnv* env = getJNIEnv();
+  for (auto r : ts_TempStringRecords)
+  {
+    env->ReleaseStringUTFChars(r.m_String, r.m_Utf8);
+  }
+  ts_TempStringRecords.clear();
+}
+
+JNIEnvGuard::JNIEnvGuard() : m_isThreadAttach(false)
 {
   assert(s_JavaVM != nullptr);
   if (isJNIEnvValid())
@@ -73,12 +100,12 @@ JNIEnvGuard::JNIEnvGuard() : isThreadAttach(false)
     {
       throw std::runtime_error("Unable to attach to JavaVM");
     }
-    isThreadAttach = true;
+    m_isThreadAttach = true;
     push(env);
   } 
 }
 
-JNIEnvGuard::JNIEnvGuard(JNIEnv* env) : isThreadAttach(false)
+JNIEnvGuard::JNIEnvGuard(JNIEnv* env) : m_isThreadAttach(false)
 {
   checkInit(env);
   assert(env != NULL);
@@ -89,12 +116,11 @@ JNIEnvGuard::JNIEnvGuard(JNIEnv* env) : isThreadAttach(false)
 JNIEnvGuard::~JNIEnvGuard()
 {
   assert(isJNIEnvValid());
-  FlushStrings();
   pop();
-  if (isThreadAttach)
+  if (m_isThreadAttach)
   {
-    s_JavaVM->DetachCurrentThread();
     assert(!isJNIEnvValid());
+    s_JavaVM->DetachCurrentThread();
   }
 }
 

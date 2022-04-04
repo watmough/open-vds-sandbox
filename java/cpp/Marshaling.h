@@ -646,56 +646,41 @@ class JNIEnvGuard
 {
   friend class Marshaling;
 
-  static thread_local std::stack<JNIEnv*>
-    ts_JNIEnvStack;
-
-  static JavaVM* s_JavaVM;
-
-  static void checkInit(JNIEnv* env);
-
-  bool isThreadAttach;
-
-  static void     pop();
-  static void     push(JNIEnv* env);
-  static JNIEnv*  top();
-public:
-
-                  JNIEnvGuard();
-                  JNIEnvGuard(JNIEnv* env);
-                  ~JNIEnvGuard();
-
-  static bool     isJNIEnvValid();
-  static JNIEnv*  getJNIEnv();
-
-  const char* GetStringUTFChars(jstring value) {
-    jboolean is_copy = false;
-    assert(!isJNIEnvValid());
-    JNIEnv* env = getJNIEnv();
-    const char* utf8 = env->GetStringUTFChars(value, &is_copy);
-    m_lUtf8Chars.push_back(StringRecord(env, value, utf8));
-    return utf8;
-  }
-
-  void FlushStrings() {
-    for (size_t i = 0; i < m_lUtf8Chars.size(); ++i) {
-      m_lUtf8Chars[i].m_Env->ReleaseStringUTFChars(m_lUtf8Chars[i].m_String, m_lUtf8Chars[i].m_Utf8);
-    }
-    m_lUtf8Chars.clear();
-  }
-
-private:
   struct StringRecord {
-    StringRecord(JNIEnv* env, jstring str, const char* utf8) : m_Env(env), m_String(str), m_Utf8(utf8) {
-      assert(env);
+    StringRecord(jstring str, const char* utf8) : m_String(str), m_Utf8(utf8) {
       assert(str);
       assert(utf8);
     }
-    JNIEnv*     m_Env;
     jstring     m_String;
     const char* m_Utf8;
   };
 
-  std::vector<StringRecord> m_lUtf8Chars;
+  static thread_local std::stack<JNIEnv*>
+    ts_JNIEnvStack;
+
+  static thread_local std::vector<struct StringRecord>
+    ts_TempStringRecords;
+
+  static JavaVM* 
+    s_JavaVM;
+
+  bool 
+    m_isThreadAttach;
+
+  static void checkInit(JNIEnv* env);
+
+  static void         pop();
+  static void         push(JNIEnv* env);
+  static JNIEnv*      top();
+public:
+
+                      JNIEnvGuard();
+                      JNIEnvGuard(JNIEnv* env);
+                      ~JNIEnvGuard();
+  static bool         isJNIEnvValid();
+  static JNIEnv*      getJNIEnv();
+  static const char*  getStringUTFChars(jstring value);
+  static void         flushStrings();
 };
 
 struct CPPJNIStringWrapper
