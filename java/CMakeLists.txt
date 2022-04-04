@@ -212,7 +212,6 @@ add_library(openvds-javacpp
   cpp/src/MetadataKey.cpp
   cpp/src/NDVector.h
   cpp/src/OpenVDS.cpp
-  cpp/src/OpenVDSJava
   cpp/src/Optional.cpp
   cpp/src/ValueConversion.cpp
   cpp/src/VDSWriteData.cpp
