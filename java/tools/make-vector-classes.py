@@ -292,7 +292,7 @@ public class CLASSNAME extends ByteBufferBackedObject {
     content += "}\n"
     content = transformTemplate(content, class_name, member_type, vector_count, composite_count)
     class_filename = transformTemplate("CLASSNAME.java", class_name, member_type, vector_count, composite_count)
-    with open(f'../src/org/opengroup/openvds/{class_filename}', 'w') as file:
+    with open(f'../java/src/org/opengroup/openvds/{class_filename}', 'w') as file:
         print(content, file=file)
 
 def make_vector_classes(class_name: str, members: list, index_seq: range):

@@ -1960,10 +1960,6 @@ exclude_classes = [
     'ReadErrorException',
 ]
 
-jni_output_dir = '../cpp'
-header_dir = '../../src/OpenVDS/OpenVDS'
-dont_output_list = []
-
 free_function_header_list = [
     'OpenVDS.h',
 ]
@@ -1992,8 +1988,19 @@ header_list = [
     'VolumeSampler.h',
 ]
 
+dont_output_list = []
+
+# Write generated cpp files here:
+jni_output_dir = '../cpp'
+
+# Write generated java files here:
+java_output_dir = '../java/src/org/opengroup/openvds'
+
+# Look for headers here_
+header_dir = '../../src/OpenVDS/OpenVDS'
+
+# Look for code generator templates here:
 template_dir = './javagen_templates'
-java_output_dir = '../src/org/opengroup/openvds'
 
 def main():
     global copyright_txt
