@@ -168,7 +168,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_OpenVDS_writeArrayR32Impl(JNIE
     auto vds = CPPJNI_cast<OpenVDS::VDS>(native_object);
     float* src = reinterpret_cast<float*>(env->GetFloatArrayElements(jSrc, 0));
     size_t src_length = env->GetArrayLength(jSrc);
-    std::string channelName = JStringToString(env, jChannel);
+    std::string channelName = CPPJNI_getString(env, jChannel);
     copy_data(vds, src, src_length, channelName);
     env->ReleaseFloatArrayElements(jSrc, src, 0);
   }
@@ -182,7 +182,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_OpenVDS_writeArrayR64Impl(JNIE
     auto vds = CPPJNI_cast<OpenVDS::VDS>(native_object);
     double* src = reinterpret_cast<double*>(env->GetDoubleArrayElements(jSrc, 0));
     size_t src_length = env->GetArrayLength(jSrc);
-    std::string channelName = JStringToString(env, jChannel);
+    std::string channelName = CPPJNI_getString(env, jChannel);
     copy_data(vds, src, src_length, channelName);
     env->ReleaseDoubleArrayElements(jSrc, src, 0);
   }
@@ -196,7 +196,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_OpenVDS_writeArrayBoolImpl(JNI
     auto vds = CPPJNI_cast<OpenVDS::VDS>(native_object);
     std::uint8_t* src = reinterpret_cast<std::uint8_t *>(env->GetBooleanArrayElements(jSrc, 0));
     size_t src_length = env->GetArrayLength(jSrc);
-    std::string channelName = JStringToString(env, jChannel);
+    std::string channelName = CPPJNI_getString(env, jChannel);
     copy_data(vds, src, src_length, channelName);
     env->ReleaseBooleanArrayElements(jSrc, src, 0);
   }
@@ -210,7 +210,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_OpenVDS_writeArrayU8Impl(JNIEn
     auto vds = CPPJNI_cast<OpenVDS::VDS>(native_object);
     std::int8_t* src = reinterpret_cast<std::int8_t *>(env->GetByteArrayElements(jSrc, 0));
     size_t src_length = env->GetArrayLength(jSrc);
-    std::string channelName = JStringToString(env, jChannel);
+    std::string channelName = CPPJNI_getString(env, jChannel);
     copy_data(vds, src, src_length, channelName);
     env->ReleaseByteArrayElements(jSrc, src, 0);
   }
@@ -224,7 +224,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_OpenVDS_writeArrayU16Impl(JNIE
     auto vds = CPPJNI_cast<OpenVDS::VDS>(native_object);
     std::int16_t* src = reinterpret_cast<std::int16_t *>(env->GetShortArrayElements(jSrc, 0));
     size_t src_length = env->GetArrayLength(jSrc);
-    std::string channelName = JStringToString(env, jChannel);
+    std::string channelName = CPPJNI_getString(env, jChannel);
     copy_data(vds, src, src_length, channelName);
     env->ReleaseShortArrayElements(jSrc, src, 0);
   }
@@ -238,7 +238,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_OpenVDS_writeArrayU32Impl(JNIE
     auto vds = CPPJNI_cast<OpenVDS::VDS>(native_object);
     std::int32_t* src = reinterpret_cast<std::int32_t *>(env->GetIntArrayElements(jSrc, 0));
     size_t src_length = env->GetArrayLength(jSrc);
-    std::string channelName = JStringToString(env, jChannel);
+    std::string channelName = CPPJNI_getString(env, jChannel);
     copy_data(vds, src, src_length, channelName);
     env->ReleaseIntArrayElements(jSrc, (jint *) src, 0);
   }
@@ -252,7 +252,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_OpenVDS_writeArrayU64Impl(JNIE
     auto vds = CPPJNI_cast<OpenVDS::VDS>(native_object);
     std::int64_t* src = reinterpret_cast<std::int64_t *>(env->GetLongArrayElements(jSrc, 0));
     size_t src_length = env->GetArrayLength(jSrc);
-    std::string channelName = JStringToString(env, jChannel);
+    std::string channelName = CPPJNI_getString(env, jChannel);
     copy_data(vds, src, src_length, channelName);
     env->ReleaseLongArrayElements(jSrc, src, 0);
   }

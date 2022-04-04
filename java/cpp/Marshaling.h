@@ -614,8 +614,9 @@ CPPJNI_destroyHandle(JNIEnv* env, jlong handle)
   delete pContext;
 }
 
-inline jstring CPPJNI_newString(JNIEnv * env, const char* str) { return env->NewStringUTF(str ? str : ""); }
-inline jstring CPPJNI_newString(JNIEnv * env, std::string const& str) { return env->NewStringUTF(str.c_str()); }
+jstring     CPPJNI_newString(JNIEnv * env, const char* str);
+jstring     CPPJNI_newString(JNIEnv * env, std::string const& str);
+std::string CPPJNI_getString(JNIEnv* env, jstring str);
 
 class Marshaling;
 
@@ -631,6 +632,7 @@ void CPPJNI_ensureNotNull(T value, const char* failMessage=nullptr)
     throw std::runtime_error(failMessage ? failMessage : "Unexpected null values");
   }
 }
+
 
 #define CPPJNI_TRY try
 #define CPPJNI_CATCH \
@@ -752,10 +754,10 @@ struct JNIDirectBuffer
 
                   JNIDirectBuffer(jlong capacity);
                   ~JNIDirectBuffer();
+                  // Create a new DirectByteBuffer with native endianness.
   static jobject  CreateDirectBuffer(void* mem, jlong capacity);
   jobject         GetBufferGlobalRef();
   void            DeleteBufferGlobalRef();
-
 };
 
 class Marshaling {
@@ -811,7 +813,5 @@ ReverseEndianness(char* data)
     }
   }
 }
-
-std::string JStringToString(JNIEnv* env, jstring str);
 
 #endif

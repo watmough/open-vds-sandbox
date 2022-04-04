@@ -132,8 +132,29 @@ JNIEnvGuard::checkInit(JNIEnv* env)
     }
   }
 #endif
-
 }
+
+jstring 
+CPPJNI_newString(JNIEnv * env, const char* str) 
+{ 
+  return env->NewStringUTF(str ? str : ""); 
+}
+
+jstring 
+CPPJNI_newString(JNIEnv * env, std::string const& str) 
+{ 
+  return env->NewStringUTF(str.c_str()); 
+}
+
+std::string 
+CPPJNI_getString(JNIEnv* env, jstring str)
+{
+  const char* utfChars = env->GetStringUTFChars(str, nullptr);
+  auto result = std::string(utfChars);
+  env->ReleaseStringUTFChars(str, utfChars);
+  return result;
+}
+
 jobject Marshaling::CreateJavaObject(const char* type) {
   jclass clazz = GetJNIEnv()->FindClass(type);
   if (clazz) {
@@ -264,15 +285,6 @@ CPPJNI_HandleSharedLibraryException(struct JNIEnv_ *env, class OpenVDS::Exceptio
   {
     CPPJNI_Throw(env, e.what(), JavaExceptionType::Exception);
   }
-}
-
-std::string 
-JStringToString(JNIEnv* env, jstring str)
-{
-  const char* utfChars = env->GetStringUTFChars(str, nullptr);
-  auto result = std::string(utfChars);
-  env->ReleaseStringUTFChars(str, utfChars);
-  return result;
 }
 
 JNIDirectBuffer::JNIDirectBuffer(jlong capacity) : m_Buffer(0), m_Memory(nullptr)

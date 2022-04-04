@@ -86,7 +86,7 @@ static std::vector<std::string> convertStringArray(JNIEnv *env, jobjectArray obj
 
     for (int i = 0; i < env->GetArrayLength(obj); i++) {
         jstring jstr = (jstring) env->GetObjectArrayElement(obj, i);
-        res.push_back(JStringToString(env, jstr));
+        res.push_back(CPPJNI_getString(env, jstr));
     }
     return res;
 }
