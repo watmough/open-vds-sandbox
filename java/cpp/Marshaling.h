@@ -617,6 +617,7 @@ CPPJNI_destroyHandle(JNIEnv* env, jlong handle)
 jstring     CPPJNI_newString(JNIEnv * env, const char* str);
 jstring     CPPJNI_newString(JNIEnv * env, std::string const& str);
 std::string CPPJNI_getString(JNIEnv* env, jstring str);
+const char* CPPJNI_internString(JNIEnv* env, jstring str);
 
 class Marshaling;
 
@@ -667,11 +668,10 @@ class JNIEnvGuard
   bool 
     m_isThreadAttach;
 
-  static void checkInit(JNIEnv* env);
-
   static void         pop();
   static void         push(JNIEnv* env);
   static JNIEnv*      top();
+  static void         checkInit(JNIEnv* env);
 public:
 
                       JNIEnvGuard();
@@ -688,23 +688,14 @@ struct CPPJNIStringWrapper
   JNIEnv *              m_Env;
   jlong                 m_NativeHandle;
   jstring               m_JString;
-  mutable const char *  m_TmpUtf8;
   mutable const char *  m_PersistentUTF8;
 
-  CPPJNIStringWrapper(JNIEnv * env, jlong native_handle, jstring str) : m_Env(env), m_NativeHandle(native_handle), m_JString(str), m_TmpUtf8(), m_PersistentUTF8()
+  CPPJNIStringWrapper(JNIEnv * env, jlong native_handle, jstring str) : m_Env(env), m_NativeHandle(native_handle), m_JString(str), m_PersistentUTF8()
   {
   }
 
   CPPJNIStringWrapper(JNIEnv * env, jstring str) : CPPJNIStringWrapper(env, 0, str)
   {
-  }
-
-  ~CPPJNIStringWrapper()
-  {
-    if (m_TmpUtf8)
-    {
-      m_Env->ReleaseStringUTFChars(m_JString, m_TmpUtf8);
-    }
   }
 
   const char*
@@ -713,14 +704,15 @@ struct CPPJNIStringWrapper
     if (m_PersistentUTF8 == nullptr)
     {
       if (m_NativeHandle)
-      {
-        m_TmpUtf8 = m_Env->GetStringUTFChars(m_JString, 0);
+      { // Lifetime of C string data is managed by the native handle
         auto pObjectContext = (CPPJNIObjectContext*)m_NativeHandle;
-        m_PersistentUTF8 = pObjectContext->addString(m_TmpUtf8);
+        auto tmp = m_Env->GetStringUTFChars(m_JString, 0);
+        m_PersistentUTF8 = pObjectContext->addString(tmp);
+        m_Env->ReleaseStringUTFChars(m_JString, tmp);
       }
       else
-      { // This will currently leak... Could be solved by an interning mechanism or deferred registration?
-        m_PersistentUTF8 = m_Env->GetStringUTFChars(m_JString, 0);
+      { // The string is interned and will live on until the library is unloaded.
+        m_PersistentUTF8 = CPPJNI_internString(m_Env, m_JString);
       }
     }
     return m_PersistentUTF8;
@@ -763,40 +755,8 @@ public:
     return JNIEnvGuard::isJNIEnvValid();
   }
 
-  static void Convert(jobject& to, OpenVDS::VolumeDataChannelDescriptor const& from);
-  static void Convert(OpenVDS::VolumeDataChannelDescriptor& to, jobject from);
-
-  static void Convert(jobject& to, OpenVDS::VolumeDataLayoutDescriptor const& from);
-  static void Convert(OpenVDS::VolumeDataLayoutDescriptor& to, jobject from);
-
-  static void Convert(jobject& to, OpenVDS::VolumeDataAxisDescriptor const& from);
-  static void Convert(OpenVDS::VolumeDataAxisDescriptor& to, jobject from);
-
-  static void Convert(jobject& to, OpenVDS::IJKGridDefinition const& from);
-  static void Convert(OpenVDS::IJKGridDefinition& to, jobject from);
-
 };
 
 template<> jobject Marshaling::CreatePODJavaObject<int>(int const& value);
-
-template<typename T>
-inline void
-ReverseEndianness(char* data)
-{
-  for(int iElement = 0; iElement < T::element_count; ++iElement)
-  {
-    char* left = data + iElement * sizeof(T::element_type);
-    char* right = left + sizeof(T::element_type) - 1;
-    size_t middle = sizeof(T::element_type) / 2;
-    for (size_t iByte = 0; iByte < middle; ++iByte)
-    {
-      char tmp = *right;
-      *right = *left;
-      *left = tmp;
-      ++left;
-      --right;
-    }
-  }
-}
 
 #endif

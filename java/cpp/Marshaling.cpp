@@ -19,7 +19,8 @@
 #include "OpenVDS/OpenVDS.h"
 #include "OpenVDS/VolumeData.h"
 #include "OpenVDS/Exceptions.h"
-#include <assert.h>
+#include <cassert>
+#include <set>
 
 #ifdef _WIN32
 #define ENABLE_DEBUGGER_ATTACH 1
@@ -160,6 +161,19 @@ JNIEnvGuard::checkInit(JNIEnv* env)
 #endif
 }
 
+class GlobalStringContainer
+{
+public:
+  static const char *
+  intern(std::string const& descriptorString)
+  {
+    static std::set<std::string> s_descriptorStrings;
+    static std::mutex s_mutex;
+    std::unique_lock<std::mutex> lock(s_mutex);
+    return s_descriptorStrings.insert(descriptorString).first->c_str();
+  }
+};
+
 jstring 
 CPPJNI_newString(JNIEnv * env, const char* str) 
 { 
@@ -181,7 +195,14 @@ CPPJNI_getString(JNIEnv* env, jstring str)
   return result;
 }
 
-jobject Marshaling::CreateJavaObject(const char* type) {
+const char*
+CPPJNI_internString(JNIEnv* env, jstring str)
+{
+  return GlobalStringContainer::intern(CPPJNI_getString(env, str));
+}
+
+jobject 
+Marshaling::CreateJavaObject(const char* type) {
   jclass clazz = GetJNIEnv()->FindClass(type);
   if (clazz) {
     return CreateJavaObject(clazz);
@@ -189,7 +210,8 @@ jobject Marshaling::CreateJavaObject(const char* type) {
   return nullptr;
 }
 
-jobject Marshaling::CreateJavaObject(jclass clazz) {
+jobject 
+Marshaling::CreateJavaObject(jclass clazz) {
   jmethodID methodID = GetJNIEnv()->GetMethodID(clazz, "<init>", "()V");
   if (methodID) {
     jobject obj = GetJNIEnv()->NewObject(clazz, methodID);
@@ -198,7 +220,8 @@ jobject Marshaling::CreateJavaObject(jclass clazz) {
   return nullptr;
 }
 
-jobjectArray Marshaling::CreateJavaArray(int elementCount, const char* elementType, jobject initialElement) 
+jobjectArray 
+Marshaling::CreateJavaArray(int elementCount, const char* elementType, jobject initialElement) 
 {
   jclass clazz = GetJNIEnv()->FindClass(elementType ? elementType : "java/lang/Object");
   if (clazz) {
@@ -209,7 +232,8 @@ jobjectArray Marshaling::CreateJavaArray(int elementCount, const char* elementTy
 }
 
 template<>
-jobject Marshaling::CreatePODJavaObject<int>(int const& value) 
+jobject 
+Marshaling::CreatePODJavaObject<int>(int const& value) 
 {
   jclass clazz = GetJNIEnv()->FindClass("java/lang/Integer");
   jmethodID methodID = GetJNIEnv()->GetMethodID(clazz, "<init>", "(I)V");
@@ -376,8 +400,8 @@ JNIDirectBuffer::DeleteBufferGlobalRef()
   }
 }
 
-extern "C" {
-
+extern "C" 
+{
 
 /**
 * The Java ManagedBuffer class inherits from ManagedBase and its constructor
@@ -448,5 +472,4 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_ManagedBuffer_dtorImpl
   CPPJNI_CATCH
 }
 
-}
-
+} // extern "C"
