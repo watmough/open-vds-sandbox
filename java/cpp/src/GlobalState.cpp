@@ -95,6 +95,9 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GlobalState_GetChunksDecompre
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_GlobalState_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
+  JNIEnvGuard
+    envGuard(env);
+
   CPPJNI_TRY
   {
     CPPJNI_destroyHandle<OpenVDS::GlobalState>(env, native_handle);

@@ -39,10 +39,26 @@ public class Error extends ManagedBase {
         return getCodeImpl(getNativeObject());
     }
 
+    native private void setCodeImpl(long native_object, int value);
+    
+    public void setCode(int value) {
+    
+        setCodeImpl(getNativeObject(), value);    
+    
+    }
+
     ///AUTOGEN-OK: FIELD_DECL string std::string RECORD
     native private String getStringImpl(long native_object);
     public String getString() {
         return getStringImpl(getNativeObject());
+    }
+
+    native private void setStringImpl(long native_object, String value);
+    
+    public void setString(String value) {
+    
+        setStringImpl(getNativeObject(), ManagedBase.requireNonNull(value, "value may not be null"));    
+    
     }
 
     Error(long nativeobject) {

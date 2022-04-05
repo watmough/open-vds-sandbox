@@ -67,10 +67,26 @@ public class GoogleOpenOptions extends OpenOptions {
         return GoogleOpenOptions.CredentialsType.fromInt((int)getCredentialsTypeImpl(getNativeObject()));
     }
 
+    native private void setCredentialsTypeImpl(long native_object, long value);
+    
+    public void setCredentialsType(GoogleOpenOptions.CredentialsType value) {
+    
+        setCredentialsTypeImpl(getNativeObject(), ManagedBase.requireNonNull(value, "value may not be null").value());    
+    
+    }
+
     ///AUTOGEN-OK: FIELD_DECL bucket std::string RECORD
     native private String getBucketImpl(long native_object);
     public String getBucket() {
         return getBucketImpl(getNativeObject());
+    }
+
+    native private void setBucketImpl(long native_object, String value);
+    
+    public void setBucket(String value) {
+    
+        setBucketImpl(getNativeObject(), ManagedBase.requireNonNull(value, "value may not be null"));    
+    
     }
 
     ///AUTOGEN-OK: FIELD_DECL pathPrefix std::string RECORD
@@ -79,10 +95,26 @@ public class GoogleOpenOptions extends OpenOptions {
         return getPathPrefixImpl(getNativeObject());
     }
 
+    native private void setPathPrefixImpl(long native_object, String value);
+    
+    public void setPathPrefix(String value) {
+    
+        setPathPrefixImpl(getNativeObject(), ManagedBase.requireNonNull(value, "value may not be null"));    
+    
+    }
+
     ///AUTOGEN-OK: FIELD_DECL credentials std::string RECORD
     native private String getCredentialsImpl(long native_object);
     public String getCredentials() {
         return getCredentialsImpl(getNativeObject());
+    }
+
+    native private void setCredentialsImpl(long native_object, String value);
+    
+    public void setCredentials(String value) {
+    
+        setCredentialsImpl(getNativeObject(), ManagedBase.requireNonNull(value, "value may not be null"));    
+    
     }
 
     ///AUTOGEN-OK: FIELD_DECL storageClass std::string RECORD
@@ -91,10 +123,26 @@ public class GoogleOpenOptions extends OpenOptions {
         return getStorageClassImpl(getNativeObject());
     }
 
+    native private void setStorageClassImpl(long native_object, String value);
+    
+    public void setStorageClass(String value) {
+    
+        setStorageClassImpl(getNativeObject(), ManagedBase.requireNonNull(value, "value may not be null"));    
+    
+    }
+
     ///AUTOGEN-OK: FIELD_DECL region std::string RECORD
     native private String getRegionImpl(long native_object);
     public String getRegion() {
         return getRegionImpl(getNativeObject());
+    }
+
+    native private void setRegionImpl(long native_object, String value);
+    
+    public void setRegion(String value) {
+    
+        setRegionImpl(getNativeObject(), ManagedBase.requireNonNull(value, "value may not be null"));    
+    
     }
 
     native private static long ctorImpl();

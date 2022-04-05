@@ -33,12 +33,28 @@ public class IndexRegionFloatVector2 extends ManagedBase {
         return result;
     }
 
+    native private void setMinImpl(long native_object, ByteBuffer value, long value_byteoffset);
+    
+    public void setMin(FloatVector2 value) {
+    
+        setMinImpl(getNativeObject(), ManagedBase.requireNonNull(value, "value may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(value, "value may not be null").getByteBufferOffset());    
+    
+    }
+
     ///AUTOGEN-OK: FIELD_DECL Max type-parameter-0-0 UNEXPOSED
     native private void getMaxImpl(long native_object, ByteBuffer result, long result_byteoffset);
     public FloatVector2 getMax() {
         FloatVector2 result = new FloatVector2();
         getMaxImpl(getNativeObject(), result.getBackingByteBuffer(), result.getByteBufferOffset());
         return result;
+    }
+
+    native private void setMaxImpl(long native_object, ByteBuffer value, long value_byteoffset);
+    
+    public void setMax(FloatVector2 value) {
+    
+        setMaxImpl(getNativeObject(), ManagedBase.requireNonNull(value, "value may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(value, "value may not be null").getByteBufferOffset());    
+    
     }
 
     native private static long ctorImpl();

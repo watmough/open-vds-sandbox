@@ -692,6 +692,9 @@ def create_jni_dtor(scope: Scope, class_name: str, class_canonical_name: str) ->
     proto = create_jni_proto(Param('void'), class_name, "dtor", is_include_proxyinterface_arg=False, extra_args=[Param('bool', 'is_disposing')])
     body = f"""
 {{
+  JNIEnvGuard
+    envGuard(env);
+
   CPPJNI_TRY
   {{
     CPPJNI_destroyHandle<{class_canonical_name}>(env, native_handle);
@@ -705,6 +708,9 @@ def create_jni_equals(class_name, class_canonical_name):
     proto = create_jni_proto(Param('bool'), class_name, "operatorEQ", extra_args=[Param(typename=class_canonical_name, name='other_native_handle')], is_include_proxyinterface_arg=False, is_static_method=False)
     body = f"""
 {{
+  JNIEnvGuard
+    envGuard(env);
+
   CPPJNI_TRY
   {{
     auto pInstance = CPPJNI_cast<{class_canonical_name}>(native_handle);
@@ -742,7 +748,30 @@ def is_scoped_enum_type(arg: Param) -> bool:
         if t.parent.is_record:
             return True
     return False
-    
+
+def create_jni_property_setter(scope: Scope, class_name: str, overload_name: str, property_def: Param, class_canonical_name: str) -> str:
+    value = Param(name='value', typename=property_def.typename, canonical_type=property_def.canonical_type)
+    args = [ value ]
+    arglist = create_jni_arglist(class_name, args)
+    proto = create_jni_proto(Param('void'), class_name, overload_name, is_include_proxyinterface_arg=True, extra_args=args)
+    invoke_args, prologue, epilogue = transform_jni_functioncall_args(args)
+    assert not prologue
+    assert not epilogue
+    body = f"""
+{{
+  JNIEnvGuard
+    envGuard(env);
+
+  CPPJNI_TRY
+  {{
+    auto pInstance = CPPJNI_cast<{class_canonical_name}>(native_handle);
+    pInstance->{scope.name} = {invoke_args};
+  }}
+  CPPJNI_CATCH
+}}
+"""
+    return proto + body
+
 def create_jni_methods(scope: Scope, template: str, override_name: str = '', template_args: List[str] = [], explicit_children: List[Scope] = []):
     output = io.StringIO()
     class_name = override_name or scope.name
@@ -782,6 +811,7 @@ def create_jni_methods(scope: Scope, template: str, override_name: str = '', tem
                     if template_args:
                         result_param = param_subsitute_template_args(result_param, template_args)
                         args = arglist_substitute_template_args(args, template_args)
+                    instantiated_result_param = result_param
                     if is_bytebuffer_backed(result_param.canonical_type, result_param.typename):
                         args.insert(0, result_param)
                         result_param = Param(typename='void', is_out=True)
@@ -877,6 +907,10 @@ def create_jni_methods(scope: Scope, template: str, override_name: str = '', tem
                         if not return_type == "void":
                             print("  return 0;", file=local_output)
                         print("}", file=local_output)
+                        if child.is_data_member:
+                            property_setter = create_jni_property_setter(child, class_name, f'set{capfirst(child.name)}', instantiated_result_param, class_canonical_name)
+                            if property_setter:
+                                print(property_setter, file=local_output)
                         if not is_static_method:
                             has_instance_methods = True
             except NotImplementedError as e:
@@ -1057,6 +1091,26 @@ def transform_java_functioncall_args(class_name: str, args: List[Param], is_incl
     _prologue = "\n".join(['        ' + p for p in prologue])
     _epilogue = "\n".join(['        ' + e for e in epilogue])
     return _args, _prologue, _epilogue
+
+def create_java_property_setter(scope: Scope, class_name: str, overload_name: str, property_def: Param) -> str:
+    value = Param(name='value', typename=property_def.typename, canonical_type=property_def.canonical_type)
+    args = [ value ]
+    native_arglist = create_native_arglist(class_name, args)
+    native_arglist = create_native_arglist(class_name, args, True)
+    arglist = create_java_arglist(args)
+    overload_signature = f'{overload_name}({arglist})'
+    fcall, prologue, epilogue = transform_java_functioncall_args(class_name, args, True)
+    docstring = format_docstring(scope, indent='    ', used_arglist=args)
+    function_docstring = f'\n{docstring}' if docstring else ''
+    ctor = f"""
+    native private void {overload_name}Impl({native_arglist});
+    {function_docstring}
+    public void {overload_name}({arglist}) {{
+    {prologue}
+        {overload_name}Impl({fcall});    
+    {epilogue}
+    }}"""
+    return ctor
 
 def create_java_ctor(scope: Scope, class_name: str, overload_name: str, has_baseclass: bool, overloads_created: List[str], extra_args: List[Param] = []) -> str:
     overload_name = overload_name.replace(scope.name, "ctor")
@@ -1565,9 +1619,14 @@ def create_java_class(scope: Scope, template: str, override_name: str = '', temp
                                 else:
                                     print(f'        {return_txt}{jni_function_name}Impl({transformed_args});', file=methods)
                             print('    }', file=methods)
+                            if child.is_data_member:
+                                property_setter = create_java_property_setter(child, class_name, f'set{capfirst(child.name)}', result_param)
+                                if property_setter:
+                                    print(property_setter, file=methods)
                             if not is_static_method:
                                 has_instance_methods = True
                             create_defaulted_overloads(overload_functions, overload_default_args, overload_signature, function_docstring, methods)
+                        
             except NotImplementedError as e:
                 print(f'\n    ///AUTOGEN-FAIL: {child}', file=methods)
                 print(f'\nJava: While parsing {child}, the following exception occurred:', file=sys.stderr)

@@ -34,6 +34,14 @@ public class VDSFileOpenOptions extends OpenOptions {
         return getFileNameImpl(getNativeObject());
     }
 
+    native private void setFileNameImpl(long native_object, String value);
+    
+    public void setFileName(String value) {
+    
+        setFileNameImpl(getNativeObject(), ManagedBase.requireNonNull(value, "value may not be null"));    
+    
+    }
+
     native private static long ctorImpl();
     
     public VDSFileOpenOptions() {

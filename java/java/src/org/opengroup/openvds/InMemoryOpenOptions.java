@@ -51,6 +51,14 @@ public class InMemoryOpenOptions extends OpenOptions {
         return getNameImpl(getNativeObject());
     }
 
+    native private void setNameImpl(long native_object, String value);
+    
+    public void setName(String value) {
+    
+        setNameImpl(getNativeObject(), ManagedBase.requireNonNull(value, "value may not be null"));    
+    
+    }
+
     InMemoryOpenOptions(long nativeobject) {
         super(nativeobject);
     }

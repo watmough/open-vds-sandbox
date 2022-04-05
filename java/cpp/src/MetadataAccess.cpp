@@ -472,6 +472,9 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_MetadataReadAccess_GetMetad
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataReadAccess_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
+  JNIEnvGuard
+    envGuard(env);
+
   CPPJNI_TRY
   {
     CPPJNI_destroyHandle<OpenVDS::MetadataReadAccess>(env, native_handle);
@@ -902,6 +905,9 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_ClearMetad
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
+  JNIEnvGuard
+    envGuard(env);
+
   CPPJNI_TRY
   {
     CPPJNI_destroyHandle<OpenVDS::MetadataWriteAccess>(env, native_handle);

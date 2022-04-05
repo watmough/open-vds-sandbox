@@ -772,6 +772,9 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_SetMetadataS
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
+  JNIEnvGuard
+    envGuard(env);
+
   CPPJNI_TRY
   {
     CPPJNI_destroyHandle<OpenVDS::MetadataContainer>(env, native_handle);

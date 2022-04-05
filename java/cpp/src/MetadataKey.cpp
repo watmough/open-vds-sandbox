@@ -122,6 +122,9 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_MetadataKey_GetNameImpl
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataKey_operatorEQImpl
   (JNIEnv * env, jobject object, jlong native_handle, jlong other_native_handle)
 {
+  JNIEnvGuard
+    envGuard(env);
+
   CPPJNI_TRY
   {
     auto pInstance = CPPJNI_cast<OpenVDS::MetadataKey>(native_handle);
@@ -136,6 +139,9 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_MetadataKey_operatorEQImpl
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataKey_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
+  JNIEnvGuard
+    envGuard(env);
+
   CPPJNI_TRY
   {
     CPPJNI_destroyHandle<OpenVDS::MetadataKey>(env, native_handle);

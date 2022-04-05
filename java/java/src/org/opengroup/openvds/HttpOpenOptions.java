@@ -36,6 +36,14 @@ public class HttpOpenOptions extends OpenOptions {
         return getUrlImpl(getNativeObject());
     }
 
+    native private void setUrlImpl(long native_object, String value);
+    
+    public void setUrl(String value) {
+    
+        setUrlImpl(getNativeObject(), ManagedBase.requireNonNull(value, "value may not be null"));    
+    
+    }
+
     native private static long ctorImpl();
     
     public HttpOpenOptions() {

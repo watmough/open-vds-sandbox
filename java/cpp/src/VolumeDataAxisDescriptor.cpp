@@ -220,6 +220,9 @@ JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_VolumeDataAxisDescriptor_Coo
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataAxisDescriptor_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
+  JNIEnvGuard
+    envGuard(env);
+
   CPPJNI_TRY
   {
     CPPJNI_destroyHandle<OpenVDS::VolumeDataAxisDescriptor>(env, native_handle);

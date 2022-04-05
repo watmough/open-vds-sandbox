@@ -47,10 +47,26 @@ public class DMSOpenOptions extends OpenOptions {
         return getSdAuthorityUrlImpl(getNativeObject());
     }
 
+    native private void setSdAuthorityUrlImpl(long native_object, String value);
+    
+    public void setSdAuthorityUrl(String value) {
+    
+        setSdAuthorityUrlImpl(getNativeObject(), ManagedBase.requireNonNull(value, "value may not be null"));    
+    
+    }
+
     ///AUTOGEN-OK: FIELD_DECL sdApiKey std::string RECORD
     native private String getSdApiKeyImpl(long native_object);
     public String getSdApiKey() {
         return getSdApiKeyImpl(getNativeObject());
+    }
+
+    native private void setSdApiKeyImpl(long native_object, String value);
+    
+    public void setSdApiKey(String value) {
+    
+        setSdApiKeyImpl(getNativeObject(), ManagedBase.requireNonNull(value, "value may not be null"));    
+    
     }
 
     ///AUTOGEN-OK: FIELD_DECL sdToken std::string RECORD
@@ -59,10 +75,26 @@ public class DMSOpenOptions extends OpenOptions {
         return getSdTokenImpl(getNativeObject());
     }
 
+    native private void setSdTokenImpl(long native_object, String value);
+    
+    public void setSdToken(String value) {
+    
+        setSdTokenImpl(getNativeObject(), ManagedBase.requireNonNull(value, "value may not be null"));    
+    
+    }
+
     ///AUTOGEN-OK: FIELD_DECL datasetPath std::string RECORD
     native private String getDatasetPathImpl(long native_object);
     public String getDatasetPath() {
         return getDatasetPathImpl(getNativeObject());
+    }
+
+    native private void setDatasetPathImpl(long native_object, String value);
+    
+    public void setDatasetPath(String value) {
+    
+        setDatasetPathImpl(getNativeObject(), ManagedBase.requireNonNull(value, "value may not be null"));    
+    
     }
 
     ///AUTOGEN-OK: FIELD_DECL logLevel int INT
@@ -71,10 +103,26 @@ public class DMSOpenOptions extends OpenOptions {
         return getLogLevelImpl(getNativeObject());
     }
 
+    native private void setLogLevelImpl(long native_object, int value);
+    
+    public void setLogLevel(int value) {
+    
+        setLogLevelImpl(getNativeObject(), value);    
+    
+    }
+
     ///AUTOGEN-OK: FIELD_DECL authTokenUrl std::string RECORD
     native private String getAuthTokenUrlImpl(long native_object);
     public String getAuthTokenUrl() {
         return getAuthTokenUrlImpl(getNativeObject());
+    }
+
+    native private void setAuthTokenUrlImpl(long native_object, String value);
+    
+    public void setAuthTokenUrl(String value) {
+    
+        setAuthTokenUrlImpl(getNativeObject(), ManagedBase.requireNonNull(value, "value may not be null"));    
+    
     }
 
     ///AUTOGEN-OK: FIELD_DECL refreshToken std::string RECORD
@@ -83,10 +131,26 @@ public class DMSOpenOptions extends OpenOptions {
         return getRefreshTokenImpl(getNativeObject());
     }
 
+    native private void setRefreshTokenImpl(long native_object, String value);
+    
+    public void setRefreshToken(String value) {
+    
+        setRefreshTokenImpl(getNativeObject(), ManagedBase.requireNonNull(value, "value may not be null"));    
+    
+    }
+
     ///AUTOGEN-OK: FIELD_DECL clientId std::string RECORD
     native private String getClientIdImpl(long native_object);
     public String getClientId() {
         return getClientIdImpl(getNativeObject());
+    }
+
+    native private void setClientIdImpl(long native_object, String value);
+    
+    public void setClientId(String value) {
+    
+        setClientIdImpl(getNativeObject(), ManagedBase.requireNonNull(value, "value may not be null"));    
+    
     }
 
     ///AUTOGEN-OK: FIELD_DECL clientSecret std::string RECORD
@@ -95,16 +159,40 @@ public class DMSOpenOptions extends OpenOptions {
         return getClientSecretImpl(getNativeObject());
     }
 
+    native private void setClientSecretImpl(long native_object, String value);
+    
+    public void setClientSecret(String value) {
+    
+        setClientSecretImpl(getNativeObject(), ManagedBase.requireNonNull(value, "value may not be null"));    
+    
+    }
+
     ///AUTOGEN-OK: FIELD_DECL scopes std::string RECORD
     native private String getScopesImpl(long native_object);
     public String getScopes() {
         return getScopesImpl(getNativeObject());
     }
 
+    native private void setScopesImpl(long native_object, String value);
+    
+    public void setScopes(String value) {
+    
+        setScopesImpl(getNativeObject(), ManagedBase.requireNonNull(value, "value may not be null"));    
+    
+    }
+
     ///AUTOGEN-OK: FIELD_DECL useFileNameForSingleFileDatasets bool BOOL
     native private boolean getUseFileNameForSingleFileDatasetsImpl(long native_object);
     public boolean getUseFileNameForSingleFileDatasets() {
         return getUseFileNameForSingleFileDatasetsImpl(getNativeObject());
+    }
+
+    native private void setUseFileNameForSingleFileDatasetsImpl(long native_object, boolean value);
+    
+    public void setUseFileNameForSingleFileDatasets(boolean value) {
+    
+        setUseFileNameForSingleFileDatasetsImpl(getNativeObject(), value);    
+    
     }
 
     DMSOpenOptions(long nativeobject) {

@@ -732,6 +732,9 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_Conve
 JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_operatorEQImpl
   (JNIEnv * env, jobject object, jlong native_handle, jlong other_native_handle)
 {
+  JNIEnvGuard
+    envGuard(env);
+
   CPPJNI_TRY
   {
     auto pInstance = CPPJNI_cast<OpenVDS::IJKCoordinateTransformer>(native_handle);
@@ -778,6 +781,9 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_Error
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
+  JNIEnvGuard
+    envGuard(env);
+
   CPPJNI_TRY
   {
     CPPJNI_destroyHandle<OpenVDS::IJKCoordinateTransformer>(env, native_handle);

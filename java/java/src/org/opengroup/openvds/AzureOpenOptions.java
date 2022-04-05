@@ -34,10 +34,26 @@ public class AzureOpenOptions extends OpenOptions {
         return getConnectionStringImpl(getNativeObject());
     }
 
+    native private void setConnectionStringImpl(long native_object, String value);
+    
+    public void setConnectionString(String value) {
+    
+        setConnectionStringImpl(getNativeObject(), ManagedBase.requireNonNull(value, "value may not be null"));    
+    
+    }
+
     ///AUTOGEN-OK: FIELD_DECL accountName std::string RECORD
     native private String getAccountNameImpl(long native_object);
     public String getAccountName() {
         return getAccountNameImpl(getNativeObject());
+    }
+
+    native private void setAccountNameImpl(long native_object, String value);
+    
+    public void setAccountName(String value) {
+    
+        setAccountNameImpl(getNativeObject(), ManagedBase.requireNonNull(value, "value may not be null"));    
+    
     }
 
     ///AUTOGEN-OK: FIELD_DECL bearerToken std::string RECORD
@@ -46,10 +62,26 @@ public class AzureOpenOptions extends OpenOptions {
         return getBearerTokenImpl(getNativeObject());
     }
 
+    native private void setBearerTokenImpl(long native_object, String value);
+    
+    public void setBearerToken(String value) {
+    
+        setBearerTokenImpl(getNativeObject(), ManagedBase.requireNonNull(value, "value may not be null"));    
+    
+    }
+
     ///AUTOGEN-OK: FIELD_DECL container std::string RECORD
     native private String getContainerImpl(long native_object);
     public String getContainer() {
         return getContainerImpl(getNativeObject());
+    }
+
+    native private void setContainerImpl(long native_object, String value);
+    
+    public void setContainer(String value) {
+    
+        setContainerImpl(getNativeObject(), ManagedBase.requireNonNull(value, "value may not be null"));    
+    
     }
 
     ///AUTOGEN-OK: FIELD_DECL blob std::string RECORD
@@ -58,16 +90,40 @@ public class AzureOpenOptions extends OpenOptions {
         return getBlobImpl(getNativeObject());
     }
 
+    native private void setBlobImpl(long native_object, String value);
+    
+    public void setBlob(String value) {
+    
+        setBlobImpl(getNativeObject(), ManagedBase.requireNonNull(value, "value may not be null"));    
+    
+    }
+
     ///AUTOGEN-OK: FIELD_DECL parallelism_factor int INT
     native private int getParallelism_factorImpl(long native_object);
     public int getParallelism_factor() {
         return getParallelism_factorImpl(getNativeObject());
     }
 
+    native private void setParallelism_factorImpl(long native_object, int value);
+    
+    public void setParallelism_factor(int value) {
+    
+        setParallelism_factorImpl(getNativeObject(), value);    
+    
+    }
+
     ///AUTOGEN-OK: FIELD_DECL max_execution_time int INT
     native private int getMax_execution_timeImpl(long native_object);
     public int getMax_execution_time() {
         return getMax_execution_timeImpl(getNativeObject());
+    }
+
+    native private void setMax_execution_timeImpl(long native_object, int value);
+    
+    public void setMax_execution_time(int value) {
+    
+        setMax_execution_timeImpl(getNativeObject(), value);    
+    
     }
 
     native private static long ctorImpl();

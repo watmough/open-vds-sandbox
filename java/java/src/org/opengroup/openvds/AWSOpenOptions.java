@@ -34,10 +34,26 @@ public class AWSOpenOptions extends OpenOptions {
         return getBucketImpl(getNativeObject());
     }
 
+    native private void setBucketImpl(long native_object, String value);
+    
+    public void setBucket(String value) {
+    
+        setBucketImpl(getNativeObject(), ManagedBase.requireNonNull(value, "value may not be null"));    
+    
+    }
+
     ///AUTOGEN-OK: FIELD_DECL key std::string RECORD
     native private String getKeyImpl(long native_object);
     public String getKey() {
         return getKeyImpl(getNativeObject());
+    }
+
+    native private void setKeyImpl(long native_object, String value);
+    
+    public void setKey(String value) {
+    
+        setKeyImpl(getNativeObject(), ManagedBase.requireNonNull(value, "value may not be null"));    
+    
     }
 
     ///AUTOGEN-OK: FIELD_DECL region std::string RECORD
@@ -46,10 +62,26 @@ public class AWSOpenOptions extends OpenOptions {
         return getRegionImpl(getNativeObject());
     }
 
+    native private void setRegionImpl(long native_object, String value);
+    
+    public void setRegion(String value) {
+    
+        setRegionImpl(getNativeObject(), ManagedBase.requireNonNull(value, "value may not be null"));    
+    
+    }
+
     ///AUTOGEN-OK: FIELD_DECL endpointOverride std::string RECORD
     native private String getEndpointOverrideImpl(long native_object);
     public String getEndpointOverride() {
         return getEndpointOverrideImpl(getNativeObject());
+    }
+
+    native private void setEndpointOverrideImpl(long native_object, String value);
+    
+    public void setEndpointOverride(String value) {
+    
+        setEndpointOverrideImpl(getNativeObject(), ManagedBase.requireNonNull(value, "value may not be null"));    
+    
     }
 
     ///AUTOGEN-OK: FIELD_DECL accessKeyId std::string RECORD
@@ -58,10 +90,26 @@ public class AWSOpenOptions extends OpenOptions {
         return getAccessKeyIdImpl(getNativeObject());
     }
 
+    native private void setAccessKeyIdImpl(long native_object, String value);
+    
+    public void setAccessKeyId(String value) {
+    
+        setAccessKeyIdImpl(getNativeObject(), ManagedBase.requireNonNull(value, "value may not be null"));    
+    
+    }
+
     ///AUTOGEN-OK: FIELD_DECL secretKey std::string RECORD
     native private String getSecretKeyImpl(long native_object);
     public String getSecretKey() {
         return getSecretKeyImpl(getNativeObject());
+    }
+
+    native private void setSecretKeyImpl(long native_object, String value);
+    
+    public void setSecretKey(String value) {
+    
+        setSecretKeyImpl(getNativeObject(), ManagedBase.requireNonNull(value, "value may not be null"));    
+    
     }
 
     ///AUTOGEN-OK: FIELD_DECL sessionToken std::string RECORD
@@ -70,10 +118,26 @@ public class AWSOpenOptions extends OpenOptions {
         return getSessionTokenImpl(getNativeObject());
     }
 
+    native private void setSessionTokenImpl(long native_object, String value);
+    
+    public void setSessionToken(String value) {
+    
+        setSessionTokenImpl(getNativeObject(), ManagedBase.requireNonNull(value, "value may not be null"));    
+    
+    }
+
     ///AUTOGEN-OK: FIELD_DECL expiration std::string RECORD
     native private String getExpirationImpl(long native_object);
     public String getExpiration() {
         return getExpirationImpl(getNativeObject());
+    }
+
+    native private void setExpirationImpl(long native_object, String value);
+    
+    public void setExpiration(String value) {
+    
+        setExpirationImpl(getNativeObject(), ManagedBase.requireNonNull(value, "value may not be null"));    
+    
     }
 
     ///AUTOGEN-OK: FIELD_DECL logFilenamePrefix std::string RECORD
@@ -82,10 +146,26 @@ public class AWSOpenOptions extends OpenOptions {
         return getLogFilenamePrefixImpl(getNativeObject());
     }
 
+    native private void setLogFilenamePrefixImpl(long native_object, String value);
+    
+    public void setLogFilenamePrefix(String value) {
+    
+        setLogFilenamePrefixImpl(getNativeObject(), ManagedBase.requireNonNull(value, "value may not be null"));    
+    
+    }
+
     ///AUTOGEN-OK: FIELD_DECL loglevel std::string RECORD
     native private String getLoglevelImpl(long native_object);
     public String getLoglevel() {
         return getLoglevelImpl(getNativeObject());
+    }
+
+    native private void setLoglevelImpl(long native_object, String value);
+    
+    public void setLoglevel(String value) {
+    
+        setLoglevelImpl(getNativeObject(), ManagedBase.requireNonNull(value, "value may not be null"));    
+    
     }
 
     ///AUTOGEN-OK: FIELD_DECL connectionTimeoutMs int INT
@@ -94,16 +174,40 @@ public class AWSOpenOptions extends OpenOptions {
         return getConnectionTimeoutMsImpl(getNativeObject());
     }
 
+    native private void setConnectionTimeoutMsImpl(long native_object, int value);
+    
+    public void setConnectionTimeoutMs(int value) {
+    
+        setConnectionTimeoutMsImpl(getNativeObject(), value);    
+    
+    }
+
     ///AUTOGEN-OK: FIELD_DECL requestTimeoutMs int INT
     native private int getRequestTimeoutMsImpl(long native_object);
     public int getRequestTimeoutMs() {
         return getRequestTimeoutMsImpl(getNativeObject());
     }
 
+    native private void setRequestTimeoutMsImpl(long native_object, int value);
+    
+    public void setRequestTimeoutMs(int value) {
+    
+        setRequestTimeoutMsImpl(getNativeObject(), value);    
+    
+    }
+
     ///AUTOGEN-OK: FIELD_DECL disableInitApi bool BOOL
     native private boolean getDisableInitApiImpl(long native_object);
     public boolean getDisableInitApi() {
         return getDisableInitApiImpl(getNativeObject());
+    }
+
+    native private void setDisableInitApiImpl(long native_object, boolean value);
+    
+    public void setDisableInitApi(boolean value) {
+    
+        setDisableInitApiImpl(getNativeObject(), value);    
+    
     }
 
     native private static long ctorImpl();

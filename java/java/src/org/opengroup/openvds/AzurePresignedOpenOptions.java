@@ -34,10 +34,26 @@ public class AzurePresignedOpenOptions extends OpenOptions {
         return getBaseUrlImpl(getNativeObject());
     }
 
+    native private void setBaseUrlImpl(long native_object, String value);
+    
+    public void setBaseUrl(String value) {
+    
+        setBaseUrlImpl(getNativeObject(), ManagedBase.requireNonNull(value, "value may not be null"));    
+    
+    }
+
     ///AUTOGEN-OK: FIELD_DECL urlSuffix std::string RECORD
     native private String getUrlSuffixImpl(long native_object);
     public String getUrlSuffix() {
         return getUrlSuffixImpl(getNativeObject());
+    }
+
+    native private void setUrlSuffixImpl(long native_object, String value);
+    
+    public void setUrlSuffix(String value) {
+    
+        setUrlSuffixImpl(getNativeObject(), ManagedBase.requireNonNull(value, "value may not be null"));    
+    
     }
 
     native private static long ctorImpl();

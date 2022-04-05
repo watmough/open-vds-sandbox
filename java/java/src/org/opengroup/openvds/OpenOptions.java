@@ -72,6 +72,14 @@ public class OpenOptions extends ManagedBase {
         return OpenOptions.ConnectionType.fromInt((int)getConnectionTypeImpl(getNativeObject()));
     }
 
+    native private void setConnectionTypeImpl(long native_object, long value);
+    
+    public void setConnectionType(OpenOptions.ConnectionType value) {
+    
+        setConnectionTypeImpl(getNativeObject(), ManagedBase.requireNonNull(value, "value may not be null").value());    
+    
+    }
+
     ///AUTOGEN-OK: FIELD_DECL waveletAdaptiveMode OpenVDS::WaveletAdaptiveMode ENUM
     native private long getWaveletAdaptiveModeImpl(long native_object);
 
@@ -81,6 +89,18 @@ public class OpenOptions extends ManagedBase {
      */
     public WaveletAdaptiveMode getWaveletAdaptiveMode() {
         return WaveletAdaptiveMode.fromInt((int)getWaveletAdaptiveModeImpl(getNativeObject()));
+    }
+
+    native private void setWaveletAdaptiveModeImpl(long native_object, long value);
+    
+    /**
+     * This property (only relevant when using Wavelet compression) is used to control how the wavelet adaptive compression determines which level of wavelet compressed data to load. Depending on the setting, either the global or local WaveletAdaptiveTolerance or the WaveletAdaptiveRatio can be used.
+     * 
+     */
+    public void setWaveletAdaptiveMode(WaveletAdaptiveMode value) {
+    
+        setWaveletAdaptiveModeImpl(getNativeObject(), ManagedBase.requireNonNull(value, "value may not be null").value());    
+    
     }
 
     ///AUTOGEN-OK: FIELD_DECL waveletAdaptiveTolerance float FLOAT
@@ -94,6 +114,18 @@ public class OpenOptions extends ManagedBase {
         return getWaveletAdaptiveToleranceImpl(getNativeObject());
     }
 
+    native private void setWaveletAdaptiveToleranceImpl(long native_object, float value);
+    
+    /**
+     * Wavelet adaptive tolerance, this setting will be used whenever the WavletAdaptiveMode is set to Tolerance.
+     * 
+     */
+    public void setWaveletAdaptiveTolerance(float value) {
+    
+        setWaveletAdaptiveToleranceImpl(getNativeObject(), value);    
+    
+    }
+
     ///AUTOGEN-OK: FIELD_DECL waveletAdaptiveRatio float FLOAT
     native private float getWaveletAdaptiveRatioImpl(long native_object);
 
@@ -103,6 +135,18 @@ public class OpenOptions extends ManagedBase {
      */
     public float getWaveletAdaptiveRatio() {
         return getWaveletAdaptiveRatioImpl(getNativeObject());
+    }
+
+    native private void setWaveletAdaptiveRatioImpl(long native_object, float value);
+    
+    /**
+     * Wavelet adaptive ratio, this setting will be used whenever the WavletAdaptiveMode is set to Ratio. A compression ratio of 5.0 corresponds to compressed data which is 20% of the original.
+     * 
+     */
+    public void setWaveletAdaptiveRatio(float value) {
+    
+        setWaveletAdaptiveRatioImpl(getNativeObject(), value);    
+    
     }
 
     OpenOptions(long nativeobject) {

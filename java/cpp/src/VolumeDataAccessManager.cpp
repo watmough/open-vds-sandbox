@@ -237,6 +237,9 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataRequest_BufferDataT
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataRequest_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
+  JNIEnvGuard
+    envGuard(env);
+
   CPPJNI_TRY
   {
     CPPJNI_destroyHandle<OpenVDS::VolumeDataRequest>(env, native_handle);
@@ -2790,6 +2793,9 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Upload
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
+  JNIEnvGuard
+    envGuard(env);
+
   CPPJNI_TRY
   {
     CPPJNI_destroyHandle<OpenVDS::VolumeDataAccessManager>(env, native_handle);
@@ -3730,6 +3736,9 @@ JNIEXPORT jbyteArray JNICALL Java_org_opengroup_openvds_VolumeDataRequest1Bit_Da
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataRequest1Bit_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
+  JNIEnvGuard
+    envGuard(env);
+
   CPPJNI_TRY
   {
     CPPJNI_destroyHandle<OpenVDS::VolumeDataRequest_t<uint8_t>>(env, native_handle);
@@ -3759,6 +3768,9 @@ JNIEXPORT jbyteArray JNICALL Java_org_opengroup_openvds_VolumeDataRequestByte_Da
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataRequestByte_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
+  JNIEnvGuard
+    envGuard(env);
+
   CPPJNI_TRY
   {
     CPPJNI_destroyHandle<OpenVDS::VolumeDataRequest_t<uint8_t>>(env, native_handle);
@@ -3788,6 +3800,9 @@ JNIEXPORT jshortArray JNICALL Java_org_opengroup_openvds_VolumeDataRequestUShort
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataRequestUShort_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
+  JNIEnvGuard
+    envGuard(env);
+
   CPPJNI_TRY
   {
     CPPJNI_destroyHandle<OpenVDS::VolumeDataRequest_t<uint16_t>>(env, native_handle);
@@ -3817,6 +3832,9 @@ JNIEXPORT jintArray JNICALL Java_org_opengroup_openvds_VolumeDataRequestUInt_Dat
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataRequestUInt_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
+  JNIEnvGuard
+    envGuard(env);
+
   CPPJNI_TRY
   {
     CPPJNI_destroyHandle<OpenVDS::VolumeDataRequest_t<uint32_t>>(env, native_handle);
@@ -3846,6 +3864,9 @@ JNIEXPORT jlongArray JNICALL Java_org_opengroup_openvds_VolumeDataRequestULong_D
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataRequestULong_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
+  JNIEnvGuard
+    envGuard(env);
+
   CPPJNI_TRY
   {
     CPPJNI_destroyHandle<OpenVDS::VolumeDataRequest_t<uint64_t>>(env, native_handle);
@@ -3875,6 +3896,9 @@ JNIEXPORT jfloatArray JNICALL Java_org_opengroup_openvds_VolumeDataRequestFloat_
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataRequestFloat_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
+  JNIEnvGuard
+    envGuard(env);
+
   CPPJNI_TRY
   {
     CPPJNI_destroyHandle<OpenVDS::VolumeDataRequest_t<float>>(env, native_handle);
@@ -3904,6 +3928,9 @@ JNIEXPORT jdoubleArray JNICALL Java_org_opengroup_openvds_VolumeDataRequestDoubl
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataRequestDouble_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
+  JNIEnvGuard
+    envGuard(env);
+
   CPPJNI_TRY
   {
     CPPJNI_destroyHandle<OpenVDS::VolumeDataRequest_t<double>>(env, native_handle);
