@@ -567,13 +567,15 @@ struct VDSFileOpenOptions : OpenOptions
   VDSFileOpenOptions(const std::string &fileName) : OpenOptions(VDSFile), fileName(fileName) {}
 };
 
-struct Error
+struct VDSError
 {
-  Error() = default;
+  VDSError() = default;
   
   int code = 0;
   std::string string;
 };
+
+typedef VDSError Error;
 
 template<typename T>
 struct VectorWrapper

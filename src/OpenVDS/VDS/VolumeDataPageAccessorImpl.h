@@ -34,7 +34,7 @@ namespace OpenVDS
 class VolumeDataPageImpl;
 class VolumeDataLayer;
 class VolumeDataAccessManagerImpl;
-struct Error;
+typedef struct VDSError Error;
 struct DataBlock;
 
 class VolumeDataPageAccessorImpl : public VolumeDataPageAccessor

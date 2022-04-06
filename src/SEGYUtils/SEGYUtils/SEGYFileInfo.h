@@ -25,7 +25,7 @@
 #include <vector>
 #include <functional>
 
-namespace OpenVDS { class File; struct Error; }
+namespace OpenVDS { class File; typedef struct VDSError Error; }
 
 struct SEGYBinInfo
 {
