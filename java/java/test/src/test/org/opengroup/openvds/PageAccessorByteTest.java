@@ -128,7 +128,7 @@ public class PageAccessorByteTest {
 
         VolumeDataPage page = pageAccessor.createPage(0);
 /*
-        VolumeIndexer3D outputIndexer = new  VolumeIndexer3D(page, 0, 0, DimensionsND.DIMENSIONS_012.ordinal(), layout);
+        VolumeIndexer3D outputIndexer = new  VolumeIndexer3D(page, 0, 0, DimENSIONS_012.ordinal(), layout);
         outputIndexer.finalize();
         */
 
@@ -250,7 +250,7 @@ public class PageAccessorByteTest {
             // get input manager
             VolumeDataAccessManager inputAM = vds.getAccessManager();
             VolumeDataPageAccessor pageAccessorInput = inputAM.createVolumeDataPageAccessor(
-                    DimensionsND.Dimensions_012, // dimension ND
+                    Dimensions_012, // dimension ND
                     0, // lod
                     channel, // channel
                     20, // max pages

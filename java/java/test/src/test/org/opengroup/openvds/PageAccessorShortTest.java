@@ -125,7 +125,7 @@ public class PageAccessorShortTest {
 
         VolumeDataPage page = pageAccessor.createPage(0);
 /*
-        VolumeIndexer3D outputIndexer = new  VolumeIndexer3D(page, 0, 0, DimensionsND.DIMENSIONS_012.ordinal(), layout);
+        VolumeIndexer3D outputIndexer = new  VolumeIndexer3D(page, 0, 0, DimENSIONS_012.ordinal(), layout);
         outputIndexer.finalize();
         */
 

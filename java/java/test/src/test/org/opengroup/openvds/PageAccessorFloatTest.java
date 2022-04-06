@@ -132,7 +132,7 @@ public class PageAccessorFloatTest {
 
         VolumeDataPage page = pageAccessor.createPage(0);
 /*
-        VolumeIndexer3D outputIndexer = new  VolumeIndexer3D(page, 0, 0, DimensionsND.DIMENSIONS_012.ordinal(), layout);
+        VolumeIndexer3D outputIndexer = new  VolumeIndexer3D(page, 0, 0, DimENSIONS_012.ordinal(), layout);
         outputIndexer.finalize();
         */
 
@@ -190,7 +190,7 @@ public class PageAccessorFloatTest {
 
             int channel = 0;
             VolumeDataPageAccessor pageAccessor = accessManager.createVolumeDataPageAccessor(
-                    DimensionsND.Dimensions_012, // dimension ND
+                    Dimensions_012, // dimension ND
                     0, // lod
                     channel, // channel
                     100, // max pages
@@ -199,7 +199,7 @@ public class PageAccessorFloatTest {
             // get input manager
             VolumeDataAccessManager inputAM = vds.getAccessManager();
             VolumeDataPageAccessor pageAccessorInput = inputAM.createVolumeDataPageAccessor(
-                    DimensionsND.Dimensions_012, // dimension ND
+                    Dimensions_012, // dimension ND
                     0, // lod
                     channel, // channel
                     100, // max pages
@@ -244,7 +244,7 @@ public class PageAccessorFloatTest {
             int channel = 0;
             VolumeDataLayout layout = vdsCopy.getLayout();
             VolumeDataPageAccessor pageAccessor = accessManager.createVolumeDataPageAccessor(
-                    DimensionsND.Dimensions_012, // dimension ND
+                    Dimensions_012, // dimension ND
                     0, // lod
                     channel, // channel
                     20, // max pages
@@ -253,7 +253,7 @@ public class PageAccessorFloatTest {
             // get input manager
             VolumeDataAccessManager inputAM = vds.getAccessManager();
             VolumeDataPageAccessor pageAccessorInput = inputAM.createVolumeDataPageAccessor(
-                    DimensionsND.Dimensions_012, // dimension ND
+                    Dimensions_012, // dimension ND
                     0, // lod
                     channel, // channel
                     20, // max pages
@@ -304,7 +304,7 @@ public class PageAccessorFloatTest {
             int channel = 0;
             VolumeDataLayout layout = vdsCopy.getLayout();
             VolumeDataPageAccessor pageAccessor = accessManager.createVolumeDataPageAccessor(
-                    DimensionsND.Dimensions_012, // dimension ND
+                    Dimensions_012, // dimension ND
                     0, // lod
                     channel, // channel
                     20, // max pages

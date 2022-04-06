@@ -27,6 +27,9 @@ import static org.opengroup.openvds.VolumeDataFormat.*;
 import static org.opengroup.openvds.VolumeDataComponents.*;
 import static org.opengroup.openvds.VolumeDataLayoutDescriptor.BrickSize;
 import static org.opengroup.openvds.VolumeDataLayoutDescriptor.LODLevels;
+import static org.opengroup.openvds.VolumeDataFormat.*;
+import static org.opengroup.openvds.VolumeDataPageAccessor.AccessMode.*;
+import static org.opengroup.openvds.DimensionsND.*;
 
 public class WriteDataTest {
     @Test
@@ -69,7 +72,7 @@ public class WriteDataTest {
             int[] min = new int[]{0, 0, 0, 0, 0, 0};
             int[] max = new int[]{nz, nx, 0, 0, 0, 0};
             int channel = layout.getChannelIndex("chan1");
-            DimensionsND dims = DimensionsND.Dimensions_01;
+            DimensionsND dims = Dimensions_01;
             try (VolumeDataRequest req = access.requestVolumeSubset(dims, 0, channel, min, max, Format_R32)) {
                 req.waitForCompletion();
                 FloatBuffer outbuf = req.getBuffer().asFloatBuffer();
@@ -128,7 +131,7 @@ public class WriteDataTest {
             int[] min = new int[]{0, 0, 0, 0, 0, 0};
             int[] max = new int[]{nz, ny, nx, 0, 0, 0};
             int channel = layout.getChannelIndex("chan2");
-            DimensionsND dims = DimensionsND.Dimensions_012;
+            DimensionsND dims = Dimensions_012;
             try (VolumeDataRequest req = access.requestVolumeSubset(dims, 0, channel, min, max, Format_R32)) {
                 req.waitForCompletion();
                 FloatBuffer outbuf = req.getBuffer().asFloatBuffer();

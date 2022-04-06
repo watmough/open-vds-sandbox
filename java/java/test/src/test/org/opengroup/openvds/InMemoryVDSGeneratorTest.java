@@ -82,8 +82,8 @@ public class InMemoryVDSGeneratorTest {
                             samplePositions.set(j * nYSamples + k, k + 0.5f, j + 0.5f, 0.5f, 0.5f, 0.5f, 0.5f);
                         }
                     }
-                    try (VolumeDataRequestFloat r_traces = accessManager.requestVolumeTraces(b1.getByteBuffer(), DimensionsND.Dimensions_012, 0, 0, tracePositions, InterpolationMethod.Nearest, 0);
-                         VolumeDataRequestFloat r_samples = accessManager.requestVolumeSamples(b0.getByteBuffer(), DimensionsND.Dimensions_012, 0, 0, samplePositions, InterpolationMethod.Nearest)
+                    try (VolumeDataRequestFloat r_traces = accessManager.requestVolumeTraces(b1.getByteBuffer(), Dimensions_012, 0, 0, tracePositions, InterpolationMethod.Nearest, 0);
+                         VolumeDataRequestFloat r_samples = accessManager.requestVolumeSamples(b0.getByteBuffer(), Dimensions_012, 0, 0, samplePositions, InterpolationMethod.Nearest)
                     ) {
                         r_traces.waitForCompletion();
                         r_samples.waitForCompletion();
@@ -118,8 +118,8 @@ public class InMemoryVDSGeneratorTest {
                     for (int j = 0; j < nYSamples; j++) {
                         tracePositions.set(j, 0.5f, j + 0.5f, 0.5f, 0.5f, 0.5f, 0.5f);
                     }
-                    try (VolumeDataRequestFloat r_traces1 = accessManager.requestVolumeTraces(b1.getByteBuffer(), DimensionsND.Dimensions_012, 0, 0, tracePositions, InterpolationMethod.Nearest, 0);
-                         VolumeDataRequestFloat r_traces0 = accessManager.requestVolumeTraces(b0.getByteBuffer(), DimensionsND.Dimensions_012, 0, 0, tracePositions, InterpolationMethod.Nearest, 0, layout.getChannelNoValue(0));
+                    try (VolumeDataRequestFloat r_traces1 = accessManager.requestVolumeTraces(b1.getByteBuffer(), Dimensions_012, 0, 0, tracePositions, InterpolationMethod.Nearest, 0);
+                         VolumeDataRequestFloat r_traces0 = accessManager.requestVolumeTraces(b0.getByteBuffer(), Dimensions_012, 0, 0, tracePositions, InterpolationMethod.Nearest, 0, layout.getChannelNoValue(0));
                     ) {
                         r_traces1.waitForCompletion();
                         r_traces0.waitForCompletion();
@@ -154,11 +154,11 @@ public class InMemoryVDSGeneratorTest {
         NDBox box = new NDBox(0, 0, 0, 0, 0, 0, nZSamples, nYSamples, 1, 0, 0, 0);
 
         final FloatBuffer floatBuffer1 = B.createFloatBuffer(nZSamples * nYSamples);
-        final long requestSubsetId1 = accessManager.requestVolumeSubset(floatBuffer1, DimensionsND.DIMENSIONS_012, 0, 0, box);
+        final long requestSubsetId1 = accessManager.requestVolumeSubset(floatBuffer1, DimENSIONS_012, 0, 0, box);
         accessManager.waitForCompletion(requestSubsetId1);
 
         final FloatBuffer floatBuffer0 = B.toBuffer(new float[nZSamples * nYSamples]);
-        final long requestSubsetId0 = accessManager.requestVolumeSubset(floatBuffer0, DimensionsND.DIMENSIONS_012, 0, 0, box);
+        final long requestSubsetId0 = accessManager.requestVolumeSubset(floatBuffer0, DimENSIONS_012, 0, 0, box);
         accessManager.waitForCompletion(requestSubsetId0);
 
         for (int i = 0; i < nZSamples * nYSamples; i++) {
@@ -192,11 +192,11 @@ public class InMemoryVDSGeneratorTest {
         NDBox box = new NDBox(0, 0, 0, 0, 0, 0, nZSamples, nYSamples, 1, 0, 0, 0);
 
         final FloatBuffer floatBuffer1 = B.createFloatBuffer(nZSamples * nYSamples);
-        final long requestSubsetId1 = accessManager.requestVolumeSubset(floatBuffer1, DimensionsND.DIMENSIONS_012, 0, 0, box);
+        final long requestSubsetId1 = accessManager.requestVolumeSubset(floatBuffer1, DimENSIONS_012, 0, 0, box);
         accessManager.waitForCompletion(requestSubsetId1);
 
         final FloatBuffer floatBuffer0 = B.toBuffer(new float[nZSamples * nYSamples]);
-        final long requestSubsetId0 = accessManager.requestVolumeSubset(floatBuffer0, DimensionsND.DIMENSIONS_012, 0, 0, box);
+        final long requestSubsetId0 = accessManager.requestVolumeSubset(floatBuffer0, DimENSIONS_012, 0, 0, box);
         accessManager.waitForCompletion(requestSubsetId0);
         float[] floatArray = B.toArrayAndRelease(floatBuffer0);
 
@@ -234,8 +234,8 @@ public class InMemoryVDSGeneratorTest {
                 }
                 int[] min = new int[]{0, 0, 0, 0, 0, 0};
                 int[] max = new int[]{nZSamples, nYSamples, 1, 0, 0, 0};
-                try (VolumeDataRequest r_subset = accessManager.requestVolumeSubsetFloat(DimensionsND.Dimensions_012, 0, 0, min, max);
-                     VolumeDataRequest r_samples = accessManager.requestVolumeSamples(DimensionsND.Dimensions_012, 0, 0, samplePositions, InterpolationMethod.Nearest)
+                try (VolumeDataRequest r_subset = accessManager.requestVolumeSubsetFloat(Dimensions_012, 0, 0, min, max);
+                     VolumeDataRequest r_samples = accessManager.requestVolumeSamples(Dimensions_012, 0, 0, samplePositions, InterpolationMethod.Nearest)
                 ) {
                     r_subset.waitForCompletion();
                     r_samples.waitForCompletion();
@@ -270,13 +270,13 @@ public class InMemoryVDSGeneratorTest {
         NDBox wholeCube = new NDBox(0, 0, 0, 0, 0, 0, nZSamples, nYSamples, nXSamples, 0, 0, 0);
 
         final FloatBuffer floatBuffer1 = B.createFloatBuffer(nZSamples * nYSamples * nXSamples);
-        final long requestSubsetId = accessManager.requestProjectedVolumeSubset(floatBuffer1, DimensionsND.DIMENSIONS_012, 0, 0,
-                wholeCube, 0.5f, 0.1f, 0.9f, 1.f, DimensionsND.DIMENSIONS_01, InterpolationMethod.NEAREST);
+        final long requestSubsetId = accessManager.requestProjectedVolumeSubset(floatBuffer1, DimENSIONS_012, 0, 0,
+                wholeCube, 0.5f, 0.1f, 0.9f, 1.f, DimENSIONS_01, InterpolationMethod.NEAREST);
         accessManager.waitForCompletion(requestSubsetId);
 
         final FloatBuffer floatBuffer0 = B.createFloatBuffer(nZSamples * nYSamples * nXSamples);
-        final long requestSubsetId0 = accessManager.requestProjectedVolumeSubset(floatBuffer0, DimensionsND.DIMENSIONS_012, 0, 0,
-                wholeCube, 0.5f, 0.1f, 0.9f, 1.f, DimensionsND.DIMENSIONS_01, InterpolationMethod.NEAREST, layout.getChannelNoValue(0));
+        final long requestSubsetId0 = accessManager.requestProjectedVolumeSubset(floatBuffer0, DimENSIONS_012, 0, 0,
+                wholeCube, 0.5f, 0.1f, 0.9f, 1.f, DimENSIONS_01, InterpolationMethod.NEAREST, layout.getChannelNoValue(0));
         accessManager.waitForCompletion(requestSubsetId0);
 
         for (int i = 0; i < nZSamples * nYSamples; i++) {
@@ -310,18 +310,18 @@ public class InMemoryVDSGeneratorTest {
 
         NDBox wholeCube = new NDBox(0, 0, 0, 0, 0, 0, nZSamples, nYSamples, nXSamples, 0, 0, 0);
 
-        final long projectedVolumeSubsetBufferSize = accessManager.getProjectedVolumeSubsetBufferSize(wholeCube, DimensionsND.DIMENSIONS_01, FORMAT_R32, 0, 0);
+        final long projectedVolumeSubsetBufferSize = accessManager.getProjectedVolumeSubsetBufferSize(wholeCube, DimENSIONS_01, FORMAT_R32, 0, 0);
         assertEquals(nZSamples * nYSamples * Float.BYTES, projectedVolumeSubsetBufferSize);
 
         final FloatBuffer floatBuffer1 = B.createFloatBuffer(nZSamples * nYSamples * nXSamples);
-        final long requestSubsetId = accessManager.requestProjectedVolumeSubset(floatBuffer1, DimensionsND.DIMENSIONS_012, 0, 0,
-                wholeCube, 0.5f, 0.1f, 0.9f, 1.f, DimensionsND.DIMENSIONS_01, InterpolationMethod.NEAREST);
+        final long requestSubsetId = accessManager.requestProjectedVolumeSubset(floatBuffer1, DimENSIONS_012, 0, 0,
+                wholeCube, 0.5f, 0.1f, 0.9f, 1.f, DimENSIONS_01, InterpolationMethod.NEAREST);
         accessManager.waitForCompletion(requestSubsetId);
 
         NDBox boxSlice = new NDBox(0, 0, 0, 0, 0, 0, nZSamples, nYSamples, 1, 0, 0, 0);
         final FloatBuffer floatBuffer0 = B.createFloatBuffer(nZSamples * nYSamples * nXSamples);
         final float channelNoValue = layout.getChannelNoValue(0);
-        final long requestID0 = accessManager.requestVolumeSubset(floatBuffer0, DimensionsND.DIMENSIONS_012, 0, 0, boxSlice, channelNoValue);
+        final long requestID0 = accessManager.requestVolumeSubset(floatBuffer0, DimENSIONS_012, 0, 0, boxSlice, channelNoValue);
         accessManager.waitForCompletion(requestID0);
 
         for (int i = 0; i < nZSamples * nYSamples; i++) {
@@ -375,8 +375,8 @@ public class InMemoryVDSGeneratorTest {
                                 jobs.addLast(executorService.submit(() -> {
                                     try (VolumeDataAccessManager accessManager = generator.getAccessManager()) {
                                         assertTrue(!accessManager.isNull());
-                                        try (VolumeDataRequestFloat r_subset1 = accessManager.requestVolumeSubsetFloat(DimensionsND.Dimensions_012, 0, 0, min, max);
-                                             VolumeDataRequestFloat r_subset0 = accessManager.requestVolumeSubsetFloat(DimensionsND.Dimensions_012, 0, 0, min, max, layout.getChannelNoValue(0))
+                                        try (VolumeDataRequestFloat r_subset1 = accessManager.requestVolumeSubsetFloat(Dimensions_012, 0, 0, min, max);
+                                             VolumeDataRequestFloat r_subset0 = accessManager.requestVolumeSubsetFloat(Dimensions_012, 0, 0, min, max, layout.getChannelNoValue(0))
                                         ) {
                                             waitComplationAndDisplayProgress(r_subset1);
                                             waitComplationAndDisplayProgress(r_subset0);
@@ -433,8 +433,8 @@ public class InMemoryVDSGeneratorTest {
                      ManagedBuffer buffer0 = new ManagedBuffer(bufferSize)
                 ) {
                     final float channelNoValue = layout.getChannelNoValue(0);
-                    try (VolumeDataRequestFloat r_subset1 = accessManager.requestVolumeSubsetFloat(buffer1.getByteBuffer(), DimensionsND.Dimensions_012, 0, 0, min, max);
-                         VolumeDataRequestFloat r_subset0 = accessManager.requestVolumeSubsetFloat(buffer0.getByteBuffer(), DimensionsND.Dimensions_012, 0, 0, min, max, channelNoValue)
+                    try (VolumeDataRequestFloat r_subset1 = accessManager.requestVolumeSubsetFloat(buffer1.getByteBuffer(), Dimensions_012, 0, 0, min, max);
+                         VolumeDataRequestFloat r_subset0 = accessManager.requestVolumeSubsetFloat(buffer0.getByteBuffer(), Dimensions_012, 0, 0, min, max, channelNoValue)
                     ) {
                         r_subset1.waitForCompletion();
                         r_subset0.waitForCompletion();
@@ -468,8 +468,8 @@ public class InMemoryVDSGeneratorTest {
                      ManagedBuffer buffer0 = new ManagedBuffer(bufferSize)
                 ) {
                     final float channelNoValue = layout.getChannelNoValue(0);
-                    try (VolumeDataRequest r_subset1 = accessManager.requestVolumeSubset(buffer1.getByteBuffer(), DimensionsND.Dimensions_012, 0, 0, min, max, format);
-                         VolumeDataRequest r_subset0 = accessManager.requestVolumeSubset(buffer0.getByteBuffer(), DimensionsND.Dimensions_012, 0, 0, min, max, format, channelNoValue)
+                    try (VolumeDataRequest r_subset1 = accessManager.requestVolumeSubset(buffer1.getByteBuffer(), Dimensions_012, 0, 0, min, max, format);
+                         VolumeDataRequest r_subset0 = accessManager.requestVolumeSubset(buffer0.getByteBuffer(), Dimensions_012, 0, 0, min, max, format, channelNoValue)
                     ) {
                         r_subset1.waitForCompletion();
                         r_subset0.waitForCompletion();
@@ -501,8 +501,8 @@ public class InMemoryVDSGeneratorTest {
                      ManagedBuffer buffer0 = new ManagedBuffer(bufferSize)
                 ) {
                     final float channelNoValue = layout.getChannelNoValue(0);
-                    try (VolumeDataRequest r_subset1 = accessManager.requestVolumeSubset(buffer1.getByteBuffer(), DimensionsND.Dimensions_012, 0, 0, min, max, format);
-                         VolumeDataRequest r_subset0 = accessManager.requestVolumeSubset(buffer0.getByteBuffer(), DimensionsND.Dimensions_012, 0, 0, min, max, format, channelNoValue)
+                    try (VolumeDataRequest r_subset1 = accessManager.requestVolumeSubset(buffer1.getByteBuffer(), Dimensions_012, 0, 0, min, max, format);
+                         VolumeDataRequest r_subset0 = accessManager.requestVolumeSubset(buffer0.getByteBuffer(), Dimensions_012, 0, 0, min, max, format, channelNoValue)
                     ) {
                         r_subset1.waitForCompletion();
                         r_subset0.waitForCompletion();
@@ -536,8 +536,8 @@ public class InMemoryVDSGeneratorTest {
                      ManagedBuffer buffer0 = new ManagedBuffer(bufferSize)
                 ) {
                     final float channelNoValue = layout.getChannelNoValue(0);
-                    try (VolumeDataRequest r_subset1 = accessManager.requestVolumeSubset(buffer1.getByteBuffer(), DimensionsND.Dimensions_012, 0, 0, min, max, format);
-                         VolumeDataRequest r_subset0 = accessManager.requestVolumeSubset(buffer0.getByteBuffer(), DimensionsND.Dimensions_012, 0, 0, min, max, format, channelNoValue)
+                    try (VolumeDataRequest r_subset1 = accessManager.requestVolumeSubset(buffer1.getByteBuffer(), Dimensions_012, 0, 0, min, max, format);
+                         VolumeDataRequest r_subset0 = accessManager.requestVolumeSubset(buffer0.getByteBuffer(), Dimensions_012, 0, 0, min, max, format, channelNoValue)
                     ) {
                         r_subset1.waitForCompletion();
                         r_subset0.waitForCompletion();
@@ -571,9 +571,9 @@ public class InMemoryVDSGeneratorTest {
                     if (channel == 0 && LODLevels_None.equals(l) && Dimensions_012.equals(dimGroup)) {
                         assertEquals(VDSProduceStatus.Normal, vdsProduceStatus);
                     } else if (channel == 0 && LODLevels_None.equals(l) && (
-                            DimensionsND.Dimensions_01.equals(dimGroup) ||
-                            DimensionsND.Dimensions_02.equals(dimGroup) ||
-                            DimensionsND.Dimensions_12.equals(dimGroup)
+                            Dimensions_01.equals(dimGroup) ||
+                            Dimensions_02.equals(dimGroup) ||
+                            Dimensions_12.equals(dimGroup)
                             )
                     ) {
                         assertEquals(VDSProduceStatus.Remapped, vdsProduceStatus);
