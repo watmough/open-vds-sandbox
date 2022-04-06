@@ -39,8 +39,11 @@ import org.opengroup.openvds.*;
 
 import static org.opengroup.openvds.VolumeDataFormat.*;
 import static org.opengroup.openvds.VolumeDataLayoutDescriptor.BrickSize;
+import static org.opengroup.openvds.VolumeDataLayoutDescriptor.BrickSize.*;
 import static org.opengroup.openvds.VolumeDataLayoutDescriptor.LODLevels;
+import static org.opengroup.openvds.VolumeDataLayoutDescriptor.LODLevels.*;
 import static org.opengroup.openvds.VolumeDataComponents.*;
+import static org.opengroup.openvds.DimensionsND.*;
 
 public class InMemoryVDSGeneratorTest {
 
@@ -565,9 +568,9 @@ public class InMemoryVDSGeneratorTest {
             for (int channel = 0; channel < nbChannel; channel++) {
                 for (DimensionsND dimGroup : DimensionsND.values()) {
                     VDSProduceStatus vdsProduceStatus = accessManager.getVDSProduceStatus(dimGroup, l.ordinal(), channel);
-                    if (channel == 0 && LODLevels.None.equals(l) && DimensionsND.Dimensions_012.equals(dimGroup)) {
+                    if (channel == 0 && LODLevels_None.equals(l) && Dimensions_012.equals(dimGroup)) {
                         assertEquals(VDSProduceStatus.Normal, vdsProduceStatus);
-                    } else if (channel == 0 && LODLevels.None.equals(l) && (
+                    } else if (channel == 0 && LODLevels_None.equals(l) && (
                             DimensionsND.Dimensions_01.equals(dimGroup) ||
                             DimensionsND.Dimensions_02.equals(dimGroup) ||
                             DimensionsND.Dimensions_12.equals(dimGroup)
@@ -605,11 +608,11 @@ public class InMemoryVDSGeneratorTest {
 
         final VolumeDataLayoutDescriptor descriptor = layout.getLayoutDescriptor();
         assertTrue(descriptor.isValid());
-        assertEquals(BrickSize._32, descriptor.getBrickSize());
+        assertEquals(BrickSize_32, descriptor.getBrickSize());
         assertEquals(4, descriptor.getNegativeMargin());
         assertEquals(4, descriptor.getPositiveMargin());
         assertEquals(4, descriptor.getBrickSizeMultiplier2D());
-        assertEquals(LODLevels.None, descriptor.getLODLevels());
+        assertEquals(LODLevels_None, descriptor.getLODLevels());
         assertTrue(!descriptor.isCreate2DLODs());
         assertTrue(!descriptor.isForceFullResolutionDimension());
         assertEquals(-1, descriptor.getFullResolutionDimension());

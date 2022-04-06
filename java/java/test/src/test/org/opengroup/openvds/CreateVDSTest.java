@@ -29,7 +29,9 @@ import org.testng.annotations.*;
 import static org.opengroup.openvds.VolumeDataFormat.*;
 import static org.opengroup.openvds.VolumeDataComponents.*;
 import static org.opengroup.openvds.VolumeDataLayoutDescriptor.BrickSize;
+import static org.opengroup.openvds.VolumeDataLayoutDescriptor.BrickSize.*;
 import static org.opengroup.openvds.VolumeDataLayoutDescriptor.LODLevels;
+import static org.opengroup.openvds.VolumeDataLayoutDescriptor.LODLevels.*;
 
 public class CreateVDSTest {
 
@@ -98,8 +100,8 @@ public class CreateVDSTest {
         if (channelDescriptors == null) {
             channelDescriptors = createDefaultChannelDescriptors("Amplitude", Format_R32);
         }
-        LODLevels lodLevels = LODLevels.None;
-        BrickSize brickSize = (samplesZ == 0) ? BrickSize._1024 : BrickSize._128;
+        LODLevels lodLevels = LODLevels_None;
+        BrickSize brickSize = (samplesZ == 0) ? BrickSize_1024 : BrickSize_128;
         EnumSet<VolumeDataLayoutDescriptor.Options> layoutOptions = EnumSet.noneOf(VolumeDataLayoutDescriptor.Options.class);
         int negativeMargin = 4;
         int positiveMargin = 4;

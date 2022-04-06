@@ -32,6 +32,9 @@ import static org.opengroup.openvds.VolumeDataFormat.*;
 import static org.opengroup.openvds.VolumeDataComponents.*;
 import static org.opengroup.openvds.VolumeDataLayoutDescriptor.BrickSize;
 import static org.opengroup.openvds.VolumeDataLayoutDescriptor.LODLevels;
+import static org.opengroup.openvds.VolumeDataFormat.*;
+import static org.opengroup.openvds.VolumeDataPageAccessor.AccessMode.*;
+import static org.opengroup.openvds.DimensionsND.*;
 
 public class PageAccessorByteTest {
 
@@ -117,11 +120,11 @@ public class PageAccessorByteTest {
         int channel = 0;
         VolumeDataLayout layout = vdsTest.getLayout();
         VolumeDataPageAccessor pageAccessor = accessManager.createVolumeDataPageAccessor(
-                DimensionsND.Dimensions_012, // dimension ND
+                Dimensions_012, // dimension ND
                 0, // lod
                 channel, // channel
                 100, // max pages
-                VolumeDataPageAccessor.AccessMode.Create); // access mode
+                AccessMode_Create); // access mode
 
         VolumeDataPage page = pageAccessor.createPage(0);
 /*
@@ -184,20 +187,20 @@ public class PageAccessorByteTest {
 
             int channel = 0;
             VolumeDataPageAccessor pageAccessor = accessManager.createVolumeDataPageAccessor(
-                    DimensionsND.Dimensions_012, // dimension ND
+                    Dimensions_012, // dimension ND
                     0, // lod
                     channel, // channel
                     100, // max pages
-                    VolumeDataPageAccessor.AccessMode.Create); // access mode
+                    AccessMode_Create); // access mode
 
             // get input manager
             VolumeDataAccessManager inputAM = vds.getAccessManager();
             VolumeDataPageAccessor pageAccessorInput = inputAM.createVolumeDataPageAccessor(
-                    DimensionsND.Dimensions_012, // dimension ND
+                    Dimensions_012, // dimension ND
                     0, // lod
                     channel, // channel
                     100, // max pages
-                    VolumeDataPageAccessor.AccessMode.ReadOnly); // access mode
+                    AccessMode_ReadOnly); // access mode
 
             // copy file
             int[] pitch = new int[VolumeDataLayout.Dimensionality_Max];
@@ -238,11 +241,11 @@ public class PageAccessorByteTest {
             int channel = 0;
             VolumeDataLayout layout = vdsCopy.getLayout();
             VolumeDataPageAccessor pageAccessor = accessManager.createVolumeDataPageAccessor(
-                    DimensionsND.Dimensions_012, // dimension ND
+                    Dimensions_012, // dimension ND
                     0, // lod
                     channel, // channel
                     20, // max pages
-                    VolumeDataPageAccessor.AccessMode.ReadOnly); // access mode
+                    AccessMode_ReadOnly); // access mode
 
             // get input manager
             VolumeDataAccessManager inputAM = vds.getAccessManager();
@@ -251,7 +254,7 @@ public class PageAccessorByteTest {
                     0, // lod
                     channel, // channel
                     20, // max pages
-                    VolumeDataPageAccessor.AccessMode.ReadOnly); // access mode
+                    AccessMode_ReadOnly); // access mode
 
             // compares block data
             int[] pitchInput = new int[VolumeDataLayout.Dimensionality_Max];
@@ -300,11 +303,11 @@ public class PageAccessorByteTest {
             int channel = 0;
             VolumeDataLayout layout = vdsCopy.getLayout();
             VolumeDataPageAccessor pageAccessor = accessManager.createVolumeDataPageAccessor(
-                    DimensionsND.Dimensions_012, // dimension ND
+                    Dimensions_012, // dimension ND
                     0, // lod
                     channel, // channel
                     20, // max pages
-                    VolumeDataPageAccessor.AccessMode.ReadOnly); // access mode
+                    AccessMode_ReadOnly); // access mode
 
             // compares block data
             int[] chunkMin = new int[VolumeDataLayout.Dimensionality_Max];

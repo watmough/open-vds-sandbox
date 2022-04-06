@@ -1197,12 +1197,12 @@ _java_enum_integral_types = {
 
 def create_java_enum(scope: Scope, template):
     def fix_enum_name(n: str) -> str:
-        if n.startswith(enum_name):
-            fixed = n.replace(enum_name + '_', '')
-            if fixed[0].isnumeric():
-                return '_' + fixed
-            else:
-                return fixed
+#        if n.startswith(enum_name):
+#            fixed = n.replace(enum_name + '_', '')
+#            if fixed[0].isnumeric():
+#                return '_' + fixed
+#            else:
+#                return fixed
         return n
 
     assert scope.is_enum
