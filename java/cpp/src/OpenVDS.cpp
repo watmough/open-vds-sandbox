@@ -2648,7 +2648,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VDSFileOpenOptions_dtorImpl
 
 
 
-JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_Error_ctorImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VDSError_ctorImpl
   (JNIEnv * env, jclass cls)
 {
   JNIEnvGuard
@@ -2656,10 +2656,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_Error_ctorImpl
 
   CPPJNI_TRY
   {
-    auto context = new CPPJNIObjectContext_t<OpenVDS::Error>();
+    auto context = new CPPJNIObjectContext_t<OpenVDS::VDSError>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::Error());
+    context->setObject(new OpenVDS::VDSError());
 
     return native_handle;
   }
@@ -2668,7 +2668,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_Error_ctorImpl
 }
 
 
-JNIEXPORT jint JNICALL Java_org_opengroup_openvds_Error_getCodeImpl
+JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VDSError_getCodeImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
   JNIEnvGuard
@@ -2676,7 +2676,7 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_Error_getCodeImpl
 
   CPPJNI_TRY
   {
-    auto pInstance = CPPJNI_cast<OpenVDS::Error>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VDSError>(native_handle);
     auto result = pInstance->code;
     return result;
   }
@@ -2684,7 +2684,7 @@ JNIEXPORT jint JNICALL Java_org_opengroup_openvds_Error_getCodeImpl
   return 0;
 }
 
-JNIEXPORT void JNICALL Java_org_opengroup_openvds_Error_setCodeImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_VDSError_setCodeImpl
   (JNIEnv * env, jobject object, jlong native_handle, jint value)
 {
   JNIEnvGuard
@@ -2692,14 +2692,14 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_Error_setCodeImpl
 
   CPPJNI_TRY
   {
-    auto pInstance = CPPJNI_cast<OpenVDS::Error>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VDSError>(native_handle);
     pInstance->code = value;
   }
   CPPJNI_CATCH
 }
 
 
-JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_Error_getStringImpl
+JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_VDSError_getStringImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
   JNIEnvGuard
@@ -2707,7 +2707,7 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_Error_getStringImpl
 
   CPPJNI_TRY
   {
-    auto pInstance = CPPJNI_cast<OpenVDS::Error>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VDSError>(native_handle);
     auto result = pInstance->string;
     return CPPJNI_newString(env, result);
   }
@@ -2715,7 +2715,7 @@ JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_Error_getStringImpl
   return 0;
 }
 
-JNIEXPORT void JNICALL Java_org_opengroup_openvds_Error_setStringImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_VDSError_setStringImpl
   (JNIEnv * env, jobject object, jlong native_handle, jstring value)
 {
   JNIEnvGuard
@@ -2723,14 +2723,14 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_Error_setStringImpl
 
   CPPJNI_TRY
   {
-    auto pInstance = CPPJNI_cast<OpenVDS::Error>(native_handle);
+    auto pInstance = CPPJNI_cast<OpenVDS::VDSError>(native_handle);
     pInstance->string = std::string(CPPJNIStringWrapper(env, native_handle, value));
   }
   CPPJNI_CATCH
 }
 
 
-JNIEXPORT void JNICALL Java_org_opengroup_openvds_Error_dtorImpl
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_VDSError_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
   JNIEnvGuard
@@ -2738,7 +2738,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_Error_dtorImpl
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::Error>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VDSError>(env, native_handle);
   }
   CPPJNI_CATCH
 }
@@ -2757,7 +2757,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_CreateOpenOptionsImpl
     auto result = OpenVDS::CreateOpenOptions(
                                OpenVDS::StringWrapper(CPPJNIStringWrapper(env, url)), 
                                OpenVDS::StringWrapper(CPPJNIStringWrapper(env, connectionString)), 
-                               *CPPJNI_cast<OpenVDS::Error>(error));
+                               *CPPJNI_cast<OpenVDS::VDSError>(error));
     auto context = CPPJNI_createNonOwningObjectContext(result);
     return context->handle();
   }
@@ -2791,7 +2791,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_OpenImpl
     auto result = OpenVDS::Open(
                                OpenVDS::StringWrapper(CPPJNIStringWrapper(env, url)), 
                                OpenVDS::StringWrapper(CPPJNIStringWrapper(env, connectionString)), 
-                               *CPPJNI_cast<OpenVDS::Error>(error));
+                               *CPPJNI_cast<OpenVDS::VDSError>(error));
     auto context = CPPJNI_createNonOwningObjectContext(result);
     return context->handle();
   }
@@ -2811,7 +2811,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_OpenWithAdaptiveCompr
                                OpenVDS::StringWrapper(CPPJNIStringWrapper(env, url)), 
                                OpenVDS::StringWrapper(CPPJNIStringWrapper(env, connectionString)), 
                                waveletAdaptiveTolerance, 
-                               *CPPJNI_cast<OpenVDS::Error>(error));
+                               *CPPJNI_cast<OpenVDS::VDSError>(error));
     auto context = CPPJNI_createNonOwningObjectContext(result);
     return context->handle();
   }
@@ -2831,7 +2831,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_OpenWithAdaptiveCompr
                                OpenVDS::StringWrapper(CPPJNIStringWrapper(env, url)), 
                                OpenVDS::StringWrapper(CPPJNIStringWrapper(env, connectionString)), 
                                waveletAdaptiveRatio, 
-                               *CPPJNI_cast<OpenVDS::Error>(error));
+                               *CPPJNI_cast<OpenVDS::VDSError>(error));
     auto context = CPPJNI_createNonOwningObjectContext(result);
     return context->handle();
   }
@@ -2847,7 +2847,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Open2Impl
 
   CPPJNI_TRY
   {
-    auto result = OpenVDS::Open(OpenVDS::StringWrapper(CPPJNIStringWrapper(env, url)), *CPPJNI_cast<OpenVDS::Error>(error));
+    auto result = OpenVDS::Open(OpenVDS::StringWrapper(CPPJNIStringWrapper(env, url)), *CPPJNI_cast<OpenVDS::VDSError>(error));
     auto context = CPPJNI_createNonOwningObjectContext(result);
     return context->handle();
   }
@@ -2863,7 +2863,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Open3Impl
 
   CPPJNI_TRY
   {
-    auto result = OpenVDS::Open(*CPPJNI_cast<OpenVDS::OpenOptions>(options), *CPPJNI_cast<OpenVDS::Error>(error));
+    auto result = OpenVDS::Open(*CPPJNI_cast<OpenVDS::OpenOptions>(options), *CPPJNI_cast<OpenVDS::VDSError>(error));
     auto context = CPPJNI_createNonOwningObjectContext(result);
     return context->handle();
   }
@@ -2879,7 +2879,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Open4Impl
 
   CPPJNI_TRY
   {
-    auto result = OpenVDS::Open(CPPJNI_cast<OpenVDS::IOManager>(ioManager), *CPPJNI_cast<OpenVDS::Error>(error));
+    auto result = OpenVDS::Open(CPPJNI_cast<OpenVDS::IOManager>(ioManager), *CPPJNI_cast<OpenVDS::VDSError>(error));
     auto context = CPPJNI_createNonOwningObjectContext(result);
     return context->handle();
   }
@@ -2919,7 +2919,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_CreateImpl
                                *CPPJNI_cast<OpenVDS::MetadataReadAccess>(metadata), 
                                (OpenVDS::CompressionMethod)compressionMethod, 
                                compressionTolerance, 
-                               *CPPJNI_cast<OpenVDS::Error>(error));
+                               *CPPJNI_cast<OpenVDS::VDSError>(error));
     auto context = CPPJNI_createNonOwningObjectContext(result);
     return context->handle();
   }
@@ -2942,7 +2942,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Create2Impl
                                CPPJNIVectorWrapperAdapter<OpenVDS::VolumeDataAxisDescriptor>(env, axisDescriptors).toVector(), 
                                CPPJNIVectorWrapperAdapter<OpenVDS::VolumeDataChannelDescriptor>(env, channelDescriptors).toVector(), 
                                *CPPJNI_cast<OpenVDS::MetadataReadAccess>(metadata), 
-                               *CPPJNI_cast<OpenVDS::Error>(error));
+                               *CPPJNI_cast<OpenVDS::VDSError>(error));
     auto context = CPPJNI_createNonOwningObjectContext(result);
     return context->handle();
   }
@@ -2966,7 +2966,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Create3Impl
                                *CPPJNI_cast<OpenVDS::MetadataReadAccess>(metadata), 
                                (OpenVDS::CompressionMethod)compressionMethod, 
                                compressionTolerance, 
-                               *CPPJNI_cast<OpenVDS::Error>(error));
+                               *CPPJNI_cast<OpenVDS::VDSError>(error));
     auto context = CPPJNI_createNonOwningObjectContext(result);
     return context->handle();
   }
@@ -2988,7 +2988,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Create4Impl
                                CPPJNIVectorWrapperAdapter<OpenVDS::VolumeDataAxisDescriptor>(env, axisDescriptors).toVector(), 
                                CPPJNIVectorWrapperAdapter<OpenVDS::VolumeDataChannelDescriptor>(env, channelDescriptors).toVector(), 
                                *CPPJNI_cast<OpenVDS::MetadataReadAccess>(metadata), 
-                               *CPPJNI_cast<OpenVDS::Error>(error));
+                               *CPPJNI_cast<OpenVDS::VDSError>(error));
     auto context = CPPJNI_createNonOwningObjectContext(result);
     return context->handle();
   }
@@ -3012,7 +3012,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Create5Impl
                                *CPPJNI_cast<OpenVDS::MetadataReadAccess>(metadata), 
                                (OpenVDS::CompressionMethod)compressionMethod, 
                                compressionTolerance, 
-                               *CPPJNI_cast<OpenVDS::Error>(error));
+                               *CPPJNI_cast<OpenVDS::VDSError>(error));
     auto context = CPPJNI_createNonOwningObjectContext(result);
     return context->handle();
   }
@@ -3034,7 +3034,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Create6Impl
                                CPPJNIVectorWrapperAdapter<OpenVDS::VolumeDataAxisDescriptor>(env, axisDescriptors).toVector(), 
                                CPPJNIVectorWrapperAdapter<OpenVDS::VolumeDataChannelDescriptor>(env, channelDescriptors).toVector(), 
                                *CPPJNI_cast<OpenVDS::MetadataReadAccess>(metadata), 
-                               *CPPJNI_cast<OpenVDS::Error>(error));
+                               *CPPJNI_cast<OpenVDS::VDSError>(error));
     auto context = CPPJNI_createNonOwningObjectContext(result);
     return context->handle();
   }
@@ -3058,7 +3058,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Create7Impl
                                *CPPJNI_cast<OpenVDS::MetadataReadAccess>(metadata), 
                                (OpenVDS::CompressionMethod)compressionMethod, 
                                compressionTolerance, 
-                               *CPPJNI_cast<OpenVDS::Error>(error));
+                               *CPPJNI_cast<OpenVDS::VDSError>(error));
     auto context = CPPJNI_createNonOwningObjectContext(result);
     return context->handle();
   }
@@ -3080,7 +3080,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Create8Impl
                                CPPJNIVectorWrapperAdapter<OpenVDS::VolumeDataAxisDescriptor>(env, axisDescriptors).toVector(), 
                                CPPJNIVectorWrapperAdapter<OpenVDS::VolumeDataChannelDescriptor>(env, channelDescriptors).toVector(), 
                                *CPPJNI_cast<OpenVDS::MetadataReadAccess>(metadata), 
-                               *CPPJNI_cast<OpenVDS::Error>(error));
+                               *CPPJNI_cast<OpenVDS::VDSError>(error));
     auto context = CPPJNI_createNonOwningObjectContext(result);
     return context->handle();
   }
@@ -3171,7 +3171,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_OpenVDS_Close2Impl
 
   CPPJNI_TRY
   {
-    OpenVDS::Close(CPPJNI_cast<OpenVDS::VDS>(handle), *CPPJNI_cast<OpenVDS::Error>(error));
+    OpenVDS::Close(CPPJNI_cast<OpenVDS::VDS>(handle), *CPPJNI_cast<OpenVDS::VDSError>(error));
   }
   CPPJNI_CATCH
 }
@@ -3197,7 +3197,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_OpenVDS_RetryableClose2Impl
 
   CPPJNI_TRY
   {
-    OpenVDS::RetryableClose(CPPJNI_cast<OpenVDS::VDS>(handle), *CPPJNI_cast<OpenVDS::Error>(error));
+    OpenVDS::RetryableClose(CPPJNI_cast<OpenVDS::VDS>(handle), *CPPJNI_cast<OpenVDS::VDSError>(error));
   }
   CPPJNI_CATCH
 }

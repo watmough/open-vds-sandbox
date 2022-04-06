@@ -23,7 +23,6 @@ import java.nio.FloatBuffer;
 import java.util.Objects;
 import java.util.Random;
 import org.opengroup.openvds.*;
-import org.opengroup.openvds.Error;
 
 import static org.testng.Assert.*;
 import org.testng.annotations.*;
