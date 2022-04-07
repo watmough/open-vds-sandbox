@@ -47,18 +47,32 @@ public abstract class ManagedBase {
     }
 
 	private long native_object;
+    private Object native_object_context;
 
     private boolean is_disposed;
 
-    public ManagedBase(long native_object) {
+    public ManagedBase(long native_object, Object native_object_context) {
         this.native_object = native_object;
+        this.native_object_context = native_object_context;
         this.is_disposed = false;
+    }
+
+    protected ManagedBase(Object[] parameters) {
+        this((Long)parameters[0], (Object)parameters[1]);
+    }
+
+    public ManagedBase(long native_object) {
+        this(native_object, null);
     }
 	
     long getNativeObject() {
         if (this.is_disposed)
            throw new ObjectDisposedException();
         return this.native_object;
+    }
+
+    Object getContext() {
+        return this.native_object_context;
     }
 	
 	protected void onDisposing(long native_object, boolean isDisposing) {
@@ -70,6 +84,7 @@ public abstract class ManagedBase {
 			long native_object = this.native_object;
 			this.native_object = 0;
 			onDisposing(native_object, isDisposing);
+			this.native_object_context = null;
 		}
     }
 

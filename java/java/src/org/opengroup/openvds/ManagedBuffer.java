@@ -20,7 +20,7 @@ package org.opengroup.openvds;
 import java.nio.*;
 
 /**
- * This class maintains a ByteBuffer with natively allocated memory, intended
+ * This class maintains a Direct ByteBuffer with natively allocated memory, intended
  * for deterministic cleanup (aka try-with-resources). Using the ByteBuffer
  * obtained from this class after it has been closed/disposed
  * will result in undefined behavior, most likely crashing your program.
@@ -67,21 +67,17 @@ public class ManagedBuffer extends ManagedBase implements AutoCloseable {
 		this.byteoffset = byteoffset;
 	}
 
-	private native static long ctorImpl(long capacity);
-	private native ByteBuffer getBufferRefImpl(long native_object);
-	private native void deleteBufferRefImpl(long native_object);
-	private native void dtorImpl(long native_object, boolean is_disposing );
+	private native static Object[] ctorImpl(long capacity);
+	private native void dtorImpl(long native_object, boolean is_disposing);
 
 	/**
-	 * Create aManagedBuffer backed by a ByteBuffer whose memory will be free'd on close/dispose
+	 * Create a ManagedBuffer backed by a DirectByteBuffer whose memory will be free'd on close/dispose
 	 * @param capacity The new buffer's capacity, in bytes.
 	 */
 	public ManagedBuffer(long capacity) {
 		super(ctorImpl(capacity));
 		this.byteoffset = 0;
-		this.bytebuffer = getBufferRefImpl(getNativeObject());
-		this.bytebuffer.order(ByteOrder.nativeOrder());
-		deleteBufferRefImpl(getNativeObject());
+		this.bytebuffer = (ByteBuffer)this.getContext();
 	}
 
 	@Override
@@ -93,7 +89,6 @@ public class ManagedBuffer extends ManagedBase implements AutoCloseable {
 	@Override
 	public synchronized void dispose() {
 		if (this.bytebuffer != null) {
-			ByteBuffer byteBuffer = this.bytebuffer;
 			this.bytebuffer = null;
 			super.dispose();
 		}
@@ -135,51 +130,51 @@ public class ManagedBuffer extends ManagedBase implements AutoCloseable {
 	}
 	
 	public byte get(int offset) {
-		return this.bytebuffer.get(this.byteoffset + offset);
+		return getByteBuffer().get(this.byteoffset + offset);
 	}
 	
 	public void put(int offset, byte value) {
-		this.bytebuffer.put(this.byteoffset + offset, value);
+		getByteBuffer().put(this.byteoffset + offset, value);
 	}
 	
 	public short getShort(int offset) {
-		return this.bytebuffer.getShort(this.byteoffset + offset);
+		return getByteBuffer().getShort(this.byteoffset + offset);
 	}
 	
 	public void putShort(int offset, short value) {
-		this.bytebuffer.putShort(this.byteoffset + offset, value);
+		getByteBuffer().putShort(this.byteoffset + offset, value);
 	}
 	
 	public int getInt(int offset) {
-		return this.bytebuffer.getInt(this.byteoffset + offset);
+		return getByteBuffer().getInt(this.byteoffset + offset);
 	}
 	
 	public void putInt(int offset, int value) {
-		this.bytebuffer.putInt(this.byteoffset + offset, value);
+		getByteBuffer().putInt(this.byteoffset + offset, value);
 	}
 	
 	public long getLong(int offset) {
-		return this.bytebuffer.getLong(this.byteoffset + offset);
+		return getByteBuffer().getLong(this.byteoffset + offset);
 	}
 	
 	public void putLong(int offset, long value) {
-		this.bytebuffer.putLong(this.byteoffset + offset, value);
+		getByteBuffer().putLong(this.byteoffset + offset, value);
 	}
 	
 	public float getFloat(int offset) {
-		return this.bytebuffer.getFloat(this.byteoffset + offset);
+		return getByteBuffer().getFloat(this.byteoffset + offset);
 	}
 	
 	public void putFloat(int offset, float value) {
-		this.bytebuffer.putFloat(this.byteoffset + offset, value);
+		getByteBuffer().putFloat(this.byteoffset + offset, value);
 	}
 	
 	public double getDouble(int offset) {
-		return this.bytebuffer.getDouble(this.byteoffset + offset);
+		return getByteBuffer().getDouble(this.byteoffset + offset);
 	}
 	
 	public void putDouble(int offset, double value) {
-		this.bytebuffer.putDouble(this.byteoffset + offset, value);
+		getByteBuffer().putDouble(this.byteoffset + offset, value);
 	}
 
 	public void put(int offset, byte[] array) {

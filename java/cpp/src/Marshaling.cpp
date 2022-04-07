@@ -245,6 +245,20 @@ Marshaling::CreatePODJavaObject<int>(int const& value)
   return nullptr;
 }
 
+template<>
+jobject 
+Marshaling::CreatePODJavaObject<int64_t>(int64_t const& value) 
+{
+  jclass clazz = GetJNIEnv()->FindClass("java/lang/Long");
+  jmethodID methodID = GetJNIEnv()->GetMethodID(clazz, "<init>", "(J)V");
+  if (methodID)
+  {
+    jobject obj = GetJNIEnv()->NewObject(clazz, methodID, value);
+    return obj;
+  }
+  return nullptr;
+}
+
 int
 CPPJNIObjectContext::getSharedLibraryGeneration()
 { // The HueSpace shared library supports unloading and reloading within the same process.
@@ -344,16 +358,11 @@ JNIDirectBuffer::JNIDirectBuffer(jlong capacity) : m_Buffer(0), m_Memory(nullptr
   {
     throw std::bad_alloc();
   }
-  jobject tmp = JNIDirectBuffer::CreateDirectBuffer(m_Memory, capacity);
-  if (tmp)
-  {
-    m_Buffer = Marshaling::GetJNIEnv()->NewGlobalRef(tmp);
-  }
+  m_Buffer = JNIDirectBuffer::CreateDirectBuffer(m_Memory, capacity);
 }
 
 JNIDirectBuffer::~JNIDirectBuffer()
 {
-  DeleteBufferGlobalRef();
   free(m_Memory);
 }
 
@@ -383,37 +392,16 @@ JNIDirectBuffer::CreateDirectBuffer(void* mem, jlong capacity)
   return byteBuffer;
 }
 
-jobject
-JNIDirectBuffer::GetBufferGlobalRef()
-{
-  return m_Buffer;
-}
-
-  void
-JNIDirectBuffer::DeleteBufferGlobalRef()
-{
-  if (m_Buffer)
-  {
-    jobject buffer = m_Buffer;
-    m_Buffer = 0;
-    Marshaling::GetJNIEnv()->DeleteGlobalRef(buffer);
-  }
-}
-
 extern "C" 
 {
 
 /**
-* The Java ManagedBuffer class inherits from ManagedBase and its constructor
-* calls the base class constructor with the native handle. To keep the
-* DirectByteBuffer alive, we create a GlobalRef to it, before it is
-* read out from the java side and finally the GlobalRef is destroyed so
-* that it won't be kept alive artificially. Seems cumbersome, but is there
-* a better way?
+* 
+* Returns an array of 2 objects: The native handle and the directbuffer object
 * 
 */
 
-JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_ManagedBuffer_ctorImpl
+JNIEXPORT jobjectArray JNICALL Java_org_opengroup_openvds_ManagedBuffer_ctorImpl
   (JNIEnv * env, jclass clazz, jlong capacity)
 {
   JNIEnvGuard
@@ -424,39 +412,14 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_ManagedBuffer_ctorImpl
     auto directBuffer = new JNIDirectBuffer(capacity);
     auto context = new CPPJNIOwningObjectContext_t<JNIDirectBuffer>(directBuffer);
     auto native_handle = context->handle();
-    return native_handle;
+    jobjectArray arr = Marshaling::CreateJavaArray(2);
+    env->SetObjectArrayElement(arr, 0, Marshaling::CreatePODJavaObject<jlong>(native_handle));
+    env->SetObjectArrayElement(arr, 1, directBuffer->m_Buffer);
+    directBuffer->m_Buffer = 0;
+    return arr;
   }
   CPPJNI_CATCH
   return 0;
-}
-
-JNIEXPORT jobject JNICALL Java_org_opengroup_openvds_ManagedBuffer_getBufferRefImpl
-  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
-{
-  JNIEnvGuard
-    envGuard(env);
-
-  CPPJNI_TRY
-  {
-    auto buffer = CPPJNI_cast<JNIDirectBuffer>(native_handle);
-    return buffer->GetBufferGlobalRef();
-  }
-  CPPJNI_CATCH
-  return 0;
-}
-
-JNIEXPORT void JNICALL Java_org_opengroup_openvds_ManagedBuffer_deleteBufferRefImpl
-  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
-{
-  JNIEnvGuard
-    envGuard(env);
-
-  CPPJNI_TRY
-  {
-    auto buffer = CPPJNI_cast<JNIDirectBuffer>(native_handle);
-    buffer->DeleteBufferGlobalRef();
-  }
-  CPPJNI_CATCH
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_ManagedBuffer_dtorImpl

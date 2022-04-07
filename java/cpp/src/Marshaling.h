@@ -726,15 +726,13 @@ struct CPPJNIStringWrapper
 
 struct JNIDirectBuffer 
 {
-  jobject m_Buffer;
+  jobject m_Buffer; // Not a global ref!!!
   void*   m_Memory;
 
                   JNIDirectBuffer(jlong capacity);
                   ~JNIDirectBuffer();
                   // Create a new DirectByteBuffer with native endianness.
   static jobject  CreateDirectBuffer(void* mem, jlong capacity);
-  jobject         GetBufferGlobalRef();
-  void            DeleteBufferGlobalRef();
 };
 
 class Marshaling {
@@ -758,5 +756,6 @@ public:
 };
 
 template<> jobject Marshaling::CreatePODJavaObject<int>(int const& value);
+template<> jobject Marshaling::CreatePODJavaObject<int64_t>(int64_t const& value);
 
 #endif
