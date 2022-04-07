@@ -1005,6 +1005,7 @@ OPENVDS_EXPORT CompressionMethod GetCompressionMethod(VDSHandle handle);
 /// </returns>
 OPENVDS_EXPORT float GetCompressionTolerance(VDSHandle handle);
 
+#if !defined(JAVA_WRAPPER_GENERATOR)
 /// <summary>
 /// Close a VDS and free up all associated resources. If an error occurs, an exception will be thrown.
 /// </summary>
@@ -1012,6 +1013,7 @@ OPENVDS_EXPORT float GetCompressionTolerance(VDSHandle handle);
 /// The handle of the VDS
 /// </param>
 OPENVDS_EXPORT void Close(VDSHandle handle);
+#endif
 
 /// <summary>
 /// Close a VDS and free up all associated resources
@@ -1024,6 +1026,7 @@ OPENVDS_EXPORT void Close(VDSHandle handle);
 /// </param>
 OPENVDS_EXPORT void Close(VDSHandle handle, Error &error);
 
+#if !defined(JAVA_WRAPPER_GENERATOR)
 /// <summary>
 /// Close a VDS and free up all associated resources if the close succeeds. If an error occurs, an exception will be thrown.
 /// </summary>
@@ -1031,6 +1034,7 @@ OPENVDS_EXPORT void Close(VDSHandle handle, Error &error);
 /// The handle of the VDS
 /// </param>
 OPENVDS_EXPORT void RetryableClose(VDSHandle handle);
+#endif
 
 /// <summary>
 /// Close a VDS and free up all associated resources if the close succeeds
