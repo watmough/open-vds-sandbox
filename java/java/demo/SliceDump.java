@@ -12,17 +12,17 @@ import java.util.Arrays;
 import java.util.DoubleSummaryStatistics;
 import java.util.Locale;
 import java.util.stream.IntStream;
-//
-//public class SliceDump {
-//
-//    public static void main(String[] args) {
-//        try {
-//            process(args);
-//        } catch (Throwable t) {
-//            System.out.println();
-//            t.printStackTrace();
-//        }
-//    }
+
+public class SliceDump {
+
+    public static void main(String[] args) {
+        try {
+            process(args);
+        } catch (Throwable t) {
+            System.out.println();
+            t.printStackTrace();
+        }
+    }
 //
 //    public static SliceDumpParameters parseParameters(String[] args) throws IllegalArgumentException {
 //        SliceDumpParameters params = new SliceDumpParameters();
@@ -157,13 +157,13 @@ import java.util.stream.IntStream;
 //        }
 //    }
 //
-//    public static VdsHandle open(SliceDumpParameters parameters) throws IOException {
+//    public static VDS open(SliceDumpParameters parameters) throws IOException {
 //        if (parameters.connectionString == null) {
 //            // file
 //            VDSFileOpenOptions fileOpenOptions = new VDSFileOpenOptions(parameters.url);
-//            fileOpenOptions.waveletAdaptiveMode = parameters.adaptiveMode;
-//            fileOpenOptions.waveletAdaptiveTolerance = parameters.adaptiveTolerance;
-//            fileOpenOptions.waveletAdaptiveRatio = parameters.adaptiveRatio;
+//            fileOpenOptions.setWaveletAdaptiveMode(parameters.adaptiveMode);
+//            fileOpenOptions.setWaveletAdaptiveTolerance(parameters.adaptiveTolerance);
+//            fileOpenOptions.setWaveletAdaptiveRatio(parameters.adaptiveRatio);
 //            return OpenVDS.open(fileOpenOptions);
 //        }
 //        else {
@@ -180,12 +180,12 @@ import java.util.stream.IntStream;
 //        }
 //    }
 //
-//    static void process(String[] args) throws Exception {
+    static void process(String[] args) throws Exception {
 //        SliceDumpParameters parameters = parseParameters(args);
 //
 //        System.out.println("Library: " + JniPointer.libraryDescription());
 //
-//        try (VdsHandle generator = open(parameters)) {
+//        try (VDS generator = open(parameters)) {
 //
 //            VolumeDataLayout layout = generator.getLayout();
 //            printLayout(layout);
@@ -258,7 +258,7 @@ import java.util.stream.IntStream;
 //            generator.release();
 //            System.out.println("Finished");
 //        }
-//    }
+    }
 //
 //    private static int[] getAxisMapping(String axisString) throws IllegalArgumentException {
 //        int[] mapping = Arrays.stream(axisString.split(",")).mapToInt(Integer::parseInt).toArray();
@@ -479,17 +479,16 @@ import java.util.stream.IntStream;
 //    }
 //
 //
-//    private static class SliceDumpParameters {
-//        private String connectionString;
-//        private String url;
-//        private String axis = "0,1,2";
-//        private int position;
-//        private int outputWidth = 500;
-//        private int outputHeight = 500;
-//        private String outputFilePath;
-//        private float adaptiveTolerance = 0.01f;
-//        private float adaptiveRatio = 1.0f;
-//        private WaveletAdaptiveMode adaptiveMode = WaveletAdaptiveMode.BestQuality;
-//    }
-//}
-//
+    private static class SliceDumpParameters {
+        private String connectionString;
+        private String url;
+        private String axis = "0,1,2";
+        private int position;
+        private int outputWidth = 500;
+        private int outputHeight = 500;
+        private String outputFilePath;
+        private float adaptiveTolerance = 0.01f;
+        private float adaptiveRatio = 1.0f;
+        private WaveletAdaptiveMode adaptiveMode = WaveletAdaptiveMode.BestQuality;
+    }
+}
