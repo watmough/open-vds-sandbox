@@ -21,7 +21,6 @@ set(JAVA_SOURCE_FILES
 	java/src/org/opengroup/openvds/DoubleVector3.java
 	java/src/org/opengroup/openvds/DoubleVector4.java
 	java/src/org/opengroup/openvds/DownloadError.java
-	java/src/org/opengroup/openvds/Error.java
 	java/src/org/opengroup/openvds/FloatRange.java
 	java/src/org/opengroup/openvds/FloatVector2.java
 	java/src/org/opengroup/openvds/FloatVector3.java
