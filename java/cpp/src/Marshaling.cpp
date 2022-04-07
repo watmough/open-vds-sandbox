@@ -324,6 +324,12 @@ CPPJNI_Throw(struct JNIEnv_ *env, const char* message, JavaExceptionType excepti
 }
 
 void 
+CPPJNI_onVDSError(OpenVDS::VDSError const& error)
+{
+  CPPJNI_Throw(JNIEnvGuard::getJNIEnv(), error.string.c_str(), JavaExceptionType::IOException);
+}
+
+void 
 CPPJNI_HandleStdException(struct JNIEnv_ *env, class std::exception &e)
 {
   CPPJNI_Throw(env, e.what(), JavaExceptionType::Exception);

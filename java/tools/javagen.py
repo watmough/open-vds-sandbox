@@ -6,6 +6,7 @@ import re
 from typing import Tuple, List, Dict, Set, Union
 from xmlrpc.client import boolean
 from clang.cindex import Cursor, Type
+from fastapi import File
 from more_itertools import peekable
 from parse_cpp_header import parse_header, Param, Scope, ScopeDoc
 
@@ -15,6 +16,7 @@ _functioncall_readability_threshold = 2 # Method formatting: if function argumen
 copyright_txt = ''
 imports_txt = ''
 includes_txt = ''
+java_auto_overloads = {}
 
 # Mapping from canonical type to alias, e.g 'Foo::Bar::IntVec<4>' -> 'Foo::Bar::IntVector4'
 g_canonical_to_alias: Dict[str, str] = {}
@@ -58,7 +60,6 @@ _enumset_types = [
     "OpenVDS::VolumeDataLayoutDescriptor::Options",
     "OpenVDS::VolumeDataChannelDescriptor::Flags",
 ]
-
 
 _prefixes = [ "OpenVDS" ]
 
@@ -1410,6 +1411,17 @@ def arglist_substitute_template_args(arglist: List[Param], template_args: List[s
     else:
         return arglist
 
+def create_automatic_overloads(function_name: str, function_signature: str, function_docstring: str, methods: File) -> None:
+    for pattern, generator in java_auto_overloads.items():
+        if re.match(pattern, function_signature):
+            function_return_type = re.match(f'.* (\w+) {function_name}\(', function_signature)[1]
+            arglist = re.match('.*\((.*)\)', function_signature)[1].split(', ')
+            function_args = [ (arg.split(' ')[0], arg.split(' ')[1]) for arg in arglist ]
+            overload = generator(function_name, function_return_type, function_args)
+            if overload:
+                print(overload, file=methods)
+            return
+
 def create_defaulted_overloads(overload_functions, overload_default_args, function_signature, function_docstring, methods):
     if not function_signature in overload_functions:
         return
@@ -1626,6 +1638,7 @@ def create_java_class(scope: Scope, template: str, override_name: str = '', temp
                             if not is_static_method:
                                 has_instance_methods = True
                             create_defaulted_overloads(overload_functions, overload_default_args, overload_signature, function_docstring, methods)
+                            create_automatic_overloads(function_name, overload_signature, function_docstring, methods)
                         
             except NotImplementedError as e:
                 print(f'\n    ///AUTOGEN-FAIL: {child}', file=methods)
@@ -2008,6 +2021,43 @@ raii_classes = [
     'VolumeDataRequest$',
     'VolumeData[2-4]D\w*Accessor\w*$',
 ]
+
+def _create_vdserror_overload(function_name: str, function_return_type: str, function_args: List[Tuple[str, str]]) -> str:
+    callargs = ', '.join([ n for t, n in function_args])
+    lastitem = function_args.pop()
+    arglist = ', '.join([ t+' '+n for t, n in function_args])
+    overload = f"""
+    public static {function_return_type} {function_name}({arglist}) throws java.io.IOException {{
+        VDSError error = new VDSError();
+        {function_return_type} result = {function_name}({callargs});
+        if (error.getCode() != 0) {{
+            throw new java.io.IOException(error.getString());
+        }}
+        return result;
+    }}
+    """
+    return overload
+
+def _create_vdserror_overload_void(function_name: str, function_return_type: str, function_args: List[Tuple[str, str]]) -> str:
+    callargs = ', '.join([ n for t, n in function_args])
+    lastitem = function_args.pop()
+    arglist = ', '.join([ t+' '+n for t, n in function_args])
+    overload = f"""
+    public static void {function_name}({arglist}) throws java.io.IOException {{
+        VDSError error = new VDSError();
+        {function_name}({callargs});
+        if (error.getCode() != 0) {{
+            throw new java.io.IOException(error.getString());
+        }}
+    }}
+    """
+    return overload
+
+# create overloads for methods matching the following patterns:
+java_auto_overloads = {
+    '.*VDS (open|create).*\(.*, VDSError error\)': _create_vdserror_overload,
+    '.*void (close|retryableClose)\(.*, VDSError error\)': _create_vdserror_overload_void,
+}
 
 exclude_classes = [
     'MetadataKeyRange',

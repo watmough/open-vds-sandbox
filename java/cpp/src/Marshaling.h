@@ -471,6 +471,8 @@ struct CPPJNIObjectContext
   }
 };
 
+void CPPJNI_onVDSError(OpenVDS::VDSError const& error);
+
 template<typename T, bool IS_DESTRUCTIBLE = true>
 struct Destroyer
 {
@@ -489,7 +491,12 @@ struct Destroyer<OpenVDS::VDS, true>
   static void 
   destroy(OpenVDS::VDS* instance) 
   { 
-    OpenVDS::Close(instance); 
+    OpenVDS::VDSError error;
+    OpenVDS::Close(instance, error); 
+    if (error.code) 
+    {
+      CPPJNI_onVDSError(error);
+    }
   }
 };
 

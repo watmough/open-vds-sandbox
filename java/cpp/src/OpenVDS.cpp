@@ -3151,19 +3151,6 @@ JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_OpenVDS_GetCompressionTolera
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_OpenVDS_CloseImpl
-  (JNIEnv * env, jclass cls, jlong handle)
-{
-  JNIEnvGuard
-    envGuard(env);
-
-  CPPJNI_TRY
-  {
-    OpenVDS::Close(CPPJNI_cast<OpenVDS::VDS>(handle));
-  }
-  CPPJNI_CATCH
-}
-
-JNIEXPORT void JNICALL Java_org_opengroup_openvds_OpenVDS_Close2Impl
   (JNIEnv * env, jclass cls, jlong handle, jlong error)
 {
   JNIEnvGuard
@@ -3177,19 +3164,6 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_OpenVDS_Close2Impl
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_OpenVDS_RetryableCloseImpl
-  (JNIEnv * env, jclass cls, jlong handle)
-{
-  JNIEnvGuard
-    envGuard(env);
-
-  CPPJNI_TRY
-  {
-    OpenVDS::RetryableClose(CPPJNI_cast<OpenVDS::VDS>(handle));
-  }
-  CPPJNI_CATCH
-}
-
-JNIEXPORT void JNICALL Java_org_opengroup_openvds_OpenVDS_RetryableClose2Impl
   (JNIEnv * env, jclass cls, jlong handle, jlong error)
 {
   JNIEnvGuard
