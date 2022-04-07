@@ -56,6 +56,14 @@ public class ByteBufferBackedObject {
 	}
 	
 	protected void createByteBuffer(int capacity) {
-		this.managedBuffer = new ManagedBuffer(ByteBuffer.allocateDirect(capacity).order(ByteOrder.nativeOrder()), 0);
+		this.managedBuffer = new ManagedBuffer(capacity);
+	}
+
+	protected void close() {
+		if (managedBuffer != null) {
+			ManagedBuffer b = managedBuffer;
+			managedBuffer = null;
+			b.close();
+		}
 	}
 }

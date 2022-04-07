@@ -17,9 +17,10 @@
 package org.opengroup.openvds;
 import java.nio.*;
 
-public class NDPosArray extends ByteBufferBackedObject implements PODArray {
+public class NDPosArray extends ByteBufferBackedObject implements PODArray, AutoCloseable {
 
     private int size;
+    private boolean readOnly;
 
     public NDPosArray(int size) {
         this.createByteBuffer(6 * Float.BYTES * size);
@@ -27,12 +28,35 @@ public class NDPosArray extends ByteBufferBackedObject implements PODArray {
         this.readOnly = false;
     }
 
-    private boolean readOnly;
-
     public NDPosArray(ByteBuffer bytebuffer, int size, boolean readOnly) {
+        ManagedBase.requireNonNull(bytebuffer, "'bytebuffer' may not be null");
+        if (!bytebuffer.isDirect()) {
+            throw new IllegalArgumentException("'bytebuffer' must be direct.");
+        }
+        if (bytebuffer.capacity() != size * VolumeDataLayout.Dimensionality_Max * Float.BYTES) {
+            throw new IllegalArgumentException("'bytebuffer' capacity does not match 'size' parameter.");
+        }
         this.setByteBuffer(bytebuffer, 0);
         this.size = size;
         this.readOnly = readOnly;
+    }
+
+    public NDPosArray(float[] floats) {
+        ManagedBase.requireNonNull(floats, "'floats' may not be null.");
+        if (floats.length % VolumeDataLayout.Dimensionality_Max != 0) {
+            throw new IllegalArgumentException("'floats' length is not a multiple of VolumeDataLayout.Dimensionality_Max.");
+        }
+        this.createByteBuffer(floats.length * Float.BYTES);
+        this.size = floats.length / VolumeDataLayout.Dimensionality_Max;
+        FloatBuffer buf = this.getByteBuffer().asFloatBuffer();
+        for (float f : floats) {
+            buf.put(f);
+        }
+    }
+
+    @Override
+    public void close() {
+        super.close();
     }
 
     public ByteBuffer getByteBuffer() {
