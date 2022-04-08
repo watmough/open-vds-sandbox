@@ -40,6 +40,9 @@ def print_callstack(exc):
 def capfirst(value: str) -> str:
     return value[0].upper() + value[1:]
 
+def remove_empty_lines(text: str) -> str:
+    return '\n'.join([l for l in text.splitlines() if l.strip()])
+
 _ignore_types = [
     "OpenVDS::M4", # Should not even be there
     "OpenVDS::VolumeDataPage::Error", # SteinFIXME add this
@@ -2024,39 +2027,31 @@ raii_classes = [
 
 def _create_vdserror_overload(function_name: str, function_return_type: str, function_args: List[Tuple[str, str]]) -> str:
     callargs = ', '.join([ n for t, n in function_args])
+    assert callargs.endswith(', error')
     lastitem = function_args.pop()
     arglist = ', '.join([ t+' '+n for t, n in function_args])
+    if function_return_type == 'void':
+        get_result = ''
+        return_result = ''
+    else:
+        get_result = f'{function_return_type} result = '
+        return_result = 'return result;'
     overload = f"""
     public static {function_return_type} {function_name}({arglist}) throws java.io.IOException {{
         VDSError error = new VDSError();
-        {function_return_type} result = {function_name}({callargs});
+        {get_result}{function_name}({callargs});
         if (error.getCode() != 0) {{
             throw new java.io.IOException(error.getString());
         }}
-        return result;
+        {return_result}
     }}
     """
-    return overload
-
-def _create_vdserror_overload_void(function_name: str, function_return_type: str, function_args: List[Tuple[str, str]]) -> str:
-    callargs = ', '.join([ n for t, n in function_args])
-    lastitem = function_args.pop()
-    arglist = ', '.join([ t+' '+n for t, n in function_args])
-    overload = f"""
-    public static void {function_name}({arglist}) throws java.io.IOException {{
-        VDSError error = new VDSError();
-        {function_name}({callargs});
-        if (error.getCode() != 0) {{
-            throw new java.io.IOException(error.getString());
-        }}
-    }}
-    """
-    return overload
+    return remove_empty_lines(overload)
 
 # create overloads for methods matching the following patterns:
 java_auto_overloads = {
     '.*VDS (open|create).*\(.*, VDSError error\)': _create_vdserror_overload,
-    '.*void (close|retryableClose)\(.*, VDSError error\)': _create_vdserror_overload_void,
+    '.*void (close|retryableClose)\(.*, VDSError error\)': _create_vdserror_overload,
 }
 
 exclude_classes = [
