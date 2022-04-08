@@ -37,3 +37,17 @@ add_test(NAME "python.pytests.pytests"
   )
 
 add_subdirectory(binding)
+
+file(READ "pytest.ini.in" PYTEST_INI_IN)
+string(CONFIGURE "${PYTEST_INI_IN}" PYTEST_INI_IN)
+file (GENERATE
+    OUTPUT "$<CONFIG>/pytest.ini"
+    CONTENT "${PYTEST_INI_IN}"
+    TARGET openvds_python_test
+)
+
+add_custom_command(COMMAND ${CMAKE_COMMAND} "-E" "copy_if_different" "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/pytest.ini" "${PROJECT_SOURCE_DIR}"
+                   DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/pytest.ini.in"
+                   OUTPUT "${PROJECT_SOURCE_DIR}/pytest.ini"
+                   COMMENT "Copy config specific pytest.ini to root folder")
+add_custom_target("copy_pytest.ini" ALL DEPENDS ${PROJECT_SOURCE_DIR}/pytest.ini)

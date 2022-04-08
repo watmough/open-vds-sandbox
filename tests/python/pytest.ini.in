@@ -1,0 +1,8 @@
+[pytest]
+testpaths = tests/python/pytests
+#pythonpath seems to be ignored by Visual Studio Test Explorer, you need to add "SearchPaths": [ "${cmake.buildRoot}\\python\\openvds\\${cmake.configurationType}", "${cmake.buildRoot}\\tests\\python\\binding\\openvds_test\\${cmake.configurationType}", "tests/python"] in .vs/PythonSettings.json
+pythonpath= tests/python
+            $<TARGET_FILE_DIR:core>/..
+            $<TARGET_FILE_DIR:openvds_python_test>/..
+            ${CMAKE_CURRENT_BINARY_DIR}
+xfail_strict = True
