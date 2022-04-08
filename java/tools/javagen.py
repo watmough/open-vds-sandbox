@@ -1,13 +1,15 @@
+
 import sys
 import io
 import os
 import traceback
 import re
-from typing import Tuple, List, Dict, Set, Union
+from typing import Tuple, List, Dict, Set, Union, overload
 from xmlrpc.client import boolean
 from clang.cindex import Cursor, Type
 from fastapi import File
 from more_itertools import peekable
+from rsa import sign
 from parse_cpp_header import parse_header, Param, Scope, ScopeDoc
 
 _print_exception_call_stacks = False # For debugging
@@ -1414,18 +1416,31 @@ def arglist_substitute_template_args(arglist: List[Param], template_args: List[s
     else:
         return arglist
 
-def create_automatic_overloads(function_name: str, function_signature: str, function_docstring: str, methods: File) -> None:
+def get_docstring_and_body(function: str) -> Tuple[str, str]:
+    if '/**' in function:
+        raise NotImplementedError('Handle docstring in overload generation')
+    return ('', function)
+
+def create_automatic_overloads(function_signature: str, function_docstring: str, overloads_created: List[str], methods: File) -> None:
+    function_name = (re.match('.* (\w+)\(', function_signature) or re.match('(\w+)\(', function_signature))[1]
     for pattern, generator in java_auto_overloads.items():
         if re.match(pattern, function_signature):
-            function_return_type = re.match(f'.* (\w+) {function_name}\(', function_signature)[1]
+            function_return_type = (re.match(f'(.*) {function_name}\(', function_signature) or (['', 'void']))[1]
+            function_static = function_return_type.startswith('static ')
+            function_return_type = function_return_type.replace('static ', '')
             arglist = re.match('.*\((.*)\)', function_signature)[1].split(', ')
-            function_args = [ (arg.split(' ')[0], arg.split(' ')[1]) for arg in arglist ]
-            overload = generator(function_name, function_return_type, function_args)
+            function_args = { arg.split(' ')[1]: arg.split(' ')[0] for arg in arglist }
+            overload = generator(function_name, function_static, function_return_type, function_args)
             if overload:
-                print(overload, file=methods)
+                doc, function = get_docstring_and_body(overload)
+                function = remove_empty_lines(function)
+                signature = function.splitlines()[0].replace('public ', '').split(')')[0].strip() + ')'
+                if signature not in overloads_created:
+                    print(function, file=methods)
+                    overloads_created.append(signature)
             return
 
-def create_defaulted_overloads(overload_functions, overload_default_args, function_signature, function_docstring, methods):
+def create_defaulted_overloads(overload_functions: List[str], overload_default_args: List[Dict[str, str]], function_signature: str, function_docstring: str, overloads_created: List[str], methods: File):
     if not function_signature in overload_functions:
         return
     for i in range(0, len(overload_functions)):
@@ -1448,7 +1463,6 @@ def create_defaulted_overloads(overload_functions, overload_default_args, functi
                 if keep_line:
                     mod_docstring.append(docstring_line)
             mod_docstring = '\n'.join(mod_docstring)
-            print(f'\n{mod_docstring}', file=methods)
             # Get function signature without defaulted arg
             function_sig = overload_functions[i]
             function_sig_arg_string = function_sig[function_sig.find('(')+1:function_sig.find(')')]
@@ -1465,6 +1479,9 @@ def create_defaulted_overloads(overload_functions, overload_default_args, functi
                 function_sig_arg_tokens.pop(token_index)
             mod_function_sig_arg_string = ','.join(function_sig_arg_tokens)
             function_sig = function_sig.replace(function_sig_arg_string, mod_function_sig_arg_string)
+            if function_sig in overloads_created:
+                return
+            print(f'\n{mod_docstring}', file=methods)
             # Get function call with defaulted arg set
             function_call = overload_functions[i]
             function_call_arg_string = function_call[function_call.find('(')+1:function_call.find(')')]
@@ -1490,6 +1507,7 @@ def create_defaulted_overloads(overload_functions, overload_default_args, functi
             function    =  f'    public {function_sig} {{\n'
             function    += f'        {ret}{function_call};\n'
             function    += f'    }}'
+            overloads_created.append(function_sig)
             print(f'\n{function}', file=methods)
 
 def is_interface_class(typename: str) -> boolean:
@@ -1640,9 +1658,8 @@ def create_java_class(scope: Scope, template: str, override_name: str = '', temp
                                     print(property_setter, file=methods)
                             if not is_static_method:
                                 has_instance_methods = True
-                            create_defaulted_overloads(overload_functions, overload_default_args, overload_signature, function_docstring, methods)
-                            create_automatic_overloads(function_name, overload_signature, function_docstring, methods)
-                        
+                            create_defaulted_overloads(overload_functions, overload_default_args, overload_signature, function_docstring, overloads_created, methods)
+                            create_automatic_overloads(overload_signature, function_docstring, overloads_created, methods)
             except NotImplementedError as e:
                 print(f'\n    ///AUTOGEN-FAIL: {child}', file=methods)
                 print(f'\nJava: While parsing {child}, the following exception occurred:', file=sys.stderr)
@@ -1657,7 +1674,12 @@ def create_java_class(scope: Scope, template: str, override_name: str = '', temp
                 pass
     extra_overloadable_functions, extra_overloadable_function_docstrings, template = get_overloadable_functions_from_template(template)
     for function, docstring in zip(extra_overloadable_functions, extra_overloadable_function_docstrings):
-        create_defaulted_overloads(overload_functions, overload_default_args, function, docstring, methods)
+        create_defaulted_overloads(overload_functions, overload_default_args, function, docstring, overloads_created, methods)
+        if 'requestVolumeSamples' in function:
+            debug = 0
+    for overload_signature in list(overloads_created):
+        function_docstring = '' # FIXME Keep overloads/docstrings in a dict?
+        create_automatic_overloads(overload_signature, function_docstring, overloads_created, methods)
     class_implements_interfaces = []   
     _bases = []
     for b, t in bases:
@@ -2025,19 +2047,16 @@ raii_classes = [
     'VolumeData[2-4]D\w*Accessor\w*$',
 ]
 
-def _create_vdserror_overload(function_name: str, function_return_type: str, function_args: List[Tuple[str, str]]) -> str:
-    callargs = ', '.join([ n for t, n in function_args])
+def _create_vdserror_overload(function_name: str, function_static: bool, function_return_type: str, function_args: Dict[str, str]) -> str:
+    assert function_static
+    callargs = ', '.join([ n for n in function_args])
     assert callargs.endswith(', error')
-    lastitem = function_args.pop()
-    arglist = ', '.join([ t+' '+n for t, n in function_args])
-    if function_return_type == 'void':
-        get_result = ''
-        return_result = ''
-    else:
-        get_result = f'{function_return_type} result = '
-        return_result = 'return result;'
+    function_args.pop('error')
+    arglist = ', '.join([ t+' '+n for n, t in function_args.items()])
+    get_result = f'{function_return_type} result = ' if not function_return_type == 'void' else ''
+    return_result = 'return result;' if not function_return_type == 'void' else ''
     overload = f"""
-    public static {function_return_type} {function_name}({arglist}) throws java.io.IOException {{
+    public {'static' if function_static else ''} {function_return_type} {function_name}({arglist}) throws java.io.IOException {{
         VDSError error = new VDSError();
         {get_result}{function_name}({callargs});
         if (error.getCode() != 0) {{
@@ -2046,10 +2065,28 @@ def _create_vdserror_overload(function_name: str, function_return_type: str, fun
         {return_result}
     }}
     """
-    return remove_empty_lines(overload)
+    return overload
+
+def _create_ndposarray_overload(function_name: str, function_static: bool, function_return_type: str, function_args: Dict[str, str]) -> str:
+    ndposarray_name = ''
+    for n, t in function_args.items():
+        if t == 'NDPosArray':
+            function_args[n] = 'float[]'
+            ndposarray_name = n
+            break
+    assert ndposarray_name
+    arglist = ', '.join([ f'{t} {n}' for n, t in function_args.items()])
+    callargs = ', '.join([ f'new NDPosArray({n})' if n==ndposarray_name else n for n in function_args])
+    overload = f"""
+    public {'static' if function_static else ''} {function_return_type} {function_name}({arglist}) {{
+        return {function_name}({callargs});
+    }}
+    """
+    return overload
 
 # create overloads for methods matching the following patterns:
 java_auto_overloads = {
+    '.*NDPosArray samplePositions.*': _create_ndposarray_overload,
     '.*VDS (open|create).*\(.*, VDSError error\)': _create_vdserror_overload,
     '.*void (close|retryableClose)\(.*, VDSError error\)': _create_vdserror_overload,
 }
@@ -2083,7 +2120,7 @@ header_list = [
     'ValueConversion.h',
     'VolumeData.h',
     'VolumeDataAccess.h',
-    'VolumeDataAccessManager.h',
+   'VolumeDataAccessManager.h',
     'VolumeDataAxisDescriptor.h',
     'VolumeDataChannelDescriptor.h',
     'VolumeDataLayout.h',

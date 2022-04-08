@@ -2210,6 +2210,12 @@ of the number of chunks in some of the dimensions. Do not change this from the d
     public VolumeDataRequestFloat requestVolumeTraces(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, NDPosArray tracePositions, InterpolationMethod interpolationMethod, int traceDimension) {
         return requestVolumeTraces(buffer, dimensionsND, LOD, channel, tracePositions, interpolationMethod, traceDimension, /*replacementNoValue=*/null);
     }
+    public  VolumeDataRequestFloat requestVolumeSamples(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, float[] samplePositions, InterpolationMethod interpolationMethod) {
+        return requestVolumeSamples(buffer, dimensionsND, LOD, channel, new NDPosArray(samplePositions), interpolationMethod);
+    }
+    public  VolumeDataRequestFloat requestVolumeSamples(DimensionsND dimensionsND, int LOD, int channel, float[] samplePositions, InterpolationMethod interpolationMethod) {
+        return requestVolumeSamples(dimensionsND, LOD, channel, new NDPosArray(samplePositions), interpolationMethod);
+    }
 
     VolumeDataAccessManager(long nativeobject) {
         super(nativeobject);
