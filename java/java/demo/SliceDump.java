@@ -224,9 +224,8 @@ public class SliceDump {
                 System.out.println("Request samples from VolumeDataAccessManager...");
 
                 Instant start = Instant.now();
-                try (NDPosArray samplePositions = new NDPosArray(samples);
-                     VolumeDataRequestFloat request = accessManager.requestVolumeSamples(DimensionsND.Dimensions_012, 0, 0, samplePositions, InterpolationMethod.Linear)) {
-
+                try (VolumeDataRequestFloat request = accessManager.requestVolumeSamples(DimensionsND.Dimensions_012, 0, 0, samples, InterpolationMethod.Linear)) {
+                    
                     System.out.println("Wait for request completion...");
                     float previousProgress = -1;
                     while (!request.waitForCompletion(1000)) {
