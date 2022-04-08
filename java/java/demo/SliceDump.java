@@ -252,12 +252,6 @@ public class SliceDump {
                     writeBitmap(outFileName, layout, data, parameters.outputWidth, parameters.outputHeight);
                     System.out.println("Picture is written to file: " + outFileName);
                 }
-
-                // STEINFIXME!!
-                // Test of finalization. Normally manual call of release() is not needed:
-                // it is called from JniPointer.finalize()
-                System.out.println("Release objects...");
-                generator.close();
                 System.out.println("Finished");
             }
         }
