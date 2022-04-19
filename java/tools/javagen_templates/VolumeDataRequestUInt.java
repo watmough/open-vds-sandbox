@@ -14,4 +14,15 @@
         return getBuffer().asIntBuffer();
     }}
 
+	/**
+	 * Copy buffer data to an array.
+	 *
+	 * @return An array containing the request buffer data.
+	 */
+	public int[] toArray() {{
+		java.nio.IntBuffer buffer = getIntBuffer();
+		int[] data = new int[buffer.capacity()];
+		buffer.get(data);
+		return data;
+	}}
 }}

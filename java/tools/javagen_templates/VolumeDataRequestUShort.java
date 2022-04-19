@@ -14,4 +14,15 @@
         return getBuffer().asShortBuffer();
     }}
 
+	/**
+	 * Copy buffer data to an array.
+	 *
+	 * @return An array containing the request buffer data.
+	 */
+	public short[] toArray() {{
+		java.nio.ShortBuffer buffer = getShortBuffer();
+		short[] data = new short[buffer.capacity()];
+		buffer.get(data);
+		return data;
+	}}
 }}

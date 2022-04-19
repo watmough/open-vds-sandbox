@@ -10,5 +10,16 @@
     public java.nio.DoubleBuffer getDoubleBuffer() {{
         return getBuffer().asDoubleBuffer();
     }}
-
+	
+	/**
+	 * Copy buffer data to an array.
+	 *
+	 * @return An array containing the request buffer data.
+	 */
+	public double[] toArray() {{
+		java.nio.DoubleBuffer buffer = getDoubleBuffer();
+		double[] data = new double[buffer.capacity()];
+		buffer.get(data);
+		return data;
+	}}
 }}

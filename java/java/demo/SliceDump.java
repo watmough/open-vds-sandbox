@@ -225,7 +225,6 @@ public class SliceDump {
 
                 Instant start = Instant.now();
                 try (VolumeDataRequestFloat request = accessManager.requestVolumeSamples(DimensionsND.Dimensions_012, 0, 0, samples, InterpolationMethod.Linear)) {
-                    
                     System.out.println("Wait for request completion...");
                     float previousProgress = -1;
                     while (!request.waitForCompletion(1000)) {
@@ -245,9 +244,7 @@ public class SliceDump {
 
                     System.out.println("Create bitmap " + parameters.outputWidth + "x" + parameters.outputHeight + " from samples...");
                     String outFileName = parameters.outputFilePath;
-                    FloatBuffer floatBuffer = request.getFloatBuffer();
-                    float[] data = new float[floatBuffer.capacity()];
-                    floatBuffer.get(data);
+                    float[] data = request.toArray();
                     writeBitmap(outFileName, layout, data, parameters.outputWidth, parameters.outputHeight);
                     System.out.println("Picture is written to file: " + outFileName);
                 }

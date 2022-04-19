@@ -14,4 +14,15 @@
         return getBuffer().asLongBuffer();
     }}
 
+	/**
+	 * Copy buffer data to an array.
+	 *
+	 * @return An array containing the request buffer data.
+	 */
+	public long[] toArray() {{
+		java.nio.LongBuffer buffer = getLongBuffer();
+		long[] data = new long[buffer.capacity()];
+		buffer.get(data);
+		return data;
+	}}
 }}
