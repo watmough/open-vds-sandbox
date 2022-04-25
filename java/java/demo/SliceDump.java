@@ -183,7 +183,7 @@ public class SliceDump {
     static void process(String[] args) throws Exception {
         SliceDumpParameters parameters = parseParameters(args);
 
-        System.out.println("Library: " + OpenVDS.getOpenVDSName());
+        System.out.println("Library: " + OpenVDS.getOpenVDSName() + " v" + OpenVDS.getOpenVDSVersion() + " rev. " + OpenVDS.getOpenVDSRevision());
 
         try (VDS generator = open(parameters)) {
 
