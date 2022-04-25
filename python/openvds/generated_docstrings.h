@@ -5089,6 +5089,8 @@ static const char *__doc_OpenVDS_VolumeDataPage_Error_message = R"doc()doc";
 
 static const char *__doc_OpenVDS_VolumeDataPage_GetBuffer = R"doc()doc";
 
+static const char *__doc_OpenVDS_VolumeDataPage_GetBuffer_2 = R"doc()doc";
+
 static const char *__doc_OpenVDS_VolumeDataPage_GetError = R"doc()doc";
 
 static const char *__doc_OpenVDS_VolumeDataPage_GetMinMax = R"doc()doc";
@@ -5098,6 +5100,8 @@ static const char *__doc_OpenVDS_VolumeDataPage_GetMinMaxExcludingMargin = R"doc
 static const char *__doc_OpenVDS_VolumeDataPage_GetVolumeDataPageAccessor = R"doc()doc";
 
 static const char *__doc_OpenVDS_VolumeDataPage_GetWritableBuffer = R"doc()doc";
+
+static const char *__doc_OpenVDS_VolumeDataPage_GetWritableBuffer_2 = R"doc()doc";
 
 static const char *__doc_OpenVDS_VolumeDataPage_Release = R"doc()doc";
 

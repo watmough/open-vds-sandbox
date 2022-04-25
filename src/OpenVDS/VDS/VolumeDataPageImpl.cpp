@@ -106,6 +106,7 @@ VolumeDataPageImpl::VolumeDataPageImpl(VolumeDataPageAccessorImpl* volumeDataPag
 {
   for (int32_t iDimension = 0; iDimension < Dimensionality_Max; iDimension++)
   {
+    m_sizeND[iDimension] = 0;
     m_pitchND[iDimension] = 0;
     m_writtenMin[iDimension] = 0;
     m_writtenMax[iDimension] = 0;
@@ -164,6 +165,7 @@ void VolumeDataPageImpl::SetBufferData(const DataBlock &dataBlock, DimensionGrou
   //assert(m_volumeDataPageAccessor->m_pageListMutex.isLockedByCurrentThread());
   m_dataBlock = dataBlock;
 
+  memset(m_sizeND, 0, sizeof(m_sizeND));
   memset(m_pitchND, 0, sizeof(m_pitchND));
 
   const int chunkDimensionality =  DimensionGroupUtil::GetDimensionality(chunkDimensionGroup);
@@ -173,6 +175,8 @@ void VolumeDataPageImpl::SetBufferData(const DataBlock &dataBlock, DimensionGrou
     int dimension = DimensionGroupUtil::GetDimension(chunkDimensionGroup, chunkDimension);
 
     assert(dimension >= 0 && dimension < Dimensionality_Max);
+    m_sizeND[dimension] = dataBlock.Size[chunkDimension];
+
     if(is1Bit && chunkDimension > 0)
     {
       // Convert pitch to bitpitch for 1-bit data
@@ -197,12 +201,13 @@ void VolumeDataPageImpl::WriteBack(VolumeDataLayer const* volumeDataLayer, std::
   layout->CompletePendingWriteChunkRequests(16);
 }
 
-void* VolumeDataPageImpl::GetBufferInternal(int(&pitchND)[Dimensionality_Max], bool isReadWrite)
+void* VolumeDataPageImpl::GetBufferInternal(int(&sizeND)[Dimensionality_Max], int(&pitchND)[Dimensionality_Max], bool isReadWrite)
 {
   //assert(m_volumeDataPageAccessor->m_pageListMutex.isLockedByCurrentThread());
 
   for(int32_t iDimension = 0; iDimension < Dimensionality_Max; iDimension++)
   {
+    sizeND[iDimension] = m_sizeND[iDimension];
     pitchND[iDimension] = m_pitchND[iDimension];
   }
 
@@ -278,12 +283,14 @@ void VolumeDataPageImpl::CopyMargin(VolumeDataPageImpl* targetPage)
     overlapSize[iDimension] = overlapMax[iDimension] - overlapMin[iDimension];
   }
 
+  int32_t sourceSize[Dimensionality_Max];
   int32_t sourcePitch[Dimensionality_Max];
+  int32_t targetSize[Dimensionality_Max];
   int32_t targetPitch[Dimensionality_Max];
 
-  const void * sourceBuffer = GetBufferInternal(sourcePitch, false);
+  const void * sourceBuffer = GetBufferInternal(sourceSize, sourcePitch, false);
 
-  void *targetBuffer = static_cast<VolumeDataPageImpl*>(targetPage)->GetBufferInternal(targetPitch, true);
+  void *targetBuffer = static_cast<VolumeDataPageImpl*>(targetPage)->GetBufferInternal(targetSize, targetPitch, true);
 
   int32_t iSourceIndex = 0;
   int32_t iTargetIndex = 0;
@@ -367,13 +374,13 @@ VolumeDataPage::Error VolumeDataPageImpl::GetError() const
 {
   return { m_error.string.c_str(), m_error.code };
 }
-const void* VolumeDataPageImpl::GetBuffer(int(&pitch)[Dimensionality_Max])
+const void* VolumeDataPageImpl::GetBuffer(int(&size)[Dimensionality_Max], int(&pitch)[Dimensionality_Max])
 {
   std::unique_lock<std::mutex>  pageListMutexLock(const_cast<VolumeDataPageAccessorImpl *>(m_volumeDataPageAccessor)->m_pagesMutex);
 
-  return GetBufferInternal(pitch, m_volumeDataPageAccessor->IsReadWrite());
+  return GetBufferInternal(size, pitch, m_volumeDataPageAccessor->IsReadWrite());
 }
-void* VolumeDataPageImpl::GetWritableBuffer(int(&pitch)[Dimensionality_Max])
+void* VolumeDataPageImpl::GetWritableBuffer(int(&size)[Dimensionality_Max], int(&pitch)[Dimensionality_Max])
 {
  std::unique_lock<std::mutex>  pageListMutexLock(const_cast<VolumeDataPageAccessorImpl *>(m_volumeDataPageAccessor)->m_pagesMutex);
 
@@ -385,7 +392,7 @@ void* VolumeDataPageImpl::GetWritableBuffer(int(&pitch)[Dimensionality_Max])
   // This will throw if we can't acquire the write lock
   m_volumeDataPageAccessor->AcquireLayerWriteLock();
 
-  return GetBufferInternal(pitch, true);
+  return GetBufferInternal(size, pitch, true);
 }
 void VolumeDataPageImpl::UpdateWrittenRegion(const int(&writtenMin)[Dimensionality_Max], const int(&writtenMax)[Dimensionality_Max])
 {

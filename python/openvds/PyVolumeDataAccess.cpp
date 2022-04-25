@@ -199,15 +199,13 @@ PyVolumeDataAccess::initModule(py::module& m)
   VolumeDataPageAccessor_AccessMode_.value("AccessMode_Create"           , VolumeDataPageAccessor::AccessMode::AccessMode_Create, OPENVDS_DOCSTRING(VolumeDataPageAccessor_AccessMode_AccessMode_Create));
 
 //AUTOGEN-END
-// IMPLEMENTED :     VolumeDataPage_.def("getBuffer"                   , [](VolumeDataPage* self, py::array_t<int,py::array::c_style>& pitch) { return self->GetBuffer(PyArrayAdapter<int, 6, true>::getArrayChecked(pitch)); }, py::arg("pitch").none(false), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(VolumeDataPage_GetBuffer));
+// IMPLEMENTED :     VolumeDataPage_.def("getBuffer"                   , [](VolumeDataPage* self, py::array_t<int,py::array::c_style>& shape, py::array_t<int,py::array::c_style>& pitch) { return self->GetBuffer(PyArrayAdapter<int, 6, true>::getArrayChecked(shape), PyArrayAdapter<int, 6, true>::getArrayChecked(pitch)); }, py::arg("shape").none(false), py::arg("pitch").none(false), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(VolumeDataPage_GetBuffer));
+// IMPLEMENTED :     VolumeDataPage_.def("getBuffer"                   , [](VolumeDataPage* self, py::array_t<int,py::array::c_style>& pitch) { return self->GetBuffer(PyArrayAdapter<int, 6, true>::getArrayChecked(pitch)); }, py::arg("pitch").none(false), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(VolumeDataPage_GetBuffer_2));
      VolumeDataPage_.def("getBuffer"                   , [](VolumeDataPage* self)
        {
-         int voxelMin[VolumeDataLayout::Dimensionality_Max];
-         int voxelMax[VolumeDataLayout::Dimensionality_Max];
-         self->GetMinMax(voxelMin, voxelMax);
-
+         int size[VolumeDataLayout::Dimensionality_Max];
          int pitch[VolumeDataLayout::Dimensionality_Max];
-         const void *buffer = self->GetBuffer(pitch);
+         const void *buffer = self->GetBuffer(size, pitch);
 
          auto channelDescriptor = self->GetVolumeDataPageAccessor().GetChannelDescriptor();
          int itemsize = GetItemSize(channelDescriptor.GetFormat(), channelDescriptor.GetComponents());
@@ -218,22 +216,20 @@ PyVolumeDataAccess::initModule(py::module& m)
          std::vector<int> strides(dimensionality);
          for(int dimension = 0; dimension < dimensionality; dimension++)
          {
-           shape[dimensionality - 1 - dimension] = voxelMax[dimension] - voxelMin[dimension];
+           shape[dimensionality - 1 - dimension] = size[dimension];
            strides[dimensionality - 1 - dimension] = pitch[dimension] * itemsize;
          }
 
          return py::memoryview::from_buffer(buffer, itemsize, format, shape, strides);
        }, OPENVDS_DOCSTRING(VolumeDataPage_GetBuffer));
 
-// IMPLEMENTED :     VolumeDataPage_.def("getWritableBuffer"           , [](VolumeDataPage* self, py::array_t<int,py::array::c_style>& pitch) { return self->GetWritableBuffer(PyArrayAdapter<int, 6, true>::getArrayChecked(pitch)); }, py::arg("pitch").none(false), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(VolumeDataPage_GetWritableBuffer));
+// IMPLEMENTED :     VolumeDataPage_.def("getWritableBuffer"           , [](VolumeDataPage* self, py::array_t<int,py::array::c_style>& shape, py::array_t<int,py::array::c_style>& pitch) { return self->GetWritableBuffer(PyArrayAdapter<int, 6, true>::getArrayChecked(shape), PyArrayAdapter<int, 6, true>::getArrayChecked(pitch)); }, py::arg("shape").none(false), py::arg("pitch").none(false), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(VolumeDataPage_GetWritableBuffer));
+// IMPLEMENTED :     VolumeDataPage_.def("getWritableBuffer"           , [](VolumeDataPage* self, py::array_t<int,py::array::c_style>& pitch) { return self->GetWritableBuffer(PyArrayAdapter<int, 6, true>::getArrayChecked(pitch)); }, py::arg("pitch").none(false), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(VolumeDataPage_GetWritableBuffer_2));
      VolumeDataPage_.def("getWritableBuffer"           , [](VolumeDataPage* self)
        {
-         int voxelMin[VolumeDataLayout::Dimensionality_Max];
-         int voxelMax[VolumeDataLayout::Dimensionality_Max];
-         self->GetMinMax(voxelMin, voxelMax);
-
+         int size[VolumeDataLayout::Dimensionality_Max];
          int pitch[VolumeDataLayout::Dimensionality_Max];
-         void *buffer = self->GetWritableBuffer(pitch);
+         void *buffer = self->GetWritableBuffer(size, pitch);
 
          auto channelDescriptor = self->GetVolumeDataPageAccessor().GetChannelDescriptor();
          int itemsize = GetItemSize(channelDescriptor.GetFormat(), channelDescriptor.GetComponents());
@@ -244,7 +240,7 @@ PyVolumeDataAccess::initModule(py::module& m)
          std::vector<int> strides(dimensionality);
          for(int dimension = 0; dimension < dimensionality; dimension++)
          {
-           shape[dimensionality - 1 - dimension] = voxelMax[dimension] - voxelMin[dimension];
+           shape[dimensionality - 1 - dimension] = size[dimension];
            strides[dimensionality - 1 - dimension] = pitch[dimension] * itemsize;
          }
 

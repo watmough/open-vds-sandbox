@@ -40,6 +40,7 @@ private:
   int64_t m_chunk;
 
   DataBlock m_dataBlock;
+  int32_t m_sizeND[Dimensionality_Max];
   int32_t m_pitchND[Dimensionality_Max];
   std::vector<uint8_t> m_blob;
   uint64_t  m_hash;
@@ -86,7 +87,7 @@ public:
 
   void          SetBufferData(const DataBlock &dataBlock, DimensionGroup chunkDimensionGroup, bool is1Bit, std::vector<uint8_t>&& blob, uint64_t hash);
   void          WriteBack(VolumeDataLayer const *volumeDataLayer, std::unique_lock<std::mutex> &pageListMutexLock);
-  void *        GetBufferInternal(int (&anPitch)[Dimensionality_Max], bool isReadWrite);
+  void *        GetBufferInternal(int(&sizeND)[Dimensionality_Max], int(&pitchND)[Dimensionality_Max], bool isReadWrite);
   void *        GetRawBufferInternal() { return m_blob.data(); }
   bool          IsCopyMarginNeeded(VolumeDataPageImpl *targetPage);
   void          CopyMargin(VolumeDataPageImpl *targetPage);
@@ -109,8 +110,8 @@ public:
   void  GetMinMax(int (&min)[Dimensionality_Max], int (&max)[Dimensionality_Max]) const override;
   void  GetMinMaxExcludingMargin(int (&minExcludingMargin)[Dimensionality_Max], int (&maxExcludingMargin)[Dimensionality_Max]) const override;
   Error GetError() const override;
-  const void *GetBuffer(int (&pitch)[Dimensionality_Max]) override; // Getting the buffer will block if the page is currently being read from the VolumeDataCache
-  void *GetWritableBuffer(int (&pitch)[Dimensionality_Max]) override;
+  const void *GetBuffer(int(&size)[Dimensionality_Max], int (&pitch)[Dimensionality_Max]) override; // Getting the buffer will block if the page is currently being read from the VolumeDataCache
+  void *GetWritableBuffer(int(&size)[Dimensionality_Max], int (&pitch)[Dimensionality_Max]) override;
   void  UpdateWrittenRegion(const int (&writtenMin)[Dimensionality_Max], const int (&writtenMax)[Dimensionality_Max]) override;
   void  Release() override;
 };
