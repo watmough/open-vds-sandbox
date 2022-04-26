@@ -370,9 +370,9 @@ void  VolumeDataPageImpl::GetMinMaxExcludingMargin(int(&minExcludingMargin)[Dime
 {
   m_volumeDataPageAccessor->GetLayer()->GetChunkMinMax(m_chunk, minExcludingMargin, maxExcludingMargin, false);
 }
-VolumeDataPage::Error VolumeDataPageImpl::GetError() const
+ReadErrorException VolumeDataPageImpl::GetError() const
 {
-  return { m_error.string.c_str(), m_error.code };
+  return ReadErrorException(m_error.string.c_str(), m_error.code);
 }
 const void* VolumeDataPageImpl::GetBuffer(int(&size)[Dimensionality_Max], int(&pitch)[Dimensionality_Max])
 {

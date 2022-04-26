@@ -165,10 +165,10 @@ void VolumeDataAccessorBase::ReadPageAtPosition(IntVector4 index, bool enableWri
   }
   else
   {
-    VolumeDataPage::Error
+    ReadErrorException
       error = page->GetError();
 
-    if(error.errorCode == 0)
+    if(error.GetErrorCode() == 0)
     {
       m_currentPage = page;
     }
@@ -177,10 +177,7 @@ void VolumeDataAccessorBase::ReadPageAtPosition(IntVector4 index, bool enableWri
       page->Release();
       m_validRegion = AccessorRegion({0, 0, 0, 0}, {0, 0, 0, 0});
 
-      ReadErrorException
-        exception(error.message, error.errorCode);
-
-      throw exception;
+      throw error;
     }
   }
 

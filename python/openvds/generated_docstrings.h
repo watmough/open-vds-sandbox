@@ -5081,12 +5081,6 @@ static const char *__doc_OpenVDS_VolumeDataPageAccessor_SetMaxPages = R"doc()doc
 
 static const char *__doc_OpenVDS_VolumeDataPageAccessor_VolumeDataPageAccessor = R"doc()doc";
 
-static const char *__doc_OpenVDS_VolumeDataPage_Error = R"doc()doc";
-
-static const char *__doc_OpenVDS_VolumeDataPage_Error_errorCode = R"doc()doc";
-
-static const char *__doc_OpenVDS_VolumeDataPage_Error_message = R"doc()doc";
-
 static const char *__doc_OpenVDS_VolumeDataPage_GetBuffer = R"doc()doc";
 
 static const char *__doc_OpenVDS_VolumeDataPage_GetBuffer_2 = R"doc()doc";

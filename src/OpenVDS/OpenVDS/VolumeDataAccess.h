@@ -118,12 +118,6 @@ public:
 
 class VolumeDataPage
 {
-public:
-  struct Error
-  {
-    const char *message;
-    int         errorCode; 
-  };
 protected:
                 VolumeDataPage() {}
   virtual      ~VolumeDataPage() {}
@@ -132,13 +126,13 @@ public:
                 GetVolumeDataPageAccessor() const = 0;
   virtual void  GetMinMax(int (&min)[Dimensionality_Max], int (&max)[Dimensionality_Max]) const = 0;
   virtual void  GetMinMaxExcludingMargin(int (&minExcludingMargin)[Dimensionality_Max], int (&maxExcludingMargin)[Dimensionality_Max]) const = 0;
-  virtual Error GetError() const = 0;
+  virtual ReadErrorException
+                GetError() const = 0;
   virtual const void *
                 GetBuffer(int(&size)[Dimensionality_Max], int (&pitch)[Dimensionality_Max]) = 0;
   const void   *GetBuffer(int (&pitch)[Dimensionality_Max]) { int size[Dimensionality_Max]; return GetBuffer(size, pitch); }
   virtual void *GetWritableBuffer(int(&size)[Dimensionality_Max], int (&pitch)[Dimensionality_Max]) = 0;
   void         *GetWritableBuffer(int (&pitch)[Dimensionality_Max]) { int size[Dimensionality_Max]; return GetWritableBuffer(size, pitch); }
-
   virtual void  UpdateWrittenRegion(const int (&writtenMin)[Dimensionality_Max], const int (&writtenMax)[Dimensionality_Max]) = 0;
   virtual void  Release() = 0;
 };

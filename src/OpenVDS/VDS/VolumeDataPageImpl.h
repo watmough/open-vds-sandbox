@@ -109,8 +109,10 @@ public:
         GetVolumeDataPageAccessor() const override;
   void  GetMinMax(int (&min)[Dimensionality_Max], int (&max)[Dimensionality_Max]) const override;
   void  GetMinMaxExcludingMargin(int (&minExcludingMargin)[Dimensionality_Max], int (&maxExcludingMargin)[Dimensionality_Max]) const override;
-  Error GetError() const override;
-  const void *GetBuffer(int(&size)[Dimensionality_Max], int (&pitch)[Dimensionality_Max]) override; // Getting the buffer will block if the page is currently being read from the VolumeDataCache
+  ReadErrorException
+        GetError() const override;
+  const void *
+        GetBuffer(int(&size)[Dimensionality_Max], int (&pitch)[Dimensionality_Max]) override;
   void *GetWritableBuffer(int(&size)[Dimensionality_Max], int (&pitch)[Dimensionality_Max]) override;
   void  UpdateWrittenRegion(const int (&writtenMin)[Dimensionality_Max], const int (&writtenMax)[Dimensionality_Max]) override;
   void  Release() override;
