@@ -1,5 +1,8 @@
 ///AUTOGEN-IGNORE: CXX_METHOD GetBuffer const void *(int (&)[6]) FUNCTIONPROTO
 ///AUTOGEN-IGNORE: CXX_METHOD GetWritableBuffer void *(int (&)[6]) FUNCTIONPROTO
+///AUTOGEN-IGNORE: CXX_METHOD GetBuffer const void *(int (&)[6], int (&)[6]) FUNCTIONPROTO
+///AUTOGEN-IGNORE: CXX_METHOD GetWritableBuffer void *(int (&)[6], int (&)[6]) FUNCTIONPROTO
+///AUTOGEN-IGNORE: CXX_METHOD GetError OpenVDS::ReadErrorException () const FUNCTIONPROTO
 
 #ifdef __cplusplus
 }
@@ -7,7 +10,7 @@
 
 template<bool WRITEABLE>
 jobject
-VolumeDataPage_GetWritableBufferImpl(JNIEnv * env, jobject object, jlong native_handle, jintArray outPitch)
+VolumeDataPage_GetWritableBufferImpl(JNIEnv * env, jobject object, jlong native_handle, jintArray outSize, jintArray outPitch)
 {
   using namespace OpenVDS;
 
@@ -18,8 +21,10 @@ VolumeDataPage_GetWritableBufferImpl(JNIEnv * env, jobject object, jlong native_
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataPage>(native_handle);
 
+    int size[VolumeDataLayout::Dimensionality_Max];
     int pitch[VolumeDataLayout::Dimensionality_Max];
-    void *buffer = WRITEABLE ? pInstance->GetWritableBuffer(pitch) : (void*)pInstance->GetBuffer(pitch);
+    void *buffer = WRITEABLE ? pInstance->GetWritableBuffer(size, pitch) : (void*)pInstance->GetBuffer(size, pitch);
+    env->SetIntArrayRegion(outSize, 0, VolumeDataLayout::Dimensionality_Max, (jint*)size);
     env->SetIntArrayRegion(outPitch, 0, VolumeDataLayout::Dimensionality_Max, (jint*)pitch);
 
     auto channelDescriptor = pInstance->GetVolumeDataPageAccessor().GetChannelDescriptor();
@@ -52,9 +57,9 @@ VolumeDataPage_GetWritableBufferImpl(JNIEnv * env, jobject object, jlong native_
     jlong nBufferSize = 1;
     for (int i = 0; i < VolumeDataLayout::Dimensionality_Max; ++i)
     {
-      if (pitch[i] > 0)
+      if (size[i] > 0)
       {
-        nBufferSize *= pitch[i];
+        nBufferSize *= size[i];
       }
     }
     nBufferSize *= itemSize;
@@ -69,13 +74,13 @@ extern "C" {
 #endif
 
 JNIEXPORT jobject JNICALL Java_org_opengroup_openvds_VolumeDataPage_GetWritableBufferImpl
-  (JNIEnv * env, jobject object, jlong native_handle, jintArray outPitch)
+  (JNIEnv * env, jobject object, jlong native_handle, jintArray outSize, jintArray outPitch)
 {
-  return VolumeDataPage_GetWritableBufferImpl<true>(env, object, native_handle, outPitch);
+  return VolumeDataPage_GetWritableBufferImpl<true>(env, object, native_handle, outSize, outPitch);
 }
 
 JNIEXPORT jobject JNICALL Java_org_opengroup_openvds_VolumeDataPage_GetBufferImpl
-  (JNIEnv * env, jobject object, jlong native_handle, jintArray outPitch)
+  (JNIEnv * env, jobject object, jlong native_handle, jintArray outSize, jintArray outPitch)
 {
-  return VolumeDataPage_GetWritableBufferImpl<false>(env, object, native_handle, outPitch);
+  return VolumeDataPage_GetWritableBufferImpl<false>(env, object, native_handle, outSize, outPitch);
 }
