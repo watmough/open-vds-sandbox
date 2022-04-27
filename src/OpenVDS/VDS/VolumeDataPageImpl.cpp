@@ -104,12 +104,12 @@ VolumeDataPageImpl::VolumeDataPageImpl(VolumeDataPageAccessorImpl* volumeDataPag
   , m_jobID(-1)
   , m_chunksCopiedTo(0)
 {
-  for (int32_t iDimension = 0; iDimension < Dimensionality_Max; iDimension++)
+  for (int32_t dimension = 0; dimension < Dimensionality_Max; dimension++)
   {
-    m_sizeND[iDimension] = 0;
-    m_pitchND[iDimension] = 0;
-    m_writtenMin[iDimension] = 0;
-    m_writtenMax[iDimension] = 0;
+    m_sizeND[dimension] = 0;
+    m_pitchND[dimension] = 0;
+    m_writtenMin[dimension] = 0;
+    m_writtenMax[dimension] = 0;
   }
 
   memset(m_copiedToChunkIndexes, 0, sizeof(m_copiedToChunkIndexes));
@@ -165,8 +165,11 @@ void VolumeDataPageImpl::SetBufferData(const DataBlock &dataBlock, DimensionGrou
   //assert(m_volumeDataPageAccessor->m_pageListMutex.isLockedByCurrentThread());
   m_dataBlock = dataBlock;
 
-  memset(m_sizeND, 0, sizeof(m_sizeND));
-  memset(m_pitchND, 0, sizeof(m_pitchND));
+  for (int32_t dimension = 0; dimension < Dimensionality_Max; dimension++)
+  {
+    m_sizeND[dimension] = 1;
+    m_pitchND[dimension] = 0;
+  }
 
   const int chunkDimensionality =  DimensionGroupUtil::GetDimensionality(chunkDimensionGroup);
 
@@ -205,10 +208,10 @@ void* VolumeDataPageImpl::GetBufferInternal(int(&sizeND)[Dimensionality_Max], in
 {
   //assert(m_volumeDataPageAccessor->m_pageListMutex.isLockedByCurrentThread());
 
-  for(int32_t iDimension = 0; iDimension < Dimensionality_Max; iDimension++)
+  for(int32_t dimension = 0; dimension < Dimensionality_Max; dimension++)
   {
-    sizeND[iDimension] = m_sizeND[iDimension];
-    pitchND[iDimension] = m_pitchND[iDimension];
+    sizeND[dimension] = m_sizeND[dimension];
+    pitchND[dimension] = m_pitchND[dimension];
   }
 
   if(isReadWrite)
@@ -233,12 +236,12 @@ bool VolumeDataPageImpl::IsCopyMarginNeeded(VolumeDataPageImpl* targetPage)
   int32_t overlapSize[Dimensionality_Max];
 
   // Check if there is any overlap between the written region and the target page
-  for(int32_t iDimension = 0; iDimension < Dimensionality_Max; iDimension++)
+  for(int32_t dimension = 0; dimension < Dimensionality_Max; dimension++)
   {
-    overlapMin[iDimension] = m_writtenMin[iDimension] >= targetMin[iDimension] ? m_writtenMin[iDimension] : targetMin[iDimension];
-    overlapMax[iDimension] = m_writtenMax[iDimension] <= targetMax[iDimension] ? m_writtenMax[iDimension] : targetMax[iDimension];
-    overlapSize[iDimension] = overlapMax[iDimension] - overlapMin[iDimension];
-    if(overlapSize[iDimension] <= 0)
+    overlapMin[dimension] = m_writtenMin[dimension] >= targetMin[dimension] ? m_writtenMin[dimension] : targetMin[dimension];
+    overlapMax[dimension] = m_writtenMax[dimension] <= targetMax[dimension] ? m_writtenMax[dimension] : targetMax[dimension];
+    overlapSize[dimension] = overlapMax[dimension] - overlapMin[dimension];
+    if(overlapSize[dimension] <= 0)
     {
       return false;
     }
@@ -276,11 +279,11 @@ void VolumeDataPageImpl::CopyMargin(VolumeDataPageImpl* targetPage)
   int32_t overlapMax[Dimensionality_Max];
   int32_t overlapSize[Dimensionality_Max];
 
-  for(int32_t iDimension = 0; iDimension < Dimensionality_Max; iDimension++)
+  for(int32_t dimension = 0; dimension < Dimensionality_Max; dimension++)
   {
-    overlapMin[iDimension] = m_writtenMin[iDimension] >= targetMin[iDimension] ? m_writtenMin[iDimension] : targetMin[iDimension];
-    overlapMax[iDimension] = m_writtenMax[iDimension] <= targetMax[iDimension] ? m_writtenMax[iDimension] : targetMax[iDimension];
-    overlapSize[iDimension] = overlapMax[iDimension] - overlapMin[iDimension];
+    overlapMin[dimension] = m_writtenMin[dimension] >= targetMin[dimension] ? m_writtenMin[dimension] : targetMin[dimension];
+    overlapMax[dimension] = m_writtenMax[dimension] <= targetMax[dimension] ? m_writtenMax[dimension] : targetMax[dimension];
+    overlapSize[dimension] = overlapMax[dimension] - overlapMin[dimension];
   }
 
   int32_t sourceSize[Dimensionality_Max];
@@ -295,10 +298,10 @@ void VolumeDataPageImpl::CopyMargin(VolumeDataPageImpl* targetPage)
   int32_t iSourceIndex = 0;
   int32_t iTargetIndex = 0;
 
-  for(int32_t iDimension = 0; iDimension < Dimensionality_Max; iDimension++)
+  for(int32_t dimension = 0; dimension < Dimensionality_Max; dimension++)
   {
-    iSourceIndex += (overlapMin[iDimension] - sourceMin[iDimension]) * sourcePitch[iDimension];
-    iTargetIndex += (overlapMin[iDimension] - targetMin[iDimension]) * targetPitch[iDimension];
+    iSourceIndex += (overlapMin[dimension] - sourceMin[dimension]) * sourcePitch[dimension];
+    iTargetIndex += (overlapMin[dimension] - targetMin[dimension]) * targetPitch[dimension];
   }
 
   int32_t remappedSourcePitch[4];
@@ -307,9 +310,9 @@ void VolumeDataPageImpl::CopyMargin(VolumeDataPageImpl* targetPage)
 
   for(int32_t iChunkDimension = 0; iChunkDimension < 4; iChunkDimension++)
   {
-    int32_t iDimension = m_volumeDataPageAccessor->GetLayer()->GetChunkDimension(iChunkDimension);
+    int32_t dimension = m_volumeDataPageAccessor->GetLayer()->GetChunkDimension(iChunkDimension);
 
-    if(iDimension == -1)
+    if(dimension == -1)
     {
       remappedSourcePitch[iChunkDimension] = 0;
       remappedTargetPitch[iChunkDimension] = 0;
@@ -317,9 +320,9 @@ void VolumeDataPageImpl::CopyMargin(VolumeDataPageImpl* targetPage)
     }
     else
     {
-      remappedSourcePitch[iChunkDimension] = sourcePitch[iDimension];
-      remappedTargetPitch[iChunkDimension] = targetPitch[iDimension];
-      remappedOverlapSize[iChunkDimension] = overlapSize[iDimension];
+      remappedSourcePitch[iChunkDimension] = sourcePitch[dimension];
+      remappedTargetPitch[iChunkDimension] = targetPitch[dimension];
+      remappedOverlapSize[iChunkDimension] = overlapSize[dimension];
     }
   }
 
@@ -406,18 +409,18 @@ void VolumeDataPageImpl::UpdateWrittenRegion(const int(&writtenMin)[Dimensionali
   // Expand written area
   if(m_writtenMin[0] == 0 && m_writtenMax[0] == 0)
   {
-    for(int32_t iDimension = 0; iDimension < Dimensionality_Max; iDimension++)
+    for(int32_t dimension = 0; dimension < Dimensionality_Max; dimension++)
     {
-      m_writtenMin[iDimension] = writtenMin[iDimension];
-      m_writtenMax[iDimension] = writtenMax[iDimension];
+      m_writtenMin[dimension] = writtenMin[dimension];
+      m_writtenMax[dimension] = writtenMax[dimension];
     }
   }
   else
   {
-    for(int32_t iDimension = 0; iDimension < Dimensionality_Max; iDimension++)
+    for(int32_t dimension = 0; dimension < Dimensionality_Max; dimension++)
     {
-      m_writtenMin[iDimension] = std::min(m_writtenMin[iDimension], writtenMin[iDimension]);
-      m_writtenMax[iDimension] = std::max(m_writtenMax[iDimension], writtenMax[iDimension]);
+      m_writtenMin[dimension] = std::min(m_writtenMin[dimension], writtenMin[dimension]);
+      m_writtenMax[dimension] = std::max(m_writtenMax[dimension], writtenMax[dimension]);
     }
   }
 
