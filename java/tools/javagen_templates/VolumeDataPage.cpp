@@ -26,9 +26,7 @@ VolumeDataPage_GetWritableBufferImpl(JNIEnv * env, jobject object, jlong native_
     void *buffer = WRITEABLE ? pInstance->GetWritableBuffer(size, pitch) : (void*)pInstance->GetBuffer(size, pitch);
     env->SetIntArrayRegion(outSize, 0, VolumeDataLayout::Dimensionality_Max, (jint*)size);
     env->SetIntArrayRegion(outPitch, 0, VolumeDataLayout::Dimensionality_Max, (jint*)pitch);
-
     auto channelDescriptor = pInstance->GetVolumeDataPageAccessor().GetChannelDescriptor();
-
     auto format = channelDescriptor.GetFormat();
     auto components = channelDescriptor.GetComponents();
     int itemSize = 0;
@@ -57,12 +55,19 @@ VolumeDataPage_GetWritableBufferImpl(JNIEnv * env, jobject object, jlong native_
     jlong nBufferSize = 1;
     for (int i = 0; i < VolumeDataLayout::Dimensionality_Max; ++i)
     {
-      if (size[i] > 0)
+      if (pitch[i] > 0)
       {
-        nBufferSize *= size[i];
+        nBufferSize = size[i] * pitch[i];
       }
     }
-    nBufferSize *= itemSize;
+    if (format == OpenVDS::VolumeDataChannelDescriptor::Format::Format_1Bit)
+    {
+      nBufferSize = nBufferSize / 8;
+    }
+    else
+    {
+      nBufferSize *= itemSize;
+    }
     return JNIDirectBuffer::CreateDirectBuffer(buffer, nBufferSize);
   }
   CPPJNI_CATCH

@@ -163,11 +163,12 @@
     </Link>
     <PostBuildEvent>
       <Command>if not exist $(ProjectDir)test_bin mkdir test_bin
-copy $(TargetPath) test_bin\
 set _DEBUG_DIR=$(ProjectDir)..\..\..\out\install\$(Platform)-$(ConfigurationName)\bin\msvc_$(PlatformToolsetVersion)\Debug\
 set _RELEASE_DIR=$(ProjectDir)..\..\..\out\install\$(Platform)-$(ConfigurationName)\bin\msvc_$(PlatformToolsetVersion)\RelWithDebInfo\
 if exist "%_DEBUG_DIR%openvdsd.dll" copy "%_DEBUG_DIR%*.dll" test_bin\
 if exist "%_RELEASE_DIR%openvds.dll" copy "%_RELEASE_DIR%*.dll" test_bin\
+copy $(TargetPath) test_bin\
+
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -190,11 +191,12 @@ if exist "%_RELEASE_DIR%openvds.dll" copy "%_RELEASE_DIR%*.dll" test_bin\
     </Link>
     <PostBuildEvent>
       <Command>if not exist $(ProjectDir)test_bin mkdir test_bin
-copy $(TargetPath) test_bin\
 set _DEBUG_DIR=$(ProjectDir)..\..\..\out\install\$(Platform)-$(ConfigurationName)\bin\msvc_$(PlatformToolsetVersion)\Debug\
 set _RELEASE_DIR=$(ProjectDir)..\..\..\out\install\$(Platform)-$(ConfigurationName)\bin\msvc_$(PlatformToolsetVersion)\RelWithDebInfo\
 if exist "%_DEBUG_DIR%openvdsd.dll" copy "%_DEBUG_DIR%*.dll" test_bin\
 if exist "%_RELEASE_DIR%openvds.dll" copy "%_RELEASE_DIR%*.dll" test_bin\
+copy $(TargetPath) test_bin\
+
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
