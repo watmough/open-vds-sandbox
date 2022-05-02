@@ -120,9 +120,6 @@ public class OpenVdsDemo {
             System.out.println("Picture is written to file: " + outFileName);
         }
 
-        // Test of finalization. Normally manual call of release() is not needed:
-        // it is called from JniPointer.finalize()
-        System.out.println("Release objects...");
         vds.close();
         System.out.println("Finished");
     }
