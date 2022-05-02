@@ -19,14 +19,12 @@ import org.opengroup.openvds.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.Objects;
 
 import static org.opengroup.openvds.DimensionsND.*;
 import static org.opengroup.openvds.VolumeDataPageAccessor.AccessMode.*;
@@ -89,8 +87,8 @@ public class CreateVDS {
             return false;
         }
         if (file.exists()) {
-//            file.delete();
-            System.err.println("VDS File already exists !"); return false;
+            file.delete();
+//            System.err.println("VDS File already exists !"); return false;
         }
         try {
             Integer dimX = Integer.parseInt(args[2]);
@@ -212,68 +210,63 @@ public class CreateVDS {
 
         int lodCount = lodLevels.ordinal();
 
-        int[] localIndex = new int[3];
-        int[] voxelPos = new int[3];
+        System.out.println("\nCreate 3D dimension group (012)");
+        createDimensionGroup(distMax, cycles, midX, midY, midZ, layout, accessManager, channel, lodCount, Dimensions_012);
 
-        int[] chunkSize = new int[Dimensionality_Max];
-        int[] chunkPitch = new int[Dimensionality_Max];
-        int[] chunkMin = new int[Dimensionality_Max];
-        int[] chunkMax = new int[Dimensionality_Max];
+        // Adds slice data : additional layers
+        System.out.println("\nCreate 2D dimension group (01)");
+        createDimensionGroup(distMax, cycles, midX, midY, midZ, layout, accessManager, channel, create2DLODs ? lodCount : 0, Dimensions_01);
 
-        for (int lod = 0 ; lod <= lodCount ; ++lod) {
-            VolumeDataPageAccessor pageAccessor = accessManager.createVolumeDataPageAccessor(
-                  Dimensions_012, // dimension ND
-                  lod, // lod
-                  channel, // channel
-                  100, // max pages
-                  AccessMode_Create); // access mode
+        System.out.println("\nCreate 2D dimension group (02)");
+        createDimensionGroup(distMax, cycles, midX, midY, midZ, layout, accessManager, channel, create2DLODs ? lodCount : 0, Dimensions_02);
 
-            int chunkCount = (int) pageAccessor.getChunkCount();
-            System.out.println("LOD : " + lod + " Chunk count :  " + chunkCount);
-
-            for (int i = 0; i < chunkCount; i++) {
-
-                long time_1 = System.currentTimeMillis();
-
-                VolumeDataPage page = pageAccessor.createPage(i);
-                System.out.print("LOD : " + lod + " / Page " + (i + 1) + " / " + chunkCount);
-
-                page.getMinMax(chunkMin, chunkMax);
-
-                FloatBuffer buffer = page.getWritableBuffer(chunkSize, chunkPitch).asFloatBuffer();
-
-                System.out.print("\tChunk Size [" + chunkSize[0] + ", " + chunkSize[1] + ", " + chunkSize[2] + "]");
-                float[] output = new float[buffer.capacity()];
-
-                System.out.print("\tCoords page : " + chunkMin[0] + "/" + chunkMax[0] + " " + chunkMin[1] + "/" + chunkMax[1] + " " + chunkMin[2] + "/" + chunkMax[2]);
-
-                System.out.print( " Page Buffer Size : " + buffer.capacity() + " ");/// [" + stats.getMin() + "," + stats.getMax() + "]");
-                // dimension of buffer
-                System.out.println(" Size : [" + chunkSize[0] + ", " + chunkSize[1] + ", " + chunkSize[2] + "]");
-                System.out.println(" Pitch : [" + chunkPitch[0] + ", " + chunkPitch[1] + ", " + chunkPitch[2] + "]");
-
-                fillChunk(distMax, cycles, midX, midY, midZ, chunkMin, chunkSize, chunkPitch, lod, output);
-
-                buffer.put(output);
-                page.close();
-            }
-            pageAccessor.commit();
-            accessManager.flushUploadQueue();
-            accessManager.destroyVolumeDataPageAccessor(pageAccessor); // SteinFIXME make it autocloseable
-        }
-
-        // Adds slice data : additional layouts
-        System.out.println("\nCreate 01 Layout");
-        create2DLayout(distMax, cycles, midX, midY, midZ, layout, accessManager, channel, create2DLODs ? lodCount : 0, Dimensions_01);
-
-        System.out.println("\nCreate 02 Layout");
-        create2DLayout(distMax, cycles, midX, midY, midZ, layout, accessManager, channel, create2DLODs ? lodCount : 0, Dimensions_02);
-
-        System.out.println("\nCreate 12 Layout");
-        create2DLayout(distMax, cycles, midX, midY, midZ, layout, accessManager, channel, create2DLODs ? lodCount : 0, Dimensions_12);
+        System.out.println("\nCreate 2D dimension group (12)");
+        createDimensionGroup(distMax, cycles, midX, midY, midZ, layout, accessManager, channel, create2DLODs ? lodCount : 0, Dimensions_12);
 
         vds.close();
         System.out.println("VDS closed");
+    }
+
+    private static void createDimensionGroup(double distMax, double cycles, double midX, double midY, double midZ, VolumeDataLayout layout, VolumeDataAccessManager accessManager, int channel, int lodCount, DimensionsND dimensionGroup) {
+        int[] chunkMin = new int[Dimensionality_Max];
+        int[] chunkMax = new int[Dimensionality_Max];
+        int[] chunkSize = new int[Dimensionality_Max];
+        int[] chunkPitch = new int[Dimensionality_Max];
+        String header = dimensionGroup.toString();
+        for (int lod = 0 ; lod <= lodCount ; ++lod) {
+            VolumeDataPageAccessor pageAccessor = accessManager.createVolumeDataPageAccessor(dimensionGroup, lod, channel, 200, AccessMode_Create);
+            int chunkCount = (int) pageAccessor.getChunkCount();
+            System.out.println(header + " LOD : " + lod + " Chunk count :  " + chunkCount);
+            for (int i = 0; i < chunkCount; i++) {
+                try (VolumeDataPage page = pageAccessor.createPage(i)) {
+                    FloatBuffer buffer = page.getWritableBuffer(chunkSize, chunkPitch).asFloatBuffer();
+                    System.out.print(header + " LOD : " + lod + " / Page " + (i + 1) + " / " + chunkCount);
+                    float valueRangeScale = pageAccessor.getLayout().getChannelValueRangeMax(channel) - pageAccessor.getLayout().getChannelValueRangeMin(channel);
+                    page.getMinMax(chunkMin, chunkMax);
+                    System.out.print("\t" + header + " Chunk : [" + chunkSize[0] + ", " + chunkSize[1] + ", " + chunkSize[2] + "]");
+
+                    System.out.print("\tCoords page : " + chunkMin[0] + "/" + chunkMax[0] + " " + chunkMin[1] + "/" + chunkMax[1] + "/" + chunkMin[2] + "/" + chunkMax[2]);
+
+                    float[] output = new float[buffer.capacity()];
+
+                    System.out.print(" Page Buffer Size : " + output.length);// + " / [" + stats.getMin() + "," + stats.getMax() + "]");
+
+                    // Buffer dimensions
+                    System.out.println(" Size : [" + chunkSize[0] + ", " + chunkSize[1] + ", " + chunkSize[2] + "]");
+                    System.out.println(" Pitch : [" + chunkPitch[0] + ", " + chunkPitch[1] + "," + chunkPitch[2] + "]");
+
+                    long time_2 = System.currentTimeMillis();
+
+                    fillChunk(distMax, cycles, midX, midY, midZ, chunkMin, chunkSize, chunkPitch, lod, output);
+
+                    // write buffer then release page
+                    buffer.put(output);
+                }
+            }
+            pageAccessor.commit();
+            accessManager.flushUploadQueue();
+            accessManager.destroyVolumeDataPageAccessor(pageAccessor);
+        }
     }
 
     private static void fillChunk(double distMax, double cycles, double midX, double midY, double midZ,  int[] chunkMin, int[] chunkSize, int[] chunkPitch, int lod, float[] output) {
@@ -298,52 +291,6 @@ public class CreateVDS {
                     output[iPos] = value;
                 }
             }
-        }
-    }
-
-    private static void create2DLayout(double distMax, double cycles, double midX, double midY, double midZ, VolumeDataLayout layout, VolumeDataAccessManager accessManager, int channel, int lodCount, DimensionsND dimLYT) {
-        int[] chunkMin = new int[Dimensionality_Max];
-        int[] chunkMax = new int[Dimensionality_Max];
-        int[] chunkSize = new int[Dimensionality_Max];
-        int[] chunkPitch = new int[Dimensionality_Max];
-        for (int lod = 0 ; lod <= lodCount ; ++lod) {
-            VolumeDataPageAccessor pageAccessor = accessManager.createVolumeDataPageAccessor(
-                    dimLYT, // dimension ND
-                    lod, // lod
-                    channel, // channel
-                    200, // max pages
-                    AccessMode_Create); // access mode
-
-            int chunkCount = (int) pageAccessor.getChunkCount();
-            System.out.println("2D Layout LOD : " + lod + " Chunk count :  " + chunkCount);
-            for (int i = 0; i < chunkCount; i++) {
-                VolumeDataPage page = pageAccessor.createPage(i);
-                FloatBuffer buffer = page.getWritableBuffer(chunkSize, chunkPitch).asFloatBuffer();
-                System.out.print("2D Layout LOD : " + lod + " / Page " + (i + 1) + " / " + chunkCount);
-                float valueRangeScale = pageAccessor.getLayout().getChannelValueRangeMax(channel) - pageAccessor.getLayout().getChannelValueRangeMin(channel);
-                page.getMinMax(chunkMin, chunkMax);
-                System.out.print("\t2D Layout Dimensions Chunk : [" + chunkSize[0] + ", " + chunkSize[1] + ", " + chunkSize[2] + "]");
-
-                System.out.print("\tCoords page : " + chunkMin[0] + "/" + chunkMax[0] + " " + chunkMin[1] + "/" + chunkMax[1] + "/" + chunkMin[2] + "/" + chunkMax[2]);
-
-                float[] output = new float[buffer.capacity()];
-
-                System.out.print( " Page Buffer Size : " + output.length);// + " / [" + stats.getMin() + "," + stats.getMax() + "]");
-                // dimension of buffer
-                System.out.println(" Size : [" + chunkSize[0] + ", " + chunkSize[1] + ", " + chunkSize[2] + "]");
-                System.out.println(" Pitch : [" + chunkPitch[0] + ", " + chunkPitch[1] + "," + chunkPitch[2] + "]");
-
-                long time_2 = System.currentTimeMillis();
-
-                fillChunk(distMax, cycles, midX, midY, midZ, chunkMin, chunkSize, chunkPitch, lod, output);
-
-                // write buffer then release page
-                buffer.put(output);
-                page.close();
-            }
-            pageAccessor.commit();
-            accessManager.flushUploadQueue();
-            accessManager.destroyVolumeDataPageAccessor(pageAccessor);
         }
     }
 
