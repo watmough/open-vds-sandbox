@@ -22,7 +22,7 @@ import java.nio.FloatBuffer;
 import java.util.Arrays;
 import static org.opengroup.openvds.VolumeDataFormat.*;
 
-public class OpenVdsDemo {
+public class OpenVDSDemo {
 
     public static void main(String[] args) {
         try {
