@@ -39,7 +39,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor_ct
     auto context = new CPPJNIObjectContext_t<OpenVDS::VolumeDataLayoutDescriptor>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::VolumeDataLayoutDescriptor());
+    context->setObject(std::make_shared<OpenVDS::VolumeDataLayoutDescriptor>());
 
     return native_handle;
   }
@@ -59,7 +59,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataLayoutDescriptor_ct
     auto context = new CPPJNIObjectContext_t<OpenVDS::VolumeDataLayoutDescriptor>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::VolumeDataLayoutDescriptor(
+    context->setObject(std::make_shared<OpenVDS::VolumeDataLayoutDescriptor>(
                                (enum OpenVDS::VolumeDataLayoutDescriptor::BrickSize)brickSize, 
                                negativeMargin, 
                                positiveMargin, 

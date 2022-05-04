@@ -524,8 +524,34 @@ struct CPPJNIObjectContext_t : public CPPJNIObjectContext
 
   ~CPPJNIObjectContext_t() override
   {
+    if (m_SharedPtr.get()) 
+    {
+      int debug = 0;
+    }
     auto object = (T*)m_OpaqueObject;
     m_OpaqueObject = nullptr;
+  }
+
+  void
+  setObject(std::shared_ptr<T> object)
+  {
+    if (object.get() == nullptr)
+    {
+      throw std::runtime_error("cannot set null opaque object");
+    }
+    m_SharedPtr = object;
+    m_OpaqueObject = object.get();
+    m_IsOwner = true;
+  }
+
+  std::weak_ptr<T>
+  getWeakPtr()
+  {
+    if (m_SharedPtr.get() == nullptr) 
+    {
+      throw std::runtime_error("cannot create weak_ptr to null object");
+    }
+    return std::weak_ptr<T>(m_SharedPtr);
   }
 
   void

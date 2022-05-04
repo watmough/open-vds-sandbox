@@ -39,7 +39,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_MetadataContainer_ctorImpl
     auto context = new CPPJNIObjectContext_t<OpenVDS::MetadataContainer>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::MetadataContainer());
+    context->setObject(std::make_shared<OpenVDS::MetadataContainer>());
 
     return native_handle;
   }

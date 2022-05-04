@@ -39,7 +39,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VDS_ctorImpl
     auto context = new CPPJNIObjectContext_t<OpenVDS::VDS>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::VDS());
+    context->setObject(std::make_shared<OpenVDS::VDS>());
 
     return native_handle;
   }
@@ -75,7 +75,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IOManager_ctorImpl
     auto context = new CPPJNIObjectContext_t<OpenVDS::IOManager>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::IOManager());
+    context->setObject(std::make_shared<OpenVDS::IOManager>());
 
     return native_handle;
   }
@@ -654,7 +654,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_AWSOpenOptions_ctorImpl
     auto context = new CPPJNIObjectContext_t<OpenVDS::AWSOpenOptions>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::AWSOpenOptions());
+    context->setObject(std::make_shared<OpenVDS::AWSOpenOptions>());
 
     return native_handle;
   }
@@ -674,7 +674,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_AWSOpenOptions_ctor2Impl
     auto context = new CPPJNIObjectContext_t<OpenVDS::AWSOpenOptions>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::AWSOpenOptions(
+    context->setObject(std::make_shared<OpenVDS::AWSOpenOptions>(
                                std::string(CPPJNIStringWrapper(env, bucket)), 
                                std::string(CPPJNIStringWrapper(env, key)), 
                                std::string(CPPJNIStringWrapper(env, region)), 
@@ -934,7 +934,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_AzureOpenOptions_ctorImpl
     auto context = new CPPJNIObjectContext_t<OpenVDS::AzureOpenOptions>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::AzureOpenOptions());
+    context->setObject(std::make_shared<OpenVDS::AzureOpenOptions>());
 
     return native_handle;
   }
@@ -954,7 +954,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_AzureOpenOptions_ctor2Impl
     auto context = new CPPJNIObjectContext_t<OpenVDS::AzureOpenOptions>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::AzureOpenOptions(
+    context->setObject(std::make_shared<OpenVDS::AzureOpenOptions>(
                                std::string(CPPJNIStringWrapper(env, connectionString)), 
                                std::string(CPPJNIStringWrapper(env, container)), 
                                std::string(CPPJNIStringWrapper(env, blob))));
@@ -977,7 +977,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_AzureOpenOptions_ctor3Impl
     auto context = new CPPJNIObjectContext_t<OpenVDS::AzureOpenOptions>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::AzureOpenOptions(
+    context->setObject(std::make_shared<OpenVDS::AzureOpenOptions>(
                                std::string(CPPJNIStringWrapper(env, connectionString)), 
                                std::string(CPPJNIStringWrapper(env, container)), 
                                std::string(CPPJNIStringWrapper(env, blob)), 
@@ -1100,7 +1100,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_AzurePresignedOpenOptions_cto
     auto context = new CPPJNIObjectContext_t<OpenVDS::AzurePresignedOpenOptions>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::AzurePresignedOpenOptions());
+    context->setObject(std::make_shared<OpenVDS::AzurePresignedOpenOptions>());
 
     return native_handle;
   }
@@ -1120,7 +1120,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_AzurePresignedOpenOptions_cto
     auto context = new CPPJNIObjectContext_t<OpenVDS::AzurePresignedOpenOptions>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::AzurePresignedOpenOptions(std::string(CPPJNIStringWrapper(env, baseUrl)), std::string(CPPJNIStringWrapper(env, urlSuffix))));
+    context->setObject(std::make_shared<OpenVDS::AzurePresignedOpenOptions>(std::string(CPPJNIStringWrapper(env, baseUrl)), std::string(CPPJNIStringWrapper(env, urlSuffix))));
 
     return native_handle;
   }
@@ -1156,7 +1156,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsToken_ctorIm
     auto context = new CPPJNIObjectContext_t<OpenVDS::GoogleCredentialsToken>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::GoogleCredentialsToken(std::string(CPPJNIStringWrapper(env, token))));
+    context->setObject(std::make_shared<OpenVDS::GoogleCredentialsToken>(std::string(CPPJNIStringWrapper(env, token))));
 
     return native_handle;
   }
@@ -1176,7 +1176,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsToken_ctor2I
     auto context = new CPPJNIObjectContext_t<OpenVDS::GoogleCredentialsToken>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::GoogleCredentialsToken(std::string(CPPJNIStringWrapper(env, token))));
+    context->setObject(std::make_shared<OpenVDS::GoogleCredentialsToken>(std::string(CPPJNIStringWrapper(env, token))));
 
     return native_handle;
   }
@@ -1212,7 +1212,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsPath_ctorImp
     auto context = new CPPJNIObjectContext_t<OpenVDS::GoogleCredentialsPath>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::GoogleCredentialsPath(std::string(CPPJNIStringWrapper(env, path))));
+    context->setObject(std::make_shared<OpenVDS::GoogleCredentialsPath>(std::string(CPPJNIStringWrapper(env, path))));
 
     return native_handle;
   }
@@ -1232,7 +1232,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsPath_ctor2Im
     auto context = new CPPJNIObjectContext_t<OpenVDS::GoogleCredentialsPath>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::GoogleCredentialsPath(std::string(CPPJNIStringWrapper(env, path))));
+    context->setObject(std::make_shared<OpenVDS::GoogleCredentialsPath>(std::string(CPPJNIStringWrapper(env, path))));
 
     return native_handle;
   }
@@ -1268,7 +1268,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsJson_ctorImp
     auto context = new CPPJNIObjectContext_t<OpenVDS::GoogleCredentialsJson>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::GoogleCredentialsJson(std::string(CPPJNIStringWrapper(env, json))));
+    context->setObject(std::make_shared<OpenVDS::GoogleCredentialsJson>(std::string(CPPJNIStringWrapper(env, json))));
 
     return native_handle;
   }
@@ -1288,7 +1288,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsJson_ctor2Im
     auto context = new CPPJNIObjectContext_t<OpenVDS::GoogleCredentialsJson>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::GoogleCredentialsJson(std::string(CPPJNIStringWrapper(env, json))));
+    context->setObject(std::make_shared<OpenVDS::GoogleCredentialsJson>(std::string(CPPJNIStringWrapper(env, json))));
 
     return native_handle;
   }
@@ -1324,7 +1324,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrl_ct
     auto context = new CPPJNIObjectContext_t<OpenVDS::GoogleCredentialsSignedUrl>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::GoogleCredentialsSignedUrl(std::string(CPPJNIStringWrapper(env, region))));
+    context->setObject(std::make_shared<OpenVDS::GoogleCredentialsSignedUrl>(std::string(CPPJNIStringWrapper(env, region))));
 
     return native_handle;
   }
@@ -1344,7 +1344,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrl_ct
     auto context = new CPPJNIObjectContext_t<OpenVDS::GoogleCredentialsSignedUrl>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::GoogleCredentialsSignedUrl(std::string(CPPJNIStringWrapper(env, region))));
+    context->setObject(std::make_shared<OpenVDS::GoogleCredentialsSignedUrl>(std::string(CPPJNIStringWrapper(env, region))));
 
     return native_handle;
   }
@@ -1380,7 +1380,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrlPat
     auto context = new CPPJNIObjectContext_t<OpenVDS::GoogleCredentialsSignedUrlPath>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::GoogleCredentialsSignedUrlPath(std::string(CPPJNIStringWrapper(env, region)), std::string(CPPJNIStringWrapper(env, path))));
+    context->setObject(std::make_shared<OpenVDS::GoogleCredentialsSignedUrlPath>(std::string(CPPJNIStringWrapper(env, region)), std::string(CPPJNIStringWrapper(env, path))));
 
     return native_handle;
   }
@@ -1400,7 +1400,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrlPat
     auto context = new CPPJNIObjectContext_t<OpenVDS::GoogleCredentialsSignedUrlPath>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::GoogleCredentialsSignedUrlPath(std::string(CPPJNIStringWrapper(env, region)), std::string(CPPJNIStringWrapper(env, path))));
+    context->setObject(std::make_shared<OpenVDS::GoogleCredentialsSignedUrlPath>(std::string(CPPJNIStringWrapper(env, region)), std::string(CPPJNIStringWrapper(env, path))));
 
     return native_handle;
   }
@@ -1420,7 +1420,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrlPat
     auto context = new CPPJNIObjectContext_t<OpenVDS::GoogleCredentialsSignedUrlPath>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::GoogleCredentialsSignedUrlPath(std::string(CPPJNIStringWrapper(env, region)), std::string(CPPJNIStringWrapper(env, path))));
+    context->setObject(std::make_shared<OpenVDS::GoogleCredentialsSignedUrlPath>(std::string(CPPJNIStringWrapper(env, region)), std::string(CPPJNIStringWrapper(env, path))));
 
     return native_handle;
   }
@@ -1440,7 +1440,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrlPat
     auto context = new CPPJNIObjectContext_t<OpenVDS::GoogleCredentialsSignedUrlPath>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::GoogleCredentialsSignedUrlPath(std::string(CPPJNIStringWrapper(env, region)), std::string(CPPJNIStringWrapper(env, path))));
+    context->setObject(std::make_shared<OpenVDS::GoogleCredentialsSignedUrlPath>(std::string(CPPJNIStringWrapper(env, region)), std::string(CPPJNIStringWrapper(env, path))));
 
     return native_handle;
   }
@@ -1476,7 +1476,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrlJso
     auto context = new CPPJNIObjectContext_t<OpenVDS::GoogleCredentialsSignedUrlJson>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::GoogleCredentialsSignedUrlJson(std::string(CPPJNIStringWrapper(env, region)), std::string(CPPJNIStringWrapper(env, json))));
+    context->setObject(std::make_shared<OpenVDS::GoogleCredentialsSignedUrlJson>(std::string(CPPJNIStringWrapper(env, region)), std::string(CPPJNIStringWrapper(env, json))));
 
     return native_handle;
   }
@@ -1496,7 +1496,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrlJso
     auto context = new CPPJNIObjectContext_t<OpenVDS::GoogleCredentialsSignedUrlJson>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::GoogleCredentialsSignedUrlJson(std::string(CPPJNIStringWrapper(env, region)), std::string(CPPJNIStringWrapper(env, json))));
+    context->setObject(std::make_shared<OpenVDS::GoogleCredentialsSignedUrlJson>(std::string(CPPJNIStringWrapper(env, region)), std::string(CPPJNIStringWrapper(env, json))));
 
     return native_handle;
   }
@@ -1516,7 +1516,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrlJso
     auto context = new CPPJNIObjectContext_t<OpenVDS::GoogleCredentialsSignedUrlJson>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::GoogleCredentialsSignedUrlJson(std::string(CPPJNIStringWrapper(env, region)), std::string(CPPJNIStringWrapper(env, json))));
+    context->setObject(std::make_shared<OpenVDS::GoogleCredentialsSignedUrlJson>(std::string(CPPJNIStringWrapper(env, region)), std::string(CPPJNIStringWrapper(env, json))));
 
     return native_handle;
   }
@@ -1536,7 +1536,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrlJso
     auto context = new CPPJNIObjectContext_t<OpenVDS::GoogleCredentialsSignedUrlJson>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::GoogleCredentialsSignedUrlJson(std::string(CPPJNIStringWrapper(env, region)), std::string(CPPJNIStringWrapper(env, json))));
+    context->setObject(std::make_shared<OpenVDS::GoogleCredentialsSignedUrlJson>(std::string(CPPJNIStringWrapper(env, region)), std::string(CPPJNIStringWrapper(env, json))));
 
     return native_handle;
   }
@@ -1758,7 +1758,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_ctorImpl
     auto context = new CPPJNIObjectContext_t<OpenVDS::GoogleOpenOptions>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::GoogleOpenOptions());
+    context->setObject(std::make_shared<OpenVDS::GoogleOpenOptions>());
 
     return native_handle;
   }
@@ -1778,7 +1778,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_ctor2Impl
     auto context = new CPPJNIObjectContext_t<OpenVDS::GoogleOpenOptions>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::GoogleOpenOptions(std::string(CPPJNIStringWrapper(env, bucket)), std::string(CPPJNIStringWrapper(env, pathPrefix))));
+    context->setObject(std::make_shared<OpenVDS::GoogleOpenOptions>(std::string(CPPJNIStringWrapper(env, bucket)), std::string(CPPJNIStringWrapper(env, pathPrefix))));
 
     return native_handle;
   }
@@ -1798,7 +1798,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_ctor3Impl
     auto context = new CPPJNIObjectContext_t<OpenVDS::GoogleOpenOptions>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::GoogleOpenOptions(
+    context->setObject(std::make_shared<OpenVDS::GoogleOpenOptions>(
                                std::string(CPPJNIStringWrapper(env, bucket)), 
                                std::string(CPPJNIStringWrapper(env, pathPrefix)), 
                                *CPPJNI_cast<OpenVDS::GoogleCredentialsToken>(credentials)));
@@ -1821,7 +1821,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_ctor4Impl
     auto context = new CPPJNIObjectContext_t<OpenVDS::GoogleOpenOptions>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::GoogleOpenOptions(
+    context->setObject(std::make_shared<OpenVDS::GoogleOpenOptions>(
                                std::string(CPPJNIStringWrapper(env, bucket)), 
                                std::string(CPPJNIStringWrapper(env, pathPrefix)), 
                                *CPPJNI_cast<OpenVDS::GoogleCredentialsPath>(credentials)));
@@ -1844,7 +1844,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_ctor5Impl
     auto context = new CPPJNIObjectContext_t<OpenVDS::GoogleOpenOptions>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::GoogleOpenOptions(
+    context->setObject(std::make_shared<OpenVDS::GoogleOpenOptions>(
                                std::string(CPPJNIStringWrapper(env, bucket)), 
                                std::string(CPPJNIStringWrapper(env, pathPrefix)), 
                                *CPPJNI_cast<OpenVDS::GoogleCredentialsJson>(credentials)));
@@ -1867,7 +1867,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_ctor6Impl
     auto context = new CPPJNIObjectContext_t<OpenVDS::GoogleOpenOptions>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::GoogleOpenOptions(
+    context->setObject(std::make_shared<OpenVDS::GoogleOpenOptions>(
                                std::string(CPPJNIStringWrapper(env, bucket)), 
                                std::string(CPPJNIStringWrapper(env, pathPrefix)), 
                                *CPPJNI_cast<OpenVDS::GoogleCredentialsSignedUrl>(credentials)));
@@ -1890,7 +1890,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_ctor7Impl
     auto context = new CPPJNIObjectContext_t<OpenVDS::GoogleOpenOptions>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::GoogleOpenOptions(
+    context->setObject(std::make_shared<OpenVDS::GoogleOpenOptions>(
                                std::string(CPPJNIStringWrapper(env, bucket)), 
                                std::string(CPPJNIStringWrapper(env, pathPrefix)), 
                                *CPPJNI_cast<OpenVDS::GoogleCredentialsSignedUrlPath>(credentials)));
@@ -1913,7 +1913,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_ctor8Impl
     auto context = new CPPJNIObjectContext_t<OpenVDS::GoogleOpenOptions>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::GoogleOpenOptions(
+    context->setObject(std::make_shared<OpenVDS::GoogleOpenOptions>(
                                std::string(CPPJNIStringWrapper(env, bucket)), 
                                std::string(CPPJNIStringWrapper(env, pathPrefix)), 
                                *CPPJNI_cast<OpenVDS::GoogleCredentialsSignedUrlJson>(credentials)));
@@ -1968,7 +1968,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_DMSOpenOptions_ctorImpl
     auto context = new CPPJNIObjectContext_t<OpenVDS::DMSOpenOptions>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::DMSOpenOptions());
+    context->setObject(std::make_shared<OpenVDS::DMSOpenOptions>());
 
     return native_handle;
   }
@@ -1988,7 +1988,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_DMSOpenOptions_ctor2Impl
     auto context = new CPPJNIObjectContext_t<OpenVDS::DMSOpenOptions>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::DMSOpenOptions(
+    context->setObject(std::make_shared<OpenVDS::DMSOpenOptions>(
                                std::string(CPPJNIStringWrapper(env, sdAuthorityUrl)), 
                                std::string(CPPJNIStringWrapper(env, sdApiKey)), 
                                std::string(CPPJNIStringWrapper(env, sdToken)), 
@@ -2409,7 +2409,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_HttpOpenOptions_ctorImpl
     auto context = new CPPJNIObjectContext_t<OpenVDS::HttpOpenOptions>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::HttpOpenOptions());
+    context->setObject(std::make_shared<OpenVDS::HttpOpenOptions>());
 
     return native_handle;
   }
@@ -2429,7 +2429,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_HttpOpenOptions_ctor2Impl
     auto context = new CPPJNIObjectContext_t<OpenVDS::HttpOpenOptions>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::HttpOpenOptions(std::string(CPPJNIStringWrapper(env, url))));
+    context->setObject(std::make_shared<OpenVDS::HttpOpenOptions>(std::string(CPPJNIStringWrapper(env, url))));
 
     return native_handle;
   }
@@ -2465,7 +2465,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_InMemoryOpenOptions_ctorImpl
     auto context = new CPPJNIObjectContext_t<OpenVDS::InMemoryOpenOptions>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::InMemoryOpenOptions());
+    context->setObject(std::make_shared<OpenVDS::InMemoryOpenOptions>());
 
     return native_handle;
   }
@@ -2485,7 +2485,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_InMemoryOpenOptions_ctor2Impl
     auto context = new CPPJNIObjectContext_t<OpenVDS::InMemoryOpenOptions>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::InMemoryOpenOptions(CPPJNIStringWrapper(env, name)));
+    context->setObject(std::make_shared<OpenVDS::InMemoryOpenOptions>(CPPJNIStringWrapper(env, name)));
 
     return native_handle;
   }
@@ -2505,7 +2505,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_InMemoryOpenOptions_ctor3Impl
     auto context = new CPPJNIObjectContext_t<OpenVDS::InMemoryOpenOptions>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::InMemoryOpenOptions(std::string(CPPJNIStringWrapper(env, name))));
+    context->setObject(std::make_shared<OpenVDS::InMemoryOpenOptions>(std::string(CPPJNIStringWrapper(env, name))));
 
     return native_handle;
   }
@@ -2603,7 +2603,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VDSFileOpenOptions_ctorImpl
     auto context = new CPPJNIObjectContext_t<OpenVDS::VDSFileOpenOptions>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::VDSFileOpenOptions());
+    context->setObject(std::make_shared<OpenVDS::VDSFileOpenOptions>());
 
     return native_handle;
   }
@@ -2623,7 +2623,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VDSFileOpenOptions_ctor2Impl
     auto context = new CPPJNIObjectContext_t<OpenVDS::VDSFileOpenOptions>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::VDSFileOpenOptions(std::string(CPPJNIStringWrapper(env, fileName))));
+    context->setObject(std::make_shared<OpenVDS::VDSFileOpenOptions>(std::string(CPPJNIStringWrapper(env, fileName))));
 
     return native_handle;
   }
@@ -2659,7 +2659,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VDSError_ctorImpl
     auto context = new CPPJNIObjectContext_t<OpenVDS::VDSError>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::VDSError());
+    context->setObject(std::make_shared<OpenVDS::VDSError>());
 
     return native_handle;
   }

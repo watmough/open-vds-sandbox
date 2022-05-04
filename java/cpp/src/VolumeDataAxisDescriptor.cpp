@@ -39,7 +39,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAxisDescriptor_ctor
     auto context = new CPPJNIObjectContext_t<OpenVDS::VolumeDataAxisDescriptor>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::VolumeDataAxisDescriptor());
+    context->setObject(std::make_shared<OpenVDS::VolumeDataAxisDescriptor>());
 
     return native_handle;
   }
@@ -59,7 +59,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAxisDescriptor_ctor
     auto context = new CPPJNIObjectContext_t<OpenVDS::VolumeDataAxisDescriptor>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::VolumeDataAxisDescriptor(
+    context->setObject(std::make_shared<OpenVDS::VolumeDataAxisDescriptor>(
                                numSamples, 
                                CPPJNIStringWrapper(env, name), 
                                CPPJNIStringWrapper(env, unit), 

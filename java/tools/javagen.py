@@ -683,7 +683,7 @@ def create_jni_ctor(scope: Scope, ctor: Scope, class_name: str, class_canonical_
     auto context = new CPPJNIObjectContext_t<{class_canonical_name}>();
 {prologue}
     auto native_handle = context->handle();
-    context->setObject(new {class_canonical_name}({args}));
+    context->setObject(std::make_shared<{class_canonical_name}>({args}));
 {epilogue}
     return native_handle;
   }}

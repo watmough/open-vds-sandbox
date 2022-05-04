@@ -39,7 +39,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_ctor
     auto context = new CPPJNIObjectContext_t<OpenVDS::IJKCoordinateTransformer>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::IJKCoordinateTransformer());
+    context->setObject(std::make_shared<OpenVDS::IJKCoordinateTransformer>());
 
     return native_handle;
   }
@@ -59,7 +59,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_ctor
     auto context = new CPPJNIObjectContext_t<OpenVDS::IJKCoordinateTransformer>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::IJKCoordinateTransformer(CPPJNIByteBufferAdapter<OpenVDS::IJKGridDefinition>(env, ijkGridDefinitionbytebuffer, ijkGridDefinitionbyteoffset), CPPJNIByteBufferAdapter<OpenVDS::IntVector3>(env, ijkSizebytebuffer, ijkSizebyteoffset)));
+    context->setObject(std::make_shared<OpenVDS::IJKCoordinateTransformer>(CPPJNIByteBufferAdapter<OpenVDS::IJKGridDefinition>(env, ijkGridDefinitionbytebuffer, ijkGridDefinitionbyteoffset), CPPJNIByteBufferAdapter<OpenVDS::IntVector3>(env, ijkSizebytebuffer, ijkSizebyteoffset)));
 
     return native_handle;
   }
@@ -79,7 +79,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_ctor
     auto context = new CPPJNIObjectContext_t<OpenVDS::IJKCoordinateTransformer>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::IJKCoordinateTransformer(
+    context->setObject(std::make_shared<OpenVDS::IJKCoordinateTransformer>(
                                CPPJNIByteBufferAdapter<OpenVDS::IJKGridDefinition>(env, ijkGridDefinitionbytebuffer, ijkGridDefinitionbyteoffset), 
                                CPPJNIByteBufferAdapter<OpenVDS::IntVector3>(env, ijkSizebytebuffer, ijkSizebyteoffset), 
                                CPPJNIByteBufferAdapter<OpenVDS::IntVector3>(env, ijkToVoxelDimensionMapbytebuffer, ijkToVoxelDimensionMapbyteoffset)));
@@ -102,7 +102,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_ctor
     auto context = new CPPJNIObjectContext_t<OpenVDS::IJKCoordinateTransformer>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::IJKCoordinateTransformer(CPPJNIByteBufferAdapter<OpenVDS::VDSIJKGridDefinition>(env, vdsIJKGridDefinitionbytebuffer, vdsIJKGridDefinitionbyteoffset), CPPJNIByteBufferAdapter<OpenVDS::IntVector3>(env, ijkSizebytebuffer, ijkSizebyteoffset)));
+    context->setObject(std::make_shared<OpenVDS::IJKCoordinateTransformer>(CPPJNIByteBufferAdapter<OpenVDS::VDSIJKGridDefinition>(env, vdsIJKGridDefinitionbytebuffer, vdsIJKGridDefinitionbyteoffset), CPPJNIByteBufferAdapter<OpenVDS::IntVector3>(env, ijkSizebytebuffer, ijkSizebyteoffset)));
 
     return native_handle;
   }
@@ -122,7 +122,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_ctor
     auto context = new CPPJNIObjectContext_t<OpenVDS::IJKCoordinateTransformer>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::IJKCoordinateTransformer(
+    context->setObject(std::make_shared<OpenVDS::IJKCoordinateTransformer>(
                                CPPJNIByteBufferAdapter<OpenVDS::IJKGridDefinition>(env, ijkGridDefinitionbytebuffer, ijkGridDefinitionbyteoffset), 
                                CPPJNIByteBufferAdapter<OpenVDS::IntVector3>(env, ijkSizebytebuffer, ijkSizebyteoffset), 
                                CPPJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, ijkAnnotationStartbytebuffer, ijkAnnotationStartbyteoffset), 
@@ -146,7 +146,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_ctor
     auto context = new CPPJNIObjectContext_t<OpenVDS::IJKCoordinateTransformer>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::IJKCoordinateTransformer(
+    context->setObject(std::make_shared<OpenVDS::IJKCoordinateTransformer>(
                                CPPJNIByteBufferAdapter<OpenVDS::IJKGridDefinition>(env, ijkGridDefinitionbytebuffer, ijkGridDefinitionbyteoffset), 
                                CPPJNIByteBufferAdapter<OpenVDS::IntVector3>(env, ijkSizebytebuffer, ijkSizebyteoffset), 
                                CPPJNIByteBufferAdapter<OpenVDS::IntVector3>(env, ijkToVoxelDimensionMapbytebuffer, ijkToVoxelDimensionMapbyteoffset), 
@@ -171,7 +171,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_ctor
     auto context = new CPPJNIObjectContext_t<OpenVDS::IJKCoordinateTransformer>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::IJKCoordinateTransformer(
+    context->setObject(std::make_shared<OpenVDS::IJKCoordinateTransformer>(
                                CPPJNIByteBufferAdapter<OpenVDS::VDSIJKGridDefinition>(env, vdsIJKGridDefinitionbytebuffer, vdsIJKGridDefinitionbyteoffset), 
                                CPPJNIByteBufferAdapter<OpenVDS::IntVector3>(env, ijkSizebytebuffer, ijkSizebyteoffset), 
                                CPPJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, ijkAnnotationStartbytebuffer, ijkAnnotationStartbyteoffset), 

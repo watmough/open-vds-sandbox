@@ -39,7 +39,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataRequest_ctorImpl
     auto context = new CPPJNIObjectContext_t<OpenVDS::VolumeDataRequest>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::VolumeDataRequest());
+    context->setObject(std::make_shared<OpenVDS::VolumeDataRequest>());
 
     return native_handle;
   }
@@ -284,7 +284,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_ctorI
     auto context = new CPPJNIObjectContext_t<OpenVDS::VolumeDataAccessManager>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::VolumeDataAccessManager());
+    context->setObject(std::make_shared<OpenVDS::VolumeDataAccessManager>());
 
     return native_handle;
   }

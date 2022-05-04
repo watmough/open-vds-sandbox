@@ -39,7 +39,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_MetadataKey_ctorImpl
     auto context = new CPPJNIObjectContext_t<OpenVDS::MetadataKey>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::MetadataKey());
+    context->setObject(std::make_shared<OpenVDS::MetadataKey>());
 
     return native_handle;
   }
@@ -59,7 +59,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_MetadataKey_ctor2Impl
     auto context = new CPPJNIObjectContext_t<OpenVDS::MetadataKey>();
 
     auto native_handle = context->handle();
-    context->setObject(new OpenVDS::MetadataKey(
+    context->setObject(std::make_shared<OpenVDS::MetadataKey>(
                                (OpenVDS::MetadataType)type, 
                                CPPJNIStringWrapper(env, category), 
                                CPPJNIStringWrapper(env, name)));
