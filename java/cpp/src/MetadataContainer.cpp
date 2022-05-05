@@ -777,7 +777,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataContainer_dtorImpl
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::MetadataContainer>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::MetadataContainer>(native_handle);
   }
   CPPJNI_CATCH
 }

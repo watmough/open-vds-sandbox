@@ -115,7 +115,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataPage_dtorImpl
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataPage>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataPage>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -547,7 +547,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_dtorImp
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataPageAccessor>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataPageAccessor>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -682,7 +682,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DInterpolatingAcces
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::FloatVector2, double>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::FloatVector2, double>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -817,7 +817,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DInterpolatingAcces
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::FloatVector2, float>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::FloatVector2, float>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -952,7 +952,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorR64_dt
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector2, double>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector2, double>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -1087,7 +1087,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU64_dt
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector2, uint64_t>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector2, uint64_t>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -1222,7 +1222,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorR32_dt
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector2, float>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector2, float>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -1357,7 +1357,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU32_dt
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector2, uint32_t>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector2, uint32_t>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -1492,7 +1492,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU16_dt
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector2, uint16_t>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector2, uint16_t>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -1627,7 +1627,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU8_dto
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector2, uint8_t>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector2, uint8_t>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -1762,7 +1762,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessor1Bit_d
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector2, bool>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector2, bool>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -1840,7 +1840,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorR
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::IntVector2, double>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::IntVector2, double>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -1918,7 +1918,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorU
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::IntVector2, uint64_t>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::IntVector2, uint64_t>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -1996,7 +1996,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorR
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::IntVector2, float>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::IntVector2, float>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -2074,7 +2074,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorU
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::IntVector2, uint32_t>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::IntVector2, uint32_t>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -2152,7 +2152,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorU
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::IntVector2, uint16_t>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::IntVector2, uint16_t>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -2230,7 +2230,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessorU
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::IntVector2, uint8_t>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::IntVector2, uint8_t>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -2308,7 +2308,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData2DReadWriteAccessor1
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::IntVector2, bool>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::IntVector2, bool>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -2443,7 +2443,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DInterpolatingAcces
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::FloatVector3, double>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::FloatVector3, double>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -2578,7 +2578,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DInterpolatingAcces
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::FloatVector3, float>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::FloatVector3, float>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -2713,7 +2713,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorR64_dt
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector3, double>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector3, double>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -2848,7 +2848,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU64_dt
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector3, uint64_t>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector3, uint64_t>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -2983,7 +2983,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorR32_dt
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector3, float>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector3, float>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -3118,7 +3118,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU32_dt
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector3, uint32_t>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector3, uint32_t>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -3253,7 +3253,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU16_dt
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector3, uint16_t>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector3, uint16_t>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -3388,7 +3388,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU8_dto
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector3, uint8_t>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector3, uint8_t>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -3523,7 +3523,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessor1Bit_d
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector3, bool>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector3, bool>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -3601,7 +3601,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorR
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::IntVector3, double>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::IntVector3, double>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -3679,7 +3679,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorU
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::IntVector3, uint64_t>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::IntVector3, uint64_t>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -3757,7 +3757,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorR
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::IntVector3, float>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::IntVector3, float>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -3835,7 +3835,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorU
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::IntVector3, uint32_t>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::IntVector3, uint32_t>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -3913,7 +3913,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorU
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::IntVector3, uint16_t>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::IntVector3, uint16_t>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -3991,7 +3991,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessorU
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::IntVector3, uint8_t>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::IntVector3, uint8_t>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -4069,7 +4069,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData3DReadWriteAccessor1
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::IntVector3, bool>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::IntVector3, bool>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -4204,7 +4204,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DInterpolatingAcces
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::FloatVector4, double>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::FloatVector4, double>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -4339,7 +4339,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DInterpolatingAcces
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::FloatVector4, float>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::FloatVector4, float>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -4474,7 +4474,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorR64_dt
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector4, double>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector4, double>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -4609,7 +4609,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU64_dt
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector4, uint64_t>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector4, uint64_t>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -4744,7 +4744,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorR32_dt
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector4, float>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector4, float>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -4879,7 +4879,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU32_dt
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector4, uint32_t>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector4, uint32_t>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -5014,7 +5014,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU16_dt
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector4, uint16_t>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector4, uint16_t>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -5149,7 +5149,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU8_dto
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector4, uint8_t>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector4, uint8_t>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -5284,7 +5284,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessor1Bit_d
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector4, bool>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector4, bool>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -5362,7 +5362,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorR
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::IntVector4, double>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::IntVector4, double>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -5440,7 +5440,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorU
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::IntVector4, uint64_t>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::IntVector4, uint64_t>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -5518,7 +5518,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorR
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::IntVector4, float>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::IntVector4, float>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -5596,7 +5596,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorU
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::IntVector4, uint32_t>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::IntVector4, uint32_t>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -5674,7 +5674,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorU
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::IntVector4, uint16_t>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::IntVector4, uint16_t>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -5752,7 +5752,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessorU
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::IntVector4, uint8_t>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::IntVector4, uint8_t>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -5830,7 +5830,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeData4DReadWriteAccessor1
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::IntVector4, bool>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::IntVector4, bool>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -5946,7 +5946,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector2_dtorIm
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::IndexRegion<OpenVDS::FloatVector2>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::IndexRegion<OpenVDS::FloatVector2>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -6062,7 +6062,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionIntVector2_dtorImpl
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::IndexRegion<OpenVDS::IntVector2>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::IndexRegion<OpenVDS::IntVector2>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -6178,7 +6178,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector3_dtorIm
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::IndexRegion<OpenVDS::FloatVector3>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::IndexRegion<OpenVDS::FloatVector3>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -6294,7 +6294,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionIntVector3_dtorImpl
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::IndexRegion<OpenVDS::IntVector3>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::IndexRegion<OpenVDS::IntVector3>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -6410,7 +6410,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionFloatVector4_dtorIm
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::IndexRegion<OpenVDS::FloatVector4>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::IndexRegion<OpenVDS::FloatVector4>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -6526,7 +6526,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IndexRegionIntVector4_dtorImpl
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::IndexRegion<OpenVDS::IntVector4>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::IndexRegion<OpenVDS::IntVector4>>(native_handle);
   }
   CPPJNI_CATCH
 }

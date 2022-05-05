@@ -416,22 +416,17 @@ struct CPPJNIObjectContext
     }
   }
   
+  virtual ~CPPJNIObjectContext();
+
   static int  getSharedLibraryGeneration();
   void        ensureValid() const;
 
-  // Add a global reference to an external java object to ensure it stays alive until
-  // the ObjectContex is deleted.
-  // NOTE: cleanupGlobalRefs() is NOT called from the dtor, since it needs
-  // the JNIEnv to perform its duty.
   void
   registerGlobalRef(JNIEnv* env, jobject obj)
   {
     m_GlobalRefs.push_back(env->NewGlobalRef(obj));
   }
 
-  // Delete all global references to external objects.
-  // NOTE: cleanupGlobalRefs() is NOT called from the dtor, since it needs
-  // the JNIEnv to perform its duty.
   void
   cleanupGlobalRefs(JNIEnv* env)
   {
@@ -440,16 +435,6 @@ struct CPPJNIObjectContext
       env->DeleteGlobalRef(gref);
     }
     m_GlobalRefs.clear();
-  }
-
-  virtual ~CPPJNIObjectContext()
-  {
-    assert(m_GlobalRefs.empty());
-    assert(m_OpaqueObject == nullptr);
-    for (char* str : m_AllocatedStrings)
-    {
-      free(str);
-    }
   }
 
   const char*
@@ -639,11 +624,10 @@ struct CPPJNIFinalizerMutexGuard : std::lock_guard<std::mutex>
 
 template<typename T>
 void
-CPPJNI_destroyHandle(JNIEnv* env, jlong handle)
+CPPJNI_destroyHandle(jlong handle)
 {
   auto pContext = ((CPPJNIObjectContext_t<T>*)(handle));
   pContext->ensureValid(); // May throw 
-  pContext->cleanupGlobalRefs(env);
   delete pContext;
 }
 

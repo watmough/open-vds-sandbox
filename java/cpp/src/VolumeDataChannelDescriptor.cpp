@@ -619,7 +619,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_dt
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataChannelDescriptor>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataChannelDescriptor>(native_handle);
   }
   CPPJNI_CATCH
 }

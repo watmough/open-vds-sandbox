@@ -242,7 +242,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataRequest_dtorImpl
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataRequest>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataRequest>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -2798,7 +2798,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_dtorIm
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataAccessManager>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataAccessManager>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -3741,7 +3741,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataRequest1Bit_dtorImpl
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataRequest_t<uint8_t>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataRequest_t<uint8_t>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -3773,7 +3773,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataRequestByte_dtorImpl
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataRequest_t<uint8_t>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataRequest_t<uint8_t>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -3805,7 +3805,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataRequestUShort_dtorIm
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataRequest_t<uint16_t>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataRequest_t<uint16_t>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -3837,7 +3837,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataRequestUInt_dtorImpl
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataRequest_t<uint32_t>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataRequest_t<uint32_t>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -3869,7 +3869,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataRequestULong_dtorImp
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataRequest_t<uint64_t>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataRequest_t<uint64_t>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -3901,7 +3901,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataRequestFloat_dtorImp
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataRequest_t<float>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataRequest_t<float>>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -3933,7 +3933,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataRequestDouble_dtorIm
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataRequest_t<double>>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataRequest_t<double>>(native_handle);
   }
   CPPJNI_CATCH
 }

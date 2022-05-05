@@ -703,7 +703,7 @@ def create_jni_dtor(scope: Scope, class_name: str, class_canonical_name: str) ->
 
   CPPJNI_TRY
   {{
-    CPPJNI_destroyHandle<{class_canonical_name}>(env, native_handle);
+    CPPJNI_destroyHandle<{class_canonical_name}>(native_handle);
   }}
   CPPJNI_CATCH
 }}

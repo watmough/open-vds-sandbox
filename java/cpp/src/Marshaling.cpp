@@ -39,6 +39,17 @@ thread_local std::stack<JNIEnv*>
 thread_local std::vector<struct JNIEnvGuard::StringRecord>
   JNIEnvGuard::ts_TempStringRecords;
 
+CPPJNIObjectContext::~CPPJNIObjectContext()
+{
+  cleanupGlobalRefs(JNIEnvGuard::getJNIEnv());
+  assert(m_GlobalRefs.empty());
+  assert(m_OpaqueObject == nullptr);
+  for (char* str : m_AllocatedStrings)
+  {
+    free(str);
+  }
+}
+
 void
 JNIEnvGuard::push(JNIEnv* env)
 {
@@ -436,7 +447,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_ManagedBuffer_dtorImpl
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<JNIDirectBuffer>(env, native_handle);
+    CPPJNI_destroyHandle<JNIDirectBuffer>(native_handle);
   }
   CPPJNI_CATCH
 }

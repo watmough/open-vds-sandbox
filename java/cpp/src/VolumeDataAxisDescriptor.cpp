@@ -225,7 +225,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataAxisDescriptor_dtorI
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataAxisDescriptor>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataAxisDescriptor>(native_handle);
   }
   CPPJNI_CATCH
 }

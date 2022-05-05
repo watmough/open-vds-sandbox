@@ -144,7 +144,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataKey_dtorImpl
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::MetadataKey>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::MetadataKey>(native_handle);
   }
   CPPJNI_CATCH
 }

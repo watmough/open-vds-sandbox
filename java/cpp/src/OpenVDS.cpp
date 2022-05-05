@@ -56,7 +56,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VDS_dtorImpl
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VDS>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VDS>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -92,7 +92,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IOManager_dtorImpl
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::IOManager>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::IOManager>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -232,7 +232,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_OpenOptions_dtorImpl
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::OpenOptions>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::OpenOptions>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -698,7 +698,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_AWSOpenOptions_dtorImpl
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::AWSOpenOptions>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::AWSOpenOptions>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -1019,7 +1019,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_AzureOpenOptions_dtorImpl
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::AzureOpenOptions>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::AzureOpenOptions>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -1137,7 +1137,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_AzurePresignedOpenOptions_dtor
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::AzurePresignedOpenOptions>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::AzurePresignedOpenOptions>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -1193,7 +1193,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_GoogleCredentialsToken_dtorImp
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::GoogleCredentialsToken>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::GoogleCredentialsToken>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -1249,7 +1249,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_GoogleCredentialsPath_dtorImpl
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::GoogleCredentialsPath>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::GoogleCredentialsPath>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -1305,7 +1305,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_GoogleCredentialsJson_dtorImpl
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::GoogleCredentialsJson>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::GoogleCredentialsJson>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -1361,7 +1361,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrl_dto
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::GoogleCredentialsSignedUrl>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::GoogleCredentialsSignedUrl>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -1457,7 +1457,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrlPath
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::GoogleCredentialsSignedUrlPath>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::GoogleCredentialsSignedUrlPath>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -1553,7 +1553,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_GoogleCredentialsSignedUrlJson
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::GoogleCredentialsSignedUrlJson>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::GoogleCredentialsSignedUrlJson>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -1949,7 +1949,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_dtorImpl
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::GoogleOpenOptions>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::GoogleOpenOptions>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -2357,7 +2357,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_DMSOpenOptions_dtorImpl
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::DMSOpenOptions>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::DMSOpenOptions>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -2446,7 +2446,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_HttpOpenOptions_dtorImpl
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::HttpOpenOptions>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::HttpOpenOptions>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -2553,7 +2553,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_InMemoryOpenOptions_dtorImpl
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::InMemoryOpenOptions>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::InMemoryOpenOptions>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -2640,7 +2640,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VDSFileOpenOptions_dtorImpl
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VDSFileOpenOptions>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VDSFileOpenOptions>(native_handle);
   }
   CPPJNI_CATCH
 }
@@ -2738,7 +2738,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VDSError_dtorImpl
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VDSError>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VDSError>(native_handle);
   }
   CPPJNI_CATCH
 }

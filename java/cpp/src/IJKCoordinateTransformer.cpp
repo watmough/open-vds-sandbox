@@ -786,7 +786,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_dtorI
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::IJKCoordinateTransformer>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::IJKCoordinateTransformer>(native_handle);
   }
   CPPJNI_CATCH
 }

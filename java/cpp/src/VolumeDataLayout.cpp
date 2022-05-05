@@ -502,7 +502,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataLayout_dtorImpl
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataLayout>(env, native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataLayout>(native_handle);
   }
   CPPJNI_CATCH
 }
