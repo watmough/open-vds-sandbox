@@ -1004,7 +1004,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_AzureOpenOptions_AzureOpenOpt
                                std::string(CPPJNIStringWrapper(env, bearerToken)), 
                                std::string(CPPJNIStringWrapper(env, container)), 
                                std::string(CPPJNIStringWrapper(env, blob)));
-    auto context = CPPJNI_createObjectContext(new OpenVDS::AzureOpenOptions(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::AzureOpenOptions>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -3113,7 +3113,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_GetAccessManagerImpl
   CPPJNI_TRY
   {
     auto result = OpenVDS::GetAccessManager(CPPJNI_cast<OpenVDS::VDS>(handle));
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataAccessManager(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataAccessManager>(result));
     return context->handle();
   }
   CPPJNI_CATCH

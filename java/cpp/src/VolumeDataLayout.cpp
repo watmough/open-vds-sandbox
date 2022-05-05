@@ -118,7 +118,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetLayoutDes
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataLayout>(native_handle);
     auto result = pInstance->GetLayoutDescriptor();
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataLayoutDescriptor(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataLayoutDescriptor>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -135,7 +135,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetChannelDe
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataLayout>(native_handle);
     auto result = pInstance->GetChannelDescriptor(channel);
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataChannelDescriptor(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataChannelDescriptor>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -152,7 +152,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetAxisDescr
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataLayout>(native_handle);
     auto result = pInstance->GetAxisDescriptor(dimension);
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataAxisDescriptor(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataAxisDescriptor>(result));
     return context->handle();
   }
   CPPJNI_CATCH

@@ -23,7 +23,7 @@ import java.util.*;
 import java.nio.ByteBuffer;
 
 
-public class VolumeDataPageAccessor extends ManagedBase {
+public class VolumeDataPageAccessor extends ManagedBase implements AutoCloseable {
     
     public enum AccessMode {
     
@@ -217,6 +217,10 @@ public class VolumeDataPageAccessor extends ManagedBase {
     @Override
     protected void onDisposing(long native_object, boolean isDisposing) {
         dtorImpl(native_object, isDisposing);
+    }
+
+    public void close() {
+        dispose();
     }
 
     static VolumeDataPageAccessor fromNativeObject(long nativeobject) {

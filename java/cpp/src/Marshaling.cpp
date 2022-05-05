@@ -280,18 +280,28 @@ CPPJNIObjectContext::getSharedLibraryGeneration()
 // Ensure that the context wraps a resource allocated in the current shared library instance.
 // If this is not the case, throw ObsoleteObjectException which in turn is caught by CPPJNI_CATCH
 // thus making the outer function call a no-op.
-void
-CPPJNIObjectContext::ensureValid() const
+CPPJNIObjectContext*
+CPPJNIObjectContext::ensureValid(CPPJNIObjectContext* context)
 {
-  assert(this);
-  if (m_MagicNumber != MAGIC_NUMBER)
+  if (context == nullptr)
+  {
+    throw std::runtime_error("Null CPPJNIObjectContext");
+  }
+  else if (context->m_MagicNumber != MAGIC_NUMBER)
   {
     throw std::runtime_error("Invalid CPPJNIObjectContext");
   }
-  if (m_SharedLibraryGeneration != getSharedLibraryGeneration())
+  else if (context->m_SharedLibraryGeneration != getSharedLibraryGeneration())
   {
     throw ObsoleteObjectException();
   }
+  return context;
+}
+
+CPPJNIObjectContext*
+CPPJNIObjectContext::ensureValid(jlong native_handle)
+{
+  return ensureValid((CPPJNIObjectContext*)native_handle);
 }
 
 CPPJNIFinalizerMutexGuard::CPPJNIFinalizerMutexGuard() : std::lock_guard<std::mutex>(s_FinalizerMutex)

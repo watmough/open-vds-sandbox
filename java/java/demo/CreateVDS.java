@@ -263,9 +263,7 @@ public class CreateVDS {
                     buffer.put(output);
                 }
             }
-            pageAccessor.commit();
-            accessManager.flushUploadQueue();
-            accessManager.destroyVolumeDataPageAccessor(pageAccessor);
+            pageAccessor.close();
         }
     }
 

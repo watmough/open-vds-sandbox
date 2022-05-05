@@ -308,4 +308,6 @@
 		return new DownloadError(arr);
 	}}
 
+	// This is now called implicitly when closing/disposing the VolumeDataPageAccessor:
+	///AUTOGEN-IGNORE: CXX_METHOD DestroyVolumeDataPageAccessor void (OpenVDS::VolumeDataPageAccessor *) FUNCTIONPROTO
 }}

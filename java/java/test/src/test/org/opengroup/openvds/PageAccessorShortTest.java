@@ -212,10 +212,7 @@ public class PageAccessorShortTest {
                 inputPage.release();
                 page.release();
             }
-            pageAccessor.commit();
-            accessManager.flushUploadQueue();
-            accessManager.destroyVolumeDataPageAccessor(pageAccessor);
-
+            pageAccessor.close();
             vdsCopy.close();
     }
 
@@ -272,9 +269,7 @@ public class PageAccessorShortTest {
                 assertEquals(pitchInput, pitchOutput);
                 assertEquals(dataIn, dataOut);
             }
-
-            accessManager.destroyVolumeDataPageAccessor(pageAccessor);
-
+            pageAccessor.close();
             vdsCopy.close();
     }
 
@@ -321,9 +316,7 @@ public class PageAccessorShortTest {
 
                 inputPage.release();
             }
-
-            accessManager.destroyVolumeDataPageAccessor(pageAccessor);
-
+            pageAccessor.close();
             vdsCopy.close();
     }
 }

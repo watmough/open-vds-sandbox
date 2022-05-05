@@ -892,7 +892,7 @@ def create_jni_methods(scope: Scope, template: str, override_name: str = '', tem
                                 # This handle will not destroy the backing object because it is not the owner:
                                 retval = 'CPPJNI_createNonOwningObjectContext(&result)'
                             else:
-                                retval = 'CPPJNI_createObjectContext(new {}(result))'.format(clean_typename(real_return_type))
+                                retval = 'CPPJNI_createObjectContext(std::make_shared<{}>(result))'.format(clean_typename(real_return_type))
                         elif return_type == 'void':
                             pass
                         else:
@@ -933,8 +933,9 @@ def create_jni_methods(scope: Scope, template: str, override_name: str = '', tem
             else:
                 output.write(local_output.getvalue())
     if has_instance_methods:
-        dtor = create_jni_dtor(scope, class_name, class_canonical_name)
-        print(dtor, file=output)
+        if not '_dtorImpl' in template:
+            dtor = create_jni_dtor(scope, class_name, class_canonical_name)
+            print(dtor, file=output)
     if failed_nodes:
         print(f'C++: Failed nodes for {class_name}:', file=sys.stderr)
         for n in failed_nodes:
@@ -2042,6 +2043,7 @@ include_classes = [
 
 raii_classes = [
     'VDS$',
+    'VolumeDataPageAccessor$',
     'VolumeDataAccessManager$', 
     'VolumeDataRequest$',
     'VolumeData[2-4]D\w*Accessor\w*$',

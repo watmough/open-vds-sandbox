@@ -538,7 +538,6 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_CommitI
   }
   CPPJNI_CATCH
 }
-
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
@@ -547,12 +546,21 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_dtorImp
 
   CPPJNI_TRY
   {
+    if (is_disposing) 
+    { // Clean up 
+      auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataPageAccessor>(native_handle);
+      pInstance->Commit();
+	  
+	  // The access manager sets itself as manager from 
+	  // Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeDataPageAccessorImpl
+      auto accessManager = CPPJNIObjectContext::ensureValid(native_handle)->getManager<OpenVDS::VolumeDataAccessManager>(); // May throw
+      accessManager->FlushUploadQueue();
+      accessManager->DestroyVolumeDataPageAccessor(pInstance);
+    }
     CPPJNI_destroyHandle<OpenVDS::VolumeDataPageAccessor>(native_handle);
   }
   CPPJNI_CATCH
 }
-
-
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DInterpolatingAccessorR64_GetLayoutImpl
@@ -598,7 +606,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DInterpolatingAcce
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::FloatVector2, double>>(native_handle);
     auto result = pInstance->Region(region);
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::FloatVector2>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::FloatVector2>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -631,7 +639,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DInterpolatingAcce
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::FloatVector2, double>>(native_handle);
     auto result = pInstance->CurrentRegion();
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::FloatVector2>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::FloatVector2>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -733,7 +741,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DInterpolatingAcce
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::FloatVector2, float>>(native_handle);
     auto result = pInstance->Region(region);
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::FloatVector2>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::FloatVector2>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -766,7 +774,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DInterpolatingAcce
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::FloatVector2, float>>(native_handle);
     auto result = pInstance->CurrentRegion();
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::FloatVector2>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::FloatVector2>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -868,7 +876,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorR64_R
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector2, double>>(native_handle);
     auto result = pInstance->Region(region);
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::IntVector2>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::IntVector2>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -901,7 +909,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorR64_C
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector2, double>>(native_handle);
     auto result = pInstance->CurrentRegion();
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::IntVector2>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::IntVector2>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1003,7 +1011,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU64_R
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector2, uint64_t>>(native_handle);
     auto result = pInstance->Region(region);
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::IntVector2>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::IntVector2>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1036,7 +1044,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU64_C
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector2, uint64_t>>(native_handle);
     auto result = pInstance->CurrentRegion();
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::IntVector2>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::IntVector2>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1138,7 +1146,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorR32_R
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector2, float>>(native_handle);
     auto result = pInstance->Region(region);
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::IntVector2>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::IntVector2>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1171,7 +1179,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorR32_C
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector2, float>>(native_handle);
     auto result = pInstance->CurrentRegion();
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::IntVector2>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::IntVector2>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1273,7 +1281,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU32_R
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector2, uint32_t>>(native_handle);
     auto result = pInstance->Region(region);
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::IntVector2>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::IntVector2>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1306,7 +1314,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU32_C
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector2, uint32_t>>(native_handle);
     auto result = pInstance->CurrentRegion();
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::IntVector2>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::IntVector2>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1408,7 +1416,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU16_R
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector2, uint16_t>>(native_handle);
     auto result = pInstance->Region(region);
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::IntVector2>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::IntVector2>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1441,7 +1449,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU16_C
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector2, uint16_t>>(native_handle);
     auto result = pInstance->CurrentRegion();
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::IntVector2>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::IntVector2>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1543,7 +1551,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU8_Re
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector2, uint8_t>>(native_handle);
     auto result = pInstance->Region(region);
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::IntVector2>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::IntVector2>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1576,7 +1584,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU8_Cu
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector2, uint8_t>>(native_handle);
     auto result = pInstance->CurrentRegion();
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::IntVector2>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::IntVector2>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1678,7 +1686,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessor1Bit_
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector2, bool>>(native_handle);
     auto result = pInstance->Region(region);
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::IntVector2>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::IntVector2>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1711,7 +1719,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessor1Bit_
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector2, bool>>(native_handle);
     auto result = pInstance->CurrentRegion();
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::IntVector2>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::IntVector2>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -2359,7 +2367,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DInterpolatingAcce
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::FloatVector3, double>>(native_handle);
     auto result = pInstance->Region(region);
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::FloatVector3>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::FloatVector3>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -2392,7 +2400,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DInterpolatingAcce
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::FloatVector3, double>>(native_handle);
     auto result = pInstance->CurrentRegion();
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::FloatVector3>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::FloatVector3>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -2494,7 +2502,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DInterpolatingAcce
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::FloatVector3, float>>(native_handle);
     auto result = pInstance->Region(region);
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::FloatVector3>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::FloatVector3>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -2527,7 +2535,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DInterpolatingAcce
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::FloatVector3, float>>(native_handle);
     auto result = pInstance->CurrentRegion();
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::FloatVector3>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::FloatVector3>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -2629,7 +2637,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorR64_R
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector3, double>>(native_handle);
     auto result = pInstance->Region(region);
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::IntVector3>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::IntVector3>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -2662,7 +2670,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorR64_C
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector3, double>>(native_handle);
     auto result = pInstance->CurrentRegion();
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::IntVector3>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::IntVector3>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -2764,7 +2772,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU64_R
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector3, uint64_t>>(native_handle);
     auto result = pInstance->Region(region);
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::IntVector3>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::IntVector3>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -2797,7 +2805,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU64_C
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector3, uint64_t>>(native_handle);
     auto result = pInstance->CurrentRegion();
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::IntVector3>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::IntVector3>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -2899,7 +2907,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorR32_R
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector3, float>>(native_handle);
     auto result = pInstance->Region(region);
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::IntVector3>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::IntVector3>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -2932,7 +2940,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorR32_C
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector3, float>>(native_handle);
     auto result = pInstance->CurrentRegion();
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::IntVector3>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::IntVector3>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -3034,7 +3042,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU32_R
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector3, uint32_t>>(native_handle);
     auto result = pInstance->Region(region);
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::IntVector3>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::IntVector3>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -3067,7 +3075,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU32_C
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector3, uint32_t>>(native_handle);
     auto result = pInstance->CurrentRegion();
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::IntVector3>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::IntVector3>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -3169,7 +3177,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU16_R
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector3, uint16_t>>(native_handle);
     auto result = pInstance->Region(region);
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::IntVector3>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::IntVector3>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -3202,7 +3210,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU16_C
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector3, uint16_t>>(native_handle);
     auto result = pInstance->CurrentRegion();
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::IntVector3>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::IntVector3>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -3304,7 +3312,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU8_Re
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector3, uint8_t>>(native_handle);
     auto result = pInstance->Region(region);
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::IntVector3>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::IntVector3>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -3337,7 +3345,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU8_Cu
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector3, uint8_t>>(native_handle);
     auto result = pInstance->CurrentRegion();
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::IntVector3>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::IntVector3>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -3439,7 +3447,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessor1Bit_
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector3, bool>>(native_handle);
     auto result = pInstance->Region(region);
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::IntVector3>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::IntVector3>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -3472,7 +3480,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessor1Bit_
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector3, bool>>(native_handle);
     auto result = pInstance->CurrentRegion();
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::IntVector3>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::IntVector3>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -4120,7 +4128,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DInterpolatingAcce
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::FloatVector4, double>>(native_handle);
     auto result = pInstance->Region(region);
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::FloatVector4>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::FloatVector4>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -4153,7 +4161,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DInterpolatingAcce
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::FloatVector4, double>>(native_handle);
     auto result = pInstance->CurrentRegion();
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::FloatVector4>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::FloatVector4>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -4255,7 +4263,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DInterpolatingAcce
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::FloatVector4, float>>(native_handle);
     auto result = pInstance->Region(region);
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::FloatVector4>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::FloatVector4>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -4288,7 +4296,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DInterpolatingAcce
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::FloatVector4, float>>(native_handle);
     auto result = pInstance->CurrentRegion();
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::FloatVector4>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::FloatVector4>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -4390,7 +4398,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorR64_R
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector4, double>>(native_handle);
     auto result = pInstance->Region(region);
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::IntVector4>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::IntVector4>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -4423,7 +4431,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorR64_C
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector4, double>>(native_handle);
     auto result = pInstance->CurrentRegion();
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::IntVector4>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::IntVector4>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -4525,7 +4533,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU64_R
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector4, uint64_t>>(native_handle);
     auto result = pInstance->Region(region);
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::IntVector4>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::IntVector4>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -4558,7 +4566,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU64_C
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector4, uint64_t>>(native_handle);
     auto result = pInstance->CurrentRegion();
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::IntVector4>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::IntVector4>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -4660,7 +4668,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorR32_R
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector4, float>>(native_handle);
     auto result = pInstance->Region(region);
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::IntVector4>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::IntVector4>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -4693,7 +4701,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorR32_C
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector4, float>>(native_handle);
     auto result = pInstance->CurrentRegion();
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::IntVector4>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::IntVector4>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -4795,7 +4803,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU32_R
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector4, uint32_t>>(native_handle);
     auto result = pInstance->Region(region);
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::IntVector4>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::IntVector4>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -4828,7 +4836,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU32_C
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector4, uint32_t>>(native_handle);
     auto result = pInstance->CurrentRegion();
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::IntVector4>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::IntVector4>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -4930,7 +4938,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU16_R
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector4, uint16_t>>(native_handle);
     auto result = pInstance->Region(region);
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::IntVector4>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::IntVector4>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -4963,7 +4971,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU16_C
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector4, uint16_t>>(native_handle);
     auto result = pInstance->CurrentRegion();
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::IntVector4>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::IntVector4>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -5065,7 +5073,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU8_Re
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector4, uint8_t>>(native_handle);
     auto result = pInstance->Region(region);
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::IntVector4>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::IntVector4>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -5098,7 +5106,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU8_Cu
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector4, uint8_t>>(native_handle);
     auto result = pInstance->CurrentRegion();
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::IntVector4>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::IntVector4>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -5200,7 +5208,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessor1Bit_
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector4, bool>>(native_handle);
     auto result = pInstance->Region(region);
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::IntVector4>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::IntVector4>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -5233,7 +5241,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessor1Bit_
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector4, bool>>(native_handle);
     auto result = pInstance->CurrentRegion();
-    auto context = CPPJNI_createObjectContext(new OpenVDS::IndexRegion<OpenVDS::IntVector4>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::IndexRegion<OpenVDS::IntVector4>>(result));
     return context->handle();
   }
   CPPJNI_CATCH

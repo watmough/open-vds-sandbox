@@ -392,6 +392,40 @@ struct CPPJNIByteBufferAdapter
   operator T const& () const { return *m_Data; }
 };
 
+// Polymorphic weak_ptr wrapper
+struct CPPJNIWeakPtrWrapper
+{
+protected:
+  virtual void _lock(void* ptrToSharedPtr) const = 0;
+public:
+  virtual ~CPPJNIWeakPtrWrapper() {}
+
+  template<typename T>
+  std::shared_ptr<T>
+  lock() const
+  {
+    std::shared_ptr<T> tmp;
+    _lock(&tmp);
+    return tmp;
+  }
+};
+
+template<typename T>
+struct CPPJNIWeakPtrWrapper_t : public CPPJNIWeakPtrWrapper
+{
+  std::weak_ptr<T> m_WeakPtr;
+
+  CPPJNIWeakPtrWrapper_t(std::shared_ptr<T> sharedPtr) 
+  {
+    m_WeakPtr = sharedPtr;
+  }
+
+  void _lock(void* ptrToSharedPtr) const override
+  {
+    auto shared = reinterpret_cast<std::shared_ptr<T>*>(ptrToSharedPtr);
+    *shared = m_WeakPtr.lock();
+  }
+};
 
 struct CPPJNIObjectContext
 {
@@ -402,6 +436,8 @@ struct CPPJNIObjectContext
 
   std::vector<char*> m_AllocatedStrings;
   std::vector<jobject> m_GlobalRefs;
+  std::unique_ptr<CPPJNIWeakPtrWrapper> m_Manager;
+
   int m_SharedLibraryGeneration;
 
   CPPJNIObjectContext() : m_MagicNumber(MAGIC_NUMBER), m_OpaqueObject(nullptr), m_SharedLibraryGeneration(getSharedLibraryGeneration())
@@ -419,7 +455,49 @@ struct CPPJNIObjectContext
   virtual ~CPPJNIObjectContext();
 
   static int  getSharedLibraryGeneration();
-  void        ensureValid() const;
+  static CPPJNIObjectContext* ensureValid(CPPJNIObjectContext* context);
+  static CPPJNIObjectContext* ensureValid(jlong native_handle);
+
+  template<typename CPPJNIOBJECTCONTEXT>
+  static CPPJNIOBJECTCONTEXT*
+  ensureValid(jlong native_handle)
+  {
+    auto context = CPPJNIObjectContext::ensureValid(native_handle);
+    auto real_context = dynamic_cast<CPPJNIOBJECTCONTEXT*>(context);
+    if (real_context == nullptr)
+    {
+      throw std::runtime_error("Invalid typecast for object context.");
+    }
+    return real_context;
+  }
+
+  // Create a polymorphic weak pointer
+  template<typename T>
+  void        
+  setManager(std::shared_ptr<T> manager)
+  {
+    if (manager.get() == nullptr)
+    {
+      throw std::runtime_error("Cannot set null manager.");
+    }
+    m_Manager = std::make_unique<CPPJNIWeakPtrWrapper_t<T>>(manager);
+  }
+
+  template<typename T>
+  std::shared_ptr<T>
+  getManager() const
+  {
+    CPPJNIWeakPtrWrapper* wrapper = m_Manager.get();
+    if (wrapper != nullptr)
+    {
+      auto result = wrapper->lock<T>();
+      if (result.get() != nullptr)
+      {
+        return result;
+      }
+    }
+    throw std::runtime_error("Object has no manager");
+  }
 
   void
   registerGlobalRef(JNIEnv* env, jobject obj)
@@ -503,7 +581,7 @@ struct CPPJNIObjectContext_t : public CPPJNIObjectContext
   {
   }
 
-  CPPJNIObjectContext_t(std::shared_ptr<T> sharedPtr) : CPPJNIObjectContext_t(sharedPtr.get(), false, sharedPtr)
+  CPPJNIObjectContext_t(std::shared_ptr<T> sharedPtr) : CPPJNIObjectContext_t(sharedPtr.get(), true, sharedPtr)
   {
   }
 
@@ -611,8 +689,7 @@ CPPJNI_cast(jlong handle)
   {
     throw std::runtime_error("null handle");
   }
-  auto pContext = ((CPPJNIObjectContext_t<T>*)(handle));
-  pContext->ensureValid(); // May throw 
+  auto pContext = ((CPPJNIObjectContext_t<T>*)CPPJNIObjectContext::ensureValid(handle)); // May throw
   return pContext->getObject();
 }
 
@@ -626,8 +703,7 @@ template<typename T>
 void
 CPPJNI_destroyHandle(jlong handle)
 {
-  auto pContext = ((CPPJNIObjectContext_t<T>*)(handle));
-  pContext->ensureValid(); // May throw 
+  auto pContext = ((CPPJNIObjectContext_t<T>*)CPPJNIObjectContext::ensureValid(handle)); // May throw
   delete pContext;
 }
 

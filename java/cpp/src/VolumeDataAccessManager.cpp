@@ -348,29 +348,6 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_GetVD
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeDataPageAccessorImpl
-  (JNIEnv * env, jobject object, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jint maxPages, jlong accessMode, jint chunkMetadataPageSize)
-{
-  JNIEnvGuard
-    envGuard(env);
-
-  CPPJNI_TRY
-  {
-    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
-    auto result = pInstance->CreateVolumeDataPageAccessor(
-                               (OpenVDS::DimensionsND)dimensionsND, 
-                               LOD, 
-                               channel, 
-                               maxPages, 
-                               (enum OpenVDS::VolumeDataPageAccessor::AccessMode)accessMode, 
-                               chunkMetadataPageSize);
-    auto context = CPPJNI_createNonOwningObjectContext(result);
-    return context->handle();
-  }
-  CPPJNI_CATCH
-  return 0;
-}
-
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_DestroyVolumeDataPageAccessorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jlong volumeDataPageAccessor)
 {
@@ -401,7 +378,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 2>, double>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 2>, double>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -423,7 +400,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                channel, 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 2>, double>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 2>, double>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -446,7 +423,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 2>, float>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 2>, float>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -468,7 +445,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                channel, 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 2>, float>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 2>, float>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -490,7 +467,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, bool>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, bool>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -511,7 +488,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, bool>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, bool>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -533,7 +510,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, unsigned char>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, unsigned char>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -554,7 +531,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, unsigned char>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, unsigned char>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -576,7 +553,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, unsigned short>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, unsigned short>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -597,7 +574,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, unsigned short>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, unsigned short>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -619,7 +596,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, unsigned int>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, unsigned int>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -640,7 +617,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, unsigned int>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, unsigned int>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -662,7 +639,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, uint64_t>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, uint64_t>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -683,7 +660,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, uint64_t>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, uint64_t>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -705,7 +682,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, float>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, float>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -726,7 +703,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, float>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, float>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -748,7 +725,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, double>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, double>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -769,7 +746,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, double>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 2>, double>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -791,7 +768,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, bool>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, bool>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -812,7 +789,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, bool>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, bool>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -834,7 +811,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, unsigned char>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, unsigned char>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -855,7 +832,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, unsigned char>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, unsigned char>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -877,7 +854,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, unsigned short>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, unsigned short>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -898,7 +875,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, unsigned short>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, unsigned short>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -920,7 +897,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, unsigned int>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, unsigned int>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -941,7 +918,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, unsigned int>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, unsigned int>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -963,7 +940,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, uint64_t>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, uint64_t>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -984,7 +961,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, uint64_t>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, uint64_t>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1006,7 +983,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, float>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, float>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1027,7 +1004,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, float>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, float>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1049,7 +1026,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, double>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, double>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1070,7 +1047,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, double>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 2>, double>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1093,7 +1070,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 3>, double>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 3>, double>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1115,7 +1092,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                channel, 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 3>, double>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 3>, double>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1138,7 +1115,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 3>, float>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 3>, float>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1160,7 +1137,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                channel, 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 3>, float>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 3>, float>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1182,7 +1159,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, bool>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, bool>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1203,7 +1180,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, bool>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, bool>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1225,7 +1202,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, unsigned char>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, unsigned char>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1246,7 +1223,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, unsigned char>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, unsigned char>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1268,7 +1245,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, unsigned short>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, unsigned short>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1289,7 +1266,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, unsigned short>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, unsigned short>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1311,7 +1288,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, unsigned int>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, unsigned int>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1332,7 +1309,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, unsigned int>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, unsigned int>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1354,7 +1331,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, uint64_t>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, uint64_t>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1375,7 +1352,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, uint64_t>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, uint64_t>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1397,7 +1374,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, float>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, float>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1418,7 +1395,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, float>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, float>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1440,7 +1417,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, double>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, double>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1461,7 +1438,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, double>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 3>, double>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1483,7 +1460,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, bool>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, bool>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1504,7 +1481,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, bool>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, bool>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1526,7 +1503,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, unsigned char>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, unsigned char>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1547,7 +1524,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, unsigned char>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, unsigned char>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1569,7 +1546,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, unsigned short>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, unsigned short>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1590,7 +1567,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, unsigned short>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, unsigned short>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1612,7 +1589,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, unsigned int>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, unsigned int>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1633,7 +1610,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, unsigned int>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, unsigned int>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1655,7 +1632,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, uint64_t>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, uint64_t>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1676,7 +1653,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, uint64_t>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, uint64_t>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1698,7 +1675,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, float>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, float>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1719,7 +1696,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, float>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, float>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1741,7 +1718,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, double>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, double>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1762,7 +1739,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, double>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 3>, double>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1785,7 +1762,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 4>, double>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 4>, double>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1807,7 +1784,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                channel, 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 4>, double>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 4>, double>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1830,7 +1807,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 4>, float>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 4>, float>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1852,7 +1829,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                channel, 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 4>, float>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 4>, float>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1874,7 +1851,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, bool>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, bool>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1895,7 +1872,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, bool>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, bool>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1917,7 +1894,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, unsigned char>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, unsigned char>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1938,7 +1915,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, unsigned char>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, unsigned char>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1960,7 +1937,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, unsigned short>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, unsigned short>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1981,7 +1958,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, unsigned short>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, unsigned short>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -2003,7 +1980,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, unsigned int>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, unsigned int>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -2024,7 +2001,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, unsigned int>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, unsigned int>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -2046,7 +2023,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, uint64_t>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, uint64_t>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -2067,7 +2044,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, uint64_t>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, uint64_t>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -2089,7 +2066,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, float>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, float>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -2110,7 +2087,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, float>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, float>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -2132,7 +2109,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, double>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, double>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -2153,7 +2130,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, double>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<int, 4>, double>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -2175,7 +2152,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, bool>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, bool>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -2196,7 +2173,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, bool>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, bool>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -2218,7 +2195,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, unsigned char>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, unsigned char>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -2239,7 +2216,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, unsigned char>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, unsigned char>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -2261,7 +2238,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, unsigned short>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, unsigned short>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -2282,7 +2259,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, unsigned short>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, unsigned short>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -2304,7 +2281,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, unsigned int>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, unsigned int>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -2325,7 +2302,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, unsigned int>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, unsigned int>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -2347,7 +2324,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, uint64_t>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, uint64_t>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -2368,7 +2345,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, uint64_t>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, uint64_t>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -2390,7 +2367,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, float>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, float>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -2411,7 +2388,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, float>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, float>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -2433,7 +2410,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                channel, 
                                maxPages, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, double>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, double>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -2454,7 +2431,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                LOD, 
                                channel, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, double>(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataReadWriteAccessor<OpenVDS::Vector<int, 4>, double>>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -3715,6 +3692,36 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
 }
 
 */
+
+///AUTOGEN-IGNORE: CXX_METHOD CreateVolumeDataPageAccessor OpenVDS::VolumeDataPageAccessor *(OpenVDS::DimensionsND, int, int, int, OpenVDS::VolumeDataPageAccessor::AccessMode, int) FUNCTIONPROTO
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeDataPageAccessorImpl
+  (JNIEnv * env, jobject object, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jint maxPages, jlong accessMode, jint chunkMetadataPageSize)
+{
+  JNIEnvGuard
+    envGuard(env);
+
+  CPPJNI_TRY
+  {
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto result = pInstance->CreateVolumeDataPageAccessor(
+                               (OpenVDS::DimensionsND)dimensionsND, 
+                               LOD, 
+                               channel, 
+                               maxPages, 
+                               (enum OpenVDS::VolumeDataPageAccessor::AccessMode)accessMode, 
+                               chunkMetadataPageSize);
+    auto context = CPPJNI_createNonOwningObjectContext(result);
+
+    // The PageAccessor must at present be destroyed through the manager, so we must provide that context for later
+    auto managerContext = CPPJNIObjectContext::ensureValid<CPPJNIObjectContext_t<OpenVDS::VolumeDataAccessManager>>(native_handle);
+    context->setManager(managerContext->m_SharedPtr);
+
+    return context->handle();
+  }
+  CPPJNI_CATCH
+  return 0;
+}
+
 
 
 JNIEXPORT jbyteArray JNICALL Java_org_opengroup_openvds_VolumeDataRequest1Bit_DataImpl

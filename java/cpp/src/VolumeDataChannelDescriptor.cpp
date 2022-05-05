@@ -579,7 +579,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_T
                                valueRangeMax, 
                                mappedValueCount, 
                                (enum OpenVDS::VolumeDataChannelDescriptor::Flags)flags);
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataChannelDescriptor(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataChannelDescriptor>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -604,7 +604,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_T
                                mappedValueCount, 
                                (enum OpenVDS::VolumeDataChannelDescriptor::Flags)flags, 
                                noValue);
-    auto context = CPPJNI_createObjectContext(new OpenVDS::VolumeDataChannelDescriptor(result));
+    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataChannelDescriptor>(result));
     return context->handle();
   }
   CPPJNI_CATCH

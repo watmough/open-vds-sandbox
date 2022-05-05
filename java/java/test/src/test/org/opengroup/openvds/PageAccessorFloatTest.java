@@ -221,10 +221,7 @@ public class PageAccessorFloatTest {
                 inputPage.release();
                 page.release();
             }
-            pageAccessor.commit();
-            accessManager.flushUploadQueue();
-            accessManager.destroyVolumeDataPageAccessor(pageAccessor);
-
+            pageAccessor.close();
             vdsCopy.close();
     }
 
@@ -282,9 +279,7 @@ public class PageAccessorFloatTest {
                 assertWithinRange(dataIn, -1.0f, 1.0f);
                 assertWithinRange(dataOut, -1.0f, 1.0f);
             }
-
-            accessManager.destroyVolumeDataPageAccessor(pageAccessor);
-
+            pageAccessor.close();
             vdsCopy.close();
     }
 
@@ -332,9 +327,7 @@ public class PageAccessorFloatTest {
 
                 inputPage.release();
             }
-
-            accessManager.destroyVolumeDataPageAccessor(pageAccessor);
-
+            pageAccessor.close();
             vdsCopy.close();
     }
 }

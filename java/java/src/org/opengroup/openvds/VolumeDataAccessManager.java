@@ -110,18 +110,6 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return createVolumeDataPageAccessor(dimensionsND, LOD, channel, maxPages, accessMode, /*chunkMetadataPageSize=*/1024);
     }
 
-    ///AUTOGEN-OK: CXX_METHOD DestroyVolumeDataPageAccessor void (OpenVDS::VolumeDataPageAccessor *) FUNCTIONPROTO
-    native private void DestroyVolumeDataPageAccessorImpl(long native_object, long volumeDataPageAccessor);
-
-    /**
-     * Destroy a volume data page accessor object.
-     * 
-     * @param volumeDataPageAccessor The VolumeDataPageAccessor object to destroy.
-     */
-    public void destroyVolumeDataPageAccessor(VolumeDataPageAccessor volumeDataPageAccessor) {
-        DestroyVolumeDataPageAccessorImpl(getNativeObject(), ManagedBase.requireNonNull(volumeDataPageAccessor, "volumeDataPageAccessor may not be null").getNativeObject());
-    }
-
     ///AUTOGEN-OK: CXX_METHOD CreateVolumeData2DInterpolatingAccessorR64 OpenVDS::VolumeDataReadAccessor<OpenVDS::Vector<float, 2>, double> (OpenVDS::DimensionsND, int, int, OpenVDS::InterpolationMethod, int, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long CreateVolumeData2DInterpolatingAccessorR64Impl(long native_object, long dimensionsND, int LOD, int channel, long interpolationMethod, int maxPages, float replacementNoValue, boolean use_replacementNoValue);
     public VolumeData2DInterpolatingAccessorR64 createVolumeData2DInterpolatingAccessorR64(DimensionsND dimensionsND, int LOD, int channel, InterpolationMethod interpolationMethod, int maxPages, Float replacementNoValue) {
@@ -2939,4 +2927,6 @@ of the number of chunks in some of the dimensions. Do not change this from the d
 		return new DownloadError(arr);
 	}
 
+	// This is now called implicitly when closing/disposing the VolumeDataPageAccessor:
+	///AUTOGEN-IGNORE: CXX_METHOD DestroyVolumeDataPageAccessor void (OpenVDS::VolumeDataPageAccessor *) FUNCTIONPROTO
 }
