@@ -633,7 +633,7 @@ void WaveletDecompressor::InverseTransform(float *source)
   int32_t tempBufferSize = ((m_bandSize[0][0] + 3) & ~3) * (m_bandSize[0][1]) * (m_bandSize[0][2]);
   std::vector<float> tempBuffer(tempBufferSize);
 
-  WaveletTransform_InverseTransform(tempBuffer.data(), tempBufferSize, source, m_transformIterations, m_bandSize, m_transformMask, m_allocatedSizeX, m_allocatedSizeXY, m_integerInfo);
+  WaveletTransform_InverseTransform_SSE(Wavelet_GetEffectiveOpenMPThreadCount(WAVELET_OPENMP_SSE_THREAD_COUNT), tempBuffer.data(), tempBufferSize, source, m_transformIterations, m_bandSize, m_transformMask, m_allocatedSizeX, m_allocatedSizeXY, m_integerInfo);
 }
 
 #else

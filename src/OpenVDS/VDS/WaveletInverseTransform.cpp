@@ -233,7 +233,7 @@ void Wavelet_CreateTransformData(Wavelet_TransformData *transformData, IntVector
 
 #ifdef ENABLE_SSE_TRANSFORM
 
-void WaveletTransform_InverseTransform(float* tempBuffer, int32_t tempBufferSize, float* source, int32_t transformIterations, const IntVector3(&bandSize)[TRANSFORM_MAX_ITERATIONS + 1], const int32_t(&transformMask)[TRANSFORM_MAX_ITERATIONS], int32_t allocatedSizeX, int32_t allocatedSizeXY, uint32_t integerInfo)
+void WaveletTransform_InverseTransform_SSE(int32_t threadCount, float* tempBuffer, int32_t tempBufferSize, float* source, int32_t transformIterations, const IntVector3(&bandSize)[TRANSFORM_MAX_ITERATIONS + 1], const int32_t(&transformMask)[TRANSFORM_MAX_ITERATIONS], int32_t allocatedSizeX, int32_t allocatedSizeXY, uint32_t integerInfo)
 {
   assert(tempBufferSize >= ((bandSize[0][0] + 3) & ~3) * (bandSize[0][1]) * (bandSize[0][2]));
 
@@ -265,8 +265,6 @@ void WaveletTransform_InverseTransform(float* tempBuffer, int32_t tempBufferSize
 
     float *read = source;
     float *write = tempBuffer;
-
-    const int threadCount = Wavelet_GetEffectiveOpenMPThreadCount(WAVELET_OPENMP_SSE_THREAD_COUNT);
 
     if (transformMaskCurr == 7)
     {
@@ -362,7 +360,7 @@ void WaveletTransform_InverseTransform(float* tempBuffer, int32_t tempBufferSize
   }
 }
 
-#else
+#endif
 
 static void GetLine(float *write, float *read, int32_t length, int32_t modulo)
 {
@@ -625,7 +623,5 @@ void WaveletTransform_InverseTransform(float* source, int32_t transformIteration
     }
   }
 }
-
-#endif
 
 }
