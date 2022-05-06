@@ -201,30 +201,28 @@ public class CreateVDS {
 
         float compressionTolerance = 0.01f;
         CompressionMethod compressionMethod = OpenVDS.isCompressionMethodSupported(CompressionMethod.Wavelet) ? CompressionMethod.Wavelet : CompressionMethod.None;
-        VDS vds = OpenVDS.create(options, layoutDescriptor, axisDescriptors.toArray(new VolumeDataAxisDescriptor[0]), channelDescriptors.toArray(new VolumeDataChannelDescriptor[0]), metadataContainer, compressionMethod, compressionTolerance);
+        try (VDS vds = OpenVDS.create(options, layoutDescriptor, axisDescriptors.toArray(new VolumeDataAxisDescriptor[0]), channelDescriptors.toArray(new VolumeDataChannelDescriptor[0]), metadataContainer, compressionMethod, compressionTolerance);
+            VolumeDataAccessManager accessManager = vds.getAccessManager()) {
 
-        VolumeDataLayout layout = vds.getLayout();
-        VolumeDataAccessManager accessManager = vds.getAccessManager();
+            VolumeDataLayout layout = vds.getLayout();
 
-        int channel = 0;
+            int channel = 0;
 
-        int lodCount = lodLevels.ordinal();
+            int lodCount = lodLevels.ordinal();
 
-        System.out.println("\nCreate 3D dimension group (012)");
-        createDimensionGroup(distMax, cycles, midX, midY, midZ, layout, accessManager, channel, lodCount, Dimensions_012);
+            System.out.println("\nCreate 3D dimension group (012)");
+            createDimensionGroup(distMax, cycles, midX, midY, midZ, layout, accessManager, channel, lodCount, Dimensions_012);
 
-        // Adds slice data : additional layers
-        System.out.println("\nCreate 2D dimension group (01)");
-        createDimensionGroup(distMax, cycles, midX, midY, midZ, layout, accessManager, channel, create2DLODs ? lodCount : 0, Dimensions_01);
+            // Adds slice data : additional layers
+            System.out.println("\nCreate 2D dimension group (01)");
+            createDimensionGroup(distMax, cycles, midX, midY, midZ, layout, accessManager, channel, create2DLODs ? lodCount : 0, Dimensions_01);
 
-        System.out.println("\nCreate 2D dimension group (02)");
-        createDimensionGroup(distMax, cycles, midX, midY, midZ, layout, accessManager, channel, create2DLODs ? lodCount : 0, Dimensions_02);
+            System.out.println("\nCreate 2D dimension group (02)");
+            createDimensionGroup(distMax, cycles, midX, midY, midZ, layout, accessManager, channel, create2DLODs ? lodCount : 0, Dimensions_02);
 
-        System.out.println("\nCreate 2D dimension group (12)");
-        createDimensionGroup(distMax, cycles, midX, midY, midZ, layout, accessManager, channel, create2DLODs ? lodCount : 0, Dimensions_12);
-
-        vds.close();
-        System.out.println("VDS closed");
+            System.out.println("\nCreate 2D dimension group (12)");
+            createDimensionGroup(distMax, cycles, midX, midY, midZ, layout, accessManager, channel, create2DLODs ? lodCount : 0, Dimensions_12);
+        }
     }
 
     private static void createDimensionGroup(double distMax, double cycles, double midX, double midY, double midZ, VolumeDataLayout layout, VolumeDataAccessManager accessManager, int channel, int lodCount, DimensionsND dimensionGroup) {
@@ -234,36 +232,37 @@ public class CreateVDS {
         int[] chunkPitch = new int[Dimensionality_Max];
         String header = dimensionGroup.toString();
         for (int lod = 0 ; lod <= lodCount ; ++lod) {
-            VolumeDataPageAccessor pageAccessor = accessManager.createVolumeDataPageAccessor(dimensionGroup, lod, channel, 200, AccessMode_Create);
-            int chunkCount = (int) pageAccessor.getChunkCount();
-            System.out.println(header + " LOD : " + lod + " Chunk count :  " + chunkCount);
-            for (int i = 0; i < chunkCount; i++) {
-                try (VolumeDataPage page = pageAccessor.createPage(i)) {
-                    FloatBuffer buffer = page.getWritableBuffer(chunkSize, chunkPitch).asFloatBuffer();
-                    System.out.print(header + " LOD : " + lod + " / Page " + (i + 1) + " / " + chunkCount);
-                    float valueRangeScale = pageAccessor.getLayout().getChannelValueRangeMax(channel) - pageAccessor.getLayout().getChannelValueRangeMin(channel);
-                    page.getMinMax(chunkMin, chunkMax);
-                    System.out.print("\t" + header + " Chunk : [" + chunkSize[0] + ", " + chunkSize[1] + ", " + chunkSize[2] + "]");
+            try (VolumeDataPageAccessor pageAccessor = accessManager.createVolumeDataPageAccessor(dimensionGroup, lod, channel, 200, AccessMode_Create)) {
+                int chunkCount = (int) pageAccessor.getChunkCount();
+                System.out.println(header + " LOD : " + lod + " Chunk count :  " + chunkCount);
+                for (int i = 0; i < chunkCount; i++) {
+                    try (VolumeDataPage page = pageAccessor.createPage(i)) {
+                        FloatBuffer buffer = page.getWritableBuffer(chunkSize, chunkPitch).asFloatBuffer();
+                        System.out.print(header + " LOD : " + lod + " / Page " + (i + 1) + " / " + chunkCount);
+                        float valueRangeScale = pageAccessor.getLayout().getChannelValueRangeMax(channel) - pageAccessor.getLayout().getChannelValueRangeMin(channel);
+                        page.getMinMax(chunkMin, chunkMax);
+                        System.out.print("\t" + header + " Chunk : [" + chunkSize[0] + ", " + chunkSize[1] + ", " + chunkSize[2] + "]");
 
-                    System.out.print("\tCoords page : " + chunkMin[0] + "/" + chunkMax[0] + " " + chunkMin[1] + "/" + chunkMax[1] + "/" + chunkMin[2] + "/" + chunkMax[2]);
+                        System.out.print("\tCoords page : " + chunkMin[0] + "/" + chunkMax[0] + " " + chunkMin[1] + "/" + chunkMax[1] + "/" + chunkMin[2] + "/" + chunkMax[2]);
 
-                    float[] output = new float[buffer.capacity()];
+                        float[] output = new float[buffer.capacity()];
 
-                    System.out.print(" Page Buffer Size : " + output.length);// + " / [" + stats.getMin() + "," + stats.getMax() + "]");
+                        System.out.print(" Page Buffer Size : " + output.length);// + " / [" + stats.getMin() + "," + stats.getMax() + "]");
 
-                    // Buffer dimensions
-                    System.out.println(" Size : [" + chunkSize[0] + ", " + chunkSize[1] + ", " + chunkSize[2] + "]");
-                    System.out.println(" Pitch : [" + chunkPitch[0] + ", " + chunkPitch[1] + "," + chunkPitch[2] + "]");
+                        // Buffer dimensions
+                        System.out.println(" Size : [" + chunkSize[0] + ", " + chunkSize[1] + ", " + chunkSize[2] + "]");
+                        System.out.println(" Pitch : [" + chunkPitch[0] + ", " + chunkPitch[1] + "," + chunkPitch[2] + "]");
 
-                    long time_2 = System.currentTimeMillis();
+                        long time_2 = System.currentTimeMillis();
 
-                    fillChunk(distMax, cycles, midX, midY, midZ, chunkMin, chunkSize, chunkPitch, lod, output);
+                        fillChunk(distMax, cycles, midX, midY, midZ, chunkMin, chunkSize, chunkPitch, lod, output);
 
-                    // write buffer then release page
-                    buffer.put(output);
+                        // write buffer then release page
+                        buffer.put(output);
+                    }
                 }
             }
-            pageAccessor.close();
+            accessManager.flushUploadQueue();
         }
     }
 
@@ -328,5 +327,4 @@ public class CreateVDS {
         }
         return res;
     }
-
 }

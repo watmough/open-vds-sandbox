@@ -1,20 +1,17 @@
 import org.opengroup.openvds.*;
-import org.testng.annotations.Test;
 
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.EnumSet;
 
-import static org.opengroup.openvds.DimensionsND.Dimensions_01;
-import static org.opengroup.openvds.DimensionsND.Dimensions_012;
-import static org.opengroup.openvds.VolumeDataComponents.Components_1;
-import static org.opengroup.openvds.VolumeDataLayoutDescriptor.BrickSize.BrickSize_1024;
-import static org.opengroup.openvds.VolumeDataLayoutDescriptor.BrickSize.BrickSize_128;
-import static org.opengroup.openvds.VolumeDataLayoutDescriptor.LODLevels.LODLevels_None;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.fail;
+import static org.opengroup.openvds.DimensionsND.*;
+import static org.opengroup.openvds.VolumeDataComponents.*;
+import static org.opengroup.openvds.VolumeDataLayoutDescriptor.BrickSize.*;
+import static org.opengroup.openvds.VolumeDataLayoutDescriptor.LODLevels.*;
 import static org.opengroup.openvds.VolumeDataFormat.*;
+
+import static org.testng.Assert.*;
 
 public class WriteDataDemo {
     public static void main(String[] args) throws IOException {
@@ -180,7 +177,7 @@ public class WriteDataDemo {
                 assertEquals(arr[1], src1[1], 1e-6);
                 assertEquals(arr[nx], src1[nx], 1e-6);
             } catch (Exception e) {
-                fail(e.getMessage());
+                System.err.println(e.getMessage());
             }
         }
     }
@@ -210,7 +207,6 @@ public class WriteDataDemo {
 
         double[] src1 = r.doubles(nx * ny * nz).toArray();
 
-
         float[] src2 = new float[src1.length];
         for (int i = 0; i < src2.length; i++)
             src2[i] = i;
@@ -223,6 +219,7 @@ public class WriteDataDemo {
 
         try (VDS vds2 = OpenVDS.open(options, vdsError);
              VolumeDataAccessManager access = vds2.getAccessManager();) {
+
             VolumeDataLayout layout = vds2.getLayout();
             int[] min = new int[]{0, 0, 0, 0, 0, 0};
             int[] max = new int[]{nz, ny, nx, 0, 0, 0};
@@ -238,7 +235,7 @@ public class WriteDataDemo {
                 assertEquals(arr[nx * ny], src2[nx * ny], 1e-6);
                 assertEquals(arr[nx * ny * nz - 42], src2[nx * ny * nz - 42], 1e-6);
             } catch (Exception e) {
-                fail(e.getMessage());
+                System.err.println(e.getMessage());
             }
         }
     }

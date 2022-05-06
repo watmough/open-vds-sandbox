@@ -186,12 +186,9 @@ public class SliceDump {
         System.out.println("Library: " + OpenVDS.getOpenVDSName() + " v" + OpenVDS.getOpenVDSVersion() + " rev. " + OpenVDS.getOpenVDSRevision());
 
         try (VDS generator = open(parameters)) {
-
             VolumeDataLayout layout = generator.getLayout();
             printLayout(layout);
-
             try (VolumeDataAccessManager accessManager = generator.getAccessManager()) {
-
                 int[] axis_mapper = getAxisMapping(parameters.axis);
                 System.out.println("\nUsing axis mapping " + axis_mapper[0] + "," + axis_mapper[1] + "," + axis_mapper[2]);
                 int[] sampleCount = new int[3];
@@ -259,7 +256,6 @@ public class SliceDump {
     }
 
     static void printLayout(VolumeDataLayout layout) {
-
         System.out.println("\nVolumeDataLayout");
         System.out.println("GetContentsHash = " + layout.getContentsHash());
         System.out.println("getDimensionality = " + layout.getDimensionality());
@@ -384,8 +380,9 @@ public class SliceDump {
                                 System.out.print(" value : " + layout.getMetadataString(k.getCategory(), k.getName()));
                             else
                                 System.out.print(" no values");
+                            break;
                         default:
-                            System.out.println("Unmanaged key type");
+                            System.out.print("Unhandled key type");
                     }
                     System.out.println();
                 });

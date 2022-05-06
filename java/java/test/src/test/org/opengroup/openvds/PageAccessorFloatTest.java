@@ -328,6 +328,7 @@ public class PageAccessorFloatTest {
                 inputPage.release();
             }
             pageAccessor.close();
+            accessManager.flushUploadQueue();
             vdsCopy.close();
     }
 }

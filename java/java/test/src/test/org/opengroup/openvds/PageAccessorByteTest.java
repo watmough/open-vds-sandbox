@@ -289,20 +289,20 @@ public class PageAccessorByteTest {
 
 //            testCopyPageAccessor();
 
-            String tmpDir = System.getProperty("java.io.tmpdir");
-            String vdsPath = tmpDir + File.separator + tempVdsCopyFileName;
-            VDSFileOpenOptions options = new VDSFileOpenOptions(vdsPath);
-            VDS vdsCopy = OpenVDS.open(options, vdserror);
-            VolumeDataAccessManager accessManager = vdsCopy.getAccessManager();
-
-            int channel = 0;
+        String tmpDir = System.getProperty("java.io.tmpdir");
+        String vdsPath = tmpDir + File.separator + tempVdsCopyFileName;
+        VDSFileOpenOptions options = new VDSFileOpenOptions(vdsPath);
+        int channel = 0;
+        try (VDS vdsCopy = OpenVDS.open(options, vdserror);
+             VolumeDataAccessManager accessManager = vdsCopy.getAccessManager();
+             VolumeDataPageAccessor pageAccessor = accessManager.createVolumeDataPageAccessor(
+                     Dimensions_012, // dimension ND
+                     0, // lod
+                     channel, // channel
+                     20, // max pages
+                     AccessMode_ReadOnly); // access mode
+        ) {
             VolumeDataLayout layout = vdsCopy.getLayout();
-            VolumeDataPageAccessor pageAccessor = accessManager.createVolumeDataPageAccessor(
-                    Dimensions_012, // dimension ND
-                    0, // lod
-                    channel, // channel
-                    20, // max pages
-                    AccessMode_ReadOnly); // access mode
 
             // compares block data
             int[] chunkMin = new int[VolumeDataLayout.Dimensionality_Max];
@@ -310,12 +310,12 @@ public class PageAccessorByteTest {
             int[] chunkMaxPos = new int[VolumeDataLayout.Dimensionality_Max];
 
             long chunkCount = pageAccessor.getChunkCount();
-            for (long chunk = 0 ; chunk < chunkCount ; ++chunk) {
+            for (long chunk = 0; chunk < chunkCount; ++chunk) {
                 VolumeDataPage inputPage = pageAccessor.readPage(chunk);
 
                 // check that chunk index matches current index
                 inputPage.getMinMaxExcludingMargin(chunkMin, chunkMax);
-                for (int i = 0 ; i < VolumeDataLayout.Dimensionality_Max ; ++i) {
+                for (int i = 0; i < VolumeDataLayout.Dimensionality_Max; ++i) {
                     chunkMaxPos[i] = chunkMax[i] != 0 ? chunkMax[i] - 1 : chunkMax[i];
                 }
                 long idxChMin = pageAccessor.getChunkIndex(chunkMin);
@@ -326,8 +326,7 @@ public class PageAccessorByteTest {
 
                 inputPage.release();
             }
-            pageAccessor.close();
-            vdsCopy.close();
+        }
     }
 }
  

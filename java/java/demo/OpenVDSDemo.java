@@ -35,8 +35,8 @@ public class OpenVDSDemo {
 
     static void process(String[] args) throws Exception {
         String url = null;
-        String connection = null;
-        for (int i = 1; i < args.length; i+=2)
+        String connection = "";
+        for (int i = 0; i < args.length; i+=2)
         {
             if (args[i].equals("--url"))
                 url = args[i+1];
@@ -59,67 +59,64 @@ public class OpenVDSDemo {
         }
         else
         {
-            System.out.println("Create MemoryVdsGenerator...");
+            System.out.println("Create InMemoryVdsGenerator...");
             vds = new InMemoryVDSGenerator(nXSamples, nYSamples, nZSamples, format).getVDS();
         }
-
         VolumeDataLayout layout = vds.getLayout();
         printLayout(layout);
+        try (VolumeDataAccessManager accessManager = vds.getAccessManager()) {
+            int[] axis_mapper = {0, 1, 2};
+            int[] sampleCount = new int[3];
+            sampleCount[0] = layout.getDimensionNumSamples(axis_mapper[0]);
+            sampleCount[1] = layout.getDimensionNumSamples(axis_mapper[1]);
+            sampleCount[2] = layout.getDimensionNumSamples(axis_mapper[2]);
 
-        VolumeDataAccessManager accessManager = vds.getAccessManager();
+            System.out.println("\nFound data set with sample count "
+                    + sampleCount[0] + "x" + sampleCount[1] + "x" + sampleCount[2]);
 
-        int[] axis_mapper = {0, 1, 2};
-        int[] sampleCount = new int[3];
-        sampleCount[0] = layout.getDimensionNumSamples(axis_mapper[0]);
-        sampleCount[1] = layout.getDimensionNumSamples(axis_mapper[1]);
-        sampleCount[2] = layout.getDimensionNumSamples(axis_mapper[2]);
+            System.out.println("\nCreate request for samples...");
 
-        System.out.println("\nFound data set with sample count "
-                + sampleCount[0] + "x" + sampleCount[1] + "x" + sampleCount[2]);
+            axis_position = sampleCount[0] / 2;
+            axis_position = Math.max(0, axis_position);
+            axis_position = Math.min(sampleCount[0], axis_position);
 
-        System.out.println("\nCreate request for samples...");
+            float x_sample_shift = (float) sampleCount[1] / output_width;
+            float y_sample_shift = (float) sampleCount[2] / output_height;
+            final int elemSize = VolumeDataLayout.Dimensionality_Max;
+            final int elemCount = output_width * output_height;
+            float[] samples = new float[elemCount * elemSize];
 
-        axis_position = sampleCount[0] / 2;
-        axis_position = Math.max(0, axis_position);
-        axis_position = Math.min(sampleCount[0], axis_position);
-
-        float x_sample_shift = (float) sampleCount[1] / output_width;
-        float y_sample_shift = (float) sampleCount[2] / output_height;
-        final int elemSize = VolumeDataLayout.Dimensionality_Max;
-        final int elemCount = output_width * output_height;
-        float[] samples = new float[elemCount * elemSize];
-
-        for (int y = 0; y < output_height; y++) {
-            float y_pos = y * y_sample_shift + 0.5f;
-            for (int x = 0; x < output_width; x++) {
-                float x_pos = x * x_sample_shift + 0.5f;
-                int offset = (y * output_width + x) * elemSize;
-                samples[offset + axis_mapper[0]] = axis_position + 0.5f;
-                samples[offset + axis_mapper[1]] = x_pos;
-                samples[offset + axis_mapper[2]] = y_pos;
-            }
-        }
-
-        System.out.println("Request samples from VolumeDataAccessManager...");
-        try (VolumeDataRequest request = accessManager.requestVolumeSamples(DimensionsND.Dimensions_012, 0, 0, samples, InterpolationMethod.Linear)) {
-            System.out.println("Wait for request completion...");
-            while (!request.waitForCompletion(100)) {
-                if (request.isCanceled()) throw new RuntimeException("Cancelled job");
-
-                // Timeout, so let display progress
-                final float completionFactor = request.getCompletionFactor();
-                System.out.println("Completion : " + completionFactor * 100. + " %");
+            for (int y = 0; y < output_height; y++) {
+                float y_pos = y * y_sample_shift + 0.5f;
+                for (int x = 0; x < output_width; x++) {
+                    float x_pos = x * x_sample_shift + 0.5f;
+                    int offset = (y * output_width + x) * elemSize;
+                    samples[offset + axis_mapper[0]] = axis_position + 0.5f;
+                    samples[offset + axis_mapper[1]] = x_pos;
+                    samples[offset + axis_mapper[2]] = y_pos;
+                }
             }
 
-            System.out.println("Create bitmap " + output_width + "x" + output_height + " from samples...");
-            String outFileName = "OpenVdsDemo_Output.bmp";
-            FloatBuffer data = request.getBuffer().asFloatBuffer();
-            float[] floats = new float[data.capacity()];
-            data.get(floats);
-            writeBitmap(outFileName, layout, floats, output_width, output_height);
-            System.out.println("Picture is written to file: " + outFileName);
-        }
+            System.out.println("Request samples from VolumeDataAccessManager...");
+            try (VolumeDataRequest request = accessManager.requestVolumeSamples(DimensionsND.Dimensions_012, 0, 0, samples, InterpolationMethod.Linear)) {
+                System.out.println("Wait for request completion...");
+                while (!request.waitForCompletion(100)) {
+                    if (request.isCanceled()) throw new RuntimeException("Cancelled job");
 
+                    // Timeout, so let display progress
+                    final float completionFactor = request.getCompletionFactor();
+                    System.out.println("Completion : " + completionFactor * 100. + " %");
+                }
+
+                System.out.println("Create bitmap " + output_width + "x" + output_height + " from samples...");
+                String outFileName = "OpenVdsDemo_Output.bmp";
+                FloatBuffer data = request.getBuffer().asFloatBuffer();
+                float[] floats = new float[data.capacity()];
+                data.get(floats);
+                writeBitmap(outFileName, layout, floats, output_width, output_height);
+                System.out.println("Picture is written to file: " + outFileName);
+            }
+        }
         vds.close();
         System.out.println("Finished");
     }
@@ -250,8 +247,9 @@ public class OpenVDSDemo {
                                 System.out.print(" value : " + layout.getMetadataString(k.getCategory(), k.getName()));
                             else
                                 System.out.print(" no values");
+                            break;
                         default:
-                            System.out.println("Unmanaged key type");
+                            System.out.print("Unhandled key type");
                     }
                     System.out.println();
                 });
