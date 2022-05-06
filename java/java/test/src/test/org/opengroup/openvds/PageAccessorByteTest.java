@@ -17,9 +17,6 @@
 
 package test.org.opengroup.openvds;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-
 import org.opengroup.openvds.*;
 
 import java.io.File;
@@ -126,11 +123,9 @@ public class PageAccessorByteTest {
                 100, // max pages
                 AccessMode_Create); // access mode
 
-        VolumeDataPage page = pageAccessor.createPage(0);
-/*
-        VolumeIndexer3D outputIndexer = new  VolumeIndexer3D(page, 0, 0, DimENSIONS_012.ordinal(), layout);
-        outputIndexer.finalize();
-        */
+        try (VolumeDataPage page = pageAccessor.createPage(0)) {
+
+        }
 
         vdsTest.close();
     }
@@ -138,87 +133,84 @@ public class PageAccessorByteTest {
     @Test
     public void testCopyPageAccessor() {
 
-            String tmpDir = System.getProperty("java.io.tmpdir");
-            String vdsPath = tmpDir + File.separator + tempVdsCopyFileName;
-            VDSFileOpenOptions options = new VDSFileOpenOptions(vdsPath);
+        String tmpDir = System.getProperty("java.io.tmpdir");
+        String vdsPath = tmpDir + File.separator + tempVdsCopyFileName;
+        VDSFileOpenOptions options = new VDSFileOpenOptions(vdsPath);
 
-            // copy information from input VDS
-            VolumeDataLayoutDescriptor cpLd = new VolumeDataLayoutDescriptor(
-                    ld.getBrickSize(),
-                    ld.getNegativeMargin(),
-                    ld.getPositiveMargin(),
-                    ld.getBrickSizeMultiplier2D(),
-                    ld.getLODLevels(),
-                    ld.getOptions(),
-                    ld.getFullResolutionDimension()
-            );
+        // copy information from input VDS
+        VolumeDataLayoutDescriptor cpLd = new VolumeDataLayoutDescriptor(
+                ld.getBrickSize(),
+                ld.getNegativeMargin(),
+                ld.getPositiveMargin(),
+                ld.getBrickSizeMultiplier2D(),
+                ld.getLODLevels(),
+                ld.getOptions(),
+                ld.getFullResolutionDimension()
+        );
 
-            VolumeDataAxisDescriptor[] cpVda = new VolumeDataAxisDescriptor[3];
-            for (int i = 0 ; i < 3 ; ++i) {
-                cpVda[i] = new VolumeDataAxisDescriptor(vda[i].getNumSamples(),
-                        vda[i].getName(), vda[i].getUnit(),
-                        vda[i].getCoordinateMin(), vda[i].getCoordinateMax());
-            }
+        VolumeDataAxisDescriptor[] cpVda = new VolumeDataAxisDescriptor[3];
+        for (int i = 0; i < 3; ++i) {
+            cpVda[i] = new VolumeDataAxisDescriptor(vda[i].getNumSamples(),
+                    vda[i].getName(), vda[i].getUnit(),
+                    vda[i].getCoordinateMin(), vda[i].getCoordinateMax());
+        }
 
+        VolumeDataChannelDescriptor[] cpVdc = new VolumeDataChannelDescriptor[1];
+        cpVdc[0] = new VolumeDataChannelDescriptor(
+                vdc[0].getFormat(),
+                vdc[0].getComponents(),
+                vdc[0].getName(),
+                vdc[0].getUnit(),
+                vdc[0].getValueRangeMin(), vdc[0].getValueRangeMax(),
+                vdc[0].getMapping(),
+                vdc[0].getMappedValueCount(),
+                vdc[0].getFlags(),
+                vdc[0].getNoValue(),
+                vdc[0].getIntegerScale(),
+                vdc[0].getIntegerOffset()
+        );
+        MetadataContainer cpMetadataContainer = new MetadataContainer();
+        VDS vdsCopy = OpenVDS.create(options, cpLd,
+                cpVda,
+                cpVdc,
+                cpMetadataContainer,
+                vdserror);
 
-            VolumeDataChannelDescriptor[] cpVdc = new VolumeDataChannelDescriptor[1];
-            cpVdc[0] = new VolumeDataChannelDescriptor(
-                    vdc[0].getFormat(),
-                    vdc[0].getComponents(),
-                    vdc[0].getName(),
-                    vdc[0].getUnit(),
-                    vdc[0].getValueRangeMin(), vdc[0].getValueRangeMax(),
-                    vdc[0].getMapping(),
-                    vdc[0].getMappedValueCount(),
-                    vdc[0].getFlags(),
-                    vdc[0].getNoValue(),
-                    vdc[0].getIntegerScale(),
-                    vdc[0].getIntegerOffset()
-            );
-            MetadataContainer cpMetadataContainer = new MetadataContainer();
-            VDS vdsCopy = OpenVDS.create(options, cpLd,
-                    cpVda,
-                    cpVdc,
-                    cpMetadataContainer,
-                    vdserror);
+        VolumeDataAccessManager accessManager = vdsCopy.getAccessManager();
 
-            VolumeDataAccessManager accessManager = vdsCopy.getAccessManager();
-            //ASSERT_TRUE(accessManager);
+        int channel = 0;
+        VolumeDataPageAccessor pageAccessor = accessManager.createVolumeDataPageAccessor(
+                Dimensions_012, // dimension ND
+                0, // lod
+                channel, // channel
+                100, // max pages
+                AccessMode_Create); // access mode
 
-            int channel = 0;
-            VolumeDataPageAccessor pageAccessor = accessManager.createVolumeDataPageAccessor(
-                    Dimensions_012, // dimension ND
-                    0, // lod
-                    channel, // channel
-                    100, // max pages
-                    AccessMode_Create); // access mode
+        // get input manager
+        VolumeDataAccessManager inputAM = vds.getAccessManager();
+        VolumeDataPageAccessor pageAccessorInput = inputAM.createVolumeDataPageAccessor(
+                Dimensions_012, // dimension ND
+                0, // lod
+                channel, // channel
+                100, // max pages
+                AccessMode_ReadOnly); // access mode
 
-            // get input manager
-            VolumeDataAccessManager inputAM = vds.getAccessManager();
-            VolumeDataPageAccessor pageAccessorInput = inputAM.createVolumeDataPageAccessor(
-                    Dimensions_012, // dimension ND
-                    0, // lod
-                    channel, // channel
-                    100, // max pages
-                    AccessMode_ReadOnly); // access mode
-
-            // copy file
-            int[] pitch = new int[VolumeDataLayout.Dimensionality_Max];
-            long chunkCount = pageAccessorInput.getChunkCount();
-            for (long chunk = 0 ; chunk < chunkCount ; ++chunk) {
-                VolumeDataPage inputPage = pageAccessorInput.readPage(chunk);
-                VolumeDataPage page = pageAccessor.createPage(chunk);
+        // copy file
+        int[] pitch = new int[VolumeDataLayout.Dimensionality_Max];
+        long chunkCount = pageAccessorInput.getChunkCount();
+        for (long chunk = 0; chunk < chunkCount; ++chunk) {
+            try (VolumeDataPage inputPage = pageAccessorInput.readPage(chunk);
+                 VolumeDataPage page = pageAccessor.createPage(chunk)
+            ) {
                 ByteBuffer readBuffer = inputPage.getBuffer(pitch);
-//                byte[] data = inputPage.readByteBuffer(pitch);
-                 ByteBuffer writeBuffer = page.getWritableBuffer(pitch);
-//                page.writeByteBuffer(data, pitch);
+                ByteBuffer writeBuffer = page.getWritableBuffer(pitch);
                 writeBuffer.put(readBuffer);
-                inputPage.release();
-                page.release();
             }
-            pageAccessor.close();
-            vdsCopy.close();
+        }
+        pageAccessor.close();
+        vdsCopy.close();
     }
+
 
     /**
      * Will test that copied file is the same as the input
@@ -229,55 +221,55 @@ public class PageAccessorByteTest {
 
 //            testCopyPageAccessor();
 
-            String tmpDir = System.getProperty("java.io.tmpdir");
-            String vdsPath = tmpDir + File.separator + tempVdsCopyFileName;
-            VDSFileOpenOptions options = new VDSFileOpenOptions(vdsPath);
-            VDS vdsCopy = OpenVDS.open(options, vdserror);
-            VolumeDataAccessManager accessManager = vdsCopy.getAccessManager();
+        String tmpDir = System.getProperty("java.io.tmpdir");
+        String vdsPath = tmpDir + File.separator + tempVdsCopyFileName;
+        VDSFileOpenOptions options = new VDSFileOpenOptions(vdsPath);
+        VDS vdsCopy = OpenVDS.open(options, vdserror);
+        VolumeDataAccessManager accessManager = vdsCopy.getAccessManager();
 
-            int channel = 0;
-            VolumeDataLayout layout = vdsCopy.getLayout();
-            VolumeDataPageAccessor pageAccessor = accessManager.createVolumeDataPageAccessor(
-                    Dimensions_012, // dimension ND
-                    0, // lod
-                    channel, // channel
-                    20, // max pages
-                    AccessMode_ReadOnly); // access mode
+        int channel = 0;
+        VolumeDataLayout layout = vdsCopy.getLayout();
+        VolumeDataPageAccessor pageAccessor = accessManager.createVolumeDataPageAccessor(
+                Dimensions_012, // dimension ND
+                0, // lod
+                channel, // channel
+                20, // max pages
+                AccessMode_ReadOnly); // access mode
 
-            // get input manager
-            VolumeDataAccessManager inputAM = vds.getAccessManager();
-            VolumeDataPageAccessor pageAccessorInput = inputAM.createVolumeDataPageAccessor(
-                    Dimensions_012, // dimension ND
-                    0, // lod
-                    channel, // channel
-                    20, // max pages
-                    AccessMode_ReadOnly); // access mode
+        // get input manager
+        VolumeDataAccessManager inputAM = vds.getAccessManager();
+        VolumeDataPageAccessor pageAccessorInput = inputAM.createVolumeDataPageAccessor(
+                Dimensions_012, // dimension ND
+                0, // lod
+                channel, // channel
+                20, // max pages
+                AccessMode_ReadOnly); // access mode
 
-            // compares block data
-            int[] pitchInput = new int[VolumeDataLayout.Dimensionality_Max];
-            int[] pitchOutput = new int[VolumeDataLayout.Dimensionality_Max];
+        // compares block data
+        int[] pitchInput = new int[VolumeDataLayout.Dimensionality_Max];
+        int[] pitchOutput = new int[VolumeDataLayout.Dimensionality_Max];
 
-            long chunkCount = pageAccessorInput.getChunkCount();
-            for (long chunk = 0 ; chunk < chunkCount ; ++chunk) {
-                VolumeDataPage inputPage = pageAccessorInput.readPage(chunk);
-                VolumeDataPage page = pageAccessor.readPage(chunk);
-//                byte[] dataIn = inputPage.readByteBuffer(pitchInput);
-                ByteBuffer dataInB = inputPage.getBuffer(pitchInput);
-//                byte[] dataOut = page.readByteBuffer(pitchOutput);
-                ByteBuffer dataOutB = page.getBuffer(pitchOutput);
-                byte[] dataIn = new byte[dataInB.remaining()];
-                byte[] dataOut = new byte[dataOutB.remaining()];
-                dataInB.get(dataIn);
-                dataOutB.get(dataOut);
+        long chunkCount = pageAccessorInput.getChunkCount();
+        for (long chunk = 0; chunk < chunkCount; ++chunk) {
+            VolumeDataPage inputPage = pageAccessorInput.readPage(chunk);
+            VolumeDataPage page = pageAccessor.readPage(chunk);
 
-                inputPage.release();
-                page.release();
+            ByteBuffer dataInB = inputPage.getBuffer(pitchInput);
+            ByteBuffer dataOutB = page.getBuffer(pitchOutput);
 
-                assertEquals(pitchInput, pitchOutput);
-                assertEquals(dataIn, dataOut);
-            }
-            pageAccessor.close();
-            vdsCopy.close();
+            byte[] dataIn = new byte[dataInB.remaining()];
+            byte[] dataOut = new byte[dataOutB.remaining()];
+            dataInB.get(dataIn);
+            dataOutB.get(dataOut);
+
+            inputPage.release();
+            page.release();
+
+            assertEquals(pitchInput, pitchOutput);
+            assertEquals(dataIn, dataOut);
+        }
+        pageAccessor.close();
+        vdsCopy.close();
     }
 
     /**
@@ -311,20 +303,18 @@ public class PageAccessorByteTest {
 
             long chunkCount = pageAccessor.getChunkCount();
             for (long chunk = 0; chunk < chunkCount; ++chunk) {
-                VolumeDataPage inputPage = pageAccessor.readPage(chunk);
+                try (VolumeDataPage inputPage = pageAccessor.readPage(chunk)) {
+                    // check that chunk index matches current index
+                    inputPage.getMinMaxExcludingMargin(chunkMin, chunkMax);
+                    for (int i = 0; i < VolumeDataLayout.Dimensionality_Max; ++i) {
+                        chunkMaxPos[i] = chunkMax[i] != 0 ? chunkMax[i] - 1 : chunkMax[i];
+                    }
+                    long idxChMin = pageAccessor.getChunkIndex(chunkMin);
+                    long idxChMax = pageAccessor.getChunkIndex(chunkMaxPos);
 
-                // check that chunk index matches current index
-                inputPage.getMinMaxExcludingMargin(chunkMin, chunkMax);
-                for (int i = 0; i < VolumeDataLayout.Dimensionality_Max; ++i) {
-                    chunkMaxPos[i] = chunkMax[i] != 0 ? chunkMax[i] - 1 : chunkMax[i];
+                    assertEquals(chunk, idxChMin);
+                    assertEquals(idxChMin, idxChMax);
                 }
-                long idxChMin = pageAccessor.getChunkIndex(chunkMin);
-                long idxChMax = pageAccessor.getChunkIndex(chunkMaxPos);
-
-                assertEquals(chunk, idxChMin);
-                assertEquals(idxChMin, idxChMax);
-
-                inputPage.release();
             }
         }
     }

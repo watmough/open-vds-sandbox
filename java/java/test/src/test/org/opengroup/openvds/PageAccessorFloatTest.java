@@ -130,11 +130,9 @@ public class PageAccessorFloatTest {
                 100, // max pages
                 AccessMode_Create); // access mode
 
-        VolumeDataPage page = pageAccessor.createPage(0);
-/*
-        VolumeIndexer3D outputIndexer = new  VolumeIndexer3D(page, 0, 0, DimENSIONS_012.ordinal(), layout);
-        outputIndexer.finalize();
-        */
+        try (VolumeDataPage page = pageAccessor.createPage(0)) {
+
+        }
 
         vdsTest.close();
     }
