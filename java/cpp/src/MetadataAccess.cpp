@@ -477,7 +477,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataReadAccess_dtorImpl
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::MetadataReadAccess>(native_handle);
+    CPPJNI_destroyHandle<OpenVDS::MetadataReadAccess>(native_handle, is_disposing);
   }
   CPPJNI_CATCH
 }
@@ -910,7 +910,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_MetadataWriteAccess_dtorImpl
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::MetadataWriteAccess>(native_handle);
+    CPPJNI_destroyHandle<OpenVDS::MetadataWriteAccess>(native_handle, is_disposing);
   }
   CPPJNI_CATCH
 }

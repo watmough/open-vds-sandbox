@@ -458,19 +458,6 @@ struct CPPJNIObjectContext
   static CPPJNIObjectContext* ensureValid(CPPJNIObjectContext* context);
   static CPPJNIObjectContext* ensureValid(jlong native_handle);
 
-  template<typename CPPJNIOBJECTCONTEXT>
-  static CPPJNIOBJECTCONTEXT*
-  ensureValid(jlong native_handle)
-  {
-    auto context = CPPJNIObjectContext::ensureValid(native_handle);
-    auto real_context = dynamic_cast<CPPJNIOBJECTCONTEXT*>(context);
-    if (real_context == nullptr)
-    {
-      throw std::runtime_error("Invalid typecast for object context.");
-    }
-    return real_context;
-  }
-
   // Create a polymorphic weak pointer
   template<typename T>
   void        
@@ -536,29 +523,69 @@ struct CPPJNIObjectContext
 
 void CPPJNI_onVDSError(OpenVDS::VDSError const& error);
 
-template<typename T, bool IS_DESTRUCTIBLE = true>
-struct Destroyer
+template<typename T>
+struct Cleaner
 {
-  static void destroy(T* instance) { delete instance; }
+  static void cleanup(std::shared_ptr<T> instancePtr, bool is_disposing) { }
 };
 
 template<typename T>
-struct Destroyer<T, false>
+std::shared_ptr<T>
+CPPJNI_createSharedPtr(T* instance)
 {
-  static void destroy(T* instance) { }
-};
+  return std::shared_ptr<T>(instance);
+}
+
+template<typename T>
+std::shared_ptr<T>
+CPPJNI_createSharedPtrNoDelete(T* instance)
+{
+  return std::shared_ptr<T>(instance, [](T*){});
+}
+
+template<class T, class... Args>
+std::shared_ptr<T>
+CPPJNI_makeShared(Args&&... args)
+{
+  T* object = new T(args...);
+  return CPPJNI_createSharedPtr<T>(object);
+}
+
+#define CPPJNI_SPECIALIZE_SHAREDPTR_NODELETE(TYPENAME)          \
+template<>                                                      \
+inline std::shared_ptr<TYPENAME>                                       \
+CPPJNI_createSharedPtr<TYPENAME>(TYPENAME* instance)            \
+{                                                               \
+  return CPPJNI_createSharedPtrNoDelete<TYPENAME>(instance);    \
+}
+
+CPPJNI_SPECIALIZE_SHAREDPTR_NODELETE(OpenVDS::VDS)
+CPPJNI_SPECIALIZE_SHAREDPTR_NODELETE(OpenVDS::VolumeDataPageAccessor)
 
 template<>
-struct Destroyer<OpenVDS::VDS, true>
+struct Cleaner<OpenVDS::VDS>
 {
   static void 
-  destroy(OpenVDS::VDS* instance) 
+  cleanup(std::shared_ptr<OpenVDS::VDS> instancePtr, bool is_disposing) 
   { 
     OpenVDS::VDSError error;
-    OpenVDS::Close(instance, error); 
+    OpenVDS::Close(instancePtr.get(), error); 
     if (error.code) 
     {
       CPPJNI_onVDSError(error);
+    }
+  }
+};
+
+template<>
+struct Cleaner<OpenVDS::VolumeDataPage>
+{
+  static void 
+  cleanup(std::shared_ptr<OpenVDS::VolumeDataPage> instancePtr, bool is_disposing) 
+  { 
+    if (is_disposing)
+    {
+      instancePtr.get()->Release();
     }
   }
 };
@@ -577,22 +604,35 @@ struct CPPJNIObjectContext_t : public CPPJNIObjectContext
   {
   }
 
-  CPPJNIObjectContext_t(T* object) : CPPJNIObjectContext_t(object, true)
+  CPPJNIObjectContext_t(T* object) : CPPJNIObjectContext_t(object, false)
   {
   }
 
   CPPJNIObjectContext_t(std::shared_ptr<T> sharedPtr) : CPPJNIObjectContext_t(sharedPtr.get(), true, sharedPtr)
   {
+    if (sharedPtr.get() == nullptr) 
+    {
+      throw std::runtime_error("Cannot create object context from empty shared_ptr");
+    }
   }
 
   ~CPPJNIObjectContext_t() override
   {
     if (m_SharedPtr.get()) 
     {
-      int debug = 0;
+      Cleaner<T> cleaner;
+      cleaner.cleanup(m_SharedPtr, false);
     }
-    auto object = (T*)m_OpaqueObject;
     m_OpaqueObject = nullptr;
+  }
+
+
+  static CPPJNIObjectContext_t<T>*
+  ensureValid(jlong native_handle)
+  {
+    auto context = CPPJNIObjectContext::ensureValid(native_handle);
+    auto real_context = reinterpret_cast<CPPJNIObjectContext_t<T>*>(context);
+    return real_context;
   }
 
   void
@@ -617,17 +657,6 @@ struct CPPJNIObjectContext_t : public CPPJNIObjectContext
     return std::weak_ptr<T>(m_SharedPtr);
   }
 
-  void
-  setObject(T* object, bool owned = true)
-  {
-    if (object == nullptr)
-    {
-      throw std::runtime_error("cannot set null opaque object");
-    }
-    m_OpaqueObject = object;
-    m_IsOwner = owned;
-  }
-
   T* 
   getObject() 
   {
@@ -647,24 +676,10 @@ struct CPPJNIObjectContext_t : public CPPJNIObjectContext
 };
 
 template<typename T>
-struct CPPJNIOwningObjectContext_t : public CPPJNIObjectContext_t<T> 
-{
-  CPPJNIOwningObjectContext_t(T* object) : CPPJNIObjectContext_t<T>(object, true)
-  {
-  }
-
-  ~CPPJNIOwningObjectContext_t() override
-  {
-    auto object = (T*)this->getObject();
-    Destroyer<T, std::is_destructible<T>::value>::destroy(object);
-  }
-};
-
-template<typename T>
 CPPJNIObjectContext_t<T>*
-CPPJNI_createObjectContext(T* pNativeObject)
+CPPJNI_createObjectContext()
 {
-  return new CPPJNIOwningObjectContext_t<T>(pNativeObject);
+  return new CPPJNIObjectContext_t<T>();
 }
 
 template<typename T>
@@ -678,18 +693,14 @@ template<typename T>
 CPPJNIObjectContext_t<T>*
 CPPJNI_createNonOwningObjectContext(T const* pNativeObject)
 {
-  return new CPPJNIObjectContext_t<T>((T*)pNativeObject, false);
+  return new CPPJNIObjectContext_t<T>(CPPJNI_createSharedPtrNoDelete<T>((T*)pNativeObject));
 }
 
 template<typename T>
 T*
 CPPJNI_cast(jlong handle)
 {
-  if (handle == 0)
-  {
-    throw std::runtime_error("null handle");
-  }
-  auto pContext = ((CPPJNIObjectContext_t<T>*)CPPJNIObjectContext::ensureValid(handle)); // May throw
+  auto pContext = CPPJNIObjectContext_t<T>::ensureValid(handle); // May throw
   return pContext->getObject();
 }
 
@@ -701,9 +712,15 @@ struct CPPJNIFinalizerMutexGuard : std::lock_guard<std::mutex>
 
 template<typename T>
 void
-CPPJNI_destroyHandle(jlong handle)
+CPPJNI_destroyHandle(jlong handle, bool is_disposing)
 {
-  auto pContext = ((CPPJNIObjectContext_t<T>*)CPPJNIObjectContext::ensureValid(handle)); // May throw
+  auto pContext = CPPJNIObjectContext_t<T>::ensureValid(handle); // May throw
+  if (pContext->m_SharedPtr.get())
+  {
+    Cleaner<T> cleaner;
+    cleaner.cleanup(pContext->m_SharedPtr, is_disposing);
+    pContext->m_SharedPtr.reset();
+  }
   delete pContext;
 }
 

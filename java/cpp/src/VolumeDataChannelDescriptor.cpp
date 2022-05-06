@@ -36,10 +36,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_c
 
   CPPJNI_TRY
   {
-    auto context = new CPPJNIObjectContext_t<OpenVDS::VolumeDataChannelDescriptor>();
+    auto context = CPPJNI_createObjectContext<OpenVDS::VolumeDataChannelDescriptor>();
 
     auto native_handle = context->handle();
-    context->setObject(std::make_shared<OpenVDS::VolumeDataChannelDescriptor>());
+    context->setObject(CPPJNI_makeShared<OpenVDS::VolumeDataChannelDescriptor>());
 
     return native_handle;
   }
@@ -56,10 +56,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_c
 
   CPPJNI_TRY
   {
-    auto context = new CPPJNIObjectContext_t<OpenVDS::VolumeDataChannelDescriptor>();
+    auto context = CPPJNI_createObjectContext<OpenVDS::VolumeDataChannelDescriptor>();
 
     auto native_handle = context->handle();
-    context->setObject(std::make_shared<OpenVDS::VolumeDataChannelDescriptor>(
+    context->setObject(CPPJNI_makeShared<OpenVDS::VolumeDataChannelDescriptor>(
                                (OpenVDS::VolumeDataFormat)format, 
                                (OpenVDS::VolumeDataComponents)components, 
                                CPPJNIStringWrapper(env, name), 
@@ -82,10 +82,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_c
 
   CPPJNI_TRY
   {
-    auto context = new CPPJNIObjectContext_t<OpenVDS::VolumeDataChannelDescriptor>();
+    auto context = CPPJNI_createObjectContext<OpenVDS::VolumeDataChannelDescriptor>();
 
     auto native_handle = context->handle();
-    context->setObject(std::make_shared<OpenVDS::VolumeDataChannelDescriptor>(
+    context->setObject(CPPJNI_makeShared<OpenVDS::VolumeDataChannelDescriptor>(
                                (OpenVDS::VolumeDataFormat)format, 
                                (OpenVDS::VolumeDataComponents)components, 
                                CPPJNIStringWrapper(env, name), 
@@ -109,10 +109,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_c
 
   CPPJNI_TRY
   {
-    auto context = new CPPJNIObjectContext_t<OpenVDS::VolumeDataChannelDescriptor>();
+    auto context = CPPJNI_createObjectContext<OpenVDS::VolumeDataChannelDescriptor>();
 
     auto native_handle = context->handle();
-    context->setObject(std::make_shared<OpenVDS::VolumeDataChannelDescriptor>(
+    context->setObject(CPPJNI_makeShared<OpenVDS::VolumeDataChannelDescriptor>(
                                (OpenVDS::VolumeDataFormat)format, 
                                (OpenVDS::VolumeDataComponents)components, 
                                CPPJNIStringWrapper(env, name), 
@@ -136,10 +136,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_c
 
   CPPJNI_TRY
   {
-    auto context = new CPPJNIObjectContext_t<OpenVDS::VolumeDataChannelDescriptor>();
+    auto context = CPPJNI_createObjectContext<OpenVDS::VolumeDataChannelDescriptor>();
 
     auto native_handle = context->handle();
-    context->setObject(std::make_shared<OpenVDS::VolumeDataChannelDescriptor>(
+    context->setObject(CPPJNI_makeShared<OpenVDS::VolumeDataChannelDescriptor>(
                                (OpenVDS::VolumeDataFormat)format, 
                                (OpenVDS::VolumeDataComponents)components, 
                                CPPJNIStringWrapper(env, name), 
@@ -164,10 +164,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_c
 
   CPPJNI_TRY
   {
-    auto context = new CPPJNIObjectContext_t<OpenVDS::VolumeDataChannelDescriptor>();
+    auto context = CPPJNI_createObjectContext<OpenVDS::VolumeDataChannelDescriptor>();
 
     auto native_handle = context->handle();
-    context->setObject(std::make_shared<OpenVDS::VolumeDataChannelDescriptor>(
+    context->setObject(CPPJNI_makeShared<OpenVDS::VolumeDataChannelDescriptor>(
                                (OpenVDS::VolumeDataFormat)format, 
                                (OpenVDS::VolumeDataComponents)components, 
                                CPPJNIStringWrapper(env, name), 
@@ -195,10 +195,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_c
 
   CPPJNI_TRY
   {
-    auto context = new CPPJNIObjectContext_t<OpenVDS::VolumeDataChannelDescriptor>();
+    auto context = CPPJNI_createObjectContext<OpenVDS::VolumeDataChannelDescriptor>();
 
     auto native_handle = context->handle();
-    context->setObject(std::make_shared<OpenVDS::VolumeDataChannelDescriptor>(
+    context->setObject(CPPJNI_makeShared<OpenVDS::VolumeDataChannelDescriptor>(
                                (OpenVDS::VolumeDataFormat)format, 
                                (OpenVDS::VolumeDataComponents)components, 
                                CPPJNIStringWrapper(env, name), 
@@ -222,10 +222,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_c
 
   CPPJNI_TRY
   {
-    auto context = new CPPJNIObjectContext_t<OpenVDS::VolumeDataChannelDescriptor>();
+    auto context = CPPJNI_createObjectContext<OpenVDS::VolumeDataChannelDescriptor>();
 
     auto native_handle = context->handle();
-    context->setObject(std::make_shared<OpenVDS::VolumeDataChannelDescriptor>(
+    context->setObject(CPPJNI_makeShared<OpenVDS::VolumeDataChannelDescriptor>(
                                (OpenVDS::VolumeDataFormat)format, 
                                (OpenVDS::VolumeDataComponents)components, 
                                CPPJNIStringWrapper(env, name), 
@@ -251,10 +251,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_c
 
   CPPJNI_TRY
   {
-    auto context = new CPPJNIObjectContext_t<OpenVDS::VolumeDataChannelDescriptor>();
+    auto context = CPPJNI_createObjectContext<OpenVDS::VolumeDataChannelDescriptor>();
 
     auto native_handle = context->handle();
-    context->setObject(std::make_shared<OpenVDS::VolumeDataChannelDescriptor>(
+    context->setObject(CPPJNI_makeShared<OpenVDS::VolumeDataChannelDescriptor>(
                                (OpenVDS::VolumeDataFormat)format, 
                                (OpenVDS::VolumeDataComponents)components, 
                                CPPJNIStringWrapper(env, name), 
@@ -579,7 +579,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_T
                                valueRangeMax, 
                                mappedValueCount, 
                                (enum OpenVDS::VolumeDataChannelDescriptor::Flags)flags);
-    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataChannelDescriptor>(result));
+    auto context = CPPJNI_createObjectContext(CPPJNI_makeShared<OpenVDS::VolumeDataChannelDescriptor>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -604,7 +604,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_T
                                mappedValueCount, 
                                (enum OpenVDS::VolumeDataChannelDescriptor::Flags)flags, 
                                noValue);
-    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::VolumeDataChannelDescriptor>(result));
+    auto context = CPPJNI_createObjectContext(CPPJNI_makeShared<OpenVDS::VolumeDataChannelDescriptor>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -619,7 +619,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataChannelDescriptor_dt
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataChannelDescriptor>(native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataChannelDescriptor>(native_handle, is_disposing);
   }
   CPPJNI_CATCH
 }

@@ -126,11 +126,9 @@ public class VolumeDataPage extends ManagedBase implements AutoCloseable {
 	}
 	
 ///AUTOGEN-IGNORE: CXX_METHOD Release void () FUNCTIONPROTO
-    native private void ReleaseImpl(long native_object);
 	
 	@Override
 	protected void onDisposing(long native_object, boolean isDisposing) {
-        ReleaseImpl(native_object);
 		dtorImpl(native_object, isDisposing);
 	}
 	

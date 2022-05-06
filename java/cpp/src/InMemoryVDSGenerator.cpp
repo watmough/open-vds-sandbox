@@ -60,7 +60,8 @@ static void getScaleOffsetForFormat(float min, float max, bool novalue, OpenVDS:
   }
 }
 
-static OpenVDS::VDS *generateSimpleInMemory3DVDS(int32_t samplesX = 100, int32_t samplesY = 100, int32_t samplesZ = 100, OpenVDS::VolumeDataChannelDescriptor::Format format = OpenVDS::VolumeDataChannelDescriptor::Format_R32)
+static std::shared_ptr<OpenVDS::VDS>
+generateSimpleInMemory3DVDS(int32_t samplesX = 100, int32_t samplesY = 100, int32_t samplesZ = 100, OpenVDS::VolumeDataChannelDescriptor::Format format = OpenVDS::VolumeDataChannelDescriptor::Format_R32)
 {
   auto brickSize = OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32;
   int negativeMargin = 4;
@@ -103,7 +104,13 @@ static OpenVDS::VDS *generateSimpleInMemory3DVDS(int32_t samplesX = 100, int32_t
   char data[4] = { 1,2,3,4 };
   metadataContainer.SetMetadataBLOB("categoryBLOB", "BLOB", data, sizeof(data));
 
-  return OpenVDS::Create(options, layoutDescriptor, axisDescriptors, channelDescriptors, metadataContainer, error);
+  OpenVDS::VDSHandle vds = OpenVDS::Create(options, layoutDescriptor, axisDescriptors, channelDescriptors, metadataContainer, error);
+  if (vds) 
+  {
+    return CPPJNI_createSharedPtr<OpenVDS::VDS>(vds);
+  }
+  CPPJNI_onVDSError(error);
+  return std::shared_ptr<OpenVDS::VDS>();
 }
 
 static void fill3DVDSWithNoise(OpenVDS::VDS *vds, int32_t channel = 0, const OpenVDS::FloatVector3 &frequency = OpenVDS::FloatVector3(0.6f, 2.f, 4.f))
@@ -204,12 +211,13 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_InMemoryVDSGenerator_CreateVD
 
   CPPJNI_TRY 
   {
-    OpenVDS::VDSHandle handle = generateSimpleInMemory3DVDS( nXSamples, nYSamples, nZSamples, (OpenVDS::VolumeDataChannelDescriptor::Format)format );
-    if(!handle ){
+    auto vdsPtr = generateSimpleInMemory3DVDS( nXSamples, nYSamples, nZSamples, (OpenVDS::VolumeDataChannelDescriptor::Format)format);
+    if (!vdsPtr.get()) 
+    {
       throw std::runtime_error("OpenVDS::Create returned NULL");
     }
-    fill3DVDSWithNoise(handle);
-    return CPPJNI_createObjectContext<OpenVDS::VDS>(handle)->handle();
+    fill3DVDSWithNoise(vdsPtr.get());
+    return CPPJNI_createObjectContext<OpenVDS::VDS>(vdsPtr)->handle();
   }
   CPPJNI_CATCH
   return 0;

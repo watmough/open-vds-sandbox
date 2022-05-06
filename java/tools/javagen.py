@@ -680,10 +680,10 @@ def create_jni_ctor(scope: Scope, ctor: Scope, class_name: str, class_canonical_
 
   CPPJNI_TRY
   {{
-    auto context = new CPPJNIObjectContext_t<{class_canonical_name}>();
+    auto context = CPPJNI_createObjectContext<{class_canonical_name}>();
 {prologue}
     auto native_handle = context->handle();
-    context->setObject(std::make_shared<{class_canonical_name}>({args}));
+    context->setObject(CPPJNI_makeShared<{class_canonical_name}>({args}));
 {epilogue}
     return native_handle;
   }}
@@ -703,7 +703,7 @@ def create_jni_dtor(scope: Scope, class_name: str, class_canonical_name: str) ->
 
   CPPJNI_TRY
   {{
-    CPPJNI_destroyHandle<{class_canonical_name}>(native_handle);
+    CPPJNI_destroyHandle<{class_canonical_name}>(native_handle, is_disposing);
   }}
   CPPJNI_CATCH
 }}
@@ -892,7 +892,7 @@ def create_jni_methods(scope: Scope, template: str, override_name: str = '', tem
                                 # This handle will not destroy the backing object because it is not the owner:
                                 retval = 'CPPJNI_createNonOwningObjectContext(&result)'
                             else:
-                                retval = 'CPPJNI_createObjectContext(std::make_shared<{}>(result))'.format(clean_typename(real_return_type))
+                                retval = 'CPPJNI_createObjectContext(CPPJNI_makeShared<{}>(result))'.format(clean_typename(real_return_type))
                         elif return_type == 'void':
                             pass
                         else:

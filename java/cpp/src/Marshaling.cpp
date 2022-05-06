@@ -436,8 +436,8 @@ JNIEXPORT jobjectArray JNICALL Java_org_opengroup_openvds_ManagedBuffer_ctorImpl
 
   CPPJNI_TRY
   {
-    auto directBuffer = new JNIDirectBuffer(capacity);
-    auto context = new CPPJNIOwningObjectContext_t<JNIDirectBuffer>(directBuffer);
+    auto directBuffer = std::make_shared<JNIDirectBuffer>(capacity);
+    auto context = CPPJNI_createObjectContext<JNIDirectBuffer>(directBuffer);
     auto native_handle = context->handle();
     jobjectArray arr = Marshaling::CreateJavaArray(2);
     env->SetObjectArrayElement(arr, 0, Marshaling::CreatePODJavaObject<jlong>(native_handle));
@@ -457,7 +457,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_ManagedBuffer_dtorImpl
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<JNIDirectBuffer>(native_handle);
+    CPPJNI_destroyHandle<JNIDirectBuffer>(native_handle, is_disposing);
   }
   CPPJNI_CATCH
 }

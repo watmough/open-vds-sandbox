@@ -36,10 +36,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_ctor
 
   CPPJNI_TRY
   {
-    auto context = new CPPJNIObjectContext_t<OpenVDS::IJKCoordinateTransformer>();
+    auto context = CPPJNI_createObjectContext<OpenVDS::IJKCoordinateTransformer>();
 
     auto native_handle = context->handle();
-    context->setObject(std::make_shared<OpenVDS::IJKCoordinateTransformer>());
+    context->setObject(CPPJNI_makeShared<OpenVDS::IJKCoordinateTransformer>());
 
     return native_handle;
   }
@@ -56,10 +56,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_ctor
 
   CPPJNI_TRY
   {
-    auto context = new CPPJNIObjectContext_t<OpenVDS::IJKCoordinateTransformer>();
+    auto context = CPPJNI_createObjectContext<OpenVDS::IJKCoordinateTransformer>();
 
     auto native_handle = context->handle();
-    context->setObject(std::make_shared<OpenVDS::IJKCoordinateTransformer>(CPPJNIByteBufferAdapter<OpenVDS::IJKGridDefinition>(env, ijkGridDefinitionbytebuffer, ijkGridDefinitionbyteoffset), CPPJNIByteBufferAdapter<OpenVDS::IntVector3>(env, ijkSizebytebuffer, ijkSizebyteoffset)));
+    context->setObject(CPPJNI_makeShared<OpenVDS::IJKCoordinateTransformer>(CPPJNIByteBufferAdapter<OpenVDS::IJKGridDefinition>(env, ijkGridDefinitionbytebuffer, ijkGridDefinitionbyteoffset), CPPJNIByteBufferAdapter<OpenVDS::IntVector3>(env, ijkSizebytebuffer, ijkSizebyteoffset)));
 
     return native_handle;
   }
@@ -76,10 +76,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_ctor
 
   CPPJNI_TRY
   {
-    auto context = new CPPJNIObjectContext_t<OpenVDS::IJKCoordinateTransformer>();
+    auto context = CPPJNI_createObjectContext<OpenVDS::IJKCoordinateTransformer>();
 
     auto native_handle = context->handle();
-    context->setObject(std::make_shared<OpenVDS::IJKCoordinateTransformer>(
+    context->setObject(CPPJNI_makeShared<OpenVDS::IJKCoordinateTransformer>(
                                CPPJNIByteBufferAdapter<OpenVDS::IJKGridDefinition>(env, ijkGridDefinitionbytebuffer, ijkGridDefinitionbyteoffset), 
                                CPPJNIByteBufferAdapter<OpenVDS::IntVector3>(env, ijkSizebytebuffer, ijkSizebyteoffset), 
                                CPPJNIByteBufferAdapter<OpenVDS::IntVector3>(env, ijkToVoxelDimensionMapbytebuffer, ijkToVoxelDimensionMapbyteoffset)));
@@ -99,10 +99,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_ctor
 
   CPPJNI_TRY
   {
-    auto context = new CPPJNIObjectContext_t<OpenVDS::IJKCoordinateTransformer>();
+    auto context = CPPJNI_createObjectContext<OpenVDS::IJKCoordinateTransformer>();
 
     auto native_handle = context->handle();
-    context->setObject(std::make_shared<OpenVDS::IJKCoordinateTransformer>(CPPJNIByteBufferAdapter<OpenVDS::VDSIJKGridDefinition>(env, vdsIJKGridDefinitionbytebuffer, vdsIJKGridDefinitionbyteoffset), CPPJNIByteBufferAdapter<OpenVDS::IntVector3>(env, ijkSizebytebuffer, ijkSizebyteoffset)));
+    context->setObject(CPPJNI_makeShared<OpenVDS::IJKCoordinateTransformer>(CPPJNIByteBufferAdapter<OpenVDS::VDSIJKGridDefinition>(env, vdsIJKGridDefinitionbytebuffer, vdsIJKGridDefinitionbyteoffset), CPPJNIByteBufferAdapter<OpenVDS::IntVector3>(env, ijkSizebytebuffer, ijkSizebyteoffset)));
 
     return native_handle;
   }
@@ -119,10 +119,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_ctor
 
   CPPJNI_TRY
   {
-    auto context = new CPPJNIObjectContext_t<OpenVDS::IJKCoordinateTransformer>();
+    auto context = CPPJNI_createObjectContext<OpenVDS::IJKCoordinateTransformer>();
 
     auto native_handle = context->handle();
-    context->setObject(std::make_shared<OpenVDS::IJKCoordinateTransformer>(
+    context->setObject(CPPJNI_makeShared<OpenVDS::IJKCoordinateTransformer>(
                                CPPJNIByteBufferAdapter<OpenVDS::IJKGridDefinition>(env, ijkGridDefinitionbytebuffer, ijkGridDefinitionbyteoffset), 
                                CPPJNIByteBufferAdapter<OpenVDS::IntVector3>(env, ijkSizebytebuffer, ijkSizebyteoffset), 
                                CPPJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, ijkAnnotationStartbytebuffer, ijkAnnotationStartbyteoffset), 
@@ -143,10 +143,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_ctor
 
   CPPJNI_TRY
   {
-    auto context = new CPPJNIObjectContext_t<OpenVDS::IJKCoordinateTransformer>();
+    auto context = CPPJNI_createObjectContext<OpenVDS::IJKCoordinateTransformer>();
 
     auto native_handle = context->handle();
-    context->setObject(std::make_shared<OpenVDS::IJKCoordinateTransformer>(
+    context->setObject(CPPJNI_makeShared<OpenVDS::IJKCoordinateTransformer>(
                                CPPJNIByteBufferAdapter<OpenVDS::IJKGridDefinition>(env, ijkGridDefinitionbytebuffer, ijkGridDefinitionbyteoffset), 
                                CPPJNIByteBufferAdapter<OpenVDS::IntVector3>(env, ijkSizebytebuffer, ijkSizebyteoffset), 
                                CPPJNIByteBufferAdapter<OpenVDS::IntVector3>(env, ijkToVoxelDimensionMapbytebuffer, ijkToVoxelDimensionMapbyteoffset), 
@@ -168,10 +168,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_ctor
 
   CPPJNI_TRY
   {
-    auto context = new CPPJNIObjectContext_t<OpenVDS::IJKCoordinateTransformer>();
+    auto context = CPPJNI_createObjectContext<OpenVDS::IJKCoordinateTransformer>();
 
     auto native_handle = context->handle();
-    context->setObject(std::make_shared<OpenVDS::IJKCoordinateTransformer>(
+    context->setObject(CPPJNI_makeShared<OpenVDS::IJKCoordinateTransformer>(
                                CPPJNIByteBufferAdapter<OpenVDS::VDSIJKGridDefinition>(env, vdsIJKGridDefinitionbytebuffer, vdsIJKGridDefinitionbyteoffset), 
                                CPPJNIByteBufferAdapter<OpenVDS::IntVector3>(env, ijkSizebytebuffer, ijkSizebyteoffset), 
                                CPPJNIByteBufferAdapter<OpenVDS::DoubleVector3>(env, ijkAnnotationStartbytebuffer, ijkAnnotationStartbyteoffset), 
@@ -786,7 +786,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IJKCoordinateTransformer_dtorI
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::IJKCoordinateTransformer>(native_handle);
+    CPPJNI_destroyHandle<OpenVDS::IJKCoordinateTransformer>(native_handle, is_disposing);
   }
   CPPJNI_CATCH
 }

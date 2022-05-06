@@ -100,7 +100,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_GlobalState_dtorImpl
 
   CPPJNI_TRY
   {
-    CPPJNI_destroyHandle<OpenVDS::GlobalState>(native_handle);
+    CPPJNI_destroyHandle<OpenVDS::GlobalState>(native_handle, is_disposing);
   }
   CPPJNI_CATCH
 }

@@ -259,7 +259,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
     auto context = CPPJNI_createNonOwningObjectContext(result);
 
     // The PageAccessor must at present be destroyed through the manager, so we must provide that context for later
-    auto managerContext = CPPJNIObjectContext::ensureValid<CPPJNIObjectContext_t<OpenVDS::VolumeDataAccessManager>>(native_handle);
+    auto managerContext = CPPJNIObjectContext_t<OpenVDS::VolumeDataAccessManager>::ensureValid(native_handle);
     context->setManager(managerContext->m_SharedPtr);
 
     return context->handle();

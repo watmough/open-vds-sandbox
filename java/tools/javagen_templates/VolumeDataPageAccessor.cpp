@@ -16,7 +16,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_dtorImp
       auto accessManager = CPPJNIObjectContext::ensureValid(native_handle)->getManager<OpenVDS::VolumeDataAccessManager>(); // May throw
       accessManager->DestroyVolumeDataPageAccessor(pInstance);
     }
-    CPPJNI_destroyHandle<OpenVDS::VolumeDataPageAccessor>(native_handle);
+    CPPJNI_destroyHandle<OpenVDS::VolumeDataPageAccessor>(native_handle, is_disposing);
   }
   CPPJNI_CATCH
 }

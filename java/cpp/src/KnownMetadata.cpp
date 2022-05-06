@@ -356,7 +356,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
   CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SurveyCoordinateSystemOrigin();
-    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::MetadataKey>(result));
+    auto context = CPPJNI_createObjectContext(CPPJNI_makeShared<OpenVDS::MetadataKey>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -372,7 +372,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
   CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SurveyCoordinateSystemInlineSpacing();
-    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::MetadataKey>(result));
+    auto context = CPPJNI_createObjectContext(CPPJNI_makeShared<OpenVDS::MetadataKey>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -388,7 +388,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
   CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SurveyCoordinateSystemCrosslineSpacing();
-    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::MetadataKey>(result));
+    auto context = CPPJNI_createObjectContext(CPPJNI_makeShared<OpenVDS::MetadataKey>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -404,7 +404,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
   CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SurveyCoordinateSystemGridPoint0();
-    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::MetadataKey>(result));
+    auto context = CPPJNI_createObjectContext(CPPJNI_makeShared<OpenVDS::MetadataKey>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -420,7 +420,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
   CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SurveyCoordinateSystemGridPoint0Inline();
-    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::MetadataKey>(result));
+    auto context = CPPJNI_createObjectContext(CPPJNI_makeShared<OpenVDS::MetadataKey>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -436,7 +436,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
   CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SurveyCoordinateSystemGridPoint0Crossline();
-    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::MetadataKey>(result));
+    auto context = CPPJNI_createObjectContext(CPPJNI_makeShared<OpenVDS::MetadataKey>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -452,7 +452,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
   CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SurveyCoordinateSystemGridPoint1();
-    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::MetadataKey>(result));
+    auto context = CPPJNI_createObjectContext(CPPJNI_makeShared<OpenVDS::MetadataKey>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -468,7 +468,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
   CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SurveyCoordinateSystemGridPoint1Inline();
-    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::MetadataKey>(result));
+    auto context = CPPJNI_createObjectContext(CPPJNI_makeShared<OpenVDS::MetadataKey>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -484,7 +484,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
   CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SurveyCoordinateSystemGridPoint1Crossline();
-    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::MetadataKey>(result));
+    auto context = CPPJNI_createObjectContext(CPPJNI_makeShared<OpenVDS::MetadataKey>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -500,7 +500,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
   CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SurveyCoordinateSystemGridPoint2();
-    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::MetadataKey>(result));
+    auto context = CPPJNI_createObjectContext(CPPJNI_makeShared<OpenVDS::MetadataKey>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -516,7 +516,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
   CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SurveyCoordinateSystemGridPoint2Inline();
-    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::MetadataKey>(result));
+    auto context = CPPJNI_createObjectContext(CPPJNI_makeShared<OpenVDS::MetadataKey>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -532,7 +532,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
   CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SurveyCoordinateSystemGridPoint2Crossline();
-    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::MetadataKey>(result));
+    auto context = CPPJNI_createObjectContext(CPPJNI_makeShared<OpenVDS::MetadataKey>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -548,7 +548,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
   CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SurveyCoordinateSystemGridPoint3();
-    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::MetadataKey>(result));
+    auto context = CPPJNI_createObjectContext(CPPJNI_makeShared<OpenVDS::MetadataKey>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -564,7 +564,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
   CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SurveyCoordinateSystemGridPoint3Inline();
-    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::MetadataKey>(result));
+    auto context = CPPJNI_createObjectContext(CPPJNI_makeShared<OpenVDS::MetadataKey>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -580,7 +580,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
   CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SurveyCoordinateSystemGridPoint3Crossline();
-    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::MetadataKey>(result));
+    auto context = CPPJNI_createObjectContext(CPPJNI_makeShared<OpenVDS::MetadataKey>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -596,7 +596,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
   CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SurveyCoordinateSystemIJKOrigin();
-    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::MetadataKey>(result));
+    auto context = CPPJNI_createObjectContext(CPPJNI_makeShared<OpenVDS::MetadataKey>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -612,7 +612,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
   CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SurveyCoordinateSystemIStepVector();
-    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::MetadataKey>(result));
+    auto context = CPPJNI_createObjectContext(CPPJNI_makeShared<OpenVDS::MetadataKey>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -628,7 +628,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
   CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SurveyCoordinateSystemJStepVector();
-    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::MetadataKey>(result));
+    auto context = CPPJNI_createObjectContext(CPPJNI_makeShared<OpenVDS::MetadataKey>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -644,7 +644,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
   CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SurveyCoordinateSystemKStepVector();
-    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::MetadataKey>(result));
+    auto context = CPPJNI_createObjectContext(CPPJNI_makeShared<OpenVDS::MetadataKey>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -660,7 +660,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
   CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SurveyCoordinateSystemUnit();
-    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::MetadataKey>(result));
+    auto context = CPPJNI_createObjectContext(CPPJNI_makeShared<OpenVDS::MetadataKey>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -676,7 +676,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SurveyCoordinat
   CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SurveyCoordinateSystemCRSWkt();
-    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::MetadataKey>(result));
+    auto context = CPPJNI_createObjectContext(CPPJNI_makeShared<OpenVDS::MetadataKey>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -707,7 +707,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_TracePositionsI
   CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::TracePositions();
-    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::MetadataKey>(result));
+    auto context = CPPJNI_createObjectContext(CPPJNI_makeShared<OpenVDS::MetadataKey>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -723,7 +723,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_TraceVerticalOf
   CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::TraceVerticalOffsets();
-    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::MetadataKey>(result));
+    auto context = CPPJNI_createObjectContext(CPPJNI_makeShared<OpenVDS::MetadataKey>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -739,7 +739,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_EnergySourcePoi
   CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::EnergySourcePointNumbers();
-    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::MetadataKey>(result));
+    auto context = CPPJNI_createObjectContext(CPPJNI_makeShared<OpenVDS::MetadataKey>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -755,7 +755,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_EnsembleNumbers
   CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::EnsembleNumbers();
-    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::MetadataKey>(result));
+    auto context = CPPJNI_createObjectContext(CPPJNI_makeShared<OpenVDS::MetadataKey>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -786,7 +786,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_WrittenRegionIm
   CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::WrittenRegion();
-    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::MetadataKey>(result));
+    auto context = CPPJNI_createObjectContext(CPPJNI_makeShared<OpenVDS::MetadataKey>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -817,7 +817,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_ImportInformati
   CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::ImportInformationDisplayName();
-    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::MetadataKey>(result));
+    auto context = CPPJNI_createObjectContext(CPPJNI_makeShared<OpenVDS::MetadataKey>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -833,7 +833,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_ImportInformati
   CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::ImportInformationInputFileName();
-    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::MetadataKey>(result));
+    auto context = CPPJNI_createObjectContext(CPPJNI_makeShared<OpenVDS::MetadataKey>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -849,7 +849,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_ImportInformati
   CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::ImportInformationInputFileSize();
-    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::MetadataKey>(result));
+    auto context = CPPJNI_createObjectContext(CPPJNI_makeShared<OpenVDS::MetadataKey>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -865,7 +865,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_ImportInformati
   CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::ImportInformationInputTimeStamp();
-    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::MetadataKey>(result));
+    auto context = CPPJNI_createObjectContext(CPPJNI_makeShared<OpenVDS::MetadataKey>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -881,7 +881,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_ImportInformati
   CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::ImportInformationImportTimeStamp();
-    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::MetadataKey>(result));
+    auto context = CPPJNI_createObjectContext(CPPJNI_makeShared<OpenVDS::MetadataKey>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -912,7 +912,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SEGYTextHeaderI
   CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SEGYTextHeader();
-    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::MetadataKey>(result));
+    auto context = CPPJNI_createObjectContext(CPPJNI_makeShared<OpenVDS::MetadataKey>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -928,7 +928,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SEGYBinaryHeade
   CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SEGYBinaryHeader();
-    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::MetadataKey>(result));
+    auto context = CPPJNI_createObjectContext(CPPJNI_makeShared<OpenVDS::MetadataKey>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -944,7 +944,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SEGYEndiannessI
   CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SEGYEndianness();
-    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::MetadataKey>(result));
+    auto context = CPPJNI_createObjectContext(CPPJNI_makeShared<OpenVDS::MetadataKey>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -960,7 +960,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SEGYDataEndiann
   CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SEGYDataEndianness();
-    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::MetadataKey>(result));
+    auto context = CPPJNI_createObjectContext(CPPJNI_makeShared<OpenVDS::MetadataKey>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -976,7 +976,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SEGYDataSampleF
   CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SEGYDataSampleFormatCode();
-    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::MetadataKey>(result));
+    auto context = CPPJNI_createObjectContext(CPPJNI_makeShared<OpenVDS::MetadataKey>(result));
     return context->handle();
   }
   CPPJNI_CATCH
@@ -992,7 +992,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_SEGYPrimaryKeyI
   CPPJNI_TRY
   {
     auto result = OpenVDS::KnownMetadata::SEGYPrimaryKey();
-    auto context = CPPJNI_createObjectContext(std::make_shared<OpenVDS::MetadataKey>(result));
+    auto context = CPPJNI_createObjectContext(CPPJNI_makeShared<OpenVDS::MetadataKey>(result));
     return context->handle();
   }
   CPPJNI_CATCH

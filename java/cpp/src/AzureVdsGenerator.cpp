@@ -30,54 +30,60 @@
 #include <vector>
 
 
-static OpenVDS::VDS *generate(const OpenVDS::AzureOpenOptions& opts, int32_t samplesX, int32_t samplesY, int32_t samplesZ,
+static std::shared_ptr<OpenVDS::VDS>
+generate(const OpenVDS::AzureOpenOptions& opts, int32_t samplesX, int32_t samplesY, int32_t samplesZ,
                               OpenVDS::VolumeDataChannelDescriptor::Format format, const std::vector<std::string>& channels,
                               const std::vector<std::string>& units)
 {
-    if (channels.size() != units.size()) {
-        throw std::runtime_error("Channel and unit array size differ in length");
-    }
+  if (channels.size() != units.size()) {
+      throw std::runtime_error("Channel and unit array size differ in length");
+  }
  
-    OpenVDS::VolumeDataLayoutDescriptor::BrickSize brickSize;
-    if (samplesZ == 0) {
-        brickSize = OpenVDS::VolumeDataLayoutDescriptor::BrickSize_1024;
-    } else {
-        brickSize = OpenVDS::VolumeDataLayoutDescriptor::BrickSize_128;
-    }
+  OpenVDS::VolumeDataLayoutDescriptor::BrickSize brickSize;
+  if (samplesZ == 0) {
+      brickSize = OpenVDS::VolumeDataLayoutDescriptor::BrickSize_1024;
+  } else {
+      brickSize = OpenVDS::VolumeDataLayoutDescriptor::BrickSize_128;
+  }
 
-    int negativeMargin = 4;
-    int positiveMargin = 4;
-    int brickSize2DMultiplier = 4;
-    auto lodLevels = OpenVDS::VolumeDataLayoutDescriptor::LODLevels_None;
-    auto layoutOptions = OpenVDS::VolumeDataLayoutDescriptor::Options_None;
-    OpenVDS::VolumeDataLayoutDescriptor layoutDescriptor(brickSize, negativeMargin, positiveMargin,
-                                                         brickSize2DMultiplier, lodLevels, layoutOptions);
+  int negativeMargin = 4;
+  int positiveMargin = 4;
+  int brickSize2DMultiplier = 4;
+  auto lodLevels = OpenVDS::VolumeDataLayoutDescriptor::LODLevels_None;
+  auto layoutOptions = OpenVDS::VolumeDataLayoutDescriptor::Options_None;
+  OpenVDS::VolumeDataLayoutDescriptor layoutDescriptor(brickSize, negativeMargin, positiveMargin,
+                                                        brickSize2DMultiplier, lodLevels, layoutOptions);
 
-    std::vector<OpenVDS::VolumeDataAxisDescriptor> axisDescriptors;
-    axisDescriptors.emplace_back(samplesX, KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_AXISNAME_SAMPLE, "ms", 0.0f, 4.f);
-    axisDescriptors.emplace_back(samplesY, KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_AXISNAME_CROSSLINE, "", 1932.f, 2536.f);
+  std::vector<OpenVDS::VolumeDataAxisDescriptor> axisDescriptors;
+  axisDescriptors.emplace_back(samplesX, KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_AXISNAME_SAMPLE, "ms", 0.0f, 4.f);
+  axisDescriptors.emplace_back(samplesY, KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_AXISNAME_CROSSLINE, "", 1932.f, 2536.f);
 
-    if (samplesZ != 0) {
-        axisDescriptors.emplace_back(samplesZ, KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_AXISNAME_INLINE,    "", 9985.f, 10369.f);
-    }
+  if (samplesZ != 0) {
+      axisDescriptors.emplace_back(samplesZ, KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_AXISNAME_INLINE,    "", 9985.f, 10369.f);
+  }
 
-    std::vector<OpenVDS::VolumeDataChannelDescriptor> channelDescriptors;
+  std::vector<OpenVDS::VolumeDataChannelDescriptor> channelDescriptors;
 
-    float rangeMin = -0.1234f;
-    float rangeMax = 0.1234f;
-    float intScale = 1.f;
-    float intOffset = 0.f;
+  float rangeMin = -0.1234f;
+  float rangeMax = 0.1234f;
+  float intScale = 1.f;
+  float intOffset = 0.f;
 
-    for (int i = 0; i < channels.size(); i++) {
-        channelDescriptors.emplace_back(format, OpenVDS::VolumeDataChannelDescriptor::Components_1,
-            channels[i].c_str(), units[i].c_str(), rangeMin, rangeMax, OpenVDS::VolumeDataMapping::Direct, 1,
-            OpenVDS::VolumeDataChannelDescriptor::Default, std::numeric_limits<float>::lowest(), intScale, intOffset);
-    }
+  for (int i = 0; i < channels.size(); i++) {
+      channelDescriptors.emplace_back(format, OpenVDS::VolumeDataChannelDescriptor::Components_1,
+          channels[i].c_str(), units[i].c_str(), rangeMin, rangeMax, OpenVDS::VolumeDataMapping::Direct, 1,
+          OpenVDS::VolumeDataChannelDescriptor::Default, std::numeric_limits<float>::lowest(), intScale, intOffset);
+  }
 
-    OpenVDS::MetadataContainer metadataContainer;
-    OpenVDS::Error error;
-
-    return OpenVDS::Create(opts, layoutDescriptor, axisDescriptors, channelDescriptors, metadataContainer, error);
+  OpenVDS::MetadataContainer metadataContainer;
+  OpenVDS::Error error;
+  OpenVDS::VDSHandle vds = OpenVDS::Create(opts, layoutDescriptor, axisDescriptors, channelDescriptors, metadataContainer, error);
+  if (vds) 
+  {
+    return CPPJNI_createSharedPtr<OpenVDS::VDS>(vds);
+  }
+  CPPJNI_onVDSError(error);
+  return std::shared_ptr<OpenVDS::VDS>();
 }
 
 static std::vector<std::string> convertStringArray(JNIEnv *env, jobjectArray obj)
@@ -121,14 +127,12 @@ jlong JNICALL Java_org_opengroup_openvds_AzureVDSGenerator_CreateVDSImpl(JNIEnv 
       }
     }
 
-    OpenVDS::VDSHandle handle = generate(*openOptions, nXSamples, nYSamples, nZSamples, 
-                                          (OpenVDS::VolumeDataChannelDescriptor::Format)format, channel_names, unit_names);
-
-    if (!handle) 
+    auto vdsPtr = generate(*openOptions, nXSamples, nYSamples, nZSamples, (OpenVDS::VolumeDataChannelDescriptor::Format)format, channel_names, unit_names);
+    if (!vdsPtr.get()) 
     {
       throw std::runtime_error("OpenVDS::Create returned NULL");
     }
-    return CPPJNI_createObjectContext<OpenVDS::VDS>(handle)->handle();
+    return CPPJNI_createObjectContext<OpenVDS::VDS>(vdsPtr)->handle();
   }
   CPPJNI_CATCH;
   return 0;
