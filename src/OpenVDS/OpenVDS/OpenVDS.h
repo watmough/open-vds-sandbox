@@ -41,15 +41,15 @@ class IOManager;
 class IVolumeDataAccessManager;
 
 #ifdef JAVA_WRAPPER_GENERATOR
-#define JAVA_OPAQUE_CLASS(_name) class _name { public: _name() {} }
-#define JAVA_OPAQUE_STRUCT(_name) struct _name { _name() {} }
+#define JAVA_OPAQUE_CLASS(_name) class _name { public: _name() {} };
+#define JAVA_OPAQUE_STRUCT(_name) struct _name { _name() {} };
 #else
 #define JAVA_OPAQUE_CLASS(_name) 
 #define JAVA_OPAQUE_STRUCT(_name) 
 #endif
 
-JAVA_OPAQUE_STRUCT(VDS);
-JAVA_OPAQUE_CLASS(IOManager);
+JAVA_OPAQUE_STRUCT(VDS)
+JAVA_OPAQUE_CLASS(IOManager)
 
 enum class WaveletAdaptiveMode
 {
