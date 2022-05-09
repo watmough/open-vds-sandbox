@@ -19,7 +19,7 @@
 
 //#pragma warning(disable : 4996) // Hide exception warning from VolumeDataAccess.h
 
-#include "Marshaling.h"
+#include "CPPJNI.h"
 
 
 #include "VolumeDataChannelDescriptor.h"

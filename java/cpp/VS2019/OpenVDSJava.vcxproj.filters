@@ -39,9 +39,6 @@
     <ClCompile Include="..\src\KnownMetadata.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Marshaling.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\MetadataAccess.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -87,12 +84,21 @@
     <ClCompile Include="..\src\VolumeSampler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\CPPJNI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\CPPJNICommon.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\Marshaling.h">
+    <ClInclude Include="..\src\NDVector.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\NDVector.h">
+    <ClInclude Include="..\src\CPPJNI.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\CPPJNICommon.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

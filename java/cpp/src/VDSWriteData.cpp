@@ -23,7 +23,7 @@
 #include <OpenVDS/VolumeDataChannelDescriptor.h>
 #include <OpenVDS/ValueConversion.h>
 
-#include "Marshaling.h"
+#include "CPPJNI.h"
 #include "NDVector.h"
 
 #include <algorithm>

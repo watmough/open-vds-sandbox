@@ -21,13 +21,14 @@
   <ItemGroup>
     <ClCompile Include="..\src\AzureVdsGenerator.cpp" />
     <ClCompile Include="..\src\CoordinateTransformer.cpp" />
+    <ClCompile Include="..\src\CPPJNI.cpp" />
+    <ClCompile Include="..\src\CPPJNICommon.cpp" />
     <ClCompile Include="..\src\Exceptions.cpp" />
     <ClCompile Include="..\src\GlobalMetadataCommon.cpp" />
     <ClCompile Include="..\src\GlobalState.cpp" />
     <ClCompile Include="..\src\IJKCoordinateTransformer.cpp" />
     <ClCompile Include="..\src\InMemoryVDSGenerator.cpp" />
     <ClCompile Include="..\src\KnownMetadata.cpp" />
-    <ClCompile Include="..\src\Marshaling.cpp" />
     <ClCompile Include="..\src\MetadataAccess.cpp" />
     <ClCompile Include="..\src\MetadataContainer.cpp" />
     <ClCompile Include="..\src\MetadataKey.cpp" />
@@ -45,7 +46,8 @@
     <ClCompile Include="..\src\VolumeSampler.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\Marshaling.h" />
+    <ClInclude Include="..\src\CPPJNI.h" />
+    <ClInclude Include="..\src\CPPJNICommon.h" />
     <ClInclude Include="..\src\NDVector.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

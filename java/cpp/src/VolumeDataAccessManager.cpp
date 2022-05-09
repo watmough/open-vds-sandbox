@@ -19,7 +19,7 @@
 
 //#pragma warning(disable : 4996) // Hide exception warning from VolumeDataAccess.h
 
-#include "Marshaling.h"
+#include "CPPJNI.h"
 
 
 #include "VolumeDataAccessManager.h"
@@ -3615,11 +3615,11 @@ JNIEXPORT jobjectArray JNICALL Java_org_opengroup_openvds_VolumeDataAccessManage
     int32_t code = 0;
     const char* errorString = nullptr;
     pInstance->GetCurrentUploadError(&objectID, &code, &errorString);
-    auto arr = Marshaling::CreateJavaArray(3);
+    auto arr = CPPJNI_createJavaArray(3);
     if (arr)
     {
       env->SetObjectArrayElement(arr, 0, env->NewStringUTF(objectID));
-      env->SetObjectArrayElement(arr, 1, Marshaling::CreatePODJavaObject<int>(code));
+      env->SetObjectArrayElement(arr, 1, CPPJNI_createPODJavaObject<int>(code));
       env->SetObjectArrayElement(arr, 2, env->NewStringUTF(errorString));
 
     }
@@ -3641,10 +3641,10 @@ JNIEXPORT jobjectArray JNICALL Java_org_opengroup_openvds_VolumeDataAccessManage
     int32_t code = 0;
     const char* errorString = "";
     pInstance->GetCurrentDownloadError(&code, &errorString);
-    auto arr = Marshaling::CreateJavaArray(2);
+    auto arr = CPPJNI_createJavaArray(2);
     if (arr)
     {
-      env->SetObjectArrayElement(arr, 0, Marshaling::CreatePODJavaObject<int>(code));
+      env->SetObjectArrayElement(arr, 0, CPPJNI_createPODJavaObject<int>(code));
       env->SetObjectArrayElement(arr, 1, env->NewStringUTF(errorString));
 
     }

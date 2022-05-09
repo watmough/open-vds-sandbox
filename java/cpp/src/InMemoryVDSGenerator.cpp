@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-#include "Marshaling.h"
+#include "CPPJNI.h"
 
 #include <OpenVDS/VolumeDataChannelDescriptor.h>
 
