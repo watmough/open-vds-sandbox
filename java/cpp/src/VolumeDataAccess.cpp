@@ -38,7 +38,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataPage_GetVolumeDataP
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataPage>(native_handle);
     auto& result = pInstance->GetVolumeDataPageAccessor();
-    auto context = CPPJNI_createNonOwningObjectContext(&result);
+    auto context = CPPJNI_createNonOwningObjectContext(&result, native_handle, pInstance);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -223,7 +223,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_GetLay
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataPageAccessor>(native_handle);
     auto result = pInstance->GetLayout();
-    auto context = CPPJNI_createNonOwningObjectContext(result);
+    auto context = CPPJNI_createNonOwningObjectContext(result, native_handle, pInstance);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -272,7 +272,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_GetCha
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataPageAccessor>(native_handle);
     auto& result = pInstance->GetChannelDescriptor();
-    auto context = CPPJNI_createNonOwningObjectContext(&result);
+    auto context = CPPJNI_createNonOwningObjectContext(&result, native_handle, pInstance);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -469,7 +469,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_Create
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataPageAccessor>(native_handle);
     auto result = pInstance->CreatePage(chunkIndex);
-    auto context = CPPJNI_createNonOwningObjectContext(result);
+    auto context = CPPJNI_createNonOwningObjectContext(result, native_handle, pInstance);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -500,7 +500,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_ReadPa
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataPageAccessor>(native_handle);
     auto result = pInstance->ReadPage(chunkIndex);
-    auto context = CPPJNI_createNonOwningObjectContext(result);
+    auto context = CPPJNI_createNonOwningObjectContext(result, native_handle, pInstance);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -518,7 +518,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_ReadPa
     auto tmpposition = CPPJNIArrayAdapter<int,6,false>(env, position);
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataPageAccessor>(native_handle);
     auto result = pInstance->ReadPageAtPosition(tmpposition.getArray());
-    auto context = CPPJNI_createNonOwningObjectContext(result);
+    auto context = CPPJNI_createNonOwningObjectContext(result, native_handle, pInstance);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -538,6 +538,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_CommitI
   }
   CPPJNI_CATCH
 }
+
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
 {
@@ -546,20 +547,12 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_dtorImp
 
   CPPJNI_TRY
   {
-    if (is_disposing) 
-    { // Clean up 
-      auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataPageAccessor>(native_handle);
-      pInstance->Commit();
-	  
-	  // The access manager sets itself as manager from 
-	  // Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeDataPageAccessorImpl
-      auto accessManager = CPPJNIObjectContext::ensureValid(native_handle)->getManager<OpenVDS::VolumeDataAccessManager>(); // May throw
-      accessManager->DestroyVolumeDataPageAccessor(pInstance);
-    }
     CPPJNI_destroyHandle<OpenVDS::VolumeDataPageAccessor>(native_handle, is_disposing);
   }
   CPPJNI_CATCH
 }
+
+
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DInterpolatingAccessorR64_GetLayoutImpl
@@ -572,7 +565,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DInterpolatingAcce
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::FloatVector2, double>>(native_handle);
     auto result = pInstance->GetLayout();
-    auto context = CPPJNI_createNonOwningObjectContext(result);
+    auto context = CPPJNI_createNonOwningObjectContext(result, native_handle, pInstance);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -707,7 +700,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DInterpolatingAcce
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::FloatVector2, float>>(native_handle);
     auto result = pInstance->GetLayout();
-    auto context = CPPJNI_createNonOwningObjectContext(result);
+    auto context = CPPJNI_createNonOwningObjectContext(result, native_handle, pInstance);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -842,7 +835,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorR64_G
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector2, double>>(native_handle);
     auto result = pInstance->GetLayout();
-    auto context = CPPJNI_createNonOwningObjectContext(result);
+    auto context = CPPJNI_createNonOwningObjectContext(result, native_handle, pInstance);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -977,7 +970,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU64_G
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector2, uint64_t>>(native_handle);
     auto result = pInstance->GetLayout();
-    auto context = CPPJNI_createNonOwningObjectContext(result);
+    auto context = CPPJNI_createNonOwningObjectContext(result, native_handle, pInstance);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1112,7 +1105,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorR32_G
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector2, float>>(native_handle);
     auto result = pInstance->GetLayout();
-    auto context = CPPJNI_createNonOwningObjectContext(result);
+    auto context = CPPJNI_createNonOwningObjectContext(result, native_handle, pInstance);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1247,7 +1240,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU32_G
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector2, uint32_t>>(native_handle);
     auto result = pInstance->GetLayout();
-    auto context = CPPJNI_createNonOwningObjectContext(result);
+    auto context = CPPJNI_createNonOwningObjectContext(result, native_handle, pInstance);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1382,7 +1375,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU16_G
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector2, uint16_t>>(native_handle);
     auto result = pInstance->GetLayout();
-    auto context = CPPJNI_createNonOwningObjectContext(result);
+    auto context = CPPJNI_createNonOwningObjectContext(result, native_handle, pInstance);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1517,7 +1510,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessorU8_Ge
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector2, uint8_t>>(native_handle);
     auto result = pInstance->GetLayout();
-    auto context = CPPJNI_createNonOwningObjectContext(result);
+    auto context = CPPJNI_createNonOwningObjectContext(result, native_handle, pInstance);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -1652,7 +1645,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData2DReadAccessor1Bit_
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector2, bool>>(native_handle);
     auto result = pInstance->GetLayout();
-    auto context = CPPJNI_createNonOwningObjectContext(result);
+    auto context = CPPJNI_createNonOwningObjectContext(result, native_handle, pInstance);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -2333,7 +2326,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DInterpolatingAcce
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::FloatVector3, double>>(native_handle);
     auto result = pInstance->GetLayout();
-    auto context = CPPJNI_createNonOwningObjectContext(result);
+    auto context = CPPJNI_createNonOwningObjectContext(result, native_handle, pInstance);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -2468,7 +2461,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DInterpolatingAcce
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::FloatVector3, float>>(native_handle);
     auto result = pInstance->GetLayout();
-    auto context = CPPJNI_createNonOwningObjectContext(result);
+    auto context = CPPJNI_createNonOwningObjectContext(result, native_handle, pInstance);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -2603,7 +2596,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorR64_G
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector3, double>>(native_handle);
     auto result = pInstance->GetLayout();
-    auto context = CPPJNI_createNonOwningObjectContext(result);
+    auto context = CPPJNI_createNonOwningObjectContext(result, native_handle, pInstance);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -2738,7 +2731,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU64_G
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector3, uint64_t>>(native_handle);
     auto result = pInstance->GetLayout();
-    auto context = CPPJNI_createNonOwningObjectContext(result);
+    auto context = CPPJNI_createNonOwningObjectContext(result, native_handle, pInstance);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -2873,7 +2866,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorR32_G
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector3, float>>(native_handle);
     auto result = pInstance->GetLayout();
-    auto context = CPPJNI_createNonOwningObjectContext(result);
+    auto context = CPPJNI_createNonOwningObjectContext(result, native_handle, pInstance);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -3008,7 +3001,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU32_G
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector3, uint32_t>>(native_handle);
     auto result = pInstance->GetLayout();
-    auto context = CPPJNI_createNonOwningObjectContext(result);
+    auto context = CPPJNI_createNonOwningObjectContext(result, native_handle, pInstance);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -3143,7 +3136,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU16_G
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector3, uint16_t>>(native_handle);
     auto result = pInstance->GetLayout();
-    auto context = CPPJNI_createNonOwningObjectContext(result);
+    auto context = CPPJNI_createNonOwningObjectContext(result, native_handle, pInstance);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -3278,7 +3271,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessorU8_Ge
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector3, uint8_t>>(native_handle);
     auto result = pInstance->GetLayout();
-    auto context = CPPJNI_createNonOwningObjectContext(result);
+    auto context = CPPJNI_createNonOwningObjectContext(result, native_handle, pInstance);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -3413,7 +3406,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData3DReadAccessor1Bit_
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector3, bool>>(native_handle);
     auto result = pInstance->GetLayout();
-    auto context = CPPJNI_createNonOwningObjectContext(result);
+    auto context = CPPJNI_createNonOwningObjectContext(result, native_handle, pInstance);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -4094,7 +4087,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DInterpolatingAcce
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::FloatVector4, double>>(native_handle);
     auto result = pInstance->GetLayout();
-    auto context = CPPJNI_createNonOwningObjectContext(result);
+    auto context = CPPJNI_createNonOwningObjectContext(result, native_handle, pInstance);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -4229,7 +4222,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DInterpolatingAcce
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::FloatVector4, float>>(native_handle);
     auto result = pInstance->GetLayout();
-    auto context = CPPJNI_createNonOwningObjectContext(result);
+    auto context = CPPJNI_createNonOwningObjectContext(result, native_handle, pInstance);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -4364,7 +4357,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorR64_G
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector4, double>>(native_handle);
     auto result = pInstance->GetLayout();
-    auto context = CPPJNI_createNonOwningObjectContext(result);
+    auto context = CPPJNI_createNonOwningObjectContext(result, native_handle, pInstance);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -4499,7 +4492,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU64_G
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector4, uint64_t>>(native_handle);
     auto result = pInstance->GetLayout();
-    auto context = CPPJNI_createNonOwningObjectContext(result);
+    auto context = CPPJNI_createNonOwningObjectContext(result, native_handle, pInstance);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -4634,7 +4627,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorR32_G
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector4, float>>(native_handle);
     auto result = pInstance->GetLayout();
-    auto context = CPPJNI_createNonOwningObjectContext(result);
+    auto context = CPPJNI_createNonOwningObjectContext(result, native_handle, pInstance);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -4769,7 +4762,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU32_G
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector4, uint32_t>>(native_handle);
     auto result = pInstance->GetLayout();
-    auto context = CPPJNI_createNonOwningObjectContext(result);
+    auto context = CPPJNI_createNonOwningObjectContext(result, native_handle, pInstance);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -4904,7 +4897,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU16_G
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector4, uint16_t>>(native_handle);
     auto result = pInstance->GetLayout();
-    auto context = CPPJNI_createNonOwningObjectContext(result);
+    auto context = CPPJNI_createNonOwningObjectContext(result, native_handle, pInstance);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -5039,7 +5032,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessorU8_Ge
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector4, uint8_t>>(native_handle);
     auto result = pInstance->GetLayout();
-    auto context = CPPJNI_createNonOwningObjectContext(result);
+    auto context = CPPJNI_createNonOwningObjectContext(result, native_handle, pInstance);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -5174,7 +5167,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeData4DReadAccessor1Bit_
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataReadAccessor<OpenVDS::IntVector4, bool>>(native_handle);
     auto result = pInstance->GetLayout();
-    auto context = CPPJNI_createNonOwningObjectContext(result);
+    auto context = CPPJNI_createNonOwningObjectContext(result, native_handle, pInstance);
     return context->handle();
   }
   CPPJNI_CATCH

@@ -303,7 +303,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_GetVo
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
     auto result = pInstance->GetVolumeDataLayout();
-    auto context = CPPJNI_createNonOwningObjectContext(result);
+    auto context = CPPJNI_createNonOwningObjectContext(result, native_handle, pInstance);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -343,6 +343,29 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_GetVD
                                LOD, 
                                channel);
     return result;
+  }
+  CPPJNI_CATCH
+  return 0;
+}
+
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeDataPageAccessorImpl
+  (JNIEnv * env, jobject object, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jint maxPages, jlong accessMode, jint chunkMetadataPageSize)
+{
+  JNIEnvGuard
+    envGuard(env);
+
+  CPPJNI_TRY
+  {
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto result = pInstance->CreateVolumeDataPageAccessor(
+                               (OpenVDS::DimensionsND)dimensionsND, 
+                               LOD, 
+                               channel, 
+                               maxPages, 
+                               (enum OpenVDS::VolumeDataPageAccessor::AccessMode)accessMode, 
+                               chunkMetadataPageSize);
+    auto context = CPPJNI_createNonOwningObjectContext(result, native_handle, pInstance);
+    return context->handle();
   }
   CPPJNI_CATCH
   return 0;
@@ -3692,35 +3715,6 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
 }
 
 */
-
-///AUTOGEN-IGNORE: CXX_METHOD CreateVolumeDataPageAccessor OpenVDS::VolumeDataPageAccessor *(OpenVDS::DimensionsND, int, int, int, OpenVDS::VolumeDataPageAccessor::AccessMode, int) FUNCTIONPROTO
-JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeDataPageAccessorImpl
-  (JNIEnv * env, jobject object, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jint maxPages, jlong accessMode, jint chunkMetadataPageSize)
-{
-  JNIEnvGuard
-    envGuard(env);
-
-  CPPJNI_TRY
-  {
-    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
-    auto result = pInstance->CreateVolumeDataPageAccessor(
-                               (OpenVDS::DimensionsND)dimensionsND, 
-                               LOD, 
-                               channel, 
-                               maxPages, 
-                               (enum OpenVDS::VolumeDataPageAccessor::AccessMode)accessMode, 
-                               chunkMetadataPageSize);
-    auto context = CPPJNI_createNonOwningObjectContext(result);
-
-    // The PageAccessor must at present be destroyed through the manager, so we must provide that context for later
-    auto managerContext = CPPJNIObjectContext_t<OpenVDS::VolumeDataAccessManager>::ensureValid(native_handle);
-    context->setManager(managerContext->m_SharedPtr);
-
-    return context->handle();
-  }
-  CPPJNI_CATCH
-  return 0;
-}
 
 
 

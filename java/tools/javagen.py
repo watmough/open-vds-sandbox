@@ -885,12 +885,14 @@ def create_jni_methods(scope: Scope, template: str, override_name: str = '', tem
                                 retval = '(jlong)result'
                             elif is_smartptr_type(real_return_type):
                                 retval = 'CPPJNI_createObjectContext(result)'.format(real_return_type)
-                            elif is_ptr_type(real_return_type):
-                                # This handle will not destroy the backing object because it is not the owner:
-                                retval = 'CPPJNI_createNonOwningObjectContext(result)'
-                            elif is_ref_type(real_return_type):
-                                # This handle will not destroy the backing object because it is not the owner:
-                                retval = 'CPPJNI_createNonOwningObjectContext(&result)'
+                            elif is_ptr_type(real_return_type) or is_ref_type(real_return_type):
+                                creator = '' if is_static_method else ', native_handle, pInstance'
+                                if is_ptr_type(real_return_type):
+                                    # This handle will not destroy the backing object because it is not the owner:
+                                    retval = f'CPPJNI_createNonOwningObjectContext(result{creator})'
+                                else:
+                                    # This handle will not destroy the backing object because it is not the owner:
+                                    retval = f'CPPJNI_createNonOwningObjectContext(&result{creator})'
                             else:
                                 retval = 'CPPJNI_createObjectContext(CPPJNI_makeShared<{}>(result))'.format(clean_typename(real_return_type))
                         elif return_type == 'void':

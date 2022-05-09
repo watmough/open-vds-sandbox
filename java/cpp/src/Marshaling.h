@@ -471,6 +471,18 @@ struct CPPJNIObjectContext
   }
 
   template<typename T>
+  void        
+  setCreator(std::shared_ptr<T> creator)
+  {
+    if (creator.get() == nullptr)
+    {
+      throw std::runtime_error("Cannot set null creator.");
+    }
+    m_Manager = std::make_unique<CPPJNIWeakPtrWrapper_t<T>>(creator);
+  }
+
+
+  template<typename T>
   std::shared_ptr<T>
   getManager() const
   {
@@ -484,6 +496,22 @@ struct CPPJNIObjectContext
       }
     }
     throw std::runtime_error("Object has no manager");
+  }
+
+  template<typename T>
+  std::shared_ptr<T>
+  getCreator() const
+  {
+    CPPJNIWeakPtrWrapper* wrapper = m_Manager.get();
+    if (wrapper != nullptr)
+    {
+      auto result = wrapper->lock<T>();
+      if (result.get() != nullptr)
+      {
+        return result;
+      }
+    }
+    throw std::runtime_error("Object has no creator");
   }
 
   void
@@ -526,7 +554,7 @@ void CPPJNI_onVDSError(OpenVDS::VDSError const& error);
 template<typename T>
 struct Cleaner
 {
-  static void cleanup(std::shared_ptr<T> instancePtr, bool is_disposing) { }
+  static void cleanup(struct CPPJNIObjectContext& context, std::shared_ptr<T> instancePtr, bool is_disposing) { }
 };
 
 template<typename T>
@@ -566,7 +594,7 @@ template<>
 struct Cleaner<OpenVDS::VDS>
 {
   static void 
-  cleanup(std::shared_ptr<OpenVDS::VDS> instancePtr, bool is_disposing) 
+  cleanup(struct CPPJNIObjectContext& context, std::shared_ptr<OpenVDS::VDS> instancePtr, bool is_disposing) 
   { 
     OpenVDS::VDSError error;
     OpenVDS::Close(instancePtr.get(), error); 
@@ -581,11 +609,30 @@ template<>
 struct Cleaner<OpenVDS::VolumeDataPage>
 {
   static void 
-  cleanup(std::shared_ptr<OpenVDS::VolumeDataPage> instancePtr, bool is_disposing) 
+  cleanup(struct CPPJNIObjectContext& context, std::shared_ptr<OpenVDS::VolumeDataPage> instancePtr, bool is_disposing) 
   { 
     if (is_disposing)
     {
       instancePtr.get()->Release();
+    }
+    //else
+    //{
+    //  int debug = 0;
+    //}
+  }
+};
+
+template<>
+struct Cleaner<OpenVDS::VolumeDataPageAccessor>
+{
+  static void 
+  cleanup(struct CPPJNIObjectContext& context, std::shared_ptr<OpenVDS::VolumeDataPageAccessor> instancePtr, bool is_disposing) 
+  { 
+    if (is_disposing)
+    {
+      instancePtr.get()->Commit();
+      auto creator = context.getCreator<OpenVDS::VolumeDataAccessManager>(); // May throw
+      creator->DestroyVolumeDataPageAccessor(instancePtr.get());
     }
     //else
     //{
@@ -625,7 +672,7 @@ struct CPPJNIObjectContext_t : public CPPJNIObjectContext
     if (m_SharedPtr.get()) 
     {
       Cleaner<T> cleaner;
-      cleaner.cleanup(m_SharedPtr, false);
+      cleaner.cleanup(*this, m_SharedPtr, false);
     }
     m_OpaqueObject = nullptr;
   }
@@ -700,6 +747,16 @@ CPPJNI_createNonOwningObjectContext(T const* pNativeObject)
   return new CPPJNIObjectContext_t<T>(CPPJNI_createSharedPtrNoDelete<T>((T*)pNativeObject));
 }
 
+template<typename T, typename CREATOR_TYPE>
+CPPJNIObjectContext_t<T>*
+CPPJNI_createNonOwningObjectContext(T const* pNativeObject, jlong creator_native_handle, CREATOR_TYPE* creator)
+{
+  auto context = new CPPJNIObjectContext_t<T>(CPPJNI_createSharedPtrNoDelete<T>((T*)pNativeObject));
+  auto creatorContext = CPPJNIObjectContext_t<CREATOR_TYPE>::ensureValid(creator_native_handle);
+  context->setManager(creatorContext->m_SharedPtr);
+  return context;
+}
+
 template<typename T>
 T*
 CPPJNI_cast(jlong handle)
@@ -722,7 +779,7 @@ CPPJNI_destroyHandle(jlong handle, bool is_disposing)
   if (pContext->m_SharedPtr.get())
   {
     Cleaner<T> cleaner;
-    cleaner.cleanup(pContext->m_SharedPtr, is_disposing);
+    cleaner.cleanup(*pContext, pContext->m_SharedPtr, is_disposing);
     pContext->m_SharedPtr.reset();
   }
   delete pContext;
