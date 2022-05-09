@@ -155,7 +155,7 @@ public:
 
   virtual int   GetLOD() const = 0;
   virtual int   GetChannelIndex() const = 0;
-  virtual VolumeDataChannelDescriptor const &GetChannelDescriptor() const = 0;
+  virtual VolumeDataChannelDescriptor GetChannelDescriptor() const = 0;
   virtual void  GetNumSamples(int (&numSamples)[Dimensionality_Max]) const = 0;
 
   virtual int64_t GetChunkCount() const = 0;

@@ -75,7 +75,7 @@ int VolumeDataPageAccessorImpl::GetChannelIndex() const
   return m_layer->GetChannelIndex();
 }
 
-VolumeDataChannelDescriptor const& VolumeDataPageAccessorImpl::GetChannelDescriptor() const
+VolumeDataChannelDescriptor VolumeDataPageAccessorImpl::GetChannelDescriptor() const
 {
   return m_layer->GetVolumeDataChannelDescriptor();
 }

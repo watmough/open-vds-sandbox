@@ -71,7 +71,7 @@ public:
 
   int   GetLOD() const override;
   int   GetChannelIndex() const override;
-  VolumeDataChannelDescriptor const& GetChannelDescriptor() const override;
+  VolumeDataChannelDescriptor GetChannelDescriptor() const override;
   void  GetNumSamples(int(&numSamples)[Dimensionality_Max]) const override;
 
   int64_t GetChunkCount() const override;
