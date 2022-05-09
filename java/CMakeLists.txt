@@ -198,14 +198,16 @@ add_jar(openvds-java-test
 add_library(openvds-javacpp
   cpp/src/AzureVdsGenerator.cpp
   cpp/src/CoordinateTransformer.cpp
+  cpp/src/CPPJNI.cpp
+  cpp/src/CPPJNI.h
+  cpp/src/CPPJNICommon.cpp
+  cpp/src/CPPJNICommon.h
   cpp/src/Exceptions.cpp
   cpp/src/GlobalMetadataCommon.cpp
   cpp/src/GlobalState.cpp
   cpp/src/IJKCoordinateTransformer.cpp
   cpp/src/InMemoryVDSGenerator.cpp
   cpp/src/KnownMetadata.cpp
-  cpp/src/Marshaling.cpp
-  cpp/src/Marshaling.h
   cpp/src/MetadataAccess.cpp
   cpp/src/MetadataContainer.cpp
   cpp/src/MetadataKey.cpp
