@@ -436,7 +436,7 @@ struct CPPJNIObjectContext
 
   std::vector<char*> m_AllocatedStrings;
   std::vector<jobject> m_GlobalRefs;
-  std::unique_ptr<CPPJNIWeakPtrWrapper> m_Manager;
+  std::unique_ptr<CPPJNIWeakPtrWrapper> m_Creator;
 
   int m_SharedLibraryGeneration;
 
@@ -461,48 +461,20 @@ struct CPPJNIObjectContext
   // Create a polymorphic weak pointer
   template<typename T>
   void        
-  setManager(std::shared_ptr<T> manager)
-  {
-    if (manager.get() == nullptr)
-    {
-      throw std::runtime_error("Cannot set null manager.");
-    }
-    m_Manager = std::make_unique<CPPJNIWeakPtrWrapper_t<T>>(manager);
-  }
-
-  template<typename T>
-  void        
   setCreator(std::shared_ptr<T> creator)
   {
     if (creator.get() == nullptr)
     {
       throw std::runtime_error("Cannot set null creator.");
     }
-    m_Manager = std::make_unique<CPPJNIWeakPtrWrapper_t<T>>(creator);
-  }
-
-
-  template<typename T>
-  std::shared_ptr<T>
-  getManager() const
-  {
-    CPPJNIWeakPtrWrapper* wrapper = m_Manager.get();
-    if (wrapper != nullptr)
-    {
-      auto result = wrapper->lock<T>();
-      if (result.get() != nullptr)
-      {
-        return result;
-      }
-    }
-    throw std::runtime_error("Object has no manager");
+    m_Creator = std::make_unique<CPPJNIWeakPtrWrapper_t<T>>(creator);
   }
 
   template<typename T>
   std::shared_ptr<T>
   getCreator() const
   {
-    CPPJNIWeakPtrWrapper* wrapper = m_Manager.get();
+    CPPJNIWeakPtrWrapper* wrapper = m_Creator.get();
     if (wrapper != nullptr)
     {
       auto result = wrapper->lock<T>();
@@ -753,7 +725,7 @@ CPPJNI_createNonOwningObjectContext(T const* pNativeObject, jlong creator_native
 {
   auto context = new CPPJNIObjectContext_t<T>(CPPJNI_createSharedPtrNoDelete<T>((T*)pNativeObject));
   auto creatorContext = CPPJNIObjectContext_t<CREATOR_TYPE>::ensureValid(creator_native_handle);
-  context->setManager(creatorContext->m_SharedPtr);
+  context->setCreator(creatorContext->m_SharedPtr);
   return context;
 }
 
