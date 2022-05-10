@@ -47,6 +47,8 @@
 
 #include <fmt/format.h>
 
+#include <OpenVDS/OpenVDSVersion.h>
+
 namespace OpenVDS
 {
 
@@ -1018,11 +1020,17 @@ void SetIoManagerTransformer(std::function<IOManager* (IOManager*)> transformer)
 
 const char *GetOpenVDSName()
 {
-  return PROJECT_NAME;
+  return OPENVDS_PROJECT_NAME;
 }
 
 const char *GetOpenVDSVersion()
 {
-  return PROJECT_VERSION;
+  return OPENVDS_VERSION;
 }
+
+const char* GetOpenVDSRevision()
+{
+  return OPENVDS_REVISION;
+}
+
 }

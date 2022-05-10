@@ -29,8 +29,7 @@ if (EMSCRIPTEN)
   set(SOURCE_FILES
     VDS/VolumeDataStore.cpp
     VDS/DataBlock.cpp
-    ${WAVELET_SOURCES}
-    ${CMAKE_CURRENT_BINARY_DIR}/VDS/GetGitRevision.cpp)
+    ${WAVELET_SOURCES})
 
   set (PRIVATE_HEADER_FILES
     VDS/DataBlock.h
@@ -79,7 +78,6 @@ else()
     VDS/Env.cpp
     VDS/StringToDouble.cpp
     ${WAVELET_SOURCES}
-    ${CMAKE_CURRENT_BINARY_DIR}/VDS/GetGitRevision.cpp
     ${COMMON_DIR}/Base64/Base64.cpp)
 
   set (PRIVATE_HEADER_FILES
@@ -183,7 +181,6 @@ endforeach()
 target_include_directories(openvds_objects PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}" "${COMMON_DIR}" "${CMAKE_CURRENT_BINARY_DIR}")
 target_include_directories(openvds_objects PRIVATE "VDS")
 target_compile_definitions(openvds_objects PRIVATE openvds_EXPORTS)
-target_compile_definitions(openvds_objects PRIVATE PROJECT_NAME="${CMAKE_PROJECT_NAME}" PROJECT_VERSION="${PROJECT_VERSION}")
 
 if (AUTODETECT_CA_CERTIFICATES)
   target_compile_definitions(openvds_objects PRIVATE AUTODETECT_CA_CERTIFICATES)
@@ -199,7 +196,8 @@ if(Git_FOUND)
       OUTPUT_STRIP_TRAILING_WHITESPACE
     )
 endif()
-configure_file(VDS/GetGitRevision.cpp.in VDS/GetGitRevision.cpp)
+configure_file(VDS/OpenVDSVersion.h.in OpenVDS/OpenVDSVersion.h)
+list(APPEND EXPORTED_HEADER_FILES ${CMAKE_CURRENT_BINARY_DIR}/OpenVDS/OpenVDSVersion.h)
 
 #needed for ENABLE_SSE_TRANSFORM
  if (NOT (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC"))
