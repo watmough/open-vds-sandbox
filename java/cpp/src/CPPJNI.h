@@ -13,19 +13,13 @@
 
 #define JAVA_WRAPPER_GENERATOR // Needed for some otherwise invisible accessors
 
+#include <climits>
+
 #include "OpenVDS/Exceptions.h"
 #include "OpenVDS/VolumeDataLayout.h"
 #include "OpenVDS/VolumeDataAccess.h"
 #include "OpenVDS/GlobalState.h"
 #include "OpenVDS/OpenVDS.h"
-
-//namespace OpenVDS {
-//class Exception;
-//class VolumeDataChannelDescriptor;
-//class VolumeDataLayoutDescriptor;
-//class VolumeDataAxisDescriptor;
-//struct IJKGridDefinition;
-//}
 
 using CPPJNILibraryException = OpenVDS::Exception;
 
