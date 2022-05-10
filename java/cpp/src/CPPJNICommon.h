@@ -432,7 +432,7 @@ struct CPPJNIObjectContext
     {
       throw std::runtime_error("Cannot set null creator.");
     }
-    m_Creator = std::make_unique<CPPJNIWeakPtrWrapper_t<T>>(creator);
+    m_Creator.reset(new CPPJNIWeakPtrWrapper_t<T>(creator));
   }
 
   template<typename T>
