@@ -68,7 +68,7 @@ public class VolumeDataPageAccessor extends ManagedBase implements AutoCloseable
         return GetChannelIndexImpl(getNativeObject());
     }
 
-    ///AUTOGEN-OK: CXX_METHOD GetChannelDescriptor const OpenVDS::VolumeDataChannelDescriptor &() const FUNCTIONPROTO
+    ///AUTOGEN-OK: CXX_METHOD GetChannelDescriptor OpenVDS::VolumeDataChannelDescriptor () const FUNCTIONPROTO
     native private long GetChannelDescriptorImpl(long native_object);
     public VolumeDataChannelDescriptor getChannelDescriptor() {
         return VolumeDataChannelDescriptor.fromNativeObject(GetChannelDescriptorImpl(getNativeObject()));

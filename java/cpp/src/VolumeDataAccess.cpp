@@ -271,8 +271,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_GetCha
   CPPJNI_TRY
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataPageAccessor>(native_handle);
-    auto& result = pInstance->GetChannelDescriptor();
-    auto context = CPPJNI_createNonOwningObjectContext(&result, native_handle, pInstance);
+    auto result = pInstance->GetChannelDescriptor();
+    auto context = CPPJNI_createObjectContext(CPPJNI_makeShared<OpenVDS::VolumeDataChannelDescriptor>(result));
     return context->handle();
   }
   CPPJNI_CATCH
