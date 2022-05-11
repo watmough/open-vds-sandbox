@@ -27,6 +27,11 @@ else()
   set(DISABLE_WARNING_FLAG "-w")
 endif()
 
+if ((NOT DISABLE_AZURE_IOMANAGER) OR (NOT DISABLE_AZURESDKFORCPP_IOMANAGER))
+  file(GLOB SRC__LIB_PROVIDERS_AZURE_COMMON ${dmsCMakeDir}/src/lib/cloud/providers/azure/*.cc)
+  set(SOURCES ${SOURCES} ${SRC__LIB_PROVIDERS_AZURE_COMMON})
+endif()
+
 if (NOT DISABLE_AZURE_IOMANAGER)
   add_definitions( -DHAS_AZURE_BLOB_STORAGE_PROVIDER )
   file(GLOB SRC_LIB_PROVIDERS_AZURE ${dmsCMakeDir}/src/lib/cloud/providers/azure/cpprest/*.cc)
