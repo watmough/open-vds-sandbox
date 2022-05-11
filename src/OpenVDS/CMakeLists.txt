@@ -149,7 +149,7 @@ add_library(hue_bds_objects OBJECT
   BulkDataStore/VDSObjectParser.cpp )
 get_target_property(json_cpp_include_dir jsoncpp_lib_static INTERFACE_INCLUDE_DIRECTORIES)
 get_target_property(fmt_include_dir fmt::fmt INTERFACE_INCLUDE_DIRECTORIES)
-target_include_directories(hue_bds_objects PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${json_cpp_include_dir} ${fmt_include_dir} ${COMMON_DIR})
+target_include_directories(hue_bds_objects PRIVATE ${json_cpp_include_dir} ${fmt_include_dir})
 target_compile_definitions(hue_bds_objects PUBLIC -DHUEBDS_EXPORTS= ) # We're not building HueBulkDataStore as a shared library
 
 add_library(openvds_objects OBJECT
@@ -178,8 +178,6 @@ foreach(DEP ${dependency_targets_3rdparty})
   add_dependencies(openvds_objects ${DEP})
 endforeach()
 
-target_include_directories(openvds_objects PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}" "${COMMON_DIR}" "${CMAKE_CURRENT_BINARY_DIR}")
-target_include_directories(openvds_objects PRIVATE "VDS")
 target_compile_definitions(openvds_objects PRIVATE openvds_EXPORTS)
 
 if (AUTODETECT_CA_CERTIFICATES)
@@ -356,8 +354,17 @@ set_target_properties(openvds
 )
 endif()
 
+target_include_directories(hue_bds_objects
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+        $<BUILD_INTERFACE:${COMMON_DIR}>
+        $<INSTALL_INTERFACE:include>
+)
+
 target_include_directories(openvds
     PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
         $<INSTALL_INTERFACE:include>
 )
