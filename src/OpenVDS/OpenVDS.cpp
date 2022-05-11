@@ -512,6 +512,7 @@ static bool GetWaveletAdaptiveInfo(std::string& connectionString, WaveletAdaptiv
   return true;
 }
 
+// This function is also used from IOManager.cpp, it might make more sense to move it there
 OpenOptions* CreateOpenOptions(StringWrapper urlWrapper, StringWrapper connectionStringWrapper, Error& error)
 {
   error = Error();
@@ -556,50 +557,6 @@ OpenOptions* CreateOpenOptions(StringWrapper urlWrapper, StringWrapper connectio
   }
 
   return openOptions.release();
-}
-
-bool IsSupportedProtocol(StringWrapper url)
-{
-  std::string u(url.data, url.size);
-  for (auto& urlToOpenOpiton : urlToOpenOptions)
-  {
-    if (isProtocol(u, urlToOpenOpiton.protocol))
-      return true;
-  }
-  return false;
-}
-
-VDSHandle Open(StringWrapper url, StringWrapper connectionString, Error& error)
-{
-  std::unique_ptr<OpenOptions> openOptions(CreateOpenOptions(url, connectionString, error));
-  if (error.code || !openOptions)
-    return nullptr;
-
-  return Open(*(openOptions.get()), error);
-}
-
-VDSHandle OpenWithAdaptiveCompressionTolerance(StringWrapper url, StringWrapper connectionString, float waveletAdaptiveTolerance, Error& error)
-{
-  std::unique_ptr<OpenOptions> openOptions(CreateOpenOptions(url, connectionString, error));
-  if (error.code || !openOptions)
-    return nullptr;
-
-  openOptions->waveletAdaptiveMode = WaveletAdaptiveMode::Tolerance;
-  openOptions->waveletAdaptiveTolerance = waveletAdaptiveTolerance;
-
-  return Open(*(openOptions.get()), error);
-}
-
-VDSHandle OpenWithAdaptiveCompressionRatio(StringWrapper url, StringWrapper connectionString, float waveletAdaptiveRatio, Error& error)
-{
-  std::unique_ptr<OpenOptions> openOptions(CreateOpenOptions(url, connectionString, error));
-  if (error.code || !openOptions)
-    return nullptr;
-
-  openOptions->waveletAdaptiveMode = WaveletAdaptiveMode::Ratio;
-  openOptions->waveletAdaptiveRatio = waveletAdaptiveRatio;
-
-  return Open(*(openOptions.get()), error);
 }
 
 static bool Init(VDS *vds, VolumeDataStore *volumeDataStore, Error& error)
@@ -655,72 +612,6 @@ void InitWaveletAdaptiveLoadLevel(VDS &vds, OpenOptions const &options)
     vds.volumeDataLayout->SetCompressionTolerance(compressionInfo.GetTolerance());
     vds.volumeDataLayout->SetWaveletAdaptiveLoadLevel(compressionInfo.GetAdaptiveLevel());
   }
-}
-
-VDSHandle Open(IOManager *ioManager, Error& error)
-{
-  std::unique_ptr<VDS> ret(new VDS());
-  error = Error();
-
-  if(Init(ret.get(), new VolumeDataStoreIOManager(*ret, ioManager), error))
-  {
-    return ret.release();
-  }
-  else
-  {
-    return nullptr;
-  }
-}
-
-VDS *Open(const OpenOptions &options, Error &error)
-{
-  std::unique_ptr<VDS> ret(new VDS());
-  std::unique_ptr<VolumeDataStore> volumeDataStore;
-  error = Error();
-
-  if(options.connectionType != OpenOptions::VDSFile)
-  {
-    std::unique_ptr<IOManager> ioManager(IOManager::CreateIOManager(options, IOManager::AccessPattern::ReadOnly, error));
-    if (error.code)
-      return nullptr;
-
-    if (iomanagerTransformer)
-      ioManager.reset(iomanagerTransformer(ioManager.release()));
-
-    volumeDataStore.reset(new VolumeDataStoreIOManager(*ret, ioManager.release()));
-  }
-  else
-  {
-    const VDSFileOpenOptions &fileOptions = static_cast<const VDSFileOpenOptions &>(options);
-    volumeDataStore.reset(new VolumeDataStoreVDSFile(*ret, fileOptions.fileName, VolumeDataStoreVDSFile::ReadOnly, error));
-    if (error.code)
-      return nullptr;
-  }
-
-  if(Init(ret.get(), volumeDataStore.release(), error))
-  {
-    assert(ret.get());
-    InitWaveletAdaptiveLoadLevel(*ret.get(), options);
-    return ret.release();
-  }
-  else
-  {
-    return nullptr;
-  }
-}
-
-VolumeDataLayout *GetLayout(VDS *vds)
-{
-  if (!vds)
-    return nullptr;
-  return vds->volumeDataLayout.get();
-}
-
-IVolumeDataAccessManager *GetAccessManagerInterface(VDS *vds)
-{
-  if (!vds)
-    return nullptr;
-  return vds->accessManager.get();
 }
 
 static int32_t GetInternalCubeSizeLOD0(const VolumeDataLayoutDescriptor &desc)
@@ -886,12 +777,164 @@ static bool Init(VDS *vds, VolumeDataStore* volumeDataStore, VolumeDataLayoutDes
   return true;
 }
 
-bool IsCompressionMethodSupported(CompressionMethod compressionMethod)
+void SetIoManagerTransformer(std::function<IOManager* (IOManager*)> transformer)
+{
+  iomanagerTransformer = transformer;
+}
+
+class OpenVDSInterfaceImpl : public OpenVDSInterface
+{
+  friend OpenVDSInterface &GetOpenVDSInterface(const char* version);
+  OpenVDSInterfaceImpl() {}
+  ~OpenVDSInterfaceImpl() {}
+
+public:
+  OpenOptions*              CreateOpenOptions(StringWrapper url, StringWrapper connectionString, Error& error) final override;
+  bool                      IsSupportedProtocol(StringWrapper url) final override;
+  VDSHandle                 Open(StringWrapper url, StringWrapper connectionString, Error& error) final override;
+  VDSHandle                 OpenWithAdaptiveCompressionTolerance(StringWrapper url, StringWrapper connectionString, float waveletAdaptiveTolerance, Error& error) final override;
+  VDSHandle                 OpenWithAdaptiveCompressionRatio(StringWrapper url, StringWrapper connectionString, float waveletAdaptiveRatio, Error& error) final override;
+  VDSHandle                 Open(const OpenOptions& options, Error& error) final override;
+  VDSHandle                 Open(IOManager*ioManager, Error &error) final override;
+  bool                      IsCompressionMethodSupported(CompressionMethod compressionMethod) final override;
+  VDSHandle                 Create(StringWrapper url, StringWrapper connectionString, VolumeDataLayoutDescriptor const& layoutDescriptor, VectorWrapper<VolumeDataAxisDescriptor> axisDescriptors, VectorWrapper<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const& metadata, CompressionMethod compressionMethod, float compressionTolerance, Error& error) final override;
+  VDSHandle                 Create(const OpenOptions& options, VolumeDataLayoutDescriptor const& layoutDescriptor, VectorWrapper<VolumeDataAxisDescriptor> axisDescriptors, VectorWrapper<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const& metadata, CompressionMethod compressionMethod, float compressionTolerance, Error& error) final override;
+  VDSHandle                 Create(IOManager* ioManager, VolumeDataLayoutDescriptor const &layoutDescriptor, VectorWrapper<VolumeDataAxisDescriptor> axisDescriptors, VectorWrapper<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const &metadata, CompressionMethod compressionMethod, float compressionTolerance, Error &error) final override;
+  VolumeDataLayout         *GetLayout(VDSHandle handle) final override;
+  IVolumeDataAccessManager *GetAccessManagerInterface(VDSHandle handle) final override;
+  CompressionMethod         GetCompressionMethod(VDSHandle handle) final override;
+  float                     GetCompressionTolerance(VDSHandle handle) final override;
+  void                      Close(VDSHandle handle) final override;
+  void                      Close(VDSHandle handle, Error &error) final override;
+  void                      RetryableClose(VDSHandle handle) final override;
+  void                      RetryableClose(VDSHandle handle, Error &error) final override;
+  GlobalState              *GetGlobalState() final override;
+  const char               *GetOpenVDSName() final override;
+  const char               *GetOpenVDSVersion() final override;
+  const char               *GetOpenVDSRevision() final override;
+};
+
+OpenOptions* OpenVDSInterfaceImpl::CreateOpenOptions(StringWrapper urlWrapper, StringWrapper connectionStringWrapper, Error& error)
+{
+  return OpenVDS::CreateOpenOptions(urlWrapper, connectionStringWrapper, error);
+}
+
+bool OpenVDSInterfaceImpl::IsSupportedProtocol(StringWrapper url)
+{
+  std::string u(url.data, url.size);
+  for (auto& urlToOpenOpiton : urlToOpenOptions)
+  {
+    if (isProtocol(u, urlToOpenOpiton.protocol))
+      return true;
+  }
+  return false;
+}
+
+VDSHandle OpenVDSInterfaceImpl::Open(StringWrapper url, StringWrapper connectionString, Error& error)
+{
+  std::unique_ptr<OpenOptions> openOptions(CreateOpenOptions(url, connectionString, error));
+  if (error.code || !openOptions)
+    return nullptr;
+
+  return Open(*(openOptions.get()), error);
+}
+
+VDSHandle OpenVDSInterfaceImpl::OpenWithAdaptiveCompressionTolerance(StringWrapper url, StringWrapper connectionString, float waveletAdaptiveTolerance, Error& error)
+{
+  std::unique_ptr<OpenOptions> openOptions(CreateOpenOptions(url, connectionString, error));
+  if (error.code || !openOptions)
+    return nullptr;
+
+  openOptions->waveletAdaptiveMode = WaveletAdaptiveMode::Tolerance;
+  openOptions->waveletAdaptiveTolerance = waveletAdaptiveTolerance;
+
+  return Open(*(openOptions.get()), error);
+}
+
+VDSHandle OpenVDSInterfaceImpl::OpenWithAdaptiveCompressionRatio(StringWrapper url, StringWrapper connectionString, float waveletAdaptiveRatio, Error& error)
+{
+  std::unique_ptr<OpenOptions> openOptions(CreateOpenOptions(url, connectionString, error));
+  if (error.code || !openOptions)
+    return nullptr;
+
+  openOptions->waveletAdaptiveMode = WaveletAdaptiveMode::Ratio;
+  openOptions->waveletAdaptiveRatio = waveletAdaptiveRatio;
+
+  return Open(*(openOptions.get()), error);
+}
+
+VDSHandle OpenVDSInterfaceImpl::Open(IOManager *ioManager, Error& error)
+{
+  std::unique_ptr<VDS> ret(new VDS());
+  error = Error();
+
+  if(Init(ret.get(), new VolumeDataStoreIOManager(*ret, ioManager), error))
+  {
+    return ret.release();
+  }
+  else
+  {
+    return nullptr;
+  }
+}
+
+VDS *OpenVDSInterfaceImpl::Open(const OpenOptions &options, Error &error)
+{
+  std::unique_ptr<VDS> ret(new VDS());
+  std::unique_ptr<VolumeDataStore> volumeDataStore;
+  error = Error();
+
+  if(options.connectionType != OpenOptions::VDSFile)
+  {
+    std::unique_ptr<IOManager> ioManager(IOManager::CreateIOManager(options, IOManager::AccessPattern::ReadOnly, error));
+    if (error.code)
+      return nullptr;
+
+    if (iomanagerTransformer)
+      ioManager.reset(iomanagerTransformer(ioManager.release()));
+
+    volumeDataStore.reset(new VolumeDataStoreIOManager(*ret, ioManager.release()));
+  }
+  else
+  {
+    const VDSFileOpenOptions &fileOptions = static_cast<const VDSFileOpenOptions &>(options);
+    volumeDataStore.reset(new VolumeDataStoreVDSFile(*ret, fileOptions.fileName, VolumeDataStoreVDSFile::ReadOnly, error));
+    if (error.code)
+      return nullptr;
+  }
+
+  if(Init(ret.get(), volumeDataStore.release(), error))
+  {
+    assert(ret.get());
+    InitWaveletAdaptiveLoadLevel(*ret.get(), options);
+    return ret.release();
+  }
+  else
+  {
+    return nullptr;
+  }
+}
+
+VolumeDataLayout *OpenVDSInterfaceImpl::GetLayout(VDS *vds)
+{
+  if (!vds)
+    return nullptr;
+  return vds->volumeDataLayout.get();
+}
+
+IVolumeDataAccessManager *OpenVDSInterfaceImpl::GetAccessManagerInterface(VDS *vds)
+{
+  if (!vds)
+    return nullptr;
+  return vds->accessManager.get();
+}
+
+bool OpenVDSInterfaceImpl::IsCompressionMethodSupported(CompressionMethod compressionMethod)
 {
   return VolumeDataStore::IsCompressionMethodSupported(compressionMethod);
 }
 
-VDSHandle Create(IOManager *ioManager, VolumeDataLayoutDescriptor const& layoutDescriptor, VectorWrapper<VolumeDataAxisDescriptor> axisDescriptors, VectorWrapper<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const& metadata, CompressionMethod compressionMethod, float compressionTolerance, Error& error)
+VDSHandle OpenVDSInterfaceImpl::Create(IOManager *ioManager, VolumeDataLayoutDescriptor const& layoutDescriptor, VectorWrapper<VolumeDataAxisDescriptor> axisDescriptors, VectorWrapper<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const& metadata, CompressionMethod compressionMethod, float compressionTolerance, Error& error)
 {
   std::unique_ptr<VDS> ret(new VDS());
   error = Error();
@@ -906,7 +949,7 @@ VDSHandle Create(IOManager *ioManager, VolumeDataLayoutDescriptor const& layoutD
   }
 }
 
-VDSHandle Create(StringWrapper url, StringWrapper connectionString, VolumeDataLayoutDescriptor const& layoutDescriptor, VectorWrapper<VolumeDataAxisDescriptor> axisDescriptors, VectorWrapper<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const& metadata, CompressionMethod compressionMethod, float compressionTolerance, Error& error)
+VDSHandle OpenVDSInterfaceImpl::Create(StringWrapper url, StringWrapper connectionString, VolumeDataLayoutDescriptor const& layoutDescriptor, VectorWrapper<VolumeDataAxisDescriptor> axisDescriptors, VectorWrapper<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const& metadata, CompressionMethod compressionMethod, float compressionTolerance, Error& error)
 {
   std::unique_ptr<OpenOptions> openOptions(CreateOpenOptions(url, connectionString, error));
   if (error.code || !openOptions)
@@ -915,7 +958,7 @@ VDSHandle Create(StringWrapper url, StringWrapper connectionString, VolumeDataLa
   return Create(*openOptions, layoutDescriptor, axisDescriptors, channelDescriptors, metadata, compressionMethod, compressionTolerance, error);
 }
 
-VDSHandle Create(const OpenOptions& options, VolumeDataLayoutDescriptor const& layoutDescriptor, VectorWrapper<VolumeDataAxisDescriptor> axisDescriptors, VectorWrapper<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const& metadata, CompressionMethod compressionMethod, float compressionTolerance, Error& error)
+VDSHandle OpenVDSInterfaceImpl::Create(const OpenOptions& options, VolumeDataLayoutDescriptor const& layoutDescriptor, VectorWrapper<VolumeDataAxisDescriptor> axisDescriptors, VectorWrapper<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const& metadata, CompressionMethod compressionMethod, float compressionTolerance, Error& error)
 {
   std::unique_ptr<VDS> ret(new VDS());
   std::unique_ptr<VolumeDataStore> volumeDataStore;
@@ -947,17 +990,17 @@ VDSHandle Create(const OpenOptions& options, VolumeDataLayoutDescriptor const& l
   }
 }
 
-CompressionMethod GetCompressionMethod(VDSHandle handle)
+CompressionMethod OpenVDSInterfaceImpl::GetCompressionMethod(VDSHandle handle)
 {
   return handle->volumeDataLayout->GetCompressionMethod();
 }
 
-float GetCompressionTolerance(VDSHandle handle)
+float OpenVDSInterfaceImpl::GetCompressionTolerance(VDSHandle handle)
 {
   return handle->volumeDataLayout->GetCompressionTolerance();
 }
 
-void Close(VDS *vds)
+void OpenVDSInterfaceImpl::Close(VDS *vds)
 {
   if (!vds)
     return;
@@ -971,7 +1014,7 @@ void Close(VDS *vds)
   }
 }
 
-void Close(VDS *vds, Error &error)
+void OpenVDSInterfaceImpl::Close(VDS *vds, Error &error)
 {
   error = Error();
   if (!vds)
@@ -981,7 +1024,7 @@ void Close(VDS *vds, Error &error)
   delete vds;
 }
 
-void RetryableClose(VDS *vds)
+void OpenVDSInterfaceImpl::RetryableClose(VDS *vds)
 {
   if (!vds)
     return;
@@ -995,7 +1038,7 @@ void RetryableClose(VDS *vds)
   delete vds;
 }
 
-void RetryableClose(VDS *vds, Error &error)
+void OpenVDSInterfaceImpl::RetryableClose(VDS *vds, Error &error)
 {
   error = Error();
   if (!vds)
@@ -1007,30 +1050,33 @@ void RetryableClose(VDS *vds, Error &error)
   }
 }
 
-GlobalState *GetGlobalState()
+GlobalState *OpenVDSInterfaceImpl::GetGlobalState()
 {
   static GlobalStateImpl globalState;
   return &globalState;
 }
 
-void SetIoManagerTransformer(std::function<IOManager* (IOManager*)> transformer)
-{
-  iomanagerTransformer = transformer;
-}
-
-const char *GetOpenVDSName()
+const char *OpenVDSInterfaceImpl::GetOpenVDSName()
 {
   return OPENVDS_PROJECT_NAME;
 }
 
-const char *GetOpenVDSVersion()
+const char *OpenVDSInterfaceImpl::GetOpenVDSVersion()
 {
   return OPENVDS_VERSION;
 }
 
-const char* GetOpenVDSRevision()
+const char *OpenVDSInterfaceImpl::GetOpenVDSRevision()
 {
   return OPENVDS_REVISION;
+}
+
+OpenVDSInterface &GetOpenVDSInterface(const char* version)
+{
+  static OpenVDSInterfaceImpl instance;
+
+  if(strcmp(version, OPENVDS_VERSION) != 0) throw InvalidOperation("OpenVDS interface version mismatch");
+  return instance;
 }
 
 }

@@ -101,6 +101,9 @@ IOManager* IOManager::CreateIOManager(const OpenOptions& options, IOManager::Acc
   return nullptr;
 }
 
+// This function is defined in OpenVDS.cpp, it might make more sense to move it here
+OpenOptions* CreateOpenOptions(StringWrapper urlWrapper, StringWrapper connectionStringWrapper, Error& error);
+
 IOManager *IOManager::CreateIOManager(const StringWrapper &url, const StringWrapper &connectionString, IOManager::AccessPattern accessPattern, Error& error)
 {
   std::unique_ptr<OpenOptions> openOptions(CreateOpenOptions(url, connectionString, error));
