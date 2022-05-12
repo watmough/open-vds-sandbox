@@ -156,7 +156,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\src\OpenVDS\OpenVDS;$(ProjectDir)..\..\..\src\OpenVDS;$(ProjectDir)..\..\..\Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\src\OpenVDS\OpenVDS;$(ProjectDir)..\..\..\src\OpenVDS;$(ProjectDir)..\..\..\Common;$(ProjectDir)..\..\..\out\install\x64-Debug\include;$(ProjectDir)..\..\..\out\install\x64-Release\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -182,7 +182,7 @@ copy $(TargetPath) test_bin\
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\src\OpenVDS\OpenVDS;$(ProjectDir)..\..\..\src\OpenVDS;$(ProjectDir)..\..\..\Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\src\OpenVDS\OpenVDS;$(ProjectDir)..\..\..\src\OpenVDS;$(ProjectDir)..\..\..\Common;$(ProjectDir)..\..\..\out\install\x64-Debug\include;$(ProjectDir)..\..\..\out\install\x64-Release\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
