@@ -4,10 +4,10 @@ import io
 import os
 import traceback
 import re
-from typing import Tuple, List, Dict, Set, Union, overload
-from xmlrpc.client import boolean
+from typing import Tuple, List, Dict, Set, Union, TextIO
+
 from clang.cindex import Cursor, Type
-from fastapi import File
+
 from more_itertools import peekable
 from rsa import sign
 from parse_cpp_header import parse_header, Param, Scope, ScopeDoc
@@ -1424,7 +1424,7 @@ def get_docstring_and_body(function: str) -> Tuple[str, str]:
         raise NotImplementedError('Handle docstring in overload generation')
     return ('', function)
 
-def create_automatic_overloads(function_signature: str, function_docstring: str, overloads_created: List[str], methods: File) -> None:
+def create_automatic_overloads(function_signature: str, function_docstring: str, overloads_created: List[str], methods: TextIO) -> None:
     function_name = (re.match('.* (\w+)\(', function_signature) or re.match('(\w+)\(', function_signature))[1]
     for pattern, generator in java_auto_overloads.items():
         if re.match(pattern, function_signature):
@@ -1443,7 +1443,7 @@ def create_automatic_overloads(function_signature: str, function_docstring: str,
                     overloads_created.append(signature)
             return
 
-def create_defaulted_overloads(overload_functions: List[str], overload_default_args: List[Dict[str, str]], function_signature: str, function_docstring: str, overloads_created: List[str], methods: File):
+def create_defaulted_overloads(overload_functions: List[str], overload_default_args: List[Dict[str, str]], function_signature: str, function_docstring: str, overloads_created: List[str], methods: TextIO):
     if not function_signature in overload_functions:
         return
     for i in range(0, len(overload_functions)):
@@ -1513,7 +1513,7 @@ def create_defaulted_overloads(overload_functions: List[str], overload_default_a
             overloads_created.append(function_sig)
             print(f'\n{function}', file=methods)
 
-def is_interface_class(typename: str) -> boolean:
+def is_interface_class(typename: str) -> bool:
     return typename in _interfaces
 
 def create_java_class(scope: Scope, template: str, override_name: str = '', template_args: List[str] = [], explicit_children: List[Scope] = []):
