@@ -724,8 +724,9 @@ def parse_args(args: List[str]) -> Tuple[List[str], List[str]]:
             filenames.append(item)
     return parameters, filenames
 
-def parse_header(filename: str, additional_include_directories: List[str] = []) -> Scope:
+def parse_header(filename: str, additional_include_directories: List[str] = [], additional_definitions: List[str] = []) -> Scope:
     args = [f"-I{d}" for d in additional_include_directories]
+    args.extend([f"-D{d}" for d in additional_definitions])
     args.append(filename)
     parameters, filenames = parse_args(args)
     return parse_file(filenames[0], parameters)

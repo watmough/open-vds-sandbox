@@ -1945,7 +1945,7 @@ def parse_and_generate(input_header, jni_dir, java_dir):
     global g_instantiate_nodes
     header_name = os.path.split(input_header)[1]
     print(f"Parsing '{header_name}'")
-    scope = parse_header(input_header, include_dirs)
+    scope = parse_header(input_header, include_dirs, ['JAVA_WRAPPER_GENERATOR', 'OPENVDS_VERSION=""'])
     g_root = scope
     cppfile = io.StringIO()
     header_free_functions = []
