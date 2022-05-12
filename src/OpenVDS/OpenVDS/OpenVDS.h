@@ -21,7 +21,11 @@
 #define OPENVDS_H
 
 #include <OpenVDS/openvds_export.h>
+#if !defined(PYTHON_WRAPPER_GENERATOR) && !defined(JAVA_WRAPPER_GENERATOR)
 #include <OpenVDS/OpenVDSVersion.h>
+#else
+#define OPENVDS_VERSION ""
+#endif
 #include <OpenVDS/OpenVDSInterface.h>
 #include <OpenVDS/MetadataAccess.h>
 #include <OpenVDS/VolumeData.h>
