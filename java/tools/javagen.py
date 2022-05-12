@@ -9,7 +9,7 @@ from typing import Tuple, List, Dict, Set, Union, TextIO
 from clang.cindex import Cursor, Type
 
 from more_itertools import peekable
-from rsa import sign
+
 from parse_cpp_header import parse_header, Param, Scope, ScopeDoc
 
 _print_exception_call_stacks = False # For debugging
