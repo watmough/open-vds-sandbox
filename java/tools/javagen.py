@@ -399,6 +399,8 @@ def param_to_real_type(param: Param, template_args: List[str]) -> str:
 
 def resolve_typealias(typename: str, alias: str) -> str:
     if alias and '<' in typename:
+        if '<' in alias:
+            return typename # To avoid losing namespace of template parameter...
         typename = alias
     return typename
 
@@ -1216,8 +1218,6 @@ def create_java_enum(scope: Scope, template):
 
     assert scope.is_enum
     enum_name = scope.name
-    if 'AccessMode' in enum_name:
-        debug = 0
     if scope.enum_integral_type not in _java_enum_integral_types:
         raise NotImplementedError(f'enum integral type {scope.enum_integral_type} not supported')
     int_type, jni_type, literal_suffix = _java_enum_integral_types[scope.enum_integral_type]
@@ -1678,8 +1678,6 @@ def create_java_class(scope: Scope, template: str, override_name: str = '', temp
     extra_overloadable_functions, extra_overloadable_function_docstrings, template = get_overloadable_functions_from_template(template)
     for function, docstring in zip(extra_overloadable_functions, extra_overloadable_function_docstrings):
         create_defaulted_overloads(overload_functions, overload_default_args, function, docstring, overloads_created, methods)
-        if 'requestVolumeSamples' in function:
-            debug = 0
     for overload_signature in list(overloads_created):
         function_docstring = '' # FIXME Keep overloads/docstrings in a dict?
         create_automatic_overloads(overload_signature, function_docstring, overloads_created, methods)
@@ -2124,7 +2122,7 @@ header_list = [
     'ValueConversion.h',
     'VolumeData.h',
     'VolumeDataAccess.h',
-   'VolumeDataAccessManager.h',
+    'VolumeDataAccessManager.h',
     'VolumeDataAxisDescriptor.h',
     'VolumeDataChannelDescriptor.h',
     'VolumeDataLayout.h',

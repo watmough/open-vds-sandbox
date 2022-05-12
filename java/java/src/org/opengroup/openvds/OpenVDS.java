@@ -28,7 +28,7 @@ public class OpenVDS {
 		ManagedBase.staticInit();
 	}
 
-    ///AUTOGEN-OK: FUNCTION_DECL CreateOpenOptions OpenVDS::OpenOptions *(OpenVDS::StringWrapper, OpenVDS::StringWrapper, OpenVDS::VDSError &) FUNCTIONPROTO
+    ///AUTOGEN-OK: FUNCTION_DECL CreateOpenOptions OpenVDS::OpenOptions *(std::string, std::string, OpenVDS::VDSError &) FUNCTIONPROTO
     native private static long CreateOpenOptionsImpl(String url, String connectionString, long error);
 
     /**
@@ -48,7 +48,7 @@ with url and string instead if this is not needed.
         return OpenOptions.fromNativeObject(CreateOpenOptionsImpl(ManagedBase.requireNonNull(url, "url may not be null"), ManagedBase.requireNonNull(connectionString, "connectionString may not be null"), ManagedBase.requireNonNull(error, "error may not be null").getNativeObject()));
     }
 
-    ///AUTOGEN-OK: FUNCTION_DECL IsSupportedProtocol bool (OpenVDS::StringWrapper) FUNCTIONPROTO
+    ///AUTOGEN-OK: FUNCTION_DECL IsSupportedProtocol bool (std::string) FUNCTIONPROTO
     native private static boolean IsSupportedProtocolImpl(String url);
 
     /**
@@ -60,7 +60,7 @@ with url and string instead if this is not needed.
         return IsSupportedProtocolImpl(ManagedBase.requireNonNull(url, "url may not be null"));
     }
 
-    ///AUTOGEN-OK: FUNCTION_DECL Open OpenVDS::VDS *(OpenVDS::StringWrapper, OpenVDS::StringWrapper, OpenVDS::VDSError &) FUNCTIONPROTO
+    ///AUTOGEN-OK: FUNCTION_DECL Open OpenVDS::VDS *(std::string, std::string, OpenVDS::VDSError &) FUNCTIONPROTO
     native private static long OpenImpl(String url, String connectionString, long error);
 
     /**
@@ -85,7 +85,7 @@ Specifies additional arguments for the cloud provider
         return result;
     }
 
-    ///AUTOGEN-OK: FUNCTION_DECL OpenWithAdaptiveCompressionTolerance OpenVDS::VDS *(OpenVDS::StringWrapper, OpenVDS::StringWrapper, float, OpenVDS::VDSError &) FUNCTIONPROTO
+    ///AUTOGEN-OK: FUNCTION_DECL OpenWithAdaptiveCompressionTolerance OpenVDS::VDS *(std::string, std::string, float, OpenVDS::VDSError &) FUNCTIONPROTO
     native private static long OpenWithAdaptiveCompressionToleranceImpl(String url, String connectionString, float waveletAdaptiveTolerance, long error);
 
     /**
@@ -112,7 +112,7 @@ This will try to read the dataset as-if it was compressed with the given toleran
         return result;
     }
 
-    ///AUTOGEN-OK: FUNCTION_DECL OpenWithAdaptiveCompressionRatio OpenVDS::VDS *(OpenVDS::StringWrapper, OpenVDS::StringWrapper, float, OpenVDS::VDSError &) FUNCTIONPROTO
+    ///AUTOGEN-OK: FUNCTION_DECL OpenWithAdaptiveCompressionRatio OpenVDS::VDS *(std::string, std::string, float, OpenVDS::VDSError &) FUNCTIONPROTO
     native private static long OpenWithAdaptiveCompressionRatioImpl(String url, String connectionString, float waveletAdaptiveRatio, long error);
 
     /**
@@ -140,7 +140,7 @@ A compression ratio of 5.0 corresponds to compressed data which is 20% of the or
         return result;
     }
 
-    ///AUTOGEN-OK: FUNCTION_DECL Open OpenVDS::VDS *(OpenVDS::StringWrapper, OpenVDS::VDSError &) FUNCTIONPROTO
+    ///AUTOGEN-OK: FUNCTION_DECL Open OpenVDS::VDS *(std::string, OpenVDS::VDSError &) FUNCTIONPROTO
     native private static long Open2Impl(String url, long error);
 
     /**
@@ -222,7 +222,7 @@ Available schemes are s3:// azure://
         return IsCompressionMethodSupportedImpl(ManagedBase.requireNonNull(compressionMethod, "compressionMethod may not be null").value());
     }
 
-    ///AUTOGEN-OK: FUNCTION_DECL Create OpenVDS::VDS *(OpenVDS::StringWrapper, OpenVDS::StringWrapper, const OpenVDS::VolumeDataLayoutDescriptor &, OpenVDS::VectorWrapper<OpenVDS::VolumeDataAxisDescriptor>, OpenVDS::VectorWrapper<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::CompressionMethod, float, OpenVDS::VDSError &) FUNCTIONPROTO
+    ///AUTOGEN-OK: FUNCTION_DECL Create OpenVDS::VDS *(std::string, std::string, const OpenVDS::VolumeDataLayoutDescriptor &, std::vector<OpenVDS::VolumeDataAxisDescriptor>, std::vector<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::CompressionMethod, float, OpenVDS::VDSError &) FUNCTIONPROTO
     native private static long CreateImpl(String url, String connectionString, long layoutDescriptor, long[] axisDescriptors, long[] channelDescriptors, long metadata, long compressionMethod, float compressionTolerance, long error);
 
     /**
@@ -257,7 +257,7 @@ Specifies additional arguments for the cloud provider
         return result;
     }
 
-    ///AUTOGEN-OK: FUNCTION_DECL Create OpenVDS::VDS *(OpenVDS::StringWrapper, OpenVDS::StringWrapper, const OpenVDS::VolumeDataLayoutDescriptor &, OpenVDS::VectorWrapper<OpenVDS::VolumeDataAxisDescriptor>, OpenVDS::VectorWrapper<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::VDSError &) FUNCTIONPROTO
+    ///AUTOGEN-OK: FUNCTION_DECL Create OpenVDS::VDS *(std::string, std::string, const OpenVDS::VolumeDataLayoutDescriptor &, std::vector<OpenVDS::VolumeDataAxisDescriptor>, std::vector<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::VDSError &) FUNCTIONPROTO
     native private static long Create2Impl(String url, String connectionString, long layoutDescriptor, long[] axisDescriptors, long[] channelDescriptors, long metadata, long error);
 
     /**
@@ -290,7 +290,7 @@ Specifies additional arguments for the cloud provider
         return result;
     }
 
-    ///AUTOGEN-OK: FUNCTION_DECL Create OpenVDS::VDS *(OpenVDS::StringWrapper, const OpenVDS::VolumeDataLayoutDescriptor &, OpenVDS::VectorWrapper<OpenVDS::VolumeDataAxisDescriptor>, OpenVDS::VectorWrapper<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::CompressionMethod, float, OpenVDS::VDSError &) FUNCTIONPROTO
+    ///AUTOGEN-OK: FUNCTION_DECL Create OpenVDS::VDS *(std::string, const OpenVDS::VolumeDataLayoutDescriptor &, std::vector<OpenVDS::VolumeDataAxisDescriptor>, std::vector<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::CompressionMethod, float, OpenVDS::VDSError &) FUNCTIONPROTO
     native private static long Create3Impl(String url, long layoutDescriptor, long[] axisDescriptors, long[] channelDescriptors, long metadata, long compressionMethod, float compressionTolerance, long error);
 
     /**
@@ -324,7 +324,7 @@ Available schemes are s3:// azure://
         return result;
     }
 
-    ///AUTOGEN-OK: FUNCTION_DECL Create OpenVDS::VDS *(OpenVDS::StringWrapper, const OpenVDS::VolumeDataLayoutDescriptor &, OpenVDS::VectorWrapper<OpenVDS::VolumeDataAxisDescriptor>, OpenVDS::VectorWrapper<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::VDSError &) FUNCTIONPROTO
+    ///AUTOGEN-OK: FUNCTION_DECL Create OpenVDS::VDS *(std::string, const OpenVDS::VolumeDataLayoutDescriptor &, std::vector<OpenVDS::VolumeDataAxisDescriptor>, std::vector<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::VDSError &) FUNCTIONPROTO
     native private static long Create4Impl(String url, long layoutDescriptor, long[] axisDescriptors, long[] channelDescriptors, long metadata, long error);
 
     /**
@@ -356,7 +356,7 @@ Available schemes are s3:// azure://
         return result;
     }
 
-    ///AUTOGEN-OK: FUNCTION_DECL Create OpenVDS::VDS *(const OpenVDS::OpenOptions &, const OpenVDS::VolumeDataLayoutDescriptor &, OpenVDS::VectorWrapper<OpenVDS::VolumeDataAxisDescriptor>, OpenVDS::VectorWrapper<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::CompressionMethod, float, OpenVDS::VDSError &) FUNCTIONPROTO
+    ///AUTOGEN-OK: FUNCTION_DECL Create OpenVDS::VDS *(const OpenVDS::OpenOptions &, const OpenVDS::VolumeDataLayoutDescriptor &, std::vector<OpenVDS::VolumeDataAxisDescriptor>, std::vector<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::CompressionMethod, float, OpenVDS::VDSError &) FUNCTIONPROTO
     native private static long Create5Impl(long options, long layoutDescriptor, long[] axisDescriptors, long[] channelDescriptors, long metadata, long compressionMethod, float compressionTolerance, long error);
 
     /**
@@ -388,7 +388,7 @@ Available schemes are s3:// azure://
         return result;
     }
 
-    ///AUTOGEN-OK: FUNCTION_DECL Create OpenVDS::VDS *(const OpenVDS::OpenOptions &, const OpenVDS::VolumeDataLayoutDescriptor &, OpenVDS::VectorWrapper<OpenVDS::VolumeDataAxisDescriptor>, OpenVDS::VectorWrapper<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::VDSError &) FUNCTIONPROTO
+    ///AUTOGEN-OK: FUNCTION_DECL Create OpenVDS::VDS *(const OpenVDS::OpenOptions &, const OpenVDS::VolumeDataLayoutDescriptor &, std::vector<OpenVDS::VolumeDataAxisDescriptor>, std::vector<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::VDSError &) FUNCTIONPROTO
     native private static long Create6Impl(long options, long layoutDescriptor, long[] axisDescriptors, long[] channelDescriptors, long metadata, long error);
 
     /**
@@ -418,7 +418,7 @@ Available schemes are s3:// azure://
         return result;
     }
 
-    ///AUTOGEN-OK: FUNCTION_DECL Create OpenVDS::VDS *(OpenVDS::IOManager *, const OpenVDS::VolumeDataLayoutDescriptor &, OpenVDS::VectorWrapper<OpenVDS::VolumeDataAxisDescriptor>, OpenVDS::VectorWrapper<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::CompressionMethod, float, OpenVDS::VDSError &) FUNCTIONPROTO
+    ///AUTOGEN-OK: FUNCTION_DECL Create OpenVDS::VDS *(OpenVDS::IOManager *, const OpenVDS::VolumeDataLayoutDescriptor &, std::vector<OpenVDS::VolumeDataAxisDescriptor>, std::vector<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::CompressionMethod, float, OpenVDS::VDSError &) FUNCTIONPROTO
     native private static long Create7Impl(long ioManager, long layoutDescriptor, long[] axisDescriptors, long[] channelDescriptors, long metadata, long compressionMethod, float compressionTolerance, long error);
 
     /**
@@ -450,7 +450,7 @@ Available schemes are s3:// azure://
         return result;
     }
 
-    ///AUTOGEN-OK: FUNCTION_DECL Create OpenVDS::VDS *(OpenVDS::IOManager *, const OpenVDS::VolumeDataLayoutDescriptor &, OpenVDS::VectorWrapper<OpenVDS::VolumeDataAxisDescriptor>, OpenVDS::VectorWrapper<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::VDSError &) FUNCTIONPROTO
+    ///AUTOGEN-OK: FUNCTION_DECL Create OpenVDS::VDS *(OpenVDS::IOManager *, const OpenVDS::VolumeDataLayoutDescriptor &, std::vector<OpenVDS::VolumeDataAxisDescriptor>, std::vector<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::VDSError &) FUNCTIONPROTO
     native private static long Create8Impl(long ioManager, long layoutDescriptor, long[] axisDescriptors, long[] channelDescriptors, long metadata, long error);
 
     /**

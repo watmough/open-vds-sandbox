@@ -2755,8 +2755,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_CreateOpenOptionsImpl
   CPPJNI_TRY
   {
     auto result = OpenVDS::CreateOpenOptions(
-                               OpenVDS::StringWrapper(CPPJNIStringWrapper(env, url)), 
-                               OpenVDS::StringWrapper(CPPJNIStringWrapper(env, connectionString)), 
+                               std::string(CPPJNIStringWrapper(env, url)), 
+                               std::string(CPPJNIStringWrapper(env, connectionString)), 
                                *CPPJNI_cast<OpenVDS::VDSError>(error));
     auto context = CPPJNI_createNonOwningObjectContext(result);
     return context->handle();
@@ -2773,7 +2773,7 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_OpenVDS_IsSupportedProtoco
 
   CPPJNI_TRY
   {
-    auto result = OpenVDS::IsSupportedProtocol(OpenVDS::StringWrapper(CPPJNIStringWrapper(env, url)));
+    auto result = OpenVDS::IsSupportedProtocol(std::string(CPPJNIStringWrapper(env, url)));
     return result;
   }
   CPPJNI_CATCH
@@ -2789,8 +2789,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_OpenImpl
   CPPJNI_TRY
   {
     auto result = OpenVDS::Open(
-                               OpenVDS::StringWrapper(CPPJNIStringWrapper(env, url)), 
-                               OpenVDS::StringWrapper(CPPJNIStringWrapper(env, connectionString)), 
+                               std::string(CPPJNIStringWrapper(env, url)), 
+                               std::string(CPPJNIStringWrapper(env, connectionString)), 
                                *CPPJNI_cast<OpenVDS::VDSError>(error));
     auto context = CPPJNI_createNonOwningObjectContext(result);
     return context->handle();
@@ -2808,8 +2808,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_OpenWithAdaptiveCompr
   CPPJNI_TRY
   {
     auto result = OpenVDS::OpenWithAdaptiveCompressionTolerance(
-                               OpenVDS::StringWrapper(CPPJNIStringWrapper(env, url)), 
-                               OpenVDS::StringWrapper(CPPJNIStringWrapper(env, connectionString)), 
+                               std::string(CPPJNIStringWrapper(env, url)), 
+                               std::string(CPPJNIStringWrapper(env, connectionString)), 
                                waveletAdaptiveTolerance, 
                                *CPPJNI_cast<OpenVDS::VDSError>(error));
     auto context = CPPJNI_createNonOwningObjectContext(result);
@@ -2828,8 +2828,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_OpenWithAdaptiveCompr
   CPPJNI_TRY
   {
     auto result = OpenVDS::OpenWithAdaptiveCompressionRatio(
-                               OpenVDS::StringWrapper(CPPJNIStringWrapper(env, url)), 
-                               OpenVDS::StringWrapper(CPPJNIStringWrapper(env, connectionString)), 
+                               std::string(CPPJNIStringWrapper(env, url)), 
+                               std::string(CPPJNIStringWrapper(env, connectionString)), 
                                waveletAdaptiveRatio, 
                                *CPPJNI_cast<OpenVDS::VDSError>(error));
     auto context = CPPJNI_createNonOwningObjectContext(result);
@@ -2847,7 +2847,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Open2Impl
 
   CPPJNI_TRY
   {
-    auto result = OpenVDS::Open(OpenVDS::StringWrapper(CPPJNIStringWrapper(env, url)), *CPPJNI_cast<OpenVDS::VDSError>(error));
+    auto result = OpenVDS::Open(std::string(CPPJNIStringWrapper(env, url)), *CPPJNI_cast<OpenVDS::VDSError>(error));
     auto context = CPPJNI_createNonOwningObjectContext(result);
     return context->handle();
   }
@@ -2911,8 +2911,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_CreateImpl
   CPPJNI_TRY
   {
     auto result = OpenVDS::Create(
-                               OpenVDS::StringWrapper(CPPJNIStringWrapper(env, url)), 
-                               OpenVDS::StringWrapper(CPPJNIStringWrapper(env, connectionString)), 
+                               std::string(CPPJNIStringWrapper(env, url)), 
+                               std::string(CPPJNIStringWrapper(env, connectionString)), 
                                *CPPJNI_cast<OpenVDS::VolumeDataLayoutDescriptor>(layoutDescriptor), 
                                CPPJNIVectorWrapperAdapter<OpenVDS::VolumeDataAxisDescriptor>(env, axisDescriptors).toVector(), 
                                CPPJNIVectorWrapperAdapter<OpenVDS::VolumeDataChannelDescriptor>(env, channelDescriptors).toVector(), 
@@ -2936,8 +2936,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Create2Impl
   CPPJNI_TRY
   {
     auto result = OpenVDS::Create(
-                               OpenVDS::StringWrapper(CPPJNIStringWrapper(env, url)), 
-                               OpenVDS::StringWrapper(CPPJNIStringWrapper(env, connectionString)), 
+                               std::string(CPPJNIStringWrapper(env, url)), 
+                               std::string(CPPJNIStringWrapper(env, connectionString)), 
                                *CPPJNI_cast<OpenVDS::VolumeDataLayoutDescriptor>(layoutDescriptor), 
                                CPPJNIVectorWrapperAdapter<OpenVDS::VolumeDataAxisDescriptor>(env, axisDescriptors).toVector(), 
                                CPPJNIVectorWrapperAdapter<OpenVDS::VolumeDataChannelDescriptor>(env, channelDescriptors).toVector(), 
@@ -2959,7 +2959,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Create3Impl
   CPPJNI_TRY
   {
     auto result = OpenVDS::Create(
-                               OpenVDS::StringWrapper(CPPJNIStringWrapper(env, url)), 
+                               std::string(CPPJNIStringWrapper(env, url)), 
                                *CPPJNI_cast<OpenVDS::VolumeDataLayoutDescriptor>(layoutDescriptor), 
                                CPPJNIVectorWrapperAdapter<OpenVDS::VolumeDataAxisDescriptor>(env, axisDescriptors).toVector(), 
                                CPPJNIVectorWrapperAdapter<OpenVDS::VolumeDataChannelDescriptor>(env, channelDescriptors).toVector(), 
@@ -2983,7 +2983,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Create4Impl
   CPPJNI_TRY
   {
     auto result = OpenVDS::Create(
-                               OpenVDS::StringWrapper(CPPJNIStringWrapper(env, url)), 
+                               std::string(CPPJNIStringWrapper(env, url)), 
                                *CPPJNI_cast<OpenVDS::VolumeDataLayoutDescriptor>(layoutDescriptor), 
                                CPPJNIVectorWrapperAdapter<OpenVDS::VolumeDataAxisDescriptor>(env, axisDescriptors).toVector(), 
                                CPPJNIVectorWrapperAdapter<OpenVDS::VolumeDataChannelDescriptor>(env, channelDescriptors).toVector(), 
