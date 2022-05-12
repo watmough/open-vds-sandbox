@@ -25,34 +25,6 @@ using CPPJNILibraryException = OpenVDS::Exception;
 
 #include "CPPJNICommon.h"
 
-template<typename T>
-struct CPPJNIVectorWrapperAdapter
-{
-  JNIEnv*                 m_Env;
-  jlongArray              m_Array;
-  mutable std::vector<T>  m_Vector;
-
-  CPPJNIVectorWrapperAdapter(JNIEnv* env, jlongArray arr) : m_Env(env), m_Array(arr)
-  {
-  }
-
-  OpenVDS::VectorWrapper<T>
-  toVector() const
-  {
-    if (m_Vector.empty())
-    {
-      jlong* elements = m_Env->GetLongArrayElements(m_Array, nullptr);
-      for (int i = 0; i < m_Env->GetArrayLength(m_Array); ++i)
-      {
-        auto item = CPPJNI_cast<T>(elements[i]);
-        m_Vector.push_back(*item);
-      }
-      m_Env->ReleaseLongArrayElements(m_Array, elements, 0);
-    }
-    return OpenVDS::VectorWrapper<T>(m_Vector);
-  }
-};
-
 void CPPJNI_onVDSError(OpenVDS::VDSError const& error);
 
 CPPJNI_SPECIALIZE_SHAREDPTR_NODELETE(OpenVDS::VDS)

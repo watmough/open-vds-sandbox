@@ -16,6 +16,8 @@
  * limitations under the License.
  */
 
+#include "CPPJNI.h"
+
 #include <OpenVDS/OpenVDS.h>
 #include <OpenVDS/VolumeDataLayout.h>
 #include <OpenVDS/VolumeDataAccess.h>
@@ -23,7 +25,6 @@
 #include <OpenVDS/VolumeDataChannelDescriptor.h>
 #include <OpenVDS/ValueConversion.h>
 
-#include "CPPJNI.h"
 #include "NDVector.h"
 
 #include <algorithm>
