@@ -205,6 +205,8 @@ error :
 
 static const char *__doc_OpenVDS_CompressionMethod = R"doc()doc";
 
+static const char *__doc_OpenVDS_CompressionMethod_2 = R"doc()doc";
+
 static const char *__doc_OpenVDS_CompressionMethod_IsWavelet = R"doc()doc";
 
 static const char *__doc_OpenVDS_CompressionMethod_None = R"doc()doc";
@@ -507,9 +509,11 @@ url :
 
 connectionString :
     The cloud provider specific connection string Specifies additional
-    arguments for the cloud provider <param name="error"> If an error
-    occured, the error code and message will be written to this output
-    parameter
+    arguments for the cloud provider
+
+error :
+    If an error occured, the error code and message will be written to
+    this output parameter
 
 Returns:
 --------
@@ -800,15 +804,9 @@ static const char *__doc_OpenVDS_DotProduct_2 = R"doc()doc";
 
 static const char *__doc_OpenVDS_Error = R"doc()doc";
 
-static const char *__doc_OpenVDS_Error_2 = R"doc()doc";
-
 static const char *__doc_OpenVDS_Error_code = R"doc()doc";
 
-static const char *__doc_OpenVDS_Error_code_2 = R"doc()doc";
-
 static const char *__doc_OpenVDS_Error_string = R"doc()doc";
-
-static const char *__doc_OpenVDS_Error_string_2 = R"doc()doc";
 
 static const char *__doc_OpenVDS_Exception = R"doc()doc";
 
@@ -925,6 +923,8 @@ Returns:
 --------
     The VolumeDataLayout of the VDS)doc";
 
+static const char *__doc_OpenVDS_GetOpenVDSInterface = R"doc()doc";
+
 static const char *__doc_OpenVDS_GetOpenVDSName =
 R"doc(Get the name of the OpenVDS implementation
 
@@ -945,6 +945,8 @@ R"doc(Get the version for the OpenVDS implementation
 static const char *__doc_OpenVDS_GlobalState = R"doc(Object that contains global runtime data)doc";
 
 static const char *__doc_OpenVDS_GlobalState_2 = R"doc()doc";
+
+static const char *__doc_OpenVDS_GlobalState_3 = R"doc()doc";
 
 static const char *__doc_OpenVDS_GlobalState_GetBytesDecompressed =
 R"doc(Get the global amount of decompressed bytes. This amount might be
@@ -1425,9 +1427,13 @@ static const char *__doc_OpenVDS_IJKGridDefinition_origin = R"doc()doc";
 
 static const char *__doc_OpenVDS_IOManager = R"doc()doc";
 
+static const char *__doc_OpenVDS_IOManager_2 = R"doc()doc";
+
 static const char *__doc_OpenVDS_IVolumeDataAccessManager = R"doc()doc";
 
 static const char *__doc_OpenVDS_IVolumeDataAccessManager_2 = R"doc()doc";
+
+static const char *__doc_OpenVDS_IVolumeDataAccessManager_3 = R"doc()doc";
 
 static const char *__doc_OpenVDS_IVolumeDataAccessManager_AddRef = R"doc()doc";
 
@@ -2506,6 +2512,8 @@ static const char *__doc_OpenVDS_MetadataContainer_IsMetadataIntVector4Available
 
 static const char *__doc_OpenVDS_MetadataContainer_IsMetadataStringAvailable = R"doc()doc";
 
+static const char *__doc_OpenVDS_MetadataContainer_MetadataContainer = R"doc()doc";
+
 static const char *__doc_OpenVDS_MetadataContainer_RemoveMetadataForKey = R"doc()doc";
 
 static const char *__doc_OpenVDS_MetadataContainer_SetMetadataBLOB = R"doc()doc";
@@ -2640,6 +2648,8 @@ static const char *__doc_OpenVDS_MetadataKey_operator_eq = R"doc()doc";
 static const char *__doc_OpenVDS_MetadataKey_operator_ne = R"doc()doc";
 
 static const char *__doc_OpenVDS_MetadataReadAccess = R"doc(Interface for read access to Metadata)doc";
+
+static const char *__doc_OpenVDS_MetadataReadAccess_2 = R"doc()doc";
 
 static const char *__doc_OpenVDS_MetadataReadAccess_GetMetadataBLOB = R"doc()doc";
 
@@ -2865,6 +2875,8 @@ Returns:
 
 static const char *__doc_OpenVDS_OpenOptions = R"doc()doc";
 
+static const char *__doc_OpenVDS_OpenOptions_2 = R"doc()doc";
+
 static const char *__doc_OpenVDS_OpenOptions_ConnectionType = R"doc()doc";
 
 static const char *__doc_OpenVDS_OpenOptions_ConnectionType_AWS = R"doc()doc";
@@ -2910,6 +2922,58 @@ corresponds to compressed data which is 20% of the original.)doc";
 static const char *__doc_OpenVDS_OpenOptions_waveletAdaptiveTolerance =
 R"doc(< Wavelet adaptive tolerance, this setting will be used whenever the
 WavletAdaptiveMode is set to Tolerance.)doc";
+
+static const char *__doc_OpenVDS_OpenVDSInterface =
+R"doc(The OpenVDS global interface is used to provide a single versioned
+entrypoint for the API)doc";
+
+static const char *__doc_OpenVDS_OpenVDSInterface_Close = R"doc()doc";
+
+static const char *__doc_OpenVDS_OpenVDSInterface_Close_2 = R"doc()doc";
+
+static const char *__doc_OpenVDS_OpenVDSInterface_Create = R"doc()doc";
+
+static const char *__doc_OpenVDS_OpenVDSInterface_Create_2 = R"doc()doc";
+
+static const char *__doc_OpenVDS_OpenVDSInterface_Create_3 = R"doc()doc";
+
+static const char *__doc_OpenVDS_OpenVDSInterface_CreateOpenOptions = R"doc()doc";
+
+static const char *__doc_OpenVDS_OpenVDSInterface_GetAccessManagerInterface = R"doc()doc";
+
+static const char *__doc_OpenVDS_OpenVDSInterface_GetCompressionMethod = R"doc()doc";
+
+static const char *__doc_OpenVDS_OpenVDSInterface_GetCompressionTolerance = R"doc()doc";
+
+static const char *__doc_OpenVDS_OpenVDSInterface_GetGlobalState = R"doc()doc";
+
+static const char *__doc_OpenVDS_OpenVDSInterface_GetLayout = R"doc()doc";
+
+static const char *__doc_OpenVDS_OpenVDSInterface_GetOpenVDSName = R"doc()doc";
+
+static const char *__doc_OpenVDS_OpenVDSInterface_GetOpenVDSRevision = R"doc()doc";
+
+static const char *__doc_OpenVDS_OpenVDSInterface_GetOpenVDSVersion = R"doc()doc";
+
+static const char *__doc_OpenVDS_OpenVDSInterface_IsCompressionMethodSupported = R"doc()doc";
+
+static const char *__doc_OpenVDS_OpenVDSInterface_IsSupportedProtocol = R"doc()doc";
+
+static const char *__doc_OpenVDS_OpenVDSInterface_Open = R"doc()doc";
+
+static const char *__doc_OpenVDS_OpenVDSInterface_Open_2 = R"doc()doc";
+
+static const char *__doc_OpenVDS_OpenVDSInterface_Open_3 = R"doc()doc";
+
+static const char *__doc_OpenVDS_OpenVDSInterface_OpenVDSInterface = R"doc()doc";
+
+static const char *__doc_OpenVDS_OpenVDSInterface_OpenWithAdaptiveCompressionRatio = R"doc()doc";
+
+static const char *__doc_OpenVDS_OpenVDSInterface_OpenWithAdaptiveCompressionTolerance = R"doc()doc";
+
+static const char *__doc_OpenVDS_OpenVDSInterface_RetryableClose = R"doc()doc";
+
+static const char *__doc_OpenVDS_OpenVDSInterface_RetryableClose_2 = R"doc()doc";
 
 static const char *__doc_OpenVDS_OpenWithAdaptiveCompressionRatio =
 R"doc(Open an existing VDS with adaptive compression ratio.
@@ -3144,6 +3208,8 @@ static const char *__doc_OpenVDS_StringWrapper_size = R"doc()doc";
 
 static const char *__doc_OpenVDS_VDS = R"doc()doc";
 
+static const char *__doc_OpenVDS_VDS_2 = R"doc()doc";
+
 static const char *__doc_OpenVDS_VDSCoordinateTransformerBase = R"doc()doc";
 
 static const char *__doc_OpenVDS_VDSCoordinateTransformerBase_SetGridDefinition =
@@ -3191,6 +3257,16 @@ static const char *__doc_OpenVDS_VDSCoordinateTransformerBase_ijkToWorldTranslat
 static const char *__doc_OpenVDS_VDSCoordinateTransformerBase_worldToIJKTransform = R"doc(< Coordinate transform matrix)doc";
 
 static const char *__doc_OpenVDS_VDSCoordinateTransformerBase_worldToIJKTranslation = R"doc(< Coordinate translation vector)doc";
+
+static const char *__doc_OpenVDS_VDSError = R"doc()doc";
+
+static const char *__doc_OpenVDS_VDSError_2 = R"doc()doc";
+
+static const char *__doc_OpenVDS_VDSError_VDSError = R"doc()doc";
+
+static const char *__doc_OpenVDS_VDSError_code = R"doc()doc";
+
+static const char *__doc_OpenVDS_VDSError_string = R"doc()doc";
 
 static const char *__doc_OpenVDS_VDSFileOpenOptions = R"doc(Options for opening a VDS file)doc";
 
@@ -4256,11 +4332,11 @@ static const char *__doc_OpenVDS_VolumeDataAccessManager_m_IVolumeDataAccessMana
 
 static const char *__doc_OpenVDS_VolumeDataAccessManager_operator_assign = R"doc()doc";
 
-static const char *__doc_OpenVDS_VolumeDataAxisDescriptor =
-R"doc(Describes the number of samples, name, unit and coordinates
-(annotation) of an axis (dimension) of the volume)doc";
+static const char *__doc_OpenVDS_VolumeDataAxisDescriptor = R"doc()doc";
 
-static const char *__doc_OpenVDS_VolumeDataAxisDescriptor_2 =
+static const char *__doc_OpenVDS_VolumeDataAxisDescriptor_2 = R"doc()doc";
+
+static const char *__doc_OpenVDS_VolumeDataAxisDescriptor_3 =
 R"doc(Describes the number of samples, name, unit and coordinates
 (annotation) of an axis (dimension) of the volume)doc";
 
@@ -4381,7 +4457,9 @@ static const char *__doc_OpenVDS_VolumeDataAxisDescriptor_m_unit = R"doc()doc";
 
 static const char *__doc_OpenVDS_VolumeDataChannelDescriptor = R"doc(\class VolumeDataChannelDescriptor Describes a channel of a VDS)doc";
 
-static const char *__doc_OpenVDS_VolumeDataChannelDescriptor_2 = R"doc(\class VolumeDataChannelDescriptor Describes a channel of a VDS)doc";
+static const char *__doc_OpenVDS_VolumeDataChannelDescriptor_2 = R"doc()doc";
+
+static const char *__doc_OpenVDS_VolumeDataChannelDescriptor_3 = R"doc(\class VolumeDataChannelDescriptor Describes a channel of a VDS)doc";
 
 static const char *__doc_OpenVDS_VolumeDataChannelDescriptor_Flags = R"doc(Flags for this channel)doc";
 
@@ -4396,6 +4474,8 @@ static const char *__doc_OpenVDS_VolumeDataChannelDescriptor_Flags_NoLossyCompre
 static const char *__doc_OpenVDS_VolumeDataChannelDescriptor_Flags_NotRenderable = R"doc(< This channel is not renderable)doc";
 
 static const char *__doc_OpenVDS_VolumeDataChannelDescriptor_GetComponents = R"doc()doc";
+
+static const char *__doc_OpenVDS_VolumeDataChannelDescriptor_GetFlags = R"doc()doc";
 
 static const char *__doc_OpenVDS_VolumeDataChannelDescriptor_GetFormat = R"doc()doc";
 
@@ -4792,11 +4872,7 @@ static const char *__doc_OpenVDS_VolumeDataFormat_Format_U64 = R"doc(< Volume da
 
 static const char *__doc_OpenVDS_VolumeDataFormat_Format_U8 = R"doc(< Volume data is in unsigned 8 bit)doc";
 
-static const char *__doc_OpenVDS_VolumeDataLayout =
-R"doc(\class VolumeDataLayout a class that contains axis and channel
-information for a VDS A layout is associated with a VDS object and
-contains information about axis and channels in the VDS. A
-VolumeDataLayout can be invalidated when the VDS is invalidated.)doc";
+static const char *__doc_OpenVDS_VolumeDataLayout = R"doc()doc";
 
 static const char *__doc_OpenVDS_VolumeDataLayout_2 =
 R"doc(\class VolumeDataLayout a class that contains axis and channel
@@ -4815,6 +4891,8 @@ static const char *__doc_OpenVDS_VolumeDataLayout_4 = R"doc()doc";
 static const char *__doc_OpenVDS_VolumeDataLayoutDescriptor = R"doc()doc";
 
 static const char *__doc_OpenVDS_VolumeDataLayoutDescriptor_2 = R"doc()doc";
+
+static const char *__doc_OpenVDS_VolumeDataLayoutDescriptor_3 = R"doc()doc";
 
 static const char *__doc_OpenVDS_VolumeDataLayoutDescriptor_BrickSize = R"doc()doc";
 
@@ -4843,6 +4921,8 @@ static const char *__doc_OpenVDS_VolumeDataLayoutDescriptor_GetFullResolutionDim
 static const char *__doc_OpenVDS_VolumeDataLayoutDescriptor_GetLODLevels = R"doc()doc";
 
 static const char *__doc_OpenVDS_VolumeDataLayoutDescriptor_GetNegativeMargin = R"doc()doc";
+
+static const char *__doc_OpenVDS_VolumeDataLayoutDescriptor_GetOptions = R"doc()doc";
 
 static const char *__doc_OpenVDS_VolumeDataLayoutDescriptor_GetPositiveMargin = R"doc()doc";
 

@@ -63,7 +63,7 @@ public:
     virtual      ~Manager() {}
   public:
     virtual void  DestroyVolumeDataAccessor(IVolumeDataAccessor *accessor) = 0;
-                  
+
     virtual IVolumeDataAccessor *
                   CloneVolumeDataAccessor(IVolumeDataAccessor const &accessor) = 0;
   };
@@ -269,70 +269,70 @@ public:
 // 2D VolumeDataAccessors
 //-----------------------------------------------------------------------------
 
-using VolumeData2DInterpolatingAccessorR64 = VolumeDataReadAccessor<FloatVector2, double>; 		
-using VolumeData2DInterpolatingAccessorR32 = VolumeDataReadAccessor<FloatVector2, float>;  		
-	    
-using VolumeData2DReadAccessorR64 = VolumeDataReadAccessor<IntVector2, double>; 			
-using VolumeData2DReadAccessorU64 = VolumeDataReadAccessor<IntVector2, uint64_t>; 		
-using VolumeData2DReadAccessorR32 = VolumeDataReadAccessor<IntVector2, float>;  			
-using VolumeData2DReadAccessorU32 = VolumeDataReadAccessor<IntVector2, uint32_t>; 		
-using VolumeData2DReadAccessorU16 = VolumeDataReadAccessor<IntVector2, uint16_t>; 		
-using VolumeData2DReadAccessorU8 = VolumeDataReadAccessor<IntVector2, uint8_t>;  		
-using VolumeData2DReadAccessor1Bit = VolumeDataReadAccessor<IntVector2, bool>;   			
-	    
-using VolumeData2DReadWriteAccessorR64 = VolumeDataReadWriteAccessor<IntVector2, double>; 	
-using VolumeData2DReadWriteAccessorU64 = VolumeDataReadWriteAccessor<IntVector2, uint64_t>; 	
-using VolumeData2DReadWriteAccessorR32 = VolumeDataReadWriteAccessor<IntVector2, float>;  	
-using VolumeData2DReadWriteAccessorU32 = VolumeDataReadWriteAccessor<IntVector2, uint32_t>; 	
-using VolumeData2DReadWriteAccessorU16 = VolumeDataReadWriteAccessor<IntVector2, uint16_t>; 	
-using VolumeData2DReadWriteAccessorU8 = VolumeDataReadWriteAccessor<IntVector2, uint8_t>;  	
-using VolumeData2DReadWriteAccessor1Bit = VolumeDataReadWriteAccessor<IntVector2, bool>;   	
+using VolumeData2DInterpolatingAccessorR64 = VolumeDataReadAccessor<FloatVector2, double>;
+using VolumeData2DInterpolatingAccessorR32 = VolumeDataReadAccessor<FloatVector2, float>;
+
+using VolumeData2DReadAccessorR64 = VolumeDataReadAccessor<IntVector2, double>;
+using VolumeData2DReadAccessorU64 = VolumeDataReadAccessor<IntVector2, uint64_t>;
+using VolumeData2DReadAccessorR32 = VolumeDataReadAccessor<IntVector2, float>;
+using VolumeData2DReadAccessorU32 = VolumeDataReadAccessor<IntVector2, uint32_t>;
+using VolumeData2DReadAccessorU16 = VolumeDataReadAccessor<IntVector2, uint16_t>;
+using VolumeData2DReadAccessorU8 = VolumeDataReadAccessor<IntVector2, uint8_t>;
+using VolumeData2DReadAccessor1Bit = VolumeDataReadAccessor<IntVector2, bool>;
+
+using VolumeData2DReadWriteAccessorR64 = VolumeDataReadWriteAccessor<IntVector2, double>;
+using VolumeData2DReadWriteAccessorU64 = VolumeDataReadWriteAccessor<IntVector2, uint64_t>;
+using VolumeData2DReadWriteAccessorR32 = VolumeDataReadWriteAccessor<IntVector2, float>;
+using VolumeData2DReadWriteAccessorU32 = VolumeDataReadWriteAccessor<IntVector2, uint32_t>;
+using VolumeData2DReadWriteAccessorU16 = VolumeDataReadWriteAccessor<IntVector2, uint16_t>;
+using VolumeData2DReadWriteAccessorU8 = VolumeDataReadWriteAccessor<IntVector2, uint8_t>;
+using VolumeData2DReadWriteAccessor1Bit = VolumeDataReadWriteAccessor<IntVector2, bool>;
 
 //-----------------------------------------------------------------------------
 // 3D VolumeDataAccessors
 //-----------------------------------------------------------------------------
 
-using VolumeData3DInterpolatingAccessorR64 = VolumeDataReadAccessor<FloatVector3, double>; 		
-using VolumeData3DInterpolatingAccessorR32 = VolumeDataReadAccessor<FloatVector3, float>;  		
-        
-using VolumeData3DReadAccessorR64 = VolumeDataReadAccessor<IntVector3, double>; 			
-using VolumeData3DReadAccessorU64 = VolumeDataReadAccessor<IntVector3, uint64_t>; 		
-using VolumeData3DReadAccessorR32 = VolumeDataReadAccessor<IntVector3, float>;  			
-using VolumeData3DReadAccessorU32 = VolumeDataReadAccessor<IntVector3, uint32_t>; 		
-using VolumeData3DReadAccessorU16 = VolumeDataReadAccessor<IntVector3, uint16_t>; 		
-using VolumeData3DReadAccessorU8 = VolumeDataReadAccessor<IntVector3, uint8_t>;  		
-using VolumeData3DReadAccessor1Bit = VolumeDataReadAccessor<IntVector3, bool>;   			
-        
-using VolumeData3DReadWriteAccessorR64 = VolumeDataReadWriteAccessor<IntVector3, double>; 	
-using VolumeData3DReadWriteAccessorU64 = VolumeDataReadWriteAccessor<IntVector3, uint64_t>; 	
-using VolumeData3DReadWriteAccessorR32 = VolumeDataReadWriteAccessor<IntVector3, float>;  	
-using VolumeData3DReadWriteAccessorU32 = VolumeDataReadWriteAccessor<IntVector3, uint32_t>; 	
-using VolumeData3DReadWriteAccessorU16 = VolumeDataReadWriteAccessor<IntVector3, uint16_t>; 	
-using VolumeData3DReadWriteAccessorU8 = VolumeDataReadWriteAccessor<IntVector3, uint8_t>;  	
-using VolumeData3DReadWriteAccessor1Bit = VolumeDataReadWriteAccessor<IntVector3, bool>;   	
+using VolumeData3DInterpolatingAccessorR64 = VolumeDataReadAccessor<FloatVector3, double>;
+using VolumeData3DInterpolatingAccessorR32 = VolumeDataReadAccessor<FloatVector3, float>;
+
+using VolumeData3DReadAccessorR64 = VolumeDataReadAccessor<IntVector3, double>;
+using VolumeData3DReadAccessorU64 = VolumeDataReadAccessor<IntVector3, uint64_t>;
+using VolumeData3DReadAccessorR32 = VolumeDataReadAccessor<IntVector3, float>;
+using VolumeData3DReadAccessorU32 = VolumeDataReadAccessor<IntVector3, uint32_t>;
+using VolumeData3DReadAccessorU16 = VolumeDataReadAccessor<IntVector3, uint16_t>;
+using VolumeData3DReadAccessorU8 = VolumeDataReadAccessor<IntVector3, uint8_t>;
+using VolumeData3DReadAccessor1Bit = VolumeDataReadAccessor<IntVector3, bool>;
+
+using VolumeData3DReadWriteAccessorR64 = VolumeDataReadWriteAccessor<IntVector3, double>;
+using VolumeData3DReadWriteAccessorU64 = VolumeDataReadWriteAccessor<IntVector3, uint64_t>;
+using VolumeData3DReadWriteAccessorR32 = VolumeDataReadWriteAccessor<IntVector3, float>;
+using VolumeData3DReadWriteAccessorU32 = VolumeDataReadWriteAccessor<IntVector3, uint32_t>;
+using VolumeData3DReadWriteAccessorU16 = VolumeDataReadWriteAccessor<IntVector3, uint16_t>;
+using VolumeData3DReadWriteAccessorU8 = VolumeDataReadWriteAccessor<IntVector3, uint8_t>;
+using VolumeData3DReadWriteAccessor1Bit = VolumeDataReadWriteAccessor<IntVector3, bool>;
 
 //-----------------------------------------------------------------------------
 // 4D VolumeDataAccessors
 //-----------------------------------------------------------------------------
 
-using VolumeData4DInterpolatingAccessorR64 = VolumeDataReadAccessor<FloatVector4, double>;  		
-using VolumeData4DInterpolatingAccessorR32 = VolumeDataReadAccessor<FloatVector4, float>;   		
-        
-using VolumeData4DReadAccessorR64 = VolumeDataReadAccessor<IntVector4, double>;  			
-using VolumeData4DReadAccessorU64 = VolumeDataReadAccessor<IntVector4, uint64_t>;  		
-using VolumeData4DReadAccessorR32 = VolumeDataReadAccessor<IntVector4, float>;   			
-using VolumeData4DReadAccessorU32 = VolumeDataReadAccessor<IntVector4, uint32_t>;  		
-using VolumeData4DReadAccessorU16 = VolumeDataReadAccessor<IntVector4, uint16_t>;  		
-using VolumeData4DReadAccessorU8 = VolumeDataReadAccessor<IntVector4, uint8_t>;   		
-using VolumeData4DReadAccessor1Bit = VolumeDataReadAccessor<IntVector4, bool>;    			
-        
-using VolumeData4DReadWriteAccessorR64 = VolumeDataReadWriteAccessor<IntVector4, double>;  	
-using VolumeData4DReadWriteAccessorU64 = VolumeDataReadWriteAccessor<IntVector4, uint64_t>;  	
-using VolumeData4DReadWriteAccessorR32 = VolumeDataReadWriteAccessor<IntVector4, float>;   	
-using VolumeData4DReadWriteAccessorU32 = VolumeDataReadWriteAccessor<IntVector4, uint32_t>;  	
-using VolumeData4DReadWriteAccessorU16 = VolumeDataReadWriteAccessor<IntVector4, uint16_t>;  	
-using VolumeData4DReadWriteAccessorU8 = VolumeDataReadWriteAccessor<IntVector4, uint8_t>;   	
-using VolumeData4DReadWriteAccessor1Bit = VolumeDataReadWriteAccessor<IntVector4, bool>;    	
+using VolumeData4DInterpolatingAccessorR64 = VolumeDataReadAccessor<FloatVector4, double>;
+using VolumeData4DInterpolatingAccessorR32 = VolumeDataReadAccessor<FloatVector4, float>;
+
+using VolumeData4DReadAccessorR64 = VolumeDataReadAccessor<IntVector4, double>;
+using VolumeData4DReadAccessorU64 = VolumeDataReadAccessor<IntVector4, uint64_t>;
+using VolumeData4DReadAccessorR32 = VolumeDataReadAccessor<IntVector4, float>;
+using VolumeData4DReadAccessorU32 = VolumeDataReadAccessor<IntVector4, uint32_t>;
+using VolumeData4DReadAccessorU16 = VolumeDataReadAccessor<IntVector4, uint16_t>;
+using VolumeData4DReadAccessorU8 = VolumeDataReadAccessor<IntVector4, uint8_t>;
+using VolumeData4DReadAccessor1Bit = VolumeDataReadAccessor<IntVector4, bool>;
+
+using VolumeData4DReadWriteAccessorR64 = VolumeDataReadWriteAccessor<IntVector4, double>;
+using VolumeData4DReadWriteAccessorU64 = VolumeDataReadWriteAccessor<IntVector4, uint64_t>;
+using VolumeData4DReadWriteAccessorR32 = VolumeDataReadWriteAccessor<IntVector4, float>;
+using VolumeData4DReadWriteAccessorU32 = VolumeDataReadWriteAccessor<IntVector4, uint32_t>;
+using VolumeData4DReadWriteAccessorU16 = VolumeDataReadWriteAccessor<IntVector4, uint16_t>;
+using VolumeData4DReadWriteAccessorU8 = VolumeDataReadWriteAccessor<IntVector4, uint8_t>;
+using VolumeData4DReadWriteAccessor1Bit = VolumeDataReadWriteAccessor<IntVector4, bool>;
 
 } /* namespace OpenVDS*/
 

@@ -62,6 +62,8 @@ PyVolumeDataChannelDescriptor::initModule(py::module& m)
   VolumeDataChannelDescriptor_.def_property_readonly("integerScale", &VolumeDataChannelDescriptor::GetIntegerScale, OPENVDS_DOCSTRING(VolumeDataChannelDescriptor_GetIntegerScale));
   VolumeDataChannelDescriptor_.def("getIntegerOffset"            , static_cast<float(VolumeDataChannelDescriptor::*)() const>(&VolumeDataChannelDescriptor::GetIntegerOffset), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(VolumeDataChannelDescriptor_GetIntegerOffset));
   VolumeDataChannelDescriptor_.def_property_readonly("integerOffset", &VolumeDataChannelDescriptor::GetIntegerOffset, OPENVDS_DOCSTRING(VolumeDataChannelDescriptor_GetIntegerOffset));
+  VolumeDataChannelDescriptor_.def("getFlags"                    , static_cast<VolumeDataChannelDescriptor::Flags(VolumeDataChannelDescriptor::*)() const>(&VolumeDataChannelDescriptor::GetFlags), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(VolumeDataChannelDescriptor_GetFlags));
+  VolumeDataChannelDescriptor_.def_property_readonly("flags", &VolumeDataChannelDescriptor::GetFlags, OPENVDS_DOCSTRING(VolumeDataChannelDescriptor_GetFlags));
 
   py::enum_<VolumeDataChannelDescriptor::Flags> 
     VolumeDataChannelDescriptor_Flags_(VolumeDataChannelDescriptor_,"Flags", OPENVDS_DOCSTRING(VolumeDataChannelDescriptor_Flags));

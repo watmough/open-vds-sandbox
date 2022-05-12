@@ -25,6 +25,9 @@ VolumeDataAccessManager.AccessMode = openvds.core.VolumeDataPageAccessor.AccessM
 
 VolumeDataAccessManager.AccessMode = VolumeDataPageAccessor.AccessMode
 
+# Add alias for VDSError
+Error = VDSError;
+
 # Add global enums in local scope
 VolumeDataChannelDescriptor.Format     = VolumeDataFormat
 VolumeDataChannelDescriptor.Components = VolumeDataComponents

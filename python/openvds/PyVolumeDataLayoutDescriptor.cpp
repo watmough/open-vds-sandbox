@@ -44,6 +44,8 @@ PyVolumeDataLayoutDescriptor::initModule(py::module& m)
   VolumeDataLayoutDescriptor_.def_property_readonly("create2DLODs", &VolumeDataLayoutDescriptor::IsCreate2DLODs, OPENVDS_DOCSTRING(VolumeDataLayoutDescriptor_IsCreate2DLODs));
   VolumeDataLayoutDescriptor_.def("isForceFullResolutionDimension", static_cast<bool(VolumeDataLayoutDescriptor::*)() const>(&VolumeDataLayoutDescriptor::IsForceFullResolutionDimension), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(VolumeDataLayoutDescriptor_IsForceFullResolutionDimension));
   VolumeDataLayoutDescriptor_.def_property_readonly("forceFullResolutionDimension", &VolumeDataLayoutDescriptor::IsForceFullResolutionDimension, OPENVDS_DOCSTRING(VolumeDataLayoutDescriptor_IsForceFullResolutionDimension));
+  VolumeDataLayoutDescriptor_.def("getOptions"                  , static_cast<VolumeDataLayoutDescriptor::Options(VolumeDataLayoutDescriptor::*)() const>(&VolumeDataLayoutDescriptor::GetOptions), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(VolumeDataLayoutDescriptor_GetOptions));
+  VolumeDataLayoutDescriptor_.def_property_readonly("options", &VolumeDataLayoutDescriptor::GetOptions, OPENVDS_DOCSTRING(VolumeDataLayoutDescriptor_GetOptions));
   VolumeDataLayoutDescriptor_.def("getFullResolutionDimension"  , static_cast<int(VolumeDataLayoutDescriptor::*)() const>(&VolumeDataLayoutDescriptor::GetFullResolutionDimension), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(VolumeDataLayoutDescriptor_GetFullResolutionDimension));
   VolumeDataLayoutDescriptor_.def_property_readonly("fullResolutionDimension", &VolumeDataLayoutDescriptor::GetFullResolutionDimension, OPENVDS_DOCSTRING(VolumeDataLayoutDescriptor_GetFullResolutionDimension));
 

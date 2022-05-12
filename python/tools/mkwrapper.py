@@ -286,6 +286,8 @@ def format_class_decl(node, classnode, all_, indent, parent_prefix):
 
 # Generate wrapper for explicit template specialization
 def generate_typealias(node, all_, output, indent, parent_prefix, context):
+    if re.match('VolumeData[1-6]D(Read|ReadWrite|Interpolating)Accessor.*', node.spelling):
+        return
 #    if 'Float' in node.spelling:
 #        debug = 1
     canonical = node.type.get_canonical()
@@ -708,7 +710,7 @@ class Parser(object):
                     func(n, self.nodes, self.output, '  ', 'm', context)
 
 def parse_args(args):
-    parameters = ["-DPYTHON_WRAPPER_GENERATOR"]
+    parameters = ['-DPYTHON_WRAPPER_GENERATOR', '-DOPENVDS_VERSION=""']
     filenames = []
     if "-x" not in args:
         parameters.extend(['-x', 'c++'])

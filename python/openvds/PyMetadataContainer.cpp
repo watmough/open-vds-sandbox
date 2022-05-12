@@ -27,6 +27,7 @@ PyMetadataContainer::initModule(py::module& m)
   py::class_<MetadataContainer, MetadataReadAccess, MetadataWriteAccess> 
     MetadataContainer_(m,"MetadataContainer", OPENVDS_DOCSTRING(MetadataContainer));
 
+  MetadataContainer_.def(py::init<                              >(), OPENVDS_DOCSTRING(MetadataContainer_MetadataContainer));
   MetadataContainer_.def("isMetadataIntAvailable"      , static_cast<bool(MetadataContainer::*)(const char *, const char *) const>(&MetadataContainer::IsMetadataIntAvailable), py::arg("category").none(false), py::arg("name").none(false), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(MetadataContainer_IsMetadataIntAvailable));
   MetadataContainer_.def("isMetadataIntVector2Available", static_cast<bool(MetadataContainer::*)(const char *, const char *) const>(&MetadataContainer::IsMetadataIntVector2Available), py::arg("category").none(false), py::arg("name").none(false), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(MetadataContainer_IsMetadataIntVector2Available));
   MetadataContainer_.def("isMetadataIntVector3Available", static_cast<bool(MetadataContainer::*)(const char *, const char *) const>(&MetadataContainer::IsMetadataIntVector3Available), py::arg("category").none(false), py::arg("name").none(false), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(MetadataContainer_IsMetadataIntVector3Available));
