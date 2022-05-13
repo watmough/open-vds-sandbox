@@ -287,7 +287,16 @@ Json::Value TranslateMetadata(Json::Value const & root)
   Json::Value
     metadataListJson(Json::arrayValue);
 
-  for(auto const & metadata : root["MetadataList"])
+  const char *metadataListName  = "MetadataList",
+             *metadataListAlias = "VDSMetadataList";
+
+  // Backwards compatibility with some really old VDSs
+  if(!root.isMember(metadataListName) && root.isMember(metadataListAlias))
+  {
+    metadataListName = metadataListAlias;
+  }
+
+  for(auto const & metadata : root[metadataListName])
   {
     Json::Value
       metadataJson(Json::objectValue);
