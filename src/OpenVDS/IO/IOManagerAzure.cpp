@@ -293,7 +293,15 @@ IOManagerAzure::IOManagerAzure(const AzureOpenOptions& openOptions, Error& error
 
   if (openOptions.connectionString.size())
   {
-    m_storage_account = azure::storage::cloud_storage_account::parse(convertToUtilString(openOptions.connectionString));
+    try {
+      m_storage_account = azure::storage::cloud_storage_account::parse(convertToUtilString(openOptions.connectionString));
+    }
+    catch (...)
+    {
+      error.code = -1;
+      error.string = "Azure Config error. Failed to parse the connection string. Make sure all key/value pairs are recognized by azure-storage.";
+      return;
+    }
   } else
   {
     assert(openOptions.bearerToken.size());
