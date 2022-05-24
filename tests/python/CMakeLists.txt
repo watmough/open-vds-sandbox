@@ -32,7 +32,7 @@ endif()
 
 add_test(NAME "python.pytests.pytests"
   COMMAND ${CMAKE_COMMAND} -E env "PYTHONPATH=$<TARGET_FILE_DIR:core>/..${separator}${CMAKE_CURRENT_BINARY_DIR}${separator}$<TARGET_FILE_DIR:openvds_python_test>/..${separator}${CMAKE_CURRENT_SOURCE_DIR}"
-  ${Python3_EXECUTABLE} -m pytest -s
+  ${Python3_EXECUTABLE} -m pytest -s --junit-xml=${PROJECT_BINARY_DIR}/test_results/pytest_results.xml
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/pytests
   )
 
