@@ -636,7 +636,9 @@ def transform_jni_functioncall_args(args: List[Param], is_static_method: bool=Fa
             elif jnitype_ == "jboolean":
                 arglist.append(f"{name} ? true : false")
             elif is_enum_type(arg):
-                if is_scoped_enum_type(arg):
+                if is_enum_class(arg):
+                    arglist.append(f"(enum class {type_}){name}")
+                elif is_scoped_enum_type(arg):
                     arglist.append(f"(enum {type_}){name}")
                 else:
                     arglist.append(f"({type_}){name}")
@@ -748,6 +750,12 @@ def is_enumset_type(arg: Param) -> bool:
     if is_enum_type(arg):
         if arg.canonical_type in _enumset_types:
             return True
+    return False
+
+def is_enum_class(arg: Param) -> bool:
+    t = find_enum_type(arg.canonical_type)
+    if t:
+        return t.is_enum_class
     return False
 
 def is_scoped_enum_type(arg: Param) -> bool:

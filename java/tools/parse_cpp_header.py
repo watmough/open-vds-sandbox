@@ -344,7 +344,8 @@ class Scope(OrderedDict):
         return children
 
     @staticmethod
-    def _get_comment_from_file(filename: str, lineno: int):
+    def _get_line_from_file(filename: str, lineno: int):
+        assert isinstance(filename, str)
         assert lineno > 0
         lineno = lineno - 1
         global _file_contents_dict
@@ -357,12 +358,17 @@ class Scope(OrderedDict):
                 _file_contents_dict[filename] = []
         contents = _file_contents_dict[filename]
         if lineno < len(contents):
-            line = contents[lineno]
-            try:
-                return line[line.index('///'):]
-            except:
-                pass
-        return ''
+            return contents[lineno]
+        else:
+            return ''
+
+    @staticmethod
+    def _get_comment_from_file(filename: str, lineno: int):
+        line = Scope._get_line_from_file(filename, lineno)
+        if '///' in line:
+            return line[line.index('///'):]
+        else:
+            return ''
 
     @staticmethod
     def _get_comment(node) -> str:
@@ -423,6 +429,16 @@ class Scope(OrderedDict):
     @property
     def is_enum(self) -> bool:
         return self.nodetype == 'ENUM_DECL'
+
+    @property
+    def is_enum_class(self) -> bool:
+        if self.is_enum:
+            # libclang cindex nodes do not distinguish between plain enums and enum classes,
+            # so we resort to this hack:
+            line = Scope._get_line_from_file(self.node.location.file.name, self.node.location.line)
+            if 'enum class' in line:
+                return True
+        return False
 
     @property
     def is_enum_value(self) -> bool:
