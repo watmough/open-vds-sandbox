@@ -60,7 +60,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_MetadataKey_ctor2Impl
 
     auto native_handle = context->handle();
     context->setObject(CPPJNI_makeShared<OpenVDS::MetadataKey>(
-                               (enum class OpenVDS::MetadataType)type, 
+                               (OpenVDS::MetadataType)type, 
                                CPPJNIStringWrapper(env, category), 
                                CPPJNIStringWrapper(env, name)));
 

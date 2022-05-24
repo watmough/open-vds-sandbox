@@ -156,7 +156,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_OpenOptions_setWaveletAdaptive
   CPPJNI_TRY
   {
     auto pInstance = CPPJNI_cast<OpenVDS::OpenOptions>(native_handle);
-    pInstance->waveletAdaptiveMode = (enum class OpenVDS::WaveletAdaptiveMode)value;
+    pInstance->waveletAdaptiveMode = (OpenVDS::WaveletAdaptiveMode)value;
   }
   CPPJNI_CATCH
 }
@@ -1586,7 +1586,7 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_GoogleOpenOptions_setCredentia
   CPPJNI_TRY
   {
     auto pInstance = CPPJNI_cast<OpenVDS::GoogleOpenOptions>(native_handle);
-    pInstance->credentialsType = (enum class OpenVDS::GoogleOpenOptions::CredentialsType)value;
+    pInstance->credentialsType = (OpenVDS::GoogleOpenOptions::CredentialsType)value;
   }
   CPPJNI_CATCH
 }
@@ -2895,7 +2895,7 @@ JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_OpenVDS_IsCompressionMetho
 
   CPPJNI_TRY
   {
-    auto result = OpenVDS::IsCompressionMethodSupported((enum class OpenVDS::CompressionMethod)compressionMethod);
+    auto result = OpenVDS::IsCompressionMethodSupported((OpenVDS::CompressionMethod)compressionMethod);
     return result;
   }
   CPPJNI_CATCH
@@ -2917,7 +2917,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_CreateImpl
                                CPPJNIVectorWrapperAdapter<OpenVDS::VolumeDataAxisDescriptor>(env, axisDescriptors).toVector(), 
                                CPPJNIVectorWrapperAdapter<OpenVDS::VolumeDataChannelDescriptor>(env, channelDescriptors).toVector(), 
                                *CPPJNI_cast<OpenVDS::MetadataReadAccess>(metadata), 
-                               (enum class OpenVDS::CompressionMethod)compressionMethod, 
+                               (OpenVDS::CompressionMethod)compressionMethod, 
                                compressionTolerance, 
                                *CPPJNI_cast<OpenVDS::VDSError>(error));
     auto context = CPPJNI_createNonOwningObjectContext(result);
@@ -2964,7 +2964,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Create3Impl
                                CPPJNIVectorWrapperAdapter<OpenVDS::VolumeDataAxisDescriptor>(env, axisDescriptors).toVector(), 
                                CPPJNIVectorWrapperAdapter<OpenVDS::VolumeDataChannelDescriptor>(env, channelDescriptors).toVector(), 
                                *CPPJNI_cast<OpenVDS::MetadataReadAccess>(metadata), 
-                               (enum class OpenVDS::CompressionMethod)compressionMethod, 
+                               (OpenVDS::CompressionMethod)compressionMethod, 
                                compressionTolerance, 
                                *CPPJNI_cast<OpenVDS::VDSError>(error));
     auto context = CPPJNI_createNonOwningObjectContext(result);
@@ -3010,7 +3010,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Create5Impl
                                CPPJNIVectorWrapperAdapter<OpenVDS::VolumeDataAxisDescriptor>(env, axisDescriptors).toVector(), 
                                CPPJNIVectorWrapperAdapter<OpenVDS::VolumeDataChannelDescriptor>(env, channelDescriptors).toVector(), 
                                *CPPJNI_cast<OpenVDS::MetadataReadAccess>(metadata), 
-                               (enum class OpenVDS::CompressionMethod)compressionMethod, 
+                               (OpenVDS::CompressionMethod)compressionMethod, 
                                compressionTolerance, 
                                *CPPJNI_cast<OpenVDS::VDSError>(error));
     auto context = CPPJNI_createNonOwningObjectContext(result);
@@ -3056,7 +3056,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_Create7Impl
                                CPPJNIVectorWrapperAdapter<OpenVDS::VolumeDataAxisDescriptor>(env, axisDescriptors).toVector(), 
                                CPPJNIVectorWrapperAdapter<OpenVDS::VolumeDataChannelDescriptor>(env, channelDescriptors).toVector(), 
                                *CPPJNI_cast<OpenVDS::MetadataReadAccess>(metadata), 
-                               (enum class OpenVDS::CompressionMethod)compressionMethod, 
+                               (OpenVDS::CompressionMethod)compressionMethod, 
                                compressionTolerance, 
                                *CPPJNI_cast<OpenVDS::VDSError>(error));
     auto context = CPPJNI_createNonOwningObjectContext(result);

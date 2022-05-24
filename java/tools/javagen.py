@@ -638,9 +638,7 @@ def transform_jni_functioncall_args(args: List[Param], is_static_method: bool=Fa
             elif is_enum_type(arg):
                 # We want to avoid any clashes between function names and type names,
                 # so lets's be specific here:
-                if is_enum_class(arg):
-                    arglist.append(f"(enum class {type_}){name}")
-                elif is_scoped_enum_type(arg):
+                if is_scoped_enum_type(arg) and not is_enum_class(arg):
                     arglist.append(f"(enum {type_}){name}")
                 else:
                     arglist.append(f"({type_}){name}")
