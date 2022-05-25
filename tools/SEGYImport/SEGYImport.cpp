@@ -46,7 +46,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-#include <cxxopts/cxxopts.hpp>
+#include <cxxopts.hpp>
 #include <json/json.h>
 #include <fmt/format.h>
 

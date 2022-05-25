@@ -7,7 +7,8 @@
 
 #include <Base64/Base64.h>
 
-#include <cxxopts/cxxopts.hpp>
+
+#include <cxxopts.hpp>
 #include <PrintHelpers.h>
 #include <HelpConnection.h>
 
