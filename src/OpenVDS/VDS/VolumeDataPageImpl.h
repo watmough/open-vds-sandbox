@@ -103,6 +103,7 @@ public:
   bool          SettingData() const { std::unique_lock<std::mutex> lock(m_mutex); return m_settingData > 0; }
   void          SetError(const OpenVDS::Error &error) { m_error = error; }
   bool          GetError(OpenVDS::Error &error) { error = m_error; return error.code != 0; }
+  Error const & GetErrorInternal() const { return m_error; }
 
   // Implementation of Hue::HueSpaceLib::VolumeDataPage interface, these methods aquire a lock (except the GetMinMax methods which don't need to)
   VolumeDataPageAccessor &

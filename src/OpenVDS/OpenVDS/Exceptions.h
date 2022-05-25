@@ -19,6 +19,7 @@
 #define EXCEPTIONS_H
 
 #include <exception>
+#include "string.h"
 
 namespace OpenVDS
 {
@@ -43,6 +44,8 @@ private:
   int           m_usedSize;
 protected:
   MessageBufferException() : m_messageBuffer(), m_usedSize(0) {}
+  MessageBufferException(MessageBufferException const &) = delete; /* derived classes have to add whatever they are copying from to the buffer */
+  MessageBufferException& operator=(const MessageBufferException& other) = delete;
 
   const char *AddToBuffer(const char *message)
   {
@@ -61,13 +64,21 @@ protected:
 
     return start;
   }
+
+  void ClearBuffer()
+  {
+    memset(m_messageBuffer, 0, MESSAGE_BUFFER_SIZE);
+    m_usedSize = 0;
+  }
 };
 
 class FatalException : public MessageBufferException<16384>
 {
   const char *m_errorMessage;
 public:
-  FatalException(const char* errorMessage) : m_errorMessage(AddToBuffer(errorMessage)) {}
+  FatalException(const char* errorMessage) :    MessageBufferException(), m_errorMessage(AddToBuffer(errorMessage)) {}
+  FatalException(const FatalException& other) : MessageBufferException(), m_errorMessage(AddToBuffer(other.m_errorMessage)) {}
+  FatalException& operator=(const FatalException& other) { if(this != &other) { ClearBuffer(); m_errorMessage = AddToBuffer(other.m_errorMessage); } return *this; }
 
   const char *GetErrorMessage() const noexcept override { return m_errorMessage; }
 };
@@ -76,7 +87,9 @@ class InvalidOperation : public MessageBufferException<512>
 {
   const char *m_errorMessage;
 public:
-  InvalidOperation(const char *errorMessage) : m_errorMessage(AddToBuffer(errorMessage)) {}
+  InvalidOperation(const char *errorMessage) :      MessageBufferException(), m_errorMessage(AddToBuffer(errorMessage)) {}
+  InvalidOperation(const InvalidOperation& other) : MessageBufferException(), m_errorMessage(AddToBuffer(other.m_errorMessage)) {}
+  InvalidOperation& operator=(const InvalidOperation& other) { if(this != &other) { ClearBuffer(); m_errorMessage = AddToBuffer(other.m_errorMessage); } return *this; }
 
   const char *GetErrorMessage() const noexcept override { return m_errorMessage; }
 };
@@ -87,7 +100,9 @@ class InvalidArgument : public MessageBufferException<512>
   const char *m_parameterName;
 
 public:
-  InvalidArgument(const char* errorMessage, const char *parameterName) : m_errorMessage(AddToBuffer(errorMessage)), m_parameterName(AddToBuffer(parameterName)) {}
+  InvalidArgument(const char* errorMessage, const char *parameterName) : MessageBufferException(), m_errorMessage(AddToBuffer(errorMessage)),         m_parameterName(AddToBuffer(parameterName)) {}
+  InvalidArgument(const InvalidArgument& other) :                        MessageBufferException(), m_errorMessage(AddToBuffer(other.m_errorMessage)), m_parameterName(AddToBuffer(other.m_parameterName)) {}
+  InvalidArgument& operator=(const InvalidArgument& other) { if(this != &other) { ClearBuffer(); m_errorMessage = AddToBuffer(other.m_errorMessage); m_parameterName = AddToBuffer(other.m_parameterName); } return *this; }
 
   const char *GetErrorMessage() const noexcept override { return m_errorMessage; }
   const char *GetParameterName() const noexcept { return m_parameterName; }
@@ -95,23 +110,27 @@ public:
 
 class IndexOutOfRangeException : public MessageBufferException<512>
 {
-  const char *m_errorMessage;
-
+  const char* m_errorMessage;
 public:
-  IndexOutOfRangeException(const char* errorMessage) : m_errorMessage(AddToBuffer(errorMessage)) {}
+  IndexOutOfRangeException(const char* errorMessage) :              MessageBufferException(), m_errorMessage(AddToBuffer(errorMessage)) {}
+  IndexOutOfRangeException(const IndexOutOfRangeException& other) : MessageBufferException(), m_errorMessage(AddToBuffer(other.m_errorMessage)) {}
+  IndexOutOfRangeException& operator=(const IndexOutOfRangeException& other) { if(this != &other) { ClearBuffer(); m_errorMessage = AddToBuffer(other.m_errorMessage); } return *this; }
+
   const char *GetErrorMessage() const noexcept override { return m_errorMessage; }
 };
 
-struct ReadErrorException : public MessageBufferException<512>
+class ReadErrorException : public MessageBufferException<512>
 {
-public:
-  //keping member public for api compatibility
-  const char *message;
-  int errorCode;
-  ReadErrorException(const char* errorMessage, int errorCode) : message(AddToBuffer(errorMessage)) , errorCode(errorCode) {}
+  const char* m_errorMessage;
+  int         m_errorCode;
 
-  const char *GetErrorMessage() const noexcept override { return message; }
-  int GetErrorCode() const noexcept { return errorCode;  }
+public:
+  ReadErrorException(const char* errorMessage, int errorCode) : MessageBufferException(), m_errorMessage(AddToBuffer(errorMessage)),         m_errorCode(errorCode) {}
+  ReadErrorException(const ReadErrorException& other) :         MessageBufferException(), m_errorMessage(AddToBuffer(other.m_errorMessage)), m_errorCode(other.m_errorCode) {}
+  ReadErrorException& operator=(const ReadErrorException& other) { if(this != &other) { ClearBuffer(); m_errorMessage = AddToBuffer(other.m_errorMessage); m_errorCode = other.m_errorCode; } return *this; }
+
+  const char *GetErrorMessage() const noexcept override { return m_errorMessage; }
+  int         GetErrorCode() const noexcept { return m_errorCode; }
 };
 } /* namespace OpenVDS */
 
