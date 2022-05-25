@@ -22,7 +22,7 @@
 #include <OpenVDS/VolumeDataAccess.h>
 #include <OpenVDS/VolumeDataLayout.h>
 
-#include <cxxopts/cxxopts.hpp>
+#include <cxxopts.hpp>
 
 #include <cstdlib>
 #include <climits>

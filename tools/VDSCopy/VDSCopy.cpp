@@ -3,7 +3,7 @@
 #include <OpenVDS/OpenVDS.h>
 #include <OpenVDS/VolumeDataLayout.h>
 
-#include <cxxopts/cxxopts.hpp>
+#include <cxxopts.hpp>
 #include <ThreadPool/ThreadPool.h>
 #include <PrintHelpers.h>
 
