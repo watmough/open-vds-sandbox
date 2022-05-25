@@ -102,19 +102,30 @@ mkdir -p $openvds_path/binpackage/python/$distribution/
 
 for python_executable in "${python_executables[@]}"; do
   python_ver=$("$python_executable" -c "import sys;  print('.'.join(map(str, sys.version_info[:2])))")
-  python_root_dir=$("$python_executable" -c "import sys; import os; print(os.path.dirname(sys.executable))")
-  
+
   openvds_path=$(realpath $openvds_path)
-  
+
   skbuild_platform="$skplat_name-$python_ver"
-  
+
   skbuild_dir="$openvds_path/_skbuild/$skbuild_platform"
   build_dir="$openvds_path/_skbuild/internal_build_dir"
   [[ -d $skbuild_dir ]] || mkdir -p $skbuild_dir
   [[ -d $build_dir ]] || mkdir -p $build_dir
   skbuild_dir=$(realpath $skbuild_dir)
   build_dir=$(realpath $build_dir)
-  
+
+  venv_dir="$openvds_path/_skbuild/venv_$python_ver"
+  $python_executable -m venv $venv_dir
+  if [[ "$platform_name" == "win" ]]; then
+    source $venv_dir/Scripts/activate
+  else
+    source $venv_dir/bin/activate
+  fi
+
+  python_executable=$(python -c "import sys; import os; print(sys.executable.replace(os.sep, '/'))")
+  $python_executable -m pip install -r $openvds_path/python/requirements-dev.txt
+  python_root_dir=$("$python_executable" -c "import sys; import os; print(os.path.dirname(sys.executable))")
+
   cd "$build_dir"
  
   echo "Do $python_executable to $skbuild_dir"
