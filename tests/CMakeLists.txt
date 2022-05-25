@@ -9,6 +9,10 @@ set_target_properties(gtest PROPERTIES
 set_target_properties(gtest_main PROPERTIES
   FOLDER ExternalProjectTargets/GoogleTest)
 
+string(REPLACE " " ";" DISABLE_WARNING_FLAG ${DISABLE_WARNING_FLAG})
+target_compile_options(gtest PRIVATE ${DISABLE_WARNING_FLAG})
+target_compile_options(gtest_main PRIVATE ${DISABLE_WARNING_FLAG})
+
 add_executable(TestRootTarget RootTestExecutable.cpp)
 set_target_properties(TestRootTarget PROPERTIES FOLDER tests)
 copyDllForTarget(TestRootTarget)
