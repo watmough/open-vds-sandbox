@@ -2,6 +2,7 @@ set -e -u
 base_dir=$(realpath $(dirname $BASH_SOURCE))
 
 openvds_path=$(realpath "$base_dir/../..")
+cmake_executable=$(which cmake)
 cmake_args="-DBUILD_TESTS=OFF"
 openvds_version=""
 name="openvds"
@@ -121,21 +122,22 @@ for python_executable in "${python_executables[@]}"; do
   else
     source $venv_dir/bin/activate
   fi
-
   python_executable=$(python -c "import sys; import os; print(sys.executable.replace(os.sep, '/'))")
   $python_executable -m pip install -r $openvds_path/python/requirements-dev.txt
   python_root_dir=$("$python_executable" -c "import sys; import os; print(os.path.dirname(sys.executable))")
+
+  deactivate
 
   cd "$build_dir"
  
   echo "Do $python_executable to $skbuild_dir"
   if [[ "$platform_name" == "win" ]]; then
-    cmake -DPython3_ROOT_DIR="$python_root_dir" -DCMAKE_INSTALL_PREFIX=$skbuild_dir/cmake-install -DENABLE_MSVC_TOOLSET_DIR=OFF $cmake_args -G"$cmake_generator" $toolset $openvds_path
-    cmake --build . --config Debug --parallel --target install
-    cmake --build . --config Release --parallel --target install
+    $cmake_executable -DPython3_ROOT_DIR="$python_root_dir" -DCMAKE_INSTALL_PREFIX=$skbuild_dir/cmake-install -DENABLE_MSVC_TOOLSET_DIR=OFF $cmake_args -G"$cmake_generator" $toolset $openvds_path
+    $cmake_executable --build . --config Debug --parallel --target install
+    $cmake_executable --build . --config Release --parallel --target install
   else
-    cmake -DPython3_ROOT_DIR="$python_root_dir" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$skbuild_dir/cmake-install $cmake_args -G"$cmake_generator" $toolset $openvds_path
-    cmake --build . --config Release --target install
+    $cmake_executable -DPython3_ROOT_DIR="$python_root_dir" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$skbuild_dir/cmake-install $cmake_args -G"$cmake_generator" $toolset $openvds_path
+    $cmake_executable --build . --config Release --target install
   fi
  
   cd "$openvds_path"
@@ -186,9 +188,9 @@ for python_executable in "${python_executables[@]}"; do
   if [[ "$platform_name" == "win" ]]; then
     cd "$build_dir"
     rm -rf $skbuild_dir/cmake-install
-    cmake -DPython3_ROOT_DIR="$python_root_dir" -DCMAKE_INSTALL_PREFIX=$skbuild_dir/cmake-install -DENABLE_MSVC_TOOLSET_DIR=ON $cmake_args -G"$cmake_generator" $toolset $openvds_path
-    cmake --build . --config Debug --parallel --target install
-    cmake --build . --config Release --parallel --target install
+    $cmake_executable -DPython3_ROOT_DIR="$python_root_dir" -DCMAKE_INSTALL_PREFIX=$skbuild_dir/cmake-install -DENABLE_MSVC_TOOLSET_DIR=ON $cmake_args -G"$cmake_generator" $toolset $openvds_path
+    $cmake_executable --build . --config Debug --parallel --target install
+    $cmake_executable --build . --config Release --parallel --target install
   fi
   cd "$openvds_path"
   cp -r $skbuild_dir/cmake-install/* binpackage/$name-$openvds_version
