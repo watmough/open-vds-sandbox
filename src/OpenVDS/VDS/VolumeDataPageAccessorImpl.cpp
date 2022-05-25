@@ -311,7 +311,7 @@ bool VolumeDataPageAccessorImpl::ReadPreparedPaged(VolumeDataPage* page)
   VolumeDataPageImpl *pageImpl = static_cast<VolumeDataPageImpl *>(page);
 
   if (!pageImpl->RequestPrepared())
-    return pageImpl->GetError().errorCode == 0;
+    return pageImpl->GetErrorInternal().code == 0;
 
   if (pageImpl->EnterSettingData())
   {
@@ -398,7 +398,7 @@ bool VolumeDataPageAccessorImpl::ReadPreparedPaged(VolumeDataPage* page)
     m_pageReadCondition.wait(pageListMutexLock, [pageImpl]{return !pageImpl->SettingData();});
   }
 
-  if (pageImpl->GetError().errorCode)
+  if (pageImpl->GetErrorInternal().code)
     return false;
 
   if(!m_layer)
