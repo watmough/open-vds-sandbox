@@ -13,7 +13,7 @@ function(setCompilerFlagsForTools target)
 
   target_link_libraries(${target} PRIVATE tools_shared)
   set_target_properties(${target} PROPERTIES INSTALL_RPATH "$ORIGIN/../lib${LIBSUFFIX}")
-  target_include_directories(${target} PRIVATE ${TOOLS_FOLDER}/Shared ${COMMON_DIR})
+  target_include_directories(${target} PRIVATE ${TOOLS_FOLDER}/Shared ${COMMON_DIR} ${cxxopts_SOURCE_DIR}/include)
 endfunction()
 
 add_subdirectory(Shared)
