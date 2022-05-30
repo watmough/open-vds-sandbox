@@ -126,10 +126,10 @@ for python_executable in "${python_executables[@]}"; do
   $python_executable -m pip install -r $openvds_path/python/requirements-dev.txt
   python_root_dir=$("$python_executable" -c "import sys; import os; print(os.path.dirname(sys.executable))")
 
-  deactivate
+  deactivate nondestructive
 
   cd "$build_dir"
- 
+
   echo "Do $python_executable to $skbuild_dir"
   if [[ "$platform_name" == "win" ]]; then
     $cmake_executable -DPython3_ROOT_DIR="$python_root_dir" -DCMAKE_INSTALL_PREFIX=$skbuild_dir/cmake-install -DENABLE_MSVC_TOOLSET_DIR=OFF $cmake_args -G"$cmake_generator" $toolset $openvds_path
@@ -139,11 +139,11 @@ for python_executable in "${python_executables[@]}"; do
     $cmake_executable -DPython3_ROOT_DIR="$python_root_dir" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$skbuild_dir/cmake-install $cmake_args -G"$cmake_generator" $toolset $openvds_path
     $cmake_executable --build . --config Release --target install
   fi
- 
+
   cd "$openvds_path"
   [[ -d "$skbuild_dir/cmake-build" ]] || mkdir -p "$skbuild_dir/cmake-build"
   cp -r "$build_dir"/* "$skbuild_dir/cmake-build"
-  
+
   "$python_executable" setup.py --skip-cmake bdist_wheel
 
   if [[ "$auditwheels" == "yes" ]]; then
