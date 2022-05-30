@@ -74,7 +74,7 @@ namespace OpenVDS
     int PageIndex() const { return m_pageIndex; }
     bool IsValid()   const { return m_valid; }
     bool IsDirty()   const { return m_dirty; }
-    const Error &transferError() const { return m_transferError; }
+    const Error &TransferError() const { return m_transferError; }
 
     MetadataPage(MetadataManager *manager, int pageIndex)
       : m_manager(manager)
@@ -126,6 +126,7 @@ namespace OpenVDS
     void PageTransferCompleted(VolumeDataStoreIOManager *accessManager, MetadataPage* page, std::vector<uint8_t>&& data);
 
     void InitiateTransfer(VolumeDataStoreIOManager* accessManager, MetadataPage* page, std::string const& url);
+    void CompleteTransfer(MetadataPage *page);
     void UploadDirtyPages(VolumeDataStoreIOManager* accessManager);
 
     uint8_t const *GetPageEntry(MetadataPage *page, int entry) const;

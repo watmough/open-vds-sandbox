@@ -356,9 +356,9 @@ bool VolumeDataStoreIOManager::PrepareReadChunkImpl(const VolumeDataChunk &chunk
 
     assert(pageIndex == metadataPage->PageIndex());
 
-    if (metadataPage->transferError().code != 0)
+    if (metadataPage->TransferError().code != 0)
     {
-      error = metadataPage->transferError();
+      error = metadataPage->TransferError();
       metadataManager->UnlockPage(metadataPage);
       return false;
     }
@@ -551,6 +551,62 @@ bool VolumeDataStoreIOManager::CancelReadChunkImpl(const VolumeDataChunk& chunk,
   }
 
   return true;
+}
+
+bool VolumeDataStoreIOManager::ReadChunkDataHash(const VolumeDataChunk& chunk, uint64_t &chunkDataHash, Error &error)
+{
+  std::string layerName = GetLayerName(*chunk.layer);
+  auto metadataManager = GetMetadataMangerForLayer(layerName);
+  chunkDataHash = VolumeDataHash::UNKNOWN;
+
+  std::unique_lock<std::mutex> lock(m_mutex);
+
+  if (metadataManager)
+  {
+    MetadataStatus const &metadataStatus = metadataManager->GetMetadataStatus();
+
+    int pageIndex  = (int)(chunk.index / metadataStatus.m_chunkMetadataPageSize);
+    int entryIndex = (int)(chunk.index % metadataStatus.m_chunkMetadataPageSize);
+
+    bool initiateTransfer;
+
+    MetadataPage* metadataPage = metadataManager->LockPage(pageIndex, &initiateTransfer);
+
+    assert(pageIndex == metadataPage->PageIndex());
+
+    if (initiateTransfer)
+    {
+      std::string url = fmt::format("{}/ChunkMetadata/{}", layerName, pageIndex);
+
+      metadataManager->InitiateTransfer(this, metadataPage, url);
+    }
+
+    if(!metadataPage->IsValid())
+    {
+      metadataManager->CompleteTransfer(metadataPage);
+    }
+
+    if(!metadataPage->IsValid())
+    {
+      error = metadataPage->TransferError();
+      return false;
+    }
+    else
+    {
+      auto parsedMetadata = ParseMetadata(metadataManager->GetPageEntry(metadataPage, entryIndex), metadataStatus.m_chunkMetadataByteSize, error);
+      if (error.code)
+      {
+        return false;
+      }
+      chunkDataHash = parsedMetadata.m_chunkHash;
+      return true;
+    }
+  }
+  else
+  {
+    chunkDataHash = VolumeDataHash::UNKNOWN;
+    return true;
+  }
 }
 
 void VolumeDataStoreIOManager::PageTransferCompleted(MetadataPage* metadataPage, const Error &error)

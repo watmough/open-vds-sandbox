@@ -156,6 +156,22 @@ void MetadataManager::InitiateTransfer(VolumeDataStoreIOManager *volumeDataStore
   page->m_activeTransfer = m_iomanager->ReadObject(url, std::make_shared<MetadataPageTransfer>(this, volumeDataStore, page));
 }
 
+void MetadataManager::CompleteTransfer(MetadataPage* page)
+{
+  std::unique_lock<std::mutex> lock(m_mutex);
+
+  if(page->m_valid) return;
+
+  if(page->m_activeTransfer)
+  {
+    Error error;
+    auto activeTransfer = page->m_activeTransfer;
+    lock.unlock();
+    activeTransfer->WaitForFinish(error);
+    lock.lock();
+  }
+}
+
 void MetadataManager::UploadDirtyPages(VolumeDataStoreIOManager *volumeDataStore)
 {
   std::unique_lock<std::mutex> lock(m_mutex);

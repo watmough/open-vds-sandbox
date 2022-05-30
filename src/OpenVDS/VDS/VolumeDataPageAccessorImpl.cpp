@@ -103,6 +103,34 @@ void  VolumeDataPageAccessorImpl::GetChunkMinMaxExcludingMargin(int64_t chunk, i
   m_layer->GetChunkMinMax(chunk, min, max, false);
 }
 
+int64_t VolumeDataPageAccessorImpl::GetChunkVolumeDataHash(int64_t chunkIndex) const
+{
+  if (chunkIndex < 0 || chunkIndex > m_layer->GetTotalChunkCount())
+  {
+    throw InvalidArgument("The requested chunk doesn't exist", "chunkIndex");
+  }
+
+  uint64_t
+    chunkDataHash = VolumeDataHash::UNKNOWN;
+
+  std::unique_lock<std::mutex> pageListMutexLock(m_pagesMutex);
+
+  auto page_it = std::find_if(m_pages.begin(), m_pages.end(), [chunkIndex](VolumeDataPageImpl const *page) { return page->GetChunkIndex() == chunkIndex; });
+  if(page_it != m_pages.end())
+  {
+    return (*page_it)->GetVolumeDataHash();
+  }
+  pageListMutexLock.unlock();
+
+  if(m_layer->GetProduceStatus() == VolumeDataLayer::ProduceStatus_Normal)
+  {
+    Error error;
+    m_accessManager->GetVolumeDataStore()->ReadChunkDataHash(m_layer->GetChunkFromIndex(chunkIndex), chunkDataHash, error);
+  }
+
+  return chunkDataHash;
+}
+
 int64_t VolumeDataPageAccessorImpl::GetChunkIndex(const int(&position)[Dimensionality_Max]) const
 {
   int32_t index_array[Dimensionality_Max];

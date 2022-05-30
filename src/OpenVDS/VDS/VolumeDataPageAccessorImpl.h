@@ -56,7 +56,7 @@ private:
   std::condition_variable m_commitFinishedCondition;
 
   public:
-  std::mutex m_pagesMutex;
+  mutable std::mutex m_pagesMutex;
   IntrusiveListNode<VolumeDataPageAccessorImpl> m_volumeDataPageAccessorListNode;
 
 private:
@@ -77,6 +77,7 @@ public:
   int64_t GetChunkCount() const override;
   void    GetChunkMinMax(int64_t chunk, int(&min)[Dimensionality_Max], int(&max)[Dimensionality_Max]) const override;
   void    GetChunkMinMaxExcludingMargin(int64_t iChunk, int(&minExcludingMargin)[Dimensionality_Max], int(&maxExcludingMargin)[Dimensionality_Max]) const override;
+  int64_t GetChunkVolumeDataHash(int64_t chunkIndex) const override;
   int64_t GetChunkIndex(const int(&position)[Dimensionality_Max]) const override;
   int64_t GetMappedChunkIndex(int64_t primaryChannelChunkIndex) const override;
   int64_t GetPrimaryChannelChunkIndex(int64_t chunkIndex) const override;

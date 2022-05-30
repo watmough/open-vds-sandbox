@@ -220,6 +220,39 @@ inline int PitchScale() { return 1; }
 template <>
 inline int PitchScale<bool>() { return 8; }
 
+/// <summary>
+/// Determine whether the given volume data hash is defined.
+/// </summary>
+inline bool VolumeDataHash_IsDefined(uint64_t volumeDataHash)
+{
+  const uint64_t
+    UNKNOWN = 0;
+
+  return volumeDataHash != UNKNOWN;
+}
+
+/// <summary>
+/// Determine whether the given volume data hash is the no-data-value.
+/// </summary>
+inline bool VolumeDataHash_IsNoValue(uint64_t volumeDataHash)
+{
+  const uint64_t
+    NOVALUE = ~0ULL;
+
+  return volumeDataHash == NOVALUE;
+}
+
+/// <summary>
+/// Determine whether the given volume data hash is constant.
+/// </summary>
+inline bool VolumeDataHash_IsConstant(uint64_t volumeDataHash)
+{
+  const uint32_t
+    CONSTANT = 0x01010101;
+
+  return VolumeDataHash_IsNoValue(volumeDataHash) || (volumeDataHash >> 32) == CONSTANT;
+}
+
 } /* namespace OpenVDS */
 
 #endif //VOLUMEDATA_H_INCLUDED
