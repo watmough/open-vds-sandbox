@@ -21,6 +21,7 @@
 #include <OpenVDS/VolumeDataLayout.h>
 #include <OpenVDS/VolumeDataAccess.h>
 #include <iostream>
+#include <limits>
 
 using namespace OpenVDS;
 
