@@ -50,12 +50,6 @@ public class VolumeData {
         return GetLODSizeImpl(voxelMin, voxelMax, LOD, includePartialUpperVoxel);
     }
 
-    ///AUTOGEN-OK: FUNCTION_DECL PitchScale int () FUNCTIONPROTO
-    native private static int PitchScale2Impl();
-    public static int pitchScale() {
-        return PitchScale2Impl();
-    }
-
     ///AUTOGEN-OK: FUNCTION_DECL VolumeDataHash_IsDefined bool (uint64_t) FUNCTIONPROTO
     native private static boolean VolumeDataHash_IsDefinedImpl(long volumeDataHash);
 
@@ -94,3 +88,4 @@ public class VolumeData {
 
 ///AUTOGEN-IGNORE: FUNCTION_DECL ReadElement bool (const bool *, uint64_t) FUNCTIONPROTO
 ///AUTOGEN-IGNORE: FUNCTION_DECL WriteElement void (bool *, uint64_t, bool) FUNCTIONPROTO
+///AUTOGEN-IGNORE: FUNCTION_DECL PitchScale int () FUNCTIONPROTO
