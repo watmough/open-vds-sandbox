@@ -27,6 +27,89 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeData_CompressionMethod_IsWaveletImpl
+  (JNIEnv * env, jclass cls, jlong compressionMethod)
+{
+  JNIEnvGuard
+    envGuard(env);
+
+  CPPJNI_TRY
+  {
+    auto result = OpenVDS::CompressionMethod_IsWavelet((OpenVDS::CompressionMethod)compressionMethod);
+    return result;
+  }
+  CPPJNI_CATCH
+  return 0;
+}
+
+JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeData_GetLODSizeImpl
+  (JNIEnv * env, jclass cls, jint voxelMin, jint voxelMax, jint LOD, jboolean includePartialUpperVoxel)
+{
+  JNIEnvGuard
+    envGuard(env);
+
+  CPPJNI_TRY
+  {
+    auto result = OpenVDS::GetLODSize(
+                               voxelMin, 
+                               voxelMax, 
+                               LOD, 
+                               includePartialUpperVoxel ? true : false);
+    return result;
+  }
+  CPPJNI_CATCH
+  return 0;
+}
+
+JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeData_VolumeDataHash_IsDefinedImpl
+  (JNIEnv * env, jclass cls, jlong volumeDataHash)
+{
+  JNIEnvGuard
+    envGuard(env);
+
+  CPPJNI_TRY
+  {
+    auto result = OpenVDS::VolumeDataHash_IsDefined(volumeDataHash);
+    return result;
+  }
+  CPPJNI_CATCH
+  return 0;
+}
+
+JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeData_VolumeDataHash_IsNoValueImpl
+  (JNIEnv * env, jclass cls, jlong volumeDataHash)
+{
+  JNIEnvGuard
+    envGuard(env);
+
+  CPPJNI_TRY
+  {
+    auto result = OpenVDS::VolumeDataHash_IsNoValue(volumeDataHash);
+    return result;
+  }
+  CPPJNI_CATCH
+  return 0;
+}
+
+JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_VolumeData_VolumeDataHash_IsConstantImpl
+  (JNIEnv * env, jclass cls, jlong volumeDataHash)
+{
+  JNIEnvGuard
+    envGuard(env);
+
+  CPPJNI_TRY
+  {
+    auto result = OpenVDS::VolumeDataHash_IsConstant(volumeDataHash);
+    return result;
+  }
+  CPPJNI_CATCH
+  return 0;
+}
+///AUTOGEN-IGNORE: FUNCTION_DECL ReadElement bool (const bool *, uint64_t) FUNCTIONPROTO
+///AUTOGEN-IGNORE: FUNCTION_DECL WriteElement void (bool *, uint64_t, bool) FUNCTIONPROTO
+///AUTOGEN-IGNORE: FUNCTION_DECL PitchScale int () FUNCTIONPROTO
+
 #ifdef __cplusplus
 }
 #endif

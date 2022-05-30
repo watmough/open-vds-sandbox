@@ -108,6 +108,21 @@ public class VolumeDataPageAccessor extends ManagedBase implements AutoCloseable
         GetChunkMinMaxExcludingMarginImpl(getNativeObject(), chunk, minExcludingMargin, maxExcludingMargin);
     }
 
+    ///AUTOGEN-OK: CXX_METHOD GetChunkVolumeDataHash int64_t (int64_t) const FUNCTIONPROTO
+    native private long GetChunkVolumeDataHashImpl(long native_object, long chunkIndex);
+
+    /**
+     * Get the volume data hash for the given chunk index.
+     * The value returned may be tested using the methods VolumeDataHash_IsDefined,
+     * VolumeDataHash_IsNoValue, and VolumeDataHash_IsConstant defined in VolumeData.h.
+     * 
+     * @param chunkIndex The chunk index to get the volume data hash for.
+     * @return The volume data hash for the chunk.
+     */
+    public long getChunkVolumeDataHash(long chunkIndex) {
+        return GetChunkVolumeDataHashImpl(getNativeObject(), chunkIndex);
+    }
+
     ///AUTOGEN-OK: CXX_METHOD GetChunkIndex int64_t (int const (&)[6]) const FUNCTIONPROTO
     native private long GetChunkIndexImpl(long native_object, int[] position);
     public long getChunkIndex(int[] position) {

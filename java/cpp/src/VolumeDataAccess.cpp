@@ -348,6 +348,22 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_GetChun
   CPPJNI_CATCH
 }
 
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_GetChunkVolumeDataHashImpl
+  (JNIEnv * env, jobject object, jlong native_handle, jlong chunkIndex)
+{
+  JNIEnvGuard
+    envGuard(env);
+
+  CPPJNI_TRY
+  {
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataPageAccessor>(native_handle);
+    auto result = pInstance->GetChunkVolumeDataHash(chunkIndex);
+    return result;
+  }
+  CPPJNI_CATCH
+  return 0;
+}
+
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_GetChunkIndexImpl
   (JNIEnv * env, jobject object, jlong native_handle, jintArray position)
 {

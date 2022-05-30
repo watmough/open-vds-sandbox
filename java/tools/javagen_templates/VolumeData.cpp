@@ -1,0 +1,3 @@
+///AUTOGEN-IGNORE: FUNCTION_DECL ReadElement bool (const bool *, uint64_t) FUNCTIONPROTO
+///AUTOGEN-IGNORE: FUNCTION_DECL WriteElement void (bool *, uint64_t, bool) FUNCTIONPROTO
+///AUTOGEN-IGNORE: FUNCTION_DECL PitchScale int () FUNCTIONPROTO
