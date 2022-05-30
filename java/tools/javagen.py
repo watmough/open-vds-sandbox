@@ -1905,9 +1905,10 @@ def load_java_template(cls: Scope, is_inner_class: bool=False, alias_name: str =
 
 def load_template(cls: Scope, ext: str, alias_name: str = '') -> str:
     alias_name = alias_name or cls.name
+
     names = [
         alias_name,
-        cls.name,
+        'Default_Namespace' if cls.is_namespace else cls.name,
         'Default',
     ]
     global template_dir
@@ -2015,7 +2016,7 @@ def parse_and_generate(input_header, jni_dir, java_dir):
                 ns = root
                 javacontents = create_java_class(ns, template=load_java_template(ns, is_inner_class=False, alias_name=ns_class_name), override_name=ns_class_name, explicit_children=header_free_functions)
                 write_java_file(java_dir, ns_class_name, javacontents)
-                cppcontents = create_jni_methods(ns, template=load_cpp_template(ns), override_name=ns_class_name, explicit_children=header_free_functions)
+                cppcontents = create_jni_methods(ns, template=load_cpp_template(ns, alias_name=ns_class_name), override_name=ns_class_name, explicit_children=header_free_functions)
                 if cppcontents:
                     print(cppcontents, file=cppfile)
         while g_instantiate_nodes:
@@ -2113,6 +2114,7 @@ exclude_classes = [
 
 free_function_header_list = [
     'OpenVDS.h',
+    'VolumeData.h',
 ]
 
 header_list = [ 

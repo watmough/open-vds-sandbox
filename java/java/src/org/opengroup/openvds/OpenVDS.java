@@ -25,6 +25,7 @@ import java.nio.ByteBuffer;
 
 public class OpenVDS {
 	static {
+		/* Ensure jni wrapper library is loaded */
 		ManagedBase.staticInit();
 	}
 
