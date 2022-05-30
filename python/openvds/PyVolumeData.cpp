@@ -109,6 +109,9 @@ PyVolumeData::initModule(py::module& m)
 
   m.def("compressionMethod_IsWavelet" , static_cast<bool(*)(native::CompressionMethod)>(&CompressionMethod_IsWavelet), py::arg("compressionMethod").none(false), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(CompressionMethod_IsWavelet));
   m.def("getLODSize"                  , static_cast<int(*)(int, int, int, bool)>(&GetLODSize), py::arg("voxelMin").none(false), py::arg("voxelMax").none(false), py::arg("LOD").none(false), py::arg("includePartialUpperVoxel") = true, py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(GetLODSize));
+  m.def("volumeDataHash_IsDefined"    , static_cast<bool(*)(uint64_t)>(&VolumeDataHash_IsDefined), py::arg("volumeDataHash").none(false), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(VolumeDataHash_IsDefined));
+  m.def("volumeDataHash_IsNoValue"    , static_cast<bool(*)(uint64_t)>(&VolumeDataHash_IsNoValue), py::arg("volumeDataHash").none(false), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(VolumeDataHash_IsNoValue));
+  m.def("volumeDataHash_IsConstant"   , static_cast<bool(*)(uint64_t)>(&VolumeDataHash_IsConstant), py::arg("volumeDataHash").none(false), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(VolumeDataHash_IsConstant));
 //AUTOGEN-END
 }
 

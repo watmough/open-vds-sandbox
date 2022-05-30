@@ -818,9 +818,13 @@ static const char *__doc_OpenVDS_FatalException = R"doc()doc";
 
 static const char *__doc_OpenVDS_FatalException_FatalException = R"doc()doc";
 
+static const char *__doc_OpenVDS_FatalException_FatalException_2 = R"doc()doc";
+
 static const char *__doc_OpenVDS_FatalException_GetErrorMessage = R"doc()doc";
 
 static const char *__doc_OpenVDS_FatalException_m_errorMessage = R"doc()doc";
+
+static const char *__doc_OpenVDS_FatalException_operator_assign = R"doc()doc";
 
 static const char *__doc_OpenVDS_GetAccessManager =
 R"doc(Get the VolumeDataAccessManager for a VDS
@@ -2105,7 +2109,11 @@ static const char *__doc_OpenVDS_IndexOutOfRangeException_GetErrorMessage = R"do
 
 static const char *__doc_OpenVDS_IndexOutOfRangeException_IndexOutOfRangeException = R"doc()doc";
 
+static const char *__doc_OpenVDS_IndexOutOfRangeException_IndexOutOfRangeException_2 = R"doc()doc";
+
 static const char *__doc_OpenVDS_IndexOutOfRangeException_m_errorMessage = R"doc()doc";
+
+static const char *__doc_OpenVDS_IndexOutOfRangeException_operator_assign = R"doc()doc";
 
 static const char *__doc_OpenVDS_IndexRegion = R"doc()doc";
 
@@ -2147,9 +2155,13 @@ static const char *__doc_OpenVDS_InvalidArgument_GetParameterName = R"doc()doc";
 
 static const char *__doc_OpenVDS_InvalidArgument_InvalidArgument = R"doc()doc";
 
+static const char *__doc_OpenVDS_InvalidArgument_InvalidArgument_2 = R"doc()doc";
+
 static const char *__doc_OpenVDS_InvalidArgument_m_errorMessage = R"doc()doc";
 
 static const char *__doc_OpenVDS_InvalidArgument_m_parameterName = R"doc()doc";
+
+static const char *__doc_OpenVDS_InvalidArgument_operator_assign = R"doc()doc";
 
 static const char *__doc_OpenVDS_InvalidOperation = R"doc()doc";
 
@@ -2157,7 +2169,11 @@ static const char *__doc_OpenVDS_InvalidOperation_GetErrorMessage = R"doc()doc";
 
 static const char *__doc_OpenVDS_InvalidOperation_InvalidOperation = R"doc()doc";
 
+static const char *__doc_OpenVDS_InvalidOperation_InvalidOperation_2 = R"doc()doc";
+
 static const char *__doc_OpenVDS_InvalidOperation_m_errorMessage = R"doc()doc";
+
+static const char *__doc_OpenVDS_InvalidOperation_operator_assign = R"doc()doc";
 
 static const char *__doc_OpenVDS_IsCompressionMethodSupported =
 R"doc(Check if a compression method is supported. Not all compression
@@ -2436,13 +2452,19 @@ static const char *__doc_OpenVDS_MessageBufferException = R"doc()doc";
 
 static const char *__doc_OpenVDS_MessageBufferException_AddToBuffer = R"doc()doc";
 
+static const char *__doc_OpenVDS_MessageBufferException_ClearBuffer = R"doc()doc";
+
 static const char *__doc_OpenVDS_MessageBufferException_MESSAGE_BUFFER_SIZE = R"doc()doc";
 
 static const char *__doc_OpenVDS_MessageBufferException_MessageBufferException = R"doc()doc";
 
+static const char *__doc_OpenVDS_MessageBufferException_MessageBufferException_2 = R"doc()doc";
+
 static const char *__doc_OpenVDS_MessageBufferException_m_messageBuffer = R"doc()doc";
 
 static const char *__doc_OpenVDS_MessageBufferException_m_usedSize = R"doc()doc";
+
+static const char *__doc_OpenVDS_MessageBufferException_operator_assign = R"doc()doc";
 
 static const char *__doc_OpenVDS_MetadataContainer = R"doc()doc";
 
@@ -3115,9 +3137,13 @@ static const char *__doc_OpenVDS_ReadErrorException_GetErrorMessage = R"doc()doc
 
 static const char *__doc_OpenVDS_ReadErrorException_ReadErrorException = R"doc()doc";
 
-static const char *__doc_OpenVDS_ReadErrorException_errorCode = R"doc()doc";
+static const char *__doc_OpenVDS_ReadErrorException_ReadErrorException_2 = R"doc()doc";
 
-static const char *__doc_OpenVDS_ReadErrorException_message = R"doc()doc";
+static const char *__doc_OpenVDS_ReadErrorException_m_errorCode = R"doc()doc";
+
+static const char *__doc_OpenVDS_ReadErrorException_m_errorMessage = R"doc()doc";
+
+static const char *__doc_OpenVDS_ReadErrorException_operator_assign = R"doc()doc";
 
 static const char *__doc_OpenVDS_RequestFormat = R"doc()doc";
 
@@ -4872,6 +4898,12 @@ static const char *__doc_OpenVDS_VolumeDataFormat_Format_U64 = R"doc(< Volume da
 
 static const char *__doc_OpenVDS_VolumeDataFormat_Format_U8 = R"doc(< Volume data is in unsigned 8 bit)doc";
 
+static const char *__doc_OpenVDS_VolumeDataHash_IsConstant = R"doc(Determine whether the given volume data hash is constant.)doc";
+
+static const char *__doc_OpenVDS_VolumeDataHash_IsDefined = R"doc(Determine whether the given volume data hash is defined.)doc";
+
+static const char *__doc_OpenVDS_VolumeDataHash_IsNoValue = R"doc(Determine whether the given volume data hash is the no-data-value.)doc";
+
 static const char *__doc_OpenVDS_VolumeDataLayout = R"doc()doc";
 
 static const char *__doc_OpenVDS_VolumeDataLayout_2 =
@@ -5104,6 +5136,22 @@ static const char *__doc_OpenVDS_VolumeDataPageAccessor_GetChunkIndex = R"doc()d
 static const char *__doc_OpenVDS_VolumeDataPageAccessor_GetChunkMinMax = R"doc()doc";
 
 static const char *__doc_OpenVDS_VolumeDataPageAccessor_GetChunkMinMaxExcludingMargin = R"doc()doc";
+
+static const char *__doc_OpenVDS_VolumeDataPageAccessor_GetChunkVolumeDataHash =
+R"doc(Get the volume data hash for the given chunk index. The value returned
+may be tested using the methods VolumeDataHash_IsDefined,
+VolumeDataHash_IsNoValue, and VolumeDataHash_IsConstant defined in
+VolumeData.h.
+
+Parameters:
+-----------
+
+chunkIndex :
+    The chunk index to get the volume data hash for.
+
+Returns:
+--------
+    The volume data hash for the chunk.)doc";
 
 static const char *__doc_OpenVDS_VolumeDataPageAccessor_GetLOD = R"doc()doc";
 
