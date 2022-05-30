@@ -65,6 +65,7 @@ public:
   virtual bool          ReadChunkImpl(const VolumeDataChunk& chunk, int adaptiveLevel, std::vector<uint8_t>& serializedData, std::vector<uint8_t>& metadata, CompressionInfo& compressionInfo, Error& error) = 0;
           bool          CancelReadChunk(const VolumeDataChunk& chunk, Error& error);
   virtual bool          CancelReadChunkImpl(const VolumeDataChunk& chunk, Error& error) = 0;
+  virtual bool          ReadChunkDataHash(const VolumeDataChunk& chunk, uint64_t &chunkDataHash, Error& error) = 0;
           bool          WriteChunk(const VolumeDataChunk& chunk, const std::vector<uint8_t>& serializedData, const std::vector<uint8_t>& metadata);
   virtual bool          WriteChunkImpl(const VolumeDataChunk& chunk, std::shared_ptr<std::vector<uint8_t>> &serializedData, const std::vector<uint8_t>& metadata, std::function<void(const Error &error)> completed) = 0;
   virtual bool          Flush(bool writeUpdatedLayerStatus) = 0;

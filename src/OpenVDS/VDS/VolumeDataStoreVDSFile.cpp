@@ -151,6 +151,53 @@ bool VolumeDataStoreVDSFile::CancelReadChunkImpl(const VolumeDataChunk& chunk, E
   return true;
 }
 
+bool
+VolumeDataStoreVDSFile::ReadChunkDataHash(const VolumeDataChunk& chunk, uint64_t &chunkDataHash, Error& error)
+{
+  error = Error();
+
+  assert(chunk.layer);
+  LayerFile* layerFile = GetLayerFile(*chunk.layer);
+
+  if(!layerFile)
+  {
+    error.code = -1;
+    error.string = "Trying to read from a layer that has not been added";
+    return false;
+  }
+
+  std::unique_lock<std::mutex> lock(m_mutex);
+  HueBulkDataStore::FileInterface *fileInterface = layerFile->fileInterface;
+
+  std::vector<uint8_t> metadata(fileInterface->GetChunkMetadataLength());
+  IndexEntry indexEntry;
+
+  bool success = fileInterface->ReadIndexEntry((int)chunk.index, &indexEntry, metadata.data());
+
+  if(success)
+  {
+    if(metadata.size() >= sizeof(uint64_t))
+    {
+      memcpy(&chunkDataHash, metadata.data(), sizeof(uint64_t));
+    }
+    else
+    {
+      error.code = -1;
+      error.string = "Invalid chunk metadata";
+      chunkDataHash = VolumeDataHash::UNKNOWN;
+      success = false;
+    }
+  }
+  else
+  {
+    error.code = -1;
+    error.string = m_dataStore->GetErrorMessage();
+    chunkDataHash = VolumeDataHash::UNKNOWN;
+  }
+
+  return success;
+}
+
 bool VolumeDataStoreVDSFile::WriteChunkImpl(const VolumeDataChunk& chunk, std::shared_ptr<std::vector<uint8_t>>& serializedData, const std::vector<uint8_t>& metadata, std::function<void(const Error &error)> completed)
 {
   Error error = Error();

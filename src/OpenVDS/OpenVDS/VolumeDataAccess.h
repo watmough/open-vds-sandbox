@@ -161,6 +161,19 @@ public:
   virtual int64_t GetChunkCount() const = 0;
   virtual void  GetChunkMinMax(int64_t chunk, int (&min)[Dimensionality_Max], int (&max)[Dimensionality_Max]) const = 0;
   virtual void  GetChunkMinMaxExcludingMargin(int64_t chunk, int (&minExcludingMargin)[Dimensionality_Max], int (&maxExcludingMargin)[Dimensionality_Max]) const = 0;
+
+  /// <summary>
+  /// Get the volume data hash for the given chunk index.
+  /// The value returned may be tested using the methods VolumeDataHash_IsDefined,
+  /// VolumeDataHash_IsNoValue, and VolumeDataHash_IsConstant defined in VolumeData.h.
+  /// </summary>
+  /// <param name="chunkIndex">
+  /// The chunk index to get the volume data hash for.
+  /// </param>
+  /// <returns>
+  /// The volume data hash for the chunk.
+  /// </returns>
+  virtual int64_t GetChunkVolumeDataHash(int64_t chunkIndex) const = 0;
   virtual int64_t GetChunkIndex(const int (&position)[Dimensionality_Max]) const = 0;
 
   /// <summary>
