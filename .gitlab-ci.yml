@@ -12,7 +12,7 @@ cache:
   paths:
   - ccache
   - 3rdparty
-devel-container:
+devel-container-gitlab:
   stage: prepare
   image: docker:19.03
   tags:
@@ -23,6 +23,21 @@ devel-container:
   - docker push $SHA_IMAGE_TAG
   only:
   - master
+devel-container-gcr:
+  stage: prepare
+  image: docker:19.03
+  tags: ["osdu-small"]
+  variables:
+    OSDU_GCP_IMAGE_PATH: "seismic/open-vds/openvds-ingestion"
+    OSDU_GCP_GCR_REGISTRY: "gcr.io/osdu-anthos"
+  before_script:
+  - cat $OSDU_GCP_DEPLOY_FILE | docker login -u _json_key --password-stdin https://gcr.io
+  script:
+  - docker build --tag $OSDU_GCP_GCR_REGISTRY/$OSDU_GCP_IMAGE_PATH:$CI_COMMIT_TAG --file docker/alpine-gitlab-ci.Dockerfile .
+  - docker push $OSDU_GCP_GCR_REGISTRY/$OSDU_GCP_IMAGE_PATH:$CI_COMMIT_TAG
+  rules:
+  - if: "$OSDU_GCP == 'true' && $CI_COMMIT_TAG"
+    when: on_success
 devel-container-merge-request:
   stage: prepare
   image: docker:19.03
