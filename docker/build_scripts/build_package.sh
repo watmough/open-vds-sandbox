@@ -78,6 +78,24 @@ case $key in
 esac
 done
 
+if [ -n "${VIRTUAL_ENV:-}" ] ; then
+  BUILD_PACKAGE_OLD_VIRTUAL_ENV="${VIRTUAL_ENV:-}"
+
+  if [ -n "${_OLD_VIRTUAL_PATH:-}" ] ; then
+    BUILD_PACKAGE_OLD_VIRTUAL_PATH="${_OLD_VIRTUAL_PATH:-}"
+    unset _OLD_VIRTUAL_PATH
+  fi
+  if [ -n "${_OLD_VIRTUAL_PYTHONHOME:-}" ] ; then
+    BUILD_PACKAGE_OLD_VIRTUAL_PYTHONHOME="${_OLD_VIRTUAL_PYTHONHOME:-}"
+    unset _OLD_VIRTUAL_PYTHONHOME
+  fi
+
+  if [ -n "${_OLD_VIRTUAL_PS1:-}" ] ; then
+    BUILD_PACKAGE_OLD_VIRTUAL_PS1="${_OLD_VIRTUAL_PS1:-}"
+    unset _OLD_VIRTUAL_PS1
+  fi
+fi
+
 if [[ "$openvds_version" == "" ]]; then
   openvds_version=${openvds_version:-$(<$openvds_path/VERSION)}
 fi
@@ -132,12 +150,12 @@ for python_executable in "${python_executables[@]}"; do
 
   echo "Do $python_executable to $skbuild_dir"
   if [[ "$platform_name" == "win" ]]; then
-    $cmake_executable -DPython3_ROOT_DIR="$python_root_dir" -DCMAKE_INSTALL_PREFIX=$skbuild_dir/cmake-install -DENABLE_MSVC_TOOLSET_DIR=OFF $cmake_args -G"$cmake_generator" $toolset $openvds_path
-    $cmake_executable --build . --config Debug --parallel --target install
-    $cmake_executable --build . --config Release --parallel --target install
+    "$cmake_executable" -DPython3_ROOT_DIR="$python_root_dir" -DCMAKE_INSTALL_PREFIX=$skbuild_dir/cmake-install -DENABLE_MSVC_TOOLSET_DIR=OFF $cmake_args -G"$cmake_generator" $toolset $openvds_path
+    "$cmake_executable" --build . --config Debug --parallel --target install
+    "$cmake_executable" --build . --config Release --parallel --target install
   else
-    $cmake_executable -DPython3_ROOT_DIR="$python_root_dir" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$skbuild_dir/cmake-install $cmake_args -G"$cmake_generator" $toolset $openvds_path
-    $cmake_executable --build . --config Release --target install
+    "$cmake_executable" -DPython3_ROOT_DIR="$python_root_dir" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$skbuild_dir/cmake-install $cmake_args -G"$cmake_generator" $toolset $openvds_path
+    "$cmake_executable" --build . --config Release --target install
   fi
 
   cd "$openvds_path"
@@ -188,9 +206,9 @@ for python_executable in "${python_executables[@]}"; do
   if [[ "$platform_name" == "win" ]]; then
     cd "$build_dir"
     rm -rf $skbuild_dir/cmake-install
-    $cmake_executable -DPython3_ROOT_DIR="$python_root_dir" -DCMAKE_INSTALL_PREFIX=$skbuild_dir/cmake-install -DENABLE_MSVC_TOOLSET_DIR=ON $cmake_args -G"$cmake_generator" $toolset $openvds_path
-    $cmake_executable --build . --config Debug --parallel --target install
-    $cmake_executable --build . --config Release --parallel --target install
+    "$cmake_executable" -DPython3_ROOT_DIR="$python_root_dir" -DCMAKE_INSTALL_PREFIX=$skbuild_dir/cmake-install -DENABLE_MSVC_TOOLSET_DIR=ON $cmake_args -G"$cmake_generator" $toolset $openvds_path
+    "$cmake_executable" --build . --config Debug --parallel --target install
+    "$cmake_executable" --build . --config Release --parallel --target install
   fi
   cd "$openvds_path"
   cp -r $skbuild_dir/cmake-install/* binpackage/$name-$openvds_version
@@ -235,3 +253,22 @@ rm -rf $name-$openvds_version
 if [[ "$output_dir" != "" ]]; then
   cp -r * $output_dir
 fi
+
+if [ -n "${BUILD_PACKAGE_OLD_VIRTUAL_ENV:-}" ] ; then
+  VIRTUAL_ENV="${BUILD_PACKAGE_OLD_VIRTUAL_ENV:-}"
+  unset BUILD_PACKAGE_OLD_VIRTUAL_ENV
+  if [ -n "${BUILD_PACKAGE_OLD_VIRTUAL_PATH:-}" ] ; then
+    _OLD_VIRTUAL_PATH="${BUILD_PACKAGE_OLD_VIRTUAL_PATH:-}"
+    unset BUILD_PACKAGE_OLD_VIRTUAL_PATH
+  fi
+  if [ -n "${BUILD_PACKAGE_OLD_VIRTUAL_PYTHONHOME:-}" ] ; then
+    _OLD_VIRTUAL_PYTHONHOME="${BUILD_PACKAGE_OLD_VIRTUAL_PYTHONHOME:-}"
+    unset BUILD_PACKAGE_OLD_VIRTUAL_PYTHONHOME
+  fi
+
+  if [ -n "${BUILD_PACKAGE_OLD_VIRTUAL_PS1:-}" ] ; then
+    _OLD_VIRTUAL_PS1="${BUILD_PACKAGE_OLD_VIRTUAL_PS1:-}"
+    unset BUILD_PACKAGE_OLD_VIRTUAL_PS1
+  fi
+fi
+
