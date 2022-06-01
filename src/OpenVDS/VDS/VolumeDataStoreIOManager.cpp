@@ -559,8 +559,6 @@ bool VolumeDataStoreIOManager::ReadChunkDataHash(const VolumeDataChunk& chunk, u
   auto metadataManager = GetMetadataMangerForLayer(layerName);
   chunkDataHash = VolumeDataHash::UNKNOWN;
 
-  std::unique_lock<std::mutex> lock(m_mutex);
-
   if (metadataManager)
   {
     MetadataStatus const &metadataStatus = metadataManager->GetMetadataStatus();
