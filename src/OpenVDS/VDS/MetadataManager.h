@@ -102,6 +102,8 @@ namespace OpenVDS
 
     int m_pageLimit;
 
+    bool m_createEmptyPages;
+
     typedef std::unordered_map<int, MetadataPageList::iterator> MetadataPageMap;
 
     MetadataPageMap  m_pageMap;
@@ -110,7 +112,7 @@ namespace OpenVDS
 
     void LimitPages();
   public:
-    MetadataManager(IOManager *iomanager, std::string const &layerURL, std::string const &channelName, MetadataStatus const &MetadataStatus, int pageLimit);
+    MetadataManager(IOManager *iomanager, std::string const &layerURL, std::string const &channelName, MetadataStatus const &MetadataStatus, int pageLimit, bool createEmptyPages = false);
     ~MetadataManager();
 
     const char *LayerUrl() const { return m_layerUrl.c_str(); }
@@ -118,8 +120,6 @@ namespace OpenVDS
     const std::string &ChannelName() const { return m_channelName; }
 
     MetadataPage *LockPage(int pageIndex, bool *InitiateTransfer);
-
-    void InitPage(MetadataPage* page);
 
     void PageTransferError(VolumeDataStoreIOManager* accessManager, MetadataPage* page, const Error &error);
 
