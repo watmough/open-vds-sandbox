@@ -23,6 +23,11 @@ The `VDSHandle` class is superseded by the `VDS` class.
 
 The `BufferUtils` and `Cleaner` classes have been removed because of simplified memory management.
 
+##### Java samples
+
+The standalone code samples in `java/java/demo` have been updated. `CreateVDS.java` and `SliceDump.java` in 
+particular, should be helpful in understanding how to read and write VDSs.
+
 ##### Regenerating and augmenting the Java API
 
 The Java API is generated from the C++ headers by the `javagen.py` script located in the 
