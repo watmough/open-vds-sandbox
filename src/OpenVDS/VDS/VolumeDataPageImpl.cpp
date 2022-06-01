@@ -142,6 +142,12 @@ bool VolumeDataPageImpl::IsEmpty()
   return m_blob.empty();
 }
 
+bool VolumeDataPageImpl::IsCanceled()
+{
+  //assert(m_volumeDataPageAccessor->m_pageListMutex.isLockedByCurrentThread());
+  return m_error.code != 0;
+}
+
 bool VolumeDataPageImpl::IsDirty()
 {
   //assert(m_volumeDataPageAccessor->m_pageListMutex.isLockedByCurrentThread());

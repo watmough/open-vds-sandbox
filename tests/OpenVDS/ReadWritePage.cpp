@@ -44,6 +44,9 @@ void writeBuffer(OpenVDS::VolumeDataPageAccessor* pageAccessor, WriteBufferAcces
   else
     page = pageAccessor->ReadPage(chunk);
 
+  auto exception = page->GetError();
+  if(exception.GetErrorCode()) throw exception;
+
   int pitch[OpenVDS::Dimensionality_Max];
   T* buffer = static_cast<T *>(page->GetWritableBuffer(pitch));
   int min[OpenVDS::VolumeDataLayout::Dimensionality_Max];
@@ -68,11 +71,16 @@ template<typename T>
 bool compareBuffer(OpenVDS::VolumeDataPageAccessor* pageAccessor, int64_t chunk, T value)
 {
   auto page = pageAccessor->ReadPage(chunk);
+
   int pitch[OpenVDS::Dimensionality_Max];
   const T* buffer = static_cast<const T *>(page->GetBuffer(pitch));
   int min[OpenVDS::VolumeDataLayout::Dimensionality_Max];
   int max[OpenVDS::VolumeDataLayout::Dimensionality_Max];
   page->GetMinMax(min, max);
+
+  auto exception = page->GetError();
+  if(exception.GetErrorCode()) throw exception;
+
   bool all_equal = true;
   for (int i = min[2]; i < max[2]; i++)
     for (int j = min[1]; j < max[1]; j++)
