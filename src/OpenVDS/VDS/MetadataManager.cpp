@@ -69,12 +69,13 @@ MetadataPage *metadataPage;
 std::vector<uint8_t> metadata;
 };
 
-MetadataManager::MetadataManager(IOManager *iomanager, std::string const &layerUrl, std::string const &channelName, MetadataStatus const &metadataStatus, int pageLimit)
+MetadataManager::MetadataManager(IOManager *iomanager, std::string const &layerUrl, std::string const &channelName, MetadataStatus const &metadataStatus, int pageLimit, bool createEmptyPages)
   : m_iomanager(iomanager)
   , m_layerUrl(layerUrl)
   , m_channelName(channelName)
   , m_metadataStatus(metadataStatus)
   , m_pageLimit(pageLimit)
+  , m_createEmptyPages(createEmptyPages)
 {
 }
 
@@ -122,7 +123,16 @@ MetadataManager::LockPage(int pageIndex, bool* initiateTransfer)
     m_pageList.emplace_front(this, pageIndex);
     mi = m_pageMap.insert(MetadataPageMap::value_type(pageIndex, m_pageList.begin())).first;
 
-    *initiateTransfer = true;
+    if(m_createEmptyPages)
+    {
+      m_pageList.begin()->m_data.resize(m_metadataStatus.m_chunkMetadataByteSize * m_metadataStatus.m_chunkMetadataPageSize);
+      m_pageList.begin()->m_valid = true;
+      *initiateTransfer = false;
+    }
+    else
+    {
+      *initiateTransfer = true;
+    }
   }
 
   MetadataPage &page = *mi->second;
@@ -136,15 +146,6 @@ MetadataManager::LockPage(int pageIndex, bool* initiateTransfer)
   assert(m_pageMap[pageIndex]->m_lockCount > 0);
 
   return &page;
-}
-
-void
-MetadataManager::InitPage(MetadataPage* page)
-{
-  std::unique_lock<std::mutex> lock(m_mutex);
-  page->m_data.resize(m_metadataStatus.m_chunkMetadataByteSize * m_metadataStatus.m_chunkMetadataPageSize);
-  page->m_valid = true;
-  lock.unlock();
 }
 
 void MetadataManager::InitiateTransfer(VolumeDataStoreIOManager *volumeDataStore, MetadataPage* page, std::string const& url)

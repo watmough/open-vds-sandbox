@@ -305,7 +305,10 @@ VolumeDataStoreIOManager::AddLayer(VolumeDataLayer* volumeDataLayer, int chunkMe
   int pageLimit = volumeDataLayer->GetLayout()->GetDimensionality() <= 3 ? 64 : 1024;
 
   std::string channelName = volumeDataLayer->GetLayout()->GetChannelName(volumeDataLayer->GetChannelIndex());;
-  SetMetadataStatus(GetLayerName(*volumeDataLayer), channelName, metadataStatus, pageLimit);
+  std::string layerName = GetLayerName(*volumeDataLayer);
+
+  std::unique_lock<std::mutex> lock(m_mutex);
+  m_metadataManagers[layerName] = std::unique_ptr<MetadataManager>(new MetadataManager(m_ioManager.get(), layerName, channelName, metadataStatus, pageLimit, true));
   return true;
 }
 
@@ -771,10 +774,11 @@ bool VolumeDataStoreIOManager::WriteChunkImpl(const VolumeDataChunk& chunk, std:
 
   MetadataPage* lockedMetadataPage = metadataManager->LockPage(pageIndex, &initiateTransfer);
 
-  // Newly created page
-  if(initiateTransfer)
+  if (initiateTransfer)
   {
-    metadataManager->InitPage(lockedMetadataPage);
+    std::string url = fmt::format("{}/ChunkMetadata/{}", layerName, pageIndex);
+
+    metadataManager->InitiateTransfer(this, lockedMetadataPage, url);
   }
 
   int64_t jobId = CreateUploadJobId();
