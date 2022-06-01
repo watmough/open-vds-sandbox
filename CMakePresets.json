@@ -1,0 +1,137 @@
+{
+  "version": 2,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 20,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "openvds_config_base",
+      "binaryDir": "${sourceDir}/out/build/${presetName}",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}"
+      }
+    },
+    {
+      "name": "openvds_single_config",
+      "inherits": "openvds_config_base",
+      "generator": "Ninja",
+      "hidden": true
+    },
+    {
+      "name": "openvds_debug",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "openvds_release",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "openvds_multi_config",
+      "generator": "Ninja Multi-Config",
+      "hidden": true,
+      "inherits": "openvds_config_base",
+      "cacheVariables": {
+        "CMAKE_CONFIGURATION_TYPES": "Release;Debug",
+        "CMAKE_CROSS_CONFIGS": "all",
+        "CMAKE_DEFAULT_CONFIGS": "all"
+      }
+    },
+    {
+      "name": "openvds_clang_windows",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "clang-cl",
+        "CMAKE_CXX_COMPILER": "clang-cl"
+      }
+    },
+    {
+      "name": "VS2015_x64",
+      "hidden": true,
+      "environment": {
+        "ClearDevCommandPromptEnvVars": "false"
+      },
+      "toolset": {
+        "value": "version=14.00",
+        "strategy": "external"
+      },
+      "architecture": {
+        "value": "x64",
+        "strategy": "external"
+      }
+    },
+    {
+      "name": "MultiConfig",
+      "description": "Built using the default Visual Studio version.",
+      "inherits": [
+        "openvds_multi_config"
+      ]
+    },
+    {
+      "name": "MultiConfig-VS2015",
+      "description": "Built using VS2015.",
+      "inherits": [
+        "openvds_multi_config",
+        "VS2015_x64"
+      ]
+    },
+    {
+      "name": "Debug",
+      "description": "Built using the default Visual Studio version.",
+      "inherits": [
+        "openvds_single_config",
+        "openvds_debug"
+      ]
+    },
+    {
+      "name": "DebugClang",
+      "description": "Built using the default Visual Studio version.",
+      "inherits": [
+        "openvds_single_config",
+        "openvds_debug",
+        "openvds_clang_windows"
+      ]
+    },
+    {
+      "name": "Debug-VS2015",
+      "description": "Built using the default Visual Studio version.",
+      "inherits": [
+        "Debug",
+        "VS2015_x64"
+      ]
+    },
+    {
+      "name": "Release",
+      "description": "Built using the default Visual Studio version.",
+      "inherits": [
+        "openvds_single_config",
+        "openvds_release"
+      ]
+    },
+    {
+      "name": "ReleaseClang",
+      "description": "Built using the default Visual Studio version.",
+      "inherits": [
+        "openvds_single_config",
+        "openvds_release",
+        "openvds_clang_windows"
+      ]
+    },
+    {
+      "name": "Release-VS2015",
+      "description": "Built using the default Visual Studio version.",
+      "inherits": [
+        "Release",
+        "VS2015_x64"
+      ]
+    }
+  ]
+}
