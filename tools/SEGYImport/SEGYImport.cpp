@@ -2178,8 +2178,17 @@ createChannelDescriptors(SEGYFileInfo const& fileInfo, OpenVDS::FloatRange const
   auto format = convertSegyFormat(fileInfo.m_dataSampleFormatCode, error);
   if (error.code)
     return channelDescriptors;
-  float channel_offset = float(GetIntegerOffsetForDataSampleFormat(fileInfo.m_dataSampleFormatCode));
-  channelDescriptors.emplace_back(format, OpenVDS::VolumeDataComponents::Components_1, attributeName.c_str(), attributeUnit.c_str(), valueRange.Min, valueRange.Max, OpenVDS::VolumeDataMapping::Direct, 1, OpenVDS::VolumeDataChannelDescriptor::Default, 1.0f, channel_offset);
+
+  const float
+    integerOffset = -(float)GetIntegerOffsetForDataSampleFormat(fileInfo.m_dataSampleFormatCode), // Observe this is a negative value.
+    integerScale = 1.0f; // SEGY does not support integer scaling, so always 1
+
+  // Adjust the value-range with the integerOffset. 
+  // For float formats, integerOffset will be zero and this will not modify the valueRange.
+  OpenVDS::FloatRange
+    effectiveValueRange(valueRange.Min + integerOffset, valueRange.Max + integerOffset);
+
+  channelDescriptors.emplace_back(format, OpenVDS::VolumeDataComponents::Components_1, attributeName.c_str(), attributeUnit.c_str(), effectiveValueRange.Min, effectiveValueRange.Max, OpenVDS::VolumeDataMapping::Direct, 1, OpenVDS::VolumeDataChannelDescriptor::Default, integerScale, integerOffset);
 
   // Trace defined flag
   channelDescriptors.emplace_back(OpenVDS::VolumeDataFormat::Format_U8, OpenVDS::VolumeDataComponents::Components_1, "Trace", "", 0.0f, 1.0f, OpenVDS::VolumeDataMapping::PerTrace, OpenVDS::VolumeDataChannelDescriptor::DiscreteData);
