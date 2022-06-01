@@ -788,10 +788,11 @@ bool VolumeDataStoreIOManager::WriteChunkImpl(const VolumeDataChunk& chunk, std:
 
   auto completedCallback = [this, chunk, indexEntry, metadataManager, lockedMetadataPage, entryIndex, jobId, completed](const Request &request, const Error &error)
   {
-    std::unique_lock<std::mutex> lock(m_mutex);
+    std::unique_lock<std::mutex> lock(m_mutex, std::defer_lock);
 
     if(error.code != 0)
     {
+      lock.lock();
       auto &uploadRequest = m_pendingUploadRequests[jobId];
       if (uploadRequest.attempts < 2)
       {
@@ -805,6 +806,10 @@ bool VolumeDataStoreIOManager::WriteChunkImpl(const VolumeDataChunk& chunk, std:
     }
     else
     {
+      // Finish transfering the metadata page
+      metadataManager->CompleteTransfer(lockedMetadataPage);
+      assert(lockedMetadataPage->IsValid() && "Implement error handling");
+
       //Update MetadataStatus
       MetadataStatus metadataStatus = metadataManager->GetMetadataStatus();
 
@@ -833,7 +838,7 @@ bool VolumeDataStoreIOManager::WriteChunkImpl(const VolumeDataChunk& chunk, std:
           metadataManager->UpdateMetadataStatus(uncompressedSize, oldSize, true, oldMetadata.m_levels);
         }
       }
-
+      lock.lock();
     }
     m_vds.volumeDataLayout->ChangePendingWriteRequestCount(-1);
 
