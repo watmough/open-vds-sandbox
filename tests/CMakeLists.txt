@@ -122,6 +122,7 @@ add_test_executable(openvds_integration_tests
   OpenVDS/IJKCoordinateTransformerTest.cpp
   OpenVDS/MultiComponent.cpp
   OpenVDS/ReadWritePage.cpp
+  OpenVDS/VolumeDataPageAccessorGetChunkVolumeDataHash.cpp
   )
 
 add_test_executable(multithreaded_requests
