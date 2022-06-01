@@ -681,7 +681,7 @@ void VolumeDataPageAccessorImpl::Commit()
   // Finish reading all pages currently being read
   for(VolumeDataPageImpl *page : m_pages)
   {
-    while(page->IsEmpty())
+    while(page->IsEmpty() && !page->IsCanceled())
     {
       // Wait for the page getting read
       m_pageReadCondition.wait_for(pageListMutexLock, std::chrono::milliseconds(1000));

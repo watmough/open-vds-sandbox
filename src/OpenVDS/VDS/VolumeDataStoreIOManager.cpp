@@ -308,7 +308,10 @@ VolumeDataStoreIOManager::AddLayer(VolumeDataLayer* volumeDataLayer, int chunkMe
   std::string layerName = GetLayerName(*volumeDataLayer);
 
   std::unique_lock<std::mutex> lock(m_mutex);
-  m_metadataManagers[layerName] = std::unique_ptr<MetadataManager>(new MetadataManager(m_ioManager.get(), layerName, channelName, metadataStatus, pageLimit, true));
+  if (m_metadataManagers.find(layerName) == m_metadataManagers.end())
+  {
+    m_metadataManagers.insert(std::make_pair(layerName, std::unique_ptr<MetadataManager>(new MetadataManager(m_ioManager.get(), layerName, channelName, metadataStatus, pageLimit, true))));
+  }
   return true;
 }
 

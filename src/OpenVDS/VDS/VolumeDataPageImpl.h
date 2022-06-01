@@ -81,6 +81,7 @@ public:
   void          UnPin();
 
   bool          IsEmpty();
+  bool          IsCanceled();
   bool          IsDirty();
   bool          IsWritten();
   void          MakeDirty();
