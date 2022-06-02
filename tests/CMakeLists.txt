@@ -45,14 +45,10 @@ function(add_test_executable name)
   target_compile_definitions(${name} PRIVATE -DTEST_URL="${TEST_URL}")
   target_compile_definitions(${name} PRIVATE -DTEST_CONNECTION="${TEST_CONNECTION_ESCAPED}")
 
-  get_property(link_3rdparty_release GLOBAL PROPERTY OPENVDS_LINK_LIBRARIES_RELEASE)
-  get_property(link_3rdparty_debug   GLOBAL PROPERTY OPENVDS_LINK_LIBRARIES_DEBUG)
+  get_property(link_3rdparty GLOBAL PROPERTY OPENVDS_LINK_LIBRARIES)
 
-  foreach(item ${link_3rdparty_debug})
-      target_link_libraries(${name} PRIVATE debug ${item})
-  endforeach()
-  foreach(item ${link_3rdparty_release})
-      target_link_libraries(${name} PRIVATE optimized ${item})
+  foreach(item ${link_3rdparty})
+      target_link_libraries(${name} PRIVATE ${item})
   endforeach()
 
   if (OpenMP_CXX_FOUND)

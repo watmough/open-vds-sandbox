@@ -19,6 +19,16 @@ function(copyDllForTarget target)
 
         file(GLOB runtime_release "${optimized_location}/*.dll")
         file(GLOB runtime_debug "${debug_location}/*.dll")
+        foreach(file ${runtime_release})
+          add_custom_command(TARGET ${target}
+            POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different $<$<NOT:$<CONFIG:Debug>>:${file}> ${CMAKE_SOURCE_DIR}/README.md $<TARGET_FILE_DIR:${target}>)
+        endforeach()
+        foreach(file ${runtime_debug})
+          add_custom_command(TARGET ${target}
+            POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different $<$<CONFIG:Debug>:${file}> ${CMAKE_SOURCE_DIR}/README.md $<TARGET_FILE_DIR:${target}>)
+        endforeach()
       else()
         add_custom_command(OUTPUT "${target}_copy_vds"
           COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:openvds> $<TARGET_FILE:segyutils> $<TARGET_FILE:sdapi> $<TARGET_FILE_DIR:${target}>
@@ -27,19 +37,13 @@ function(copyDllForTarget target)
                      PROPERTY SYMBOLIC ON
                     )
         target_sources(${target} PRIVATE ${target}_copy_vds)
-        get_property(runtime_release GLOBAL PROPERTY OPENVDS_RUNTIME_LIBS_RELEASE)
-        get_property(runtime_debug   GLOBAL PROPERTY OPENVDS_RUNTIME_LIBS_DEBUG)
-      endif()
+        get_property(runtime_libs GLOBAL PROPERTY OPENVDS_RUNTIME_LIBS)
 
-      foreach(file ${runtime_release})
-        add_custom_command(TARGET ${target}
-          POST_BUILD
-          COMMAND ${CMAKE_COMMAND} -E copy_if_different $<$<NOT:$<CONFIG:Debug>>:${file}> ${CMAKE_SOURCE_DIR}/README.md $<TARGET_FILE_DIR:${target}>)
-      endforeach()
-      foreach(file ${runtime_debug})
-        add_custom_command(TARGET ${target}
-          POST_BUILD
-          COMMAND ${CMAKE_COMMAND} -E copy_if_different $<$<CONFIG:Debug>:${file}> ${CMAKE_SOURCE_DIR}/README.md $<TARGET_FILE_DIR:${target}>)
-      endforeach()
+        foreach(file ${runtime_libs})
+          add_custom_command(TARGET ${target}
+            POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different ${file} $<TARGET_FILE_DIR:${target}>)
+        endforeach()
+      endif()
     endif()
 endfunction()

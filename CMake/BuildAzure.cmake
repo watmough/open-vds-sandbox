@@ -21,7 +21,7 @@ function(BuildAzure)
   elseif(BOOST_INCLUDEDIR)
     set(BOOST_FLAGS ";-DBOOST_INCLUDEDIR=${BOOST_INCLUDEDIR};-DBOOST_LIBRARYDIR=${BOOST_LIBRARYDIR};")
   endif()
-  BuildExternal(azure-storage ${azure-storage-cpp_VERSION} cpp-rest-api ${AzureCmakeDir} "${AZURE_LIBS_LIST}" "${AZURE_DLLS_LIST}" "" "" "${cmake_arg}${BOOST_FLAGS}")
+  BuildExternal(azure-storage ${azure-storage-cpp_VERSION} cpp-rest-api ${AzureCmakeDir} "${AZURE_LIBS_LIST}" "${AZURE_DLLS_LIST}" "${cmake_arg}${BOOST_FLAGS}")
 
 
 endfunction()

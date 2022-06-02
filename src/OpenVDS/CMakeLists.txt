@@ -167,10 +167,8 @@ if(MSVC_VERSION)
   set_source_files_properties(VDS/VolumeDataAccessor.cpp PROPERTIES COMPILE_FLAGS /bigobj)
 endif()
 
-get_property(link_3rdparty_release GLOBAL PROPERTY OPENVDS_LINK_LIBRARIES_RELEASE)
-get_property(link_3rdparty_debug   GLOBAL PROPERTY OPENVDS_LINK_LIBRARIES_DEBUG)
-get_property(runtime_3rdparty_release GLOBAL PROPERTY OPENVDS_RUNTIME_LIBS_RELEASE)
-get_property(runtime_3rdparty_debug   GLOBAL PROPERTY OPENVDS_RUNTIME_LIBS_DEBUG)
+get_property(link_3rdparty GLOBAL PROPERTY OPENVDS_LINK_LIBRARIES)
+get_property(runtime_3rdparty GLOBAL PROPERTY OPENVDS_RUNTIME_LIBS)
 get_property(include_3rdparty      GLOBAL PROPERTY OPENVDS_INCLUDE_LIBRARIES)
 get_property(dependency_targets_3rdparty      GLOBAL PROPERTY OPENVDS_DEPENDENCY_TARGETS)
 
@@ -340,11 +338,8 @@ setCommonTargetProperties(openvds_objects)
 setCommonTargetProperties(openvds)
 setExportedHeadersForTarget(openvds ${EXPORTED_HEADER_FILES})
 
-foreach(item ${link_3rdparty_debug})
-    target_link_libraries(openvds PRIVATE debug ${item})
-endforeach()
-foreach(item ${link_3rdparty_release})
-    target_link_libraries(openvds PRIVATE optimized ${item})
+foreach(item ${link_3rdparty})
+    target_link_libraries(openvds PRIVATE ${item})
 endforeach()
 
 if (ENABLE_RUNPATH_ORIGIN)
@@ -392,8 +387,7 @@ install(
 )
 
 set(RUNTIME_LIBS_DESTINATION $<IF:$<PLATFORM_ID:Windows>,${CMAKE_INSTALL_BINDIR},${CMAKE_INSTALL_LIBDIR}>${LIB_TOOLSET_DIR})
-install(FILES ${runtime_3rdparty_release} CONFIGURATIONS Release RelWithDebInfo MinSizeRel DESTINATION ${RUNTIME_LIBS_DESTINATION})
-install(FILES ${runtime_3rdparty_debug} CONFIGURATIONS Debug DESTINATION ${RUNTIME_LIBS_DESTINATION})
+install(FILES ${runtime_3rdparty} DESTINATION ${RUNTIME_LIBS_DESTINATION})
 
 export(
     TARGETS
