@@ -314,6 +314,7 @@ OPENVDS_EXPORT void Ieee2ibm(void *to, const void *from, size_t len);
 // Read field from header
 
 OPENVDS_EXPORT int ReadFieldFromHeader(const void *header, HeaderField const &headerField, Endianness endianness);
+
 // Byte size of sample, returns 0 for invalid format
 
 OPENVDS_EXPORT int FormatSize(BinaryHeader::DataSampleFormatCode dataSampleFormatCode);
