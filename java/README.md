@@ -1,12 +1,12 @@
-#### OpenVDS Java API
+### OpenVDS Java API
 
 Since OpenVDS version 2.3 the Java API has undergone a major change; The API source code is now 
-mainly auto-generated from the C++ API header files. This should lower the burden of maintaining
+primarily auto-generated from the C++ API header files. This will lower the burden of maintaining
 an up-to-date version of the Java API.
 
 Several classes have added support for `try-with-resources` by implementing the `AutoCloseable`
 interface. This allows for more predictable lifecycle management of objects that are in
-a rather close-knit dependence hierarchy. It also allows for more deterministic memory
+a close-knit dependence hierarchy. It also allows for more deterministic memory
 management, particularly in the case of the `VolumeDataAccessor` and `VolumeDataPageAccessor`
 classes as memory allocated by these classes will be immediatly free'd upon calling `close` on
 an instance. This happens implicitly when using the `try-with-resources` construct.
