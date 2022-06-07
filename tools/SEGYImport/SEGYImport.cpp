@@ -16,10 +16,10 @@
 ****************************************************************************/
 
 #define _CRT_SECURE_NO_WARNINGS 1
-#include <SEGYUtils/SEGYFileInfo.h>
 #include "IO/File.h"
 #include "VDS/Hash.h"
 #include <SEGYUtils/DataProvider.h>
+#include <SEGYUtils/SEGYFileInfo.h>
 #include <SEGYUtils/TraceDataManager.h>
 #include "TraceInfo2DManager.h"
 
@@ -58,6 +58,8 @@
 #include <numeric>
 #include <set>
 #include <array>
+
+#include "SEGYUtils/VDSSEGYInfo.h"
 
 #if defined(WIN32)
 #undef WIN32_LEAN_AND_MEAN // avoid warnings if defined on command line
@@ -102,41 +104,6 @@ enum class PrimaryKeyValue
   InlineNumber = 1,
   CrosslineNumber = 2
 };
-
-static OpenVDS::VolumeDataFormat convertSegyFormat(SEGY::BinaryHeader::DataSampleFormatCode dataSampleFormatCode, OpenVDS::Error &error)
-{
-  switch (dataSampleFormatCode)
-  {
-  case SEGY::BinaryHeader::DataSampleFormatCode::IEEEDouble:
-  case SEGY::BinaryHeader::DataSampleFormatCode::UInt64:
-  case SEGY::BinaryHeader::DataSampleFormatCode::Int64:
-    return OpenVDS::VolumeDataFormat::Format_R64;
-
-  case SEGY::BinaryHeader::DataSampleFormatCode::IBMFloat:
-  case SEGY::BinaryHeader::DataSampleFormatCode::IEEEFloat:
-  case SEGY::BinaryHeader::DataSampleFormatCode::UInt32:
-  case SEGY::BinaryHeader::DataSampleFormatCode::Int32:
-    return OpenVDS::VolumeDataFormat::Format_R32;
-
-  case SEGY::BinaryHeader::DataSampleFormatCode::UInt16:
-  case SEGY::BinaryHeader::DataSampleFormatCode::Int16:
-    return OpenVDS::VolumeDataFormat::Format_U16;
-
-  case SEGY::BinaryHeader::DataSampleFormatCode::UInt8:
-  case SEGY::BinaryHeader::DataSampleFormatCode::Int8:
-    return OpenVDS::VolumeDataFormat::Format_U8;
-
-  case SEGY::BinaryHeader::DataSampleFormatCode::Unknown:
-  case SEGY::BinaryHeader::DataSampleFormatCode::UInt24:
-  case SEGY::BinaryHeader::DataSampleFormatCode::Int24:
-  case SEGY::BinaryHeader::DataSampleFormatCode::FixedPoint:
-  default:
-    error.code = -1;
-    error.string = "Unknown data sample format";
-    break;
-  }
-  return OpenVDS::VolumeDataFormat::Format_Any;
-}
 
 inline char asciitolower(char in) {
   if (in <= 'Z' && in >= 'A')
@@ -868,50 +835,6 @@ findRepresentativePrimaryKey(SEGYFileInfo const& fileInfo, int& primaryStep)
   return bestPrimaryKey;
 }
 
-template<SEGY::BinaryHeader::DataSampleFormatCode dataSampleFormatCode>
-int32_t
-GetIntegerOffsetForDataSampleFormat()
-{
-  switch (dataSampleFormatCode)
-  {
-    // VDS does not support IntegerOffset for Int32 and Int64 so updating this function
-    // is not enough to properly handle Int32 types without converting them to float.
-  case SEGY::BinaryHeader::DataSampleFormatCode::Int16:
-    return 32768;
-  case SEGY::BinaryHeader::DataSampleFormatCode::Int8:
-    return 128;
-  default:
-    return 0;
-  }
-}
-int32_t
-GetIntegerOffsetForDataSampleFormat(SEGY::BinaryHeader::DataSampleFormatCode dataSampleFormatCode)
-{
-  switch (dataSampleFormatCode)
-  {
-    // VDS does not support IntegerOffset for Int32 and Int64 so updating this function
-    // is not enough to properly handle Int32 types without converting them to float.
-  case SEGY::BinaryHeader::DataSampleFormatCode::Int16:
-    return 32768;
-  case SEGY::BinaryHeader::DataSampleFormatCode::Int8:
-    return 128;
-  default:
-    return 0;
-  }
-}
-
-inline float
-IntToFloat(int fconv)
-{
-  union
-  {
-    int i;
-    float f;
-  } conv;
-  conv.i = fconv;
-  return conv.f;
-}
-
 template <SEGY::Endianness ENDIANNESS, SEGY::BinaryHeader::DataSampleFormatCode FORMAT>
 void
 copySamples(float* prTarget, const unsigned char* puSource, int iSampleMin, int iSampleMax)
@@ -938,7 +861,7 @@ copySamples(float* prTarget, const unsigned char* puSource, int iSampleMin, int 
 
     if (FORMAT == SEGY::BinaryHeader::DataSampleFormatCode::IEEEFloat)
     {
-      *prTarget++ = IntToFloat(nValue);
+      *prTarget++ = SEGY::IntToFloat(nValue);
     }
     else if (FORMAT == SEGY::BinaryHeader::DataSampleFormatCode::Int32)
     {
@@ -969,7 +892,7 @@ copySamples(uint8_t* puTarget, const unsigned char* puSource, int iSampleMin, in
 
     if (FORMAT == SEGY::BinaryHeader::DataSampleFormatCode::Int8)
     {
-      *puTarget++ = nValue + GetIntegerOffsetForDataSampleFormat<FORMAT>();
+      *puTarget++ = nValue + SEGY::GetVDSIntegerOffsetForDataSampleFormat<FORMAT>();
     }
     else if (FORMAT == SEGY::BinaryHeader::DataSampleFormatCode::UInt8)
     {
@@ -1002,7 +925,7 @@ copySamples(uint16_t* puTarget, const unsigned char* puSource, int iSampleMin, i
 
     if (FORMAT == SEGY::BinaryHeader::DataSampleFormatCode::Int16)
     {
-      *puTarget++ = nValue + GetIntegerOffsetForDataSampleFormat<FORMAT>();
+      *puTarget++ = nValue + SEGY::GetVDSIntegerOffsetForDataSampleFormat<FORMAT>();
     }
     else if (FORMAT == SEGY::BinaryHeader::DataSampleFormatCode::UInt16)
     {
@@ -2175,12 +2098,12 @@ createChannelDescriptors(SEGYFileInfo const& fileInfo, OpenVDS::FloatRange const
     channelDescriptors;
 
   // Primary channel
-  auto format = convertSegyFormat(fileInfo.m_dataSampleFormatCode, error);
+  auto format = SEGY::convertSegyFormat(fileInfo.m_dataSampleFormatCode, error);
   if (error.code)
     return channelDescriptors;
 
   const float
-    integerOffset = -(float)GetIntegerOffsetForDataSampleFormat(fileInfo.m_dataSampleFormatCode), // Observe this is a negative value.
+    integerOffset = -(float)SEGY::GetVDSIntegerOffsetForDataSampleFormat(fileInfo.m_dataSampleFormatCode), // Observe this is a negative value.
     integerScale = 1.0f; // SEGY does not support integer scaling, so always 1
 
   // Adjust the value-range with the integerOffset. 

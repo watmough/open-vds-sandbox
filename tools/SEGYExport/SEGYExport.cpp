@@ -27,12 +27,166 @@
 #include <cstdlib>
 #include <climits>
 #include <json/json.h>
-#include <assert.h>
+#include <cassert>
 #include <fmt/format.h>
 #include <chrono>
 
 #include <PrintHelpers.h>
 #include <HelpConnection.h>
+
+#include "SEGYUtils/VDSSEGYInfo.h"
+
+template <SEGY::Endianness ENDIANNESS, SEGY::BinaryHeader::DataSampleFormatCode FORMAT>
+void
+copySamplesToSEGY(const float* prVDSData, unsigned char* puSEGYData, int iSampleMin, int iSampleMax)
+{
+  if (FORMAT == SEGY::BinaryHeader::DataSampleFormatCode::IBMFloat)
+  {
+    SEGY::Ieee2ibm(puSEGYData + iSampleMin * 4, prVDSData, iSampleMax - iSampleMin);
+    return;
+  }
+
+  int
+    nValue = 0;
+
+  for (int iSample = iSampleMin; iSample < iSampleMax; iSample++)
+  {
+    if (FORMAT == SEGY::BinaryHeader::DataSampleFormatCode::IEEEFloat)
+    {
+      nValue = SEGY::FloatToInt(*prVDSData++);
+    }
+    else if (FORMAT == SEGY::BinaryHeader::DataSampleFormatCode::Int32)
+    {
+      nValue = (int32_t)*prVDSData++; // Intentionally lose precision
+    }
+    else if (FORMAT == SEGY::BinaryHeader::DataSampleFormatCode::UInt32)
+    {
+      nValue = (uint32_t)*prVDSData++; // Intentionally lose precision
+    }
+    else
+    {
+      assert(0 && "Bad data sample format");
+    }
+
+    if (ENDIANNESS == SEGY::Endianness::BigEndian)
+    {
+      puSEGYData[iSample * 4 + 0] = (nValue >> 24) & 0xff;
+      puSEGYData[iSample * 4 + 1] = (nValue >> 16) & 0xff;
+      puSEGYData[iSample * 4 + 2] = (nValue >> 8) & 0xff;
+      puSEGYData[iSample * 4 + 3] = nValue & 0xff;
+    }
+    else
+    {
+      puSEGYData[iSample * 4 + 3] = (nValue >> 24) & 0xff;
+      puSEGYData[iSample * 4 + 2] = (nValue >> 16) & 0xff;
+      puSEGYData[iSample * 4 + 1] = (nValue >> 8) & 0xff;
+      puSEGYData[iSample * 4 + 0] = nValue & 0xff;
+    }
+  }
+}
+
+template <SEGY::Endianness ENDIANNESS, SEGY::BinaryHeader::DataSampleFormatCode FORMAT>
+void
+copySamplesToSEGY(const uint8_t* puVDSData, unsigned char* puSEGYData, int iSampleMin, int iSampleMax)
+{
+  int8_t
+    nValue;
+
+  for (int iSample = iSampleMin; iSample < iSampleMax; iSample++)
+  {
+    nValue = *puVDSData++;
+
+    if (FORMAT == SEGY::BinaryHeader::DataSampleFormatCode::Int8)
+    {
+      puSEGYData[iSample * 1 + 0] = nValue - SEGY::GetVDSIntegerOffsetForDataSampleFormat<FORMAT>();
+    }
+    else if (FORMAT == SEGY::BinaryHeader::DataSampleFormatCode::UInt8)
+    {
+      puSEGYData[iSample * 1 + 0] = (uint8_t)nValue;
+    }
+    else
+    {
+      assert(0 && "Bad data sample format");
+    }
+
+  }
+}
+
+template <SEGY::Endianness ENDIANNESS, SEGY::BinaryHeader::DataSampleFormatCode FORMAT>
+void
+copySamplesToSEGY(const uint16_t* puVDSData, unsigned char* puSEGYData, int iSampleMin, int iSampleMax)
+{
+  int16_t
+    nValue = 0;
+
+  for (int iSample = iSampleMin; iSample < iSampleMax; iSample++)
+  {
+    if (FORMAT == SEGY::BinaryHeader::DataSampleFormatCode::Int16)
+    {
+      nValue = *puVDSData++ - SEGY::GetVDSIntegerOffsetForDataSampleFormat<FORMAT>();
+    }
+    else if (FORMAT == SEGY::BinaryHeader::DataSampleFormatCode::UInt16)
+    {
+      nValue = *puVDSData++;
+    }
+    else
+    {
+      assert(0 && "Bad data sample format");
+    }
+
+    if (ENDIANNESS == SEGY::Endianness::BigEndian)
+    {
+      puSEGYData[iSample * 2 + 0] = (nValue >> 8) & 0xff;
+      puSEGYData[iSample * 2 + 1] = nValue & 0xff;
+    }
+    else
+    {
+      nValue = (int16_t)(puSEGYData[iSample * 2 + 1] << 8 | puSEGYData[iSample * 2 + 0]);
+      puSEGYData[iSample * 2 + 0] = nValue & 0xff;
+      puSEGYData[iSample * 2 + 1] = (nValue >> 8) & 0xff;
+    }
+  }
+}
+
+template<typename T, SEGY::Endianness ENDIANNESS>
+void
+copySamplesToSEGY(SEGY::BinaryHeader::DataSampleFormatCode dataSampleFormatCode, const T* source, unsigned char* puTarget, int iSampleMin, int iSampleMax)
+{
+  switch (dataSampleFormatCode)
+  {
+  case SEGY::BinaryHeader::DataSampleFormatCode::IBMFloat:
+    return copySamplesToSEGY<ENDIANNESS, SEGY::BinaryHeader::DataSampleFormatCode::IBMFloat>(source, puTarget, iSampleMin, iSampleMax);
+  case SEGY::BinaryHeader::DataSampleFormatCode::IEEEFloat:
+    return copySamplesToSEGY<ENDIANNESS, SEGY::BinaryHeader::DataSampleFormatCode::IEEEFloat>(source, puTarget, iSampleMin, iSampleMax);
+  case SEGY::BinaryHeader::DataSampleFormatCode::UInt32:
+    return copySamplesToSEGY<ENDIANNESS, SEGY::BinaryHeader::DataSampleFormatCode::UInt32>(source, puTarget, iSampleMin, iSampleMax);
+  case SEGY::BinaryHeader::DataSampleFormatCode::Int32:
+    return copySamplesToSEGY<ENDIANNESS, SEGY::BinaryHeader::DataSampleFormatCode::Int32>(source, puTarget, iSampleMin, iSampleMax);
+  case SEGY::BinaryHeader::DataSampleFormatCode::UInt16:
+    return copySamplesToSEGY<ENDIANNESS, SEGY::BinaryHeader::DataSampleFormatCode::UInt16>(source, puTarget, iSampleMin, iSampleMax);
+  case SEGY::BinaryHeader::DataSampleFormatCode::Int16:
+    return copySamplesToSEGY<ENDIANNESS, SEGY::BinaryHeader::DataSampleFormatCode::Int16>(source, puTarget, iSampleMin, iSampleMax);
+  case SEGY::BinaryHeader::DataSampleFormatCode::UInt8:
+    return copySamplesToSEGY<ENDIANNESS, SEGY::BinaryHeader::DataSampleFormatCode::UInt8>(source, puTarget, iSampleMin, iSampleMax);
+  case SEGY::BinaryHeader::DataSampleFormatCode::Int8:
+    return copySamplesToSEGY<ENDIANNESS, SEGY::BinaryHeader::DataSampleFormatCode::Int8>(source, puTarget, iSampleMin, iSampleMax);
+  default:
+    assert(false && "Unsupported data sample format");
+  }
+}
+
+template<typename T>
+void
+copySamplesToSEGY(SEGY::Endianness endianess, SEGY::BinaryHeader::DataSampleFormatCode dataSampleFormatCode, const T* source, unsigned char* puTarget, int iSampleMin, int iSampleMax)
+{
+  switch (endianess)
+  {
+  case SEGY::Endianness::BigEndian:
+    return copySamplesToSEGY<T, SEGY::Endianness::BigEndian>(dataSampleFormatCode, source, puTarget, iSampleMin, iSampleMax);
+  case SEGY::Endianness::LittleEndian:
+    return copySamplesToSEGY<T, SEGY::Endianness::LittleEndian>(dataSampleFormatCode, source, puTarget, iSampleMin, iSampleMax);
+  }
+}
 
 int
 main(int argc, char *argv[])
@@ -301,7 +455,13 @@ main(int argc, char *argv[])
   }
 
   if(dataSampleFormatCode != SEGY::BinaryHeader::DataSampleFormatCode::IBMFloat &&
-     dataSampleFormatCode != SEGY::BinaryHeader::DataSampleFormatCode::IEEEFloat)
+     dataSampleFormatCode != SEGY::BinaryHeader::DataSampleFormatCode::IEEEFloat &&
+     dataSampleFormatCode != SEGY::BinaryHeader::DataSampleFormatCode::Int32 &&
+     dataSampleFormatCode != SEGY::BinaryHeader::DataSampleFormatCode::UInt32 &&
+     dataSampleFormatCode != SEGY::BinaryHeader::DataSampleFormatCode::Int16 &&
+     dataSampleFormatCode != SEGY::BinaryHeader::DataSampleFormatCode::UInt16 &&
+     dataSampleFormatCode != SEGY::BinaryHeader::DataSampleFormatCode::Int8 &&
+     dataSampleFormatCode != SEGY::BinaryHeader::DataSampleFormatCode::UInt8)
   {
     OpenVDS::printError(printConfig, "SEGY", "Unsupported data sample format", fmt::format("{}", dataSampleFormatCode));
     return EXIT_FAILURE;
@@ -350,9 +510,16 @@ main(int argc, char *argv[])
     }
   }
 
-  const int sampleFormatSize = 4;
+  const int sampleFormatSize = SEGY::FormatSize(dataSampleFormatCode);
   const int sampleCount = volumeDataLayout->GetDimensionNumSamples(0);
   const int traceDataSize = sampleCount * sampleFormatSize;
+
+  const auto requestDataFormat = SEGY::convertSegyFormat(dataSampleFormatCode, error);
+  if (error.code != 0)
+  {
+    OpenVDS::printError(printConfig, "VDS", "Could not get VDS data format for SEGY data format", openError.string);
+    return EXIT_FAILURE;
+  }
 
   std::unique_ptr<char[]> data(new char[traceCount * traceDataSize]);
   std::unique_ptr<char[]> traceFlag(new char[traceCount]);
@@ -382,7 +549,7 @@ main(int argc, char *argv[])
     min[outerDimension] = line;
     max[outerDimension] = line + 1;
 
-    auto dataRequest = accessManager.RequestVolumeSubset((void *)data.get(), traceCount * traceDataSize, dimensionGroup, 0, 0, min, max, OpenVDS::VolumeDataChannelDescriptor::Format_R32);
+    auto dataRequest = accessManager.RequestVolumeSubset((void *)data.get(), traceCount * traceDataSize, dimensionGroup, 0, 0, min, max, requestDataFormat);
 
     max[0] = 1;
     auto traceFlagRequest = accessManager.RequestVolumeSubset((void *)traceFlag.get(), traceCount, dimensionGroup, 0, traceFlagChannel, min, max, OpenVDS::VolumeDataChannelDescriptor::Format_U8);
@@ -419,7 +586,7 @@ main(int argc, char *argv[])
       exit(1);
     }
 
-    std::unique_ptr<char[]> writeBuffer(new char[traceCount * (traceDataSize + SEGY::TraceHeaderSize)]);
+    std::unique_ptr<unsigned char[]> writeBuffer(new unsigned char[traceCount * (traceDataSize + SEGY::TraceHeaderSize)]);
     int activeTraceCount = 0;
 
     for(int trace = 0; trace < traceCount; trace++)
@@ -430,20 +597,26 @@ main(int argc, char *argv[])
         memcpy(writeBuffer.get() + activeTraceCount * (traceDataSize + SEGY::TraceHeaderSize), segyTraceHeader.get() + trace * SEGY::TraceHeaderSize, SEGY::TraceHeaderSize);
 
         // Convert trace data
-        if(dataSampleFormatCode == SEGY::BinaryHeader::DataSampleFormatCode::IBMFloat)
+        switch (dataSampleFormatCode)
         {
-          SEGY::Ieee2ibm(writeBuffer.get() + activeTraceCount * (traceDataSize + SEGY::TraceHeaderSize) + SEGY::TraceHeaderSize, data.get() + trace * traceDataSize, sampleCount);
-        }
-        else if(dataSampleFormatCode == SEGY::BinaryHeader::DataSampleFormatCode::IEEEFloat)
-        {
-          if(dataEndianness == SEGY::Endianness::BigEndian)
-          {
-            SEGY::ConvertToEndianness<SEGY::Endianness::BigEndian>(writeBuffer.get() + activeTraceCount * (traceDataSize + SEGY::TraceHeaderSize) + SEGY::TraceHeaderSize, reinterpret_cast<float *>(data.get() + trace * traceDataSize), sampleCount);
-          }
-          else
-          {
-            SEGY::ConvertToEndianness<SEGY::Endianness::LittleEndian>(writeBuffer.get() + activeTraceCount * (traceDataSize + SEGY::TraceHeaderSize) + SEGY::TraceHeaderSize, reinterpret_cast<float *>(data.get() + trace * traceDataSize), sampleCount);
-          }
+        case SEGY::BinaryHeader::DataSampleFormatCode::IBMFloat:
+        case SEGY::BinaryHeader::DataSampleFormatCode::IEEEFloat:
+        case SEGY::BinaryHeader::DataSampleFormatCode::UInt32:
+        case SEGY::BinaryHeader::DataSampleFormatCode::Int32:
+          copySamplesToSEGY<float>(dataEndianness, dataSampleFormatCode, reinterpret_cast<float*>(data.get() + static_cast<size_t>(trace) * traceDataSize), writeBuffer.get() + static_cast<size_t>(activeTraceCount) * (traceDataSize + SEGY::TraceHeaderSize) + SEGY::TraceHeaderSize, 0, sampleCount);
+          break;
+        case SEGY::BinaryHeader::DataSampleFormatCode::UInt16:
+        case SEGY::BinaryHeader::DataSampleFormatCode::Int16:
+          copySamplesToSEGY<uint16_t>(dataEndianness, dataSampleFormatCode, reinterpret_cast<uint16_t*>(data.get() + static_cast<size_t>(trace) * traceDataSize), writeBuffer.get() + static_cast<size_t>(activeTraceCount) * (traceDataSize + SEGY::TraceHeaderSize) + SEGY::TraceHeaderSize, 0, sampleCount);
+          break;
+        case SEGY::BinaryHeader::DataSampleFormatCode::UInt8:
+        case SEGY::BinaryHeader::DataSampleFormatCode::Int8:
+          copySamplesToSEGY<uint8_t>(dataEndianness, dataSampleFormatCode, reinterpret_cast<uint8_t*>(data.get() + static_cast<size_t>(trace) * traceDataSize), writeBuffer.get() + static_cast<size_t>(activeTraceCount) * (traceDataSize + SEGY::TraceHeaderSize) + SEGY::TraceHeaderSize, 0, sampleCount);
+          break;
+        default:
+          error.code = -1;
+          error.string = fmt::format("Unknown input format {}.", SEGY::DataSampleFormatCodeToString(dataSampleFormatCode));
+          continue;
         }
 
         activeTraceCount++;
