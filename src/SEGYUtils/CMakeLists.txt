@@ -3,11 +3,13 @@ set(EXPORTED_HEADER_FILES
     SEGYUtils/SEGY.h
     SEGYUtils/SEGYFileInfo.h
     SEGYUtils/TraceDataManager.h
+    SEGYUtils/VDSSEGYInfo.h
 )
 add_library(segyutils
     ${EXPORTED_HEADER_FILES}
     SEGY.cpp
     SEGYFileInfo.cpp
+    VDSSEGYInfo.cpp
     )
 setCommonTargetProperties(segyutils)
 setExportedHeadersForTarget(segyutils ${EXPORTED_HEADER_FILES})
