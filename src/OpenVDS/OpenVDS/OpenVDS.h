@@ -602,7 +602,7 @@ typedef VDSError Error;
 /// with url and string instead if this is not needed.
 /// </returns>
 
-inline OpenOptions* CreateOpenOptions(std::string url, std::string connectionString, Error& error) { return GetOpenVDSInterface(OPENVDS_VERSION).CreateOpenOptions(url, connectionString, [](Error *error, int errorCode, const char *errorMessage) { *error = { errorCode, errorMessage }; }, &error); }
+inline OpenOptions* CreateOpenOptions(std::string url, std::string connectionString, Error& error) { return GetOpenVDSInterface(OPENVDS_VERSION).CreateOpenOptions(url, connectionString, [](Error *error, int errorCode, const char *errorMessage) { error->code = errorCode; error->string = errorMessage; }, &error); }
 
 /// <summary>
 /// Verifies that the url is a supported protocol
@@ -629,7 +629,7 @@ inline bool IsSupportedProtocol(std::string url) { return GetOpenVDSInterface(OP
 /// <returns>
 /// The VDS handle that can be used to get the VolumeDataLayout and the VolumeDataAccessManager
 /// </returns>
-inline VDSHandle Open(std::string url, std::string connectionString, Error& error) { return GetOpenVDSInterface(OPENVDS_VERSION).Open(url, connectionString, [](Error *error, int errorCode, const char *errorMessage) { *error = { errorCode, errorMessage }; }, &error); }
+inline VDSHandle Open(std::string url, std::string connectionString, Error& error) { return GetOpenVDSInterface(OPENVDS_VERSION).Open(url, connectionString, [](Error *error, int errorCode, const char *errorMessage) { error->code = errorCode; error->string = errorMessage; }, &error); }
 
 /// <summary>
 /// Open an existing VDS with adaptive compression tolerance.
@@ -652,7 +652,7 @@ inline VDSHandle Open(std::string url, std::string connectionString, Error& erro
 /// <returns>
 /// The VDS handle that can be used to get the VolumeDataLayout and the VolumeDataAccessManager
 /// </returns>
-inline VDSHandle OpenWithAdaptiveCompressionTolerance(std::string url, std::string connectionString, float waveletAdaptiveTolerance, Error& error) { return GetOpenVDSInterface(OPENVDS_VERSION).OpenWithAdaptiveCompressionTolerance(url, connectionString, waveletAdaptiveTolerance, [](Error *error, int errorCode, const char *errorMessage) { *error = { errorCode, errorMessage }; }, &error); }
+inline VDSHandle OpenWithAdaptiveCompressionTolerance(std::string url, std::string connectionString, float waveletAdaptiveTolerance, Error& error) { return GetOpenVDSInterface(OPENVDS_VERSION).OpenWithAdaptiveCompressionTolerance(url, connectionString, waveletAdaptiveTolerance, [](Error *error, int errorCode, const char *errorMessage) { error->code = errorCode; error->string = errorMessage; }, &error); }
 
 /// <summary>
 /// Open an existing VDS with adaptive compression ratio.
@@ -676,7 +676,7 @@ inline VDSHandle OpenWithAdaptiveCompressionTolerance(std::string url, std::stri
 /// <returns>
 /// The VDS handle that can be used to get the VolumeDataLayout and the VolumeDataAccessManager
 /// </returns>
-inline VDSHandle OpenWithAdaptiveCompressionRatio(std::string url, std::string connectionString, float waveletAdaptiveRatio, Error& error) { return GetOpenVDSInterface(OPENVDS_VERSION).OpenWithAdaptiveCompressionRatio(url, connectionString, waveletAdaptiveRatio, [](Error *error, int errorCode, const char *errorMessage) { *error = { errorCode, errorMessage }; }, &error); }
+inline VDSHandle OpenWithAdaptiveCompressionRatio(std::string url, std::string connectionString, float waveletAdaptiveRatio, Error& error) { return GetOpenVDSInterface(OPENVDS_VERSION).OpenWithAdaptiveCompressionRatio(url, connectionString, waveletAdaptiveRatio, [](Error *error, int errorCode, const char *errorMessage) { error->code = errorCode; error->string = errorMessage; }, &error); }
 
 /// <summary>
 /// Open an existing VDS.
@@ -692,7 +692,7 @@ inline VDSHandle OpenWithAdaptiveCompressionRatio(std::string url, std::string c
 /// <returns>
 /// The VDS handle that can be used to get the VolumeDataLayout and the VolumeDataAccessManager
 /// </returns>
-inline VDSHandle Open(std::string url, Error& error) { return GetOpenVDSInterface(OPENVDS_VERSION).Open(url, std::string(), [](Error *error, int errorCode, const char *errorMessage) { *error = { errorCode, errorMessage }; }, &error); }
+inline VDSHandle Open(std::string url, Error& error) { return GetOpenVDSInterface(OPENVDS_VERSION).Open(url, std::string(), [](Error *error, int errorCode, const char *errorMessage) { error->code = errorCode; error->string = errorMessage; }, &error); }
 
 /// <summary>
 /// Open an existing VDS
@@ -706,7 +706,7 @@ inline VDSHandle Open(std::string url, Error& error) { return GetOpenVDSInterfac
 /// <returns>
 /// The VDS handle that can be used to get the VolumeDataLayout and the VolumeDataAccessManager
 /// </returns>
-inline VDSHandle Open(const OpenOptions& options, Error& error) { return GetOpenVDSInterface(OPENVDS_VERSION).Open(options, [](Error *error, int errorCode, const char *errorMessage) { *error = { errorCode, errorMessage }; }, &error); }
+inline VDSHandle Open(const OpenOptions& options, Error& error) { return GetOpenVDSInterface(OPENVDS_VERSION).Open(options, [](Error *error, int errorCode, const char *errorMessage) { error->code = errorCode; error->string = errorMessage; }, &error); }
 
 /// <summary>
 /// Open an existing VDS
@@ -720,7 +720,7 @@ inline VDSHandle Open(const OpenOptions& options, Error& error) { return GetOpen
 /// <returns>
 /// The VDS handle that can be used to get the VolumeDataLayout and the VolumeDataAccessManager
 /// </returns>
-inline VDSHandle Open(IOManager*ioManager, Error &error) { return GetOpenVDSInterface(OPENVDS_VERSION).Open(ioManager, [](Error *error, int errorCode, const char *errorMessage) { *error = { errorCode, errorMessage }; }, &error); }
+inline VDSHandle Open(IOManager*ioManager, Error &error) { return GetOpenVDSInterface(OPENVDS_VERSION).Open(ioManager, [](Error *error, int errorCode, const char *errorMessage) { error->code = errorCode; error->string = errorMessage; }, &error); }
 
 /// <summary>
 /// Check if a compression method is supported.
@@ -759,7 +759,7 @@ inline bool IsCompressionMethodSupported(CompressionMethod compressionMethod) { 
 /// </returns>
 inline VDSHandle Create(std::string url, std::string connectionString, VolumeDataLayoutDescriptor const& layoutDescriptor, std::vector<VolumeDataAxisDescriptor> axisDescriptors, std::vector<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const& metadata, CompressionMethod compressionMethod, float compressionTolerance, Error& error)
 {
-  return GetOpenVDSInterface(OPENVDS_VERSION).Create(url, connectionString, layoutDescriptor, axisDescriptors, channelDescriptors, metadata, compressionMethod, compressionTolerance, [](Error *error, int errorCode, const char *errorMessage) { *error = { errorCode, errorMessage }; }, &error);
+  return GetOpenVDSInterface(OPENVDS_VERSION).Create(url, connectionString, layoutDescriptor, axisDescriptors, channelDescriptors, metadata, compressionMethod, compressionTolerance, [](Error *error, int errorCode, const char *errorMessage) { error->code = errorCode; error->string = errorMessage; }, &error);
 }
 
 /// <summary>
@@ -781,7 +781,7 @@ inline VDSHandle Create(std::string url, std::string connectionString, VolumeDat
 /// </returns>
 inline VDSHandle Create(std::string url, std::string connectionString, VolumeDataLayoutDescriptor const& layoutDescriptor, std::vector<VolumeDataAxisDescriptor> axisDescriptors, std::vector<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const& metadata, Error& error)
 {
-  return GetOpenVDSInterface(OPENVDS_VERSION).Create(url, connectionString, layoutDescriptor, axisDescriptors, channelDescriptors, metadata, CompressionMethod::None, 0, [](Error *error, int errorCode, const char *errorMessage) { *error = { errorCode, errorMessage }; }, &error);
+  return GetOpenVDSInterface(OPENVDS_VERSION).Create(url, connectionString, layoutDescriptor, axisDescriptors, channelDescriptors, metadata, CompressionMethod::None, 0, [](Error *error, int errorCode, const char *errorMessage) { error->code = errorCode; error->string = errorMessage; }, &error);
 }
 
 /// <summary>
@@ -806,7 +806,7 @@ inline VDSHandle Create(std::string url, std::string connectionString, VolumeDat
 /// </returns>
 inline VDSHandle Create(std::string url, VolumeDataLayoutDescriptor const& layoutDescriptor, std::vector<VolumeDataAxisDescriptor> axisDescriptors, std::vector<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const& metadata, CompressionMethod compressionMethod, float compressionTolerance, Error& error)
 {
-  return GetOpenVDSInterface(OPENVDS_VERSION).Create(url, std::string(), layoutDescriptor, axisDescriptors, channelDescriptors, metadata, compressionMethod, compressionTolerance, [](Error *error, int errorCode, const char *errorMessage) { *error = { errorCode, errorMessage }; }, &error);
+  return GetOpenVDSInterface(OPENVDS_VERSION).Create(url, std::string(), layoutDescriptor, axisDescriptors, channelDescriptors, metadata, compressionMethod, compressionTolerance, [](Error *error, int errorCode, const char *errorMessage) { error->code = errorCode; error->string = errorMessage; }, &error);
 }
 
 /// <summary>
@@ -825,7 +825,7 @@ inline VDSHandle Create(std::string url, VolumeDataLayoutDescriptor const& layou
 /// </returns>
 inline VDSHandle Create(std::string url, VolumeDataLayoutDescriptor const& layoutDescriptor, std::vector<VolumeDataAxisDescriptor> axisDescriptors, std::vector<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const& metadata, Error& error)
 {
-  return GetOpenVDSInterface(OPENVDS_VERSION).Create(url, std::string(), layoutDescriptor, axisDescriptors, channelDescriptors, metadata, CompressionMethod::None, 0, [](Error *error, int errorCode, const char *errorMessage) { *error = { errorCode, errorMessage }; }, &error);
+  return GetOpenVDSInterface(OPENVDS_VERSION).Create(url, std::string(), layoutDescriptor, axisDescriptors, channelDescriptors, metadata, CompressionMethod::None, 0, [](Error *error, int errorCode, const char *errorMessage) { error->code = errorCode; error->string = errorMessage; }, &error);
 }
 
 /// <summary>
@@ -848,7 +848,7 @@ inline VDSHandle Create(std::string url, VolumeDataLayoutDescriptor const& layou
 /// </returns>
 inline VDSHandle Create(const OpenOptions& options, VolumeDataLayoutDescriptor const& layoutDescriptor, std::vector<VolumeDataAxisDescriptor> axisDescriptors, std::vector<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const& metadata, CompressionMethod compressionMethod, float compressionTolerance, Error& error)
 {
-  return GetOpenVDSInterface(OPENVDS_VERSION).Create(options, layoutDescriptor, axisDescriptors, channelDescriptors, metadata, compressionMethod, compressionTolerance, [](Error *error, int errorCode, const char *errorMessage) { *error = { errorCode, errorMessage }; }, &error);
+  return GetOpenVDSInterface(OPENVDS_VERSION).Create(options, layoutDescriptor, axisDescriptors, channelDescriptors, metadata, compressionMethod, compressionTolerance, [](Error *error, int errorCode, const char *errorMessage) { error->code = errorCode; error->string = errorMessage; }, &error);
 }
 
 /// <summary>
@@ -865,7 +865,7 @@ inline VDSHandle Create(const OpenOptions& options, VolumeDataLayoutDescriptor c
 /// </returns>
 inline VDSHandle Create(const OpenOptions& options, VolumeDataLayoutDescriptor const& layoutDescriptor, std::vector<VolumeDataAxisDescriptor> axisDescriptors, std::vector<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const& metadata, Error& error)
 {
-  return GetOpenVDSInterface(OPENVDS_VERSION).Create(options, layoutDescriptor, axisDescriptors, channelDescriptors, metadata, CompressionMethod::None, 0, [](Error *error, int errorCode, const char *errorMessage) { *error = { errorCode, errorMessage }; }, &error);
+  return GetOpenVDSInterface(OPENVDS_VERSION).Create(options, layoutDescriptor, axisDescriptors, channelDescriptors, metadata, CompressionMethod::None, 0, [](Error *error, int errorCode, const char *errorMessage) { error->code = errorCode; error->string = errorMessage; }, &error);
 }
 
 /// <summary>
@@ -888,7 +888,7 @@ inline VDSHandle Create(const OpenOptions& options, VolumeDataLayoutDescriptor c
 /// </returns>
 inline VDSHandle Create(IOManager* ioManager, VolumeDataLayoutDescriptor const &layoutDescriptor, std::vector<VolumeDataAxisDescriptor> axisDescriptors, std::vector<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const &metadata, CompressionMethod compressionMethod, float compressionTolerance, Error &error)
 {
-  return GetOpenVDSInterface(OPENVDS_VERSION).Create(ioManager, layoutDescriptor, axisDescriptors, channelDescriptors, metadata, compressionMethod, compressionTolerance, [](Error *error, int errorCode, const char *errorMessage) { *error = { errorCode, errorMessage }; }, &error);
+  return GetOpenVDSInterface(OPENVDS_VERSION).Create(ioManager, layoutDescriptor, axisDescriptors, channelDescriptors, metadata, compressionMethod, compressionTolerance, [](Error *error, int errorCode, const char *errorMessage) { error->code = errorCode; error->string = errorMessage; }, &error);
 }
 
 /// <summary>
@@ -905,7 +905,7 @@ inline VDSHandle Create(IOManager* ioManager, VolumeDataLayoutDescriptor const &
 /// </returns>
 inline VDSHandle Create(IOManager* ioManager, VolumeDataLayoutDescriptor const &layoutDescriptor, std::vector<VolumeDataAxisDescriptor> axisDescriptors, std::vector<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const &metadata, Error &error)
 {
-  return GetOpenVDSInterface(OPENVDS_VERSION).Create(ioManager, layoutDescriptor, axisDescriptors, channelDescriptors, metadata, CompressionMethod::None, 0, [](Error *error, int errorCode, const char *errorMessage) { *error = { errorCode, errorMessage }; }, &error);
+  return GetOpenVDSInterface(OPENVDS_VERSION).Create(ioManager, layoutDescriptor, axisDescriptors, channelDescriptors, metadata, CompressionMethod::None, 0, [](Error *error, int errorCode, const char *errorMessage) { error->code = errorCode; error->string = errorMessage; }, &error);
 }
 
 /// <summary>
@@ -987,7 +987,7 @@ inline void Close(VDSHandle handle) { return GetOpenVDSInterface(OPENVDS_VERSION
 /// <param name="error">
 /// If an error occured, the error code and message will be written to this output parameter
 /// </param>
-inline void Close(VDSHandle handle, Error &error) { return GetOpenVDSInterface(OPENVDS_VERSION).Close(handle, [](Error *error, int errorCode, const char *errorMessage) { *error = { errorCode, errorMessage }; }, &error); }
+inline void Close(VDSHandle handle, Error &error) { return GetOpenVDSInterface(OPENVDS_VERSION).Close(handle, [](Error *error, int errorCode, const char *errorMessage) { error->code = errorCode; error->string = errorMessage; }, &error); }
 
 #if !defined(JAVA_WRAPPER_GENERATOR)
 /// <summary>
@@ -1008,7 +1008,7 @@ inline void RetryableClose(VDSHandle handle) { return GetOpenVDSInterface(OPENVD
 /// <param name="error">
 /// If an error occured, the error code and message will be written to this output parameter
 /// </param>
-inline void RetryableClose(VDSHandle handle, Error &error) { return GetOpenVDSInterface(OPENVDS_VERSION).RetryableClose(handle, [](Error *error, int errorCode, const char *errorMessage) { *error = { errorCode, errorMessage }; }, &error); }
+inline void RetryableClose(VDSHandle handle, Error &error) { return GetOpenVDSInterface(OPENVDS_VERSION).RetryableClose(handle, [](Error *error, int errorCode, const char *errorMessage) { error->code = errorCode; error->string = errorMessage; }, &error); }
 
 /// <summary>
 /// Get the GlobalState interface 
