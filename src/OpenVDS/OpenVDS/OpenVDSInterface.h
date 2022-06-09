@@ -127,7 +127,9 @@ public:
   virtual const char               *GetOpenVDSRevision() = 0;
 };
 
+#ifndef OPENVDS_REPLACE_INTERFACE
 OPENVDS_EXPORT OpenVDSInterface &GetOpenVDSInterface(const char* version);
+#endif
 }
 
 #endif //OPENVDSINTERFACE_H
