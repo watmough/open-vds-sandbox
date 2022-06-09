@@ -1,4 +1,4 @@
-### OpenVDS Java API
+## OpenVDS Java API
 
 Since OpenVDS version 2.3 the Java API has undergone a major change; The API source code is now 
 primarily auto-generated from the C++ API header files. This will lower the burden of maintaining
@@ -23,12 +23,12 @@ The `VDSHandle` class is superseded by the `VDS` class.
 
 The `BufferUtils` and `Cleaner` classes have been removed because of simplified memory management.
 
-##### Java samples
+### Java samples
 
 The standalone code samples in `java/java/demo` have been updated. `CreateVDS.java` and `SliceDump.java` in 
 particular, should be helpful in understanding how to read and write VDSs.
 
-##### Regenerating and augmenting the Java API
+### Regenerating and augmenting the Java API
 
 The Java API is generated from the C++ headers by the `javagen.py` script located in the 
 `java/tools` folder. To run it, you need to have Python with the [clang](https://pypi.org/project/clang/) 
