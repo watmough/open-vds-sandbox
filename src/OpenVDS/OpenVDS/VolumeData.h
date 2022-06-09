@@ -131,13 +131,13 @@ enum class VolumeDataMapping : uint64_t
 
 enum class CompressionMethod
 {
-  None,
-  Wavelet,
-  RLE,
-  Zip,
-  WaveletNormalizeBlock,
-  WaveletLossless,
-  WaveletNormalizeBlockLossless
+  None,                         ///< No compression is applied; data is stored 'as is'
+  Wavelet,                      ///< Voxel values are compressed using a lossy wavelet compression algorithm. This usually produces excellent results for continuous data, but is not applicable when dealing with discrete values.
+  RLE,                          ///< Voxel values are compressed using run-length encoding which is a fast, lossless algorithm. This gives good results when the same value is often repeated for adjacent voxels, for example classification data.
+  Zip,                          ///< Voxel values are compressed using zip (zlib) which is a slower, lossless algorithm that gives fairly good compression for all types of data.
+  WaveletNormalizeBlock,        ///< This method is experimental and no guarantee is made that decompression for data compressed in this format will be supported in future versions. Voxel values are compressed using a lossy wavelet compression algorithm. Also the threshold takes into account the absolute average of each block. This is good for data that varies a lot in signal strength. This usually produces excellent results for continuous data, but is not applicable when dealing with discrete values.
+  WaveletLossless,              ///< Voxel values are compressed using a losslees wavelet compression algorithm. This usually produces excellent results for continuous data, but is not applicable when dealing with discrete values.
+  WaveletNormalizeBlockLossless ///< This method is experimental and no guarantee is made that decompression for data compressed in this format will be supported in future versions. Voxel values are compressed using a lossless wavelet compression algorithm. Also the threshold takes into account the absolute average of each block. This is good for data that varies a lot in signal strength. This usually produces excellent results for continuous data, but is not applicable when dealing with discrete values.
 };
 
 inline bool CompressionMethod_IsWavelet(CompressionMethod compressionMethod)
