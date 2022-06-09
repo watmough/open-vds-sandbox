@@ -51,6 +51,37 @@
 	
 ///AUTOGEN-IGNORE: CXX_METHOD Release void () FUNCTIONPROTO
 	
+	/**
+	 * Translate n-dimensional local/chunk index to 1-dimensional data index.
+	 * @param localIndex An array of length <= 6 which represents the n-dimensional index into a chunk.
+     * @param pitch An array of length 6 which describes the layout of the returned buffer : Each 
+     *              non-zero element is equal to the distance between neighboring elements (bytes, floats, etc.)
+     *              along each dimension in the buffer. 
+	 * @return Data index.
+	 */
+    public static int localIndexToDataIndex(int[] localIndex, int[] pitch) {{
+        assert(localIndex.length <= pitch.length);
+        int dataIndex = 0;
+        for (int i = 0; i < localIndex.length; i++) {{
+            dataIndex += localIndex[i] * pitch[i];
+        }}
+        return dataIndex;
+    }}
+
+	/**
+	 * Translate n-dimensional local/chunk index to global n-dimensional index.
+	 * @param localIndex An array of length <= 6 which represents the n-dimensional index into a chunk.
+	 * @param chunkMin An array of length <= representing the global index of the chunk's 0th element.
+	 * @param log The LOD level of the chunk.
+	 */
+    public static void localIndexToGlobalIndex(int[] globalIndex, int[] localIndex, int[] chunkMin, int lod) {{
+        assert(globalIndex.length == localIndex.length);
+        assert(localIndex.length <= chunkMin.length);
+        for (int i = 0; i < localIndex.length; i++) {{
+            globalIndex[i] = chunkMin[i] + (localIndex[i] << lod);
+        }}
+    }}
+	
 	@Override
 	protected void onDisposing(long native_object, boolean isDisposing) {{
 		dtorImpl(native_object, isDisposing);

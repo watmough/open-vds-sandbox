@@ -113,23 +113,6 @@ public class CreateVDS {
         return true;
     }
 
-    static int localIndexToDataIndex(int[] localIndex, int[] pitch) {
-        assert(localIndex.length <= pitch.length);
-        int dataIndex = 0;
-        for (int i = 0; i < localIndex.length; i++) {
-            dataIndex += localIndex[i] * pitch[i];
-        }
-        return dataIndex;
-    }
-
-    static void localIndexToGlobalIndex(int[] globalIndex, int[] localIndex, int[] chunkMin, int lod) {
-        assert(globalIndex.length == localIndex.length);
-        assert(localIndex.length <= chunkMin.length);
-        for (int i = 0; i < localIndex.length; i++) {
-            globalIndex[i] = chunkMin[i] + (localIndex[i] << lod);
-        }
-    }
-
     static void process(int lodParam, String vdsFilePath, int dimX, int dimY, int dimZ) throws Exception {
         int samplesX = dimZ; // time
         int samplesY = dimY; // XL
@@ -275,7 +258,7 @@ public class CreateVDS {
                 localIndex[1] = iDim1;
                 for (int iDim0 = 0; iDim0 < chunkSize[0]; iDim0++) {
                     localIndex[0] = iDim0;
-                    localIndexToGlobalIndex(voxelPos, localIndex, chunkMin, lod);
+                    VolumeDataPage.localIndexToGlobalIndex(voxelPos, localIndex, chunkMin, lod);
                     float value = 0f;
                     double dist = 0;
                     if (voxelPos[0] >= midX) {
@@ -284,7 +267,7 @@ public class CreateVDS {
                         dist = distance3D(midX, midY, midZ, voxelPos[0], voxelPos[1], voxelPos[2]);
                     }
                     value = (float) Math.sin((dist * cycles) / distMax);
-                    int iPos = localIndexToDataIndex(localIndex, chunkPitch);
+                    int iPos = VolumeDataPage.localIndexToDataIndex(localIndex, chunkPitch);
                     output[iPos] = value;
                 }
             }
