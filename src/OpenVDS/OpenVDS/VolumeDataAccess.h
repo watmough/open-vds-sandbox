@@ -173,7 +173,7 @@ public:
   /// <returns>
   /// The volume data hash for the chunk.
   /// </returns>
-  virtual int64_t GetChunkVolumeDataHash(int64_t chunkIndex) const = 0;
+  virtual uint64_t GetChunkVolumeDataHash(int64_t chunkIndex) const = 0;
   virtual int64_t GetChunkIndex(const int (&position)[Dimensionality_Max]) const = 0;
 
   /// <summary>

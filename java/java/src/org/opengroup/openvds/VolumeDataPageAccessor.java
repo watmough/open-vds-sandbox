@@ -108,7 +108,7 @@ public class VolumeDataPageAccessor extends ManagedBase implements AutoCloseable
         GetChunkMinMaxExcludingMarginImpl(getNativeObject(), chunk, minExcludingMargin, maxExcludingMargin);
     }
 
-    ///AUTOGEN-OK: CXX_METHOD GetChunkVolumeDataHash int64_t (int64_t) const FUNCTIONPROTO
+    ///AUTOGEN-OK: CXX_METHOD GetChunkVolumeDataHash uint64_t (int64_t) const FUNCTIONPROTO
     native private long GetChunkVolumeDataHashImpl(long native_object, long chunkIndex);
 
     /**

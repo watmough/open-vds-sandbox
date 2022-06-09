@@ -209,19 +209,48 @@ static const char *__doc_OpenVDS_CompressionMethod_2 = R"doc()doc";
 
 static const char *__doc_OpenVDS_CompressionMethod_IsWavelet = R"doc()doc";
 
-static const char *__doc_OpenVDS_CompressionMethod_None = R"doc()doc";
+static const char *__doc_OpenVDS_CompressionMethod_None = R"doc(< No compression is applied; data is stored 'as is')doc";
 
-static const char *__doc_OpenVDS_CompressionMethod_RLE = R"doc()doc";
+static const char *__doc_OpenVDS_CompressionMethod_RLE =
+R"doc(< Voxel values are compressed using run-length encoding which is a
+fast, lossless algorithm. This gives good results when the same value
+is often repeated for adjacent voxels, for example classification
+data.)doc";
 
-static const char *__doc_OpenVDS_CompressionMethod_Wavelet = R"doc()doc";
+static const char *__doc_OpenVDS_CompressionMethod_Wavelet =
+R"doc(< Voxel values are compressed using a lossy wavelet compression
+algorithm. This usually produces excellent results for continuous
+data, but is not applicable when dealing with discrete values.)doc";
 
-static const char *__doc_OpenVDS_CompressionMethod_WaveletLossless = R"doc()doc";
+static const char *__doc_OpenVDS_CompressionMethod_WaveletLossless =
+R"doc(< Voxel values are compressed using a losslees wavelet compression
+algorithm. This usually produces excellent results for continuous
+data, but is not applicable when dealing with discrete values.)doc";
 
-static const char *__doc_OpenVDS_CompressionMethod_WaveletNormalizeBlock = R"doc()doc";
+static const char *__doc_OpenVDS_CompressionMethod_WaveletNormalizeBlock =
+R"doc(< This method is experimental and no guarantee is made that
+decompression for data compressed in this format will be supported in
+future versions. Voxel values are compressed using a lossy wavelet
+compression algorithm. Also the threshold takes into account the
+absolute average of each block. This is good for data that varies a
+lot in signal strength. This usually produces excellent results for
+continuous data, but is not applicable when dealing with discrete
+values.)doc";
 
-static const char *__doc_OpenVDS_CompressionMethod_WaveletNormalizeBlockLossless = R"doc()doc";
+static const char *__doc_OpenVDS_CompressionMethod_WaveletNormalizeBlockLossless =
+R"doc(< This method is experimental and no guarantee is made that
+decompression for data compressed in this format will be supported in
+future versions. Voxel values are compressed using a lossless wavelet
+compression algorithm. Also the threshold takes into account the
+absolute average of each block. This is good for data that varies a
+lot in signal strength. This usually produces excellent results for
+continuous data, but is not applicable when dealing with discrete
+values.)doc";
 
-static const char *__doc_OpenVDS_CompressionMethod_Zip = R"doc()doc";
+static const char *__doc_OpenVDS_CompressionMethod_Zip =
+R"doc(< Voxel values are compressed using zip (zlib) which is a slower,
+lossless algorithm that gives fairly good compression for all types of
+data.)doc";
 
 static const char *__doc_OpenVDS_ConvertNoValue = R"doc()doc";
 
