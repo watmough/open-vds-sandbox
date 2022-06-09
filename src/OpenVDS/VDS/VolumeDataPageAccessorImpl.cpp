@@ -103,7 +103,7 @@ void  VolumeDataPageAccessorImpl::GetChunkMinMaxExcludingMargin(int64_t chunk, i
   m_layer->GetChunkMinMax(chunk, min, max, false);
 }
 
-int64_t VolumeDataPageAccessorImpl::GetChunkVolumeDataHash(int64_t chunkIndex) const
+uint64_t VolumeDataPageAccessorImpl::GetChunkVolumeDataHash(int64_t chunkIndex) const
 {
   if (chunkIndex < 0 || chunkIndex > m_layer->GetTotalChunkCount())
   {
