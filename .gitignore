@@ -26,3 +26,4 @@ cmake-build*
 /**/CMakeFiles
 binpackage
 pytest.ini
+/3rdparty/cxxopts-3.0.0
