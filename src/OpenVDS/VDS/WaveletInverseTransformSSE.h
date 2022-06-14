@@ -30,9 +30,11 @@
   #define __unaligned Unaligned
 #endif
 
-#include <xmmintrin.h>
-#include <emmintrin.h>
+#if defined(_M_ARM64) || defined(__aarch64__)
+#include "sse2neon.h"
+#else
 #include <smmintrin.h>
+#endif
 
 #ifdef __EMSCRIPTEN__
   #undef __unaligned
