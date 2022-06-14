@@ -20,7 +20,6 @@ endif()
 
 set_target_properties(openvds_python_test
   PROPERTIES
-  VERSION ${CMAKE_PROJECT_VERSION}
   RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/openvds_test
   LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/openvds_test
   )
