@@ -30,8 +30,13 @@ function(copyDllForTarget target)
             COMMAND ${CMAKE_COMMAND} -E copy_if_different $<$<CONFIG:Debug>:${file}> ${CMAKE_SOURCE_DIR}/README.md $<TARGET_FILE_DIR:${target}>)
         endforeach()
       else()
+	list(APPEND COPY_TARGETS "$<TARGET_FILE:openvds>")
+	list(APPEND COPY_TARGETS "$<TARGET_FILE:segyutils>")
+        if (NOT DISABLE_DMS_IOMANAGER)
+	  list(APPEND COPY_TARGETS "$<TARGET_FILE:sdapi>")
+        endif()
         add_custom_command(OUTPUT "${target}_copy_vds"
-          COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:openvds> $<TARGET_FILE:segyutils> $<TARGET_FILE:sdapi> $<TARGET_FILE_DIR:${target}>
+          COMMAND ${CMAKE_COMMAND} -E copy_if_different ${COPY_TARGETS} $<TARGET_FILE_DIR:${target}>
           DEPENDS openvds)
         set_property(SOURCE "${target}_copy_vds"
                      PROPERTY SYMBOLIC ON
