@@ -33,7 +33,7 @@ function(add_test_executable name)
     DISCOVERY_TIMEOUT 25
     XML_OUTPUT_DIR ${PROJECT_BINARY_DIR}/test_results
   )
-  setCommonTargetProperties(${name})
+  setCommonTestTargetProperties(${name})
   set_target_properties(${name} PROPERTIES FOLDER tests)
   get_target_property(fmt_INCLUDE fmt::fmt INTERFACE_INCLUDE_DIRECTORIES)
   get_target_property(json_INCLUDE jsoncpp_lib_static INTERFACE_INCLUDE_DIRECTORIES)

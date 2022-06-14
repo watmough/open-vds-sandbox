@@ -1,5 +1,5 @@
 function(copyDllForTarget target)
-    if (WIN32)
+    if (WIN32 OR APPLE)
       get_target_property(is_imported openvds::openvds IMPORTED)
       if (is_imported)
         get_target_property(openvds_location_debug openvds::openvds IMPORTED_LOCATION_DEBUG)

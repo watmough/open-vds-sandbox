@@ -290,9 +290,9 @@ std::string File::LastWriteTime(Error& error) const
   struct tm lastWriteTime;
   gmtime_r(&result.st_mtime, &lastWriteTime);
 
-  const long millis = result.st_mtim.tv_nsec / 1000;
+  //const long millis = result.st_mtim.tv_nsec / 1000;
 
-  return fmt::format("{:04d}-{:02d}-{:02d}T{:02d}:{:02d}:{:02d}.{:03d}Z", lastWriteTime.tm_year + 1900, lastWriteTime.tm_mon + 1, lastWriteTime.tm_mday, lastWriteTime.tm_hour, lastWriteTime.tm_min, lastWriteTime.tm_sec, millis);
+  return fmt::format("{:04d}-{:02d}-{:02d}T{:02d}:{:02d}:{:02d}.{:03d}Z", lastWriteTime.tm_year + 1900, lastWriteTime.tm_mon + 1, lastWriteTime.tm_mday, lastWriteTime.tm_hour, lastWriteTime.tm_min, lastWriteTime.tm_sec, 0);
 }
 
 bool File::Read(void* pxData, int64_t nOffset, int32_t nLength, Error& error) const

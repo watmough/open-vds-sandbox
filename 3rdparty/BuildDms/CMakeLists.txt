@@ -57,7 +57,7 @@ if (NOT DISABLE_AWS_IOMANAGER)
 
   #to work around Aws::String problem
   #https://github.com/aws/aws-sdk-cpp/blob/266d7682c3d07d41618c41a3521811e1219c1bc7/aws-cpp-sdk-core/include/aws/core/utils/memory/stl/AWSString.h#L21
-  if (NOT MSVC)
+  if (NOT MSVC AND NOT APPLE)
     set_property(SOURCE ${dmsCMakeDir}/src/lib/cloud/providers/aws/AwsStorage.cc APPEND_STRING PROPERTY COMPILE_FLAGS " -fvisibility=default")
     set_property(SOURCE ${dmsCMakeDir}/src/lib/cloud/providers/ibm/IbmStorage.cc APPEND_STRING PROPERTY COMPILE_FLAGS " -fvisibility=default")
   endif()
@@ -108,6 +108,7 @@ addSystemHeadersToTarget(sdapi_objects "${include_3rdparty}")
 
 if (UNIX)
   find_package(Boost REQUIRED COMPONENTS system date_time regex)
+  target_include_directories(sdapi_objects PRIVATE ${OPENSSL_INCLUDE_DIR})
   target_link_libraries(sdapi_objects PRIVATE Boost::system)
 endif()
 
