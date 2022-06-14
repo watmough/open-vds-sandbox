@@ -1248,7 +1248,7 @@ analyzePrimaryKey(const std::vector<DataProvider>& dataProviders, SEGYFileInfo c
     auto&
       primaryKeySegments = entry.second;
 
-    for (const auto segmentInfoRef : primaryKeySegments)
+    for (const auto &segmentInfoRef : primaryKeySegments)
     {
       const auto&
         segmentInfo = segmentInfoRef.get();
