@@ -201,6 +201,9 @@ if (OpenMP_CXX_FOUND)
   set(CMAKE_INSTALL_OPENMP_LIBRARIES TRUE)
 endif()
 
+include(CheckCXXCompilerFlag)
+check_cxx_compiler_flag("-msse4.1" ENABLE_SSE4_1)
+
 include(CMake/SetWarnings.cmake)
 include(CMake/SetVersionForTarget.cmake)
 include(CMake/SetLTOForTarget.cmake)
