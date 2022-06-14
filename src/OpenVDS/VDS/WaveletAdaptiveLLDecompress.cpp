@@ -534,7 +534,7 @@ int32_t WaveletAdaptiveLLDecompress_DecompressLossless(uint8_t *in, float *pic, 
   }
 
   const int threadCount = Wavelet_GetEffectiveOpenMPThreadCount(WAVELET_OPENMP_SSE_THREAD_COUNT);
-
+  (void) threadCount;
 #pragma omp parallel for num_threads(threadCount) schedule(static)
   for (int i = 0; i < 4; i++)
   {
@@ -654,7 +654,7 @@ template <class T, bool isHigh>
 static void WaveletAdaptiveLL_ReplaceZeroFromZeroCount(T * pxPic, int nTransformSizeY, int nTransformSizeZ, int nAllocatedSizeX, int nAllocatedSizeY, const unsigned char *puCountLow, const unsigned char *puCountHigh, T replaceValue)
 {
   const int threadCount = Wavelet_GetEffectiveOpenMPThreadCount(WAVELET_OPENMP_SSE_THREAD_COUNT);
-
+  (void) threadCount;
 #pragma omp parallel for if(nTransformSizeZ > 1) num_threads(threadCount) schedule(static)
   for (int iZ=0; iZ<nTransformSizeZ;iZ++)
   {
