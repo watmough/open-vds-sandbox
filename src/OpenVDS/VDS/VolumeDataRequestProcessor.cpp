@@ -2176,7 +2176,6 @@ int64_t VolumeDataRequestProcessor::RequestVolumeTraces(void *buffer, VolumeData
   }
 
   int64_t currentChunkIndex = -1;
-  int32_t totalChunks = 0;
 
   std::vector<VolumeDataChunk> volumeDataChunks;
   int32_t traceMin[Dimensionality_Max];
@@ -2203,11 +2202,7 @@ int64_t VolumeDataRequestProcessor::RequestVolumeTraces(void *buffer, VolumeData
       traceMin[traceDimension] = 0;
       traceMax[traceDimension] = volumeDataLayer->GetDimensionNumSamples(traceDimension);
 
-      int32_t currentChunksCount = int32_t(volumeDataChunks.size());
-
       volumeDataLayer->GetChunksInRegion(traceMin, traceMax, &volumeDataChunks, true);
-
-      totalChunks += int32_t(volumeDataChunks.size()) - currentChunksCount;
     }
   }
 
