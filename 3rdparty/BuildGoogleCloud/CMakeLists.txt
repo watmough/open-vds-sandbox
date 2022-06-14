@@ -99,6 +99,10 @@ target_include_directories(google_cloud_ovds PUBLIC
   ${absl_SOURCE_DIR}
   )
 
+if (NOT WIN32)
+  target_include_directories(google_cloud_ovds PRIVATE ${OPENSSL_INCLUDE_DIR})
+endif()
+
 add_dependencies(google_cloud_ovds crc32c)
 if (WIN32)
   add_dependencies(google_cloud_ovds libressl)

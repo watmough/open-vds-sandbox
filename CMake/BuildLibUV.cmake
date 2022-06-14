@@ -7,6 +7,8 @@ function(BuildLibUV)
   if (WIN32)
     list(APPEND LIBUV_LIBS_LIST "${LIB_PREFIX}/uv.lib")
     list(APPEND LIBUV_DLLS_LIST "${LIB_PREFIX}/uv.dll")
+  elseif (APPLE)
+    list(APPEND LIBUV_DLLS_LIST "${LIB_PREFIX}/libuv.dylib")
   endif()
 
   BuildExternal(libuv ${libuv_VERSION} "" ${libuv_SOURCE_DIR} "${LIBUV_LIBS_LIST}" "${LIBUV_DLLS_LIST}" "")

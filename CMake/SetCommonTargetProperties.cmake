@@ -5,10 +5,15 @@ function(setCommonTargetProperties target)
   setCompilerFlagsForTarget(${target})
 endfunction()
 
+function(setCommonTestTargetProperties target)
+  setWarningFlagsForTarget(${target})
+  setLTOForTarget(${target})
+  setCompilerFlagsForTarget(${target})
+endfunction()
+
 function(setExportedHeadersForTarget target)
   set_target_properties(${target}
     PROPERTIES
-    FRAMEWORK ON
     PUBLIC_HEADER "${ARGN}"
   )
 endfunction()

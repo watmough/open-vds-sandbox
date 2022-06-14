@@ -138,7 +138,7 @@ set_source_files_properties(VDS/FSE/fse_decompress.cpp PROPERTIES COMPILE_FLAGS 
 
 #to work around Aws::String problem
 #https://github.com/aws/aws-sdk-cpp/blob/266d7682c3d07d41618c41a3521811e1219c1bc7/aws-cpp-sdk-core/include/aws/core/utils/memory/stl/AWSString.h#L21
-if (NOT MSVC AND NOT EMSCRIPTEN)
+if (NOT MSVC AND NOT EMSCRIPTEN AND NOT APPLE)
   set_source_files_properties(IO/IOManagerAWS.cpp PROPERTIES COMPILE_FLAGS -fvisibility=default)
   set_source_files_properties(IO/IOManagerAWSCurl.cpp PROPERTIES COMPILE_FLAGS -fvisibility=default)
 endif()
@@ -197,7 +197,7 @@ list(APPEND EXPORTED_HEADER_FILES ${CMAKE_CURRENT_BINARY_DIR}/OpenVDS/OpenVDSVer
 
 #needed for ENABLE_SSE_TRANSFORM
 target_include_directories(openvds_objects PRIVATE ${sse2neo_SOURCE_DIR})
-if (ENABLE_SSE4_1)
+if (ENABLE_SSE4_1 AND NOT (APPLE AND CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "arm64"))
   target_compile_options(openvds_objects PRIVATE -msse4.1)
 endif()
 
@@ -226,6 +226,7 @@ if (NOT EMSCRIPTEN)
     if (UNIX)
       find_package(Boost REQUIRED COMPONENTS system date_time regex)
       target_link_libraries(openvds_objects PRIVATE Boost::system)
+      target_include_directories(openvds_objects PRIVATE ${OPENSSL_INCLUDE_DIR})
     endif()
   endif()
 
@@ -263,10 +264,6 @@ if (NOT EMSCRIPTEN)
     target_compile_definitions(openvds_objects PRIVATE OPENVDS_NO_GCP_IOMANAGER)
     set_source_files_properties(IO/IOManagerGoogle.cpp PROPERTIES HEADER_FILE_ONLY TRUE)
   else()
-    if (WIN32 AND NOT USE_LIBRESSL)
-      find_package(OpenSSL REQUIRED)
-      target_link_libraries(openvds_objects PRIVATE OpenSSL::SSL OpenSSL::Crypto)
-    endif()
     target_link_libraries(openvds_objects PRIVATE google_cloud_ovds)
   endif()
 
@@ -282,7 +279,7 @@ if (NOT EMSCRIPTEN)
   if (WIN32)
     target_link_libraries(openvds_objects PRIVATE crypt32 wsock32 ws2_32)
   else()
-    target_link_libraries(openvds_objects PRIVATE ssl crypto)
+    target_link_libraries(openvds_objects PRIVATE OpenSSL::SSL OpenSSL::Crypto)
   endif()
 
   target_link_libraries(openvds_objects PRIVATE Threads::Threads)

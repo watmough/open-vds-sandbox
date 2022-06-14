@@ -105,6 +105,12 @@ folder:
 `$ cmake -P CMake/Fetch3rdParty.cmake`
 Then start like other cmake projects in Visual Studio
 
+#### MacOS
+When building on MacOS we use homebrew for some of the dependencies.
+brew install openssl libuv boost ossp-uuid
+
+Then it should be work out of the box with the IDE of your choice.
+
 #### Emscripten
 OpenVDS can be compiled with Emscripten to a javascript module. The module
 exports the DeserializeVolumeData() function.
