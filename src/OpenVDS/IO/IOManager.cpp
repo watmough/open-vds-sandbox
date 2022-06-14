@@ -89,8 +89,10 @@ IOManager* IOManager::CreateIOManager(const OpenOptions& options, IOManager::Acc
   case OpenOptions::Http:
     return new IOManagerHttp(static_cast<const HttpOpenOptions &>(options), error);
 #endif
+#ifndef OPENVDS_NO_DMS_IOMANAGER
   case OpenOptions::DMS:
     return CreateDMSIOManager(static_cast<const DMSOpenOptions&>(options), accessPattern, error);
+#endif
   case OpenOptions::InMemory:
     return IOManagerInMemory::CreateIOManagerInMemory(static_cast<const InMemoryOpenOptions &>(options), error);
   default:
