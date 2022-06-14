@@ -31,6 +31,7 @@ struct BitMask {
   {
   }
   constexpr BitMask(const BitMask<T> &other) = default;
+  BitMask<T> &operator=(const BitMask<T> &other) = default;
 
   template <typename... ARGS>
     BitMask(T flag, ARGS... args)
