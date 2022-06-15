@@ -1116,9 +1116,13 @@ const char *OpenVDSInterfaceImpl::GetOpenVDSRevision()
 
 static OpenVDSInterface *openVDSInterfacePointer = &OpenVDSInterfaceImpl::GetInstance();
 
+#define OPENVDS_STRINGIZE_UNEXPANDED(N) #N
+#define OPENVDS_STRINGIZE(N) OPENVDS_STRINGIZE_UNEXPANDED(N)
+
 OpenVDSInterface &GetOpenVDSInterface(const char* version)
 {
-  if(strcmp(version, OPENVDS_VERSION) != 0) throw InvalidOperation("OpenVDS interface version mismatch");
+  static const char expectedVersion[] = OPENVDS_STRINGIZE(OPENVDS_MAJOR_VERSION) "." OPENVDS_STRINGIZE(OPENVDS_MINOR_VERSION) ".";
+  if(strncmp(version, expectedVersion, sizeof(expectedVersion) - 1) != 0) throw InvalidOperation("OpenVDS interface version mismatch");
 
   return *openVDSInterfacePointer;
 }
