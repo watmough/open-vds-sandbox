@@ -92,9 +92,24 @@ struct StringWrapper
 };
 
 /// <summary>
-/// The OpenVDS global interface is used to provide a single versioned entrypoint for the API
+/// The OpenVDS versioning interface is a stable base class for the OpenVDS global interface that can be used to check what version of the OpenVDS interface is provided
 /// </summary>
-class OpenVDSInterface
+class OpenVDSVersioningInterface
+{
+protected:
+           OpenVDSVersioningInterface() {}
+  virtual ~OpenVDSVersioningInterface() {}
+public:
+  virtual const char               *GetOpenVDSName() = 0;
+  virtual const char               *GetOpenVDSVersion() = 0;
+  virtual void                      GetOpenVDSVersion(int &major, int &minor, int &patch) = 0;
+  virtual const char               *GetOpenVDSRevision() = 0;
+};
+
+/// <summary>
+/// The OpenVDS interface is used to provide a versioned entrypoint for the API with wrappers for standard types to ensure ABI compatibility
+/// </summary>
+class OpenVDSInterface : public OpenVDSVersioningInterface
 {
 protected:
            OpenVDSInterface() {}
@@ -122,13 +137,11 @@ public:
   virtual void                      RetryableClose(VDSHandle handle) = 0;
   virtual void                      RetryableClose(VDSHandle handle, ErrorHandler errorHandler, Error *error=nullptr) = 0;
   virtual GlobalState              *GetGlobalState() = 0;
-  virtual const char               *GetOpenVDSName() = 0;
-  virtual const char               *GetOpenVDSVersion() = 0;
-  virtual const char               *GetOpenVDSRevision() = 0;
 };
 
 #ifndef OPENVDS_REPLACE_INTERFACE
 OPENVDS_EXPORT OpenVDSInterface &GetOpenVDSInterface(const char* version);
+OPENVDS_EXPORT void              SetOpenVDSInterface(OpenVDSInterface &openVDSInterface);
 #endif
 }
 
