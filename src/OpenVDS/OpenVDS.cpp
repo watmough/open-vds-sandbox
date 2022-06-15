@@ -823,7 +823,14 @@ public:
   GlobalState              *GetGlobalState() final override;
   const char               *GetOpenVDSName() final override;
   const char               *GetOpenVDSVersion() final override;
+  void                      GetOpenVDSVersion(int &major, int &minor, int &patch) final override;
   const char               *GetOpenVDSRevision() final override;
+
+  static OpenVDSInterfaceImpl &GetInstance()
+  {
+    static OpenVDSInterfaceImpl instance;
+    return instance;
+  }
 };
 
 OpenOptions* OpenVDSInterfaceImpl::CreateOpenOptions(StringWrapper urlWrapper, StringWrapper connectionStringWrapper, ErrorHandler errorHandler, Error *errorPtr)
@@ -1095,17 +1102,30 @@ const char *OpenVDSInterfaceImpl::GetOpenVDSVersion()
   return OPENVDS_VERSION;
 }
 
+void OpenVDSInterfaceImpl::GetOpenVDSVersion(int &major, int &minor, int &patch)
+{
+  major = OPENVDS_MAJOR_VERSION;
+  minor = OPENVDS_MINOR_VERSION;
+  patch = OPENVDS_PATCH_VERSION;
+}
+
 const char *OpenVDSInterfaceImpl::GetOpenVDSRevision()
 {
   return OPENVDS_REVISION;
 }
 
+static OpenVDSInterface *openVDSInterfacePointer = &OpenVDSInterfaceImpl::GetInstance();
+
 OpenVDSInterface &GetOpenVDSInterface(const char* version)
 {
-  static OpenVDSInterfaceImpl instance;
-
   if(strcmp(version, OPENVDS_VERSION) != 0) throw InvalidOperation("OpenVDS interface version mismatch");
-  return instance;
+
+  return *openVDSInterfacePointer;
+}
+
+void SetOpenVDSInterface(OpenVDSInterface &openVDSInterface)
+{
+  openVDSInterfacePointer = &openVDSInterface;
 }
 
 }
