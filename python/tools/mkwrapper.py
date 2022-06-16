@@ -574,7 +574,7 @@ def generate_function(node, all_, output, indent, parent_prefix, context):
             lambda_params = params[:-1]
             (decl_params, call_params) = create_lambda_arguments(lambda_params, "err")
             argnames_lambda = get_argnames_params(lambda_params)
-            lamcode = """.def({:30}, []{} {{ {}::Error err; auto ret = {}{}; if (err.code) throw std::runtime_error(err.string); return ret; }}, py::call_guard<py::gil_scoped_release>(){});""".format(q(fnname), decl_params, "native",  getnativename(node, all_), call_params, argnames_lambda)
+            lamcode = """.def({:30}, []{} {{ {}::Error err; auto ret = {}{}; if (err.code) {{ throw std::runtime_error(err.string); }} return ret; }}, py::call_guard<py::gil_scoped_release>(){});""".format(q(fnname), decl_params, "native",  getnativename(node, all_), call_params, argnames_lambda)
             if node.is_static_method():
                 lamcode = lamcode.replace('.def(', '.def_static(')
             lamline = indent + parent_prefix + lamcode
