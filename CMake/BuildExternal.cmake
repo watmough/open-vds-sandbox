@@ -19,9 +19,15 @@ function(BuildExternal name version depends source_dir install_libs runtime_libs
 
   set(INSTALL_INT_CONFIG "${INSTALL_INT}/$<CONFIG>")
   get_filename_component(ABS_PATH_INSTALL_INT_CONFIG "${INSTALL_INT_CONFIG}" ABSOLUTE)
-  foreach (LIB IN LISTS install_libs)
-    list(APPEND BUILDBYPRODUCTS "${ABS_PATH_INSTALL_INT_CONFIG}/${LIB}")
-  endforeach()
+  if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.20.0")
+    foreach (LIB IN LISTS install_libs)
+      list(APPEND BUILDBYPRODUCTS "${ABS_PATH_INSTALL_INT_CONFIG}/${LIB}")
+    endforeach()
+  else()
+    if (CMAKE_GENERATOR MATCHES ".*Ninja.*")
+      message(FATAL_ERROR "Required minimum CMake version when using a Ninja generator is 3.20.0")
+    endif()
+  endif()
 
   set(${name}_INSTALL_INT_CONFIG "${INSTALL_INT_CONFIG}" PARENT_SCOPE)
 
