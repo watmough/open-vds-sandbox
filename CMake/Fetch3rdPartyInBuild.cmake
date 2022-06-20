@@ -91,6 +91,7 @@ function(Fetch3rdParty)
 
   Fetch3rdParty_Git(aws-cpp-sdk           1.9.197a   https://github.com/aws/aws-sdk-cpp.git                                               1.9.197)
   Fetch3rdParty_Package(gtest             1.10.0     https://github.com/google/googletest/archive/release-1.10.0.tar.gz                   SHA256=9dc9157a9a1551ec7a7e43daea9a694a0bb5fb8bec81235d8a1e6ef64c716dcb)
+  Fetch3rdParty_Package(benchmark         1.6.1     https://github.com/google/benchmark/archive/refs/tags/v1.6.1.tar.gz                   SHA256=6132883bc8c9b0df5375b16ab520fac1a85dc9e4cf5be59480448ece74b278d4)
   Fetch3rdParty_Package(jsoncpp           1.8.4      https://github.com/open-source-parsers/jsoncpp/archive/1.8.4.tar.gz                  MD5=fa47a3ab6b381869b6a5f20811198662)
   Fetch3rdParty_Package(fmt               7.1.3      https://github.com/fmtlib/fmt/archive/7.1.3.tar.gz                                   SHA256=5cae7072042b3043e12d53d50ef404bbb76949dad1de368d7f993a15c8c05ecc)
   Fetch3rdParty_Package(cpprestapi        2.10.16    https://github.com/microsoft/cpprestsdk/archive/v2.10.16.tar.gz                      SHA256=3d75e17c7d79131320438f2a15331f7ca6281c38c0e2daa27f051e290eeb8681)

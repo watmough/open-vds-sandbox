@@ -164,3 +164,4 @@ if (BUILD_JAVA)
   add_subdirectory(java)
 endif()
 
+add_subdirectory(benchmark)
