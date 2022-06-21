@@ -82,16 +82,14 @@ install(TARGETS core LIBRARY CONFIGURATIONS Debug DESTINATION python/Debug/openv
 install(FILES ${pythonsources} CONFIGURATIONS Release RelWithDebInfo MinSizeRel DESTINATION python/openvds)
 install(FILES ${pythonsources} CONFIGURATIONS Debug DESTINATION python/Debug/openvds)
 
-set(PYINSTALL_TARGETS "openvds")
-if (NOT DISABLE_DMS_IOMANAGER)
-  list(APPEND PYINSTALL_TARGETS "sdapi")
-endif()
-
 if (NOT PYTHON_DISABLE_INSTALL_3RD_PARTY)
-  get_property(runtime_3rdparty_release GLOBAL PROPERTY OPENVDS_RUNTIME_LIBS_RELEASE)
-  get_property(runtime_3rdparty_debug   GLOBAL PROPERTY OPENVDS_RUNTIME_LIBS_DEBUG)
-  install(FILES ${runtime_3rdparty_release} CONFIGURATIONS Release RelWithDebInfo MinSizeRel DESTINATION python/openvds)
-  install(FILES ${runtime_3rdparty_debug} CONFIGURATIONS Debug DESTINATION python/Debug/openvds)
+  set(PYINSTALL_TARGETS "openvds")
+  if (NOT DISABLE_DMS_IOMANAGER)
+    list(APPEND PYINSTALL_TARGETS "sdapi")
+  endif()
+  get_property(runtime_3rdparty GLOBAL PROPERTY OPENVDS_RUNTIME_LIBS)
+  install(FILES ${runtime_3rdparty} CONFIGURATIONS Release RelWithDebInfo MinSizeRel DESTINATION python/openvds)
+  install(FILES ${runtime_3rdparty} CONFIGURATIONS Debug DESTINATION python/Debug/openvds)
   install(TARGETS ${PYINSTALL_TARGETS} CONFIGURATIONS Release RelWithDebInfo MinSizeRel
     RUNTIME DESTINATION python/openvds
     LIBRARY DESTINATION python/openvds
