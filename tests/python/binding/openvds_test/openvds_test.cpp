@@ -84,7 +84,16 @@ public:
   {
     return facade.WriteObject(objectName, contentDispostionFilename, contentType, metadataHeader, data, completedCallback);
   }
+
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable : 4717)
+#endif
   bool Close(OpenVDS::Error &error) override { return facade.Close(error); }
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
+
 
   std::unique_ptr<OpenVDS::IOManager> deleter;
   IOManagerFacadeUtil facade;
