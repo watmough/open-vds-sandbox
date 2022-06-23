@@ -1,4 +1,7 @@
 set(BENCHMARK_ENABLE_GTEST_TESTS OFF CACHE BOOL "We dont need to build the unit tests" FORCE)
+set(BENCHMARK_ENABLE_TESTING OFF CACHE BOOL "We dont need to build the unit tests" FORCE)
+set(BENCHMARK_ENABLE_INSTALL OFF CACHE BOOL "We dont need to build the unit tests" FORCE)
+set(BENCHMARK_ENABLE_ASSEMBLY_TESTS OFF CACHE BOOL "We dont need to build the unit tests" FORCE)
 add_subdirectory(${benchmark_SOURCE_DIR} ${PROJECT_BINARY_DIR}/benchmark)
 
 add_executable(BenchmarkRootTarget RootBenchmarkExecutable.cpp)
