@@ -36,6 +36,17 @@ add_test(NAME "python.pytests.pytests"
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/pytests
   )
 
+find_package(Python3 COMPONENTS NumPy)
+
+execute_process(COMMAND ${Python3_EXECUTABLE} -c "from packaging import version; import sys; import numpy as np; sys.exit(version.parse(\"1.17.0\") > version.parse(np.__version__))" RESULT_VARIABLE ret)
+if (NOT ret)
+  add_test(NAME "python.pytests.benchmarks"
+    COMMAND ${CMAKE_COMMAND} -E env "PYTHONPATH=$<TARGET_FILE_DIR:core>/..${separator}${CMAKE_CURRENT_BINARY_DIR}${separator}$<TARGET_FILE_DIR:openvds_python_test>/..${separator}${CMAKE_CURRENT_SOURCE_DIR}"
+    ${Python3_EXECUTABLE} -m pytest -s --junit-xml=${PROJECT_BINARY_DIR}/test_results/pytest_results.xml
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/benchmark
+    )
+endif()
+
 add_subdirectory(binding)
 
 file(READ "pytest.ini.in" PYTEST_INI_IN)

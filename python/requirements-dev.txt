@@ -2,3 +2,4 @@ scikit-build
 pybind11
 numpy
 pytest
+pytest-benchmark
