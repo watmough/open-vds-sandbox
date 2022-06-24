@@ -7,7 +7,6 @@ cmake_args="-DBUILD_TESTS=OFF"
 openvds_version=""
 name="openvds"
 
-cmake_generator=""
 platform_name=""
 skplat_name=""
 distribution=""
@@ -16,20 +15,14 @@ auditwheels="no"
 libdir_suffix=""
 [[ -d /usr/lib64 ]] && libdir_suffix="64"
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-  cmake_generator="Ninja"
   platform_name="linux"
   skplat_name="linux-x86_64"
-  toolset=""
 elif [[ "$OSTYPE" == "darwin"* ]]; then
-  cmake_generator="Ninja"
   platform_name="mac"
   skplat_name="maxosx-10.6-x86_64"
-  toolset=""
 elif [[ "$OSTYPE" == "msys" ]]; then
-  cmake_generator="Visual Studio 16 2019"
   platform_name="win"
   skplat_name="win-amd64"
-  toolset="-Tv140"
 fi
   
 while [[ $# -gt 0 ]]
@@ -127,11 +120,8 @@ for python_executable in "${python_executables[@]}"; do
   skbuild_platform="$skplat_name-$python_ver"
 
   skbuild_dir="$openvds_path/_skbuild/$skbuild_platform"
-  build_dir="$openvds_path/_skbuild/internal_build_dir"
   [[ -d $skbuild_dir ]] || mkdir -p $skbuild_dir
-  [[ -d $build_dir ]] || mkdir -p $build_dir
   skbuild_dir=$(realpath $skbuild_dir)
-  build_dir=$(realpath $build_dir)
 
   venv_dir="$openvds_path/_skbuild/venv_$python_ver"
   $python_executable -m venv $venv_dir
@@ -146,21 +136,14 @@ for python_executable in "${python_executables[@]}"; do
 
   deactivate nondestructive
 
-  cd "$build_dir"
-
   echo "Do $python_executable to $skbuild_dir"
-  if [[ "$platform_name" == "win" ]]; then
-    "$cmake_executable" -DPython3_ROOT_DIR="$python_root_dir" -DCMAKE_INSTALL_PREFIX=$skbuild_dir/cmake-install -DENABLE_MSVC_TOOLSET_DIR=OFF $cmake_args -G"$cmake_generator" $toolset $openvds_path
-    "$cmake_executable" --build . --config Debug --parallel --target install
-    "$cmake_executable" --build . --config Release --parallel --target install
-  else
-    "$cmake_executable" -DPython3_ROOT_DIR="$python_root_dir" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$skbuild_dir/cmake-install $cmake_args -G"$cmake_generator" $toolset $openvds_path
-    "$cmake_executable" --build . --config Release --target install
-  fi
-
   cd "$openvds_path"
+
+  "$cmake_executable" -DPython3_ROOT_DIR="$python_root_dir" -DENABLE_MSVC_TOOLSET_DIR=OFF -DCMAKE_INSTALL_PREFIX=$skbuild_dir/cmake-install $cmake_args --preset Release
+  ninja -C out/build/Release install
+
   [[ -d "$skbuild_dir/cmake-build" ]] || mkdir -p "$skbuild_dir/cmake-build"
-  cp -r "$build_dir"/* "$skbuild_dir/cmake-build"
+  cp -r out/build/Release/* "$skbuild_dir/cmake-build"
 
   "$python_executable" setup.py --skip-cmake bdist_wheel
 
@@ -204,11 +187,12 @@ for python_executable in "${python_executables[@]}"; do
   fi
 
   if [[ "$platform_name" == "win" ]]; then
-    cd "$build_dir"
+    cd "$openvds_path"
     rm -rf $skbuild_dir/cmake-install
-    "$cmake_executable" -DPython3_ROOT_DIR="$python_root_dir" -DCMAKE_INSTALL_PREFIX=$skbuild_dir/cmake-install -DENABLE_MSVC_TOOLSET_DIR=ON $cmake_args -G"$cmake_generator" $toolset $openvds_path
-    "$cmake_executable" --build . --config Debug --parallel --target install
-    "$cmake_executable" --build . --config Release --parallel --target install
+    "$cmake_executable" -DPython3_ROOT_DIR="$python_root_dir" -DENABLE_MSVC_TOOLSET_DIR=ON -DCMAKE_INSTALL_PREFIX=$skbuild_dir/cmake-install $cmake_args --preset Release
+    ninja -C out/build/Release install
+    "$cmake_executable" -DPython3_ROOT_DIR="$python_root_dir" -DENABLE_MSVC_TOOLSET_DIR=ON -DCMAKE_INSTALL_PREFIX=$skbuild_dir/cmake-install $cmake_args --preset Debug
+    ninja -C out/build/Debug install
   fi
   cd "$openvds_path"
   cp -r $skbuild_dir/cmake-install/* binpackage/$name-$openvds_version
