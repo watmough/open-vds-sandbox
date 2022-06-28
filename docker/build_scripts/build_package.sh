@@ -2,7 +2,6 @@ set -e -u
 base_dir=$(realpath $(dirname $BASH_SOURCE))
 
 openvds_path=$(realpath "$base_dir/../..")
-cmake_executable=$(which cmake)
 cmake_args="-DBUILD_TESTS=OFF"
 openvds_version=""
 name="openvds"
@@ -111,6 +110,21 @@ fi
 
 mkdir -p $openvds_path/binpackage/$name-$openvds_version
 mkdir -p $openvds_path/binpackage/python/$distribution/
+mkdir -p $openvds_path/_skbuild
+
+if [[ "$platform_name" == "win" ]]; then
+  cmake_version=3.23.2
+  cmake_name="cmake-$cmake_version-windows-x86_64"
+  cd "$openvds_path/_skbuild"
+  if [[ ! -d $cmake_name ]]; then
+    curl -O -L "https://github.com/Kitware/CMake/releases/download/v$cmake_version/$cmake_name.zip"
+    unzip $cmake_name.zip
+  fi
+  cmake_executable="$openvds_path/_skbuild/$cmake_name/bin/cmake.exe"
+  cd "$openvds_path"
+else
+  cmake_executable=$(which cmake)
+fi
 
 for python_executable in "${python_executables[@]}"; do
   python_ver=$("$python_executable" -c "import sys;  print('.'.join(map(str, sys.version_info[:2])))")
