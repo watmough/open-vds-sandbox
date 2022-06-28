@@ -2,7 +2,7 @@ function(GetRootInstallDir var name version)
   set(${var} "${PROJECT_BINARY_DIR}/${name}_${version}_install" PARENT_SCOPE)
 endfunction()
 
-function(BuildExternal name version depends source_dir install_libs runtime_libs cmake_args)
+function(BuildExternal name version depends source_dir install_libs runtime_libs use_logging cmake_args)
 
   GetRootInstallDir(INSTALL_INT ${name} ${version})
 
@@ -52,17 +52,36 @@ function(BuildExternal name version depends source_dir install_libs runtime_libs
   endif()
   set(cmake_arg_complete "${cmake_arg_complete}-DCMAKE_INSTALL_PREFIX=${INSTALL_INT_CONFIG};-DCMAKE_INSTALL_MESSAGE=LAZY;-Wno-dev")
   include(ExternalProject)
-  ExternalProject_Add(${name}
-    PREFIX ${PROJECT_BINARY_DIR}/${name}_${version}
-    SOURCE_DIR ${source_dir}
-    BUILD_IN_SOURCE OFF
-    USES_TERMINAL_DOWNLOAD ON
-    USES_TERMINAL_BUILD ON
-    CMAKE_GENERATOR ${CMAKE_GENERATOR}
-    CMAKE_GENERATOR_PLATFORM ${CMAKE_GENERATOR_PLATFORM}
-    CMAKE_GENERATOR_TOOLSET ${CMAKE_GENERATOR_TOOLSET}
-    CMAKE_ARGS ${cmake_arg_complete}
-    BUILD_BYPRODUCTS "${BUILDBYPRODUCTS}"
-    DEPENDS ${depends})
+  if (use_logging)
+    ExternalProject_Add(${name}
+      PREFIX ${PROJECT_BINARY_DIR}/${name}_${version}
+      SOURCE_DIR ${source_dir}
+      BUILD_IN_SOURCE OFF
+      USES_TERMINAL_DOWNLOAD ON
+      USES_TERMINAL_BUILD ON
+      LOG_CONFIGURE ON
+      LOG_INSTALL ON
+      LOG_BUILD ON
+      LOG_OUTPUT_ON_FAILURE ON
+      CMAKE_GENERATOR ${CMAKE_GENERATOR}
+      CMAKE_GENERATOR_PLATFORM ${CMAKE_GENERATOR_PLATFORM}
+      CMAKE_GENERATOR_TOOLSET ${CMAKE_GENERATOR_TOOLSET}
+      CMAKE_ARGS ${cmake_arg_complete}
+      BUILD_BYPRODUCTS "${BUILDBYPRODUCTS}"
+      DEPENDS ${depends})
+  else()
+    ExternalProject_Add(${name}
+      PREFIX ${PROJECT_BINARY_DIR}/${name}_${version}
+      SOURCE_DIR ${source_dir}
+      BUILD_IN_SOURCE OFF
+      USES_TERMINAL_DOWNLOAD ON
+      USES_TERMINAL_BUILD ON
+      CMAKE_GENERATOR ${CMAKE_GENERATOR}
+      CMAKE_GENERATOR_PLATFORM ${CMAKE_GENERATOR_PLATFORM}
+      CMAKE_GENERATOR_TOOLSET ${CMAKE_GENERATOR_TOOLSET}
+      CMAKE_ARGS ${cmake_arg_complete}
+      BUILD_BYPRODUCTS "${BUILDBYPRODUCTS}"
+      DEPENDS ${depends})
+  endif()
 endfunction()
 

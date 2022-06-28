@@ -13,7 +13,7 @@ function(BuildLibreSSL)
     list(APPEND CMAKE_ARGS "-DLIBRESSL_APPS=OFF")
     list(APPEND CMAKE_ARGS "-DLIBRESSL_TESTS=OFF")
     list(APPEND CMAKE_ARGS "-DBUILD_SHARED_LIBS=ON")
-    BuildExternal(libressl ${libressl_VERSION} "" ${libressl_SOURCE_DIR} "${LIBRESSL_LIBS_LIST}" "${LIBRESSL_DLLS_LIST}" "${CMAKE_ARGS}")
+    BuildExternal(libressl ${libressl_VERSION} "" ${libressl_SOURCE_DIR} "${LIBRESSL_LIBS_LIST}" "${LIBRESSL_DLLS_LIST}" ON "${CMAKE_ARGS}")
   endif()
 
 endfunction()

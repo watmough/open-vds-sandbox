@@ -11,5 +11,5 @@ function(BuildLibUV)
     list(APPEND LIBUV_DLLS_LIST "${LIB_PREFIX}/libuv.dylib")
   endif()
 
-  BuildExternal(libuv ${libuv_VERSION} "" ${libuv_SOURCE_DIR} "${LIBUV_LIBS_LIST}" "${LIBUV_DLLS_LIST}" "")
+  BuildExternal(libuv ${libuv_VERSION} "" ${libuv_SOURCE_DIR} "${LIBUV_LIBS_LIST}" "${LIBUV_DLLS_LIST}" ON "")
 endfunction()

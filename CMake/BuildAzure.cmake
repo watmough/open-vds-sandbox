@@ -33,7 +33,7 @@ function(BuildAzure)
   if (UUID_INCLUDE_DIR)
     set(cmake_arg "${cmake_arg};-DUUID_INCLUDE_DIR=${UUID_INCLUDE_DIR}")
   endif()
-  BuildExternal(azure-storage ${azure-storage-cpp_VERSION} cpp-rest-api ${AzureCmakeDir} "${AZURE_LIBS_LIST}" "${AZURE_DLLS_LIST}" "${cmake_arg}${BOOST_FLAGS}")
+  BuildExternal(azure-storage ${azure-storage-cpp_VERSION} cpp-rest-api ${AzureCmakeDir} "${AZURE_LIBS_LIST}" "${AZURE_DLLS_LIST}" ON "${cmake_arg}${BOOST_FLAGS}")
 
 
 endfunction()
