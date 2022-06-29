@@ -120,10 +120,16 @@ if [[ "$platform_name" == "win" ]]; then
     curl -O -L "https://github.com/Kitware/CMake/releases/download/v$cmake_version/$cmake_name.zip"
     unzip $cmake_name.zip
   fi
+  if [[ ! -d ninja ]]; then
+    curl -O -L https://github.com/ninja-build/ninja/releases/download/v1.11.0/ninja-win.zip
+    unzip ninja-win.zip -d ninja
+  fi
   cmake_executable="$openvds_path/_skbuild/$cmake_name/bin/cmake.exe"
+  ninja_executable="$openvds_path/_skbuild/ninja/ninja.exe"
   cd "$openvds_path"
 else
   cmake_executable=$(which cmake)
+  ninja_executable=$(which ninja)
 fi
 
 for python_executable in "${python_executables[@]}"; do
@@ -154,7 +160,7 @@ for python_executable in "${python_executables[@]}"; do
   cd "$openvds_path"
 
   "$cmake_executable" -DPython3_ROOT_DIR="$python_root_dir" -DENABLE_MSVC_TOOLSET_DIR=OFF -DCMAKE_INSTALL_PREFIX=$skbuild_dir/cmake-install $cmake_args --preset Release
-  ninja -C out/build/Release install
+  "$ninja_executable" -C out/build/Release install
 
   [[ -d "$skbuild_dir/cmake-build" ]] || mkdir -p "$skbuild_dir/cmake-build"
   cp -r out/build/Release/* "$skbuild_dir/cmake-build"
@@ -204,9 +210,9 @@ for python_executable in "${python_executables[@]}"; do
     cd "$openvds_path"
     rm -rf $skbuild_dir/cmake-install
     "$cmake_executable" -DPython3_ROOT_DIR="$python_root_dir" -DENABLE_MSVC_TOOLSET_DIR=ON -DCMAKE_INSTALL_PREFIX=$skbuild_dir/cmake-install $cmake_args --preset Release
-    ninja -C out/build/Release install
+    "$ninja_executable" -C out/build/Release install
     "$cmake_executable" -DPython3_ROOT_DIR="$python_root_dir" -DENABLE_MSVC_TOOLSET_DIR=ON -DCMAKE_INSTALL_PREFIX=$skbuild_dir/cmake-install $cmake_args --preset Debug
-    ninja -C out/build/Debug install
+    "$ninja_executable" -C out/build/Debug install
   fi
   cd "$openvds_path"
   cp -r $skbuild_dir/cmake-install/* binpackage/$name-$openvds_version
