@@ -18,11 +18,24 @@ namespace OpenVDS
 
   struct InitAws
   {
-    InitAws();
-    ~InitAws();
+    InitAws()
+    {
+      std::unique_lock<std::mutex> lock(mutex);
+      if (!apiHandle)
+        apiHandle.reset(new Aws::Crt::ApiHandle());
+      count++;
+    }
+    ~InitAws()
+    {
+      std::unique_lock<std::mutex> lock(mutex);
+      count--;
+      if (count == 0)
+        apiHandle.reset();
+    }
 
     static std::mutex mutex;
     static int count;
+    static std::unique_ptr<Aws::Crt::ApiHandle> apiHandle;
   };
   class IOManagerAWSCurl : public IOManager
   {
@@ -36,7 +49,7 @@ namespace OpenVDS
       bool Close(Error &error) override { return true; }
     private:
       CurlHandler m_curlHandler;
-      std::unique_ptr<Aws::Crt::ApiHandle> m_apiHandle;
+      std::unique_ptr<InitAws> m_awsInitDeinit;
       Aws::Crt::Io::EventLoopGroup m_eventLoopGroup;
       Aws::Crt::Io::DefaultHostResolver m_hostResolver;
       Aws::Crt::Io::ClientBootstrap m_clientBootstrap;
