@@ -14,6 +14,10 @@
 namespace OpenVDS
 {
 
+std::mutex InitAws::mutex;
+int InitAws::count = 0;
+std::unique_ptr<Aws::Crt::ApiHandle> InitAws::apiHandle;
+
 inline char asciitolower(char in)
 {
   if (in <= 'Z' && in >= 'A')
@@ -181,7 +185,7 @@ void assignByteCursorFromString(Aws::Crt::ByteCursor& cursor, const std::string&
 IOManagerAWSCurl::IOManagerAWSCurl(const AWSOpenOptions& openOptions, Error& error)
   : IOManager(OpenOptions::AWS)
   , m_curlHandler(error, resolveLoglevel(openOptions.loglevel) > 0)
-  , m_apiHandle(openOptions.disableInitApi ? nullptr : new Aws::Crt::ApiHandle())
+  , m_awsInitDeinit(openOptions.disableInitApi ? nullptr : new InitAws())
   , m_eventLoopGroup(1)
   , m_hostResolver(m_eventLoopGroup, 1000, 1000)
   , m_clientBootstrap(m_eventLoopGroup, m_hostResolver)
