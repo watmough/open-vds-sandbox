@@ -15,8 +15,8 @@
 ** limitations under the License.
 ****************************************************************************/
 
-#ifndef VOLUMEDATAACCESSMANAGER_H
-#define VOLUMEDATAACCESSMANAGER_H
+#ifndef OPENVDS_VOLUMEDATAACCESSMANAGER_H
+#define OPENVDS_VOLUMEDATAACCESSMANAGER_H
 
 #include <OpenVDS/VolumeDataAccess.h>
 #include <OpenVDS/VolumeDataLayout.h>
@@ -2517,6 +2517,6 @@ template<> inline VolumeDataReadAccessor<FloatVector3, float>  VolumeDataAccessM
 template<> inline VolumeDataReadAccessor<FloatVector4, double> VolumeDataAccessManager::CreateInterpolatingVolumeDataAccessor<FloatVector4, double>(DimensionsND dimensionsND, int LOD, int channel, InterpolationMethod interpolationMethod, optional<float> replacementNoValue) { return CreateVolumeData4DInterpolatingAccessorR64(dimensionsND, LOD, channel, interpolationMethod, replacementNoValue); }
 template<> inline VolumeDataReadAccessor<FloatVector4, float>  VolumeDataAccessManager::CreateInterpolatingVolumeDataAccessor<FloatVector4, float> (DimensionsND dimensionsND, int LOD, int channel, InterpolationMethod interpolationMethod, optional<float> replacementNoValue) { return CreateVolumeData4DInterpolatingAccessorR32(dimensionsND, LOD, channel, interpolationMethod, replacementNoValue); }
 
-} /* namespace OpenVDS*/
+} // end namespace OpenVDS
 
-#endif // VOLUMEDATAACCESSMANAGER_H
+#endif // OPENVDS_VOLUMEDATAACCESSMANAGER_H

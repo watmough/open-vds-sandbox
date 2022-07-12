@@ -15,8 +15,8 @@
 ** limitations under the License.
 ****************************************************************************/
 
-#ifndef VALUECONVERSION_H
-#define VALUECONVERSION_H
+#ifndef OPENVDS_VALUECONVERSION_H
+#define OPENVDS_VALUECONVERSION_H
 
 #include <type_traits>
 #include <limits>
@@ -303,5 +303,7 @@ public:
     }
   }
 };
-}
-#endif //VALUECONVERSION_H
+
+} // end namespace OpenVDS
+
+#endif // OPENVDS_VALUECONVERSION_H

@@ -15,8 +15,8 @@
 ** limitations under the License.
 ****************************************************************************/
 
-#ifndef OPTIONAL_H
-#define OPTIONAL_H
+#ifndef OPENVDS_OPTIONAL_H
+#define OPENVDS_OPTIONAL_H
 
 #if __cplusplus >=201703L
 #include <optional>
@@ -76,6 +76,6 @@ struct optional
   }
 };
 
-} /* namespace OpenVDS */
+} // end namespace OpenVDS
 
-#endif //OPTIONAL_H
+#endif // OPENVDS_OPTIONAL_H

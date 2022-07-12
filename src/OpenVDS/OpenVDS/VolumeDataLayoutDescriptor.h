@@ -15,8 +15,8 @@
 ** limitations under the License.
 ****************************************************************************/
 
-#ifndef VOLUMEDATALAYOUTDESCRIPTOR_H
-#define VOLUMEDATALAYOUTDESCRIPTOR_H
+#ifndef OPENVDS_VOLUMEDATALAYOUTDESCRIPTOR_H
+#define OPENVDS_VOLUMEDATALAYOUTDESCRIPTOR_H
 
 namespace OpenVDS
 {
@@ -94,5 +94,6 @@ public:
 
 inline VolumeDataLayoutDescriptor::Options operator|(VolumeDataLayoutDescriptor::Options lhs, VolumeDataLayoutDescriptor::Options rhs) { return (VolumeDataLayoutDescriptor::Options)((int)lhs | (int)rhs); }
 
-}
-#endif //VOLUMEDATALAYOUTDESCRIPTOR_H
+} // end namespace OpenVDS
+
+#endif // OPENVDS_VOLUMEDATALAYOUTDESCRIPTOR_H

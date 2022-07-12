@@ -15,8 +15,8 @@
 ** limitations under the License.
 ****************************************************************************/
 
-#ifndef VOLUMEDATALAYOUT_H
-#define VOLUMEDATALAYOUT_H
+#ifndef OPENVDS_VOLUMEDATALAYOUT_H
+#define OPENVDS_VOLUMEDATALAYOUT_H
 
 #include <OpenVDS/VolumeDataChannelDescriptor.h>
 #include <OpenVDS/VolumeDataAxisDescriptor.h>
@@ -105,6 +105,6 @@ public:
   virtual float GetChannelIntegerOffset(int channel) const = 0; ///< Returns the integer offset for the given channel index
 };
 
-}
+} // end namespace OpenVDS
 
-#endif //VOLUMEDATALAYOUT_H
+#endif // OPENVDS_VOLUMEDATALAYOUT_H

@@ -15,8 +15,8 @@
 ** limitations under the License.
 ****************************************************************************/
 
-#ifndef VOLUMESAMPLER_H
-#define VOLUMESAMPLER_H
+#ifndef OPENVDS_VOLUMESAMPLER_H
+#define OPENVDS_VOLUMESAMPLER_H
 
 #include <OpenVDS/VolumeData.h>
 #include <OpenVDS/Vector.h>
@@ -660,6 +660,6 @@ public:
   }
 };
 
-}
+} // end namespace OpenVDS
 
-#endif
+#endif // OPENVDS_VOLUMESAMPLER_H

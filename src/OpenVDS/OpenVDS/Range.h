@@ -15,8 +15,8 @@
 ** limitations under the License.
 ****************************************************************************/
 
-#ifndef RANGE_H
-#define RANGE_H
+#ifndef OPENVDS_RANGE_H
+#define OPENVDS_RANGE_H
 
 namespace OpenVDS
 {
@@ -40,6 +40,6 @@ using IntRange    = Range<int>;
 using FloatRange  = Range<float>;
 using DoubleRange = Range<double>;
 
-}
+} // end namespace OpenVDS
 
-#endif //RANGE_H
+#endif // OPENVDS_RANGE_H

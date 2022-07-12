@@ -15,8 +15,8 @@
 ** limitations under the License.
 ****************************************************************************/
 
-#ifndef IJKCOORDINATETRANSFORMER_H_INCLUDED_UTIL
-#define IJKCOORDINATETRANSFORMER_H_INCLUDED_UTIL
+#ifndef OPENVDS_IJKCOORDINATETRANSFORMER_H
+#define OPENVDS_IJKCOORDINATETRANSFORMER_H
 
 #include "VolumeDataLayout.h"
 #include "CoordinateTransformer.h"
@@ -916,7 +916,6 @@ protected:
   DoubleMatrix4x4       m_WorldToIJKTransform;
 };
 
-} 
+} // end namespace OpenVDS
 
-#endif // IJKCOORDINATETRANSFORMER_H_INCLUDED_UTIL
-
+#endif // OPENVDS_IJKCOORDINATETRANSFORMER_H

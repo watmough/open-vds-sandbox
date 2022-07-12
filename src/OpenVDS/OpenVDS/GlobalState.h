@@ -15,8 +15,8 @@
 ** limitations under the License.
 ****************************************************************************/
 
-#ifndef OPENVDS_GLOBAL_STATE_H
-#define OPENVDS_GLOBAL_STATE_H
+#ifndef OPENVDS_GLOBALSTATE_H
+#define OPENVDS_GLOBALSTATE_H
 
 #include <OpenVDS/OpenVDS.h>
 #include <stdint.h>
@@ -62,6 +62,7 @@ public:
   /// <returns>Number of chunks decompressed.</returns>
   virtual uint64_t GetChunksDecompressed(OpenOptions::ConnectionType connectionType) = 0;
 };
-}
 
-#endif
+} // end namespace OpenVDS
+
+#endif // OPENVDS_GLOBALSTATE_H

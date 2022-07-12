@@ -15,8 +15,8 @@
 ** limitations under the License.
 ****************************************************************************/
 
-#ifndef VOLUMEDATA_H
-#define VOLUMEDATA_H
+#ifndef OPENVDS_VOLUMEDATA_H
+#define OPENVDS_VOLUMEDATA_H
 
 #include <cstdint>
 #include <cstddef>
@@ -253,6 +253,6 @@ inline bool VolumeDataHash_IsConstant(uint64_t volumeDataHash)
   return VolumeDataHash_IsNoValue(volumeDataHash) || (volumeDataHash >> 32) == CONSTANT;
 }
 
-} /* namespace OpenVDS */
+} // end namespace OpenVDS
 
-#endif //VOLUMEDATA_H_INCLUDED
+#endif // OPENVDS_VOLUMEDATA_H

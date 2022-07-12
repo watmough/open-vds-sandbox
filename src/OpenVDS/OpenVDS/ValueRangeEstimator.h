@@ -15,8 +15,11 @@
 ** limitations under the License.
 ****************************************************************************/
 
-#ifndef VALUERANGEESTIMATOR_H
-#define VALUERANGEESTIMATOR_H
+#ifndef OPENVDS_VALUERANGEESTIMATOR_H
+#define OPENVDS_VALUERANGEESTIMATOR_H
+
+#include <vector>
+#include <algorithm>
 
 namespace OpenVDS
 {
@@ -108,5 +111,7 @@ public:
     return m_nanCount;
   }
 };
-}
-#endif
+
+} // end namespace OpenVDS
+
+#endif // OPENVDS_VALUERANGEESTIMATOR_H

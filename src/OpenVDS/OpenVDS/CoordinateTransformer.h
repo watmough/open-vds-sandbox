@@ -15,8 +15,8 @@
 ** limitations under the License.
 ****************************************************************************/
 
-#ifndef COORDINATETRANSFORMER_H
-#define COORDINATETRANSFORMER_H
+#ifndef OPENVDS_COORDINATETRANSFORMER_H
+#define OPENVDS_COORDINATETRANSFORMER_H
 
 #include <OpenVDS/Vector.h>
 #include <OpenVDS/VolumeData.h>
@@ -356,6 +356,6 @@ typedef VDSCoordinateTransformerBase<4> VDSCoordinateTransformer4D;
 typedef VDSCoordinateTransformerBase<5> VDSCoordinateTransformer5D;
 typedef VDSCoordinateTransformerBase<6> VDSCoordinateTransformer6D;
 
-}
+} // end namespace OpenVDS
 
-#endif //COORDINATETRANSFORMER_H
+#endif // OPENVDS_COORDINATETRANSFORMER_H

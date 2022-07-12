@@ -17,8 +17,8 @@
 ** limitations under the License.
 ****************************************************************************/
 
-#ifndef OPENVDS_H
-#define OPENVDS_H
+#ifndef OPENVDS_OPENVDS_H
+#define OPENVDS_OPENVDS_H
 
 #include <OpenVDS/openvds_export.h>
 #ifndef OPENVDS_VERSION
@@ -1079,6 +1079,6 @@ public:
 };
 #endif
 
-}
+} // end namespace OpenVDS
 
-#endif //OPENVDS_H
+#endif // OPENVDS_OPENVDS_H

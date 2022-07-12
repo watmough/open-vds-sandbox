@@ -1,5 +1,5 @@
-#ifndef MATRIX_H_INCLUDED
-#define MATRIX_H_INCLUDED
+#ifndef OPENVDS_MATRIX_H
+#define OPENVDS_MATRIX_H
 /****************************************************************************
 ** Copyright 2021 The Open Group
 ** Copyright 2021 Bluware, Inc.
@@ -55,6 +55,7 @@ template<size_t N>
 using FloatMatrix = Matrix<float, N>;
 template<size_t N>
 using DoubleMatrix = Matrix<double, N>;
-}
 
-#endif // !defined MATRIX_H_INCLUDED
+} // end namespace OpenVDS
+
+#endif // OPENVDS_MATRIX_H

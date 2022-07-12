@@ -15,8 +15,8 @@
 ** limitations under the License.
 ****************************************************************************/
 
-#ifndef EXCEPTIONS_H
-#define EXCEPTIONS_H
+#ifndef OPENVDS_EXCEPTIONS_H
+#define OPENVDS_EXCEPTIONS_H
 
 #include <exception>
 #include "string.h"
@@ -132,6 +132,7 @@ public:
   const char *GetErrorMessage() const noexcept override { return m_errorMessage; }
   int         GetErrorCode() const noexcept { return m_errorCode; }
 };
-} /* namespace OpenVDS */
 
-#endif //EXCEPTIONS_H
+} // end namespace OpenVDS
+
+#endif // OPENVDS_EXCEPTIONS_H

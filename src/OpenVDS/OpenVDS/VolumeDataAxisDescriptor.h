@@ -15,8 +15,8 @@
 ** limitations under the License.
 ****************************************************************************/
 
-#ifndef VOLUMEDATAAXISDESCRIPTOR_H
-#define VOLUMEDATAAXISDESCRIPTOR_H
+#ifndef OPENVDS_VOLUMEDATAAXISDESCRIPTOR_H
+#define OPENVDS_VOLUMEDATAAXISDESCRIPTOR_H
 
 #include <OpenVDS/Range.h>
 
@@ -144,6 +144,7 @@ public:
   /// </returns>
   float CoordinateToSamplePosition(float coordinate) { return (coordinate == m_coordinateMin) ? 0.5f : ((coordinate - m_coordinateMin) / (m_coordinateMax - m_coordinateMin)) * (m_numSamples - 1) + 0.5f; }
 };
-}
-#endif //VOLUMEDATAAXISDESCRIPTOR_H
 
+} // end namespace OpenVDS
+
+#endif // OPENVDS_VOLUMEDATAAXISDESCRIPTOR_H

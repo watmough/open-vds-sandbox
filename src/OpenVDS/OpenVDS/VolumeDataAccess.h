@@ -15,8 +15,8 @@
 ** limitations under the License.
 ****************************************************************************/
 
-#ifndef VOLUMEDATAACCESS_H
-#define VOLUMEDATAACCESS_H
+#ifndef OPENVDS_VOLUMEDATAACCESS_H
+#define OPENVDS_VOLUMEDATAACCESS_H
 
 #include <OpenVDS/VolumeData.h>
 #include <OpenVDS/VolumeDataLayout.h>
@@ -347,6 +347,6 @@ using VolumeData4DReadWriteAccessorU16 = VolumeDataReadWriteAccessor<IntVector4,
 using VolumeData4DReadWriteAccessorU8 = VolumeDataReadWriteAccessor<IntVector4, uint8_t>;
 using VolumeData4DReadWriteAccessor1Bit = VolumeDataReadWriteAccessor<IntVector4, bool>;
 
-} /* namespace OpenVDS*/
+} // end namespace OpenVDS
 
-#endif //VOLUMEDATAACCESS_H
+#endif // OPENVDS_VOLUMEDATAACCESS_H

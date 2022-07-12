@@ -15,8 +15,8 @@
 ** limitations under the License.
 ****************************************************************************/
 
-#ifndef VOLUMEINDEXER_H
-#define VOLUMEINDEXER_H
+#ifndef OPENVDS_VOLUMEINDEXER_H
+#define OPENVDS_VOLUMEINDEXER_H
 
 #include <OpenVDS/openvds_export.h>
 #include <OpenVDS/Vector.h>
@@ -1020,6 +1020,6 @@ using VolumeIndexer5D = VolumeIndexerBase<5>;
 using VolumeIndexer6D = VolumeIndexerBase<6>;
 #endif
 
-}
+} // end namespace OpenVDS
 
-#endif //VOLUMEINDEXER_H
+#endif // OPENVDS_VOLUMEINDEXER_H

@@ -15,8 +15,8 @@
 ** limitations under the License.
 ****************************************************************************/
 
-#ifndef VOLUMEDATACHANNELDESCRIPTOR_H
-#define VOLUMEDATACHANNELDESCRIPTOR_H
+#ifndef OPENVDS_VOLUMEDATACHANNELDESCRIPTOR_H
+#define OPENVDS_VOLUMEDATACHANNELDESCRIPTOR_H
 
 #include <string>
 
@@ -228,5 +228,6 @@ public:
 
 inline VolumeDataChannelDescriptor::Flags operator|(VolumeDataChannelDescriptor::Flags lhs, VolumeDataChannelDescriptor::Flags rhs) { return (VolumeDataChannelDescriptor::Flags)((int)lhs | (int)rhs); }
 
-}
-#endif //VOLUMEDATACHANNELDESCRIPTOR_H
+} // end namespace OpenVDS
+
+#endif // OPENVDS_VOLUMEDATACHANNELDESCRIPTOR_H

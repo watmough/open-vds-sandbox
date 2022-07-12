@@ -15,8 +15,8 @@
 ** limitations under the License.
 ****************************************************************************/
 
-#ifndef KNOWNMETADATA_H
-#define KNOWNMETADATA_H
+#ifndef OPENVDS_KNOWNMETADATA_H
+#define OPENVDS_KNOWNMETADATA_H
 
 #include "MetadataKey.h"
 
@@ -837,5 +837,4 @@ public:
 
 } // end namespace OpenVDS
 
-
-#endif // !KNOWNMETADATA_H
+#endif // OPENVDS_KNOWNMETADATA_H

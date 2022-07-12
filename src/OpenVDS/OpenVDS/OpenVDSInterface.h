@@ -17,8 +17,8 @@
 ** limitations under the License.
 ****************************************************************************/
 
-#ifndef OPENVDSINTERFACE_H
-#define OPENVDSINTERFACE_H
+#ifndef OPENVDS_OPENVDSINTERFACE_H
+#define OPENVDS_OPENVDSINTERFACE_H
 
 #include <OpenVDS/openvds_export.h>
 
@@ -143,6 +143,7 @@ public:
 OPENVDS_EXPORT OpenVDSInterface &GetOpenVDSInterface(const char* version);
 OPENVDS_EXPORT void              SetOpenVDSInterface(OpenVDSInterface &openVDSInterface);
 #endif
-}
 
-#endif //OPENVDSINTERFACE_H
+} // end namespace OpenVDS
+
+#endif // OPENVDS_OPENVDSINTERFACE_H

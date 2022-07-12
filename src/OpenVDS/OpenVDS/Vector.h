@@ -15,7 +15,8 @@
 ** limitations under the License.
 ****************************************************************************/
 
-#pragma once
+#ifndef OPENVDS_VECTOR_H
+#define OPENVDS_VECTOR_H
 
 #include <stddef.h>
 #include <tuple>
@@ -283,7 +284,9 @@ Vector<T, SIZE> Multiply(const Vector<T, SIZE> &a, const Vector<T, SIZE> &b)
 }
 
 #endif
-}
+
+}  // end namespace OpenVDS
+
 #if defined(__GNUC__)
 #pragma GCC diagnostic pop
 #endif
@@ -292,3 +295,4 @@ Vector<T, SIZE> Multiply(const Vector<T, SIZE> &a, const Vector<T, SIZE> &b)
 #pragma clang diagnostic pop
 #endif
 
+#endif // OPENVDS_VECTOR_H
