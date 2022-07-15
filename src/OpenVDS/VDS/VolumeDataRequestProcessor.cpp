@@ -1219,6 +1219,7 @@ int64_t VolumeDataRequestProcessor::RequestRemap(VolumeDataPageImpl& targetPage,
     ConversionParameters conversionParameters = makeConversionParameters(sourceLayer, false, 0.0f);
 
     int LOD = targetLayer->GetLOD();
+    int sourceLOD = sourceLayer->GetLOD();
 
     int targetMin[Dimensionality_Max];
     int targetMax[Dimensionality_Max];
@@ -1315,7 +1316,7 @@ int64_t VolumeDataRequestProcessor::RequestRemap(VolumeDataPageImpl& targetPage,
           includePartialUpperVoxel = (sourceMaxExcludingMargin[dimension] >= regionMax[dimension]);
 
         offsetTarget[dimension] = (overlapMin[dimension] - targetMin[dimension]) >> LOD;
-        offsetSource[dimension] = (overlapMin[dimension] - sourceMin[dimension]) >> LOD;
+        offsetSource[dimension] = (overlapMin[dimension] - sourceMin[dimension]) >> sourceLOD;
         globalOverlapSize[dimension]  = GetLODSize(overlapMin[dimension], overlapMax[dimension], LOD, includePartialUpperVoxel);
       }
       else
@@ -1386,35 +1387,76 @@ int64_t VolumeDataRequestProcessor::RequestRemap(VolumeDataPageImpl& targetPage,
       }
     }
 
-    // Convert byte size to bitsize for 1-bit data
-    if(sourceLayer->GetFormat() == VolumeDataChannelDescriptor::Format_1Bit)
+    // Check for LOD generation
+    if(LOD != sourceLOD)
     {
-      globalSourceSize[0] *= 8;
-      globalTargetSize[0] *= 8;
+      assert(sourceLayer->GetChunkDimensionGroup() == targetLayer->GetChunkDimensionGroup() && "LOD generation can only be done from the same dimension group");
+
+      int32_t sourceOffset[DataBlock::Dimensionality_Max];
+      int32_t targetSize[DataBlock::Dimensionality_Max];
+      int32_t targetOffset[DataBlock::Dimensionality_Max];
+
+      int fullResolutionDimension = -1;
+
+      for(int dataBlockDimension = 0; dataBlockDimension < DataBlock::Dimensionality_Max; dataBlockDimension++)
+      {
+        int dimension = DimensionGroupUtil::GetDimension(sourceLayer->GetChunkDimensionGroup(), dataBlockDimension);
+        if(dimension != -1)
+        {
+          sourceOffset[dataBlockDimension] = offsetSource[dimension];
+          targetSize[dataBlockDimension] = globalOverlapSize[dimension];
+          targetOffset[dataBlockDimension] = offsetTarget[dimension];
+
+          if(targetLayer->GetLayout()->GetFullResolutionDimension() == dimension)
+          {
+            fullResolutionDimension = dataBlockDimension;
+          }
+        }
+        else
+        {
+          sourceOffset[dataBlockDimension] = 0;
+          targetSize[dataBlockDimension] = 1;
+          targetOffset[dataBlockDimension] = 0;
+        }
+      }
+
+      DownSampleAndCopyRegion(targetDataBlock, sourcePage->GetDataBlock(), sharedData->m_buffer.data(), sourcePage->GetRawBufferInternal(),
+                              targetOffset[0], targetOffset[1], targetOffset[2],
+                              targetSize[0], targetSize[1], targetSize[1],
+                              sourceOffset[0], sourceOffset[1], sourceOffset[2], targetLayer->GetNoValue(), fullResolutionDimension);
     }
-
-    int32_t sourceSize[DataBlock::Dimensionality_Max];
-    int32_t sourceOffset[DataBlock::Dimensionality_Max];
-    int32_t targetSize[DataBlock::Dimensionality_Max];
-    int32_t targetOffset[DataBlock::Dimensionality_Max];
-    int32_t overlapSize[DataBlock::Dimensionality_Max];
-
-    int32_t copyDimensions = CombineAndReduceDimensions(sourceSize, sourceOffset, targetSize, targetOffset, overlapSize, globalSourceSize, offsetSource, globalTargetSize, offsetTarget, globalOverlapSize);
-    (void) copyDimensions;
-
-    // Multiply sizes and offsets by number of components since BlockCopy is not component-aware
-    if(sourceLayer->GetComponents() > 1)
+    else
     {
-      sourceSize  [0] *= int(targetLayer->GetComponents());
-      sourceOffset[0] *= int(targetLayer->GetComponents());
-      targetSize  [0] *= int(targetLayer->GetComponents());
-      targetOffset[0] *= int(targetLayer->GetComponents());
-      overlapSize [0] *= int(targetLayer->GetComponents());
-    }
+      // Convert byte size to bitsize for 1-bit data
+      if(sourceLayer->GetFormat() == VolumeDataChannelDescriptor::Format_1Bit)
+      {
+        globalSourceSize[0] *= 8;
+        globalTargetSize[0] *= 8;
+      }
 
-    DispatchBlockCopy(targetLayer->GetFormat(), sharedData->m_buffer.data(), targetOffset, targetSize,
-                      sourceLayer->GetFormat(), sourcePage->GetRawBufferInternal(), sourceOffset, sourceSize,
-                      overlapSize, conversionParameters);
+      int32_t sourceSize[DataBlock::Dimensionality_Max];
+      int32_t sourceOffset[DataBlock::Dimensionality_Max];
+      int32_t targetSize[DataBlock::Dimensionality_Max];
+      int32_t targetOffset[DataBlock::Dimensionality_Max];
+      int32_t overlapSize[DataBlock::Dimensionality_Max];
+
+      int32_t copyDimensions = CombineAndReduceDimensions(sourceSize, sourceOffset, targetSize, targetOffset, overlapSize, globalSourceSize, offsetSource, globalTargetSize, offsetTarget, globalOverlapSize);
+      (void) copyDimensions;
+
+      // Multiply sizes and offsets by number of components since BlockCopy is not component-aware
+      if(sourceLayer->GetComponents() > 1)
+      {
+        sourceSize  [0] *= int(targetLayer->GetComponents());
+        sourceOffset[0] *= int(targetLayer->GetComponents());
+        targetSize  [0] *= int(targetLayer->GetComponents());
+        targetOffset[0] *= int(targetLayer->GetComponents());
+        overlapSize [0] *= int(targetLayer->GetComponents());
+      }
+
+      DispatchBlockCopy(targetLayer->GetFormat(), sharedData->m_buffer.data(), targetOffset, targetSize,
+                        sourceLayer->GetFormat(), sourcePage->GetRawBufferInternal(), sourceOffset, sourceSize,
+                        overlapSize, conversionParameters);
+    }
 
     sharedDataLock.lock();
     if(++sharedData->m_chunksProcessed == sharedData->m_totalChunks)
