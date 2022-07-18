@@ -952,9 +952,9 @@ void DownSampleAndCopyRegion(DataBlock const &targetDataBlock,
   int ZFactor = fullResolutionDimension == 2 ? 1 : 2;
 
   // Check if read outside valid area is possible
-  bool lastValidX = sourceOffsetX + targetSizeX * XFactor + 1 >= sourceDataBlock.Size[0];
-  bool lastValidY = sourceOffsetY + targetSizeY * YFactor + 1 >= sourceDataBlock.Size[1];
-  bool lastValidZ = sourceOffsetZ + targetSizeZ * ZFactor + 1 >= sourceDataBlock.Size[2];
+  bool lastValidX = sourceOffsetX + targetSizeX * XFactor <= sourceDataBlock.Size[0];
+  bool lastValidY = sourceOffsetY + targetSizeY * YFactor <= sourceDataBlock.Size[1];
+  bool lastValidZ = sourceOffsetZ + targetSizeZ * ZFactor <= sourceDataBlock.Size[2];
 
   int
     elementSize = GetElementSize(sourceDataBlock);
@@ -1422,7 +1422,7 @@ int64_t VolumeDataRequestProcessor::RequestRemap(VolumeDataPageImpl& targetPage,
 
       DownSampleAndCopyRegion(targetDataBlock, sourcePage->GetDataBlock(), sharedData->m_buffer.data(), sourcePage->GetRawBufferInternal(),
                               targetOffset[0], targetOffset[1], targetOffset[2],
-                              targetSize[0], targetSize[1], targetSize[1],
+                              targetSize[0], targetSize[1], targetSize[2],
                               sourceOffset[0], sourceOffset[1], sourceOffset[2], targetLayer->GetNoValue(), fullResolutionDimension);
     }
     else
