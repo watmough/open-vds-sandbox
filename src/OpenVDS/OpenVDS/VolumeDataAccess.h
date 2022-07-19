@@ -142,9 +142,10 @@ class VolumeDataPageAccessor
 public:
   enum AccessMode
   {
-    AccessMode_ReadOnly,
-    AccessMode_ReadWrite,
-    AccessMode_Create
+    AccessMode_ReadOnly,                  ///< The volume data page accessor will only be used for reading
+    AccessMode_ReadWrite,                 ///< The volume data page accessor will be used for reading and writing (can only be used with LOD 0, the other LODs will be automatically updated)
+    AccessMode_Create,                    ///< The volume data page accessor will be used to write new data, overwriting any existing data (can only be used with LOD 0, the other LODs will be automatically created)
+    AccessMode_CreateWithoutLODGeneration ///< The volume data page accessor will be used to write new data, overwriting any existing data (each LOD has to be created separately)
   };
 
 protected:

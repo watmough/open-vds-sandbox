@@ -41,13 +41,14 @@ class VolumeDataPageAccessorImpl : public VolumeDataPageAccessor
 {
 private:
   VolumeDataAccessManagerImpl *m_accessManager;
+  VolumeDataPageAccessorImpl *m_parentVolumeDataPageAccessor;
   VolumeDataLayer const *m_layer;
   int m_pagesFound;
   int m_pagesRead;
   int m_pagesWritten;
   int m_maxPages;
   std::atomic_int m_references;
-  bool m_isReadWrite;
+  AccessMode m_accessMode;
   bool m_isCommitInProgress;
   bool m_isLayerWriteLocked;
   std::atomic<std::chrono::time_point<std::chrono::steady_clock>> m_lastUsed;
@@ -61,10 +62,13 @@ private:
 
 private:
   void LimitPageListSize(int maxPages, std::unique_lock<std::mutex> &pageListMutexLock);
+  void CommitInternal(std::unique_lock<std::mutex>& pageListMutexLock);
 
 public:
-  VolumeDataPageAccessorImpl(VolumeDataAccessManagerImpl *acccessManager, VolumeDataLayer const* layer, int maxPages, bool IsReadWrite);
+  VolumeDataPageAccessorImpl(VolumeDataAccessManagerImpl *acccessManager, VolumeDataPageAccessorImpl *parentVolumeDataPageAccessor, VolumeDataLayer const* layer, int maxPages, AccessMode accessMode);
   ~VolumeDataPageAccessorImpl();
+
+  bool IsReadWrite() const { return m_accessMode != AccessMode_ReadOnly; }
 
   VolumeDataLayout const* GetLayout() const override;
   VolumeDataLayer const * GetLayer() const { return m_layer; }
@@ -102,8 +106,6 @@ public:
   void AcquireLayerWriteLock();
 
   void  Commit() override;
-
-  bool IsReadWrite() const { return m_isReadWrite; }
 
   VolumeDataAccessManagerImpl *GetManager() const { return m_accessManager; }
 

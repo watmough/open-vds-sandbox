@@ -358,7 +358,23 @@ VolumeDataAccessManagerImpl::GetVDSChunkCount(DimensionsND dimensionsND, int LOD
     return volumeDataLayer->GetTotalChunkCount();
   }
   return 0;
+}
 
+VolumeDataPageAccessorImpl *
+VolumeDataAccessManagerImpl::CreateVolumeDataPageAccessor(VolumeDataLayer const *volumeDataLayer, int maxPages, VolumeDataPageAccessor::AccessMode accessMode)
+{
+  VolumeDataPageAccessorImpl *parentVolumeDataPageAccessor = nullptr;
+
+  if(accessMode != VolumeDataPageAccessor::AccessMode_ReadOnly && accessMode != VolumeDataPageAccessor::AccessMode_CreateWithoutLODGeneration)
+  {
+    if(volumeDataLayer->GetParentLayer() && volumeDataLayer->GetParentLayer()->GetLayerType() != VolumeDataLayer::Virtual)
+    {
+      parentVolumeDataPageAccessor = CreateVolumeDataPageAccessor(volumeDataLayer->GetParentLayer(), (maxPages + 1) / 2, accessMode);
+    }
+  }
+
+  VolumeDataPageAccessorImpl *pageAccessor = new VolumeDataPageAccessorImpl(this, parentVolumeDataPageAccessor, volumeDataLayer, maxPages, accessMode);
+  return pageAccessor;
 }
 
 VolumeDataPageAccessor *
@@ -368,17 +384,40 @@ VolumeDataAccessManagerImpl::CreateVolumeDataPageAccessor(DimensionsND dimension
 
   VolumeDataLayer *volumeDataLayer = const_cast<VolumeDataLayer *>(PrivateGetLayer(dimensionsND, channel, LOD));
 
-  if(accessMode != VolumeDataAccessManager::AccessMode_ReadOnly)
+  if((accessMode == VolumeDataPageAccessor::AccessMode_Create || accessMode == VolumeDataPageAccessor::AccessMode_ReadWrite) && LOD > 0)
   {
+    throw InvalidOperation("LODs can only be automatically created/updated when accessing LOD 0, use AccessMode_CreateWithoutLODGeneration to write LODs directly");
+  }
+
+  if(accessMode != VolumeDataPageAccessor::AccessMode_ReadOnly)
+  {
+    int chunkDimensionality = DimensionGroupUtil::GetDimensionality(DimensionGroupUtil::GetDimensionGroupFromDimensionsND(dimensionsND));
+    assert(chunkDimensionality == 2 || chunkDimensionality == 3);
+
     bool success = GetVolumeDataStore()->AddLayer(volumeDataLayer, chunkMetadataPageSize);
     if(!success)
     {
       throw InvalidOperation("Failed to create layer");
     }
     volumeDataLayer->SetProduceStatus(VolumeDataLayer::ProduceStatus_Normal);
+
+    if(accessMode == VolumeDataPageAccessor::AccessMode_Create)
+    {
+      VolumeDataLayer *LODLayer = volumeDataLayer->GetParentLayer();
+      while(LODLayer && LODLayer->GetLayerType() != VolumeDataLayer::Virtual)
+      {
+        bool success = GetVolumeDataStore()->AddLayer(LODLayer, chunkMetadataPageSize);
+        if(!success)
+        {
+          throw InvalidOperation("Failed to create LOD layer");
+        }
+        LODLayer->SetProduceStatus(VolumeDataLayer::ProduceStatus_Normal);
+        LODLayer = LODLayer->GetParentLayer();
+      }
+    }
   }
 
-  VolumeDataPageAccessorImpl *pageAccessor = new VolumeDataPageAccessorImpl(this, ValidateProduceStatus(volumeDataLayer), maxPages, accessMode != VolumeDataAccessManager::AccessMode_ReadOnly);
+  VolumeDataPageAccessorImpl *pageAccessor = CreateVolumeDataPageAccessor(ValidateProduceStatus(volumeDataLayer), maxPages, accessMode);
   m_volumeDataPageAccessorList.InsertLast(pageAccessor);
   return pageAccessor;
 }

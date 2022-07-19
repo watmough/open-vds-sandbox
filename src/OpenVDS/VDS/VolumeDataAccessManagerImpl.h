@@ -56,6 +56,8 @@ class VolumeDataAccessManagerImpl : public IVolumeDataAccessManager, public IVol
   VolumeDataLayer const *               ValidateVolumeDataStore(VolumeDataLayer const *volumeDataLayer);
   VolumeDataLayer const *               ValidateTraceDimension(VolumeDataLayer const *volumeDataLayer, int traceDimension);
 
+  VolumeDataPageAccessorImpl *          CreateVolumeDataPageAccessor(VolumeDataLayer const *volumeDataLayer, int maxPages, VolumeDataAccessManager::AccessMode accessMode);
+
   VolumeDataAccessManagerImpl(VDS &vds);
   ~VolumeDataAccessManagerImpl() override;
 

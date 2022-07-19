@@ -1537,7 +1537,7 @@ int64_t VolumeDataRequestProcessor::RequestRemap(VolumeDataPageImpl& targetPage,
         FixupBorder(targetDataBlock, sharedData->m_buffer.data(), targetLayer->GetFormat(), targetLayer->GetComponents(), targetLayer->GetBorderMode(), borderNegativeRadius, borderPositiveRadius, layoutMin, layoutSize, layoutDimension);
       }
 
-      targetPage.SetBufferData(targetDataBlock, targetLayer->GetChunkDimensionGroup(), targetLayer->GetFormat() == VolumeDataFormat::Format_1Bit, std::move(sharedData->m_buffer), VolumeDataHash(sharedData->m_constantValueHash).IsConstant() ? sharedData->m_constantValueHash : sharedData->m_volumeDataHash);
+      targetPage.SetBufferData(targetDataBlock, targetLayer->GetChunkDimensionGroup(), std::move(sharedData->m_buffer), VolumeDataHash(sharedData->m_constantValueHash).IsConstant() ? sharedData->m_constantValueHash : sharedData->m_volumeDataHash);
     }
     return true;
   });

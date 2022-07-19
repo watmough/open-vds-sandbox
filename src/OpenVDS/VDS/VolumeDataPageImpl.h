@@ -39,6 +39,8 @@ private:
 
   int64_t m_chunk;
 
+  VolumeDataPageImpl *m_parentPage;
+
   DataBlock m_dataBlock;
   int32_t m_sizeND[Dimensionality_Max];
   int32_t m_pitchND[Dimensionality_Max];
@@ -68,8 +70,9 @@ private:
   int32_t m_chunksCopiedTo;
 
 public:
-  VolumeDataPageImpl(VolumeDataPageAccessorImpl *volumeDataPageAccessor, int64_t chunk);
+  VolumeDataPageImpl(VolumeDataPageAccessorImpl *volumeDataPageAccessor, int64_t chunk, VolumeDataPageImpl *parentPage);
   VolumeDataPageImpl(VolumeDataPageImpl const &) = delete;
+  ~VolumeDataPageImpl();
 
   int64_t GetChunkIndex() const { return m_chunk; }
   const DataBlock &GetDataBlock() const { return m_dataBlock;}
@@ -86,12 +89,13 @@ public:
   bool          IsWritten();
   void          MakeDirty();
 
-  void          SetBufferData(const DataBlock &dataBlock, DimensionGroup chunkDimensionGroup, bool is1Bit, std::vector<uint8_t>&& blob, uint64_t hash);
+  void          SetBufferData(const DataBlock &dataBlock, DimensionGroup chunkDimensionGroup, std::vector<uint8_t>&& blob, uint64_t hash);
   void          WriteBack(VolumeDataLayer const *volumeDataLayer, std::unique_lock<std::mutex> &pageListMutexLock);
   void *        GetBufferInternal(int(&sizeND)[Dimensionality_Max], int(&pitchND)[Dimensionality_Max], bool isReadWrite);
   void *        GetRawBufferInternal() { return m_blob.data(); }
   bool          IsCopyMarginNeeded(VolumeDataPageImpl *targetPage);
   void          CopyMargin(VolumeDataPageImpl *targetPage);
+  void          WriteIntoLOD();
 
   void          SetRequestPrepared(bool prepared) { std::unique_lock<std::mutex> lock(m_mutex); m_requestPrepared = prepared; }
   bool          RequestPrepared() const { std::unique_lock<std::mutex> lock(m_mutex); return m_requestPrepared; }

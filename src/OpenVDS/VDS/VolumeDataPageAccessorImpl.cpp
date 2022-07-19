@@ -36,15 +36,16 @@
 namespace OpenVDS
 {
 
-VolumeDataPageAccessorImpl::VolumeDataPageAccessorImpl(VolumeDataAccessManagerImpl* accessManager, VolumeDataLayer const* layer, int maxPages, bool isReadWrite)
+VolumeDataPageAccessorImpl::VolumeDataPageAccessorImpl(VolumeDataAccessManagerImpl* accessManager, VolumeDataPageAccessorImpl *parentVolumeDataPageAccessor, VolumeDataLayer const* layer, int maxPages, AccessMode accessMode)
   : m_accessManager(accessManager)
+  , m_parentVolumeDataPageAccessor(parentVolumeDataPageAccessor)
   , m_layer(layer)
   , m_pagesFound(0)
   , m_pagesRead(0)
   , m_pagesWritten(0)
   , m_maxPages(maxPages)
   , m_references(1)
-  , m_isReadWrite(isReadWrite)
+  , m_accessMode(accessMode)
   , m_isCommitInProgress(false)
   , m_isLayerWriteLocked(false)
   , m_lastUsed(std::chrono::steady_clock::now())
@@ -56,6 +57,14 @@ VolumeDataPageAccessorImpl::~VolumeDataPageAccessorImpl()
   for (auto& page : m_pages)
   {
     delete page;
+  }
+
+  if(m_parentVolumeDataPageAccessor)
+  {
+    if(m_parentVolumeDataPageAccessor->RemoveReference() == 0)
+    {
+      delete m_parentVolumeDataPageAccessor;
+    }
   }
 }
 
@@ -219,8 +228,15 @@ VolumeDataPage* VolumeDataPageAccessorImpl::CreatePage(int64_t chunk)
     throw InvalidOperation("Cannot create a page that already exists");
   }
 
+  VolumeDataPageImpl *parentPage = nullptr;
+  if(m_parentVolumeDataPageAccessor)
+  {
+    int parentChunk = m_layer->GetParentIndex(chunk, *m_parentVolumeDataPageAccessor->m_layer);
+    parentPage = static_cast<VolumeDataPageImpl *>(m_parentVolumeDataPageAccessor->ReadPage(parentChunk));
+  }
+
   // Create a new page
-  VolumeDataPageImpl *page = new VolumeDataPageImpl(this, chunk);
+  VolumeDataPageImpl *page = new VolumeDataPageImpl(this, chunk, parentPage);
 
   m_pages.push_front(page);
 
@@ -243,7 +259,7 @@ VolumeDataPage* VolumeDataPageAccessorImpl::CreatePage(int64_t chunk)
   }
 
   pageListMutexLock.lock();
-  page->SetBufferData(dataBlock, m_layer->GetChunkDimensionGroup(), m_layer->GetFormat() == VolumeDataFormat::Format_1Bit, std::move(page_data), uint64_t(volumeDataHash));
+  page->SetBufferData(dataBlock, m_layer->GetChunkDimensionGroup(), std::move(page_data), uint64_t(volumeDataHash));
   page->MakeDirty();
 
   m_pageReadCondition.notify_all();
@@ -304,8 +320,15 @@ VolumeDataPage* VolumeDataPageAccessorImpl::PrepareReadPage(int64_t chunk, Error
     }
   }
 
-  // Not found, we need to create a new page,0
-  VolumeDataPageImpl *page = new VolumeDataPageImpl(this, chunk);
+  VolumeDataPageImpl *parentPage = nullptr;
+  if(m_parentVolumeDataPageAccessor)
+  {
+    int parentChunk = m_layer->GetParentIndex(chunk, *m_parentVolumeDataPageAccessor->m_layer);
+    parentPage = static_cast<VolumeDataPageImpl *>(m_parentVolumeDataPageAccessor->ReadPage(parentChunk));
+  }
+
+  // Not found, we need to create a new page
+  VolumeDataPageImpl *page = new VolumeDataPageImpl(this, chunk, parentPage);
 
   m_pages.push_front(page);
 
@@ -411,7 +434,7 @@ bool VolumeDataPageAccessorImpl::ReadPreparedPaged(VolumeDataPage* page)
       }
 
       pageListMutexLock.lock();
-      pageImpl->SetBufferData(dataBlock, m_layer->GetChunkDimensionGroup(), m_layer->GetFormat() == VolumeDataFormat::Format_1Bit, std::move(page_data), page_hash);
+      pageImpl->SetBufferData(dataBlock, m_layer->GetChunkDimensionGroup(), std::move(page_data), page_hash);
     }
 
     m_pagesRead++;
@@ -647,11 +670,7 @@ int64_t VolumeDataPageAccessorImpl::RequestWritePage(int64_t chunk, const DataBl
   return m_accessManager->GetVolumeDataStore()->WriteChunk({ m_layer, chunk }, serializedData, metadata);
 }
 
-/////////////////////////////////////////////////////////////////////////////
-// AcquireLayerWriteLock
-
-void
-VolumeDataPageAccessorImpl::AcquireLayerWriteLock()
+void VolumeDataPageAccessorImpl::AcquireLayerWriteLock()
 {
   if(!m_isLayerWriteLocked)
   {
@@ -663,21 +682,8 @@ VolumeDataPageAccessorImpl::AcquireLayerWriteLock()
   }
 }
 
-/////////////////////////////////////////////////////////////////////////////
-// Commit
-
-void VolumeDataPageAccessorImpl::Commit()
+void VolumeDataPageAccessorImpl::CommitInternal(std::unique_lock<std::mutex>& pageListMutexLock)
 {
-  std::unique_lock<std::mutex> pageListMutexLock(m_pagesMutex);
-
-  if(m_isCommitInProgress)
-  {
-    return;
-  }
-
-  // Make sure we don't start reading any new pages while we're finishing up the current waiting reads
-  m_isCommitInProgress = true;
-
   // Finish reading all pages currently being read
   for(VolumeDataPageImpl *page : m_pages)
   {
@@ -721,13 +727,31 @@ void VolumeDataPageAccessorImpl::Commit()
     m_isLayerWriteLocked = false;
   }
 
+  if(m_parentVolumeDataPageAccessor)
+  {
+    m_parentVolumeDataPageAccessor->CommitInternal(pageListMutexLock);
+  }
+}
+
+void VolumeDataPageAccessorImpl::Commit()
+{
+  std::unique_lock<std::mutex> pageListMutexLock(m_pagesMutex);
+
+  if(m_isCommitInProgress)
+  {
+    return;
+  }
+
+  // Make sure we don't start reading any new pages while we're finishing up the current waiting reads
+  m_isCommitInProgress = true;
+  CommitInternal(pageListMutexLock);
   m_isCommitInProgress = false;
   m_commitFinishedCondition.notify_all();
 
   // Only access the layout if there has been any write requests.
   // This allows for deleting read and interpolating accessors after their VDS has been deleted,
   // which can happen during project unload in Headwave.
-  if (m_isReadWrite && m_pagesWritten > 0 && m_layer)
+  if (IsReadWrite() && m_pagesWritten > 0 && m_layer)
   {
     m_accessManager->FlushCopyPageJobs();
     // FIXME: Make sure *all* invalidates are received, this is just a stop-gap measure.

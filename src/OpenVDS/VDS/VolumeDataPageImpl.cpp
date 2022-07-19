@@ -91,9 +91,10 @@ static void dataBlock_BlockCopyWithExplicitContiguity(T * __restrict ptTarget, c
   }
 }
 
-VolumeDataPageImpl::VolumeDataPageImpl(VolumeDataPageAccessorImpl* volumeDataPageAccessor, int64_t chunk)
+VolumeDataPageImpl::VolumeDataPageImpl(VolumeDataPageAccessorImpl* volumeDataPageAccessor, int64_t chunk, VolumeDataPageImpl *parentPage)
   : m_volumeDataPageAccessor(volumeDataPageAccessor)
   , m_chunk(chunk)
+  , m_parentPage(parentPage)
   , m_blob()
   , m_hash(VolumeDataHash::UNKNOWN)
   , m_pins(1)
@@ -113,6 +114,14 @@ VolumeDataPageImpl::VolumeDataPageImpl(VolumeDataPageAccessorImpl* volumeDataPag
   }
 
   memset(m_copiedToChunkIndexes, 0, sizeof(m_copiedToChunkIndexes));
+}
+
+VolumeDataPageImpl::~VolumeDataPageImpl()
+{
+  if(m_parentPage)
+  {
+    m_parentPage->Release();
+  }  
 }
 
   // All these methods require the caller to hold a lock
@@ -166,7 +175,7 @@ void VolumeDataPageImpl::MakeDirty()
   m_isDirty = true;
 }
 
-void VolumeDataPageImpl::SetBufferData(const DataBlock &dataBlock, DimensionGroup chunkDimensionGroup, bool is1Bit, std::vector<uint8_t>&& blob, uint64_t hash)
+void VolumeDataPageImpl::SetBufferData(const DataBlock &dataBlock, DimensionGroup chunkDimensionGroup, std::vector<uint8_t>&& blob, uint64_t hash)
 {
   //assert(m_volumeDataPageAccessor->m_pageListMutex.isLockedByCurrentThread());
   m_dataBlock = dataBlock;
@@ -186,7 +195,7 @@ void VolumeDataPageImpl::SetBufferData(const DataBlock &dataBlock, DimensionGrou
     assert(dimension >= 0 && dimension < Dimensionality_Max);
     m_sizeND[dimension] = dataBlock.Size[chunkDimension];
 
-    if(is1Bit && chunkDimension > 0)
+    if(dataBlock.Format == VolumeDataFormat::Format_1Bit && chunkDimension > 0)
     {
       // Convert pitch to bitpitch for 1-bit data
       m_pitchND[dimension] = dataBlock.Pitch[chunkDimension] * 8;
@@ -204,6 +213,10 @@ void VolumeDataPageImpl::SetBufferData(const DataBlock &dataBlock, DimensionGrou
 void VolumeDataPageImpl::WriteBack(VolumeDataLayer const* volumeDataLayer, std::unique_lock<std::mutex>& pageListMutexLock)
 {
   assert(m_isDirty);
+  if(m_parentPage)
+  {
+    WriteIntoLOD();
+  }
   m_volumeDataPageAccessor->RequestWritePage(m_chunk, m_dataBlock, m_blob, m_hash);
   auto layout = const_cast<VolumeDataLayoutImpl*>(static_cast<VolumeDataLayoutImpl const*>(m_volumeDataPageAccessor->GetLayout()));
   m_isDirty = false;
@@ -366,6 +379,11 @@ void VolumeDataPageImpl::CopyMargin(VolumeDataPageImpl* targetPage)
   m_copiedToChunkIndexes[m_chunksCopiedTo++] = targetPage->GetChunkIndex();
 }
 
+void VolumeDataPageImpl::WriteIntoLOD()
+{
+  assert(m_parentPage);
+}
+
 // Implementation of Hue::HueSpaceLib::VolumeDataPage interface, these methods aquire a lock (except the GetMinMax methods which don't need to)
 VolumeDataPageAccessor &VolumeDataPageImpl::GetVolumeDataPageAccessor() const
 {
@@ -403,6 +421,7 @@ void* VolumeDataPageImpl::GetWritableBuffer(int(&size)[Dimensionality_Max], int(
 
   return GetBufferInternal(size, pitch, true);
 }
+
 void VolumeDataPageImpl::UpdateWrittenRegion(const int(&writtenMin)[Dimensionality_Max], const int(&writtenMax)[Dimensionality_Max])
 {
  std::unique_lock<std::mutex>  pageListMutexLock(const_cast<VolumeDataPageAccessorImpl *>(m_volumeDataPageAccessor)->m_pagesMutex);
