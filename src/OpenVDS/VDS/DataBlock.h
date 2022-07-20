@@ -56,9 +56,8 @@ public:
   int32_t SizeY;
   int32_t SizeZ;
 
-  VolumeDataChannelDescriptor::Format Format;
-  VolumeDataChannelDescriptor::Components Components;
-
+  VolumeDataFormat Format;
+  VolumeDataComponents Components;
 
   bool IsValid(const int32_t (&voxelSize)[DataBlock::Dimensionality_Max]) const
   {
@@ -67,41 +66,41 @@ public:
            (SizeX == voxelSize[0]                        ) &&
            (SizeY == voxelSize[1] || Dimensionality < 2) &&
            (SizeZ == voxelSize[2] || Dimensionality < 3) &&
-           (Format == VolumeDataChannelDescriptor::Format_1Bit ||
-            Format == VolumeDataChannelDescriptor::Format_U8   ||
-            Format == VolumeDataChannelDescriptor::Format_U16  ||
-            Format == VolumeDataChannelDescriptor::Format_U32  ||
-            Format == VolumeDataChannelDescriptor::Format_U64  ||
-            Format == VolumeDataChannelDescriptor::Format_R32  ||
-            Format == VolumeDataChannelDescriptor::Format_R64) &&
-           (Components == VolumeDataChannelDescriptor::Components_1 ||
-            Components == VolumeDataChannelDescriptor::Components_2 ||
-            Components == VolumeDataChannelDescriptor::Components_4);
+           (Format == VolumeDataFormat::Format_1Bit ||
+            Format == VolumeDataFormat::Format_U8   ||
+            Format == VolumeDataFormat::Format_U16  ||
+            Format == VolumeDataFormat::Format_U32  ||
+            Format == VolumeDataFormat::Format_U64  ||
+            Format == VolumeDataFormat::Format_R32  ||
+            Format == VolumeDataFormat::Format_R64) &&
+           (Components == VolumeDataComponents::Components_1 ||
+            Components == VolumeDataComponents::Components_2 ||
+            Components == VolumeDataComponents::Components_4);
   }
 
   bool IsValid() const { int32_t voxelSize[DataBlock::Dimensionality_Max] = {SizeX, SizeY, SizeZ}; return IsValid(voxelSize); }
 };
 
 bool InitializeDataBlock(const DataBlockDescriptor &descriptor, DataBlock &dataBlock, Error &error);
-bool InitializeDataBlock(VolumeDataChannelDescriptor::Format format, VolumeDataChannelDescriptor::Components components, enum DataBlock::Dimensionality dimensionality, int32_t (&size)[DataBlock::Dimensionality_Max], DataBlock &dataBlock, Error &error);
+bool InitializeDataBlock(VolumeDataFormat format, VolumeDataComponents components, enum DataBlock::Dimensionality dimensionality, int32_t (&size)[DataBlock::Dimensionality_Max], DataBlock &dataBlock, Error &error);
 
-inline int32_t GetVoxelFormatByteSize(VolumeDataChannelDescriptor::Format format)
+inline int32_t GetVoxelFormatByteSize(VolumeDataFormat format)
 {
   int32_t iRetval = -1;
   switch (format) {
-  case VolumeDataChannelDescriptor::Format_R64:
-  case VolumeDataChannelDescriptor::Format_U64:
+  case VolumeDataFormat::Format_R64:
+  case VolumeDataFormat::Format_U64:
     iRetval = 8;
     break;
-  case VolumeDataChannelDescriptor::Format_R32:
-  case VolumeDataChannelDescriptor::Format_U32:
+  case VolumeDataFormat::Format_R32:
+  case VolumeDataFormat::Format_U32:
     iRetval = 4;
     break;
-  case VolumeDataChannelDescriptor::Format_U16:
+  case VolumeDataFormat::Format_U16:
     iRetval = 2;
     break;
-  case VolumeDataChannelDescriptor::Format_U8:
-  case VolumeDataChannelDescriptor::Format_1Bit:
+  case VolumeDataFormat::Format_U8:
+  case VolumeDataFormat::Format_1Bit:
     iRetval =1;
     break;
   default:
@@ -111,23 +110,23 @@ inline int32_t GetVoxelFormatByteSize(VolumeDataChannelDescriptor::Format format
   return iRetval;
 }
 
-static uint32_t GetElementSize(VolumeDataChannelDescriptor::Format format, VolumeDataChannelDescriptor::Components components)
+static uint32_t GetElementSize(VolumeDataFormat format, VolumeDataComponents components)
 {
   switch(format)
   {
   default:
     throw std::runtime_error("Illegal format");
-  case VolumeDataChannelDescriptor::Format_1Bit:
+  case VolumeDataFormat::Format_1Bit:
     return 1;
-  case VolumeDataChannelDescriptor::Format_U8:
+  case VolumeDataFormat::Format_U8:
     return 1 * components;
-  case VolumeDataChannelDescriptor::Format_U16:
+  case VolumeDataFormat::Format_U16:
     return 2 * components;
-  case VolumeDataChannelDescriptor::Format_R32:
-  case VolumeDataChannelDescriptor::Format_U32:
+  case VolumeDataFormat::Format_R32:
+  case VolumeDataFormat::Format_U32:
     return 4 * components;
-  case VolumeDataChannelDescriptor::Format_U64:
-  case VolumeDataChannelDescriptor::Format_R64:
+  case VolumeDataFormat::Format_U64:
+  case VolumeDataFormat::Format_R64:
     return 8 * components;
   }
 }
@@ -137,11 +136,11 @@ inline uint32_t GetElementSize(const DataBlock &datablock)
   return GetElementSize(datablock.Format, datablock.Components);
 }
 
-inline uint32_t GetByteSize(const int32_t (&size)[DataBlock::Dimensionality_Max], VolumeDataChannelDescriptor::Format format, VolumeDataChannelDescriptor::Components components, bool isBitSize = true)
+inline uint32_t GetByteSize(const int32_t (&size)[DataBlock::Dimensionality_Max], VolumeDataFormat format, VolumeDataComponents components, bool isBitSize = true)
 {
   int byteSize = size[0] * GetElementSize(format, components);
 
-  if(format == VolumeDataChannelDescriptor::Format_1Bit && isBitSize)
+  if(format == VolumeDataFormat::Format_1Bit && isBitSize)
   {
     byteSize = (byteSize + 7) / 8;
   }
@@ -191,9 +190,9 @@ struct ConversionParameters
     bool hasReplacementNoValue;
 };
 
-void DispatchBlockCopy(VolumeDataChannelDescriptor::Format destinationFormat,
+void DispatchBlockCopy(VolumeDataFormat destinationFormat,
                        void       *target, const int32_t (&targetOffset)[DataBlock::Dimensionality_Max], const int32_t (&targetSize)[DataBlock::Dimensionality_Max],
-                       VolumeDataChannelDescriptor::Format sourceFormat,
+                       VolumeDataFormat sourceFormat,
                        void const *source, const int32_t (&sourceOffset)[DataBlock::Dimensionality_Max], const int32_t (&sourceSize)[DataBlock::Dimensionality_Max],
                        const int32_t (&overlapSize) [DataBlock::Dimensionality_Max], const ConversionParameters &conversionParamters);
 

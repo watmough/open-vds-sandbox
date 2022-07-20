@@ -31,7 +31,7 @@ bool InitializeDataBlock(const DataBlockDescriptor &descriptor, DataBlock &dataB
   return InitializeDataBlock(descriptor.Format, descriptor.Components, (enum DataBlock::Dimensionality)(descriptor.Dimensionality), size, dataBlock, error);
 }
 
-bool InitializeDataBlock(VolumeDataChannelDescriptor::Format format, VolumeDataChannelDescriptor::Components components, enum DataBlock::Dimensionality dimensionality, int32_t (&size)[DataBlock::Dimensionality_Max], DataBlock &dataBlock, Error &error)
+bool InitializeDataBlock(VolumeDataFormat format, VolumeDataComponents components, enum DataBlock::Dimensionality dimensionality, int32_t (&size)[DataBlock::Dimensionality_Max], DataBlock &dataBlock, Error &error)
 {
   dataBlock.Components = components;
   dataBlock.Format = format;
@@ -63,7 +63,7 @@ bool InitializeDataBlock(VolumeDataChannelDescriptor::Format format, VolumeDataC
     return false;
   }
 
-  dataBlock.AllocatedSize[0] = (format == VolumeDataChannelDescriptor::Format_1Bit) ? ((dataBlock.Size[0] * components) + 7) / 8 : GetAllocatedByteSizeForSize(dataBlock.Size[0]);
+  dataBlock.AllocatedSize[0] = (format == VolumeDataFormat::Format_1Bit) ? ((dataBlock.Size[0] * components) + 7) / 8 : GetAllocatedByteSizeForSize(dataBlock.Size[0]);
   dataBlock.AllocatedSize[1] = GetAllocatedByteSizeForSize(dataBlock.Size[1]);
   dataBlock.AllocatedSize[2] = GetAllocatedByteSizeForSize(dataBlock.Size[2]);
   dataBlock.AllocatedSize[3] = GetAllocatedByteSizeForSize(dataBlock.Size[3]);
@@ -444,54 +444,54 @@ static void DispatchBlockCopy3(void *target, const int32_t (&targetOffset)[DataB
 }
 template<typename T, bool targetOneBit>
 static void DispatchBlockCopy2(void *target, const int32_t (&targetOffset)[DataBlock::Dimensionality_Max], const int32_t (&targetSize)[DataBlock::Dimensionality_Max],
-                              VolumeDataChannelDescriptor::Format sourceFormat,
+                              VolumeDataFormat sourceFormat,
                               void const *source, const int32_t (&sourceOffset)[DataBlock::Dimensionality_Max], const int32_t (&sourceSize)[DataBlock::Dimensionality_Max],
                               const int32_t (&overlapSize) [DataBlock::Dimensionality_Max], const ConversionParameters &conversionParameters)
 {
   switch(sourceFormat)
   {
-  case VolumeDataChannelDescriptor::Format_1Bit:
+  case VolumeDataFormat::Format_1Bit:
     return DispatchBlockCopy3<T, targetOneBit, uint8_t, true>(target, targetOffset, targetSize, source, sourceOffset, sourceSize, overlapSize, conversionParameters);
-  case VolumeDataChannelDescriptor::Format_U8:
+  case VolumeDataFormat::Format_U8:
     return DispatchBlockCopy3<T, targetOneBit, uint8_t, false>(target, targetOffset, targetSize, source, sourceOffset, sourceSize, overlapSize, conversionParameters);
-  case VolumeDataChannelDescriptor::Format_U16:
+  case VolumeDataFormat::Format_U16:
     return DispatchBlockCopy3<T, targetOneBit, uint16_t, false>(target, targetOffset, targetSize, source, sourceOffset, sourceSize, overlapSize, conversionParameters);
-  case VolumeDataChannelDescriptor::Format_R32:
+  case VolumeDataFormat::Format_R32:
     return DispatchBlockCopy3<T, targetOneBit, float, false>(target, targetOffset, targetSize, source, sourceOffset, sourceSize, overlapSize, conversionParameters);
-  case VolumeDataChannelDescriptor::Format_U32:
+  case VolumeDataFormat::Format_U32:
     return DispatchBlockCopy3<T, targetOneBit, uint32_t, false>(target, targetOffset, targetSize, source, sourceOffset, sourceSize, overlapSize, conversionParameters);
-  case VolumeDataChannelDescriptor::Format_R64:
+  case VolumeDataFormat::Format_R64:
     return DispatchBlockCopy3<T, targetOneBit, double, false>(target, targetOffset, targetSize, source, sourceOffset, sourceSize, overlapSize, conversionParameters);
-  case VolumeDataChannelDescriptor::Format_U64:
+  case VolumeDataFormat::Format_U64:
     return DispatchBlockCopy3<T, targetOneBit, uint64_t, false>(target, targetOffset, targetSize, source, sourceOffset, sourceSize, overlapSize, conversionParameters);
-  case VolumeDataChannelDescriptor::Format_Any:
+  case VolumeDataFormat::Format_Any:
     return DispatchBlockCopy3<T, targetOneBit, uint8_t, false>(target, targetOffset, targetSize, source, sourceOffset, sourceSize, overlapSize, conversionParameters);
   }
 }
 
-void DispatchBlockCopy(VolumeDataChannelDescriptor::Format destinationFormat,
+void DispatchBlockCopy(VolumeDataFormat destinationFormat,
                        void       *target, const int32_t (&targetOffset)[DataBlock::Dimensionality_Max], const int32_t (&targetSize)[DataBlock::Dimensionality_Max],
-                       VolumeDataChannelDescriptor::Format sourceFormat,
+                       VolumeDataFormat sourceFormat,
                        void const *source, const int32_t (&sourceOffset)[DataBlock::Dimensionality_Max], const int32_t (&sourceSize)[DataBlock::Dimensionality_Max],
                        const int32_t (&overlapSize) [DataBlock::Dimensionality_Max], const ConversionParameters &conversionParamters)
 {
   switch(destinationFormat)
   {
-  case VolumeDataChannelDescriptor::Format_1Bit:
+  case VolumeDataFormat::Format_1Bit:
     return DispatchBlockCopy2<uint8_t, true>(target, targetOffset, targetSize, sourceFormat, source, sourceOffset, sourceSize, overlapSize, conversionParamters);
-  case VolumeDataChannelDescriptor::Format_U8:
+  case VolumeDataFormat::Format_U8:
     return DispatchBlockCopy2<uint8_t, false>(target, targetOffset, targetSize, sourceFormat, source, sourceOffset, sourceSize, overlapSize, conversionParamters);
-  case VolumeDataChannelDescriptor::Format_U16:
+  case VolumeDataFormat::Format_U16:
     return DispatchBlockCopy2<uint16_t, false>(target, targetOffset, targetSize, sourceFormat, source, sourceOffset, sourceSize, overlapSize, conversionParamters);
-  case VolumeDataChannelDescriptor::Format_R32:
+  case VolumeDataFormat::Format_R32:
     return DispatchBlockCopy2<float, false>(target, targetOffset, targetSize, sourceFormat, source, sourceOffset, sourceSize, overlapSize, conversionParamters);
-  case VolumeDataChannelDescriptor::Format_U32:
+  case VolumeDataFormat::Format_U32:
     return DispatchBlockCopy2<uint32_t, false>(target, targetOffset, targetSize, sourceFormat, source, sourceOffset, sourceSize, overlapSize, conversionParamters);
-  case VolumeDataChannelDescriptor::Format_R64:
+  case VolumeDataFormat::Format_R64:
     return DispatchBlockCopy2<double, false>(target, targetOffset, targetSize, sourceFormat, source, sourceOffset, sourceSize, overlapSize, conversionParamters);
-  case VolumeDataChannelDescriptor::Format_U64:
+  case VolumeDataFormat::Format_U64:
     return DispatchBlockCopy2<uint64_t, false>(target, targetOffset, targetSize, sourceFormat, source, sourceOffset, sourceSize, overlapSize, conversionParamters);
-  case VolumeDataChannelDescriptor::Format_Any:
+  case VolumeDataFormat::Format_Any:
     return DispatchBlockCopy2<uint8_t, false>(target, targetOffset, targetSize, sourceFormat, source, sourceOffset, sourceSize, overlapSize, conversionParamters);
   }
 }
