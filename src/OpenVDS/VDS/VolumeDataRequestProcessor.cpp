@@ -412,7 +412,7 @@ int64_t VolumeDataRequestProcessor::RequestRemap(VolumeDataPageImpl& targetPage,
       int32_t targetSize[DataBlock::Dimensionality_Max];
       int32_t targetOffset[DataBlock::Dimensionality_Max];
 
-      int fullResolutionDimension = -1;
+      int fullResolutionDataBlockDimension = -1;
 
       for(int dataBlockDimension = 0; dataBlockDimension < DataBlock::Dimensionality_Max; dataBlockDimension++)
       {
@@ -425,7 +425,7 @@ int64_t VolumeDataRequestProcessor::RequestRemap(VolumeDataPageImpl& targetPage,
 
           if(targetLayer->GetLayout()->GetFullResolutionDimension() == dimension)
           {
-            fullResolutionDimension = dataBlockDimension;
+            fullResolutionDataBlockDimension = dataBlockDimension;
           }
         }
         else
@@ -439,7 +439,7 @@ int64_t VolumeDataRequestProcessor::RequestRemap(VolumeDataPageImpl& targetPage,
       DownSampleAndCopyRegion(targetDataBlock, sourcePage->GetDataBlock(), sharedData->m_buffer.data(), sourcePage->GetRawBufferInternal(),
                               targetOffset[0], targetOffset[1], targetOffset[2],
                               targetSize[0], targetSize[1], targetSize[2],
-                              sourceOffset[0], sourceOffset[1], sourceOffset[2], targetLayer->GetNoValue(), fullResolutionDimension);
+                              sourceOffset[0], sourceOffset[1], sourceOffset[2], targetLayer->GetNoValue(), fullResolutionDataBlockDimension);
     }
     else
     {

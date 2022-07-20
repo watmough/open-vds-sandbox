@@ -381,7 +381,108 @@ void VolumeDataPageImpl::CopyMargin(VolumeDataPageImpl* targetPage)
 
 void VolumeDataPageImpl::WriteIntoLOD()
 {
-  assert(m_parentPage);
+  if(m_parentPage == nullptr) return;
+
+  if(VolumeDataHash_IsConstant(m_hash) && m_hash == m_parentPage->m_hash) return;
+
+  VolumeDataLayer const *childLayer = m_volumeDataPageAccessor->GetLayer();
+  VolumeDataLayer const *parentLayer = m_parentPage->m_volumeDataPageAccessor->GetLayer();
+
+  int
+    parentLOD = parentLayer->GetLOD(),
+    childLOD  = childLayer->GetLOD();
+
+  int
+    parentMin[Dimensionality_Max],
+    parentMax[Dimensionality_Max],
+    parentMinExcludingMargin[Dimensionality_Max],
+    parentMaxExcludingMargin[Dimensionality_Max],
+    childMin[Dimensionality_Max],
+    childMax[Dimensionality_Max],
+    childMinExcludingMargin[Dimensionality_Max],
+    childMaxExcludingMargin[Dimensionality_Max];
+
+  m_parentPage->GetMinMax(parentMin, parentMax);
+  m_parentPage->GetMinMaxExcludingMargin(parentMinExcludingMargin, parentMaxExcludingMargin);
+
+  GetMinMax(childMin, childMax);
+  GetMinMaxExcludingMargin(childMinExcludingMargin, childMaxExcludingMargin);
+
+  int
+    targetOffset[3],
+    targetSize[3],
+    sourceOffset[3];
+
+  int
+    fullResolutionDataBlockDimension = -1;
+
+  for(int dataBlockDimension = 0; dataBlockDimension < 3; dataBlockDimension++)
+  {
+    int dimension = childLayer->GetChunkDimension(dataBlockDimension);
+
+    assert(dimension == parentLayer->GetChunkDimension(dataBlockDimension));
+
+    if(dimension == -1)
+    {
+      targetOffset[dataBlockDimension] = 0;
+      targetSize[dataBlockDimension] = 1;
+      sourceOffset[dataBlockDimension] = 0;
+    }
+    else
+    {
+      int
+        sourceMin, sourceMax;
+
+      if(childMin[dimension] < parentMinExcludingMargin[dimension])
+      {
+        sourceMin = childMin[dimension];
+      }
+      else
+      {
+        sourceMin = childMinExcludingMargin[dimension];
+      }
+
+      if (parentLayer->IsDimensionLODDecimated(dimension))
+      {
+        targetOffset[dataBlockDimension] = (sourceMin - parentMin[dimension]) >> parentLOD;
+        sourceOffset[dataBlockDimension] = (sourceMin - childMin[dimension]) >> childLOD;
+
+        if (childMax[dimension] >= parentMaxExcludingMargin[dimension])
+        {
+          sourceMax = childMax[dimension];
+          targetSize[dataBlockDimension] = GetLODSize(sourceMin, sourceMax, parentLOD, true);
+        }
+        else
+        {
+          sourceMax = childMaxExcludingMargin[dimension];
+          targetSize[dataBlockDimension] = GetLODSize(sourceMin, sourceMax, parentLOD, false);
+        }
+      }
+      else
+      {
+        fullResolutionDataBlockDimension = dataBlockDimension;
+
+        targetOffset[dataBlockDimension] = sourceMin - parentMin[dimension];
+        sourceOffset[dataBlockDimension] = sourceMin - childMin[dimension];
+
+        if (childMax[dimension] >= parentMaxExcludingMargin[dimension])
+        {
+          sourceMax = childMax[dimension];
+          targetSize[dataBlockDimension] = sourceMax - sourceMin;
+        }
+        else
+        {
+          sourceMax = childMaxExcludingMargin[dimension];
+          targetSize[dataBlockDimension] = sourceMax - sourceMin;
+        }
+      }
+    }
+  }
+
+  DownSampleAndCopyRegion(m_parentPage->GetDataBlock(), GetDataBlock(), m_parentPage->GetRawBufferInternal(), GetRawBufferInternal(),
+                          targetOffset[0], targetOffset[1], targetOffset[2],
+                          targetSize[0], targetSize[1], targetSize[2],
+                          sourceOffset[0], sourceOffset[1], sourceOffset[2], parentLayer->GetNoValue(), fullResolutionDataBlockDimension);
 }
 
 // Implementation of Hue::HueSpaceLib::VolumeDataPage interface, these methods aquire a lock (except the GetMinMax methods which don't need to)
