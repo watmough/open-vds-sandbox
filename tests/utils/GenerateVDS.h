@@ -66,13 +66,13 @@ inline OpenVDS::VDS *generateSimpleInMemory3DVDS(int32_t samplesX = 100, int32_t
   return OpenVDS::Create(options, layoutDescriptor, axisDescriptors, channelDescriptors, metadataContainer, error);
 }
 
-inline void fill3DVDSWithNoise(OpenVDS::VDS *vds, int32_t channel = 0, const OpenVDS::FloatVector3 &frequency = OpenVDS::FloatVector3(0.6f, 2.f, 4.f))
+inline void fill3DVDSWithNoise(OpenVDS::VDS *vds, int32_t channel = 0, const OpenVDS::FloatVector3 &frequency = OpenVDS::FloatVector3(0.6f, 2.f, 4.f), bool createLODs = true)
 {
   OpenVDS::VolumeDataLayout *layout = OpenVDS::GetLayout(vds);
   //ASSERT_TRUE(layout);
   OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(vds);
 
-  OpenVDS::VolumeDataPageAccessor *pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, channel, 0, 100, OpenVDS::VolumeDataAccessManager::AccessMode_Create);
+  OpenVDS::VolumeDataPageAccessor *pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, channel, 0, 100, createLODs ? OpenVDS::VolumeDataAccessManager::AccessMode_Create : OpenVDS::VolumeDataAccessManager::AccessMode_CreateWithoutLODGeneration);
   //ASSERT_TRUE(pageAccessor);
 
   int32_t chunkCount = int32_t(pageAccessor->GetChunkCount());

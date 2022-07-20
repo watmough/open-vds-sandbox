@@ -491,7 +491,77 @@ TEST(OpenVDS_integration, GenerateLOD)
 
   std::string in_memory_name = fmt::format("inmemory://{}", "GenerateLOD");
   OpenVDS::ScopedVDSHandle handle(OpenVDS::Create(in_memory_name, std::string(""), layoutDescriptor, axisDescriptors, channelDescriptors, metadataContainer, error));
-  fill3DVDSWithNoise(handle);
+  fill3DVDSWithNoise(handle, 0, OpenVDS::FloatVector3(0.6f, 2.f, 4.f), true);
+
+  OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle);
+
+  auto accessor = accessManager.CreateVolumeData3DReadAccessorR32(OpenVDS::Dimensions_012, 0, 0);
+
+  {
+    const int LOD = 1;
+
+    ASSERT_EQ(accessManager.GetVDSProduceStatus(OpenVDS::Dimensions_012, LOD, 0), OpenVDS::VDSProduceStatus::Normal);
+
+    OpenVDS::VolumeDataPageAccessor* pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, LOD, 0, 100, OpenVDS::VolumeDataAccessManager::AccessMode_ReadOnly);
+
+    for(int chunk = 0, chunkCount = pageAccessor->GetChunkCount(); chunk < chunkCount; chunk++)
+    {
+      auto page = pageAccessor->ReadPage(chunk);
+
+      int size[OpenVDS::Dimensionality_Max];
+      int pitch[OpenVDS::Dimensionality_Max];
+      int min[OpenVDS::Dimensionality_Max];
+      int max[OpenVDS::Dimensionality_Max];
+      page->GetMinMax(min, max);    
+      const float* buffer = static_cast<const float *>(page->GetBuffer(size, pitch));
+      for(int i = 0; i < size[2]; i++)
+      for(int j = 0; j < size[1]; j++)
+      for(int k = 0; k < size[0]; k++)
+      {
+        float valueLOD1 = buffer[i * pitch[2] + j * pitch[1] + k];
+        float valueLOD0 = accessor.GetValue(OpenVDS::IntVector3((i << LOD) + min[2], (j << LOD) + min[1], (k << LOD) + min[0]));      
+        if(valueLOD0 != valueLOD1)
+        {
+          EXPECT_EQ(valueLOD0, valueLOD1);
+          break;
+        }
+      }
+
+      (void)buffer;
+      page->Release();
+    }
+
+    accessManager.DestroyVolumeDataPageAccessor(pageAccessor);
+  }
+}
+
+TEST(OpenVDS_integration, RemapLOD)
+{
+  OpenVDS::Error error;
+  int negativeMargin = 4;
+  int positiveMargin = 4;
+  int brickSize2DMultiplier = 4;
+  auto lodLevels = OpenVDS::VolumeDataLayoutDescriptor::LODLevels_1;
+  auto layoutOptions = OpenVDS::VolumeDataLayoutDescriptor::Options_None;
+  OpenVDS::VolumeDataLayoutDescriptor layoutDescriptor(OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, negativeMargin, positiveMargin, brickSize2DMultiplier, lodLevels, layoutOptions);
+
+  std::vector<OpenVDS::VolumeDataAxisDescriptor> axisDescriptors;
+  axisDescriptors.emplace_back(100, "X", "", 1.0f, 100.f);
+  axisDescriptors.emplace_back(100, "Y", "", 1.f,  100.f);
+  axisDescriptors.emplace_back(100, "Z", "", 1.f,  100.f);
+
+  std::vector<OpenVDS::VolumeDataChannelDescriptor> channelDescriptors;
+  float rangeMin = 0.0f;
+  float rangeMax = 1.0f;
+  float integerScale = 0;
+  float integerOffset = 0;
+  channelDescriptors.push_back(OpenVDS::VolumeDataChannelDescriptor(OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataChannelDescriptor::Components_1, AMPLITUDE_ATTRIBUTE_NAME, "", rangeMin, rangeMax, OpenVDS::VolumeDataMapping::Direct, 1, OpenVDS::VolumeDataChannelDescriptor::Default, 0.f, integerScale, integerOffset));
+
+  OpenVDS::MetadataContainer metadataContainer;
+
+  std::string in_memory_name = fmt::format("inmemory://{}", "RemapLOD");
+  OpenVDS::ScopedVDSHandle handle(OpenVDS::Create(in_memory_name, std::string(""), layoutDescriptor, axisDescriptors, channelDescriptors, metadataContainer, error));
+  fill3DVDSWithNoise(handle, 0, OpenVDS::FloatVector3(0.6f, 2.f, 4.f), false);
 
   OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle);
 
