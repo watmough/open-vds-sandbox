@@ -19,7 +19,8 @@
 #define DATABLOCK_H
 
 #include <OpenVDS/OpenVDS.h>
-#include <OpenVDS/VolumeDataChannelDescriptor.h>
+#include <OpenVDS/VolumeData.h>
+#include "VolumeDataPartition.h"
 
 #include <stdexcept>
 
@@ -37,8 +38,8 @@ struct DataBlock
     Dimensionality_Max = Dimensionality_4 
   };
 
-  VolumeDataChannelDescriptor::Format Format;
-  VolumeDataChannelDescriptor::Components Components;
+  VolumeDataFormat Format;
+  VolumeDataComponents Components;
   enum Dimensionality Dimensionality;
   int32_t Size[DataBlock::Dimensionality_Max];
   int32_t AllocatedSize[DataBlock::Dimensionality_Max];
@@ -167,6 +168,44 @@ inline int32_t GetAllocatedByteSizeForSize(const int32_t size)
 {
   return size == 1 ? 1 : (size + 7) & -8;
 }
+
+int32_t CombineAndReduceDimensions (int32_t (&sourceSize  )[DataBlock::Dimensionality_Max],
+                                    int32_t (&sourceOffset)[DataBlock::Dimensionality_Max],
+                                    int32_t (&targetSize  )[DataBlock::Dimensionality_Max],
+                                    int32_t (&targetOffset)[DataBlock::Dimensionality_Max],
+                                    int32_t (&overlapSize )[DataBlock::Dimensionality_Max],
+                                    const int32_t (&origSourceSize  )[Dimensionality_Max],
+                                    const int32_t (&origSourceOffset)[Dimensionality_Max],
+                                    const int32_t (&origTargetSize  )[Dimensionality_Max],
+                                    const int32_t (&origTargetOffset)[Dimensionality_Max],
+                                    const int32_t (&origOverlapSize )[Dimensionality_Max]);
+
+struct ConversionParameters
+{
+    float valueRangeMin;
+    float valueRangeMax;
+    float integerScale;
+    float integerOffset;
+    float noValue;
+    float replacementNoValue;
+    bool hasReplacementNoValue;
+};
+
+void DispatchBlockCopy(VolumeDataChannelDescriptor::Format destinationFormat,
+                       void       *target, const int32_t (&targetOffset)[DataBlock::Dimensionality_Max], const int32_t (&targetSize)[DataBlock::Dimensionality_Max],
+                       VolumeDataChannelDescriptor::Format sourceFormat,
+                       void const *source, const int32_t (&sourceOffset)[DataBlock::Dimensionality_Max], const int32_t (&sourceSize)[DataBlock::Dimensionality_Max],
+                       const int32_t (&overlapSize) [DataBlock::Dimensionality_Max], const ConversionParameters &conversionParamters);
+
+void FixupBorder(DataBlock const &dataBlock, void *buffer, VolumeDataFormat format, VolumeDataComponents components, BorderMode borderMode, const int (&borderNegativeRadius)[6], const int (&borderPositiveRadius)[6], const int (&layoutMin)[6], const int (&layoutSize)[6], const int (&layoutDimension)[DataBlock::Dimensionality_Max]);
+
+void DownSampleAndCopyRegion(DataBlock const &targetDataBlock,
+                             DataBlock const &sourceDataBlock,
+                             void *targetBuffer, const void *sourceBuffer,
+                             int targetOffsetX, int targetOffsetY, int targetOffsetZ,
+                             int targetSizeX,   int targetSizeY,   int targetSizeZ,
+                             int sourceOffsetX, int sourceOffsetY, int sourceOffsetZ,
+                             float rNoValue, int fullResolutionDimension);
 
 }
 
