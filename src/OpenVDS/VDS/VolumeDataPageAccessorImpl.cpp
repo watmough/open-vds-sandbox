@@ -242,6 +242,12 @@ VolumeDataPage* VolumeDataPageAccessorImpl::CreatePage(int64_t chunk)
 
   assert(page->IsPinned());
 
+  if(parentPage && parentPage->GetErrorInternal().code != 0)
+  {
+    page->SetError(parentPage->GetErrorInternal());
+    return page;
+  }
+
   Error error;
   VolumeDataChunk volumeDataChunk = m_layer->GetChunkFromIndex(chunk);
 
@@ -334,6 +340,12 @@ VolumeDataPage* VolumeDataPageAccessorImpl::PrepareReadPage(int64_t chunk, Error
 
   assert(page->IsPinned());
 
+  if(parentPage && parentPage->GetErrorInternal().code != 0)
+  {
+    page->SetError(parentPage->GetErrorInternal());
+    return page;
+  }
+
   VolumeDataChunk volumeDataChunk = m_layer->GetChunkFromIndex(chunk);
 
   VolumeDataLayer const *remapFromLayer = m_layer->GetLayerToRemapFrom();
@@ -422,15 +434,35 @@ bool VolumeDataPageAccessorImpl::ReadPreparedPaged(VolumeDataPage* page)
       std::vector<uint8_t> page_data;
       uint64_t page_hash = VolumeDataHash::UNKNOWN;
       DataBlock dataBlock;
-      if (!m_accessManager->GetVolumeDataStore()->DeserializeVolumeData(volumeDataChunk, serialized_data, metadata, compressionInfo.GetCompressionMethod(), compressionInfo.GetAdaptiveLevel(), m_layer->GetFormat(), dataBlock, page_data, page_hash, error))
+      bool sparse = false;
+
+      if(metadata.size() >= sizeof(uint64_t))
       {
-        pageListMutexLock.lock();
-        pageImpl->SetError(error);
-        pageImpl->SetRequestPrepared(false);
-        pageImpl->LeaveSettingData();
-        m_pageReadCondition.notify_all();
-        //fprintf(stderr, "Failed when deserializing chunk: %s\n", error.string.c_str());
-        return false;
+        uint64_t hash = VolumeDataHash::UNKNOWN;
+        memcpy(&hash, metadata.data(), sizeof(uint64_t));
+
+        // Check for sparse data
+        if(hash == VolumeDataHash::UNKNOWN)
+        {
+          VolumeDataHash constantValueVolumeDataHash = m_layer->IsUseNoValue() ? VolumeDataHash(VolumeDataHash::NOVALUE) : VolumeDataHash(0.0f);
+          m_accessManager->GetVolumeDataStore()->CreateConstantValueDataBlock(volumeDataChunk, m_layer->GetFormat(), m_layer->GetNoValue(), m_layer->GetComponents(), constantValueVolumeDataHash, dataBlock, page_data, error);
+          sparse = true;
+        }
+      }
+
+      if (!sparse)
+      {
+        bool success = m_accessManager->GetVolumeDataStore()->DeserializeVolumeData(volumeDataChunk, serialized_data, metadata, compressionInfo.GetCompressionMethod(), compressionInfo.GetAdaptiveLevel(), m_layer->GetFormat(), dataBlock, page_data, page_hash, error);
+        if(!success)
+        {
+          pageListMutexLock.lock();
+          pageImpl->SetError(error);
+          pageImpl->SetRequestPrepared(false);
+          pageImpl->LeaveSettingData();
+          m_pageReadCondition.notify_all();
+          //fprintf(stderr, "Failed when deserializing chunk: %s\n", error.string.c_str());
+          return false;
+        }
       }
 
       pageListMutexLock.lock();
