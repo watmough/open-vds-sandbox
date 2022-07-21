@@ -504,7 +504,7 @@ TEST(OpenVDS_integration, GenerateLOD)
 
     OpenVDS::VolumeDataPageAccessor* pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, LOD, 0, 100, OpenVDS::VolumeDataAccessManager::AccessMode_ReadOnly);
 
-    for(int chunk = 0, chunkCount = pageAccessor->GetChunkCount(); chunk < chunkCount; chunk++)
+    for(int64_t chunk = 0, chunkCount = pageAccessor->GetChunkCount(); chunk < chunkCount; chunk++)
     {
       auto page = pageAccessor->ReadPage(chunk);
 
@@ -574,7 +574,7 @@ TEST(OpenVDS_integration, RemapLOD)
 
     OpenVDS::VolumeDataPageAccessor* pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, LOD, 0, 100, OpenVDS::VolumeDataAccessManager::AccessMode_ReadOnly);
 
-    for(int chunk = 0, chunkCount = pageAccessor->GetChunkCount(); chunk < chunkCount; chunk++)
+    for(int64_t chunk = 0, chunkCount = pageAccessor->GetChunkCount(); chunk < chunkCount; chunk++)
     {
       auto page = pageAccessor->ReadPage(chunk);
       

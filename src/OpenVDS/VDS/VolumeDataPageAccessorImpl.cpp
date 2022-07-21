@@ -231,7 +231,7 @@ VolumeDataPage* VolumeDataPageAccessorImpl::CreatePage(int64_t chunk)
   VolumeDataPageImpl *parentPage = nullptr;
   if(m_parentVolumeDataPageAccessor)
   {
-    int parentChunk = m_layer->GetParentIndex(chunk, *m_parentVolumeDataPageAccessor->m_layer);
+    int64_t parentChunk = m_layer->GetParentIndex(chunk, *m_parentVolumeDataPageAccessor->m_layer);
     parentPage = static_cast<VolumeDataPageImpl *>(m_parentVolumeDataPageAccessor->ReadPage(parentChunk));
   }
 
@@ -329,7 +329,7 @@ VolumeDataPage* VolumeDataPageAccessorImpl::PrepareReadPage(int64_t chunk, Error
   VolumeDataPageImpl *parentPage = nullptr;
   if(m_parentVolumeDataPageAccessor)
   {
-    int parentChunk = m_layer->GetParentIndex(chunk, *m_parentVolumeDataPageAccessor->m_layer);
+    int64_t parentChunk = m_layer->GetParentIndex(chunk, *m_parentVolumeDataPageAccessor->m_layer);
     parentPage = static_cast<VolumeDataPageImpl *>(m_parentVolumeDataPageAccessor->ReadPage(parentChunk));
   }
 
