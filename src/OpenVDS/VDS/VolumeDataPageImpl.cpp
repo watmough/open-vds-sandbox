@@ -483,6 +483,10 @@ void VolumeDataPageImpl::WriteIntoLOD()
                           targetOffset[0], targetOffset[1], targetOffset[2],
                           targetSize[0], targetSize[1], targetSize[2],
                           sourceOffset[0], sourceOffset[1], sourceOffset[2], parentLayer->GetNoValue(), fullResolutionDataBlockDimension);
+
+  std::unique_lock<std::mutex> pageListMutexLock(const_cast<VolumeDataPageAccessorImpl *>(m_parentPage->m_volumeDataPageAccessor)->m_pagesMutex);  
+  m_parentPage->MakeDirty();
+  m_parentPage->m_hash = VolumeDataHash::GetUniqueHash();
 }
 
 // Implementation of Hue::HueSpaceLib::VolumeDataPage interface, these methods aquire a lock (except the GetMinMax methods which don't need to)
@@ -508,6 +512,7 @@ const void* VolumeDataPageImpl::GetBuffer(int(&size)[Dimensionality_Max], int(&p
 
   return GetBufferInternal(size, pitch, m_volumeDataPageAccessor->IsReadWrite());
 }
+
 void* VolumeDataPageImpl::GetWritableBuffer(int(&size)[Dimensionality_Max], int(&pitch)[Dimensionality_Max])
 {
  std::unique_lock<std::mutex>  pageListMutexLock(const_cast<VolumeDataPageAccessorImpl *>(m_volumeDataPageAccessor)->m_pagesMutex);
