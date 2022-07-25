@@ -19,21 +19,19 @@
 #define VOLUMEDATAACCESSOR_H
 
 #include <OpenVDS/Vector.h>
-
-#include "VolumeDataPageImpl.h"
-#include "VolumeDataPageAccessorImpl.h"
+#include <OpenVDS/VolumeDataAccess.h>
 #include <OpenVDS/VolumeSampler.h>
 
 namespace OpenVDS
 {
-template <typename INDEX> inline INDEX NdPosToVector(const int (&pos)[Dimensionality_Max]){ assert(false); }
+template <typename INDEX> inline INDEX NDPosToVector(const int (&pos)[Dimensionality_Max]){ assert(false); }
 
-template <> inline IntVector2 NdPosToVector<IntVector2>(const int (&pos)[Dimensionality_Max]) { return { pos[1], pos[0]}; }
-template <> inline IntVector3 NdPosToVector<IntVector3>(const int (&pos)[Dimensionality_Max]) { return { pos[2], pos[1], pos[0]}; }
-template <> inline IntVector4 NdPosToVector<IntVector4>(const int (&pos)[Dimensionality_Max]) { return { pos[3], pos[2], pos[1], pos[0]}; }
-template <> inline FloatVector2 NdPosToVector<FloatVector2>(const int (&pos)[Dimensionality_Max]) { return { (float)pos[1], (float)pos[0]}; }
-template <> inline FloatVector3 NdPosToVector<FloatVector3>(const int (&pos)[Dimensionality_Max]) { return { (float)pos[2], (float)pos[1], (float)pos[0]}; }
-template <> inline FloatVector4 NdPosToVector<FloatVector4>(const int (&pos)[Dimensionality_Max]) { return { (float)pos[3], (float)pos[2], (float)pos[1], (float)pos[0]}; }
+template <> inline IntVector2 NDPosToVector<IntVector2>(const int (&pos)[Dimensionality_Max]) { return { pos[1], pos[0]}; }
+template <> inline IntVector3 NDPosToVector<IntVector3>(const int (&pos)[Dimensionality_Max]) { return { pos[2], pos[1], pos[0]}; }
+template <> inline IntVector4 NDPosToVector<IntVector4>(const int (&pos)[Dimensionality_Max]) { return { pos[3], pos[2], pos[1], pos[0]}; }
+template <> inline FloatVector2 NDPosToVector<FloatVector2>(const int (&pos)[Dimensionality_Max]) { return { (float)pos[1], (float)pos[0]}; }
+template <> inline FloatVector3 NDPosToVector<FloatVector3>(const int (&pos)[Dimensionality_Max]) { return { (float)pos[2], (float)pos[1], (float)pos[0]}; }
+template <> inline FloatVector4 NDPosToVector<FloatVector4>(const int (&pos)[Dimensionality_Max]) { return { (float)pos[3], (float)pos[2], (float)pos[1], (float)pos[0]}; }
 
 template <typename INDEX> inline void VectorToNDPos(INDEX const &index, int (&pos)[Dimensionality_Max]) { assert(false); }
 template <> inline void VectorToNDPos(IntVector2 const &index, int (&pos)[Dimensionality_Max]) { pos[0] = index[0]; pos[1] = index[1]; }
@@ -193,7 +191,7 @@ inline AccessorRegion AccessorRegion::Intersection(AccessorRegion const &region)
 class VolumeDataAccessorBase
 {
 protected:
-  VolumeDataPageAccessorImpl *m_volumeDataPageAccessor;
+  VolumeDataPageAccessor *m_volumeDataPageAccessor;
 
   VolumeDataPage *m_currentPage;
 
@@ -211,6 +209,8 @@ protected:
 
   IntVector4    m_numSamples;
 
+  IntVector4    m_LOD;
+
   bool          m_writable;
 
   void         *m_buffer;
@@ -221,6 +221,7 @@ protected:
   void          MakeCurrentPageWritable();
   void          UpdateWrittenRegion();
 public:
+  IVolumeDataAccessor::Manager &GetManager();
   VolumeDataLayout const *GetLayout();
 
   void          Commit();
@@ -236,7 +237,7 @@ public:
 };
 
 
-template<typename T>
+template <typename T, bool isLOD0>
 class RawVolumeDataAccessor : public VolumeDataAccessorBase
 {
 protected:
@@ -255,15 +256,16 @@ protected:
   {}
 };
 
-template<typename INDEX, typename T1, typename T2, bool useNoValue>
-class ConvertingVolumeDataAccessor : public RawVolumeDataAccessor<T2>, public IVolumeDataReadWriteAccessor<INDEX, T1>
+template<typename INDEX, typename T1, typename T2, bool useNoValue, bool isLOD0>
+class ConvertingVolumeDataAccessor : public RawVolumeDataAccessor<T2, isLOD0>, public IVolumeDataReadWriteAccessor<INDEX, T1>
 {
-  using RawVolumeDataAccessor<T2>::m_min;
-  using RawVolumeDataAccessor<T2>::m_max;
-  using RawVolumeDataAccessor<T2>::m_validRegion;
-  using RawVolumeDataAccessor<T2>::m_buffer;
-  using RawVolumeDataAccessor<T2>::m_pitch;
-  using RawVolumeDataAccessor<T2>::m_volumeDataPageAccessor;
+  using RawVolumeDataAccessor<T2, isLOD0>::m_min;
+  using RawVolumeDataAccessor<T2, isLOD0>::m_max;
+  using RawVolumeDataAccessor<T2, isLOD0>::m_validRegion;
+  using RawVolumeDataAccessor<T2, isLOD0>::m_LOD;
+  using RawVolumeDataAccessor<T2, isLOD0>::m_buffer;
+  using RawVolumeDataAccessor<T2, isLOD0>::m_pitch;
+  using RawVolumeDataAccessor<T2, isLOD0>::m_volumeDataPageAccessor;
 
   QuantizingValueConverterWithNoValue<T1, T2, useNoValue> m_readValueConverter;
 
@@ -291,7 +293,7 @@ class ConvertingVolumeDataAccessor : public RawVolumeDataAccessor<T2>, public IV
 
 public:
   ConvertingVolumeDataAccessor(VolumeDataPageAccessor &volumeDataPageAccessor, float replacementNoValue)
-    : RawVolumeDataAccessor<T2>(volumeDataPageAccessor)
+    : RawVolumeDataAccessor<T2, isLOD0>(volumeDataPageAccessor)
   {
     VolumeDataChannelDescriptor const &channelDescriptor = m_volumeDataPageAccessor->GetChannelDescriptor();
 
@@ -325,7 +327,7 @@ public:
 
     m_volumeDataPageAccessor->GetChunkMinMaxExcludingMargin(region, minExcludingMargin, maxExcludingMargin);
 
-    return IndexRegion<INDEX>(NdPosToVector<INDEX>(minExcludingMargin), NdPosToVector<INDEX>(maxExcludingMargin));
+    return IndexRegion<INDEX>(NDPosToVector<INDEX>(minExcludingMargin), NDPosToVector<INDEX>(maxExcludingMargin));
   }
 
   int64_t RegionFromIndex(INDEX index) override
@@ -343,29 +345,30 @@ public:
     return IndexRegion<INDEX>(min, max);
   }
 
-  T1 GetValue(INDEX index) override { return m_readValueConverter.ConvertValue(RawVolumeDataAccessor<T2>::GetValue(index)); }
+  T1 GetValue(INDEX index) override { return m_readValueConverter.ConvertValue(RawVolumeDataAccessor<T2, isLOD0>::GetValue(index)); }
 
-  void SetValue(INDEX index, T1 value) override { return RawVolumeDataAccessor<T2>::SetValue(index, m_writeValueConverter.ConvertValue(value)); }
+  void SetValue(INDEX index, T1 value) override { return RawVolumeDataAccessor<T2, isLOD0>::SetValue(index, m_writeValueConverter.ConvertValue(value)); }
 
-  void Commit() override { return RawVolumeDataAccessor<T2>::Commit(); }
-  void Cancel() override { return RawVolumeDataAccessor<T2>::Cancel(); }
+  void Commit() override { return RawVolumeDataAccessor<T2, isLOD0>::Commit(); }
+  void Cancel() override { return RawVolumeDataAccessor<T2, isLOD0>::Cancel(); }
 
-  VolumeDataAccessManagerImpl &GetManager() override { return *m_volumeDataPageAccessor->GetManager(); }
+  IVolumeDataAccessor::Manager &GetManager() override { return VolumeDataAccessorBase::GetManager(); }
 
   VolumeDataLayout const *GetLayout() override { return VolumeDataAccessorBase::GetLayout(); }
 
   IVolumeDataAccessor *Clone(VolumeDataPageAccessor &volumeDataPageAccessor) const override { volumeDataPageAccessor.AddReference(); return new ConvertingVolumeDataAccessor(volumeDataPageAccessor, m_replacementNoValue); }
 };
 
-template<typename INDEX, typename T1, typename T2, bool useNoValue, int interpolationMethod>
-class InterpolatingVolumeDataAccessor : public RawVolumeDataAccessor<T2>, public IVolumeDataReadAccessor<INDEX, T1>
+template<typename INDEX, typename T1, typename T2, bool useNoValue, int interpolationMethod, bool isLOD0>
+class InterpolatingVolumeDataAccessor : public RawVolumeDataAccessor<T2, isLOD0>, public IVolumeDataReadAccessor<INDEX, T1>
 {
-  using RawVolumeDataAccessor<T2>::m_min;
-  using RawVolumeDataAccessor<T2>::m_max;
-  using RawVolumeDataAccessor<T2>::m_validRegion;
-  using RawVolumeDataAccessor<T2>::m_buffer;
-  using RawVolumeDataAccessor<T2>::m_pitch;
-  using RawVolumeDataAccessor<T2>::m_volumeDataPageAccessor;
+  using RawVolumeDataAccessor<T2, isLOD0>::m_min;
+  using RawVolumeDataAccessor<T2, isLOD0>::m_max;
+  using RawVolumeDataAccessor<T2, isLOD0>::m_validRegion;
+  using RawVolumeDataAccessor<T2, isLOD0>::m_LOD;
+  using RawVolumeDataAccessor<T2, isLOD0>::m_buffer;
+  using RawVolumeDataAccessor<T2, isLOD0>::m_pitch;
+  using RawVolumeDataAccessor<T2, isLOD0>::m_volumeDataPageAccessor;
 
   float m_valueRangeMin;
   float m_valueRangeMax;
@@ -401,17 +404,17 @@ class InterpolatingVolumeDataAccessor : public RawVolumeDataAccessor<T2>, public
   {
     VolumeDataAccessorBase::ReadPageAtPosition(index, enableWriting);
 
-   int32_t size[DataBlock::Dimensionality_Max] = { m_max[3] - m_min[3],  m_max[2] - m_min[2], m_max[1] - m_min[1],  m_max[0] - m_min[0] };
-   int32_t pitch[DataBlock::Dimensionality_Max] = { m_pitch[3], m_pitch[2], m_pitch[1], m_pitch[0] };
+   int32_t size[VolumeSampler<T2, (InterpolationMethod)interpolationMethod, useNoValue>::DataBlockDimensionality_Max] = { m_max[3] - m_min[3],  m_max[2] - m_min[2], m_max[1] - m_min[1],  m_max[0] - m_min[0] };
+   int32_t pitch[VolumeSampler<T2, (InterpolationMethod)interpolationMethod, useNoValue>::DataBlockDimensionality_Max] = { m_pitch[3], m_pitch[2], m_pitch[1], m_pitch[0] };
 
     m_volumeSampler = VolumeSampler<T2, (InterpolationMethod)interpolationMethod, useNoValue>(size, pitch, m_valueRangeMin, m_valueRangeMax, m_integerScale, m_integerOffset, m_noValue, m_replacementNoValue);
   }
 
 public:
   InterpolatingVolumeDataAccessor(VolumeDataPageAccessor &volumeDataPageAccessor, float replacementNoValue)
-    : RawVolumeDataAccessor<T2>(volumeDataPageAccessor)
+    : RawVolumeDataAccessor<T2, isLOD0>(volumeDataPageAccessor)
   {
-    VolumeDataChannelDescriptor const &channelDescriptor = this->m_volumeDataPageAccessor->GetChannelDescriptor();
+    VolumeDataChannelDescriptor channelDescriptor = this->m_volumeDataPageAccessor->GetChannelDescriptor();
 
     m_valueRangeMin = channelDescriptor.GetValueRangeMin();
     m_valueRangeMax = channelDescriptor.GetValueRangeMax();
@@ -435,7 +438,7 @@ public:
 
     m_volumeDataPageAccessor->GetChunkMinMaxExcludingMargin(region, minExcludingMargin, maxExcludingMargin);
 
-    return IndexRegion<INDEX>(NdPosToVector<INDEX>(minExcludingMargin), NdPosToVector<INDEX>(maxExcludingMargin));
+    return IndexRegion<INDEX>(NDPosToVector<INDEX>(minExcludingMargin), NDPosToVector<INDEX>(maxExcludingMargin));
   }
 
   int64_t RegionFromIndex(INDEX index) override
@@ -467,7 +470,15 @@ public:
       }
     }
 
-    return ConvertValue<T1>(m_volumeSampler.Sample2D((T2 *)m_buffer, {pos[1] - m_min[3], pos[0] - m_min[2]}));
+    if(isLOD0)
+    {
+      return ConvertValue<T1>(m_volumeSampler.Sample2D((T2 *)m_buffer, {pos[1] - m_min[3], pos[0] - m_min[2]}));
+    }
+    else
+    {
+      return ConvertValue<T1>(m_volumeSampler.Sample2D((T2 *)m_buffer, { (pos[1] - m_min[3]) / (1 << m_LOD[3]) ,
+                                                                         (pos[0] - m_min[2]) / (1 << m_LOD[2]) }));
+    }
   }
 
   T1 GetValue_t(FloatVector3 pos)
@@ -486,7 +497,16 @@ public:
     }
 
     // TODO: This should really use 2D sampling for 2D dimensiongroups
-    return ConvertValue<T1>(m_volumeSampler.Sample3D((T2 *)m_buffer, {pos[2] - m_min[3], pos[1] - m_min[2], pos[0] - m_min[1]}));
+    if(isLOD0)
+    {
+      return ConvertValue<T1>(m_volumeSampler.Sample3D((T2 *)m_buffer, {pos[2] - m_min[3], pos[1] - m_min[2], pos[0] - m_min[1]}));
+    }
+    else
+    {
+      return ConvertValue<T1>(m_volumeSampler.Sample3D((T2 *)m_buffer, { (pos[2] - m_min[3]) / (1 << m_LOD[3]),
+                                                                         (pos[1] - m_min[2]) / (1 << m_LOD[2]),
+                                                                         (pos[0] - m_min[1]) / (1 << m_LOD[1])}));
+    } 
   }
 
   T1 GetValue_t(FloatVector4 pos)
@@ -506,7 +526,16 @@ public:
     }
 
     // TODO: This doesn't work with dimensiongroup 0/1/3
-    return ConvertValue<T1>(m_volumeSampler.Sample3D((T2 *)m_buffer, {pos[3] - m_min[3], pos[2] - m_min[2], pos[1] - m_min[1]}));
+    if(isLOD0)
+    {
+      return ConvertValue<T1>(m_volumeSampler.Sample3D((T2 *)m_buffer, {pos[3] - m_min[3], pos[2] - m_min[2], pos[1] - m_min[1]}));
+    }
+    else
+    {
+      return ConvertValue<T1>(m_volumeSampler.Sample3D((T2 *)m_buffer, { (pos[3] - m_min[3]) / (1 << m_LOD[3]),
+                                                                         (pos[2] - m_min[2]) / (1 << m_LOD[2]),
+                                                                         (pos[1] - m_min[1]) / (1 << m_LOD[1])}));
+    }
   }
 
   T1 GetValue(INDEX pos) override
@@ -514,49 +543,17 @@ public:
       return GetValue_t(pos);
   }
 
-  VolumeDataAccessManagerImpl &GetManager() override { return *m_volumeDataPageAccessor->GetManager(); }
+  IVolumeDataAccessor::Manager &GetManager() override { return VolumeDataAccessorBase::GetManager(); }
 
   VolumeDataLayout const *GetLayout() override { return VolumeDataAccessorBase::GetLayout(); }
 
   IVolumeDataAccessor *Clone(VolumeDataPageAccessor &volumeDataPageAccessor) const override { volumeDataPageAccessor.AddReference(); return new InterpolatingVolumeDataAccessor(volumeDataPageAccessor, m_replacementNoValue); }
 };
 
-
-  template <typename T>
-  inline T ReadBuffer(const void *buffer, int index)
-  {
-    return static_cast<const T *>(buffer)[index];
-  }
-
-  template <typename T>
-  inline void WriteBuffer(void *buffer, int index, T value)
-  {
-    static_cast<T *>(buffer)[index] = value;
-  }
-
-  template <>
-  inline bool ReadBuffer<bool>(const void *buffer, int index)
-  {
-    return (static_cast<const unsigned char *>(buffer)[index / 8] & (1 << (index % 8))) != 0;
-  }
-
-  template <>
-  inline void WriteBuffer<bool>(void *buffer, int index, bool value)
-  {
-    if(value)
-    {
-      static_cast<unsigned char *>(buffer)[index / 8] |= (1 << (index % 8));
-    }
-    else
-    {
-      static_cast<unsigned char *>(buffer)[index / 8] &= ~(1 << (index % 8));
-    }
-  }
-
 //-----------------------------------------------------------------------------
 
-template <typename T>
-T RawVolumeDataAccessor<T>::GetValue(IntVector4 index)
+template <typename T, bool isLOD0>
+T RawVolumeDataAccessor<T, isLOD0>::GetValue(IntVector4 index)
 {
   if(!m_validRegion.Contains(index))
   {
@@ -567,16 +564,26 @@ T RawVolumeDataAccessor<T>::GetValue(IntVector4 index)
     }
   }
 
-  return ReadBuffer<T>(m_buffer, (index[0] - m_min[0]) * m_pitch[0] +
-                                 (index[1] - m_min[1]) * m_pitch[1] +
-                                 (index[2] - m_min[2]) * m_pitch[2] +
-                                 (index[3] - m_min[3]) * m_pitch[3]);
+  if(isLOD0)
+  {
+    return ReadElement((T *)m_buffer, (index[0] - m_min[0]) * m_pitch[0] +
+                                      (index[1] - m_min[1]) * m_pitch[1] +
+                                      (index[2] - m_min[2]) * m_pitch[2] +
+                                      (index[3] - m_min[3]) * m_pitch[3]);
+  }
+  else
+  {
+    return ReadElement((T *)m_buffer, ((index[0] - m_min[0]) >> m_LOD[0]) * m_pitch[0] +
+                                      ((index[1] - m_min[1]) >> m_LOD[1]) * m_pitch[1] +
+                                      ((index[2] - m_min[2]) >> m_LOD[2]) * m_pitch[2] +
+                                      ((index[3] - m_min[3]) >> m_LOD[3]) * m_pitch[3]);
+  }   
 }
 
 //-----------------------------------------------------------------------------
 
-template <typename T>
-T RawVolumeDataAccessor<T>::GetValue(IntVector3 index)
+template <typename T, bool isLOD0>
+T RawVolumeDataAccessor<T, isLOD0>::GetValue(IntVector3 index)
 {
   if(!m_validRegion.Contains(index))
   {
@@ -587,15 +594,24 @@ T RawVolumeDataAccessor<T>::GetValue(IntVector3 index)
     }
   }
 
-  return ReadBuffer<T>(m_buffer, (index[0] - m_min[1]) * m_pitch[1] +
-                                 (index[1] - m_min[2]) * m_pitch[2] +
-                                 (index[2] - m_min[3]) * m_pitch[3]);
+  if(isLOD0)
+  {
+    return ReadElement((T *)m_buffer, (index[0] - m_min[1]) * m_pitch[1] +
+                                      (index[1] - m_min[2]) * m_pitch[2] +
+                                      (index[2] - m_min[3]) * m_pitch[3]);
+  }
+  else
+  {
+    return ReadElement((T *)m_buffer, ((index[0] - m_min[1]) >> m_LOD[1]) * m_pitch[1] +
+                                      ((index[1] - m_min[2]) >> m_LOD[2]) * m_pitch[2] +
+                                      ((index[2] - m_min[3]) >> m_LOD[3]) * m_pitch[3]);
+  }
 }
 
 //-----------------------------------------------------------------------------
 
-template <typename T>
-T RawVolumeDataAccessor<T>::GetValue(IntVector2 index)
+template <typename T, bool isLOD0>
+T RawVolumeDataAccessor<T, isLOD0>::GetValue(IntVector2 index)
 {
   if(!m_validRegion.Contains(index))
   {
@@ -606,14 +622,22 @@ T RawVolumeDataAccessor<T>::GetValue(IntVector2 index)
     }
   }
 
-  return ReadBuffer<T>(m_buffer, (index[0] - m_min[2]) * m_pitch[2] +
-                                 (index[1] - m_min[3]) * m_pitch[3]);
+  if(isLOD0)
+  {
+    return ReadElement((T *)m_buffer, (index[0] - m_min[2]) * m_pitch[2] +
+                                      (index[1] - m_min[3]) * m_pitch[3]);
+  }
+  else
+  {
+    return ReadElement((T *)m_buffer, ((index[0] - m_min[2]) >> m_LOD[2]) * m_pitch[2] +
+                                      ((index[1] - m_min[3]) >> m_LOD[3]) * m_pitch[3]);
+  }
 }
 
 //-----------------------------------------------------------------------------
 
-template <typename T>
-void RawVolumeDataAccessor<T>::SetValue(IntVector4 index, T value)
+template <typename T, bool isLOD0>
+void RawVolumeDataAccessor<T, isLOD0>::SetValue(IntVector4 index, T value)
 {
   if(!m_writtenRegion.Contains(index))
   {
@@ -639,16 +663,26 @@ void RawVolumeDataAccessor<T>::SetValue(IntVector4 index, T value)
     }
   }
 
-  WriteBuffer<T>(m_buffer, (index[0] - m_min[0]) * m_pitch[0] +
-                           (index[1] - m_min[1]) * m_pitch[1] +
-                           (index[2] - m_min[2]) * m_pitch[2] +
-                           (index[3] - m_min[3]) * m_pitch[3], value);
+  if(isLOD0)
+  {
+    WriteElement((T *)m_buffer, (index[0] - m_min[0]) * m_pitch[0] +
+                                (index[1] - m_min[1]) * m_pitch[1] +
+                                (index[2] - m_min[2]) * m_pitch[2] +
+                                (index[3] - m_min[3]) * m_pitch[3], value);
+  }
+  else
+  {
+    WriteElement((T *)m_buffer, ((index[0] - m_min[0]) >> m_LOD[0]) * m_pitch[0] +
+                                ((index[1] - m_min[1]) >> m_LOD[1]) * m_pitch[1] +
+                                ((index[2] - m_min[2]) >> m_LOD[2]) * m_pitch[2] +
+                                ((index[3] - m_min[3]) >> m_LOD[3]) * m_pitch[3], value);
+  }
 }
 
 //-----------------------------------------------------------------------------
 
-template <typename T>
-void RawVolumeDataAccessor<T>::SetValue(IntVector3 index, T value)
+template <typename T, bool isLOD0>
+void RawVolumeDataAccessor<T, isLOD0>::SetValue(IntVector3 index, T value)
 {
   if(!m_writtenRegion.Contains(index))
   {
@@ -674,15 +708,24 @@ void RawVolumeDataAccessor<T>::SetValue(IntVector3 index, T value)
     }
   }
 
-  WriteBuffer<T>(m_buffer, (index[0] - m_min[1]) * m_pitch[1] +
-                           (index[1] - m_min[2]) * m_pitch[2] +
-                           (index[2] - m_min[3]) * m_pitch[3], value);
+  if(isLOD0)
+  {
+    WriteElement((T *)m_buffer, (index[0] - m_min[1]) * m_pitch[1] +
+                                (index[1] - m_min[2]) * m_pitch[2] +
+                                (index[2] - m_min[3]) * m_pitch[3], value);
+  }
+  else
+  {
+    WriteElement((T *)m_buffer, ((index[0] - m_min[1]) >> m_LOD[1]) * m_pitch[1] +
+                                ((index[1] - m_min[2]) >> m_LOD[2]) * m_pitch[2] +
+                                ((index[2] - m_min[3]) >> m_LOD[3]) * m_pitch[3], value);
+  }
 }
 
 //-----------------------------------------------------------------------------
 
-template <typename T>
-void RawVolumeDataAccessor<T>::SetValue(IntVector2 index, T value)
+template <typename T, bool isLOD0>
+void RawVolumeDataAccessor<T, isLOD0>::SetValue(IntVector2 index, T value)
 {
   if(!m_writtenRegion.Contains(index))
   {
@@ -708,9 +751,18 @@ void RawVolumeDataAccessor<T>::SetValue(IntVector2 index, T value)
     }
   }
 
-  WriteBuffer<T>(m_buffer, (index[0] - m_min[2]) * m_pitch[2] +
-                           (index[1] - m_min[3]) * m_pitch[3], value);
+  if(isLOD0)
+  {
+    WriteElement((T *)m_buffer, (index[0] - m_min[2]) * m_pitch[2] +
+                                (index[1] - m_min[3]) * m_pitch[3], value);
+  }
+  else
+  {
+    WriteElement((T *)m_buffer, ((index[0] - m_min[2]) >> m_LOD[2]) * m_pitch[2] +
+                                ((index[1] - m_min[3]) >> m_LOD[3]) * m_pitch[3], value);
+  }
 }
+
 }
 
 #endif
