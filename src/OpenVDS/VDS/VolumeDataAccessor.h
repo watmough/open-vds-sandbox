@@ -22,6 +22,8 @@
 #include <OpenVDS/VolumeDataAccess.h>
 #include <OpenVDS/VolumeSampler.h>
 
+#include <assert.h>
+
 namespace OpenVDS
 {
 template <typename INDEX> inline INDEX NDPosToVector(const int (&pos)[Dimensionality_Max]){ assert(false); }
