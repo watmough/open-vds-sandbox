@@ -367,9 +367,9 @@ TEST(OpenVDS_integration, CreateMultiplePageAccessors)
   int negativeMargin = 4;
   int positiveMargin = 4;
   int brickSize2DMultiplier = 4;
-  auto lodLevels = OpenVDS::VolumeDataLayoutDescriptor::LODLevels_None;
+  auto LODLevels = OpenVDS::VolumeDataLayoutDescriptor::LODLevels_None;
   auto layoutOptions = OpenVDS::VolumeDataLayoutDescriptor::Options_None;
-  OpenVDS::VolumeDataLayoutDescriptor layoutDescriptor(OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, negativeMargin, positiveMargin, brickSize2DMultiplier, lodLevels, layoutOptions);
+  OpenVDS::VolumeDataLayoutDescriptor layoutDescriptor(OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, negativeMargin, positiveMargin, brickSize2DMultiplier, LODLevels, layoutOptions);
 
   std::vector<OpenVDS::VolumeDataAxisDescriptor> axisDescriptors;
   axisDescriptors.emplace_back(63, KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_AXISNAME_SAMPLE, "ms", 0.0f, 4.f);
@@ -411,9 +411,9 @@ TEST(OpenVDS_integration, CreateMultiplePageAccessorsAndWriteData)
   int negativeMargin = 4;
   int positiveMargin = 4;
   int brickSize2DMultiplier = 4;
-  auto lodLevels = OpenVDS::VolumeDataLayoutDescriptor::LODLevels_None;
+  auto LODLevels = OpenVDS::VolumeDataLayoutDescriptor::LODLevels_None;
   auto layoutOptions = OpenVDS::VolumeDataLayoutDescriptor::Options_None;
-  OpenVDS::VolumeDataLayoutDescriptor layoutDescriptor(OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, negativeMargin, positiveMargin, brickSize2DMultiplier, lodLevels, layoutOptions);
+  OpenVDS::VolumeDataLayoutDescriptor layoutDescriptor(OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, negativeMargin, positiveMargin, brickSize2DMultiplier, LODLevels, layoutOptions);
 
   std::vector<OpenVDS::VolumeDataAxisDescriptor> axisDescriptors;
   axisDescriptors.emplace_back(63, KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_AXISNAME_SAMPLE, "ms", 0.0f, 4.f);
@@ -471,9 +471,9 @@ TEST(OpenVDS_integration, GenerateLOD)
   int negativeMargin = 4;
   int positiveMargin = 4;
   int brickSize2DMultiplier = 4;
-  auto lodLevels = OpenVDS::VolumeDataLayoutDescriptor::LODLevels_1;
+  auto LODLevels = OpenVDS::VolumeDataLayoutDescriptor::LODLevels_1;
   auto layoutOptions = OpenVDS::VolumeDataLayoutDescriptor::Options_None;
-  OpenVDS::VolumeDataLayoutDescriptor layoutDescriptor(OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, negativeMargin, positiveMargin, brickSize2DMultiplier, lodLevels, layoutOptions);
+  OpenVDS::VolumeDataLayoutDescriptor layoutDescriptor(OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, negativeMargin, positiveMargin, brickSize2DMultiplier, LODLevels, layoutOptions);
 
   std::vector<OpenVDS::VolumeDataAxisDescriptor> axisDescriptors;
   axisDescriptors.emplace_back(100, "X", "", 1.0f, 100.f);
@@ -541,9 +541,9 @@ TEST(OpenVDS_integration, RemapLOD)
   int negativeMargin = 4;
   int positiveMargin = 4;
   int brickSize2DMultiplier = 4;
-  auto lodLevels = OpenVDS::VolumeDataLayoutDescriptor::LODLevels_1;
+  auto LODLevels = OpenVDS::VolumeDataLayoutDescriptor::LODLevels_1;
   auto layoutOptions = OpenVDS::VolumeDataLayoutDescriptor::Options_None;
-  OpenVDS::VolumeDataLayoutDescriptor layoutDescriptor(OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, negativeMargin, positiveMargin, brickSize2DMultiplier, lodLevels, layoutOptions);
+  OpenVDS::VolumeDataLayoutDescriptor layoutDescriptor(OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, negativeMargin, positiveMargin, brickSize2DMultiplier, LODLevels, layoutOptions);
 
   std::vector<OpenVDS::VolumeDataAxisDescriptor> axisDescriptors;
   axisDescriptors.emplace_back(100, "X", "", 1.0f, 100.f);
@@ -670,7 +670,7 @@ OpenVDS::VDS *CreateVolumeDataAccessorLODTestVDS(int dimensionality, int fullRes
   int negativeMargin = 4;
   int positiveMargin = 4;
   int brickSize2DMultiplier = 4;
-  auto lodLevels = OpenVDS::VolumeDataLayoutDescriptor::LODLevels_4;
+  auto LODLevels = OpenVDS::VolumeDataLayoutDescriptor::LODLevels_4;
   auto layoutOptions = OpenVDS::VolumeDataLayoutDescriptor::Options_Create2DLODs;
 
   if(fullResolutionDimension >= 0)
@@ -678,7 +678,7 @@ OpenVDS::VDS *CreateVolumeDataAccessorLODTestVDS(int dimensionality, int fullRes
     layoutOptions = layoutOptions | OpenVDS::VolumeDataLayoutDescriptor::Options_ForceFullResolutionDimension;
   }
 
-  OpenVDS::VolumeDataLayoutDescriptor layoutDescriptor(OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, negativeMargin, positiveMargin, brickSize2DMultiplier, lodLevels, layoutOptions, fullResolutionDimension);
+  OpenVDS::VolumeDataLayoutDescriptor layoutDescriptor(OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, negativeMargin, positiveMargin, brickSize2DMultiplier, LODLevels, layoutOptions, fullResolutionDimension);
 
   std::vector<OpenVDS::VolumeDataAxisDescriptor> axisDescriptors;
   axisDescriptors.emplace_back(SIZE_K, "X", "", 1.0f, float(SIZE_K));
@@ -700,7 +700,7 @@ OpenVDS::VDS *CreateVolumeDataAccessorLODTestVDS(int dimensionality, int fullRes
 
   auto accessManager = OpenVDS::GetAccessManager(handle);
 
-  for(int LOD = 0; LOD <= int(lodLevels); LOD++)
+  for(int LOD = 0; LOD <= int(LODLevels); LOD++)
   {
     const int channel = 0;
     OpenVDS::VolumeDataPageAccessor* pageAccessor = accessManager.CreateVolumeDataPageAccessor(dimensionality == 2 ? OpenVDS::DimensionsND::Dimensions_01 : OpenVDS::Dimensions_012, LOD, channel, 100, OpenVDS::VolumeDataAccessManager::AccessMode_CreateWithoutLODGeneration);
@@ -890,3 +890,199 @@ TEST(OpenVDS_integration, TestVolumeDataReadAccessorLOD)
     }
   }
 }
+
+class LODRoundingParameterTest : public ::testing::Test, public testing::WithParamInterface<std::tuple<int, int, int>>
+{
+public:
+  // Run once for this whole test suite/file
+  static void SetUpTestSuite()
+  {
+  }
+
+  static void TearDownTestSuite()
+  {
+  }
+};
+
+TEST_P(LODRoundingParameterTest, TestLODRounding)
+{
+  int minCoord = std::get<0>(GetParam());
+  int maxCoord = std::get<1>(GetParam());
+  int lod = std::get<2>(GetParam());
+  
+  int channel = 0;
+  auto marginSize = 2;
+  auto LODLevels = OpenVDS::VolumeDataLayoutDescriptor::LODLevels::LODLevels_4;
+  auto brickSize = OpenVDS::VolumeDataLayoutDescriptor::BrickSize::BrickSize_128;
+  int brickSize2DMultiplier = 4;
+  auto layoutOptions = OpenVDS::VolumeDataLayoutDescriptor::Options_None;
+
+  OpenVDS::Error error;
+  OpenVDS::VolumeDataLayoutDescriptor layoutDescriptor(brickSize, marginSize, marginSize, brickSize2DMultiplier, LODLevels, layoutOptions);
+
+  int
+    size0 = 1793,
+    size1 = 1,
+    size2 = 1;
+
+  std::vector<OpenVDS::VolumeDataAxisDescriptor> axisDescriptors;
+  axisDescriptors.emplace_back(size0, "X", "", 1.f, float(size0));
+  axisDescriptors.emplace_back(size1, "Y", "", 1.f, float(size1));
+  axisDescriptors.emplace_back(size2, "Z", "", 1.f, float(size2));
+
+  std::vector<OpenVDS::VolumeDataChannelDescriptor> channelDescriptors;
+  float rangeMin = 0.0f;
+  float rangeMax = 1.0f;
+  float integerScale = 0;
+  float integerOffset = 0;
+  channelDescriptors.push_back(OpenVDS::VolumeDataChannelDescriptor(OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataChannelDescriptor::Components_1, AMPLITUDE_ATTRIBUTE_NAME, "", rangeMin, rangeMax, OpenVDS::VolumeDataMapping::Direct, 1, OpenVDS::VolumeDataChannelDescriptor::Default, 0.f, integerScale, integerOffset));
+
+  OpenVDS::MetadataContainer metadataContainer;
+
+  std::string in_memory_name = fmt::format("inmemory://{}", std::string(::testing::UnitTest::GetInstance()->current_test_info()->name()));
+  OpenVDS::ScopedVDSHandle handle(OpenVDS::Create(in_memory_name, std::string(""), layoutDescriptor, axisDescriptors, channelDescriptors, metadataContainer, error));
+  fill3DVDSWithNoise(handle, 0, OpenVDS::FloatVector3(0.6f, 2.f, 4.f), true);
+
+  OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle);
+
+  auto dimensionsND = OpenVDS::DimensionsND::Dimensions_012;
+
+  int
+    minCoords[6] = { minCoord, 0, 0, 0, 0, 0 },
+    maxCoords[6] = { maxCoord, 1, 1, 1, 1, 1 };
+
+  size_t voxelCount = OpenVDS::GetLODSize(minCoord, maxCoord, lod);
+
+  std::vector<float> rvsBuffer(voxelCount);
+  // Fill the buffer with known values, so that we can compare against them and see that they have been set by the request.
+  // The noise data should be in [0, 1], so negative values should not happen.
+  for (int i = 0; i < int(rvsBuffer.size()); ++i)
+  {
+    rvsBuffer[i] = static_cast<float>(-i);
+  }
+
+  auto rvs = accessManager.RequestVolumeSubset(rvsBuffer.data(), rvsBuffer.size() * sizeof(float), dimensionsND, lod, channel, minCoords, maxCoords);
+
+  ASSERT_TRUE(rvs->WaitForCompletion());
+  ASSERT_FALSE(rvs->IsCanceled());
+
+  for (int i = 0; i < int(rvsBuffer.size()); ++i)
+  {
+    EXPECT_NE(rvsBuffer[i], static_cast<float>(-i));
+  }
+};
+
+TEST_P(LODRoundingParameterTest, TestProjectedSubsetLODRounding)
+{
+  int minCoord = std::get<0>(GetParam());
+  int maxCoord = std::get<1>(GetParam());
+  int lod = std::get<2>(GetParam());
+
+  int channel = 0;
+  auto marginSize = 2;
+  auto LODLevels = OpenVDS::VolumeDataLayoutDescriptor::LODLevels::LODLevels_4;
+  auto brickSize = OpenVDS::VolumeDataLayoutDescriptor::BrickSize::BrickSize_128;
+  int brickSize2DMultiplier = 4;
+  auto layoutOptions = OpenVDS::VolumeDataLayoutDescriptor::Options_None;
+
+  OpenVDS::Error error;
+  OpenVDS::VolumeDataLayoutDescriptor layoutDescriptor(brickSize, marginSize, marginSize, brickSize2DMultiplier, LODLevels, layoutOptions);
+
+  int
+    size0 = 1,
+    size1 = 1793,
+    size2 = 1793;
+
+  std::vector<OpenVDS::VolumeDataAxisDescriptor> axisDescriptors;
+  axisDescriptors.emplace_back(size0, "X", "", 1.f, float(size0));
+  axisDescriptors.emplace_back(size1, "Y", "", 1.f, float(size1));
+  axisDescriptors.emplace_back(size2, "Z", "", 1.f, float(size2));
+
+  std::vector<OpenVDS::VolumeDataChannelDescriptor> channelDescriptors;
+  float rangeMin = 0.0f;
+  float rangeMax = 1.0f;
+  float integerScale = 0;
+  float integerOffset = 0;
+  channelDescriptors.push_back(OpenVDS::VolumeDataChannelDescriptor(OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataChannelDescriptor::Components_1, AMPLITUDE_ATTRIBUTE_NAME, "", rangeMin, rangeMax, OpenVDS::VolumeDataMapping::Direct, 1, OpenVDS::VolumeDataChannelDescriptor::Default, 0.f, integerScale, integerOffset));
+
+  OpenVDS::MetadataContainer metadataContainer;
+
+  std::string in_memory_name = fmt::format("inmemory://{}", std::string(::testing::UnitTest::GetInstance()->current_test_info()->name()));
+  OpenVDS::ScopedVDSHandle handle(OpenVDS::Create(in_memory_name, std::string(""), layoutDescriptor, axisDescriptors, channelDescriptors, metadataContainer, error));
+  fill3DVDSWithNoise(handle, 0, OpenVDS::FloatVector3(0.6f, 2.f, 4.f), true);
+
+  OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle);
+
+  auto dimensionsND = OpenVDS::DimensionsND::Dimensions_012;
+  auto projectedDimensions = OpenVDS::DimensionsND::Dimensions_12;
+  auto format = OpenVDS::VolumeDataFormat::Format_R32;
+
+  OpenVDS::FloatVector4
+    voxelPlane(3, 2, 1, 0);
+
+  voxelPlane.T = -0.5f * (size0 * voxelPlane.X + size1 * voxelPlane.Y + size2 * voxelPlane.Z);
+
+  int
+    minCoords[6] = { 0, minCoord, minCoord, 0, 0, 0 },
+    maxCoords[6] = { 1, maxCoord, maxCoord, 1, 1, 1 };
+
+  size_t voxelCount = 1;
+  for (int i = 0; i < 6; ++i)
+    voxelCount *= OpenVDS::GetLODSize(minCoords[i], maxCoords[i], lod);
+
+  std::vector<float> rpvsBuffer(voxelCount);
+  std::vector<float> rvsBuffer(voxelCount);
+  // Fill the buffer with known values, so that we can compare against them and see that they have been set by the request.
+  // The noise data should be in [0, 1], so negative values should not happen.
+  for (int i = 0; i < int(rpvsBuffer.size()); ++i)
+  {
+    rvsBuffer[i] = rpvsBuffer[i] = -(float)(i + 1);
+  }
+
+  int lodStep = 1 << lod;
+  float (*samplePositions)[6] = new float[voxelCount][6];
+  for (int j = minCoord, pos = 0; j < maxCoord; j += lodStep)
+  for (int i = minCoord; i < maxCoord; i += lodStep, ++pos)
+  {
+    float
+      (&samplePosition)[6] = samplePositions[pos];
+
+    samplePosition[0] = ((i + 0.5f * lodStep) * voxelPlane.Y + (j + 0.5f * lodStep) * voxelPlane.Z + voxelPlane.T) / -voxelPlane.X;
+    samplePosition[1] = (float)i;
+    samplePosition[2] = (float)j;
+    samplePosition[3] = 0;
+    samplePosition[4] = 0;
+    samplePosition[5] = 0;
+  }
+
+  auto rpvs = accessManager.RequestProjectedVolumeSubset(rpvsBuffer.data(), rpvsBuffer.size() * sizeof(float), dimensionsND, lod, channel, minCoords, maxCoords, voxelPlane, projectedDimensions, format, OpenVDS::InterpolationMethod::Nearest);
+  auto rvs = accessManager.RequestVolumeSamples(rvsBuffer.data(), rvsBuffer.size() * sizeof(float), dimensionsND, lod, channel, samplePositions, voxelCount, OpenVDS::InterpolationMethod::Nearest);
+
+  delete[] samplePositions;
+
+  ASSERT_TRUE(rpvs->WaitForCompletion());
+  ASSERT_FALSE(rpvs->IsCanceled());
+
+  ASSERT_TRUE(rvs->WaitForCompletion());
+  ASSERT_FALSE(rvs->IsCanceled());
+
+  for (size_t i = 0; i < rpvsBuffer.size(); ++i)
+  {
+    EXPECT_NE(rpvsBuffer[i], -(float)(i + 1));
+    EXPECT_EQ(rvsBuffer[i], rpvsBuffer[i]) << "Index: " << i;
+  }
+};
+
+INSTANTIATE_TEST_SUITE_P(
+  LODRoundingTests,
+  LODRoundingParameterTest,
+  ::testing::Values(
+    std::make_tuple(0, 250, 1),     // This request should only fetch data from the first chunk
+    std::make_tuple(0, 252, 1),     // This request will fetch one data element from the second chunk
+    std::make_tuple(1, 253, 1),     // This request should yield the same answer as the above
+    std::make_tuple(250, 253, 1),   // This should only fetch data from the second chunk
+    std::make_tuple(512, 1793, 2),  // This is the original query from that failed
+    std::make_tuple(1487, 1793, 2), // This request triggered an assert
+    std::make_tuple(1488, 1491, 2)  // These coordinates are in the same voxel at LOD 2. 
+  )
+);
