@@ -35,7 +35,7 @@ struct IOErrorHandlingFixture : public ::testing::Test
   static void SetUpTestSuite() {
     OpenVDS::Error error;
     OpenVDS::InMemoryOpenOptions options;
-    inMemoryIOManager = OpenVDS::IOManagerInMemory::CreateIOManager(options, OpenVDS::IOManager::AccessPattern::ReadWrite, error);
+    inMemoryIOManager = OpenVDS::IOManagerInMemory::CreateIOManager(options, OpenVDS::IOManager::AccessPattern::ReadWrite, OpenVDS::CreateDefaultLogHandler(), error);
 
     IOManagerFacade* facadeIoManager = new IOManagerFacade(inMemoryIOManager);
 

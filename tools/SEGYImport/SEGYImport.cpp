@@ -121,7 +121,7 @@ static DataProvider CreateDataProviderFromFile(const std::string &filename, Open
 
 static DataProvider CreateDataProviderFromOpenOptions(const std::string &url, const std::string &connectionString, OpenVDS::Error &error)
 {
-  std::unique_ptr<OpenVDS::IOManager> ioManager(OpenVDS::IOManager::CreateIOManager(url, connectionString, OpenVDS::IOManager::AccessPattern::ReadOnly, error));
+  std::unique_ptr<OpenVDS::IOManager> ioManager(OpenVDS::IOManager::CreateIOManager(url, connectionString, OpenVDS::IOManager::AccessPattern::ReadOnly, OpenVDS::CreateDefaultLogHandler(), error));
   if (error.code)
     return DataProvider("", (OpenVDS::IOManager*)nullptr, error);
   return DataProvider(url, ioManager.release(), error);
@@ -3110,7 +3110,7 @@ main(int argc, char* argv[])
               return EXIT_FAILURE;
             }
             std::string scanUrl = dirname + parameters;
-            std::unique_ptr<OpenVDS::IOManager> ioManager(OpenVDS::IOManager::CreateIOManager(scanUrl, urlConnection, OpenVDS::IOManager::ReadWrite, error));
+            std::unique_ptr<OpenVDS::IOManager> ioManager(OpenVDS::IOManager::CreateIOManager(scanUrl, urlConnection, OpenVDS::IOManager::ReadWrite, OpenVDS::CreateDefaultLogHandler(), error));
             if (error.code)
             {
               OpenVDS::printError(printConfig, "IO", "Failed to creating IOManager for", fileInfoFileName, error.string);

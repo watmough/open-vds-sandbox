@@ -58,6 +58,10 @@ void ReleaseVolumeDataAccessManager(VolumeDataAccessManagerImpl *);
 
 struct VDS
 {
+  VDS(OpenVDSLogging logHandler)
+    : logHandler(logHandler)
+  {}
+
   VolumeDataLayoutDescriptor
                     layoutDescriptor;
 
@@ -81,6 +85,7 @@ struct VDS
                     accessManager;
   std::unique_ptr<VolumeDataStore>
                     volumeDataStore;
+  OpenVDSLogging logHandler;
 };
 
 void CreateVolumeDataLayout(VDS &handle, CompressionMethod compressionMethod = CompressionMethod::None, float compressionTolerance = 0);

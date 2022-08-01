@@ -34,7 +34,7 @@ if (EMSCRIPTEN)
   set (PRIVATE_HEADER_FILES
     VDS/DataBlock.h
     ${WAVELET_HEADERS}
-    )
+    VDS/Logging.h)
 else()
 
   set(SOURCE_FILES

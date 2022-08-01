@@ -124,7 +124,7 @@ GTEST_TEST(VDS_integration, ParseVolumeDataLayoutAndLayerStatus)
     error;
 
   OpenVDS::VDS
-    handle;
+    handle(OpenVDS::CreateDefaultLogHandler());
 
   TestLayerMetadataContainer
     layerMetadataContainer;

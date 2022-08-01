@@ -72,7 +72,7 @@ TEST(IOTests, basicIOTest)
 
   OpenVDS::Error ioManagerError;
 
-  std::unique_ptr<OpenVDS::IOManager> m_ioManager(OpenVDS::IOManager::CreateIOManager(url, connectionString, OpenVDS::IOManager::AccessPattern::ReadWrite, ioManagerError));
+  std::unique_ptr<OpenVDS::IOManager> m_ioManager(OpenVDS::IOManager::CreateIOManager(url, connectionString, OpenVDS::IOManager::AccessPattern::ReadWrite, OpenVDS::CreateDefaultLogHandler(), ioManagerError));
 
   const char hash[] = "Test text";
   std::vector<char> base64Hash;
