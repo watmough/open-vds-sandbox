@@ -815,10 +815,10 @@ void FillPages(OpenVDS::VolumeDataPageAccessor *pageAccessor, std::function<floa
   pageAccessor->Commit();
 }
 
-static int
+static float
 LODTestVoxelValue(OpenVDS::IntVector4 voxel)
 {
-  return voxel[3] + 37 * (voxel[2] + 37 * (voxel[1] + 37 * voxel[0]));
+  return float(voxel[3] + 37 * (voxel[2] + 37 * (voxel[1] + 37 * voxel[0])));
 }
 
 OpenVDS::VDS *CreateVolumeDataAccessorLODTestVDS(int dimensionality, int fullResolutionDimension)
