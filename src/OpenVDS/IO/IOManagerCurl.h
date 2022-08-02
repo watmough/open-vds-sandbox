@@ -161,7 +161,7 @@ struct CurlUploadHandler : public CurlEasyHandler
 
 struct UVEventLoopData
 {
-  bool verboseOutput;
+  OpenVDSLogging logHandler;
   uv_loop_t *loop;
   CURLM *curlMulti;
   
@@ -189,7 +189,7 @@ struct UVEventLoopData
 class CurlHandler
 {
 public:
-  CurlHandler(Error& error, bool verboseOutput);
+  CurlHandler(Error& error, OpenVDSLogging logHandler);
   ~CurlHandler();
 
   void addDownloadRequest(const std::shared_ptr<DownloadRequestCurl>& request, const std::string& url, const std::vector<std::string>& headers, std::function<std::string(const std::string &date)> toISO8601DateTransformer, CurlDownloadHandler::Verb verb);

@@ -28,6 +28,7 @@
 #include <OpenVDS/VolumeSampler.h>
 #include "VDS.h"
 #include "Env.h"
+#include "Logging.h"
 
 #include <cstdint>
 #include <algorithm>
@@ -1688,11 +1689,12 @@ static void CleanupThread(PageAccessorNotifier &pageAccessorNotifier,  std::map<
   }
 }
 
-VolumeDataRequestProcessor::VolumeDataRequestProcessor(VolumeDataAccessManagerImpl& manager)
+VolumeDataRequestProcessor::VolumeDataRequestProcessor(VolumeDataAccessManagerImpl& manager, OpenVDSLogging logHandler)
   : m_manager(manager)
   , m_pageAccessorNotifier(m_mutex)
   , m_threadPool(std::thread::hardware_concurrency())
   , m_cleanupThread([this]() { CleanupThread(m_pageAccessorNotifier, m_pageAccessors); } )
+  , m_logHandler(logHandler)
 {}
 
 VolumeDataRequestProcessor::~VolumeDataRequestProcessor()
@@ -1937,16 +1939,15 @@ bool VolumeDataRequestProcessor::IsCanceled(int64_t jobID, Error &error)
     static bool should_print = getBooleanEnvironmentVariable("OPENVDS_DEBUG_IS_CANCELLED");
     if (should_print)
     {
-      std::string out = "Printing cancelled request results\n";
+      LogInfo(m_logHandler, "Printing cancelled request results");
       for (int i = 0; i < job->pagesCount; i++)
       {
         auto& future = job->future[i];
         Error error = future.get();
         if (!error.code)
           error.string = "OK";
-        out += fmt::format("Request channel {} chunk {} result: {}\n", job->pages[i].chunk.layer->GetChannelIndex(), job->pages[i].chunk.index, error.string);
+        LogInfo(m_logHandler, fmt::format("Request channel {} chunk {} result: {}", job->pages[i].chunk.layer->GetChannelIndex(), job->pages[i].chunk.index, error.string));
       }
-      fmt::print(stderr, "{}", out);
     }
     SetErrorForJob(job);
     m_manager.SetCurrentDownloadError(job->completedError);

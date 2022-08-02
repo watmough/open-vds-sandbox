@@ -5,6 +5,6 @@
 
 namespace OpenVDS
 {
-  IOManager* CreateDMSIOManager(const DMSOpenOptions& openOptions, IOManager::AccessPattern accessPattern, Error& error);
+  IOManager* CreateDMSIOManager(const DMSOpenOptions& openOptions, IOManager::AccessPattern accessPattern, OpenVDSLogging logHandler, Error& error);
 }
 #endif

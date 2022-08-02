@@ -40,7 +40,7 @@ namespace OpenVDS
   class IOManagerAWSCurl : public IOManager
   {
     public:
-      IOManagerAWSCurl(const AWSOpenOptions &openOptions, Error &error);
+      IOManagerAWSCurl(const AWSOpenOptions &openOptions, OpenVDSLogging logHandler, Error &error);
       ~IOManagerAWSCurl() override;
 
       std::shared_ptr<Request> ReadObjectInfo(const std::string &objectName, std::shared_ptr<TransferDownloadHandler> handler) override;

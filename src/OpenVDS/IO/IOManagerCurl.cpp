@@ -20,6 +20,7 @@
 #include <fmt/printf.h>
 
 #include <VDS/CompilerDefines.h>
+#include <VDS/Logging.h>
 
 #include <sstream>
 #include <iomanip>
@@ -116,11 +117,13 @@ static void curlAddRequests(UVEventLoopData *eventLoopData)
 
 static int curl_easy_debug_callback(CURL* handle, curl_infotype type, char* data, size_t size, void* userptr)
 {
+  auto* easyHandle = static_cast<CurlEasyHandler*>(userptr);
+  auto& logHandler = easyHandle->eventLoopData->logHandler;
   std::string text;
   std::string datastr(data, size);
   switch (type) {
   case CURLINFO_TEXT:
-    fprintf(stderr, "== Info: %s", data); FALLTHROUGH;
+    LogTrace(logHandler, fmt::format(" == Info: {}", std::string(data, size))); FALLTHROUGH;
   default: /* in case a new one is introduced to shock us */
     return 0;
 
@@ -144,7 +147,7 @@ static int curl_easy_debug_callback(CURL* handle, curl_infotype type, char* data
     break;
   }
 
-  fmt::print(stderr, "{} - {}\n", text, datastr);
+  LogTrace(logHandler, fmt::format("{} - {}", text, datastr));
   return 0;
 }
 
@@ -187,7 +190,7 @@ static void addDownloadCB(uv_async_t *handle)
       curl_easy_setopt(downloadRequest->curlEasy, CURLOPT_NOBODY, 1L);
     }
     curl_easy_setopt(downloadRequest->curlEasy, CURLOPT_DEBUGFUNCTION, curl_easy_debug_callback);
-    if (eventLoopData->verboseOutput)
+    if (int(eventLoopData->logHandler.level) >= int(OpenVDSLogging::Trace))
       curl_easy_setopt(downloadRequest->curlEasy, CURLOPT_VERBOSE, 1L);
   }
   
@@ -290,7 +293,7 @@ static void addUploadCB(uv_async_t *handle)
     }
     curl_easy_setopt(uploadRequest->curlEasy, CURLOPT_INFILESIZE_LARGE, filesize);
     curl_easy_setopt(uploadRequest->curlEasy, CURLOPT_DEBUGFUNCTION, curl_easy_debug_callback);
-    if (eventLoopData->verboseOutput)
+    if (int(eventLoopData->logHandler.level) >= int(OpenVDSLogging::Trace))
       curl_easy_setopt(uploadRequest->curlEasy, CURLOPT_VERBOSE, 1L);
   }
   
@@ -785,9 +788,9 @@ struct Barrier
   std::condition_variable wait;
 };
 
-CurlHandler::CurlHandler(Error& error, bool verboseOutput)
+CurlHandler::CurlHandler(Error& error, OpenVDSLogging logHandler)
 {
-  m_eventLoopData.verboseOutput = verboseOutput;
+  m_eventLoopData.logHandler = logHandler;
   error.code = curl_global_init(CURL_GLOBAL_ALL);
   if (error.code)
   {

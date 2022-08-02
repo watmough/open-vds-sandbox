@@ -23,6 +23,7 @@
 #include "VolumeDataPageImpl.h"
 #include "VolumeDataStore.h"
 #include "MetadataManager.h"
+#include "Logging.h"
 
 #include <IO/IOManager.h>
 
@@ -36,7 +37,7 @@
 namespace OpenVDS
 {
 
-VolumeDataPageAccessorImpl::VolumeDataPageAccessorImpl(VolumeDataAccessManagerImpl* accessManager, VolumeDataPageAccessorImpl *parentVolumeDataPageAccessor, VolumeDataLayer const* layer, int maxPages, AccessMode accessMode)
+VolumeDataPageAccessorImpl::VolumeDataPageAccessorImpl(VolumeDataAccessManagerImpl* accessManager, VolumeDataPageAccessorImpl *parentVolumeDataPageAccessor, VolumeDataLayer const* layer, int maxPages, AccessMode accessMode, OpenVDSLogging logHandler)
   : m_accessManager(accessManager)
   , m_parentVolumeDataPageAccessor(parentVolumeDataPageAccessor)
   , m_layer(layer)
@@ -49,6 +50,7 @@ VolumeDataPageAccessorImpl::VolumeDataPageAccessorImpl(VolumeDataAccessManagerIm
   , m_isCommitInProgress(false)
   , m_isLayerWriteLocked(false)
   , m_lastUsed(std::chrono::steady_clock::now())
+  , m_logHandler(logHandler)
 {
 }
 
@@ -260,7 +262,7 @@ VolumeDataPage* VolumeDataPageAccessorImpl::CreatePage(int64_t chunk)
   {
     pageListMutexLock.lock();
     page->UnPin();
-    fprintf(stderr, "Failed when creating chunk: %s\n", error.string.c_str());
+    LogError(m_logHandler, fmt::format("Failed when creating chunk: {}", error.string.c_str()));
     return nullptr;
   }
 
@@ -409,7 +411,7 @@ bool VolumeDataPageAccessorImpl::ReadPreparedPaged(VolumeDataPage* page)
         pageImpl->SetRequestPrepared(false);
         pageImpl->LeaveSettingData();
         m_pageReadCondition.notify_all();
-        //fprintf(stderr, "Failed when waiting for chunk: %s\n", error.string.c_str());
+        LogError(m_logHandler, fmt::format("Failed when waiting for chunk: {}", error.string.c_str()));
         return false;
       }
     }
@@ -427,7 +429,7 @@ bool VolumeDataPageAccessorImpl::ReadPreparedPaged(VolumeDataPage* page)
         pageImpl->SetRequestPrepared(false);
         pageImpl->LeaveSettingData();
         m_pageReadCondition.notify_all();
-        //fprintf(stderr, "Failed when waiting for chunk: %s\n", error.string.c_str());
+        LogError(m_logHandler, fmt::format("Failed when waiting for chunk: {}", error.string.c_str()));
         return false;
       }
 
@@ -460,7 +462,7 @@ bool VolumeDataPageAccessorImpl::ReadPreparedPaged(VolumeDataPage* page)
           pageImpl->SetRequestPrepared(false);
           pageImpl->LeaveSettingData();
           m_pageReadCondition.notify_all();
-          //fprintf(stderr, "Failed when deserializing chunk: %s\n", error.string.c_str());
+          LogError(m_logHandler, fmt::format("Failed when deserializing chunk: {}", error.string.c_str()));
           return false;
         }
       }

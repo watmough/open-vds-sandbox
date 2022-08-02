@@ -58,7 +58,7 @@ IOManager* IOManager::CreateIOManager(const OpenOptions& options, IOManager::Acc
     bool useAwsSdk = getBooleanEnvironmentVariable("OPENVDS_AWSSDK");
     if (useAwsSdk)
       return new IOManagerAWS(static_cast<const AWSOpenOptions&>(options), error);
-    return new IOManagerAWSCurl(static_cast<const AWSOpenOptions&>(options), error);
+    return new IOManagerAWSCurl(static_cast<const AWSOpenOptions&>(options), logHandler, error);
   }
 #endif
   break;
@@ -79,19 +79,19 @@ IOManager* IOManager::CreateIOManager(const OpenOptions& options, IOManager::Acc
   }
 #ifndef OPENVDS_NO_AZURE_PRESIGNED_IOMANAGER
   case OpenOptions::AzurePresigned:
-    return new IOManagerAzurePresigned(static_cast<const AzurePresignedOpenOptions&>(options).baseUrl, static_cast<const AzurePresignedOpenOptions&>(options).urlSuffix, error);
+    return new IOManagerAzurePresigned(static_cast<const AzurePresignedOpenOptions&>(options).baseUrl, static_cast<const AzurePresignedOpenOptions&>(options).urlSuffix, logHandler, error);
 #endif
 #ifndef OPENVDS_NO_GCP_IOMANAGER
   case OpenOptions::GoogleStorage:
-    return new IOManagerGoogle(static_cast<const GoogleOpenOptions &>(options), error);
+    return new IOManagerGoogle(static_cast<const GoogleOpenOptions &>(options), logHandler, error);
 #endif
 #ifndef OPENVDS_NO_HTTP_IOMANAGER
   case OpenOptions::Http:
-    return new IOManagerHttp(static_cast<const HttpOpenOptions &>(options), error);
+    return new IOManagerHttp(static_cast<const HttpOpenOptions &>(options), logHandler, error);
 #endif
 #ifndef OPENVDS_NO_DMS_IOMANAGER
   case OpenOptions::DMS:
-    return CreateDMSIOManager(static_cast<const DMSOpenOptions&>(options), accessPattern, error);
+    return CreateDMSIOManager(static_cast<const DMSOpenOptions&>(options), accessPattern, logHandler, error);
 #endif
   case OpenOptions::InMemory:
     return IOManagerInMemory::CreateIOManagerInMemory(static_cast<const InMemoryOpenOptions &>(options), error);

@@ -27,6 +27,7 @@
 #include "VolumeDataHash.h"
 #include "VolumeDataLayoutImpl.h"
 #include "VolumeDataPageAccessorImpl.h"
+#include "Logging.h"
 
 #include <algorithm>
 #include <inttypes.h>
@@ -42,7 +43,7 @@ VolumeDataAccessManagerImpl::VolumeDataAccessManagerImpl(VDS &vds)
   , m_invalidated(false)
   , m_copyJobIndex(false)
   , m_vds(vds)
-  , m_requestProcessor(new VolumeDataRequestProcessor(*this))
+  , m_requestProcessor(new VolumeDataRequestProcessor(*this, vds.logHandler))
 {
 }
 
@@ -50,7 +51,7 @@ VolumeDataAccessManagerImpl::~VolumeDataAccessManagerImpl()
 {
   if (m_uploadErrors.errors.size())
   {
-    fprintf(stderr, "VolumeDataAccessManager destructor: there where upload errors\n");
+    LogWarning(m_vds.logHandler,"VolumeDataAccessManager destructor: there where upload errors");
   }
 }
 
@@ -372,7 +373,7 @@ VolumeDataAccessManagerImpl::CreateVolumeDataPageAccessor(VolumeDataLayer const 
     }
   }
 
-  VolumeDataPageAccessorImpl *pageAccessor = new VolumeDataPageAccessorImpl(this, parentVolumeDataPageAccessor, volumeDataLayer, maxPages, accessMode);
+  VolumeDataPageAccessorImpl *pageAccessor = new VolumeDataPageAccessorImpl(this, parentVolumeDataPageAccessor, volumeDataLayer, maxPages, accessMode, m_vds.logHandler);
   return pageAccessor;
 }
 

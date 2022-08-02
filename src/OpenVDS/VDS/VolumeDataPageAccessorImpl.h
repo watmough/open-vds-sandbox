@@ -19,6 +19,7 @@
 #define VOLUMEDATAPAGEACCESSORIMPL_H
 
 #include <OpenVDS/VolumeDataAccess.h>
+#include <OpenVDS/OpenVDSInterface.h>
 #include "IntrusiveList.h"
 
 #include <list>
@@ -59,13 +60,14 @@ private:
   public:
   mutable std::mutex m_pagesMutex;
   IntrusiveListNode<VolumeDataPageAccessorImpl> m_volumeDataPageAccessorListNode;
+  OpenVDSLogging m_logHandler;
 
 private:
   void LimitPageListSize(int maxPages, std::unique_lock<std::mutex> &pageListMutexLock);
   void CommitInternal(std::unique_lock<std::mutex>& pageListMutexLock);
 
 public:
-  VolumeDataPageAccessorImpl(VolumeDataAccessManagerImpl *acccessManager, VolumeDataPageAccessorImpl *parentVolumeDataPageAccessor, VolumeDataLayer const* layer, int maxPages, AccessMode accessMode);
+  VolumeDataPageAccessorImpl(VolumeDataAccessManagerImpl *acccessManager, VolumeDataPageAccessorImpl *parentVolumeDataPageAccessor, VolumeDataLayer const* layer, int maxPages, AccessMode accessMode, OpenVDSLogging logHandler);
   ~VolumeDataPageAccessorImpl();
 
   bool IsReadWrite() const { return m_accessMode != AccessMode_ReadOnly; }
