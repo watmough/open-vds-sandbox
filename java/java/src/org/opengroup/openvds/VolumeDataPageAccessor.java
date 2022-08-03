@@ -27,9 +27,22 @@ public class VolumeDataPageAccessor extends ManagedBase implements AutoCloseable
     
     public enum AccessMode {
     
-            AccessMode_ReadOnly(0),
-            AccessMode_ReadWrite(1),
-            AccessMode_Create(2);
+        /**
+         * The volume data page accessor will only be used for reading
+         */
+        AccessMode_ReadOnly(0),
+        /**
+         * The volume data page accessor will be used for reading and writing (can only be used with LOD 0, the other LODs will be automatically updated)
+         */
+        AccessMode_ReadWrite(1),
+        /**
+         * The volume data page accessor will be used to write new data, overwriting any existing data (can only be used with LOD 0, the other LODs will be automatically created)
+         */
+        AccessMode_Create(2),
+        /**
+         * The volume data page accessor will be used to write new data, overwriting any existing data (each LOD has to be created separately)
+         */
+        AccessMode_CreateWithoutLODGeneration(3);
     
         private final int value;
     
@@ -45,6 +58,7 @@ public class VolumeDataPageAccessor extends ManagedBase implements AutoCloseable
             if (value == 0) return AccessMode_ReadOnly;
             if (value == 1) return AccessMode_ReadWrite;
             if (value == 2) return AccessMode_Create;
+            if (value == 3) return AccessMode_CreateWithoutLODGeneration;
             return AccessMode.values()[0];
         }
     

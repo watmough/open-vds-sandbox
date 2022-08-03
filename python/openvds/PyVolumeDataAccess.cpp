@@ -191,6 +191,7 @@ PyVolumeDataAccess::initModule(py::module& m)
   VolumeDataPageAccessor_AccessMode_.value("AccessMode_ReadOnly"         , VolumeDataPageAccessor::AccessMode::AccessMode_ReadOnly, OPENVDS_DOCSTRING(VolumeDataPageAccessor_AccessMode_AccessMode_ReadOnly));
   VolumeDataPageAccessor_AccessMode_.value("AccessMode_ReadWrite"        , VolumeDataPageAccessor::AccessMode::AccessMode_ReadWrite, OPENVDS_DOCSTRING(VolumeDataPageAccessor_AccessMode_AccessMode_ReadWrite));
   VolumeDataPageAccessor_AccessMode_.value("AccessMode_Create"           , VolumeDataPageAccessor::AccessMode::AccessMode_Create, OPENVDS_DOCSTRING(VolumeDataPageAccessor_AccessMode_AccessMode_Create));
+  VolumeDataPageAccessor_AccessMode_.value("AccessMode_CreateWithoutLODGeneration", VolumeDataPageAccessor::AccessMode::AccessMode_CreateWithoutLODGeneration, OPENVDS_DOCSTRING(VolumeDataPageAccessor_AccessMode_AccessMode_CreateWithoutLODGeneration));
 
 //AUTOGEN-END
 // IMPLEMENTED :     VolumeDataPage_.def("getBuffer"                   , [](VolumeDataPage* self, py::array_t<int,py::array::c_style>& size, py::array_t<int,py::array::c_style>& pitch) { return self->GetBuffer(PyArrayAdapter<int, 6, true>::getArrayChecked(size), PyArrayAdapter<int, 6, true>::getArrayChecked(pitch)); }, py::arg("size").none(false), py::arg("pitch").none(false), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(VolumeDataPage_GetBuffer));

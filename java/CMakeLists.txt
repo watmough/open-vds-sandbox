@@ -60,6 +60,8 @@ set(JAVA_SOURCE_FILES
 	java/src/org/opengroup/openvds/MetadataReadAccess.java
 	java/src/org/opengroup/openvds/MetadataType.java
 	java/src/org/opengroup/openvds/MetadataWriteAccess.java
+        java/src/org/opengroup/openvds/LogHandler.java
+        java/src/org/opengroup/openvds/LogLevel.java
 	java/src/org/opengroup/openvds/NDPos.java
 	java/src/org/opengroup/openvds/NDPosArray.java
 	java/src/org/opengroup/openvds/OpenOptions.java

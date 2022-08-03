@@ -29,6 +29,20 @@ public class OpenVDS {
 		ManagedBase.staticInit();
 	}
 
+    ///AUTOGEN-OK: FUNCTION_DECL CreateDefaultLogHandler OpenVDS::LogHandler () FUNCTIONPROTO
+    native private static long CreateDefaultLogHandlerImpl();
+
+    /**
+     * Create the default OpenVDSLogging interface
+     * 
+     * @return This function creates a default logging interface that will print
+trace and info to stdout. It will print Warning and Error to the stderr
+file stream.
+     */
+    public static LogHandler createDefaultLogHandler() {
+        return LogHandler.fromNativeObject(CreateDefaultLogHandlerImpl());
+    }
+
     ///AUTOGEN-OK: FUNCTION_DECL CreateOpenOptions OpenVDS::OpenOptions *(std::string, std::string, OpenVDS::VDSError &) FUNCTIONPROTO
     native private static long CreateOpenOptionsImpl(String url, String connectionString, long error);
 
@@ -47,6 +61,27 @@ with url and string instead if this is not needed.
      */
     public static OpenOptions createOpenOptions(String url, String connectionString, VDSError error) {
         return OpenOptions.fromNativeObject(CreateOpenOptionsImpl(ManagedBase.requireNonNull(url, "url may not be null"), ManagedBase.requireNonNull(connectionString, "connectionString may not be null"), ManagedBase.requireNonNull(error, "error may not be null").getNativeObject()));
+    }
+
+    ///AUTOGEN-OK: FUNCTION_DECL CreateOpenOptions OpenVDS::OpenOptions *(std::string, std::string, const OpenVDS::LogHandler &, OpenVDS::VDSError &) FUNCTIONPROTO
+    native private static long CreateOpenOptions2Impl(String url, String connectionString, long logHandler, long error);
+
+    /**
+     * Create an OpenOptions struct from a url and connection string
+     * 
+     * @param url The url scheme specific to each cloud provider
+Available schemes are s3:// azure://
+     * @param connectionString The cloud provider specific connection string
+Specifies additional arguments for the cloud provider
+     * @param logHandler The logging handler
+     * @param error If an error occured, the error code and message will be written to this output parameter
+     * @return This function news a OpenOptions struct that has to be deleted by
+the caller. This is a helper function to allow applications modify the
+OpenOption before passing it to Open. Use the Open and Create functions
+with url and string instead if this is not needed.
+     */
+    public static OpenOptions createOpenOptions(String url, String connectionString, LogHandler logHandler, VDSError error) {
+        return OpenOptions.fromNativeObject(CreateOpenOptions2Impl(ManagedBase.requireNonNull(url, "url may not be null"), ManagedBase.requireNonNull(connectionString, "connectionString may not be null"), ManagedBase.requireNonNull(logHandler, "logHandler may not be null").getNativeObject(), ManagedBase.requireNonNull(error, "error may not be null").getNativeObject()));
     }
 
     ///AUTOGEN-OK: FUNCTION_DECL IsSupportedProtocol bool (std::string) FUNCTIONPROTO
@@ -86,6 +121,32 @@ Specifies additional arguments for the cloud provider
         return result;
     }
 
+    ///AUTOGEN-OK: FUNCTION_DECL Open OpenVDS::VDS *(std::string, std::string, const OpenVDS::LogHandler &, OpenVDS::VDSError &) FUNCTIONPROTO
+    native private static long Open2Impl(String url, String connectionString, long logHandler, long error);
+
+    /**
+     * Open an existing VDS
+     * 
+     * @param url The url scheme specific to each cloud provider
+Available schemes are s3:// azure://
+     * @param connectionString The cloud provider specific connection string
+Specifies additional arguments for the cloud provider
+     * @param logHandler The logging handler
+     * @param error If an error occured, the error code and message will be written to this output parameter
+     * @return The VDS handle that can be used to get the VolumeDataLayout and the VolumeDataAccessManager
+     */
+    public static VDS open(String url, String connectionString, LogHandler logHandler, VDSError error) {
+        return VDS.fromNativeObject(Open2Impl(ManagedBase.requireNonNull(url, "url may not be null"), ManagedBase.requireNonNull(connectionString, "connectionString may not be null"), ManagedBase.requireNonNull(logHandler, "logHandler may not be null").getNativeObject(), ManagedBase.requireNonNull(error, "error may not be null").getNativeObject()));
+    }
+    public static VDS open(String url, String connectionString, LogHandler logHandler) throws java.io.IOException {
+        VDSError error = new VDSError();
+        VDS result = open(url, connectionString, logHandler, error);
+        if (error.getCode() != 0) {
+            throw new java.io.IOException(error.getString());
+        }
+        return result;
+    }
+
     ///AUTOGEN-OK: FUNCTION_DECL OpenWithAdaptiveCompressionTolerance OpenVDS::VDS *(std::string, std::string, float, OpenVDS::VDSError &) FUNCTIONPROTO
     native private static long OpenWithAdaptiveCompressionToleranceImpl(String url, String connectionString, float waveletAdaptiveTolerance, long error);
 
@@ -107,6 +168,34 @@ This will try to read the dataset as-if it was compressed with the given toleran
     public static VDS openWithAdaptiveCompressionTolerance(String url, String connectionString, float waveletAdaptiveTolerance) throws java.io.IOException {
         VDSError error = new VDSError();
         VDS result = openWithAdaptiveCompressionTolerance(url, connectionString, waveletAdaptiveTolerance, error);
+        if (error.getCode() != 0) {
+            throw new java.io.IOException(error.getString());
+        }
+        return result;
+    }
+
+    ///AUTOGEN-OK: FUNCTION_DECL OpenWithAdaptiveCompressionTolerance OpenVDS::VDS *(std::string, std::string, float, const OpenVDS::LogHandler &, OpenVDS::VDSError &) FUNCTIONPROTO
+    native private static long OpenWithAdaptiveCompressionTolerance2Impl(String url, String connectionString, float waveletAdaptiveTolerance, long logHandler, long error);
+
+    /**
+     * Open an existing VDS with adaptive compression tolerance.
+     * 
+     * @param url The url scheme specific to each cloud provider
+Available schemes are s3:// azure://
+     * @param connectionString The cloud provider specific connection string
+Specifies additional arguments for the cloud provider
+     * @param waveletAdaptiveTolerance Wavelet adaptive tolerance.
+This will try to read the dataset as-if it was compressed with the given tolerance even if it was compressed with a lower tolerance or lossless.
+     * @param logHandler The logging handler
+     * @param error If an error occured, the error code and message will be written to this output parameter
+     * @return The VDS handle that can be used to get the VolumeDataLayout and the VolumeDataAccessManager
+     */
+    public static VDS openWithAdaptiveCompressionTolerance(String url, String connectionString, float waveletAdaptiveTolerance, LogHandler logHandler, VDSError error) {
+        return VDS.fromNativeObject(OpenWithAdaptiveCompressionTolerance2Impl(ManagedBase.requireNonNull(url, "url may not be null"), ManagedBase.requireNonNull(connectionString, "connectionString may not be null"), waveletAdaptiveTolerance, ManagedBase.requireNonNull(logHandler, "logHandler may not be null").getNativeObject(), ManagedBase.requireNonNull(error, "error may not be null").getNativeObject()));
+    }
+    public static VDS openWithAdaptiveCompressionTolerance(String url, String connectionString, float waveletAdaptiveTolerance, LogHandler logHandler) throws java.io.IOException {
+        VDSError error = new VDSError();
+        VDS result = openWithAdaptiveCompressionTolerance(url, connectionString, waveletAdaptiveTolerance, logHandler, error);
         if (error.getCode() != 0) {
             throw new java.io.IOException(error.getString());
         }
@@ -141,8 +230,37 @@ A compression ratio of 5.0 corresponds to compressed data which is 20% of the or
         return result;
     }
 
+    ///AUTOGEN-OK: FUNCTION_DECL OpenWithAdaptiveCompressionRatio OpenVDS::VDS *(std::string, std::string, float, const OpenVDS::LogHandler &, OpenVDS::VDSError &) FUNCTIONPROTO
+    native private static long OpenWithAdaptiveCompressionRatio2Impl(String url, String connectionString, float waveletAdaptiveRatio, long logHandler, long error);
+
+    /**
+     * Open an existing VDS with adaptive compression ratio.
+     * 
+     * @param url The url scheme specific to each cloud provider
+Available schemes are s3:// azure://
+     * @param connectionString The cloud provider specific connection string
+Specifies additional arguments for the cloud provider
+     * @param waveletAdaptiveRatio Wavelet adaptive ratio.
+This will try to read the dataset as-if it was compressed with the given ratio even if it was compressed with a lower ratio or lossless.
+A compression ratio of 5.0 corresponds to compressed data which is 20% of the original.
+     * @param logHandler The logging handler
+     * @param error If an error occured, the error code and message will be written to this output parameter
+     * @return The VDS handle that can be used to get the VolumeDataLayout and the VolumeDataAccessManager
+     */
+    public static VDS openWithAdaptiveCompressionRatio(String url, String connectionString, float waveletAdaptiveRatio, LogHandler logHandler, VDSError error) {
+        return VDS.fromNativeObject(OpenWithAdaptiveCompressionRatio2Impl(ManagedBase.requireNonNull(url, "url may not be null"), ManagedBase.requireNonNull(connectionString, "connectionString may not be null"), waveletAdaptiveRatio, ManagedBase.requireNonNull(logHandler, "logHandler may not be null").getNativeObject(), ManagedBase.requireNonNull(error, "error may not be null").getNativeObject()));
+    }
+    public static VDS openWithAdaptiveCompressionRatio(String url, String connectionString, float waveletAdaptiveRatio, LogHandler logHandler) throws java.io.IOException {
+        VDSError error = new VDSError();
+        VDS result = openWithAdaptiveCompressionRatio(url, connectionString, waveletAdaptiveRatio, logHandler, error);
+        if (error.getCode() != 0) {
+            throw new java.io.IOException(error.getString());
+        }
+        return result;
+    }
+
     ///AUTOGEN-OK: FUNCTION_DECL Open OpenVDS::VDS *(std::string, OpenVDS::VDSError &) FUNCTIONPROTO
-    native private static long Open2Impl(String url, long error);
+    native private static long Open3Impl(String url, long error);
 
     /**
      * Open an existing VDS.
@@ -154,7 +272,7 @@ Available schemes are s3:// azure://
      * @return The VDS handle that can be used to get the VolumeDataLayout and the VolumeDataAccessManager
      */
     public static VDS open(String url, VDSError error) {
-        return VDS.fromNativeObject(Open2Impl(ManagedBase.requireNonNull(url, "url may not be null"), ManagedBase.requireNonNull(error, "error may not be null").getNativeObject()));
+        return VDS.fromNativeObject(Open3Impl(ManagedBase.requireNonNull(url, "url may not be null"), ManagedBase.requireNonNull(error, "error may not be null").getNativeObject()));
     }
     public static VDS open(String url) throws java.io.IOException {
         VDSError error = new VDSError();
@@ -165,8 +283,33 @@ Available schemes are s3:// azure://
         return result;
     }
 
+    ///AUTOGEN-OK: FUNCTION_DECL Open OpenVDS::VDS *(std::string, const OpenVDS::LogHandler &, OpenVDS::VDSError &) FUNCTIONPROTO
+    native private static long Open4Impl(String url, long logHandler, long error);
+
+    /**
+     * Open an existing VDS.
+     * This is a simple wrapper that uses an empty connectionString
+     * 
+     * @param url The url scheme specific to each cloud provider
+Available schemes are s3:// azure://
+     * @param logHandler The logging handler
+     * @param error If an error occured, the error code and message will be written to this output parameter
+     * @return The VDS handle that can be used to get the VolumeDataLayout and the VolumeDataAccessManager
+     */
+    public static VDS open(String url, LogHandler logHandler, VDSError error) {
+        return VDS.fromNativeObject(Open4Impl(ManagedBase.requireNonNull(url, "url may not be null"), ManagedBase.requireNonNull(logHandler, "logHandler may not be null").getNativeObject(), ManagedBase.requireNonNull(error, "error may not be null").getNativeObject()));
+    }
+    public static VDS open(String url, LogHandler logHandler) throws java.io.IOException {
+        VDSError error = new VDSError();
+        VDS result = open(url, logHandler, error);
+        if (error.getCode() != 0) {
+            throw new java.io.IOException(error.getString());
+        }
+        return result;
+    }
+
     ///AUTOGEN-OK: FUNCTION_DECL Open OpenVDS::VDS *(const OpenVDS::OpenOptions &, OpenVDS::VDSError &) FUNCTIONPROTO
-    native private static long Open3Impl(long options, long error);
+    native private static long Open5Impl(long options, long error);
 
     /**
      * Open an existing VDS
@@ -176,7 +319,7 @@ Available schemes are s3:// azure://
      * @return The VDS handle that can be used to get the VolumeDataLayout and the VolumeDataAccessManager
      */
     public static VDS open(OpenOptions options, VDSError error) {
-        return VDS.fromNativeObject(Open3Impl(ManagedBase.requireNonNull(options, "options may not be null").getNativeObject(), ManagedBase.requireNonNull(error, "error may not be null").getNativeObject()));
+        return VDS.fromNativeObject(Open5Impl(ManagedBase.requireNonNull(options, "options may not be null").getNativeObject(), ManagedBase.requireNonNull(error, "error may not be null").getNativeObject()));
     }
     public static VDS open(OpenOptions options) throws java.io.IOException {
         VDSError error = new VDSError();
@@ -187,8 +330,31 @@ Available schemes are s3:// azure://
         return result;
     }
 
+    ///AUTOGEN-OK: FUNCTION_DECL Open OpenVDS::VDS *(const OpenVDS::OpenOptions &, const OpenVDS::LogHandler &, OpenVDS::VDSError &) FUNCTIONPROTO
+    native private static long Open6Impl(long options, long logHandler, long error);
+
+    /**
+     * Open an existing VDS
+     * 
+     * @param options The options for the connection
+     * @param logHandler The logging handler
+     * @param error If an error occured, the error code and message will be written to this output parameter
+     * @return The VDS handle that can be used to get the VolumeDataLayout and the VolumeDataAccessManager
+     */
+    public static VDS open(OpenOptions options, LogHandler logHandler, VDSError error) {
+        return VDS.fromNativeObject(Open6Impl(ManagedBase.requireNonNull(options, "options may not be null").getNativeObject(), ManagedBase.requireNonNull(logHandler, "logHandler may not be null").getNativeObject(), ManagedBase.requireNonNull(error, "error may not be null").getNativeObject()));
+    }
+    public static VDS open(OpenOptions options, LogHandler logHandler) throws java.io.IOException {
+        VDSError error = new VDSError();
+        VDS result = open(options, logHandler, error);
+        if (error.getCode() != 0) {
+            throw new java.io.IOException(error.getString());
+        }
+        return result;
+    }
+
     ///AUTOGEN-OK: FUNCTION_DECL Open OpenVDS::VDS *(OpenVDS::IOManager *, OpenVDS::VDSError &) FUNCTIONPROTO
-    native private static long Open4Impl(long ioManager, long error);
+    native private static long Open7Impl(long ioManager, long error);
 
     /**
      * Open an existing VDS
@@ -198,11 +364,34 @@ Available schemes are s3:// azure://
      * @return The VDS handle that can be used to get the VolumeDataLayout and the VolumeDataAccessManager
      */
     public static VDS open(IOManager ioManager, VDSError error) {
-        return VDS.fromNativeObject(Open4Impl(ManagedBase.requireNonNull(ioManager, "ioManager may not be null").getNativeObject(), ManagedBase.requireNonNull(error, "error may not be null").getNativeObject()));
+        return VDS.fromNativeObject(Open7Impl(ManagedBase.requireNonNull(ioManager, "ioManager may not be null").getNativeObject(), ManagedBase.requireNonNull(error, "error may not be null").getNativeObject()));
     }
     public static VDS open(IOManager ioManager) throws java.io.IOException {
         VDSError error = new VDSError();
         VDS result = open(ioManager, error);
+        if (error.getCode() != 0) {
+            throw new java.io.IOException(error.getString());
+        }
+        return result;
+    }
+
+    ///AUTOGEN-OK: FUNCTION_DECL Open OpenVDS::VDS *(OpenVDS::IOManager *, const OpenVDS::LogHandler &, OpenVDS::VDSError &) FUNCTIONPROTO
+    native private static long Open8Impl(long ioManager, long logHandler, long error);
+
+    /**
+     * Open an existing VDS
+     * 
+     * @param ioManager The IOManager for the connection, it will be deleted automatically when the VDS handle is closed
+     * @param logHandler The logging handler
+     * @param error If an error occured, the error code and message will be written to this output parameter
+     * @return The VDS handle that can be used to get the VolumeDataLayout and the VolumeDataAccessManager
+     */
+    public static VDS open(IOManager ioManager, LogHandler logHandler, VDSError error) {
+        return VDS.fromNativeObject(Open8Impl(ManagedBase.requireNonNull(ioManager, "ioManager may not be null").getNativeObject(), ManagedBase.requireNonNull(logHandler, "logHandler may not be null").getNativeObject(), ManagedBase.requireNonNull(error, "error may not be null").getNativeObject()));
+    }
+    public static VDS open(IOManager ioManager, LogHandler logHandler) throws java.io.IOException {
+        VDSError error = new VDSError();
+        VDS result = open(ioManager, logHandler, error);
         if (error.getCode() != 0) {
             throw new java.io.IOException(error.getString());
         }
@@ -258,8 +447,44 @@ Specifies additional arguments for the cloud provider
         return result;
     }
 
+    ///AUTOGEN-OK: FUNCTION_DECL Create OpenVDS::VDS *(std::string, std::string, const OpenVDS::VolumeDataLayoutDescriptor &, std::vector<OpenVDS::VolumeDataAxisDescriptor>, std::vector<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::CompressionMethod, float, const OpenVDS::LogHandler &, OpenVDS::VDSError &) FUNCTIONPROTO
+    native private static long Create2Impl(String url, String connectionString, long layoutDescriptor, long[] axisDescriptors, long[] channelDescriptors, long metadata, long compressionMethod, float compressionTolerance, long logHandler, long error);
+
+    /**
+     * Create a new VDS.
+     * 
+     * @param url The url scheme specific to each cloud provider
+Available schemes are s3:// azure://
+     * @param connectionString The cloud provider specific connection string
+Specifies additional arguments for the cloud provider
+     * @param compressionMethod The overall compression method to be used for the VDS. The channel descriptors can have additional options to control how a channel is compressed.
+     * @param compressionTolerance This property specifies the compression tolerance [1..255] when using the wavelet compression method. This value is the maximum deviation from the original data value when the data is converted to 8-bit using the value range. A value of 1 means the maximum allowable loss is the same as quantizing to 8-bit (but the average loss will be much much lower than quantizing to 8-bit). It is not a good idea to directly relate the tolerance to the quality of the compressed data, as the average loss will in general be an order of magnitude lower than the allowable loss.
+     * @param logHandler The logging handler
+     * @param error If an error occured, the error code and message will be written to this output parameter
+     * @return The VDS handle that can be used to get the VolumeDataLayout and the VolumeDataAccessManager
+     */
+    public static VDS create(String url, String connectionString, VolumeDataLayoutDescriptor layoutDescriptor, VolumeDataAxisDescriptor[] axisDescriptors, VolumeDataChannelDescriptor[] channelDescriptors, MetadataReadAccess metadata, CompressionMethod compressionMethod, float compressionTolerance, LogHandler logHandler, VDSError error) {
+        long[] axisDescriptorstmp = new long[ManagedBase.requireNonNull(axisDescriptors, "axisDescriptors may not be null").length];
+        for (int i = 0; i < axisDescriptors.length; ++i) {
+            axisDescriptorstmp[i] = axisDescriptors[i].getNativeObject();
+        }
+        long[] channelDescriptorstmp = new long[ManagedBase.requireNonNull(channelDescriptors, "channelDescriptors may not be null").length];
+        for (int i = 0; i < channelDescriptors.length; ++i) {
+            channelDescriptorstmp[i] = channelDescriptors[i].getNativeObject();
+        }
+        return VDS.fromNativeObject(Create2Impl(ManagedBase.requireNonNull(url, "url may not be null"), ManagedBase.requireNonNull(connectionString, "connectionString may not be null"), ManagedBase.requireNonNull(layoutDescriptor, "layoutDescriptor may not be null").getNativeObject(), axisDescriptorstmp, channelDescriptorstmp, ManagedBase.requireNonNull(metadata, "metadata may not be null").getNativeObject(), ManagedBase.requireNonNull(compressionMethod, "compressionMethod may not be null").value(), compressionTolerance, ManagedBase.requireNonNull(logHandler, "logHandler may not be null").getNativeObject(), ManagedBase.requireNonNull(error, "error may not be null").getNativeObject()));
+    }
+    public static VDS create(String url, String connectionString, VolumeDataLayoutDescriptor layoutDescriptor, VolumeDataAxisDescriptor[] axisDescriptors, VolumeDataChannelDescriptor[] channelDescriptors, MetadataReadAccess metadata, CompressionMethod compressionMethod, float compressionTolerance, LogHandler logHandler) throws java.io.IOException {
+        VDSError error = new VDSError();
+        VDS result = create(url, connectionString, layoutDescriptor, axisDescriptors, channelDescriptors, metadata, compressionMethod, compressionTolerance, logHandler, error);
+        if (error.getCode() != 0) {
+            throw new java.io.IOException(error.getString());
+        }
+        return result;
+    }
+
     ///AUTOGEN-OK: FUNCTION_DECL Create OpenVDS::VDS *(std::string, std::string, const OpenVDS::VolumeDataLayoutDescriptor &, std::vector<OpenVDS::VolumeDataAxisDescriptor>, std::vector<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::VDSError &) FUNCTIONPROTO
-    native private static long Create2Impl(String url, String connectionString, long layoutDescriptor, long[] axisDescriptors, long[] channelDescriptors, long metadata, long error);
+    native private static long Create3Impl(String url, String connectionString, long layoutDescriptor, long[] axisDescriptors, long[] channelDescriptors, long metadata, long error);
 
     /**
      * Create a new VDS.
@@ -280,7 +505,7 @@ Specifies additional arguments for the cloud provider
         for (int i = 0; i < channelDescriptors.length; ++i) {
             channelDescriptorstmp[i] = channelDescriptors[i].getNativeObject();
         }
-        return VDS.fromNativeObject(Create2Impl(ManagedBase.requireNonNull(url, "url may not be null"), ManagedBase.requireNonNull(connectionString, "connectionString may not be null"), ManagedBase.requireNonNull(layoutDescriptor, "layoutDescriptor may not be null").getNativeObject(), axisDescriptorstmp, channelDescriptorstmp, ManagedBase.requireNonNull(metadata, "metadata may not be null").getNativeObject(), ManagedBase.requireNonNull(error, "error may not be null").getNativeObject()));
+        return VDS.fromNativeObject(Create3Impl(ManagedBase.requireNonNull(url, "url may not be null"), ManagedBase.requireNonNull(connectionString, "connectionString may not be null"), ManagedBase.requireNonNull(layoutDescriptor, "layoutDescriptor may not be null").getNativeObject(), axisDescriptorstmp, channelDescriptorstmp, ManagedBase.requireNonNull(metadata, "metadata may not be null").getNativeObject(), ManagedBase.requireNonNull(error, "error may not be null").getNativeObject()));
     }
     public static VDS create(String url, String connectionString, VolumeDataLayoutDescriptor layoutDescriptor, VolumeDataAxisDescriptor[] axisDescriptors, VolumeDataChannelDescriptor[] channelDescriptors, MetadataReadAccess metadata) throws java.io.IOException {
         VDSError error = new VDSError();
@@ -291,8 +516,42 @@ Specifies additional arguments for the cloud provider
         return result;
     }
 
+    ///AUTOGEN-OK: FUNCTION_DECL Create OpenVDS::VDS *(std::string, std::string, const OpenVDS::VolumeDataLayoutDescriptor &, std::vector<OpenVDS::VolumeDataAxisDescriptor>, std::vector<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, const OpenVDS::LogHandler &, OpenVDS::VDSError &) FUNCTIONPROTO
+    native private static long Create4Impl(String url, String connectionString, long layoutDescriptor, long[] axisDescriptors, long[] channelDescriptors, long metadata, long logHandler, long error);
+
+    /**
+     * Create a new VDS.
+     * 
+     * @param url The url scheme specific to each cloud provider
+Available schemes are s3:// azure://
+     * @param connectionString The cloud provider specific connection string
+Specifies additional arguments for the cloud provider
+     * @param logHandler The logging handler
+     * @param error If an error occured, the error code and message will be written to this output parameter
+     * @return The VDS handle that can be used to get the VolumeDataLayout and the VolumeDataAccessManager
+     */
+    public static VDS create(String url, String connectionString, VolumeDataLayoutDescriptor layoutDescriptor, VolumeDataAxisDescriptor[] axisDescriptors, VolumeDataChannelDescriptor[] channelDescriptors, MetadataReadAccess metadata, LogHandler logHandler, VDSError error) {
+        long[] axisDescriptorstmp = new long[ManagedBase.requireNonNull(axisDescriptors, "axisDescriptors may not be null").length];
+        for (int i = 0; i < axisDescriptors.length; ++i) {
+            axisDescriptorstmp[i] = axisDescriptors[i].getNativeObject();
+        }
+        long[] channelDescriptorstmp = new long[ManagedBase.requireNonNull(channelDescriptors, "channelDescriptors may not be null").length];
+        for (int i = 0; i < channelDescriptors.length; ++i) {
+            channelDescriptorstmp[i] = channelDescriptors[i].getNativeObject();
+        }
+        return VDS.fromNativeObject(Create4Impl(ManagedBase.requireNonNull(url, "url may not be null"), ManagedBase.requireNonNull(connectionString, "connectionString may not be null"), ManagedBase.requireNonNull(layoutDescriptor, "layoutDescriptor may not be null").getNativeObject(), axisDescriptorstmp, channelDescriptorstmp, ManagedBase.requireNonNull(metadata, "metadata may not be null").getNativeObject(), ManagedBase.requireNonNull(logHandler, "logHandler may not be null").getNativeObject(), ManagedBase.requireNonNull(error, "error may not be null").getNativeObject()));
+    }
+    public static VDS create(String url, String connectionString, VolumeDataLayoutDescriptor layoutDescriptor, VolumeDataAxisDescriptor[] axisDescriptors, VolumeDataChannelDescriptor[] channelDescriptors, MetadataReadAccess metadata, LogHandler logHandler) throws java.io.IOException {
+        VDSError error = new VDSError();
+        VDS result = create(url, connectionString, layoutDescriptor, axisDescriptors, channelDescriptors, metadata, logHandler, error);
+        if (error.getCode() != 0) {
+            throw new java.io.IOException(error.getString());
+        }
+        return result;
+    }
+
     ///AUTOGEN-OK: FUNCTION_DECL Create OpenVDS::VDS *(std::string, const OpenVDS::VolumeDataLayoutDescriptor &, std::vector<OpenVDS::VolumeDataAxisDescriptor>, std::vector<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::CompressionMethod, float, OpenVDS::VDSError &) FUNCTIONPROTO
-    native private static long Create3Impl(String url, long layoutDescriptor, long[] axisDescriptors, long[] channelDescriptors, long metadata, long compressionMethod, float compressionTolerance, long error);
+    native private static long Create5Impl(String url, long layoutDescriptor, long[] axisDescriptors, long[] channelDescriptors, long metadata, long compressionMethod, float compressionTolerance, long error);
 
     /**
      * Create a new VDS.
@@ -314,7 +573,7 @@ Available schemes are s3:// azure://
         for (int i = 0; i < channelDescriptors.length; ++i) {
             channelDescriptorstmp[i] = channelDescriptors[i].getNativeObject();
         }
-        return VDS.fromNativeObject(Create3Impl(ManagedBase.requireNonNull(url, "url may not be null"), ManagedBase.requireNonNull(layoutDescriptor, "layoutDescriptor may not be null").getNativeObject(), axisDescriptorstmp, channelDescriptorstmp, ManagedBase.requireNonNull(metadata, "metadata may not be null").getNativeObject(), ManagedBase.requireNonNull(compressionMethod, "compressionMethod may not be null").value(), compressionTolerance, ManagedBase.requireNonNull(error, "error may not be null").getNativeObject()));
+        return VDS.fromNativeObject(Create5Impl(ManagedBase.requireNonNull(url, "url may not be null"), ManagedBase.requireNonNull(layoutDescriptor, "layoutDescriptor may not be null").getNativeObject(), axisDescriptorstmp, channelDescriptorstmp, ManagedBase.requireNonNull(metadata, "metadata may not be null").getNativeObject(), ManagedBase.requireNonNull(compressionMethod, "compressionMethod may not be null").value(), compressionTolerance, ManagedBase.requireNonNull(error, "error may not be null").getNativeObject()));
     }
     public static VDS create(String url, VolumeDataLayoutDescriptor layoutDescriptor, VolumeDataAxisDescriptor[] axisDescriptors, VolumeDataChannelDescriptor[] channelDescriptors, MetadataReadAccess metadata, CompressionMethod compressionMethod, float compressionTolerance) throws java.io.IOException {
         VDSError error = new VDSError();
@@ -325,8 +584,43 @@ Available schemes are s3:// azure://
         return result;
     }
 
+    ///AUTOGEN-OK: FUNCTION_DECL Create OpenVDS::VDS *(std::string, const OpenVDS::VolumeDataLayoutDescriptor &, std::vector<OpenVDS::VolumeDataAxisDescriptor>, std::vector<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::CompressionMethod, float, const OpenVDS::LogHandler &, OpenVDS::VDSError &) FUNCTIONPROTO
+    native private static long Create6Impl(String url, long layoutDescriptor, long[] axisDescriptors, long[] channelDescriptors, long metadata, long compressionMethod, float compressionTolerance, long logHandler, long error);
+
+    /**
+     * Create a new VDS.
+     * This is a simple wrapper that uses an empty connectionString
+     * 
+     * @param url The url scheme specific to each cloud provider
+Available schemes are s3:// azure://
+     * @param compressionMethod The overall compression method to be used for the VDS. The channel descriptors can have additional options to control how a channel is compressed.
+     * @param compressionTolerance This property specifies the compression tolerance [1..255] when using the wavelet compression method. This value is the maximum deviation from the original data value when the data is converted to 8-bit using the value range. A value of 1 means the maximum allowable loss is the same as quantizing to 8-bit (but the average loss will be much much lower than quantizing to 8-bit). It is not a good idea to directly relate the tolerance to the quality of the compressed data, as the average loss will in general be an order of magnitude lower than the allowable loss.
+     * @param logHandler The logging handler
+     * @param error If an error occured, the error code and message will be written to this output parameter
+     * @return The VDS handle that can be used to get the VolumeDataLayout and the VolumeDataAccessManager
+     */
+    public static VDS create(String url, VolumeDataLayoutDescriptor layoutDescriptor, VolumeDataAxisDescriptor[] axisDescriptors, VolumeDataChannelDescriptor[] channelDescriptors, MetadataReadAccess metadata, CompressionMethod compressionMethod, float compressionTolerance, LogHandler logHandler, VDSError error) {
+        long[] axisDescriptorstmp = new long[ManagedBase.requireNonNull(axisDescriptors, "axisDescriptors may not be null").length];
+        for (int i = 0; i < axisDescriptors.length; ++i) {
+            axisDescriptorstmp[i] = axisDescriptors[i].getNativeObject();
+        }
+        long[] channelDescriptorstmp = new long[ManagedBase.requireNonNull(channelDescriptors, "channelDescriptors may not be null").length];
+        for (int i = 0; i < channelDescriptors.length; ++i) {
+            channelDescriptorstmp[i] = channelDescriptors[i].getNativeObject();
+        }
+        return VDS.fromNativeObject(Create6Impl(ManagedBase.requireNonNull(url, "url may not be null"), ManagedBase.requireNonNull(layoutDescriptor, "layoutDescriptor may not be null").getNativeObject(), axisDescriptorstmp, channelDescriptorstmp, ManagedBase.requireNonNull(metadata, "metadata may not be null").getNativeObject(), ManagedBase.requireNonNull(compressionMethod, "compressionMethod may not be null").value(), compressionTolerance, ManagedBase.requireNonNull(logHandler, "logHandler may not be null").getNativeObject(), ManagedBase.requireNonNull(error, "error may not be null").getNativeObject()));
+    }
+    public static VDS create(String url, VolumeDataLayoutDescriptor layoutDescriptor, VolumeDataAxisDescriptor[] axisDescriptors, VolumeDataChannelDescriptor[] channelDescriptors, MetadataReadAccess metadata, CompressionMethod compressionMethod, float compressionTolerance, LogHandler logHandler) throws java.io.IOException {
+        VDSError error = new VDSError();
+        VDS result = create(url, layoutDescriptor, axisDescriptors, channelDescriptors, metadata, compressionMethod, compressionTolerance, logHandler, error);
+        if (error.getCode() != 0) {
+            throw new java.io.IOException(error.getString());
+        }
+        return result;
+    }
+
     ///AUTOGEN-OK: FUNCTION_DECL Create OpenVDS::VDS *(std::string, const OpenVDS::VolumeDataLayoutDescriptor &, std::vector<OpenVDS::VolumeDataAxisDescriptor>, std::vector<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::VDSError &) FUNCTIONPROTO
-    native private static long Create4Impl(String url, long layoutDescriptor, long[] axisDescriptors, long[] channelDescriptors, long metadata, long error);
+    native private static long Create7Impl(String url, long layoutDescriptor, long[] axisDescriptors, long[] channelDescriptors, long metadata, long error);
 
     /**
      * Create a new VDS.
@@ -346,7 +640,7 @@ Available schemes are s3:// azure://
         for (int i = 0; i < channelDescriptors.length; ++i) {
             channelDescriptorstmp[i] = channelDescriptors[i].getNativeObject();
         }
-        return VDS.fromNativeObject(Create4Impl(ManagedBase.requireNonNull(url, "url may not be null"), ManagedBase.requireNonNull(layoutDescriptor, "layoutDescriptor may not be null").getNativeObject(), axisDescriptorstmp, channelDescriptorstmp, ManagedBase.requireNonNull(metadata, "metadata may not be null").getNativeObject(), ManagedBase.requireNonNull(error, "error may not be null").getNativeObject()));
+        return VDS.fromNativeObject(Create7Impl(ManagedBase.requireNonNull(url, "url may not be null"), ManagedBase.requireNonNull(layoutDescriptor, "layoutDescriptor may not be null").getNativeObject(), axisDescriptorstmp, channelDescriptorstmp, ManagedBase.requireNonNull(metadata, "metadata may not be null").getNativeObject(), ManagedBase.requireNonNull(error, "error may not be null").getNativeObject()));
     }
     public static VDS create(String url, VolumeDataLayoutDescriptor layoutDescriptor, VolumeDataAxisDescriptor[] axisDescriptors, VolumeDataChannelDescriptor[] channelDescriptors, MetadataReadAccess metadata) throws java.io.IOException {
         VDSError error = new VDSError();
@@ -357,8 +651,41 @@ Available schemes are s3:// azure://
         return result;
     }
 
+    ///AUTOGEN-OK: FUNCTION_DECL Create OpenVDS::VDS *(std::string, const OpenVDS::VolumeDataLayoutDescriptor &, std::vector<OpenVDS::VolumeDataAxisDescriptor>, std::vector<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, const OpenVDS::LogHandler &, OpenVDS::VDSError &) FUNCTIONPROTO
+    native private static long Create8Impl(String url, long layoutDescriptor, long[] axisDescriptors, long[] channelDescriptors, long metadata, long logHandler, long error);
+
+    /**
+     * Create a new VDS.
+     * This is a simple wrapper that uses an empty connectionString
+     * 
+     * @param url The url scheme specific to each cloud provider
+Available schemes are s3:// azure://
+     * @param logHandler The logging handler
+     * @param error If an error occured, the error code and message will be written to this output parameter
+     * @return The VDS handle that can be used to get the VolumeDataLayout and the VolumeDataAccessManager
+     */
+    public static VDS create(String url, VolumeDataLayoutDescriptor layoutDescriptor, VolumeDataAxisDescriptor[] axisDescriptors, VolumeDataChannelDescriptor[] channelDescriptors, MetadataReadAccess metadata, LogHandler logHandler, VDSError error) {
+        long[] axisDescriptorstmp = new long[ManagedBase.requireNonNull(axisDescriptors, "axisDescriptors may not be null").length];
+        for (int i = 0; i < axisDescriptors.length; ++i) {
+            axisDescriptorstmp[i] = axisDescriptors[i].getNativeObject();
+        }
+        long[] channelDescriptorstmp = new long[ManagedBase.requireNonNull(channelDescriptors, "channelDescriptors may not be null").length];
+        for (int i = 0; i < channelDescriptors.length; ++i) {
+            channelDescriptorstmp[i] = channelDescriptors[i].getNativeObject();
+        }
+        return VDS.fromNativeObject(Create8Impl(ManagedBase.requireNonNull(url, "url may not be null"), ManagedBase.requireNonNull(layoutDescriptor, "layoutDescriptor may not be null").getNativeObject(), axisDescriptorstmp, channelDescriptorstmp, ManagedBase.requireNonNull(metadata, "metadata may not be null").getNativeObject(), ManagedBase.requireNonNull(logHandler, "logHandler may not be null").getNativeObject(), ManagedBase.requireNonNull(error, "error may not be null").getNativeObject()));
+    }
+    public static VDS create(String url, VolumeDataLayoutDescriptor layoutDescriptor, VolumeDataAxisDescriptor[] axisDescriptors, VolumeDataChannelDescriptor[] channelDescriptors, MetadataReadAccess metadata, LogHandler logHandler) throws java.io.IOException {
+        VDSError error = new VDSError();
+        VDS result = create(url, layoutDescriptor, axisDescriptors, channelDescriptors, metadata, logHandler, error);
+        if (error.getCode() != 0) {
+            throw new java.io.IOException(error.getString());
+        }
+        return result;
+    }
+
     ///AUTOGEN-OK: FUNCTION_DECL Create OpenVDS::VDS *(const OpenVDS::OpenOptions &, const OpenVDS::VolumeDataLayoutDescriptor &, std::vector<OpenVDS::VolumeDataAxisDescriptor>, std::vector<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::CompressionMethod, float, OpenVDS::VDSError &) FUNCTIONPROTO
-    native private static long Create5Impl(long options, long layoutDescriptor, long[] axisDescriptors, long[] channelDescriptors, long metadata, long compressionMethod, float compressionTolerance, long error);
+    native private static long Create9Impl(long options, long layoutDescriptor, long[] axisDescriptors, long[] channelDescriptors, long metadata, long compressionMethod, float compressionTolerance, long error);
 
     /**
      * Create a new VDS.
@@ -378,7 +705,7 @@ Available schemes are s3:// azure://
         for (int i = 0; i < channelDescriptors.length; ++i) {
             channelDescriptorstmp[i] = channelDescriptors[i].getNativeObject();
         }
-        return VDS.fromNativeObject(Create5Impl(ManagedBase.requireNonNull(options, "options may not be null").getNativeObject(), ManagedBase.requireNonNull(layoutDescriptor, "layoutDescriptor may not be null").getNativeObject(), axisDescriptorstmp, channelDescriptorstmp, ManagedBase.requireNonNull(metadata, "metadata may not be null").getNativeObject(), ManagedBase.requireNonNull(compressionMethod, "compressionMethod may not be null").value(), compressionTolerance, ManagedBase.requireNonNull(error, "error may not be null").getNativeObject()));
+        return VDS.fromNativeObject(Create9Impl(ManagedBase.requireNonNull(options, "options may not be null").getNativeObject(), ManagedBase.requireNonNull(layoutDescriptor, "layoutDescriptor may not be null").getNativeObject(), axisDescriptorstmp, channelDescriptorstmp, ManagedBase.requireNonNull(metadata, "metadata may not be null").getNativeObject(), ManagedBase.requireNonNull(compressionMethod, "compressionMethod may not be null").value(), compressionTolerance, ManagedBase.requireNonNull(error, "error may not be null").getNativeObject()));
     }
     public static VDS create(OpenOptions options, VolumeDataLayoutDescriptor layoutDescriptor, VolumeDataAxisDescriptor[] axisDescriptors, VolumeDataChannelDescriptor[] channelDescriptors, MetadataReadAccess metadata, CompressionMethod compressionMethod, float compressionTolerance) throws java.io.IOException {
         VDSError error = new VDSError();
@@ -389,8 +716,41 @@ Available schemes are s3:// azure://
         return result;
     }
 
+    ///AUTOGEN-OK: FUNCTION_DECL Create OpenVDS::VDS *(const OpenVDS::OpenOptions &, const OpenVDS::VolumeDataLayoutDescriptor &, std::vector<OpenVDS::VolumeDataAxisDescriptor>, std::vector<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::CompressionMethod, float, const OpenVDS::LogHandler &, OpenVDS::VDSError &) FUNCTIONPROTO
+    native private static long Create10Impl(long options, long layoutDescriptor, long[] axisDescriptors, long[] channelDescriptors, long metadata, long compressionMethod, float compressionTolerance, long logHandler, long error);
+
+    /**
+     * Create a new VDS.
+     * 
+     * @param options The options for the connection
+     * @param compressionMethod The overall compression method to be used for the VDS. The channel descriptors can have additional options to control how a channel is compressed.
+     * @param compressionTolerance This property specifies the compression tolerance [1..255] when using the wavelet compression method. This value is the maximum deviation from the original data value when the data is converted to 8-bit using the value range. A value of 1 means the maximum allowable loss is the same as quantizing to 8-bit (but the average loss will be much much lower than quantizing to 8-bit). It is not a good idea to directly relate the tolerance to the quality of the compressed data, as the average loss will in general be an order of magnitude lower than the allowable loss.
+     * @param logHandler The logging handler
+     * @param error If an error occured, the error code and message will be written to this output parameter
+     * @return The VDS handle that can be used to get the VolumeDataLayout and the VolumeDataAccessManager
+     */
+    public static VDS create(OpenOptions options, VolumeDataLayoutDescriptor layoutDescriptor, VolumeDataAxisDescriptor[] axisDescriptors, VolumeDataChannelDescriptor[] channelDescriptors, MetadataReadAccess metadata, CompressionMethod compressionMethod, float compressionTolerance, LogHandler logHandler, VDSError error) {
+        long[] axisDescriptorstmp = new long[ManagedBase.requireNonNull(axisDescriptors, "axisDescriptors may not be null").length];
+        for (int i = 0; i < axisDescriptors.length; ++i) {
+            axisDescriptorstmp[i] = axisDescriptors[i].getNativeObject();
+        }
+        long[] channelDescriptorstmp = new long[ManagedBase.requireNonNull(channelDescriptors, "channelDescriptors may not be null").length];
+        for (int i = 0; i < channelDescriptors.length; ++i) {
+            channelDescriptorstmp[i] = channelDescriptors[i].getNativeObject();
+        }
+        return VDS.fromNativeObject(Create10Impl(ManagedBase.requireNonNull(options, "options may not be null").getNativeObject(), ManagedBase.requireNonNull(layoutDescriptor, "layoutDescriptor may not be null").getNativeObject(), axisDescriptorstmp, channelDescriptorstmp, ManagedBase.requireNonNull(metadata, "metadata may not be null").getNativeObject(), ManagedBase.requireNonNull(compressionMethod, "compressionMethod may not be null").value(), compressionTolerance, ManagedBase.requireNonNull(logHandler, "logHandler may not be null").getNativeObject(), ManagedBase.requireNonNull(error, "error may not be null").getNativeObject()));
+    }
+    public static VDS create(OpenOptions options, VolumeDataLayoutDescriptor layoutDescriptor, VolumeDataAxisDescriptor[] axisDescriptors, VolumeDataChannelDescriptor[] channelDescriptors, MetadataReadAccess metadata, CompressionMethod compressionMethod, float compressionTolerance, LogHandler logHandler) throws java.io.IOException {
+        VDSError error = new VDSError();
+        VDS result = create(options, layoutDescriptor, axisDescriptors, channelDescriptors, metadata, compressionMethod, compressionTolerance, logHandler, error);
+        if (error.getCode() != 0) {
+            throw new java.io.IOException(error.getString());
+        }
+        return result;
+    }
+
     ///AUTOGEN-OK: FUNCTION_DECL Create OpenVDS::VDS *(const OpenVDS::OpenOptions &, const OpenVDS::VolumeDataLayoutDescriptor &, std::vector<OpenVDS::VolumeDataAxisDescriptor>, std::vector<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::VDSError &) FUNCTIONPROTO
-    native private static long Create6Impl(long options, long layoutDescriptor, long[] axisDescriptors, long[] channelDescriptors, long metadata, long error);
+    native private static long Create11Impl(long options, long layoutDescriptor, long[] axisDescriptors, long[] channelDescriptors, long metadata, long error);
 
     /**
      * Create a new VDS.
@@ -408,7 +768,7 @@ Available schemes are s3:// azure://
         for (int i = 0; i < channelDescriptors.length; ++i) {
             channelDescriptorstmp[i] = channelDescriptors[i].getNativeObject();
         }
-        return VDS.fromNativeObject(Create6Impl(ManagedBase.requireNonNull(options, "options may not be null").getNativeObject(), ManagedBase.requireNonNull(layoutDescriptor, "layoutDescriptor may not be null").getNativeObject(), axisDescriptorstmp, channelDescriptorstmp, ManagedBase.requireNonNull(metadata, "metadata may not be null").getNativeObject(), ManagedBase.requireNonNull(error, "error may not be null").getNativeObject()));
+        return VDS.fromNativeObject(Create11Impl(ManagedBase.requireNonNull(options, "options may not be null").getNativeObject(), ManagedBase.requireNonNull(layoutDescriptor, "layoutDescriptor may not be null").getNativeObject(), axisDescriptorstmp, channelDescriptorstmp, ManagedBase.requireNonNull(metadata, "metadata may not be null").getNativeObject(), ManagedBase.requireNonNull(error, "error may not be null").getNativeObject()));
     }
     public static VDS create(OpenOptions options, VolumeDataLayoutDescriptor layoutDescriptor, VolumeDataAxisDescriptor[] axisDescriptors, VolumeDataChannelDescriptor[] channelDescriptors, MetadataReadAccess metadata) throws java.io.IOException {
         VDSError error = new VDSError();
@@ -419,8 +779,39 @@ Available schemes are s3:// azure://
         return result;
     }
 
+    ///AUTOGEN-OK: FUNCTION_DECL Create OpenVDS::VDS *(const OpenVDS::OpenOptions &, const OpenVDS::VolumeDataLayoutDescriptor &, std::vector<OpenVDS::VolumeDataAxisDescriptor>, std::vector<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, const OpenVDS::LogHandler &, OpenVDS::VDSError &) FUNCTIONPROTO
+    native private static long Create12Impl(long options, long layoutDescriptor, long[] axisDescriptors, long[] channelDescriptors, long metadata, long logHandler, long error);
+
+    /**
+     * Create a new VDS.
+     * 
+     * @param options The options for the connection
+     * @param logHandler The logging handler
+     * @param error If an error occured, the error code and message will be written to this output parameter
+     * @return The VDS handle that can be used to get the VolumeDataLayout and the VolumeDataAccessManager
+     */
+    public static VDS create(OpenOptions options, VolumeDataLayoutDescriptor layoutDescriptor, VolumeDataAxisDescriptor[] axisDescriptors, VolumeDataChannelDescriptor[] channelDescriptors, MetadataReadAccess metadata, LogHandler logHandler, VDSError error) {
+        long[] axisDescriptorstmp = new long[ManagedBase.requireNonNull(axisDescriptors, "axisDescriptors may not be null").length];
+        for (int i = 0; i < axisDescriptors.length; ++i) {
+            axisDescriptorstmp[i] = axisDescriptors[i].getNativeObject();
+        }
+        long[] channelDescriptorstmp = new long[ManagedBase.requireNonNull(channelDescriptors, "channelDescriptors may not be null").length];
+        for (int i = 0; i < channelDescriptors.length; ++i) {
+            channelDescriptorstmp[i] = channelDescriptors[i].getNativeObject();
+        }
+        return VDS.fromNativeObject(Create12Impl(ManagedBase.requireNonNull(options, "options may not be null").getNativeObject(), ManagedBase.requireNonNull(layoutDescriptor, "layoutDescriptor may not be null").getNativeObject(), axisDescriptorstmp, channelDescriptorstmp, ManagedBase.requireNonNull(metadata, "metadata may not be null").getNativeObject(), ManagedBase.requireNonNull(logHandler, "logHandler may not be null").getNativeObject(), ManagedBase.requireNonNull(error, "error may not be null").getNativeObject()));
+    }
+    public static VDS create(OpenOptions options, VolumeDataLayoutDescriptor layoutDescriptor, VolumeDataAxisDescriptor[] axisDescriptors, VolumeDataChannelDescriptor[] channelDescriptors, MetadataReadAccess metadata, LogHandler logHandler) throws java.io.IOException {
+        VDSError error = new VDSError();
+        VDS result = create(options, layoutDescriptor, axisDescriptors, channelDescriptors, metadata, logHandler, error);
+        if (error.getCode() != 0) {
+            throw new java.io.IOException(error.getString());
+        }
+        return result;
+    }
+
     ///AUTOGEN-OK: FUNCTION_DECL Create OpenVDS::VDS *(OpenVDS::IOManager *, const OpenVDS::VolumeDataLayoutDescriptor &, std::vector<OpenVDS::VolumeDataAxisDescriptor>, std::vector<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::CompressionMethod, float, OpenVDS::VDSError &) FUNCTIONPROTO
-    native private static long Create7Impl(long ioManager, long layoutDescriptor, long[] axisDescriptors, long[] channelDescriptors, long metadata, long compressionMethod, float compressionTolerance, long error);
+    native private static long Create13Impl(long ioManager, long layoutDescriptor, long[] axisDescriptors, long[] channelDescriptors, long metadata, long compressionMethod, float compressionTolerance, long error);
 
     /**
      * Create a new VDS.
@@ -440,7 +831,7 @@ Available schemes are s3:// azure://
         for (int i = 0; i < channelDescriptors.length; ++i) {
             channelDescriptorstmp[i] = channelDescriptors[i].getNativeObject();
         }
-        return VDS.fromNativeObject(Create7Impl(ManagedBase.requireNonNull(ioManager, "ioManager may not be null").getNativeObject(), ManagedBase.requireNonNull(layoutDescriptor, "layoutDescriptor may not be null").getNativeObject(), axisDescriptorstmp, channelDescriptorstmp, ManagedBase.requireNonNull(metadata, "metadata may not be null").getNativeObject(), ManagedBase.requireNonNull(compressionMethod, "compressionMethod may not be null").value(), compressionTolerance, ManagedBase.requireNonNull(error, "error may not be null").getNativeObject()));
+        return VDS.fromNativeObject(Create13Impl(ManagedBase.requireNonNull(ioManager, "ioManager may not be null").getNativeObject(), ManagedBase.requireNonNull(layoutDescriptor, "layoutDescriptor may not be null").getNativeObject(), axisDescriptorstmp, channelDescriptorstmp, ManagedBase.requireNonNull(metadata, "metadata may not be null").getNativeObject(), ManagedBase.requireNonNull(compressionMethod, "compressionMethod may not be null").value(), compressionTolerance, ManagedBase.requireNonNull(error, "error may not be null").getNativeObject()));
     }
     public static VDS create(IOManager ioManager, VolumeDataLayoutDescriptor layoutDescriptor, VolumeDataAxisDescriptor[] axisDescriptors, VolumeDataChannelDescriptor[] channelDescriptors, MetadataReadAccess metadata, CompressionMethod compressionMethod, float compressionTolerance) throws java.io.IOException {
         VDSError error = new VDSError();
@@ -451,8 +842,41 @@ Available schemes are s3:// azure://
         return result;
     }
 
+    ///AUTOGEN-OK: FUNCTION_DECL Create OpenVDS::VDS *(OpenVDS::IOManager *, const OpenVDS::VolumeDataLayoutDescriptor &, std::vector<OpenVDS::VolumeDataAxisDescriptor>, std::vector<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::CompressionMethod, float, const OpenVDS::LogHandler &, OpenVDS::VDSError &) FUNCTIONPROTO
+    native private static long Create14Impl(long ioManager, long layoutDescriptor, long[] axisDescriptors, long[] channelDescriptors, long metadata, long compressionMethod, float compressionTolerance, long logHandler, long error);
+
+    /**
+     * Create a new VDS.
+     * 
+     * @param ioManager The IOManager for the connection, it will be deleted automatically when the VDS handle is closed
+     * @param compressionMethod The overall compression method to be used for the VDS. The channel descriptors can have additional options to control how a channel is compressed.
+     * @param compressionTolerance This property specifies the compression tolerance [1..255] when using the wavelet compression method. This value is the maximum deviation from the original data value when the data is converted to 8-bit using the value range. A value of 1 means the maximum allowable loss is the same as quantizing to 8-bit (but the average loss will be much much lower than quantizing to 8-bit). It is not a good idea to directly relate the tolerance to the quality of the compressed data, as the average loss will in general be an order of magnitude lower than the allowable loss.
+     * @param logHandler The logging handler
+     * @param error If an error occured, the error code and message will be written to this output parameter
+     * @return The VDS handle that can be used to get the VolumeDataLayout and the VolumeDataAccessManager
+     */
+    public static VDS create(IOManager ioManager, VolumeDataLayoutDescriptor layoutDescriptor, VolumeDataAxisDescriptor[] axisDescriptors, VolumeDataChannelDescriptor[] channelDescriptors, MetadataReadAccess metadata, CompressionMethod compressionMethod, float compressionTolerance, LogHandler logHandler, VDSError error) {
+        long[] axisDescriptorstmp = new long[ManagedBase.requireNonNull(axisDescriptors, "axisDescriptors may not be null").length];
+        for (int i = 0; i < axisDescriptors.length; ++i) {
+            axisDescriptorstmp[i] = axisDescriptors[i].getNativeObject();
+        }
+        long[] channelDescriptorstmp = new long[ManagedBase.requireNonNull(channelDescriptors, "channelDescriptors may not be null").length];
+        for (int i = 0; i < channelDescriptors.length; ++i) {
+            channelDescriptorstmp[i] = channelDescriptors[i].getNativeObject();
+        }
+        return VDS.fromNativeObject(Create14Impl(ManagedBase.requireNonNull(ioManager, "ioManager may not be null").getNativeObject(), ManagedBase.requireNonNull(layoutDescriptor, "layoutDescriptor may not be null").getNativeObject(), axisDescriptorstmp, channelDescriptorstmp, ManagedBase.requireNonNull(metadata, "metadata may not be null").getNativeObject(), ManagedBase.requireNonNull(compressionMethod, "compressionMethod may not be null").value(), compressionTolerance, ManagedBase.requireNonNull(logHandler, "logHandler may not be null").getNativeObject(), ManagedBase.requireNonNull(error, "error may not be null").getNativeObject()));
+    }
+    public static VDS create(IOManager ioManager, VolumeDataLayoutDescriptor layoutDescriptor, VolumeDataAxisDescriptor[] axisDescriptors, VolumeDataChannelDescriptor[] channelDescriptors, MetadataReadAccess metadata, CompressionMethod compressionMethod, float compressionTolerance, LogHandler logHandler) throws java.io.IOException {
+        VDSError error = new VDSError();
+        VDS result = create(ioManager, layoutDescriptor, axisDescriptors, channelDescriptors, metadata, compressionMethod, compressionTolerance, logHandler, error);
+        if (error.getCode() != 0) {
+            throw new java.io.IOException(error.getString());
+        }
+        return result;
+    }
+
     ///AUTOGEN-OK: FUNCTION_DECL Create OpenVDS::VDS *(OpenVDS::IOManager *, const OpenVDS::VolumeDataLayoutDescriptor &, std::vector<OpenVDS::VolumeDataAxisDescriptor>, std::vector<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::VDSError &) FUNCTIONPROTO
-    native private static long Create8Impl(long ioManager, long layoutDescriptor, long[] axisDescriptors, long[] channelDescriptors, long metadata, long error);
+    native private static long Create15Impl(long ioManager, long layoutDescriptor, long[] axisDescriptors, long[] channelDescriptors, long metadata, long error);
 
     /**
      * Create a new VDS.
@@ -470,11 +894,42 @@ Available schemes are s3:// azure://
         for (int i = 0; i < channelDescriptors.length; ++i) {
             channelDescriptorstmp[i] = channelDescriptors[i].getNativeObject();
         }
-        return VDS.fromNativeObject(Create8Impl(ManagedBase.requireNonNull(ioManager, "ioManager may not be null").getNativeObject(), ManagedBase.requireNonNull(layoutDescriptor, "layoutDescriptor may not be null").getNativeObject(), axisDescriptorstmp, channelDescriptorstmp, ManagedBase.requireNonNull(metadata, "metadata may not be null").getNativeObject(), ManagedBase.requireNonNull(error, "error may not be null").getNativeObject()));
+        return VDS.fromNativeObject(Create15Impl(ManagedBase.requireNonNull(ioManager, "ioManager may not be null").getNativeObject(), ManagedBase.requireNonNull(layoutDescriptor, "layoutDescriptor may not be null").getNativeObject(), axisDescriptorstmp, channelDescriptorstmp, ManagedBase.requireNonNull(metadata, "metadata may not be null").getNativeObject(), ManagedBase.requireNonNull(error, "error may not be null").getNativeObject()));
     }
     public static VDS create(IOManager ioManager, VolumeDataLayoutDescriptor layoutDescriptor, VolumeDataAxisDescriptor[] axisDescriptors, VolumeDataChannelDescriptor[] channelDescriptors, MetadataReadAccess metadata) throws java.io.IOException {
         VDSError error = new VDSError();
         VDS result = create(ioManager, layoutDescriptor, axisDescriptors, channelDescriptors, metadata, error);
+        if (error.getCode() != 0) {
+            throw new java.io.IOException(error.getString());
+        }
+        return result;
+    }
+
+    ///AUTOGEN-OK: FUNCTION_DECL Create OpenVDS::VDS *(OpenVDS::IOManager *, const OpenVDS::VolumeDataLayoutDescriptor &, std::vector<OpenVDS::VolumeDataAxisDescriptor>, std::vector<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, const OpenVDS::LogHandler &, OpenVDS::VDSError &) FUNCTIONPROTO
+    native private static long Create16Impl(long ioManager, long layoutDescriptor, long[] axisDescriptors, long[] channelDescriptors, long metadata, long logHandler, long error);
+
+    /**
+     * Create a new VDS.
+     * 
+     * @param ioManager The IOManager for the connection, it will be deleted automatically when the VDS handle is closed
+     * @param logHandler The logging handler
+     * @param error If an error occured, the error code and message will be written to this output parameter
+     * @return The VDS handle that can be used to get the VolumeDataLayout and the VolumeDataAccessManager
+     */
+    public static VDS create(IOManager ioManager, VolumeDataLayoutDescriptor layoutDescriptor, VolumeDataAxisDescriptor[] axisDescriptors, VolumeDataChannelDescriptor[] channelDescriptors, MetadataReadAccess metadata, LogHandler logHandler, VDSError error) {
+        long[] axisDescriptorstmp = new long[ManagedBase.requireNonNull(axisDescriptors, "axisDescriptors may not be null").length];
+        for (int i = 0; i < axisDescriptors.length; ++i) {
+            axisDescriptorstmp[i] = axisDescriptors[i].getNativeObject();
+        }
+        long[] channelDescriptorstmp = new long[ManagedBase.requireNonNull(channelDescriptors, "channelDescriptors may not be null").length];
+        for (int i = 0; i < channelDescriptors.length; ++i) {
+            channelDescriptorstmp[i] = channelDescriptors[i].getNativeObject();
+        }
+        return VDS.fromNativeObject(Create16Impl(ManagedBase.requireNonNull(ioManager, "ioManager may not be null").getNativeObject(), ManagedBase.requireNonNull(layoutDescriptor, "layoutDescriptor may not be null").getNativeObject(), axisDescriptorstmp, channelDescriptorstmp, ManagedBase.requireNonNull(metadata, "metadata may not be null").getNativeObject(), ManagedBase.requireNonNull(logHandler, "logHandler may not be null").getNativeObject(), ManagedBase.requireNonNull(error, "error may not be null").getNativeObject()));
+    }
+    public static VDS create(IOManager ioManager, VolumeDataLayoutDescriptor layoutDescriptor, VolumeDataAxisDescriptor[] axisDescriptors, VolumeDataChannelDescriptor[] channelDescriptors, MetadataReadAccess metadata, LogHandler logHandler) throws java.io.IOException {
+        VDSError error = new VDSError();
+        VDS result = create(ioManager, layoutDescriptor, axisDescriptors, channelDescriptors, metadata, logHandler, error);
         if (error.getCode() != 0) {
             throw new java.io.IOException(error.getString());
         }

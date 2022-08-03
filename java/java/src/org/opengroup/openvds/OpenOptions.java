@@ -149,6 +149,43 @@ public class OpenOptions extends ManagedBase {
     
     }
 
+    ///AUTOGEN-OK: FIELD_DECL logLevel OpenVDS::LogLevel ENUM
+    native private long getLogLevelImpl(long native_object);
+
+    /**
+     * Property to adjust the OpenVDSLogging handlers level.
+     * 
+     */
+    public LogLevel getLogLevel() {
+        return LogLevel.fromInt((int)getLogLevelImpl(getNativeObject()));
+    }
+
+    native private void setLogLevelImpl(long native_object, long value);
+    
+    /**
+     * Property to adjust the OpenVDSLogging handlers level.
+     * 
+     */
+    public void setLogLevel(LogLevel value) {
+    
+        setLogLevelImpl(getNativeObject(), ManagedBase.requireNonNull(value, "value may not be null").value());    
+    
+    }
+
+    ///AUTOGEN-OK: FIELD_DECL logLevelIsSet bool BOOL
+    native private boolean getLogLevelIsSetImpl(long native_object);
+    public boolean getLogLevelIsSet() {
+        return getLogLevelIsSetImpl(getNativeObject());
+    }
+
+    native private void setLogLevelIsSetImpl(long native_object, boolean value);
+    
+    public void setLogLevelIsSet(boolean value) {
+    
+        setLogLevelIsSetImpl(getNativeObject(), value);    
+    
+    }
+
     OpenOptions(long nativeobject) {
         super(nativeobject);
     }

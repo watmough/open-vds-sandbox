@@ -140,34 +140,6 @@ public class AWSOpenOptions extends OpenOptions {
     
     }
 
-    ///AUTOGEN-OK: FIELD_DECL logFilenamePrefix std::string RECORD
-    native private String getLogFilenamePrefixImpl(long native_object);
-    public String getLogFilenamePrefix() {
-        return getLogFilenamePrefixImpl(getNativeObject());
-    }
-
-    native private void setLogFilenamePrefixImpl(long native_object, String value);
-    
-    public void setLogFilenamePrefix(String value) {
-    
-        setLogFilenamePrefixImpl(getNativeObject(), ManagedBase.requireNonNull(value, "value may not be null"));    
-    
-    }
-
-    ///AUTOGEN-OK: FIELD_DECL loglevel std::string RECORD
-    native private String getLoglevelImpl(long native_object);
-    public String getLoglevel() {
-        return getLoglevelImpl(getNativeObject());
-    }
-
-    native private void setLoglevelImpl(long native_object, String value);
-    
-    public void setLoglevel(String value) {
-    
-        setLoglevelImpl(getNativeObject(), ManagedBase.requireNonNull(value, "value may not be null"));    
-    
-    }
-
     ///AUTOGEN-OK: FIELD_DECL connectionTimeoutMs int INT
     native private int getConnectionTimeoutMsImpl(long native_object);
     public int getConnectionTimeoutMs() {
