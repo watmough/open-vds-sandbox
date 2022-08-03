@@ -842,7 +842,7 @@ public:
    ~ErrorGuard() noexcept(false) { m_errorHandler(m_errorPtr, code, string.c_str()); }
   };
 
-  LogHandler            CreateDefaultLogHandler() final override;
+  LogHandler                CreateDefaultLogHandler() final override;
   OpenOptions*              CreateOpenOptions(StringWrapper url, StringWrapper connectionString, const LogHandler &logHandler, ErrorHandler errorHandler, Error *errorPtr=nullptr) final override;
   bool                      IsSupportedProtocol(StringWrapper url) final override;
   VDSHandle                 Open(StringWrapper url, StringWrapper connectionString, const LogHandler &logHandler, ErrorHandler errorHandler, Error *errorPtr=nullptr) final override;
@@ -875,16 +875,34 @@ public:
   }
 };
 
+template<size_t SIZE>
+fmt::string_view create_fmt_string_view(const char(&a)[SIZE])
+{
+  return fmt::string_view(a, SIZE - 1);
+}
+
+static fmt::string_view GetLogLevelString(LogLevel loglevel)
+{
+  const fmt::string_view tagNames[] =
+  {
+    create_fmt_string_view("None"),
+    create_fmt_string_view("Error"),
+    create_fmt_string_view("Warning"),
+    create_fmt_string_view("Info"),
+    create_fmt_string_view("Trace")
+  };
+  static_assert(sizeof(tagNames) / sizeof(*tagNames) == int(LogLevel::Trace) + 1, "LogLevel names does not match LogLevel enum");
+  return tagNames[int(loglevel)];
+}
+
 LogHandler OpenVDSInterfaceImpl::CreateDefaultLogHandler()
 {
   LogHandler ret;
   ret.callback = [](LogLevel level, const char* message, size_t messageSize, void*)
   {
-    if (level == LogLevel::None)
-      return;
     auto stream = (int(level) < int(LogLevel::Warning)) ? stdout : stderr;
-    fwrite(message, 1, messageSize, stream);
-    fputc('\n', stream);
+    auto str = fmt::format("{}: {}\n", GetLogLevelString(level), fmt::string_view(message, messageSize));
+    fwrite(str.c_str(), 1, str.size(), stream);
   };
   return ret;
 }
