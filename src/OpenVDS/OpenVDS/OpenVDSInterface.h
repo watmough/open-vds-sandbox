@@ -114,11 +114,11 @@ struct OpenVDSLogging
 {
   enum Level
   {
-    None,
-    Error,
-    Warning,
-    Info,
-    Trace
+    None = 0,
+    Error = 1,
+    Warning = 2,
+    Info = 3,
+    Trace = 4
   };
   typedef void (*LogHandler)(Level level, const char* message, size_t messageSize, void* userHandle);
 
