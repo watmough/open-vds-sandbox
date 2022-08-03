@@ -71,7 +71,7 @@ namespace OpenVDS
     return in;
   }
 
-  static Aws::Utils::Logging::LogLevel resolveLoglevel(OpenVDSLogging::Level loglevel)
+  static Aws::Utils::Logging::LogLevel resolveLoglevel(LogLevel loglevel)
   {
     static Aws::Utils::Logging::LogLevel awsLogLevels[] = {
       Aws::Utils::Logging::LogLevel::Off,   //OpenVDSLogging::None:
@@ -80,20 +80,20 @@ namespace OpenVDS
       Aws::Utils::Logging::LogLevel::Info,  //OpenVDSLogging::Info:
       Aws::Utils::Logging::LogLevel::Trace  //OpenVDSLogging::Trace:
     };
-    static_assert(sizeof(awsLogLevels) / sizeof(*awsLogLevels) == int(OpenVDSLogging::Trace) + 1, "The loglevel conversion table is wrong, has the enums changed");
+    static_assert(sizeof(awsLogLevels) / sizeof(*awsLogLevels) == int(LogLevel::Trace) + 1, "The loglevel conversion table is wrong, has the enums changed");
     return awsLogLevels[int(loglevel)];
   }
 
-  static OpenVDSLogging::Level resolveAwsLogLevel(Aws::Utils::Logging::LogLevel logLevel)
+  static LogLevel resolveAwsLogLevel(Aws::Utils::Logging::LogLevel logLevel)
   {
-    static OpenVDSLogging::Level openVdsLogLevels[] = {
-      OpenVDSLogging::None,   //Off = 0,
-      OpenVDSLogging::Error,  //Fatal = 1,
-      OpenVDSLogging::Error,  //Error = 2,
-      OpenVDSLogging::Warning,//Warn = 3,
-      OpenVDSLogging::Info,   //Info = 4,
-      OpenVDSLogging::Info,   //Debug = 5,
-      OpenVDSLogging::Trace   //Trace = 6
+    static LogLevel openVdsLogLevels[] = {
+      LogLevel::None,   //Off = 0,
+      LogLevel::Error,  //Fatal = 1,
+      LogLevel::Error,  //Error = 2,
+      LogLevel::Warning,//Warn = 3,
+      LogLevel::Info,   //Info = 4,
+      LogLevel::Info,   //Debug = 5,
+      LogLevel::Trace   //Trace = 6
     };
     static_assert(sizeof(openVdsLogLevels) / sizeof(*openVdsLogLevels) == int(Aws::Utils::Logging::LogLevel::Trace) + 1, "The loglevel conversion table is wrong, has the enums changed");
     return openVdsLogLevels[int(logLevel)];
@@ -102,7 +102,7 @@ namespace OpenVDS
   class OpenVDSAwsLogger : public Aws::Utils::Logging::LogSystemInterface
   {
   public:
-    OpenVDSAwsLogger(OpenVDSLogging logHandler)
+    OpenVDSAwsLogger(LogHandler logHandler)
       : logHandler(logHandler)
     {
     }
@@ -143,11 +143,11 @@ namespace OpenVDS
     }
     void Flush() override final {}
   private:
-    OpenVDSLogging logHandler;
+    LogHandler logHandler;
     Aws::Utils::Logging::LogLevel awsLogLevel;
   };
 
-  static void initializeAWSSDK(OpenVDSLogging &logHandler)
+  static void initializeAWSSDK(const LogHandler &logHandler)
   {
     std::unique_lock<std::mutex> lock(initialize_sdk_mutex);
     initialize_sdk++;
@@ -366,7 +366,7 @@ namespace OpenVDS
 
   }
 
-  IOManagerAWS::IOManagerAWS(const AWSOpenOptions& openOptions, OpenVDSLogging logHandler, Error &error)
+  IOManagerAWS::IOManagerAWS(const AWSOpenOptions& openOptions, LogHandler logHandler, Error &error)
     : IOManager(OpenOptions::AWS)
     , m_region(openOptions.region)
     , m_bucket(openOptions.bucket)

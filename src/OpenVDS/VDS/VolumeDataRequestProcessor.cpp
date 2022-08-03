@@ -1689,7 +1689,7 @@ static void CleanupThread(PageAccessorNotifier &pageAccessorNotifier,  std::map<
   }
 }
 
-VolumeDataRequestProcessor::VolumeDataRequestProcessor(VolumeDataAccessManagerImpl& manager, OpenVDSLogging logHandler)
+VolumeDataRequestProcessor::VolumeDataRequestProcessor(VolumeDataAccessManagerImpl& manager, LogHandler logHandler)
   : m_manager(manager)
   , m_pageAccessorNotifier(m_mutex)
   , m_threadPool(std::thread::hardware_concurrency())

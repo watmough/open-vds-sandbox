@@ -190,7 +190,7 @@ static void addDownloadCB(uv_async_t *handle)
       curl_easy_setopt(downloadRequest->curlEasy, CURLOPT_NOBODY, 1L);
     }
     curl_easy_setopt(downloadRequest->curlEasy, CURLOPT_DEBUGFUNCTION, curl_easy_debug_callback);
-    if (int(eventLoopData->logHandler.level) >= int(OpenVDSLogging::Trace))
+    if (int(eventLoopData->logHandler.level) >= int(LogLevel::Trace))
       curl_easy_setopt(downloadRequest->curlEasy, CURLOPT_VERBOSE, 1L);
   }
   
@@ -293,7 +293,7 @@ static void addUploadCB(uv_async_t *handle)
     }
     curl_easy_setopt(uploadRequest->curlEasy, CURLOPT_INFILESIZE_LARGE, filesize);
     curl_easy_setopt(uploadRequest->curlEasy, CURLOPT_DEBUGFUNCTION, curl_easy_debug_callback);
-    if (int(eventLoopData->logHandler.level) >= int(OpenVDSLogging::Trace))
+    if (int(eventLoopData->logHandler.level) >= int(LogLevel::Trace))
       curl_easy_setopt(uploadRequest->curlEasy, CURLOPT_VERBOSE, 1L);
   }
   
@@ -788,7 +788,7 @@ struct Barrier
   std::condition_variable wait;
 };
 
-CurlHandler::CurlHandler(Error& error, OpenVDSLogging logHandler)
+CurlHandler::CurlHandler(Error& error, LogHandler logHandler)
 {
   m_eventLoopData.logHandler = logHandler;
   error.code = curl_global_init(CURL_GLOBAL_ALL);

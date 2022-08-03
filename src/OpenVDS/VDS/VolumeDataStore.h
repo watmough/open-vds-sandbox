@@ -54,7 +54,7 @@ public:
 class VolumeDataStore
 {
 public:
-           VolumeDataStore(OpenOptions::ConnectionType connectionType, OpenVDSLogging logHandler);
+           VolumeDataStore(OpenOptions::ConnectionType connectionType, LogHandler logHandler);
   virtual ~VolumeDataStore();
 
   virtual CompressionInfo
@@ -103,7 +103,7 @@ protected:
   std::mutex m_mutex;
   std::condition_variable m_wait;
   std::vector<std::unique_ptr<StorageRequest>> m_requests;
-  OpenVDSLogging m_logHandler;
+  LogHandler m_logHandler;
 };
 
 }

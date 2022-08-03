@@ -117,7 +117,7 @@ struct Job
 class VolumeDataRequestProcessor
 {
 public:
-  VolumeDataRequestProcessor(VolumeDataAccessManagerImpl &manager, OpenVDSLogging logHandler);
+  VolumeDataRequestProcessor(VolumeDataAccessManagerImpl &manager, LogHandler logHandler);
   ~VolumeDataRequestProcessor();
 
   int64_t AddJob(const std::vector<VolumeDataChunk> &chunks, std::function<bool(VolumeDataPageImpl *page, const VolumeDataChunk &volumeDataChunk, Error &error)> processor, bool singleThread = false);
@@ -151,7 +151,7 @@ private:
   PageAccessorNotifier m_pageAccessorNotifier;
   ThreadPool m_threadPool;
   std::thread m_cleanupThread;
-  OpenVDSLogging m_logHandler;
+  LogHandler m_logHandler;
 };
 
 }

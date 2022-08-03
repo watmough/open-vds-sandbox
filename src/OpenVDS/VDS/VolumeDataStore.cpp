@@ -240,7 +240,7 @@ bool DeserializeVolumeData(const std::vector<uint8_t> &serializedData, VolumeDat
 }
 
 #ifndef __EMSCRIPTEN__
-VolumeDataStore::VolumeDataStore(OpenOptions::ConnectionType connectionType, OpenVDSLogging logHandler)
+VolumeDataStore::VolumeDataStore(OpenOptions::ConnectionType connectionType, LogHandler logHandler)
   : m_globalStateVds(static_cast<GlobalStateImpl *>(GetGlobalState())->downloaded[connectionType],
                      static_cast<GlobalStateImpl *>(GetGlobalState())->downloadedChunks[connectionType],
                      static_cast<GlobalStateImpl *>(GetGlobalState())->decompressed[connectionType],

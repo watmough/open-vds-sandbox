@@ -185,7 +185,7 @@ namespace OpenVDS
     return iomanager->m_tokenRefresher->newToken();
   }
 
-  IOManagerDms::IOManagerDms(const DMSOpenOptions& openOptions, IOManager::AccessPattern accessPattern, OpenVDSLogging logHandler, Error& error)
+  IOManagerDms::IOManagerDms(const DMSOpenOptions& openOptions, IOManager::AccessPattern accessPattern, LogHandler logHandler, Error& error)
     : IOManager(openOptions.connectionType)
     , m_opened(false)
     , m_useFileNameForSingleFileDatasets(openOptions.useFileNameForSingleFileDatasets)
@@ -210,7 +210,7 @@ namespace OpenVDS
 
 
     try {
-      m_sdManager.reset(new seismicdrive::SDManager(openOptions.sdAuthorityUrl, openOptions.sdApiKey, openOptions.logLevel));
+      m_sdManager.reset(new seismicdrive::SDManager(openOptions.sdAuthorityUrl, openOptions.sdApiKey, int(openOptions.logLevel)));
       if (openOptions.authProviderCallback)
       {
         m_sdManager->setAuthProviderCallback(openOptions.authProviderCallback, openOptions.authProviderCallbackData);
@@ -228,7 +228,7 @@ namespace OpenVDS
         m_sdManager->setAuthProviderFromString(openOptions.sdToken);
       }
 
-      m_dataset.reset(new seismicdrive::SDGenericDataset(m_sdManager.get(), openOptions.datasetPath, openOptions.logLevel != 0));
+      m_dataset.reset(new seismicdrive::SDGenericDataset(m_sdManager.get(), openOptions.datasetPath, openOptions.logLevel != LogLevel::None));
 
       seismicdrive::SDDatasetDisposition disposition = seismicdrive::SDDatasetDisposition::READ_ONLY;
       switch (accessPattern)

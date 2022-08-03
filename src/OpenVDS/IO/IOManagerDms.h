@@ -76,7 +76,7 @@ namespace OpenVDS
   class IOManagerDms : public IOManager
   {
   public:
-    IOManagerDms(const DMSOpenOptions& openOptions, IOManager::AccessPattern accessPattern, OpenVDSLogging logHandler, Error& error);
+    IOManagerDms(const DMSOpenOptions& openOptions, IOManager::AccessPattern accessPattern, LogHandler logHandler, Error& error);
     ~IOManagerDms() override;
 
     std::shared_ptr<Request> ReadObjectInfo(const std::string& objectName, std::shared_ptr<TransferDownloadHandler> handler) override;

@@ -501,7 +501,7 @@ static bool GetWaveletAdaptiveInfo(std::string& connectionString, WaveletAdaptiv
   return true;
 }
 
-static bool GetLogLevel(std::string& connectionString, OpenVDSLogging::Level &level, Error &error)
+static bool GetLogLevel(std::string& connectionString, LogLevel &level, Error &error)
 {
   std::vector<std::string> keys;
   keys.emplace_back("LogLevel");
@@ -514,23 +514,23 @@ static bool GetLogLevel(std::string& connectionString, OpenVDSLogging::Level &le
   std::transform(logLevelStr.begin(), logLevelStr.end(), logLevelStr.begin(), asciitolower);
   if (logLevelStr == "none")
   {
-    level = OpenVDSLogging::None;
+    level = LogLevel::None;
   }
   else if (logLevelStr == "error")
   {
-    level = OpenVDSLogging::Error;
+    level = LogLevel::Error;
   }
   else if (logLevelStr == "warning")
   {
-    level = OpenVDSLogging::Warning;
+    level = LogLevel::Warning;
   }
   else if (logLevelStr == "info")
   {
-    level = OpenVDSLogging::Info;
+    level = LogLevel::Info;
   }
   else if (logLevelStr == "trace")
   {
-    level = OpenVDSLogging::Trace;
+    level = LogLevel::Trace;
   }
   else
   {
@@ -543,7 +543,7 @@ static bool GetLogLevel(std::string& connectionString, OpenVDSLogging::Level &le
 }
 
 // This function is also used from IOManager.cpp, it might make more sense to move it there
-OpenOptions* CreateOpenOptions(StringWrapper urlWrapper, StringWrapper connectionStringWrapper, OpenVDSLogging logHandler, Error& error)
+OpenOptions* CreateOpenOptions(StringWrapper urlWrapper, StringWrapper connectionStringWrapper, const LogHandler &logHandler, Error& error)
 {
   error = Error();
   std::unique_ptr<OpenOptions> openOptions;
@@ -558,7 +558,7 @@ OpenOptions* CreateOpenOptions(StringWrapper urlWrapper, StringWrapper connectio
   if (error.code)
     return nullptr;
 
-  OpenVDSLogging::Level logLevel = OpenVDSLogging::Warning;
+  LogLevel logLevel = LogLevel::Warning;
   bool logLevelSet = GetLogLevel(connectionString, logLevel, error);
   if (error.code)
     return nullptr;
@@ -829,8 +829,8 @@ class OpenVDSInterfaceImpl : public OpenVDSInterface
   OpenVDSInterfaceImpl() {}
   ~OpenVDSInterfaceImpl() {}
 
-  VDSHandle                 Open(const OpenOptions& options, OpenVDSLogging logHandler, Error &error);
-  VDSHandle                 Create(const OpenOptions& options, VolumeDataLayoutDescriptor const& layoutDescriptor, VectorWrapper<VolumeDataAxisDescriptor> axisDescriptors, VectorWrapper<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const& metadata, CompressionMethod compressionMethod, float compressionTolerance, OpenVDSLogging logHandler, Error &error);
+  VDSHandle                 Open(const OpenOptions& options, const LogHandler &logHandler, Error &error);
+  VDSHandle                 Create(const OpenOptions& options, VolumeDataLayoutDescriptor const& layoutDescriptor, VectorWrapper<VolumeDataAxisDescriptor> axisDescriptors, VectorWrapper<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const& metadata, CompressionMethod compressionMethod, float compressionTolerance, const LogHandler &logHandler, Error &error);
 
 public:
   class ErrorGuard : public Error
@@ -842,18 +842,18 @@ public:
    ~ErrorGuard() noexcept(false) { m_errorHandler(m_errorPtr, code, string.c_str()); }
   };
 
-  OpenVDSLogging            CreateDefaultLogHandler() final override;
-  OpenOptions*              CreateOpenOptions(StringWrapper url, StringWrapper connectionString, OpenVDSLogging logHandler, ErrorHandler errorHandler, Error *errorPtr=nullptr) final override;
+  LogHandler            CreateDefaultLogHandler() final override;
+  OpenOptions*              CreateOpenOptions(StringWrapper url, StringWrapper connectionString, const LogHandler &logHandler, ErrorHandler errorHandler, Error *errorPtr=nullptr) final override;
   bool                      IsSupportedProtocol(StringWrapper url) final override;
-  VDSHandle                 Open(StringWrapper url, StringWrapper connectionString, OpenVDSLogging logHandler, ErrorHandler errorHandler, Error *errorPtr=nullptr) final override;
-  VDSHandle                 OpenWithAdaptiveCompressionTolerance(StringWrapper url, StringWrapper connectionString, float waveletAdaptiveTolerance, OpenVDSLogging logHandler, ErrorHandler errorHandler, Error *errorPtr=nullptr) final override;
-  VDSHandle                 OpenWithAdaptiveCompressionRatio(StringWrapper url, StringWrapper connectionString, float waveletAdaptiveRatio, OpenVDSLogging logHandler, ErrorHandler errorHandler, Error *errorPtr=nullptr) final override;
-  VDSHandle                 Open(const OpenOptions& options, OpenVDSLogging logHandler, ErrorHandler errorHandler, Error *errorPtr=nullptr) final override;
-  VDSHandle                 Open(IOManager*ioManager, OpenVDSLogging logHandler, ErrorHandler errorHandler, Error *errorPtr=nullptr) final override;
+  VDSHandle                 Open(StringWrapper url, StringWrapper connectionString, const LogHandler &logHandler, ErrorHandler errorHandler, Error *errorPtr=nullptr) final override;
+  VDSHandle                 OpenWithAdaptiveCompressionTolerance(StringWrapper url, StringWrapper connectionString, float waveletAdaptiveTolerance, const LogHandler &logHandler, ErrorHandler errorHandler, Error *errorPtr=nullptr) final override;
+  VDSHandle                 OpenWithAdaptiveCompressionRatio(StringWrapper url, StringWrapper connectionString, float waveletAdaptiveRatio, const LogHandler &logHandler, ErrorHandler errorHandler, Error *errorPtr=nullptr) final override;
+  VDSHandle                 Open(const OpenOptions& options, const LogHandler &logHandler, ErrorHandler errorHandler, Error *errorPtr=nullptr) final override;
+  VDSHandle                 Open(IOManager*ioManager, const LogHandler &logHandler, ErrorHandler errorHandler, Error *errorPtr=nullptr) final override;
   bool                      IsCompressionMethodSupported(CompressionMethod compressionMethod) final override;
-  VDSHandle                 Create(StringWrapper url, StringWrapper connectionString, VolumeDataLayoutDescriptor const& layoutDescriptor, VectorWrapper<VolumeDataAxisDescriptor> axisDescriptors, VectorWrapper<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const& metadata, CompressionMethod compressionMethod, float compressionTolerance, OpenVDSLogging logHandler, ErrorHandler errorHandler, Error *errorPtr=nullptr) final override;
-  VDSHandle                 Create(const OpenOptions& options, VolumeDataLayoutDescriptor const& layoutDescriptor, VectorWrapper<VolumeDataAxisDescriptor> axisDescriptors, VectorWrapper<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const& metadata, CompressionMethod compressionMethod, float compressionTolerance, OpenVDSLogging logHandler, ErrorHandler errorHandler, Error *errorPtr=nullptr) final override;
-  VDSHandle                 Create(IOManager* ioManager, VolumeDataLayoutDescriptor const &layoutDescriptor, VectorWrapper<VolumeDataAxisDescriptor> axisDescriptors, VectorWrapper<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const &metadata, CompressionMethod compressionMethod, float compressionTolerance, OpenVDSLogging logHandler, ErrorHandler errorHandler, Error *errorPtr=nullptr) final override;
+  VDSHandle                 Create(StringWrapper url, StringWrapper connectionString, VolumeDataLayoutDescriptor const& layoutDescriptor, VectorWrapper<VolumeDataAxisDescriptor> axisDescriptors, VectorWrapper<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const& metadata, CompressionMethod compressionMethod, float compressionTolerance, const LogHandler &logHandler, ErrorHandler errorHandler, Error *errorPtr=nullptr) final override;
+  VDSHandle                 Create(const OpenOptions& options, VolumeDataLayoutDescriptor const& layoutDescriptor, VectorWrapper<VolumeDataAxisDescriptor> axisDescriptors, VectorWrapper<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const& metadata, CompressionMethod compressionMethod, float compressionTolerance, const LogHandler &logHandler, ErrorHandler errorHandler, Error *errorPtr=nullptr) final override;
+  VDSHandle                 Create(IOManager* ioManager, VolumeDataLayoutDescriptor const &layoutDescriptor, VectorWrapper<VolumeDataAxisDescriptor> axisDescriptors, VectorWrapper<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const &metadata, CompressionMethod compressionMethod, float compressionTolerance, const LogHandler &logHandler, ErrorHandler errorHandler, Error *errorPtr=nullptr) final override;
   VolumeDataLayout         *GetLayout(VDSHandle handle) final override;
   IVolumeDataAccessManager *GetAccessManagerInterface(VDSHandle handle) final override;
   CompressionMethod         GetCompressionMethod(VDSHandle handle) final override;
@@ -875,21 +875,21 @@ public:
   }
 };
 
-OpenVDSLogging OpenVDSInterfaceImpl::CreateDefaultLogHandler()
+LogHandler OpenVDSInterfaceImpl::CreateDefaultLogHandler()
 {
-  OpenVDSLogging ret;
-  ret.callback = [](OpenVDSLogging::Level level, const char* message, size_t messageSize, void*)
+  LogHandler ret;
+  ret.callback = [](LogLevel level, const char* message, size_t messageSize, void*)
   {
-    if (level == OpenVDSLogging::None)
+    if (level == LogLevel::None)
       return;
-    auto stream = (int(level) < int(OpenVDSLogging::Warning)) ? stdout : stderr;
+    auto stream = (int(level) < int(LogLevel::Warning)) ? stdout : stderr;
     fwrite(message, 1, messageSize, stream);
     fputc('\n', stream);
   };
   return ret;
 }
 
-OpenOptions* OpenVDSInterfaceImpl::CreateOpenOptions(StringWrapper urlWrapper, StringWrapper connectionStringWrapper, OpenVDSLogging logHandler, ErrorHandler errorHandler, Error *errorPtr)
+OpenOptions* OpenVDSInterfaceImpl::CreateOpenOptions(StringWrapper urlWrapper, StringWrapper connectionStringWrapper, const LogHandler &logHandler, ErrorHandler errorHandler, Error *errorPtr)
 {
   ErrorGuard error(errorHandler, errorPtr);
   return OpenVDS::CreateOpenOptions(urlWrapper, connectionStringWrapper, logHandler, error);
@@ -906,7 +906,7 @@ bool OpenVDSInterfaceImpl::IsSupportedProtocol(StringWrapper url)
   return false;
 }
 
-VDSHandle OpenVDSInterfaceImpl::Open(StringWrapper url, StringWrapper connectionString, OpenVDSLogging logHandler, ErrorHandler errorHandler, Error *errorPtr)
+VDSHandle OpenVDSInterfaceImpl::Open(StringWrapper url, StringWrapper connectionString, const LogHandler &logHandler, ErrorHandler errorHandler, Error *errorPtr)
 {
   ErrorGuard error(errorHandler, errorPtr);
   std::unique_ptr<OpenOptions> openOptions(OpenVDS::CreateOpenOptions(url, connectionString, logHandler, error));
@@ -916,7 +916,7 @@ VDSHandle OpenVDSInterfaceImpl::Open(StringWrapper url, StringWrapper connection
   return Open(*(openOptions.get()), logHandler, error);
 }
 
-VDSHandle OpenVDSInterfaceImpl::OpenWithAdaptiveCompressionTolerance(StringWrapper url, StringWrapper connectionString, float waveletAdaptiveTolerance, OpenVDSLogging logHandler, ErrorHandler errorHandler, Error *errorPtr)
+VDSHandle OpenVDSInterfaceImpl::OpenWithAdaptiveCompressionTolerance(StringWrapper url, StringWrapper connectionString, float waveletAdaptiveTolerance, const LogHandler &logHandler, ErrorHandler errorHandler, Error *errorPtr)
 {
   ErrorGuard error(errorHandler, errorPtr);
   std::unique_ptr<OpenOptions> openOptions(OpenVDS::CreateOpenOptions(url, connectionString, logHandler, error));
@@ -929,7 +929,7 @@ VDSHandle OpenVDSInterfaceImpl::OpenWithAdaptiveCompressionTolerance(StringWrapp
   return Open(*(openOptions.get()), logHandler, error);
 }
 
-VDSHandle OpenVDSInterfaceImpl::OpenWithAdaptiveCompressionRatio(StringWrapper url, StringWrapper connectionString, float waveletAdaptiveRatio, OpenVDSLogging logHandler, ErrorHandler errorHandler, Error *errorPtr)
+VDSHandle OpenVDSInterfaceImpl::OpenWithAdaptiveCompressionRatio(StringWrapper url, StringWrapper connectionString, float waveletAdaptiveRatio, const LogHandler &logHandler, ErrorHandler errorHandler, Error *errorPtr)
 {
   ErrorGuard error(errorHandler, errorPtr);
   std::unique_ptr<OpenOptions> openOptions(OpenVDS::CreateOpenOptions(url, connectionString, logHandler, error));
@@ -942,7 +942,7 @@ VDSHandle OpenVDSInterfaceImpl::OpenWithAdaptiveCompressionRatio(StringWrapper u
   return Open(*(openOptions.get()), logHandler, error);
 }
 
-VDSHandle OpenVDSInterfaceImpl::Open(IOManager *ioManager, OpenVDSLogging logHandler, ErrorHandler errorHandler, Error *errorPtr)
+VDSHandle OpenVDSInterfaceImpl::Open(IOManager *ioManager, const LogHandler &logHandler, ErrorHandler errorHandler, Error *errorPtr)
 {
   ErrorGuard error(errorHandler, errorPtr);
   std::unique_ptr<VDS> ret(new VDS(logHandler));
@@ -957,7 +957,7 @@ VDSHandle OpenVDSInterfaceImpl::Open(IOManager *ioManager, OpenVDSLogging logHan
   }
 }
 
-VDS *OpenVDSInterfaceImpl::Open(const OpenOptions &options, OpenVDSLogging logHandler, Error &error)
+VDS *OpenVDSInterfaceImpl::Open(const OpenOptions &options, const LogHandler &logHandler, Error &error)
 {
   std::unique_ptr<VDS> ret(new VDS(logHandler));
   if (options.logLevelIsSet)
@@ -995,7 +995,7 @@ VDS *OpenVDSInterfaceImpl::Open(const OpenOptions &options, OpenVDSLogging logHa
   }
 }
 
-VDS *OpenVDSInterfaceImpl::Open(const OpenOptions &options, OpenVDSLogging logHandler, ErrorHandler errorHandler, Error *errorPtr)
+VDS *OpenVDSInterfaceImpl::Open(const OpenOptions &options, const LogHandler &logHandler, ErrorHandler errorHandler, Error *errorPtr)
 {
   ErrorGuard error(errorHandler, errorPtr);
   return Open(options, logHandler, error);
@@ -1020,7 +1020,7 @@ bool OpenVDSInterfaceImpl::IsCompressionMethodSupported(CompressionMethod compre
   return VolumeDataStore::IsCompressionMethodSupported(compressionMethod);
 }
 
-VDSHandle OpenVDSInterfaceImpl::Create(IOManager *ioManager, VolumeDataLayoutDescriptor const& layoutDescriptor, VectorWrapper<VolumeDataAxisDescriptor> axisDescriptors, VectorWrapper<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const& metadata, CompressionMethod compressionMethod, float compressionTolerance, OpenVDSLogging logHandler, ErrorHandler errorHandler, Error *errorPtr)
+VDSHandle OpenVDSInterfaceImpl::Create(IOManager *ioManager, VolumeDataLayoutDescriptor const& layoutDescriptor, VectorWrapper<VolumeDataAxisDescriptor> axisDescriptors, VectorWrapper<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const& metadata, CompressionMethod compressionMethod, float compressionTolerance, const LogHandler &logHandler, ErrorHandler errorHandler, Error *errorPtr)
 {
   ErrorGuard error(errorHandler, errorPtr);
   std::unique_ptr<VDS> ret(new VDS(logHandler));
@@ -1035,7 +1035,7 @@ VDSHandle OpenVDSInterfaceImpl::Create(IOManager *ioManager, VolumeDataLayoutDes
   }
 }
 
-VDSHandle OpenVDSInterfaceImpl::Create(StringWrapper url, StringWrapper connectionString, VolumeDataLayoutDescriptor const& layoutDescriptor, VectorWrapper<VolumeDataAxisDescriptor> axisDescriptors, VectorWrapper<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const& metadata, CompressionMethod compressionMethod, float compressionTolerance, OpenVDSLogging logHandler, ErrorHandler errorHandler, Error *errorPtr)
+VDSHandle OpenVDSInterfaceImpl::Create(StringWrapper url, StringWrapper connectionString, VolumeDataLayoutDescriptor const& layoutDescriptor, VectorWrapper<VolumeDataAxisDescriptor> axisDescriptors, VectorWrapper<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const& metadata, CompressionMethod compressionMethod, float compressionTolerance, const LogHandler &logHandler, ErrorHandler errorHandler, Error *errorPtr)
 {
   ErrorGuard error(errorHandler, errorPtr);
   std::unique_ptr<OpenOptions> openOptions(OpenVDS::CreateOpenOptions(url, connectionString, logHandler, error));
@@ -1045,7 +1045,7 @@ VDSHandle OpenVDSInterfaceImpl::Create(StringWrapper url, StringWrapper connecti
   return Create(*openOptions, layoutDescriptor, axisDescriptors, channelDescriptors, metadata, compressionMethod, compressionTolerance, logHandler, error);
 }
 
-VDSHandle OpenVDSInterfaceImpl::Create(const OpenOptions& options, VolumeDataLayoutDescriptor const& layoutDescriptor, VectorWrapper<VolumeDataAxisDescriptor> axisDescriptors, VectorWrapper<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const& metadata, CompressionMethod compressionMethod, float compressionTolerance, OpenVDSLogging logHandler, Error &error)
+VDSHandle OpenVDSInterfaceImpl::Create(const OpenOptions& options, VolumeDataLayoutDescriptor const& layoutDescriptor, VectorWrapper<VolumeDataAxisDescriptor> axisDescriptors, VectorWrapper<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const& metadata, CompressionMethod compressionMethod, float compressionTolerance, const LogHandler &logHandler, Error &error)
 {
   std::unique_ptr<VDS> ret(new VDS(logHandler));
   if (options.logLevelIsSet)
@@ -1078,7 +1078,7 @@ VDSHandle OpenVDSInterfaceImpl::Create(const OpenOptions& options, VolumeDataLay
   }
 }
 
-VDSHandle OpenVDSInterfaceImpl::Create(const OpenOptions& options, VolumeDataLayoutDescriptor const& layoutDescriptor, VectorWrapper<VolumeDataAxisDescriptor> axisDescriptors, VectorWrapper<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const& metadata, CompressionMethod compressionMethod, float compressionTolerance, OpenVDSLogging logHandler, ErrorHandler errorHandler, Error *errorPtr)
+VDSHandle OpenVDSInterfaceImpl::Create(const OpenOptions& options, VolumeDataLayoutDescriptor const& layoutDescriptor, VectorWrapper<VolumeDataAxisDescriptor> axisDescriptors, VectorWrapper<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const& metadata, CompressionMethod compressionMethod, float compressionTolerance, const LogHandler &logHandler, ErrorHandler errorHandler, Error *errorPtr)
 {
   ErrorGuard error(errorHandler, errorPtr);
   return Create(options, layoutDescriptor, axisDescriptors, channelDescriptors, metadata, compressionMethod, compressionTolerance, logHandler, error);

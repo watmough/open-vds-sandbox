@@ -115,7 +115,7 @@ namespace OpenVDS
   class IOManagerAWS : public IOManager
   {
     public:
-      IOManagerAWS(const AWSOpenOptions &openOptions, OpenVDSLogging logHandler, Error &error);
+      IOManagerAWS(const AWSOpenOptions &openOptions, LogHandler logHandler, Error &error);
       ~IOManagerAWS() override;
 
       std::shared_ptr<Request> ReadObjectInfo(const std::string &objectName, std::shared_ptr<TransferDownloadHandler> handler) override;
@@ -128,7 +128,7 @@ namespace OpenVDS
       std::string m_objectId;
       std::unique_ptr<Aws::S3::S3Client> m_s3Client;
       bool m_disableInitializeSdk;
-      OpenVDSLogging logHandler;
+      LogHandler logHandler;
   };
 }
 #endif //IOMANAGERAWS_H

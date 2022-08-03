@@ -48,7 +48,7 @@
 namespace OpenVDS
 {
 
-IOManager* IOManager::CreateIOManager(const OpenOptions& options, IOManager::AccessPattern accessPattern, OpenVDSLogging logHandler, Error &error)
+IOManager* IOManager::CreateIOManager(const OpenOptions& options, IOManager::AccessPattern accessPattern, const LogHandler &logHandler, Error &error)
 {
   switch(options.connectionType)
   {
@@ -104,9 +104,9 @@ IOManager* IOManager::CreateIOManager(const OpenOptions& options, IOManager::Acc
 }
 
 // This function is defined in OpenVDS.cpp, it might make more sense to move it here
-OpenOptions* CreateOpenOptions(StringWrapper urlWrapper, StringWrapper connectionStringWrapper,  OpenVDSLogging logHandler, Error& error);
+OpenOptions* CreateOpenOptions(StringWrapper urlWrapper, StringWrapper connectionStringWrapper,  const LogHandler &logHandler, Error& error);
 
-IOManager *IOManager::CreateIOManager(const StringWrapper &url, const StringWrapper &connectionString, IOManager::AccessPattern accessPattern, OpenVDSLogging logHandler, Error& error)
+IOManager *IOManager::CreateIOManager(const StringWrapper &url, const StringWrapper &connectionString, IOManager::AccessPattern accessPattern, const LogHandler &logHandler, Error& error)
 {
   std::unique_ptr<OpenOptions> openOptions(CreateOpenOptions(url, connectionString, logHandler, error));
   if (error.code || !openOptions)
