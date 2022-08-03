@@ -37,10 +37,15 @@
 #include <aws/sts/STSClient.h>
 #include <aws/sts/model/AssumeRoleRequest.h>
 #include <aws/transfer/TransferManager.h>
+#include <aws/core/utils/Array.h>
 #include <mutex>
 #include <functional>
 
 #include <fmt/format.h>
+
+#include <VDS/Logging.h>
+
+#include <cstdarg>
 
 namespace OpenVDS
 {
@@ -49,12 +54,12 @@ namespace OpenVDS
   static std::mutex initialize_sdk_mutex;
   static Aws::SDKOptions initialize_sdk_options;
 
-  static Aws::String convertStdString(const std::string &s)
+  static Aws::String convertStdString(const std::string& s)
   {
     return Aws::String(s.begin(), s.end());
   }
 
-  static std::string convertAwsString(const Aws::String &s)
+  static std::string convertAwsString(const Aws::String& s)
   {
     return std::string(s.begin(), s.end());
   }
@@ -66,50 +71,90 @@ namespace OpenVDS
     return in;
   }
 
-  static Aws::Utils::Logging::LogLevel resolveLoglevel(const std::string &loglevel)
+  static Aws::Utils::Logging::LogLevel resolveLoglevel(OpenVDSLogging::Level loglevel)
   {
-    std::string lowercase = loglevel;
-    std::transform(lowercase.begin(), lowercase.end(), lowercase.begin(), asciitolower);
-    if (lowercase == "off")
-      return Aws::Utils::Logging::LogLevel::Off;
-    else if (lowercase == "fatal")
-      return Aws::Utils::Logging::LogLevel::Fatal;
-    else if (lowercase == "error")
-      return Aws::Utils::Logging::LogLevel::Error;
-    else if (lowercase == "warn")
-      return Aws::Utils::Logging::LogLevel::Warn;
-    else if (lowercase == "info")
-      return Aws::Utils::Logging::LogLevel::Info;
-    else if (lowercase == "debug")
-      return Aws::Utils::Logging::LogLevel::Debug;
-    else if (lowercase == "trace")
-      return Aws::Utils::Logging::LogLevel::Trace;
-
-    return Aws::Utils::Logging::LogLevel::Off;
+    static Aws::Utils::Logging::LogLevel awsLogLevels[] = {
+      Aws::Utils::Logging::LogLevel::Off,   //OpenVDSLogging::None:
+      Aws::Utils::Logging::LogLevel::Error, //OpenVDSLogging::Error:
+      Aws::Utils::Logging::LogLevel::Warn,  //OpenVDSLogging::Warning:
+      Aws::Utils::Logging::LogLevel::Info,  //OpenVDSLogging::Info:
+      Aws::Utils::Logging::LogLevel::Trace  //OpenVDSLogging::Trace:
+    };
+    static_assert(sizeof(awsLogLevels) / sizeof(*awsLogLevels) == int(OpenVDSLogging::Trace) + 1, "The loglevel conversion table is wrong, has the enums changed");
+    return awsLogLevels[int(loglevel)];
   }
 
-  static void initializeAWSSDK(const std::string &logfilePrefix, const std::string &loglevelstr)
+  static OpenVDSLogging::Level resolveAwsLogLevel(Aws::Utils::Logging::LogLevel logLevel)
   {
+    static OpenVDSLogging::Level openVdsLogLevels[] = {
+      OpenVDSLogging::None,   //Off = 0,
+      OpenVDSLogging::Error,  //Fatal = 1,
+      OpenVDSLogging::Error,  //Error = 2,
+      OpenVDSLogging::Warning,//Warn = 3,
+      OpenVDSLogging::Info,   //Info = 4,
+      OpenVDSLogging::Info,   //Debug = 5,
+      OpenVDSLogging::Trace   //Trace = 6
+    };
+    static_assert(sizeof(openVdsLogLevels) / sizeof(*openVdsLogLevels) == int(Aws::Utils::Logging::LogLevel::Trace) + 1, "The loglevel conversion table is wrong, has the enums changed");
+    return openVdsLogLevels[int(logLevel)];
+  }
 
+  class OpenVDSAwsLogger : public Aws::Utils::Logging::LogSystemInterface
+  {
+  public:
+    OpenVDSAwsLogger(OpenVDSLogging logHandler)
+      : logHandler(logHandler)
+    {
+    }
+
+    Aws::Utils::Logging::LogLevel GetLogLevel() const override final { return awsLogLevel; }
+                
+    void Log(Aws::Utils::Logging::LogLevel logLevel, const char* tag, const char* formatStr, ...) override final
+    {
+      Aws::StringStream ss;
+
+      std::va_list args;
+      va_start(args, formatStr);
+
+      va_list tmp_args; //unfortunately you cannot consume a va_list twice
+      va_copy(tmp_args, args); //so we have to copy it
+#ifdef _WIN32
+      const int requiredLength = _vscprintf(formatStr, tmp_args) + 1;
+#else
+      const int requiredLength = vsnprintf(nullptr, 0, formatStr, tmp_args) + 1;
+#endif
+      va_end(tmp_args);
+
+      Aws::Utils::Array<char> outputBuff(requiredLength);
+#ifdef _WIN32
+      vsnprintf_s(outputBuff.GetUnderlyingData(), requiredLength, _TRUNCATE, formatStr, args);
+#else
+      vsnprintf(outputBuff.GetUnderlyingData(), requiredLength, formatStr, args);
+#endif // _WIN32
+
+      auto str = std::string(tag) + ": " + ss.str();
+      logHandler.callback(resolveAwsLogLevel(logLevel), str.c_str(), str.size(), logHandler.userHandle);
+      va_end(args);
+    }
+    void LogStream(Aws::Utils::Logging::LogLevel logLevel, const char* tag, const Aws::OStringStream& messageStream) override final
+    {
+      auto str = std::string(tag) + ": " + messageStream.str();
+      logHandler.callback(resolveAwsLogLevel(logLevel), str.c_str(), str.size(), logHandler.userHandle);
+    }
+    void Flush() override final {}
+  private:
+    OpenVDSLogging logHandler;
+    Aws::Utils::Logging::LogLevel awsLogLevel;
+  };
+
+  static void initializeAWSSDK(OpenVDSLogging &logHandler)
+  {
     std::unique_lock<std::mutex> lock(initialize_sdk_mutex);
     initialize_sdk++;
     if (initialize_sdk == 1)
     {
 
-      Aws::Utils::Logging::LogLevel loglevel = resolveLoglevel(loglevelstr);
-
-      if (logfilePrefix.size())
-      {
-        Aws::Utils::Logging::InitializeAWSLogging(
-          Aws::MakeShared<Aws::Utils::Logging::DefaultLogSystem>(
-            "OpenVDS-S3 Integration", loglevel, logfilePrefix.c_str()));
-      }
-      else
-      {
-        Aws::Utils::Logging::InitializeAWSLogging(
-          Aws::MakeShared<Aws::Utils::Logging::ConsoleLogSystem>(
-            "OpenVDS-S3 Integration", loglevel));
-      }
+      Aws::Utils::Logging::InitializeAWSLogging(Aws::MakeShared<OpenVDSAwsLogger>("OpenVDS-S3 Integration", logHandler));
       Aws::InitAPI(initialize_sdk_options);
     }
   }
@@ -321,7 +366,7 @@ namespace OpenVDS
 
   }
 
-  IOManagerAWS::IOManagerAWS(const AWSOpenOptions& openOptions, Error &error)
+  IOManagerAWS::IOManagerAWS(const AWSOpenOptions& openOptions, OpenVDSLogging logHandler, Error &error)
     : IOManager(OpenOptions::AWS)
     , m_region(openOptions.region)
     , m_bucket(openOptions.bucket)
@@ -339,7 +384,7 @@ namespace OpenVDS
       m_objectId.resize(m_objectId.size() - 1);
 
     if (!m_disableInitializeSdk)
-      initializeAWSSDK(openOptions.logFilenamePrefix, openOptions.loglevel);
+      initializeAWSSDK(logHandler);
 
     Aws::String profileName = "";
 

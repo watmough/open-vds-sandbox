@@ -57,7 +57,7 @@ IOManager* IOManager::CreateIOManager(const OpenOptions& options, IOManager::Acc
   {
     bool useAwsSdk = getBooleanEnvironmentVariable("OPENVDS_AWSSDK");
     if (useAwsSdk)
-      return new IOManagerAWS(static_cast<const AWSOpenOptions&>(options), error);
+      return new IOManagerAWS(static_cast<const AWSOpenOptions&>(options),logHandler,  error);
     return new IOManagerAWSCurl(static_cast<const AWSOpenOptions&>(options), logHandler, error);
   }
 #endif
