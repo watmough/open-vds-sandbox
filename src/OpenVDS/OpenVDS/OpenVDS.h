@@ -82,13 +82,16 @@ struct OpenOptions
   ConnectionType connectionType;
 
 protected:
-  OpenOptions(ConnectionType connectionType) : connectionType(connectionType), waveletAdaptiveMode(WaveletAdaptiveMode::BestQuality), waveletAdaptiveTolerance(0.01f), waveletAdaptiveRatio(1.0f) {}
-  OpenOptions(ConnectionType connectionType, WaveletAdaptiveMode waveletAdaptiveMode, float waveletAdaptiveTolerance, float waveletAdaptiveRatio) : connectionType(connectionType), waveletAdaptiveMode(waveletAdaptiveMode), waveletAdaptiveTolerance(waveletAdaptiveTolerance), waveletAdaptiveRatio(waveletAdaptiveRatio) {}
+  OpenOptions(ConnectionType connectionType) : connectionType(connectionType), waveletAdaptiveMode(WaveletAdaptiveMode::BestQuality), waveletAdaptiveTolerance(0.01f), waveletAdaptiveRatio(1.0f), logLevel(OpenVDS::OpenVDSLogging::Warning), logLevelIsSet(false) {}
+  OpenOptions(ConnectionType connectionType, WaveletAdaptiveMode waveletAdaptiveMode, float waveletAdaptiveTolerance, float waveletAdaptiveRatio, OpenVDSLogging::Level logLevel) : connectionType(connectionType), waveletAdaptiveMode(waveletAdaptiveMode), waveletAdaptiveTolerance(waveletAdaptiveTolerance), waveletAdaptiveRatio(waveletAdaptiveRatio), logLevel(logLevel), logLevelIsSet(true) {}
 
 public:
   WaveletAdaptiveMode waveletAdaptiveMode;      ///< This property (only relevant when using Wavelet compression) is used to control how the wavelet adaptive compression determines which level of wavelet compressed data to load. Depending on the setting, either the global or local WaveletAdaptiveTolerance or the WaveletAdaptiveRatio can be used.
   float               waveletAdaptiveTolerance; ///< Wavelet adaptive tolerance, this setting will be used whenever the WavletAdaptiveMode is set to Tolerance.
   float               waveletAdaptiveRatio;     ///< Wavelet adaptive ratio, this setting will be used whenever the WavletAdaptiveMode is set to Ratio. A compression ratio of 5.0 corresponds to compressed data which is 20% of the original.
+  OpenVDSLogging::Level
+                      logLevel;                 ///< Property to adjust the OpenVDSLogging handlers level.
+  bool                logLevelIsSet;
 
   virtual ~OpenOptions() {}
 };
@@ -106,8 +109,6 @@ struct AWSOpenOptions : OpenOptions
   std::string secretKey;
   std::string sessionToken;
   std::string expiration;
-  std::string logFilenamePrefix;
-  std::string loglevel;
   int connectionTimeoutMs;
   int requestTimeoutMs;
   bool disableInitApi;
@@ -472,15 +473,14 @@ struct GoogleOpenOptions : OpenOptions
 
 struct DMSOpenOptions : OpenOptions
 {
-  DMSOpenOptions() : OpenOptions(DMS), logLevel(0), useFileNameForSingleFileDatasets(false) , authProviderCallback(nullptr) , authProviderCallbackData(nullptr) {}
+  DMSOpenOptions() : OpenOptions(DMS), useFileNameForSingleFileDatasets(false) , authProviderCallback(nullptr) , authProviderCallbackData(nullptr) {}
 
-  DMSOpenOptions(std::string const& sdAuthorityUrl, std::string const& sdApiKey, std::string const &sdToken, std::string const &datasetPath, int logLevel, std::string const &authTokenUrl = std::string(), std::string const &refreshToken = std::string(), std::string const &clientId = std::string(), std::string const &clientSecret = std::string(), std::string const &scopes = std::string(), bool useFileNameForSingleFileDatasets = false)
+  DMSOpenOptions(std::string const& sdAuthorityUrl, std::string const& sdApiKey, std::string const &sdToken, std::string const &datasetPath, std::string const &authTokenUrl = std::string(), std::string const &refreshToken = std::string(), std::string const &clientId = std::string(), std::string const &clientSecret = std::string(), std::string const &scopes = std::string(), bool useFileNameForSingleFileDatasets = false)
     : OpenOptions(DMS)
     , sdAuthorityUrl(sdAuthorityUrl)
     , sdApiKey(sdApiKey)
     , sdToken(sdToken)
     , datasetPath(datasetPath)
-    , logLevel(logLevel)
     , authTokenUrl(authTokenUrl)
     , refreshToken(refreshToken)
     , clientId(clientId)
@@ -491,12 +491,11 @@ struct DMSOpenOptions : OpenOptions
     , authProviderCallbackData(nullptr)
   {}
 
-  DMSOpenOptions(std::string const& sdAuthorityUrl, std::string const& sdApiKey, std::string const &datasetPath, std::string (*authProviderCallback)(const void*), const void *authProviderCallbackData, int logLevel = 0, bool useFileNameForSingleFileDatasets = false)
+  DMSOpenOptions(std::string const& sdAuthorityUrl, std::string const& sdApiKey, std::string const &datasetPath, std::string (*authProviderCallback)(const void*), const void *authProviderCallbackData, bool useFileNameForSingleFileDatasets = false)
     : OpenOptions(DMS)
     , sdAuthorityUrl(sdAuthorityUrl)
     , sdApiKey(sdApiKey)
     , datasetPath(datasetPath)
-    , logLevel(logLevel)
     , useFileNameForSingleFileDatasets(useFileNameForSingleFileDatasets)
     , authProviderCallback(authProviderCallback)
     , authProviderCallbackData(authProviderCallbackData)
@@ -506,7 +505,6 @@ struct DMSOpenOptions : OpenOptions
   std::string sdApiKey;
   std::string sdToken;
   std::string datasetPath;
-  int logLevel;
   std::string authTokenUrl;
   std::string refreshToken;
   std::string clientId;

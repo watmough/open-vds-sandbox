@@ -203,14 +203,6 @@ static std::unique_ptr<OpenOptions> createS3OpenOptions(const std::string &url, 
     {
       openOptions->expiration = connectionPair.second;
     }
-    else if (connectionPair.first == "logfilenameprefix" || connectionPair.first == "log_filename_prefix")
-    {
-      openOptions->logFilenamePrefix = connectionPair.second;
-    }
-    else if (connectionPair.first == "loglevel" || connectionPair.first == "log_level")
-    {
-      openOptions->loglevel = connectionPair.second;
-    }
     else if (connectionPair.first == "connectiontimeoutms" || connectionPair.first == "connection_timeout_ms")
     {
       openOptions->connectionTimeoutMs = strtol(&connectionPair.second[0], nullptr, 10);
@@ -401,7 +393,6 @@ static std::unique_ptr<OpenOptions> createGoogleOpenOptions(const std::string & 
 static std::unique_ptr<OpenOptions> createDMSOpenOptions(const std::string & url, const std::string & connectionString, Error& error)
 {
   std::unique_ptr<DMSOpenOptions> openOptions(new DMSOpenOptions());
-  openOptions->logLevel = 0;
   auto connectionStringMap = ParseConnectionString(connectionString, error);
   if (error.code)
   {
@@ -424,8 +415,6 @@ static std::unique_ptr<OpenOptions> createDMSOpenOptions(const std::string & url
       openOptions->sdApiKey = connectionPair.second;
     if (connectionPair.first == "sdtoken" || connectionPair.first == "sd_token")
       openOptions->sdToken = connectionPair.second;
-    if (connectionPair.first == "loglevel" || connectionPair.first == "log_level")
-      openOptions->logLevel = atoi(connectionPair.second.c_str());
     if (connectionPair.first == "authtokenurl" || connectionPair.first == "auth_token_url")
       openOptions->authTokenUrl = connectionPair.second;
     if (connectionPair.first == "refreshtoken" || connectionPair.first == "refresh_token")
@@ -499,16 +488,57 @@ static bool GetWaveletAdaptiveInfo(std::string& connectionString, WaveletAdaptiv
   {
     tolerance = float(StringToDouble(waveletAdaptivePair.second, error));
     if (error.code)
-      error.string = fmt::format("Connection string parameter WaveletAdaptiveRatio: {}", error.string);
+      error.string = fmt::format("Connection string parameter WaveletAdaptiveTolerance: {}", error.string);
     mode = WaveletAdaptiveMode::Tolerance;
   }
-  else if (waveletAdaptivePair.first == 0)
+  else if (waveletAdaptivePair.first == 1)
   {
     ratio = float(StringToDouble(waveletAdaptivePair.second, error));
     if (error.code)
       error.string = fmt::format("Connection string parameter WaveletAdaptiveRatio: {}", error.string);
     mode = WaveletAdaptiveMode::Ratio;
   }
+  return true;
+}
+
+static bool GetLogLevel(std::string& connectionString, OpenVDSLogging::Level &level, Error &error)
+{
+  std::vector<std::string> keys;
+  keys.emplace_back("LogLevel");
+  keys.emplace_back("log_level");
+  auto logLevelPair = RemoveKeyValue(keys, connectionString, error);
+  if (error.code || logLevelPair.first < 0)
+    return false;
+  assert(logLevelPair.first < 2);
+  std::string logLevelStr = logLevelPair.second;
+  std::transform(logLevelStr.begin(), logLevelStr.end(), logLevelStr.begin(), asciitolower);
+  if (logLevelStr == "none")
+  {
+    level = OpenVDSLogging::None;
+  }
+  else if (logLevelStr == "error")
+  {
+    level = OpenVDSLogging::Error;
+  }
+  else if (logLevelStr == "warning")
+  {
+    level = OpenVDSLogging::Warning;
+  }
+  else if (logLevelStr == "info")
+  {
+    level = OpenVDSLogging::Info;
+  }
+  else if (logLevelStr == "trace")
+  {
+    level = OpenVDSLogging::Trace;
+  }
+  else
+  {
+    error.code = -1;
+    error.string = fmt::format("Not recognized logLevel {}", logLevelPair.second);
+    return false;
+  }
+
   return true;
 }
 
@@ -525,6 +555,11 @@ OpenOptions* CreateOpenOptions(StringWrapper urlWrapper, StringWrapper connectio
   float adaptiveTolerance = 0.0f;
   float adaptiveRatio = 0.0f;
   bool adaptiveDataSet = GetWaveletAdaptiveInfo(connectionString, adaptiveMode, adaptiveTolerance, adaptiveRatio, error);
+  if (error.code)
+    return nullptr;
+
+  OpenVDSLogging::Level logLevel = OpenVDSLogging::Warning;
+  bool logLevelSet = GetLogLevel(connectionString, logLevel, error);
   if (error.code)
     return nullptr;
 
@@ -554,6 +589,12 @@ OpenOptions* CreateOpenOptions(StringWrapper urlWrapper, StringWrapper connectio
       openOptions->waveletAdaptiveRatio = adaptiveRatio;
     if (adaptiveMode == WaveletAdaptiveMode::Tolerance)
       openOptions->waveletAdaptiveTolerance = adaptiveTolerance;
+  }
+  
+  if (openOptions && logLevelSet)
+  {
+    openOptions->logLevel = logLevel;
+    openOptions->logLevelIsSet = true;
   }
 
   return openOptions.release();
@@ -919,6 +960,8 @@ VDSHandle OpenVDSInterfaceImpl::Open(IOManager *ioManager, OpenVDSLogging logHan
 VDS *OpenVDSInterfaceImpl::Open(const OpenOptions &options, OpenVDSLogging logHandler, Error &error)
 {
   std::unique_ptr<VDS> ret(new VDS(logHandler));
+  if (options.logLevelIsSet)
+    ret->logHandler.level = options.logLevel;
   std::unique_ptr<VolumeDataStore> volumeDataStore;
 
   if(options.connectionType != OpenOptions::VDSFile)
@@ -1005,6 +1048,8 @@ VDSHandle OpenVDSInterfaceImpl::Create(StringWrapper url, StringWrapper connecti
 VDSHandle OpenVDSInterfaceImpl::Create(const OpenOptions& options, VolumeDataLayoutDescriptor const& layoutDescriptor, VectorWrapper<VolumeDataAxisDescriptor> axisDescriptors, VectorWrapper<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const& metadata, CompressionMethod compressionMethod, float compressionTolerance, OpenVDSLogging logHandler, Error &error)
 {
   std::unique_ptr<VDS> ret(new VDS(logHandler));
+  if (options.logLevelIsSet)
+    ret->logHandler.level = options.logLevel;
   std::unique_ptr<VolumeDataStore> volumeDataStore;
 
   if(options.connectionType != OpenOptions::VDSFile)
