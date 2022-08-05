@@ -47,8 +47,6 @@ class VolumeDataStoreVDSFile : public VolumeDataStore, public LayerMetadataConta
 
   VDS &m_vds;
 
-  mutable std::mutex m_mutex;
-
   bool m_isVDSObjectFilePresent;
   bool m_isVolumeDataLayoutFilePresent;
   std::map<std::string, LayerFile> m_layerFiles;

@@ -70,7 +70,7 @@ CompressionInfo VolumeDataStoreVDSFile::GetEffectiveAdaptiveLevel(VolumeDataLaye
 
 VolumeDataStoreVDSFile::LayerFile *VolumeDataStoreVDSFile::GetLayerFile(std::string const &layerName) const
 {
-  std::unique_lock<std::mutex> lock(m_mutex);
+  std::unique_lock<std::mutex> lock(const_cast<std::mutex &>(m_mutex));
 
   auto layerFileIterator = m_layerFiles.find(layerName);
   return (layerFileIterator != m_layerFiles.end()) ? const_cast<VolumeDataStoreVDSFile::LayerFile *>(&layerFileIterator->second) : nullptr;
@@ -298,6 +298,7 @@ bool VolumeDataStoreVDSFile::WriteChunkImpl(const VolumeDataChunk& chunk, std::s
   }
 
   assert(layerFile->layerMetadata.m_validChunkCount <= layerFile->fileInterface->GetChunkCount());
+  lock.unlock();
   if (completed)
     completed(error);
   return true;
