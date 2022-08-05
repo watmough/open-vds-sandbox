@@ -25,28 +25,6 @@ inline char asciitolower(char in)
   return in;
 }
 
-static int resolveLoglevel(const std::string& loglevel)
-{
-  std::string lowercase = loglevel;
-  std::transform(lowercase.begin(), lowercase.end(), lowercase.begin(), asciitolower);
-  if (lowercase == "off")
-    return 0;
-  else if (lowercase == "fatal")
-    return 1;
-  else if (lowercase == "error")
-    return 2;
-  else if (lowercase == "warn")
-    return 3;
-  else if (lowercase == "info")
-    return 4;
-  else if (lowercase == "debug")
-    return 5;
-  else if (lowercase == "trace")
-    return 6;
-
-  return 0;
-}
-
 class ErrorRequest : public Request
 {
 public:

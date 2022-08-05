@@ -20,6 +20,8 @@
 #ifndef OPENVDS_LOG_H
 #define OPENVDS_LOG_H
 
+#include <stddef.h>
+
 namespace OpenVDS
 {
 enum class LogLevel
