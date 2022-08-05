@@ -29,6 +29,7 @@
 #include "ParsedMetadata.h"
 #include "GlobalStateImpl.h"
 #include "LayerMetadataContainer.h"
+#include "Logging.h"
 
 #include <vector>
 #include <map>
@@ -54,7 +55,7 @@ public:
 class VolumeDataStore
 {
 public:
-           VolumeDataStore(OpenOptions::ConnectionType connectionType, LogHandler logHandler);
+           VolumeDataStore(OpenOptions::ConnectionType connectionType, Logger &logger);
   virtual ~VolumeDataStore();
 
   virtual CompressionInfo
@@ -103,7 +104,7 @@ protected:
   std::mutex m_mutex;
   std::condition_variable m_wait;
   std::vector<std::unique_ptr<StorageRequest>> m_requests;
-  LogHandler m_logHandler;
+  Logger m_logger;
 };
 
 }

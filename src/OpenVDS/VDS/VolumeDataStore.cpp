@@ -240,19 +240,19 @@ bool DeserializeVolumeData(const std::vector<uint8_t> &serializedData, VolumeDat
 }
 
 #ifndef __EMSCRIPTEN__
-VolumeDataStore::VolumeDataStore(OpenOptions::ConnectionType connectionType, LogHandler logHandler)
+VolumeDataStore::VolumeDataStore(OpenOptions::ConnectionType connectionType, Logger &logger)
   : m_globalStateVds(static_cast<GlobalStateImpl *>(GetGlobalState())->downloaded[connectionType],
                      static_cast<GlobalStateImpl *>(GetGlobalState())->downloadedChunks[connectionType],
                      static_cast<GlobalStateImpl *>(GetGlobalState())->decompressed[connectionType],
                      static_cast<GlobalStateImpl *>(GetGlobalState())->decompressedChunks[connectionType])
-  , m_logHandler(logHandler)
+  , m_logger(logger)
 {
 }
 
 VolumeDataStore::~VolumeDataStore()
 {
   if (m_requests.size())
-    LogError(m_logHandler, fmt::format("VolumeDataStore request cache is not empty {}", m_requests.size()));
+    m_logger.LogError(fmt::format("VolumeDataStore request cache is not empty {}", m_requests.size()));
 }
 
 bool

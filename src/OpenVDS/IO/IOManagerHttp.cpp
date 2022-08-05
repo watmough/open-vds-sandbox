@@ -21,9 +21,9 @@
 
 namespace OpenVDS
 {
-  IOManagerHttp::IOManagerHttp(const HttpOpenOptions &openOptions, LogHandler logHandler, Error &error)
+  IOManagerHttp::IOManagerHttp(const HttpOpenOptions &openOptions, const Logger &logger, Error &error)
     : IOManager(OpenOptions::Http)
-    , m_curlHandler(error, logHandler)
+    , m_curlHandler(error, logger)
   {
     const std::string &url = openOptions.url;
     if (url.empty())

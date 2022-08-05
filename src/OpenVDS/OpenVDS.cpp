@@ -594,7 +594,6 @@ OpenOptions* CreateOpenOptions(StringWrapper urlWrapper, StringWrapper connectio
   if (openOptions && logLevelSet)
   {
     openOptions->logLevel = logLevel;
-    openOptions->logLevelIsSet = true;
   }
 
   return openOptions.release();
@@ -849,11 +848,11 @@ public:
   VDSHandle                 OpenWithAdaptiveCompressionTolerance(StringWrapper url, StringWrapper connectionString, float waveletAdaptiveTolerance, const LogHandler &logHandler, ErrorHandler errorHandler, Error *errorPtr=nullptr) final override;
   VDSHandle                 OpenWithAdaptiveCompressionRatio(StringWrapper url, StringWrapper connectionString, float waveletAdaptiveRatio, const LogHandler &logHandler, ErrorHandler errorHandler, Error *errorPtr=nullptr) final override;
   VDSHandle                 Open(const OpenOptions& options, const LogHandler &logHandler, ErrorHandler errorHandler, Error *errorPtr=nullptr) final override;
-  VDSHandle                 Open(IOManager*ioManager, const LogHandler &logHandler, ErrorHandler errorHandler, Error *errorPtr=nullptr) final override;
+  VDSHandle                 Open(IOManager*ioManager, LogLevel logLevel, const LogHandler &logHandler, ErrorHandler errorHandler, Error *errorPtr=nullptr) final override;
   bool                      IsCompressionMethodSupported(CompressionMethod compressionMethod) final override;
   VDSHandle                 Create(StringWrapper url, StringWrapper connectionString, VolumeDataLayoutDescriptor const& layoutDescriptor, VectorWrapper<VolumeDataAxisDescriptor> axisDescriptors, VectorWrapper<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const& metadata, CompressionMethod compressionMethod, float compressionTolerance, const LogHandler &logHandler, ErrorHandler errorHandler, Error *errorPtr=nullptr) final override;
   VDSHandle                 Create(const OpenOptions& options, VolumeDataLayoutDescriptor const& layoutDescriptor, VectorWrapper<VolumeDataAxisDescriptor> axisDescriptors, VectorWrapper<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const& metadata, CompressionMethod compressionMethod, float compressionTolerance, const LogHandler &logHandler, ErrorHandler errorHandler, Error *errorPtr=nullptr) final override;
-  VDSHandle                 Create(IOManager* ioManager, VolumeDataLayoutDescriptor const &layoutDescriptor, VectorWrapper<VolumeDataAxisDescriptor> axisDescriptors, VectorWrapper<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const &metadata, CompressionMethod compressionMethod, float compressionTolerance, const LogHandler &logHandler, ErrorHandler errorHandler, Error *errorPtr=nullptr) final override;
+  VDSHandle                 Create(IOManager* ioManager, VolumeDataLayoutDescriptor const &layoutDescriptor, VectorWrapper<VolumeDataAxisDescriptor> axisDescriptors, VectorWrapper<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const &metadata, CompressionMethod compressionMethod, float compressionTolerance, LogLevel logLevel, const LogHandler &logHandler, ErrorHandler errorHandler, Error *errorPtr=nullptr) final override;
   VolumeDataLayout         *GetLayout(VDSHandle handle) final override;
   IVolumeDataAccessManager *GetAccessManagerInterface(VDSHandle handle) final override;
   CompressionMethod         GetCompressionMethod(VDSHandle handle) final override;
@@ -960,10 +959,10 @@ VDSHandle OpenVDSInterfaceImpl::OpenWithAdaptiveCompressionRatio(StringWrapper u
   return Open(*(openOptions.get()), logHandler, error);
 }
 
-VDSHandle OpenVDSInterfaceImpl::Open(IOManager *ioManager, const LogHandler &logHandler, ErrorHandler errorHandler, Error *errorPtr)
+VDSHandle OpenVDSInterfaceImpl::Open(IOManager *ioManager, LogLevel loglevel, const LogHandler &logHandler, ErrorHandler errorHandler, Error *errorPtr)
 {
   ErrorGuard error(errorHandler, errorPtr);
-  std::unique_ptr<VDS> ret(new VDS(logHandler));
+  std::unique_ptr<VDS> ret(new VDS(loglevel, logHandler));
 
   if(Init(ret.get(), new VolumeDataStoreIOManager(*ret, ioManager), error))
   {
@@ -977,9 +976,7 @@ VDSHandle OpenVDSInterfaceImpl::Open(IOManager *ioManager, const LogHandler &log
 
 VDS *OpenVDSInterfaceImpl::Open(const OpenOptions &options, const LogHandler &logHandler, Error &error)
 {
-  std::unique_ptr<VDS> ret(new VDS(logHandler));
-  if (options.logLevelIsSet)
-    ret->logHandler.level = options.logLevel;
+  std::unique_ptr<VDS> ret(new VDS(options.logLevel, logHandler));
   std::unique_ptr<VolumeDataStore> volumeDataStore;
 
   if(options.connectionType != OpenOptions::VDSFile)
@@ -1038,10 +1035,10 @@ bool OpenVDSInterfaceImpl::IsCompressionMethodSupported(CompressionMethod compre
   return VolumeDataStore::IsCompressionMethodSupported(compressionMethod);
 }
 
-VDSHandle OpenVDSInterfaceImpl::Create(IOManager *ioManager, VolumeDataLayoutDescriptor const& layoutDescriptor, VectorWrapper<VolumeDataAxisDescriptor> axisDescriptors, VectorWrapper<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const& metadata, CompressionMethod compressionMethod, float compressionTolerance, const LogHandler &logHandler, ErrorHandler errorHandler, Error *errorPtr)
+VDSHandle OpenVDSInterfaceImpl::Create(IOManager *ioManager, VolumeDataLayoutDescriptor const& layoutDescriptor, VectorWrapper<VolumeDataAxisDescriptor> axisDescriptors, VectorWrapper<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const& metadata, CompressionMethod compressionMethod, float compressionTolerance, LogLevel logLevel, const LogHandler &logHandler, ErrorHandler errorHandler, Error *errorPtr)
 {
   ErrorGuard error(errorHandler, errorPtr);
-  std::unique_ptr<VDS> ret(new VDS(logHandler));
+  std::unique_ptr<VDS> ret(new VDS(logLevel, logHandler));
 
   if(Init(ret.get(), new VolumeDataStoreIOManager(*ret, ioManager), layoutDescriptor, axisDescriptors, channelDescriptors, metadata, compressionMethod, compressionTolerance, error))
   {
@@ -1065,9 +1062,7 @@ VDSHandle OpenVDSInterfaceImpl::Create(StringWrapper url, StringWrapper connecti
 
 VDSHandle OpenVDSInterfaceImpl::Create(const OpenOptions& options, VolumeDataLayoutDescriptor const& layoutDescriptor, VectorWrapper<VolumeDataAxisDescriptor> axisDescriptors, VectorWrapper<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const& metadata, CompressionMethod compressionMethod, float compressionTolerance, const LogHandler &logHandler, Error &error)
 {
-  std::unique_ptr<VDS> ret(new VDS(logHandler));
-  if (options.logLevelIsSet)
-    ret->logHandler.level = options.logLevel;
+  std::unique_ptr<VDS> ret(new VDS(options.logLevel, logHandler));
   std::unique_ptr<VolumeDataStore> volumeDataStore;
 
   if(options.connectionType != OpenOptions::VDSFile)

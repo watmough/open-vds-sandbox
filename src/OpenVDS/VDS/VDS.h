@@ -31,6 +31,7 @@
 #include "VDS/VolumeDataRequestProcessor.h"
 #include "VDS/VolumeDataStore.h"
 #include "VDS/GlobalStateImpl.h"
+#include "VDS/Logging.h"
 
 #include <vector>
 #include <map>
@@ -58,8 +59,8 @@ void ReleaseVolumeDataAccessManager(VolumeDataAccessManagerImpl *);
 
 struct VDS
 {
-  VDS(LogHandler logHandler)
-    : logHandler(logHandler)
+  VDS(LogLevel level, const LogHandler &logger)
+    : logger(level, logger)
   {}
 
   VolumeDataLayoutDescriptor
@@ -85,7 +86,7 @@ struct VDS
                     accessManager;
   std::unique_ptr<VolumeDataStore>
                     volumeDataStore;
-  LogHandler logHandler;
+  Logger            logger;
 };
 
 void CreateVolumeDataLayout(VDS &handle, CompressionMethod compressionMethod = CompressionMethod::None, float compressionTolerance = 0);

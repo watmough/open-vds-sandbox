@@ -43,7 +43,7 @@ VolumeDataAccessManagerImpl::VolumeDataAccessManagerImpl(VDS &vds)
   , m_invalidated(false)
   , m_copyJobIndex(false)
   , m_vds(vds)
-  , m_requestProcessor(new VolumeDataRequestProcessor(*this, vds.logHandler))
+  , m_requestProcessor(new VolumeDataRequestProcessor(*this, vds.logger))
 {
 }
 
@@ -51,7 +51,7 @@ VolumeDataAccessManagerImpl::~VolumeDataAccessManagerImpl()
 {
   if (m_uploadErrors.errors.size())
   {
-    LogWarning(m_vds.logHandler,"VolumeDataAccessManager destructor: there where upload errors");
+    m_vds.logger.LogWarning("VolumeDataAccessManager destructor: there where upload errors");
   }
 }
 
@@ -373,7 +373,7 @@ VolumeDataAccessManagerImpl::CreateVolumeDataPageAccessor(VolumeDataLayer const 
     }
   }
 
-  VolumeDataPageAccessorImpl *pageAccessor = new VolumeDataPageAccessorImpl(this, parentVolumeDataPageAccessor, volumeDataLayer, maxPages, accessMode, m_vds.logHandler);
+  VolumeDataPageAccessorImpl *pageAccessor = new VolumeDataPageAccessorImpl(this, parentVolumeDataPageAccessor, volumeDataLayer, maxPages, accessMode, m_vds.logger);
   return pageAccessor;
 }
 

@@ -117,37 +117,38 @@ static void curlAddRequests(UVEventLoopData *eventLoopData)
 
 static int curl_easy_debug_callback(CURL* handle, curl_infotype type, char* data, size_t size, void* userptr)
 {
-  auto* easyHandle = static_cast<CurlEasyHandler*>(userptr);
-  auto& logHandler = easyHandle->eventLoopData->logHandler;
-  std::string text;
-  std::string datastr(data, size);
+  auto& logger= *static_cast<Logger*>(userptr);
+  fmt::string_view datastr(data, size);
+  char* url_ptr = nullptr;
+  curl_easy_getinfo(handle, CURLINFO_EFFECTIVE_URL, &url_ptr);
+  std::string url = url_ptr;
+
   switch (type) {
   case CURLINFO_TEXT:
-    LogTrace(logHandler, fmt::format(" == Info: {}", std::string(data, size))); FALLTHROUGH;
+    logger.LogTrace(fmt::format("{}:\n== Info: {}", url, datastr)); FALLTHROUGH;
   default: /* in case a new one is introduced to shock us */
     return 0;
 
   case CURLINFO_HEADER_OUT:
-    text = "=> Send header";
+    logger.LogTrace(fmt::format("{}:\n=> Send header - {}",url, datastr));
     break;
   case CURLINFO_DATA_OUT:
-    text = "=> Send data";
+    logger.LogTrace(fmt::format("{}:\n=> Send data - length: {}",url, size));
     break;
   case CURLINFO_SSL_DATA_OUT:
-    text = "=> Send SSL data";
+    logger.LogTrace(fmt::format("{}:\n=> Send SSL data - {}", url, datastr));
     break;
   case CURLINFO_HEADER_IN:
-    text = "<= Recv header";
+    logger.LogTrace(fmt::format("{}:\n<= Recv header - {}", url, datastr));
     break;
   case CURLINFO_DATA_IN:
-    text = "<= Recv data";
+    logger.LogTrace(fmt::format("{}:\n<= Recv data - length: {}", url, size));
     break;
   case CURLINFO_SSL_DATA_IN:
-    text = "<= Recv SSL data";
+    logger.LogTrace(fmt::format("{}:\n<= Recv SSL data - {}", url, datastr));
     break;
   }
 
-  LogTrace(logHandler, fmt::format("{} - {}", text, datastr));
   return 0;
 }
 
@@ -190,7 +191,8 @@ static void addDownloadCB(uv_async_t *handle)
       curl_easy_setopt(downloadRequest->curlEasy, CURLOPT_NOBODY, 1L);
     }
     curl_easy_setopt(downloadRequest->curlEasy, CURLOPT_DEBUGFUNCTION, curl_easy_debug_callback);
-    if (int(eventLoopData->logHandler.level) >= int(LogLevel::Trace))
+    curl_easy_setopt(downloadRequest->curlEasy, CURLOPT_DEBUGDATA, &context->eventLoopData->logger);
+    if (int(eventLoopData->logger.level) >= int(LogLevel::Trace))
       curl_easy_setopt(downloadRequest->curlEasy, CURLOPT_VERBOSE, 1L);
   }
   
@@ -293,7 +295,8 @@ static void addUploadCB(uv_async_t *handle)
     }
     curl_easy_setopt(uploadRequest->curlEasy, CURLOPT_INFILESIZE_LARGE, filesize);
     curl_easy_setopt(uploadRequest->curlEasy, CURLOPT_DEBUGFUNCTION, curl_easy_debug_callback);
-    if (int(eventLoopData->logHandler.level) >= int(LogLevel::Trace))
+    curl_easy_setopt(uploadRequest->curlEasy, CURLOPT_DEBUGDATA, &context->eventLoopData->logger);
+    if (int(eventLoopData->logger.level) >= int(LogLevel::Trace))
       curl_easy_setopt(uploadRequest->curlEasy, CURLOPT_VERBOSE, 1L);
   }
   
@@ -788,9 +791,9 @@ struct Barrier
   std::condition_variable wait;
 };
 
-CurlHandler::CurlHandler(Error& error, LogHandler logHandler)
+CurlHandler::CurlHandler(Error& error, const Logger& logger)
+  : m_eventLoopData(logger)
 {
-  m_eventLoopData.logHandler = logHandler;
   error.code = curl_global_init(CURL_GLOBAL_ALL);
   if (error.code)
   {

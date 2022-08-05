@@ -102,8 +102,9 @@ namespace OpenVDS
   class OpenVDSAwsLogger : public Aws::Utils::Logging::LogSystemInterface
   {
   public:
-    OpenVDSAwsLogger(LogHandler logHandler)
-      : logHandler(logHandler)
+    OpenVDSAwsLogger(LogLevel logLevel, LogHandler logHandler)
+      : awsLogLevel(resolveLoglevel(logLevel))
+      , logHandler(logHandler)
     {
     }
 
@@ -143,18 +144,18 @@ namespace OpenVDS
     }
     void Flush() override final {}
   private:
-    LogHandler logHandler;
     Aws::Utils::Logging::LogLevel awsLogLevel;
+    LogHandler logHandler;
   };
 
-  static void initializeAWSSDK(const LogHandler &logHandler)
+  static void initializeAWSSDK(const Logger &logger)
   {
     std::unique_lock<std::mutex> lock(initialize_sdk_mutex);
     initialize_sdk++;
     if (initialize_sdk == 1)
     {
 
-      Aws::Utils::Logging::InitializeAWSLogging(Aws::MakeShared<OpenVDSAwsLogger>("OpenVDS-S3 Integration", logHandler));
+      Aws::Utils::Logging::InitializeAWSLogging(Aws::MakeShared<OpenVDSAwsLogger>("OpenVDS-S3 Integration", logger.level, logger.handler));
       Aws::InitAPI(initialize_sdk_options);
     }
   }
@@ -366,12 +367,13 @@ namespace OpenVDS
 
   }
 
-  IOManagerAWS::IOManagerAWS(const AWSOpenOptions& openOptions, LogHandler logHandler, Error &error)
+  IOManagerAWS::IOManagerAWS(const AWSOpenOptions& openOptions, const Logger &logger, Error &error)
     : IOManager(OpenOptions::AWS)
     , m_region(openOptions.region)
     , m_bucket(openOptions.bucket)
     , m_objectId(openOptions.key)
     , m_disableInitializeSdk(openOptions.disableInitApi)
+    , m_logger(logger)
   {
     if (m_bucket.empty())
     {
@@ -384,7 +386,7 @@ namespace OpenVDS
       m_objectId.resize(m_objectId.size() - 1);
 
     if (!m_disableInitializeSdk)
-      initializeAWSSDK(logHandler);
+      initializeAWSSDK(m_logger);
 
     Aws::String profileName = "";
 

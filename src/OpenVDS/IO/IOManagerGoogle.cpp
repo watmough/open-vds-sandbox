@@ -161,9 +161,9 @@ namespace OpenVDS
       return true;
   }
 
-  IOManagerGoogle::IOManagerGoogle(const GoogleOpenOptions& openOptions, LogHandler logHandler, Error &error)
+  IOManagerGoogle::IOManagerGoogle(const GoogleOpenOptions& openOptions, const Logger &logger, Error &error)
     : IOManager(OpenOptions::GoogleStorage)
-    , m_curlHandler(error, logHandler)
+    , m_curlHandler(error, logger)
     , m_bucket(openOptions.bucket)
     , m_pathPrefix(openOptions.pathPrefix)
     , m_storageClass(openOptions.storageClass)

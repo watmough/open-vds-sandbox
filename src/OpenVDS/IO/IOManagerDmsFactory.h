@@ -2,9 +2,10 @@
 #define IOMANAGERDMSFACTORY_H
 
 #include "IOManager.h"
+#include <VDS/Logging.h>
 
 namespace OpenVDS
 {
-  IOManager* CreateDMSIOManager(const DMSOpenOptions& openOptions, IOManager::AccessPattern accessPattern, LogHandler logHandler, Error& error);
+  IOManager* CreateDMSIOManager(const DMSOpenOptions& openOptions, IOManager::AccessPattern accessPattern, Logger &logger, Error& error);
 }
 #endif

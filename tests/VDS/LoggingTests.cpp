@@ -20,62 +20,63 @@
 
 GTEST_TEST(VDS_integration, Logging)
 {
-  OpenVDS::LogHandler logHandler;
   int count = 0;
+  OpenVDS::LogHandler logHandler;
   logHandler.userHandle = &count;
   logHandler.callback = [](OpenVDS::LogLevel level, const char* message, size_t messageSize, void* userHandle)
   {
     auto local_count = static_cast<int*>(userHandle);
     (*local_count)++;
   };
+  OpenVDS::Logger logger(OpenVDS::LogLevel::None, logHandler);
 
-  logHandler.level = OpenVDS::LogLevel::None;
-  OpenVDS::LogError(logHandler, "hello world");
+  logger.level = OpenVDS::LogLevel::None;
+  logger.LogError("hello world");
   EXPECT_EQ(0, count);
-  OpenVDS::LogWarning(logHandler, "hello world");
+  logger.LogWarning("hello world");
   EXPECT_EQ(0, count);
-  OpenVDS::LogInfo(logHandler, "hello world");
+  logger.LogInfo("hello world");
   EXPECT_EQ(0, count);
-  OpenVDS::LogTrace(logHandler, "hello world");
+  logger.LogTrace("hello world");
   EXPECT_EQ(0, count);
 
-  logHandler.level = OpenVDS::LogLevel::Error;
-  OpenVDS::LogError(logHandler, "hello world");
+  logger.level = OpenVDS::LogLevel::Error;
+  logger.LogError("hello world");
   EXPECT_EQ(1, count);
-  OpenVDS::LogWarning(logHandler, "hello world");
+  logger.LogWarning("hello world");
   EXPECT_EQ(1, count);
-  OpenVDS::LogInfo(logHandler, "hello world");
+  logger.LogInfo("hello world");
   EXPECT_EQ(1, count);
-  OpenVDS::LogTrace(logHandler, "hello world");
+  logger.LogTrace("hello world");
   EXPECT_EQ(1, count);
 
-  logHandler.level = OpenVDS::LogLevel::Warning;
-  OpenVDS::LogError(logHandler, "hello world");
+  logger.level = OpenVDS::LogLevel::Warning;
+  logger.LogError("hello world");
   EXPECT_EQ(2, count);
-  OpenVDS::LogWarning(logHandler, "hello world");
+  logger.LogWarning("hello world");
   EXPECT_EQ(3, count);
-  OpenVDS::LogInfo(logHandler, "hello world");
+  logger.LogInfo("hello world");
   EXPECT_EQ(3, count);
-  OpenVDS::LogTrace(logHandler, "hello world");
+  logger.LogTrace("hello world");
   EXPECT_EQ(3, count);
 
-  logHandler.level = OpenVDS::LogLevel::Info;
-  OpenVDS::LogError(logHandler, "hello world");
+  logger.level = OpenVDS::LogLevel::Info;
+  logger.LogError("hello world");
   EXPECT_EQ(4, count);
-  OpenVDS::LogWarning(logHandler, "hello world");
+  logger.LogWarning("hello world");
   EXPECT_EQ(5, count);
-  OpenVDS::LogInfo(logHandler, "hello world");
+  logger.LogInfo("hello world");
   EXPECT_EQ(6, count);
-  OpenVDS::LogTrace(logHandler, "hello world");
+  logger.LogTrace("hello world");
   EXPECT_EQ(6, count);
 
-  logHandler.level = OpenVDS::LogLevel::Trace;
-  OpenVDS::LogError(logHandler, "hello world");
+  logger.level = OpenVDS::LogLevel::Trace;
+  logger.LogError("hello world");
   EXPECT_EQ(7, count);
-  OpenVDS::LogWarning(logHandler, "hello world");
+  logger.LogWarning("hello world");
   EXPECT_EQ(8, count);
-  OpenVDS::LogInfo(logHandler, "hello world");
+  logger.LogInfo("hello world");
   EXPECT_EQ(9, count);
-  OpenVDS::LogTrace(logHandler, "hello world");
+  logger.LogTrace("hello world");
   EXPECT_EQ(10, count);
 }

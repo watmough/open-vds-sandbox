@@ -185,7 +185,7 @@ namespace OpenVDS
     return iomanager->m_tokenRefresher->newToken();
   }
 
-  IOManagerDms::IOManagerDms(const DMSOpenOptions& openOptions, IOManager::AccessPattern accessPattern, LogHandler logHandler, Error& error)
+  IOManagerDms::IOManagerDms(const DMSOpenOptions& openOptions, IOManager::AccessPattern accessPattern, Logger &logger, Error& error)
     : IOManager(openOptions.connectionType)
     , m_opened(false)
     , m_useFileNameForSingleFileDatasets(openOptions.useFileNameForSingleFileDatasets)
@@ -217,7 +217,7 @@ namespace OpenVDS
       }
       else if (openOptions.authTokenUrl.size() && openOptions.clientId.size() && openOptions.refreshToken.size())
       {
-        m_curlHandler.reset(new CurlHandler(error, logHandler));
+        m_curlHandler.reset(new CurlHandler(error, logger));
         if (error.code != 0)
           return;
         m_tokenRefresher.reset(new TokenRefresher(openOptions.authTokenUrl, openOptions.clientId, openOptions.clientSecret, openOptions.scopes, openOptions.refreshToken, *m_curlHandler, std::function<void(std::string&& new_token)>()));

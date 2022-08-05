@@ -180,7 +180,7 @@ static bool IsConstantChunkHash(uint64_t chunkHash)
 }
 
 VolumeDataStoreIOManager:: VolumeDataStoreIOManager(VDS &vds, IOManager *ioManager)
-  : VolumeDataStore(ioManager->connectionType(), vds.logHandler)
+  : VolumeDataStore(ioManager->connectionType(), vds.logger)
   , m_vds(vds)
   , m_ioManager(ioManager)
   , m_warnedAboutMissingMetadataTag(getBooleanEnvironmentVariable("OPENVDS_DISABLE_WARNINGS"))
@@ -506,7 +506,7 @@ bool VolumeDataStoreIOManager::ReadChunkImpl(const VolumeDataChunk &chunk, int a
       lock.lock();
       if (!m_warnedAboutMissingMetadataTag)
       {
-        LogWarning(m_logHandler, fmt::format("Dataset has missing metadata tags, degraded data verification, reverting to metadata pages"));
+        m_logger.LogWarning(fmt::format("Dataset has missing metadata tags, degraded data verification, reverting to metadata pages"));
         m_warnedAboutMissingMetadataTag = true;
       }
       lock.unlock();

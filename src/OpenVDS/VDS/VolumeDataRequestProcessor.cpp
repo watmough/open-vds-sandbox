@@ -1689,12 +1689,12 @@ static void CleanupThread(PageAccessorNotifier &pageAccessorNotifier,  std::map<
   }
 }
 
-VolumeDataRequestProcessor::VolumeDataRequestProcessor(VolumeDataAccessManagerImpl& manager, LogHandler logHandler)
+VolumeDataRequestProcessor::VolumeDataRequestProcessor(VolumeDataAccessManagerImpl& manager, Logger &logger)
   : m_manager(manager)
   , m_pageAccessorNotifier(m_mutex)
   , m_threadPool(std::thread::hardware_concurrency())
   , m_cleanupThread([this]() { CleanupThread(m_pageAccessorNotifier, m_pageAccessors); } )
-  , m_logHandler(logHandler)
+  , m_logger(logger)
 {}
 
 VolumeDataRequestProcessor::~VolumeDataRequestProcessor()
@@ -1939,14 +1939,14 @@ bool VolumeDataRequestProcessor::IsCanceled(int64_t jobID, Error &error)
     static bool should_print = getBooleanEnvironmentVariable("OPENVDS_DEBUG_IS_CANCELLED");
     if (should_print)
     {
-      LogInfo(m_logHandler, "Printing cancelled request results");
+      m_logger.LogInfo("Printing cancelled request results");
       for (int i = 0; i < job->pagesCount; i++)
       {
         auto& future = job->future[i];
         Error error = future.get();
         if (!error.code)
           error.string = "OK";
-        LogInfo(m_logHandler, fmt::format("Request channel {} chunk {} result: {}", job->pages[i].chunk.layer->GetChannelIndex(), job->pages[i].chunk.index, error.string));
+        m_logger.LogInfo(fmt::format("Request channel {} chunk {} result: {}", job->pages[i].chunk.layer->GetChannelIndex(), job->pages[i].chunk.index, error.string));
       }
     }
     SetErrorForJob(job);

@@ -182,9 +182,9 @@ void assignByteCursorFromString(Aws::Crt::ByteCursor& cursor, const std::string&
   cursor.len = source.size();
 }
 
-IOManagerAWSCurl::IOManagerAWSCurl(const AWSOpenOptions& openOptions, LogHandler logHandler, Error& error)
+IOManagerAWSCurl::IOManagerAWSCurl(const AWSOpenOptions& openOptions, const Logger &logger, Error& error)
   : IOManager(OpenOptions::AWS)
-  , m_curlHandler(error, logHandler)
+  , m_curlHandler(error, logger)
   , m_awsInitDeinit(openOptions.disableInitApi ? nullptr : new InitAws())
   , m_eventLoopGroup(1)
   , m_hostResolver(m_eventLoopGroup, 1000, 1000)

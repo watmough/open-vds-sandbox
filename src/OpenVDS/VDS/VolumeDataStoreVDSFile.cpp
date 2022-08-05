@@ -583,7 +583,7 @@ void VolumeDataStoreVDSFile::SetMetadataStatus(std::string const &layerName, std
 }
 
 VolumeDataStoreVDSFile::VolumeDataStoreVDSFile(VDS &vds, const std::string &vdsFileName, Mode mode, Error &error)
-  : VolumeDataStore(OpenOptions::VDSFile, vds.logHandler)
+  : VolumeDataStore(OpenOptions::VDSFile, vds.logger)
   , m_vds(vds)
   , m_isVDSObjectFilePresent(false)
   , m_isVolumeDataLayoutFilePresent(false)
