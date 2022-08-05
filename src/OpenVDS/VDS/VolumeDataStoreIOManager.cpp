@@ -846,6 +846,7 @@ bool VolumeDataStoreIOManager::WriteChunkImpl(const VolumeDataChunk& chunk, std:
 
     lockedMetadataPage->GetManager()->UnlockPage(lockedMetadataPage);
 
+    lock.unlock();
     if (completed)
       completed(error);
   };
