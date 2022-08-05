@@ -4,102 +4,90 @@
 #include <json/json.h>
 #include <fmt/format.h>
 #include <OpenVDS/OpenVDS.h>
+#include <mutex>
 
 namespace OpenVDS
 {
 
-enum class PrintConfig
+struct OutputPrinter
 {
-  NoOutput = 0,
-  Error = 1 << 1,
-  Warning = 1 << 2,
-  Info = 1 << 3,
-  Json = 1 << 4
+  bool json;
+  bool printingPercentage;
+  std::mutex mutex;
+  LogLevel logLevel;
+  LogHandler logHandler;
+
+  struct PrintingPercentageGuard
+  {
+    PrintingPercentageGuard(OutputPrinter* printer)
+      : lock(printer->mutex)
+    {
+      if (printer->printingPercentage)
+      {
+        fmt::print(stdout, "\n");
+        printer->printingPercentage = false;
+      }
+    }
+    std::unique_lock<std::mutex> lock;
+  };
+
+  OutputPrinter(bool json, LogLevel logLevel)
+    : json(json)
+    , printingPercentage(false)
+    , logLevel(logLevel)
+  {
+    logHandler.userHandle = this;
+    logHandler.callback = [](LogLevel level, const char* message, size_t messageSize, void* userHandle)
+    {
+      auto* self = static_cast<OutputPrinter*>(userHandle);
+      PrintingPercentageGuard guard(self);
+      std::string messageStr(message, messageSize);
+      switch (level)
+      {
+      case LogLevel::None:
+        return;
+      case LogLevel::Error:
+        self->printErrorUnguarded("OpenVDS", messageStr);
+        break;
+      case LogLevel::Warning:
+        self->printWarningUnguarded("OpenVDS", messageStr);
+        break;
+      case LogLevel::Info:
+      case LogLevel::Trace:
+        self->printInfoUnguarded("OpenVDS", messageStr);
+      }
+    };
+  }
+  static LogLevel getLogLevel(bool disableWarning, bool disableInfo)
+  {
+    if (disableWarning)
+      return LogLevel::Error;
+    if (disableInfo)
+      return LogLevel::Warning;
+    return LogLevel::Info;
+  }
+
+  void printVersion(const std::string& name);
+  void printPercentage(double);
+  void printNewLine(OpenVDS::LogLevel threshold);
+  void printInfo(const std::string title, const std::string& str);
+  void printInfoUnguarded(const std::string title, const std::string& str);
+  void printInfo(const std::string title, const std::string& str, const std::string& value);
+  void printWarning(const std::string& title, const std::string& str);
+  void printWarningUnguarded(const std::string& title, const std::string& str);
+  void printWarning(const std::string& title, const std::string& message, const std::string& value, const std::string& systemError);
+  void printError(const std::string& title, const std::string& str);
+  void printErrorUnguarded(const std::string& title, const std::string& str);
+  void printError(const std::string& title, const std::string& message, const std::string& value);
+  void printError(const std::string& title, const std::string& message, const std::string& value, const std::string& systemError);
 };
 
-inline bool isNoOutput(PrintConfig config) { return ((int)config & (int)PrintConfig::NoOutput) != 0; }
-inline bool isInfo(PrintConfig config) { return ((int)config & (int)PrintConfig::Info) != 0; }
-inline bool isWarning(PrintConfig config) { return ((int)config & (int)PrintConfig::Warning) != 0; }
-inline bool isError(PrintConfig config) { return ((int)config & (int)PrintConfig::Error) != 0; }
-inline bool isJson(PrintConfig config) { return ((int)config & (int)PrintConfig::Json) != 0; }
-
-inline PrintConfig getOutputLevel(bool disableInfo, bool disableWarning)
+inline void OutputPrinter::printVersion(const std::string &name)
 {
-  OpenVDS::PrintConfig outputLevel = OpenVDS::PrintConfig::Info;
-  if (disableInfo)
-    outputLevel = OpenVDS::PrintConfig::Warning;
-  if (disableWarning)
-    outputLevel = OpenVDS::PrintConfig::Error;
-  return outputLevel;
-}
-
-inline PrintConfig createPrintConfig(bool json, PrintConfig minSeverity)
-{
-  int n = 0;
+  if (logLevel < LogLevel::Info)
+    return;
+  PrintingPercentageGuard guard(this);
   if (json)
-    n |= (int)PrintConfig::Json;
-  n |= (int(minSeverity) << 1) - 1;
-  return (PrintConfig)n;
-}
-
-inline PrintConfig createPrintConfig(bool json, bool disableInfo, bool disableWarning)
-{
-  return createPrintConfig(json, getOutputLevel(disableInfo, disableWarning));
-}
-
-void
-printInfo(PrintConfig config, const std::string title, const std::string &str)
-{
-  if (isNoOutput(config) || !isInfo(config))
-    return;
-  if (isJson(config))
-  {
-    Json::Value valueObj;
-    valueObj["message"] = str;
-    valueObj["title"] = title;
-    Json::Value info;
-    info["info"] = valueObj;
-    Json::StreamWriterBuilder wbuilder;
-    wbuilder["indentation"] = "  ";
-    std::string document = Json::writeString(wbuilder, info);
-    fmt::print(stdout, "{}\n", document);
-  }
-  else
-  {
-    fmt::print(stdout, "{}\n", str);
-  }
-}
-
-inline void
-printInfo(PrintConfig config, const std::string title, const std::string &str, const std::string &value)
-{
-  if (isNoOutput(config) || !isInfo(config))
-    return;
-  if (isJson(config))
-  {
-    Json::Value valueObj;
-    valueObj["value"] = value;
-    valueObj["message"] = str;
-    valueObj["title"] = title;
-    Json::Value info;
-    info["info"] = valueObj;
-    Json::StreamWriterBuilder wbuilder;
-    wbuilder["indentation"] = "  ";
-    std::string document = Json::writeString(wbuilder, info);
-    fmt::print(stdout, "{}\n", document);
-  }
-  else
-  {
-    fmt::print(stdout, "{}: {}\n", str, value);
-  }
-}
-
-inline void
-printVersion(PrintConfig config, const std::string &name)
-{
-  if (isNoOutput(config) || !isInfo(config))
-    return;
-  if (isJson(config))
   {
     Json::Value version;
     version["name"] = name;
@@ -131,12 +119,85 @@ printVersion(PrintConfig config, const std::string &name)
   }
 }
 
-inline void
-printWarning(PrintConfig config, const std::string &title, const std::string& str)
+inline void OutputPrinter::printPercentage(double percentage)
 {
-  if (isNoOutput(config) || !isWarning(config))
+  if (json || logLevel < OpenVDS::LogLevel::Info)
     return;
-  if (isJson(config))
+  std::unique_lock<std::mutex> lock(mutex);
+  printingPercentage = true;
+  fmt::print(stdout, "\r {0:5.2f} % Done.", percentage);
+  fflush(stdout);
+}
+
+inline void OutputPrinter::printNewLine(OpenVDS::LogLevel threshold)
+{
+  if (logLevel < threshold || json)
+    return;
+  PrintingPercentageGuard guard(this);
+  fputc('\n', stdout);
+}
+
+inline void OutputPrinter::printInfo(const std::string title, const std::string& str)
+{
+  if (logLevel < LogLevel::Info)
+    return;
+  PrintingPercentageGuard guard(this);
+  printInfoUnguarded(title, str);
+}
+inline void OutputPrinter::printInfoUnguarded(const std::string title, const std::string &str)
+{
+  if (json)
+  {
+    Json::Value valueObj;
+    valueObj["message"] = str;
+    valueObj["title"] = title;
+    Json::Value info;
+    info["info"] = valueObj;
+    Json::StreamWriterBuilder wbuilder;
+    wbuilder["indentation"] = "  ";
+    std::string document = Json::writeString(wbuilder, info);
+    fmt::print(stdout, "{}\n", document);
+  }
+  else
+  {
+    fmt::print(stdout, "{}\n", str);
+  }
+}
+
+inline void OutputPrinter::printInfo(const std::string title, const std::string &str, const std::string &value)
+{
+  if (logLevel < LogLevel::Info)
+    return;
+  PrintingPercentageGuard guard(this);
+  if (json)
+  {
+    Json::Value valueObj;
+    valueObj["value"] = value;
+    valueObj["message"] = str;
+    valueObj["title"] = title;
+    Json::Value info;
+    info["info"] = valueObj;
+    Json::StreamWriterBuilder wbuilder;
+    wbuilder["indentation"] = "  ";
+    std::string document = Json::writeString(wbuilder, info);
+    fmt::print(stdout, "{}\n", document);
+  }
+  else
+  {
+    fmt::print(stdout, "{}: {}\n", str, value);
+  }
+}
+
+inline void OutputPrinter::printWarning(const std::string& title, const std::string& str)
+{
+  if (logLevel < LogLevel::Warning)
+    return;
+  PrintingPercentageGuard guard(this);
+  printWarningUnguarded(title, str);
+}
+inline void OutputPrinter::printWarningUnguarded(const std::string &title, const std::string& str)
+{
+  if (json)
   {
     Json::Value valueObj;
     valueObj["message"] = str;
@@ -154,12 +215,12 @@ printWarning(PrintConfig config, const std::string &title, const std::string& st
   }
 }
 
-inline void
-printWarning(PrintConfig config, const std::string& title, const std::string& message, const std::string& value, const std::string &systemError)
+inline void OutputPrinter::printWarning(const std::string& title, const std::string& message, const std::string& value, const std::string &systemError)
 {
-  if (isNoOutput(config) || !isWarning(config))
+  if (logLevel < LogLevel::Warning)
     return;
-  if (isJson(config))
+  PrintingPercentageGuard guard(this);
+  if (json)
   {
     Json::Value valueObj;
     valueObj["message"] = message;
@@ -179,12 +240,16 @@ printWarning(PrintConfig config, const std::string& title, const std::string& me
   }
 }
 
-inline void
-printError(PrintConfig config, const std::string &title, const std::string& str)
+inline void OutputPrinter::printError(const std::string& title, const std::string& str)
 {
-  if (isNoOutput(config) || !isError(config))
+  if (logLevel < LogLevel::Error)
     return;
-  if (isJson(config))
+  PrintingPercentageGuard guard(this);
+  printErrorUnguarded(title, str);
+}
+inline void OutputPrinter::printErrorUnguarded(const std::string &title, const std::string& str)
+{
+  if (json)
   {
     Json::Value valueObj;
     valueObj["message"] = str;
@@ -202,12 +267,12 @@ printError(PrintConfig config, const std::string &title, const std::string& str)
   }
 }
 
-inline void
-printError(PrintConfig config, const std::string& title, const std::string& message, const std::string& value)
+inline void OutputPrinter::printError(const std::string& title, const std::string& message, const std::string& value)
 {
-  if (isNoOutput(config) || !isError(config))
+  if (logLevel < LogLevel::Error)
     return;
-  if (isJson(config))
+  PrintingPercentageGuard guard(this);
+  if (json)
   {
     Json::Value valueObj;
     valueObj["message"] = message;
@@ -226,12 +291,12 @@ printError(PrintConfig config, const std::string& title, const std::string& mess
   }
 }
 
-inline void
-printError(PrintConfig config, const std::string& title, const std::string& message, const std::string& value, const std::string &systemError)
+inline void OutputPrinter::printError(const std::string& title, const std::string& message, const std::string& value, const std::string &systemError)
 {
-  if (isNoOutput(config) || !isError(config))
+  if (logLevel < LogLevel::Error)
     return;
-  if (isJson(config))
+  PrintingPercentageGuard guard(this);
+  if (json)
   {
     Json::Value valueObj;
     valueObj["message"] = message;
@@ -250,93 +315,51 @@ printError(PrintConfig config, const std::string& title, const std::string& mess
     fmt::print(stderr, "[{}] {}: {}\n", message, value, systemError);
   }
 }
-
-inline void
-printWarning_with_condition_fatal(PrintConfig config, bool fatal, const std::string title, const std::string& value, const std::string& fatal_value)
-{
-  if (isNoOutput(config))
-    return;
-  if (isJson(config))
-  {
-    Json::Value valueObj;
-    valueObj["message"] = value;
-    valueObj["title"] = title;
-    if (fatal & isError(config))
-      valueObj["info"] = fatal_value;
-    Json::Value root;
-    if (fatal & isError(config))
-      root["error"] = valueObj;
-    else if (isWarning(config))
-      root["warning"] = valueObj;
-    Json::StreamWriterBuilder wbuilder;
-    wbuilder["indentation"] = "  ";
-    std::string document = Json::writeString(wbuilder, root);
-    if (isError(config) || isWarning(config))
-      fmt::print(stdout, "{}\n", document);
-  }
-  else
-  {
-    if (isWarning(config))
-      printWarning(config, title, value);
-    if(fatal && isError(config))
-    {
-      printError(config, title, fatal_value);
-    }
-  }
-  if (fatal)
-    exit(1);
-}
-
 struct PrintWarningContext
 {
   Json::Value arrayAcc;
   std::string title;
   std::string fatalMsg;
-  PrintConfig config;
-  bool fatal;
-  PrintWarningContext(PrintConfig config, const std::string& title, bool fatal, const std::string fatalMsg)
+  OutputPrinter &outputPrinter;
+  bool printForceMessage;
+  PrintWarningContext(OutputPrinter &outputPrinter, const std::string& title, bool printForceMessage, const std::string fatalMsg)
     : title(title)
-    , config(config)
-    , fatal(fatal)
+    , outputPrinter(outputPrinter)
   {
 
   }
   ~PrintWarningContext()
   {
-    if (isNoOutput(config))
+    if (outputPrinter.logLevel == LogLevel::None)
       return;
-    if (isJson(config))
+    OutputPrinter::PrintingPercentageGuard guard(&outputPrinter);
+    if (outputPrinter.json)
     {
       Json::Value root;
-      if (fatal && isError(config))
+      if (printForceMessage)
       {
         root["error"] = arrayAcc;
         root["info"] = fatalMsg;
       }
-      else if (isWarning(config))
+      else
       {
         root["warning"] = arrayAcc;
       }
       Json::StreamWriterBuilder wbuilder;
       wbuilder["indentation"] = "  ";
       std::string document = Json::writeString(wbuilder, root);
-      if (isError(config) || isWarning(config))
-        fmt::print(stdout, "{}\n", document);
+      fmt::print(stdout, "{}\n", document);
     }
     else
     {
-      if (fatal)
-        printError(config, "VDS", fatalMsg);
-    }
-    if (fatal)
-    {
-      exit(EXIT_FAILURE);
+      if (printForceMessage)
+        outputPrinter.printErrorUnguarded("VDS", fatalMsg);
     }
   }
 
   void addWarning(const std::string& message, const std::string& value, const std::string& systemError)
   {
-    if (isJson(config))
+    if (outputPrinter.json)
     {
       Json::Value obj;
       obj["message"] = message;
@@ -347,12 +370,11 @@ struct PrintWarningContext
     }
     else
     {
-      if (isWarning(config))
-        fmt::print(stderr, "[{}] {}: {}\n", message, value, systemError);
+      OutputPrinter::PrintingPercentageGuard guard(&outputPrinter);
+      fmt::print(stderr, "[{}] {}: {}\n", message, value, systemError);
     }
   }
 };
-
 }
 
 #endif

@@ -210,11 +210,10 @@ VDSInfo --metadata-name TextHeader -b -e -w 80 s3://bluware-jorgen-dev/volve
 
   options.parse_positional("urlpos");
 
-  OpenVDS::PrintConfig printConfig = OpenVDS::createPrintConfig(false, OpenVDS::PrintConfig::Info);
-
+  OpenVDS::OutputPrinter printer(useJsonOutput, OpenVDS::LogLevel::Info);
   if(argc == 1)
   {
-    OpenVDS::printInfo(printConfig, "Args", options.help());
+    printer.printInfo("Args", options.help());
     return EXIT_SUCCESS;
   }
 
@@ -224,32 +223,30 @@ VDSInfo --metadata-name TextHeader -b -e -w 80 s3://bluware-jorgen-dev/volve
   }
   catch(cxxopts::OptionParseException &e)
   {
-    OpenVDS::printError(printConfig, "Args", e.what());
+    printer.printError("Args", e.what());
     return EXIT_FAILURE;
   }
 
-  printConfig = OpenVDS::createPrintConfig(useJsonOutput, OpenVDS::PrintConfig::Info);
-
   if (help)
   {
-    OpenVDS::printInfo(printConfig, "Args", options.help());
+    printer.printInfo("Args", options.help());
     return EXIT_SUCCESS;
   }
   if (helpConnection)
   {
-    OpenVDS::printInfo(printConfig, "Args", GetConnectionHelpString());
+    printer.printInfo("Args", GetConnectionHelpString());
     return EXIT_SUCCESS;
   }
 
   if (version)
   {
-    OpenVDS::printVersion(printConfig, "VDSInfo");
+    printer.printVersion("VDSInfo");
     return EXIT_SUCCESS;
   }
 
   if (urlarg.empty())
   {
-    OpenVDS::printError(printConfig, "Args", "Failed - missing url/vdsfile argument");
+    printer.printError("Args", "Failed - missing url/vdsfile argument");
     return EXIT_FAILURE;
   }
   
@@ -271,23 +268,23 @@ VDSInfo --metadata-name TextHeader -b -e -w 80 s3://bluware-jorgen-dev/volve
 
   if(OpenVDS::IsSupportedProtocol(url))
   {
-    handle = OpenVDS::Open(url, connection, openError);
+    handle = OpenVDS::Open(url, connection, printer.logHandler, openError);
   }
   else
   {
-    handle = OpenVDS::Open(OpenVDS::VDSFileOpenOptions(url), openError);
+    handle = OpenVDS::Open(OpenVDS::VDSFileOpenOptions(url), printer.logHandler, openError);
   }
 
   if(openError.code != 0)
   {
-    OpenVDS::printError(printConfig, "VDS", "Could not open VDS", openError.string);
+    printer.printError("VDS", "Could not open VDS", openError.string);
     return EXIT_FAILURE;
   }
 
   auto layout = OpenVDS::GetLayout(handle);
   if (!layout)
   {
-    OpenVDS::printError(printConfig, "VDS", "Internal error, no layout");
+    printer.printError("VDS", "Internal error, no layout");
     return EXIT_FAILURE;
   }
   

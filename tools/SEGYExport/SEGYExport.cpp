@@ -223,10 +223,10 @@ main(int argc, char *argv[])
 
   options.parse_positional("output");
 
-  OpenVDS::PrintConfig printConfig = OpenVDS::createPrintConfig(false, OpenVDS::PrintConfig::Info);
+  OpenVDS::OutputPrinter outputPrinter(useJsonOutput, OpenVDS::OutputPrinter::getLogLevel(disableWarning, disableInfo));
   if(argc == 1)
   {
-    OpenVDS::printInfo(printConfig, "Args", options.help());
+    outputPrinter.printError("Args", options.help());
     return EXIT_SUCCESS;
   }
 
@@ -236,32 +236,30 @@ main(int argc, char *argv[])
   }
   catch(cxxopts::OptionParseException &e)
   {
-    OpenVDS::printError(printConfig, "Args", e.what());
+    outputPrinter.printError("Args", e.what());
     return EXIT_FAILURE;
   }
 
-  printConfig = OpenVDS::createPrintConfig(useJsonOutput, disableInfo, disableWarning);
-
   if (help)
   {
-    OpenVDS::printInfo(printConfig, "Args", options.help());
+    outputPrinter.printInfo("Args", options.help());
     return EXIT_SUCCESS;
   }
   if (helpConnection)
   {
-    OpenVDS::printInfo(printConfig, "Args", GetConnectionHelpString());
+    outputPrinter.printInfo("Args", GetConnectionHelpString());
     return EXIT_SUCCESS;
   }
 
   if (version)
   {
-    OpenVDS::printVersion(printConfig, "SEGYExport");
+    outputPrinter.printVersion("SEGYExport");
     return EXIT_SUCCESS;
   }
 
   if(fileName.empty())
   {
-    OpenVDS::printError(printConfig, "Args", "No output SEG-Y file specified");
+    outputPrinter.printError("Args", "No output SEG-Y file specified");
     return EXIT_FAILURE;
   }
 
@@ -281,20 +279,20 @@ main(int argc, char *argv[])
   
   if(OpenVDS::IsSupportedProtocol(url))
   {
-    handle = OpenVDS::Open(url, connection, openError);
+    handle = OpenVDS::Open(url, connection, outputPrinter.logHandler, openError);
   }
   else
   {
-    handle = OpenVDS::Open(OpenVDS::VDSFileOpenOptions(url), openError);
+    handle = OpenVDS::Open(OpenVDS::VDSFileOpenOptions(url), outputPrinter.logHandler, openError);
   }
 
   if(openError.code != 0)
   {
-    OpenVDS::printError(printConfig, "VDS", "Could not open VDS", openError.string);
+    outputPrinter.printError("VDS", "Could not open VDS", openError.string);
     return EXIT_FAILURE;
   }
 
-  OpenVDS::printVersion(printConfig, "SEGYExport");
+  outputPrinter.printVersion("SEGYExport");
 
   auto accessManager = OpenVDS::GetAccessManager(handle);
   auto volumeDataLayout = accessManager.GetVolumeDataLayout();
@@ -332,20 +330,20 @@ main(int argc, char *argv[])
 
   if(accessManager.GetVDSProduceStatus(dimensionGroup, 0, 0) == OpenVDS::VDSProduceStatus::Unavailable)
   {
-    OpenVDS::printError(printConfig, "VDS", "VDS cannot produce data");
+    outputPrinter.printError("VDS", "VDS cannot produce data");
     return EXIT_FAILURE;
   }
 
   if(!volumeDataLayout->IsChannelAvailable("Trace"))
   {
-    OpenVDS::printError(printConfig, "VDS", "VDS has no \"Trace\" channel");
+    outputPrinter.printError("VDS", "VDS has no \"Trace\" channel");
     return EXIT_FAILURE;
   }
   int traceFlagChannel = volumeDataLayout->GetChannelIndex("Trace");
 
   if(!volumeDataLayout->IsChannelAvailable("SEGYTraceHeader"))
   {
-    OpenVDS::printError(printConfig, "VDS", "VDS has no \"SEGYTraceHeader\" channel");
+    outputPrinter.printError("VDS", "VDS has no \"SEGYTraceHeader\" channel");
     return EXIT_FAILURE;
   }
   int segyTraceHeaderChannel = volumeDataLayout->GetChannelIndex("SEGYTraceHeader");
@@ -353,7 +351,7 @@ main(int argc, char *argv[])
   if((!volumeDataLayout->IsMetadataBLOBAvailable("SEGY", "TextHeader")   && !volumeDataLayout->IsMetadataBLOBAvailable("", "SEGYTextHeader")) ||
      (!volumeDataLayout->IsMetadataBLOBAvailable("SEGY", "BinaryHeader") && !volumeDataLayout->IsMetadataBLOBAvailable("", "SEGYBinaryHeader")))
   {
-    OpenVDS::printError(printConfig, "VDS", "SEG-Y Text/Binary headers not found");
+    outputPrinter.printError("VDS", "SEG-Y Text/Binary headers not found");
     return EXIT_FAILURE;
   }
 
@@ -433,7 +431,7 @@ main(int argc, char *argv[])
 
   if(textHeader.size() != SEGY::TextualFileHeaderSize || binaryHeader.size() != SEGY::BinaryFileHeaderSize)
   {
-    OpenVDS::printError(printConfig, "SEGY", "Invalid SEG-Y Text/Binary headers");
+    outputPrinter.printError("SEGY", "Invalid SEG-Y Text/Binary headers");
     return EXIT_FAILURE;
   }
 
@@ -450,7 +448,7 @@ main(int argc, char *argv[])
 
   if(dataSampleFormatCode == SEGY::BinaryHeader::DataSampleFormatCode::IBMFloat && dataEndianness == SEGY::Endianness::LittleEndian)
   {
-    OpenVDS::printError(printConfig, "SEGY", "Little-endian IBM float is not supported");
+    outputPrinter.printError("SEGY", "Little-endian IBM float is not supported");
     return EXIT_FAILURE;
   }
 
@@ -463,7 +461,7 @@ main(int argc, char *argv[])
      dataSampleFormatCode != SEGY::BinaryHeader::DataSampleFormatCode::Int8 &&
      dataSampleFormatCode != SEGY::BinaryHeader::DataSampleFormatCode::UInt8)
   {
-    OpenVDS::printError(printConfig, "SEGY", "Unsupported data sample format", fmt::format("{}", dataSampleFormatCode));
+    outputPrinter.printError("SEGY", "Unsupported data sample format", fmt::format("{}", dataSampleFormatCode));
     return EXIT_FAILURE;
   }
 
@@ -477,14 +475,14 @@ main(int argc, char *argv[])
 
   if(error.code != 0)
   {
-    OpenVDS::printError(printConfig, "VDS", "Could not open file", fileName);
+    outputPrinter.printError("VDS", "Could not open file", fileName);
     return EXIT_FAILURE;
   }
 
   file.Write(textHeader.data(), 0, SEGY::TextualFileHeaderSize, error) && file.Write(binaryHeader.data(), SEGY::TextualFileHeaderSize, SEGY::BinaryFileHeaderSize, error);
   if(error.code != 0)
   {
-    OpenVDS::printError(printConfig, "VDS", "Error writing SEG-Y headers to file", fileName);
+    outputPrinter.printError("VDS", "Error writing SEG-Y headers to file", fileName);
     return EXIT_FAILURE;
   }
 
@@ -517,7 +515,7 @@ main(int argc, char *argv[])
   const auto requestDataFormat = SEGY::convertSegyFormat(dataSampleFormatCode, error);
   if (error.code != 0)
   {
-    OpenVDS::printError(printConfig, "VDS", "Could not get VDS data format for SEGY data format", openError.string);
+    outputPrinter.printError("VDS", "Could not get VDS data format for SEGY data format", openError.string);
     return EXIT_FAILURE;
   }
 
@@ -528,15 +526,14 @@ main(int argc, char *argv[])
   int64_t
     offset = SEGY::TextualFileHeaderSize + SEGY::BinaryFileHeaderSize;
 
-  int percentage = -1;
+  double percentage = -1.0;
   for(int line = 0; line < lineCount; line++)
   {
-    int new_percentage = int(line / double(lineCount) * 100);
-    if (OpenVDS::isInfo(printConfig) && !OpenVDS::isJson(printConfig) && percentage != new_percentage)
+    double new_percentage = line / double(lineCount) * 100.0;
+    if (new_percentage - percentage > 0.333)
     {
       percentage = new_percentage;
-      fmt::print(stdout, "\33[2K\r {:3}% Done. ", percentage);
-      fflush(stdout);
+      outputPrinter.printPercentage(percentage);
     }
     int min[OpenVDS::Dimensionality_Max] = {},
         max[OpenVDS::Dimensionality_Max] = {};
@@ -563,7 +560,7 @@ main(int argc, char *argv[])
       int errorCode;
       const char* errorString;
       accessManager.GetCurrentDownloadError(&errorCode, &errorString);
-      OpenVDS::printError(printConfig, "Error in data request", errorString, fmt::format("{}", errorCode));
+      outputPrinter.printError("Error in data request", errorString, fmt::format("{}", errorCode));
       assert(dataRequest->IsCanceled());
       exit(1);
     }
@@ -572,7 +569,7 @@ main(int argc, char *argv[])
       int errorCode;
       const char* errorString;
       accessManager.GetCurrentDownloadError(&errorCode, &errorString);
-      OpenVDS::printError(printConfig, "Error in traceFlag request", errorString, fmt::format("{}", errorCode));
+      outputPrinter.printError("Error in traceFlag request", errorString, fmt::format("{}", errorCode));
       assert(traceFlagRequest->IsCanceled());
       exit(1);
     }
@@ -581,7 +578,7 @@ main(int argc, char *argv[])
       int errorCode;
       const char* errorString;
       accessManager.GetCurrentDownloadError(&errorCode, &errorString);
-      OpenVDS::printError(printConfig, "Error in segyTraceHeader request", errorString, fmt::format("{}", errorCode));
+      outputPrinter.printError("Error in segyTraceHeader request", errorString, fmt::format("{}", errorCode));
       assert(segyTraceHaderRequest->IsCanceled());
       exit(1);
     }
@@ -626,14 +623,13 @@ main(int argc, char *argv[])
     file.Write(writeBuffer.get(), offset, activeTraceCount * (traceDataSize + SEGY::TraceHeaderSize), error);
     if(error.code != 0)
     {
-      OpenVDS::printError(printConfig, "Error writing SEG-Y traces to file", fileName);
+      outputPrinter.printError("Error writing SEG-Y traces to file", fileName);
       return EXIT_FAILURE;
     }
     offset += activeTraceCount * (traceDataSize + SEGY::TraceHeaderSize);
   }
-  if (OpenVDS::isInfo(printConfig) && !OpenVDS::isJson(printConfig))
-    fmt::print(stdout, "\33[2K\r 100% Done.\n", percentage);
-
+  outputPrinter.printPercentage(100.0f);
+  outputPrinter.printInfo("Done", fmt::format("Successfully exported {} to {}", url, fileName));
   //double elapsed = std::chrono::duration<double, std::milli>(std::chrono::high_resolution_clock::now() - start_time).count();
   //fmt::print("Elapsed time is {}.\n", elapsed / 1000);
 

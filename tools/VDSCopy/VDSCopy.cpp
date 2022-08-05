@@ -17,29 +17,20 @@ inline char asciitolower(char in) {
   return in;
 }
 
-inline void printPercentage(float percentage)
-{
-  fmt::print(stdout, "\r {0:5.2f} % Done.", percentage);
-  fflush(stdout);
-}
-
 struct CopyError
 {
   int code = 0;
   std::string message;
 };
 
-static void printProgress(OpenVDS::PrintConfig printConfig, int64_t totalChunks, int64_t doneChunks, int& percentage)
+static void printProgress(OpenVDS::OutputPrinter &outputPrinter, int64_t totalChunks, int64_t doneChunks, int& percentage)
 {
   int newPercentage = int(doneChunks * 10000 / totalChunks);
   if (newPercentage != percentage)
   {
     percentage = newPercentage;
-    if (!OpenVDS::isJson(printConfig) && OpenVDS::isInfo(printConfig))
-    {
-      float output_percentage = float(percentage) / 100;
-      printPercentage(output_percentage);
-    }
+    double output_percentage = double(percentage) / 100.0;
+    outputPrinter.printPercentage(output_percentage);
   }
 }
 
@@ -95,11 +86,11 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
 
   options.parse_positional("urls");
 
-  OpenVDS::PrintConfig printConfig = OpenVDS::createPrintConfig(false, OpenVDS::PrintConfig::Info);
+  OpenVDS::OutputPrinter outputPrinter(useJsonOutput, OpenVDS::OutputPrinter::getLogLevel(disableWarning, disableInfo));
 
   if (argc == 1)
   {
-    OpenVDS::printInfo(printConfig, "Args", options.help());
+    outputPrinter.printInfo("Args", options.help());
     return EXIT_SUCCESS;
   }
 
@@ -109,32 +100,30 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
   }
   catch(cxxopts::OptionParseException &e)
   {
-    OpenVDS::printError(printConfig, "Args", e.what());
+    outputPrinter.printError("Args", e.what());
     return EXIT_FAILURE;
   }
   
-  printConfig = OpenVDS::createPrintConfig(useJsonOutput, disableInfo, disableWarning);
-
   if (help)
   {
-    OpenVDS::printInfo(printConfig, "Args", options.help());
+    outputPrinter.printInfo("Args", options.help());
     return EXIT_SUCCESS;
   }
   if (helpConnection)
   {
-    OpenVDS::printInfo(printConfig, "Args", GetConnectionHelpString());
+    outputPrinter.printInfo("Args", GetConnectionHelpString());
     return EXIT_SUCCESS;
   }
 
   if (version)
   {
-    OpenVDS::printVersion(printConfig, "VDSCopy");
+    outputPrinter.printVersion("VDSCopy");
     return EXIT_SUCCESS;
   }
 
   if (urlarg.size() != 2)
   {
-    OpenVDS::printError(printConfig, "Args", "Failed - missing url/vdsfile argument");
+    outputPrinter.printError("Args", "Failed - missing url/vdsfile argument");
     return EXIT_FAILURE;
   }
   
@@ -148,23 +137,23 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
 
   if(OpenVDS::IsSupportedProtocol(sourceUrl))
   {
-    sourceHandle = OpenVDS::Open(sourceUrl, sourceConnection, error);
+    sourceHandle = OpenVDS::Open(sourceUrl, sourceConnection, outputPrinter.logHandler, error);
   }
   else
   {
-    sourceHandle = OpenVDS::Open(OpenVDS::VDSFileOpenOptions(sourceUrl), error);
+    sourceHandle = OpenVDS::Open(OpenVDS::VDSFileOpenOptions(sourceUrl), outputPrinter.logHandler, error);
   }
 
   if(error.code != 0)
   {
-    OpenVDS::printError(printConfig, "VDS", fmt::format("Could not open VDS {}", sourceUrl), error.string);
+    outputPrinter.printError("VDS", fmt::format("Could not open VDS {}", sourceUrl), error.string);
     return EXIT_FAILURE;
   }
 
   auto layout = OpenVDS::GetLayout(sourceHandle);
   if (!layout)
   {
-    OpenVDS::printError(printConfig, "VDS", "Internal error, no layout");
+    outputPrinter.printError("VDS", "Internal error, no layout");
     return EXIT_FAILURE;
   }
 
@@ -186,12 +175,12 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
   else if(compressionMethodString == "waveletnormalizeblocklossless") compressionMethod = OpenVDS::CompressionMethod::WaveletNormalizeBlockLossless;
   else
   {
-    OpenVDS::printError(printConfig, "CompressionMethod", "Unknown compression method", compressionMethodString);
+    outputPrinter.printError("CompressionMethod", "Unknown compression method", compressionMethodString);
     return EXIT_FAILURE;
   }
   if (!OpenVDS::IsCompressionMethodSupported(compressionMethod))
   {
-    OpenVDS::printError(printConfig, "CompressionMethod", "Unsupported compression method", compressionMethodString);
+    outputPrinter.printError("CompressionMethod", "Unsupported compression method", compressionMethodString);
     return EXIT_FAILURE;
   }
 
@@ -214,14 +203,14 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
 
 
   OpenVDS::ScopedVDSHandle destinationHandle;
-  destinationHandle = OpenVDS::Create(destinationUrl, destinationConnection, layoutDescriptor, axisDescriptors, channelDescriptors, *layout, compressionMethod, compressionTolerance, error);
+  destinationHandle = OpenVDS::Create(destinationUrl, destinationConnection, layoutDescriptor, axisDescriptors, channelDescriptors, *layout, compressionMethod, compressionTolerance, outputPrinter.logHandler, error);
   if(error.code != 0)
   {
-    OpenVDS::printError(printConfig, "VDS", fmt::format("Could not create VDS {}", destinationUrl), error.string);
+    outputPrinter.printError("VDS", fmt::format("Could not create VDS {}", destinationUrl), error.string);
     return EXIT_FAILURE;
   }
 
-  OpenVDS::printVersion(printConfig, "VDSCopy");
+  outputPrinter.printVersion("VDSCopy");
 
   auto sourceAccessManager = OpenVDS::GetAccessManager(sourceHandle);
   auto destinationAccessManager = OpenVDS::GetAccessManager(destinationHandle);
@@ -259,12 +248,10 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
     && (destinationCompressionMethod == OpenVDS::CompressionMethod::Wavelet || destinationCompressionMethod == OpenVDS::CompressionMethod::WaveletNormalizeBlock)
     && (OpenVDS::GetCompressionTolerance(sourceHandle) != OpenVDS::GetCompressionTolerance(destinationHandle)))
   {
-    OpenVDS::printInfo(printConfig, "Data degradation", "Copying between lossy compressed datasets will lead to a slight data degradation.");
+    outputPrinter.printInfo("Data degradation", "Copying between lossy compressed datasets will lead to a slight data degradation.");
   }
 
-  OpenVDS::printInfo(printConfig, destinationUrl, fmt::format("Copying {} to {}. Total chunks to copy is {}", sourceUrl, destinationUrl, totalChunks));
-  if (!OpenVDS::isJson(printConfig) && OpenVDS::isInfo(printConfig))
-    fmt::print(stdout, "\n");
+  outputPrinter.printInfo(destinationUrl, fmt::format("Copying {} to {}. Total chunks to copy is {}", sourceUrl, destinationUrl, totalChunks));
   for (int lod = 0; lod <= layoutDescriptor.GetLODLevels(); lod++)
   {
     for (int dim = 0; dim <= OpenVDS::DimensionsND::Dimensions_45; dim++)
@@ -302,7 +289,7 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
             {
               destinationAccessors[channel]->CopyPage(mappedChunk, *sourceAccessors[channel]);
               doneChunks++;
-              printProgress(printConfig, totalChunks, doneChunks, percentage);
+              printProgress(outputPrinter, totalChunks, doneChunks, percentage);
               int errorCount = destinationAccessManager.UploadErrorCount();
               for (int errorIndex = 0; errorIndex < errorCount; errorIndex++)
               {
@@ -314,7 +301,7 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
                 {
                   copyError.message = fmt::format("{}: {}", objectId, errorString);
                   copyError.code = errorCode;
-                  OpenVDS::printError(printConfig, "Failed to copy chunk ", copyError.message);
+                  outputPrinter.printError("Failed to copy chunk ", copyError.message);
                 }
               }
             }
@@ -324,12 +311,7 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
     }
   }
 
-  if (!OpenVDS::isJson(printConfig) && OpenVDS::isInfo(printConfig))
-  {
-    printPercentage(100.0f);
-    fprintf(stdout, "\n");
-  }
-
-  OpenVDS::printInfo(printConfig, destinationUrl, fmt::format("Successfully copied {} to {}", sourceUrl, destinationUrl));
+  outputPrinter.printPercentage(100.0f);
+  outputPrinter.printInfo(destinationUrl, fmt::format("Successfully copied {} to {}", sourceUrl, destinationUrl));
   return EXIT_SUCCESS;
 }
