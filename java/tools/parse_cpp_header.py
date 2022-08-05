@@ -206,7 +206,7 @@ class ScopeDoc:
             try:
                 tree = ET.ElementTree(ET.fromstring(xmlstring))
                 root = tree.getroot()
-                it = root.getiterator()
+                it = root.iter()
                 next(it) # skip root
                 doc = ScopeDoc()
                 for n in it:
