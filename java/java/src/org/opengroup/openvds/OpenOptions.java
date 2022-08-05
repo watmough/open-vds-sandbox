@@ -172,20 +172,6 @@ public class OpenOptions extends ManagedBase {
     
     }
 
-    ///AUTOGEN-OK: FIELD_DECL logLevelIsSet bool BOOL
-    native private boolean getLogLevelIsSetImpl(long native_object);
-    public boolean getLogLevelIsSet() {
-        return getLogLevelIsSetImpl(getNativeObject());
-    }
-
-    native private void setLogLevelIsSetImpl(long native_object, boolean value);
-    
-    public void setLogLevelIsSet(boolean value) {
-    
-        setLogLevelIsSetImpl(getNativeObject(), value);    
-    
-    }
-
     OpenOptions(long nativeobject) {
         super(nativeobject);
     }

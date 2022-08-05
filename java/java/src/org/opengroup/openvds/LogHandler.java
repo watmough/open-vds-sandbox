@@ -37,21 +37,7 @@ public class LogHandler extends ManagedBase {
     
     }
 
-    ///AUTOGEN-FAIL: CONSTRUCTOR LogHandler void (OpenVDS::LogLevel, void (*)(OpenVDS::LogLevel, const char *, uint64_t, void *), void *) FUNCTIONPROTO
-
-    ///AUTOGEN-OK: FIELD_DECL level OpenVDS::LogLevel ENUM
-    native private long getLevelImpl(long native_object);
-    public LogLevel getLevel() {
-        return LogLevel.fromInt((int)getLevelImpl(getNativeObject()));
-    }
-
-    native private void setLevelImpl(long native_object, long value);
-    
-    public void setLevel(LogLevel value) {
-    
-        setLevelImpl(getNativeObject(), ManagedBase.requireNonNull(value, "value may not be null").value());    
-    
-    }
+    ///AUTOGEN-FAIL: CONSTRUCTOR LogHandler void (void (*)(OpenVDS::LogLevel, const char *, uint64_t, void *), void *) FUNCTIONPROTO
 
     ///AUTOGEN-FAIL: FIELD_DECL callback void (*)(OpenVDS::LogLevel, const char *, uint64_t, void *) POINTER
 

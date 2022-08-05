@@ -2125,6 +2125,7 @@ header_list = [
     'GlobalState.h',
     'IJKCoordinateTransformer.h',
     'KnownMetadata.h',
+    'Log.h',
     'MetadataAccess.h',
     'MetadataContainer.h',
     'MetadataKey.h',

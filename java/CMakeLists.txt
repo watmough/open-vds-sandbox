@@ -210,6 +210,7 @@ add_library(openvds-javacpp
   cpp/src/IJKCoordinateTransformer.cpp
   cpp/src/InMemoryVDSGenerator.cpp
   cpp/src/KnownMetadata.cpp
+  cpp/src/Log.cpp
   cpp/src/MetadataAccess.cpp
   cpp/src/MetadataContainer.cpp
   cpp/src/MetadataKey.cpp

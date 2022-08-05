@@ -375,23 +375,24 @@ Available schemes are s3:// azure://
         return result;
     }
 
-    ///AUTOGEN-OK: FUNCTION_DECL Open OpenVDS::VDS *(OpenVDS::IOManager *, const OpenVDS::LogHandler &, OpenVDS::VDSError &) FUNCTIONPROTO
-    native private static long Open8Impl(long ioManager, long logHandler, long error);
+    ///AUTOGEN-OK: FUNCTION_DECL Open OpenVDS::VDS *(OpenVDS::IOManager *, OpenVDS::LogLevel, const OpenVDS::LogHandler &, OpenVDS::VDSError &) FUNCTIONPROTO
+    native private static long Open8Impl(long ioManager, long logLevel, long logHandler, long error);
 
     /**
      * Open an existing VDS
      * 
      * @param ioManager The IOManager for the connection, it will be deleted automatically when the VDS handle is closed
+     * @param logLevel The logging threshold
      * @param logHandler The logging handler
      * @param error If an error occured, the error code and message will be written to this output parameter
      * @return The VDS handle that can be used to get the VolumeDataLayout and the VolumeDataAccessManager
      */
-    public static VDS open(IOManager ioManager, LogHandler logHandler, VDSError error) {
-        return VDS.fromNativeObject(Open8Impl(ManagedBase.requireNonNull(ioManager, "ioManager may not be null").getNativeObject(), ManagedBase.requireNonNull(logHandler, "logHandler may not be null").getNativeObject(), ManagedBase.requireNonNull(error, "error may not be null").getNativeObject()));
+    public static VDS open(IOManager ioManager, LogLevel logLevel, LogHandler logHandler, VDSError error) {
+        return VDS.fromNativeObject(Open8Impl(ManagedBase.requireNonNull(ioManager, "ioManager may not be null").getNativeObject(), ManagedBase.requireNonNull(logLevel, "logLevel may not be null").value(), ManagedBase.requireNonNull(logHandler, "logHandler may not be null").getNativeObject(), ManagedBase.requireNonNull(error, "error may not be null").getNativeObject()));
     }
-    public static VDS open(IOManager ioManager, LogHandler logHandler) throws java.io.IOException {
+    public static VDS open(IOManager ioManager, LogLevel logLevel, LogHandler logHandler) throws java.io.IOException {
         VDSError error = new VDSError();
-        VDS result = open(ioManager, logHandler, error);
+        VDS result = open(ioManager, logLevel, logHandler, error);
         if (error.getCode() != 0) {
             throw new java.io.IOException(error.getString());
         }
@@ -842,8 +843,8 @@ Available schemes are s3:// azure://
         return result;
     }
 
-    ///AUTOGEN-OK: FUNCTION_DECL Create OpenVDS::VDS *(OpenVDS::IOManager *, const OpenVDS::VolumeDataLayoutDescriptor &, std::vector<OpenVDS::VolumeDataAxisDescriptor>, std::vector<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::CompressionMethod, float, const OpenVDS::LogHandler &, OpenVDS::VDSError &) FUNCTIONPROTO
-    native private static long Create14Impl(long ioManager, long layoutDescriptor, long[] axisDescriptors, long[] channelDescriptors, long metadata, long compressionMethod, float compressionTolerance, long logHandler, long error);
+    ///AUTOGEN-OK: FUNCTION_DECL Create OpenVDS::VDS *(OpenVDS::IOManager *, const OpenVDS::VolumeDataLayoutDescriptor &, std::vector<OpenVDS::VolumeDataAxisDescriptor>, std::vector<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::CompressionMethod, float, OpenVDS::LogLevel, const OpenVDS::LogHandler &, OpenVDS::VDSError &) FUNCTIONPROTO
+    native private static long Create14Impl(long ioManager, long layoutDescriptor, long[] axisDescriptors, long[] channelDescriptors, long metadata, long compressionMethod, float compressionTolerance, long logLevel, long logHandler, long error);
 
     /**
      * Create a new VDS.
@@ -855,7 +856,7 @@ Available schemes are s3:// azure://
      * @param error If an error occured, the error code and message will be written to this output parameter
      * @return The VDS handle that can be used to get the VolumeDataLayout and the VolumeDataAccessManager
      */
-    public static VDS create(IOManager ioManager, VolumeDataLayoutDescriptor layoutDescriptor, VolumeDataAxisDescriptor[] axisDescriptors, VolumeDataChannelDescriptor[] channelDescriptors, MetadataReadAccess metadata, CompressionMethod compressionMethod, float compressionTolerance, LogHandler logHandler, VDSError error) {
+    public static VDS create(IOManager ioManager, VolumeDataLayoutDescriptor layoutDescriptor, VolumeDataAxisDescriptor[] axisDescriptors, VolumeDataChannelDescriptor[] channelDescriptors, MetadataReadAccess metadata, CompressionMethod compressionMethod, float compressionTolerance, LogLevel logLevel, LogHandler logHandler, VDSError error) {
         long[] axisDescriptorstmp = new long[ManagedBase.requireNonNull(axisDescriptors, "axisDescriptors may not be null").length];
         for (int i = 0; i < axisDescriptors.length; ++i) {
             axisDescriptorstmp[i] = axisDescriptors[i].getNativeObject();
@@ -864,11 +865,11 @@ Available schemes are s3:// azure://
         for (int i = 0; i < channelDescriptors.length; ++i) {
             channelDescriptorstmp[i] = channelDescriptors[i].getNativeObject();
         }
-        return VDS.fromNativeObject(Create14Impl(ManagedBase.requireNonNull(ioManager, "ioManager may not be null").getNativeObject(), ManagedBase.requireNonNull(layoutDescriptor, "layoutDescriptor may not be null").getNativeObject(), axisDescriptorstmp, channelDescriptorstmp, ManagedBase.requireNonNull(metadata, "metadata may not be null").getNativeObject(), ManagedBase.requireNonNull(compressionMethod, "compressionMethod may not be null").value(), compressionTolerance, ManagedBase.requireNonNull(logHandler, "logHandler may not be null").getNativeObject(), ManagedBase.requireNonNull(error, "error may not be null").getNativeObject()));
+        return VDS.fromNativeObject(Create14Impl(ManagedBase.requireNonNull(ioManager, "ioManager may not be null").getNativeObject(), ManagedBase.requireNonNull(layoutDescriptor, "layoutDescriptor may not be null").getNativeObject(), axisDescriptorstmp, channelDescriptorstmp, ManagedBase.requireNonNull(metadata, "metadata may not be null").getNativeObject(), ManagedBase.requireNonNull(compressionMethod, "compressionMethod may not be null").value(), compressionTolerance, ManagedBase.requireNonNull(logLevel, "logLevel may not be null").value(), ManagedBase.requireNonNull(logHandler, "logHandler may not be null").getNativeObject(), ManagedBase.requireNonNull(error, "error may not be null").getNativeObject()));
     }
-    public static VDS create(IOManager ioManager, VolumeDataLayoutDescriptor layoutDescriptor, VolumeDataAxisDescriptor[] axisDescriptors, VolumeDataChannelDescriptor[] channelDescriptors, MetadataReadAccess metadata, CompressionMethod compressionMethod, float compressionTolerance, LogHandler logHandler) throws java.io.IOException {
+    public static VDS create(IOManager ioManager, VolumeDataLayoutDescriptor layoutDescriptor, VolumeDataAxisDescriptor[] axisDescriptors, VolumeDataChannelDescriptor[] channelDescriptors, MetadataReadAccess metadata, CompressionMethod compressionMethod, float compressionTolerance, LogLevel logLevel, LogHandler logHandler) throws java.io.IOException {
         VDSError error = new VDSError();
-        VDS result = create(ioManager, layoutDescriptor, axisDescriptors, channelDescriptors, metadata, compressionMethod, compressionTolerance, logHandler, error);
+        VDS result = create(ioManager, layoutDescriptor, axisDescriptors, channelDescriptors, metadata, compressionMethod, compressionTolerance, logLevel, logHandler, error);
         if (error.getCode() != 0) {
             throw new java.io.IOException(error.getString());
         }
@@ -905,8 +906,8 @@ Available schemes are s3:// azure://
         return result;
     }
 
-    ///AUTOGEN-OK: FUNCTION_DECL Create OpenVDS::VDS *(OpenVDS::IOManager *, const OpenVDS::VolumeDataLayoutDescriptor &, std::vector<OpenVDS::VolumeDataAxisDescriptor>, std::vector<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, const OpenVDS::LogHandler &, OpenVDS::VDSError &) FUNCTIONPROTO
-    native private static long Create16Impl(long ioManager, long layoutDescriptor, long[] axisDescriptors, long[] channelDescriptors, long metadata, long logHandler, long error);
+    ///AUTOGEN-OK: FUNCTION_DECL Create OpenVDS::VDS *(OpenVDS::IOManager *, const OpenVDS::VolumeDataLayoutDescriptor &, std::vector<OpenVDS::VolumeDataAxisDescriptor>, std::vector<OpenVDS::VolumeDataChannelDescriptor>, const OpenVDS::MetadataReadAccess &, OpenVDS::LogLevel, const OpenVDS::LogHandler &, OpenVDS::VDSError &) FUNCTIONPROTO
+    native private static long Create16Impl(long ioManager, long layoutDescriptor, long[] axisDescriptors, long[] channelDescriptors, long metadata, long logLevel, long logHandler, long error);
 
     /**
      * Create a new VDS.
@@ -916,7 +917,7 @@ Available schemes are s3:// azure://
      * @param error If an error occured, the error code and message will be written to this output parameter
      * @return The VDS handle that can be used to get the VolumeDataLayout and the VolumeDataAccessManager
      */
-    public static VDS create(IOManager ioManager, VolumeDataLayoutDescriptor layoutDescriptor, VolumeDataAxisDescriptor[] axisDescriptors, VolumeDataChannelDescriptor[] channelDescriptors, MetadataReadAccess metadata, LogHandler logHandler, VDSError error) {
+    public static VDS create(IOManager ioManager, VolumeDataLayoutDescriptor layoutDescriptor, VolumeDataAxisDescriptor[] axisDescriptors, VolumeDataChannelDescriptor[] channelDescriptors, MetadataReadAccess metadata, LogLevel logLevel, LogHandler logHandler, VDSError error) {
         long[] axisDescriptorstmp = new long[ManagedBase.requireNonNull(axisDescriptors, "axisDescriptors may not be null").length];
         for (int i = 0; i < axisDescriptors.length; ++i) {
             axisDescriptorstmp[i] = axisDescriptors[i].getNativeObject();
@@ -925,11 +926,11 @@ Available schemes are s3:// azure://
         for (int i = 0; i < channelDescriptors.length; ++i) {
             channelDescriptorstmp[i] = channelDescriptors[i].getNativeObject();
         }
-        return VDS.fromNativeObject(Create16Impl(ManagedBase.requireNonNull(ioManager, "ioManager may not be null").getNativeObject(), ManagedBase.requireNonNull(layoutDescriptor, "layoutDescriptor may not be null").getNativeObject(), axisDescriptorstmp, channelDescriptorstmp, ManagedBase.requireNonNull(metadata, "metadata may not be null").getNativeObject(), ManagedBase.requireNonNull(logHandler, "logHandler may not be null").getNativeObject(), ManagedBase.requireNonNull(error, "error may not be null").getNativeObject()));
+        return VDS.fromNativeObject(Create16Impl(ManagedBase.requireNonNull(ioManager, "ioManager may not be null").getNativeObject(), ManagedBase.requireNonNull(layoutDescriptor, "layoutDescriptor may not be null").getNativeObject(), axisDescriptorstmp, channelDescriptorstmp, ManagedBase.requireNonNull(metadata, "metadata may not be null").getNativeObject(), ManagedBase.requireNonNull(logLevel, "logLevel may not be null").value(), ManagedBase.requireNonNull(logHandler, "logHandler may not be null").getNativeObject(), ManagedBase.requireNonNull(error, "error may not be null").getNativeObject()));
     }
-    public static VDS create(IOManager ioManager, VolumeDataLayoutDescriptor layoutDescriptor, VolumeDataAxisDescriptor[] axisDescriptors, VolumeDataChannelDescriptor[] channelDescriptors, MetadataReadAccess metadata, LogHandler logHandler) throws java.io.IOException {
+    public static VDS create(IOManager ioManager, VolumeDataLayoutDescriptor layoutDescriptor, VolumeDataAxisDescriptor[] axisDescriptors, VolumeDataChannelDescriptor[] channelDescriptors, MetadataReadAccess metadata, LogLevel logLevel, LogHandler logHandler) throws java.io.IOException {
         VDSError error = new VDSError();
-        VDS result = create(ioManager, layoutDescriptor, axisDescriptors, channelDescriptors, metadata, logHandler, error);
+        VDS result = create(ioManager, layoutDescriptor, axisDescriptors, channelDescriptors, metadata, logLevel, logHandler, error);
         if (error.getCode() != 0) {
             throw new java.io.IOException(error.getString());
         }

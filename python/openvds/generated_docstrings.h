@@ -2742,15 +2742,15 @@ static const char *__doc_OpenVDS_LogHandler =
 R"doc(The OpenVDS Logging interface is used to provide a callback for
 applications to get logging output from the library)doc";
 
-static const char *__doc_OpenVDS_LogHandler_2 = R"doc()doc";
+static const char *__doc_OpenVDS_LogHandler_2 =
+R"doc(The OpenVDS Logging interface is used to provide a callback for
+applications to get logging output from the library)doc";
 
 static const char *__doc_OpenVDS_LogHandler_LogHandler = R"doc()doc";
 
 static const char *__doc_OpenVDS_LogHandler_LogHandler_2 = R"doc()doc";
 
 static const char *__doc_OpenVDS_LogHandler_callback = R"doc()doc";
-
-static const char *__doc_OpenVDS_LogHandler_level = R"doc()doc";
 
 static const char *__doc_OpenVDS_LogHandler_userHandle = R"doc()doc";
 
@@ -3317,6 +3317,9 @@ ioManager :
     The IOManager for the connection, it will be deleted automatically
     when the VDS handle is closed
 
+logLevel :
+    The logging threshold
+
 logHandler :
     The logging handler
 
@@ -3364,8 +3367,6 @@ static const char *__doc_OpenVDS_OpenOptions_OpenOptions_2 = R"doc()doc";
 static const char *__doc_OpenVDS_OpenOptions_connectionType = R"doc()doc";
 
 static const char *__doc_OpenVDS_OpenOptions_logLevel = R"doc(< Property to adjust the OpenVDSLogging handlers level.)doc";
-
-static const char *__doc_OpenVDS_OpenOptions_logLevelIsSet = R"doc()doc";
 
 static const char *__doc_OpenVDS_OpenOptions_waveletAdaptiveMode =
 R"doc(< This property (only relevant when using Wavelet compression) is used
