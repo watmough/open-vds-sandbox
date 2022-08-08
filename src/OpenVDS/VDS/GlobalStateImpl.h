@@ -21,21 +21,41 @@
 #include <OpenVDS/GlobalState.h>
 
 #include <atomic>
+#include <mutex>
 
 namespace OpenVDS
 {
+  class GlobalLogInterface
+  {
+  public:
+    GlobalLogInterface();
+    void SetLoggCallback(LogCallback callback, void* userHandle);
+    void SetDefaultLogCallback();
+
+    void Log(LogLevel logLevel, const char* message, size_t messageSize)
+    {
+      std::unique_lock<std::mutex> lock(mutex);
+      if (callback)
+        callback(logLevel, message, messageSize, userHandle);
+    }
+  private:
+    LogCallback callback;
+    void* userHandle;
+    std::mutex mutex;
+  };
+
   class GlobalStateImpl : public GlobalState
   {
   public:
     GlobalStateImpl()
     {
-      for (auto &i : downloaded)
+      for (auto& i : downloaded)
         i = 0;
-      for (auto &i : downloadedChunks)
+      for (auto& i : downloadedChunks)
         i = 0;
-      for (auto &i : decompressed)
+      for (auto& i : decompressed)
         i = 0;
-      for (auto &i : decompressedChunks)
+      for (auto& i : decompressedChunks)
         i = 0;
     }
     std::atomic<uint64_t> downloaded[OpenOptions::ConnectionTypeCount];
@@ -43,21 +63,33 @@ namespace OpenVDS
     std::atomic<uint64_t> decompressed[OpenOptions::ConnectionTypeCount];
     std::atomic<uint64_t> decompressedChunks[OpenOptions::ConnectionTypeCount];
 
-    uint64_t GetBytesDownloaded(OpenOptions::ConnectionType connectionType) override
+    GlobalLogInterface logInterface;
+
+    uint64_t GetBytesDownloaded(OpenOptions::ConnectionType connectionType) override final
     {
       return downloaded[connectionType];
     }
-    uint64_t GetChunksDownloaded(OpenOptions::ConnectionType connectionType) override
+    uint64_t GetChunksDownloaded(OpenOptions::ConnectionType connectionType) override final
     {
       return downloadedChunks[connectionType];
     }
-    uint64_t GetBytesDecompressed(OpenOptions::ConnectionType connectionType) override
+    uint64_t GetBytesDecompressed(OpenOptions::ConnectionType connectionType) override final
     {
       return decompressed[connectionType];
     }
-    uint64_t GetChunksDecompressed(OpenOptions::ConnectionType connectionType) override
+    uint64_t GetChunksDecompressed(OpenOptions::ConnectionType connectionType) override final
     {
       return decompressedChunks[connectionType];
+    }
+
+    void SetLogCallback(LogCallback callback, void* userHandle) override final
+    {
+      logInterface.SetLoggCallback(callback, userHandle);
+    }
+
+    void SetDefaultLogCallback() override final
+    {
+      logInterface.SetDefaultLogCallback();
     }
   };
 

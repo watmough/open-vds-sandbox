@@ -32,7 +32,7 @@ TEST(IOManagerProtocolTests, thread)
     GTEST_SKIP() << "Test Environment for connecting to VDS is not set";
   }
   OpenVDS::Error error;
-  std::unique_ptr<OpenVDS::IOManager> iomanager(OpenVDS::IOManager::CreateIOManager(url, connectionString, OpenVDS::IOManager::ReadWrite, OpenVDS::CreateDefaultLogHandler(), error));
+  std::unique_ptr<OpenVDS::IOManager> iomanager(OpenVDS::IOManager::CreateIOManager(url, connectionString, OpenVDS::IOManager::ReadWrite, error));
 
   auto data = std::make_shared<std::vector<uint8_t>>();
   const char hello_world[] = "hello world";

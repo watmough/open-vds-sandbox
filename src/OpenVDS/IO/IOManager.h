@@ -88,10 +88,10 @@ namespace OpenVDS
     OpenOptions::ConnectionType connectionType() const { return m_connectionType; }
 
     OPENVDS_EXPORT
-    static IOManager *CreateIOManager(const OpenOptions &options, IOManager::AccessPattern accessPattern, const LogHandler &logHandler, Error &error);
+    static IOManager *CreateIOManager(const OpenOptions &options, IOManager::AccessPattern accessPattern, Error &error);
 
     OPENVDS_EXPORT
-      static IOManager* CreateIOManager(const StringWrapper& url, const StringWrapper& connectionString, IOManager::AccessPattern accessPattern, const LogHandler &logHandler, Error& error);
+      static IOManager* CreateIOManager(const StringWrapper& url, const StringWrapper& connectionString, IOManager::AccessPattern accessPattern, Error& error);
 
   protected:
     OpenOptions::ConnectionType m_connectionType;

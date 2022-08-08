@@ -45,12 +45,14 @@
 
 #include "VDS/Env.h"
 
+#include "VDS/GlobalStateImpl.h"
+
 namespace OpenVDS
 {
 
-IOManager* IOManager::CreateIOManager(const OpenOptions& options, IOManager::AccessPattern accessPattern, const LogHandler &logHandler, Error &error)
+IOManager* IOManager::CreateIOManager(const OpenOptions& options, IOManager::AccessPattern accessPattern, Error &error)
 {
-  Logger logger(options.logLevel, logHandler);
+  Logger logger(static_cast<GlobalStateImpl*>(OpenVDS::GetGlobalState())->logInterface, options.logLevel);
   switch(options.connectionType)
   {
   case OpenOptions::AWS:
@@ -105,14 +107,14 @@ IOManager* IOManager::CreateIOManager(const OpenOptions& options, IOManager::Acc
 }
 
 // This function is defined in OpenVDS.cpp, it might make more sense to move it here
-OpenOptions* CreateOpenOptions(StringWrapper urlWrapper, StringWrapper connectionStringWrapper,  const LogHandler &logHandler, Error& error);
+OpenOptions* CreateOpenOptions(StringWrapper urlWrapper, StringWrapper connectionStringWrapper, Error& error);
 
-IOManager *IOManager::CreateIOManager(const StringWrapper &url, const StringWrapper &connectionString, IOManager::AccessPattern accessPattern, const LogHandler &logHandler, Error& error)
+IOManager *IOManager::CreateIOManager(const StringWrapper &url, const StringWrapper &connectionString, IOManager::AccessPattern accessPattern, Error& error)
 {
-  std::unique_ptr<OpenOptions> openOptions(CreateOpenOptions(url, connectionString, logHandler, error));
+  std::unique_ptr<OpenOptions> openOptions(CreateOpenOptions(url, connectionString, error));
   if (error.code || !openOptions)
     return nullptr;
-  return CreateIOManager(*(openOptions.get()), accessPattern, logHandler, error);
+  return CreateIOManager(*(openOptions.get()), accessPattern, error);
 }
 
 }

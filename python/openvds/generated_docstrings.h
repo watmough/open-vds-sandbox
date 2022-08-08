@@ -327,6 +327,26 @@ connectionString :
     The cloud provider specific connection string Specifies additional
     arguments for the cloud provider
 
+error :
+    If an error occured, the error code and message will be written to
+    this output parameter
+
+Returns:
+--------
+    The VDS handle that can be used to get the VolumeDataLayout and
+    the VolumeDataAccessManager)doc";
+
+static const char *__doc_OpenVDS_Create_3 =
+R"doc(Create a new VDS. This is a simple wrapper that uses an empty
+connectionString
+
+Parameters:
+-----------
+
+url :
+    The url scheme specific to each cloud provider Available schemes
+    are s3:// azure://
+
 compressionMethod :
     The overall compression method to be used for the VDS. The channel
     descriptors can have additional options to control how a channel
@@ -343,32 +363,6 @@ compressionTolerance :
     compressed data, as the average loss will in general be an order
     of magnitude lower than the allowable loss.
 
-logHandler :
-    The logging handler
-
-error :
-    If an error occured, the error code and message will be written to
-    this output parameter
-
-Returns:
---------
-    The VDS handle that can be used to get the VolumeDataLayout and
-    the VolumeDataAccessManager)doc";
-
-static const char *__doc_OpenVDS_Create_3 =
-R"doc(Create a new VDS.
-
-Parameters:
------------
-
-url :
-    The url scheme specific to each cloud provider Available schemes
-    are s3:// azure://
-
-connectionString :
-    The cloud provider specific connection string Specifies additional
-    arguments for the cloud provider
-
 error :
     If an error occured, the error code and message will be written to
     this output parameter
@@ -379,7 +373,8 @@ Returns:
     the VolumeDataAccessManager)doc";
 
 static const char *__doc_OpenVDS_Create_4 =
-R"doc(Create a new VDS.
+R"doc(Create a new VDS. This is a simple wrapper that uses an empty
+connectionString
 
 Parameters:
 -----------
@@ -387,13 +382,6 @@ Parameters:
 url :
     The url scheme specific to each cloud provider Available schemes
     are s3:// azure://
-
-connectionString :
-    The cloud provider specific connection string Specifies additional
-    arguments for the cloud provider
-
-logHandler :
-    The logging handler
 
 error :
     If an error occured, the error code and message will be written to
@@ -405,15 +393,13 @@ Returns:
     the VolumeDataAccessManager)doc";
 
 static const char *__doc_OpenVDS_Create_5 =
-R"doc(Create a new VDS. This is a simple wrapper that uses an empty
-connectionString
+R"doc(Create a new VDS.
 
 Parameters:
 -----------
 
-url :
-    The url scheme specific to each cloud provider Available schemes
-    are s3:// azure://
+options :
+    The options for the connection
 
 compressionMethod :
     The overall compression method to be used for the VDS. The channel
@@ -441,15 +427,32 @@ Returns:
     the VolumeDataAccessManager)doc";
 
 static const char *__doc_OpenVDS_Create_6 =
-R"doc(Create a new VDS. This is a simple wrapper that uses an empty
-connectionString
+R"doc(Create a new VDS.
 
 Parameters:
 -----------
 
-url :
-    The url scheme specific to each cloud provider Available schemes
-    are s3:// azure://
+options :
+    The options for the connection
+
+error :
+    If an error occured, the error code and message will be written to
+    this output parameter
+
+Returns:
+--------
+    The VDS handle that can be used to get the VolumeDataLayout and
+    the VolumeDataAccessManager)doc";
+
+static const char *__doc_OpenVDS_Create_7 =
+R"doc(Create a new VDS.
+
+Parameters:
+-----------
+
+ioManager :
+    The IOManager for the connection, it will be deleted automatically
+    when the VDS handle is closed
 
 compressionMethod :
     The overall compression method to be used for the VDS. The channel
@@ -467,29 +470,6 @@ compressionTolerance :
     compressed data, as the average loss will in general be an order
     of magnitude lower than the allowable loss.
 
-logHandler :
-    The logging handler
-
-error :
-    If an error occured, the error code and message will be written to
-    this output parameter
-
-Returns:
---------
-    The VDS handle that can be used to get the VolumeDataLayout and
-    the VolumeDataAccessManager)doc";
-
-static const char *__doc_OpenVDS_Create_7 =
-R"doc(Create a new VDS. This is a simple wrapper that uses an empty
-connectionString
-
-Parameters:
------------
-
-url :
-    The url scheme specific to each cloud provider Available schemes
-    are s3:// azure://
-
 error :
     If an error occured, the error code and message will be written to
     this output parameter
@@ -500,18 +480,30 @@ Returns:
     the VolumeDataAccessManager)doc";
 
 static const char *__doc_OpenVDS_Create_8 =
-R"doc(Create a new VDS. This is a simple wrapper that uses an empty
-connectionString
+R"doc(Create a new VDS.
 
 Parameters:
 -----------
 
-url :
-    The url scheme specific to each cloud provider Available schemes
-    are s3:// azure://
+ioManager :
+    The IOManager for the connection, it will be deleted automatically
+    when the VDS handle is closed
 
-logHandler :
-    The logging handler
+compressionMethod :
+    The overall compression method to be used for the VDS. The channel
+    descriptors can have additional options to control how a channel
+    is compressed.
+
+compressionTolerance :
+    This property specifies the compression tolerance [1..255] when
+    using the wavelet compression method. This value is the maximum
+    deviation from the original data value when the data is converted
+    to 8-bit using the value range. A value of 1 means the maximum
+    allowable loss is the same as quantizing to 8-bit (but the average
+    loss will be much much lower than quantizing to 8-bit). It is not
+    a good idea to directly relate the tolerance to the quality of the
+    compressed data, as the average loss will in general be an order
+    of magnitude lower than the allowable loss.
 
 error :
     If an error occured, the error code and message will be written to
@@ -528,24 +520,9 @@ R"doc(Create a new VDS.
 Parameters:
 -----------
 
-options :
-    The options for the connection
-
-compressionMethod :
-    The overall compression method to be used for the VDS. The channel
-    descriptors can have additional options to control how a channel
-    is compressed.
-
-compressionTolerance :
-    This property specifies the compression tolerance [1..255] when
-    using the wavelet compression method. This value is the maximum
-    deviation from the original data value when the data is converted
-    to 8-bit using the value range. A value of 1 means the maximum
-    allowable loss is the same as quantizing to 8-bit (but the average
-    loss will be much much lower than quantizing to 8-bit). It is not
-    a good idea to directly relate the tolerance to the quality of the
-    compressed data, as the average loss will in general be an order
-    of magnitude lower than the allowable loss.
+ioManager :
+    The IOManager for the connection, it will be deleted automatically
+    when the VDS handle is closed
 
 error :
     If an error occured, the error code and message will be written to
@@ -562,155 +539,6 @@ R"doc(Create a new VDS.
 Parameters:
 -----------
 
-options :
-    The options for the connection
-
-compressionMethod :
-    The overall compression method to be used for the VDS. The channel
-    descriptors can have additional options to control how a channel
-    is compressed.
-
-compressionTolerance :
-    This property specifies the compression tolerance [1..255] when
-    using the wavelet compression method. This value is the maximum
-    deviation from the original data value when the data is converted
-    to 8-bit using the value range. A value of 1 means the maximum
-    allowable loss is the same as quantizing to 8-bit (but the average
-    loss will be much much lower than quantizing to 8-bit). It is not
-    a good idea to directly relate the tolerance to the quality of the
-    compressed data, as the average loss will in general be an order
-    of magnitude lower than the allowable loss.
-
-logHandler :
-    The logging handler
-
-error :
-    If an error occured, the error code and message will be written to
-    this output parameter
-
-Returns:
---------
-    The VDS handle that can be used to get the VolumeDataLayout and
-    the VolumeDataAccessManager)doc";
-
-static const char *__doc_OpenVDS_Create_11 =
-R"doc(Create a new VDS.
-
-Parameters:
------------
-
-options :
-    The options for the connection
-
-error :
-    If an error occured, the error code and message will be written to
-    this output parameter
-
-Returns:
---------
-    The VDS handle that can be used to get the VolumeDataLayout and
-    the VolumeDataAccessManager)doc";
-
-static const char *__doc_OpenVDS_Create_12 =
-R"doc(Create a new VDS.
-
-Parameters:
------------
-
-options :
-    The options for the connection
-
-logHandler :
-    The logging handler
-
-error :
-    If an error occured, the error code and message will be written to
-    this output parameter
-
-Returns:
---------
-    The VDS handle that can be used to get the VolumeDataLayout and
-    the VolumeDataAccessManager)doc";
-
-static const char *__doc_OpenVDS_Create_13 =
-R"doc(Create a new VDS.
-
-Parameters:
------------
-
-ioManager :
-    The IOManager for the connection, it will be deleted automatically
-    when the VDS handle is closed
-
-compressionMethod :
-    The overall compression method to be used for the VDS. The channel
-    descriptors can have additional options to control how a channel
-    is compressed.
-
-compressionTolerance :
-    This property specifies the compression tolerance [1..255] when
-    using the wavelet compression method. This value is the maximum
-    deviation from the original data value when the data is converted
-    to 8-bit using the value range. A value of 1 means the maximum
-    allowable loss is the same as quantizing to 8-bit (but the average
-    loss will be much much lower than quantizing to 8-bit). It is not
-    a good idea to directly relate the tolerance to the quality of the
-    compressed data, as the average loss will in general be an order
-    of magnitude lower than the allowable loss.
-
-error :
-    If an error occured, the error code and message will be written to
-    this output parameter
-
-Returns:
---------
-    The VDS handle that can be used to get the VolumeDataLayout and
-    the VolumeDataAccessManager)doc";
-
-static const char *__doc_OpenVDS_Create_14 =
-R"doc(Create a new VDS.
-
-Parameters:
------------
-
-ioManager :
-    The IOManager for the connection, it will be deleted automatically
-    when the VDS handle is closed
-
-compressionMethod :
-    The overall compression method to be used for the VDS. The channel
-    descriptors can have additional options to control how a channel
-    is compressed.
-
-compressionTolerance :
-    This property specifies the compression tolerance [1..255] when
-    using the wavelet compression method. This value is the maximum
-    deviation from the original data value when the data is converted
-    to 8-bit using the value range. A value of 1 means the maximum
-    allowable loss is the same as quantizing to 8-bit (but the average
-    loss will be much much lower than quantizing to 8-bit). It is not
-    a good idea to directly relate the tolerance to the quality of the
-    compressed data, as the average loss will in general be an order
-    of magnitude lower than the allowable loss.
-
-logHandler :
-    The logging handler
-
-error :
-    If an error occured, the error code and message will be written to
-    this output parameter
-
-Returns:
---------
-    The VDS handle that can be used to get the VolumeDataLayout and
-    the VolumeDataAccessManager)doc";
-
-static const char *__doc_OpenVDS_Create_15 =
-R"doc(Create a new VDS.
-
-Parameters:
------------
-
 ioManager :
     The IOManager for the connection, it will be deleted automatically
     when the VDS handle is closed
@@ -723,37 +551,6 @@ Returns:
 --------
     The VDS handle that can be used to get the VolumeDataLayout and
     the VolumeDataAccessManager)doc";
-
-static const char *__doc_OpenVDS_Create_16 =
-R"doc(Create a new VDS.
-
-Parameters:
------------
-
-ioManager :
-    The IOManager for the connection, it will be deleted automatically
-    when the VDS handle is closed
-
-logHandler :
-    The logging handler
-
-error :
-    If an error occured, the error code and message will be written to
-    this output parameter
-
-Returns:
---------
-    The VDS handle that can be used to get the VolumeDataLayout and
-    the VolumeDataAccessManager)doc";
-
-static const char *__doc_OpenVDS_CreateDefaultLogHandler =
-R"doc(Create the default OpenVDSLogging interface
-
-Returns:
---------
-    This function creates a default logging interface that will print
-    trace and info to stdout. It will print Warning and Error to the
-    stderr file stream.)doc";
 
 static const char *__doc_OpenVDS_CreateInterpolatingVolumeDataAccessor = R"doc()doc";
 
@@ -792,34 +589,6 @@ url :
 connectionString :
     The cloud provider specific connection string Specifies additional
     arguments for the cloud provider
-
-error :
-    If an error occured, the error code and message will be written to
-    this output parameter
-
-Returns:
---------
-    This function news a OpenOptions struct that has to be deleted by
-    the caller. This is a helper function to allow applications modify
-    the OpenOption before passing it to Open. Use the Open and Create
-    functions with url and string instead if this is not needed.)doc";
-
-static const char *__doc_OpenVDS_CreateOpenOptions_2 =
-R"doc(Create an OpenOptions struct from a url and connection string
-
-Parameters:
------------
-
-url :
-    The url scheme specific to each cloud provider Available schemes
-    are s3:// azure://
-
-connectionString :
-    The cloud provider specific connection string Specifies additional
-    arguments for the cloud provider
-
-logHandler :
-    The logging handler
 
 error :
     If an error occured, the error code and message will be written to
@@ -1308,6 +1077,26 @@ connectionType :
 Returns:
 --------
     Number of chunks downloaded.)doc";
+
+static const char *__doc_OpenVDS_GlobalState_SetDefaultLogCallback =
+R"doc(Set the default LogCallback This function sets the default logging
+interface that will print trace and info to stdout. It will print
+Warning and Error to the stderr file stream.)doc";
+
+static const char *__doc_OpenVDS_GlobalState_SetLogCallback =
+R"doc(Set the log callback used to receive log messages from OpenVDS. It is
+safe to set the LogCallback before any other OpenVDS function is
+called.
+
+Parameters:
+-----------
+
+callback :
+    The function pointer to the callback.
+
+userHandle :
+    This is the pointer that will be passed into the callback
+    functions userHandle parameter.)doc";
 
 static const char *__doc_OpenVDS_GoogleCredentialsJson =
 R"doc(Credentials for opening a VDS in Google Cloud Storage by the string
@@ -2738,22 +2527,6 @@ static const char *__doc_OpenVDS_Length = R"doc()doc";
 
 static const char *__doc_OpenVDS_Length_2 = R"doc()doc";
 
-static const char *__doc_OpenVDS_LogHandler =
-R"doc(The OpenVDS Logging interface is used to provide a callback for
-applications to get logging output from the library)doc";
-
-static const char *__doc_OpenVDS_LogHandler_2 =
-R"doc(The OpenVDS Logging interface is used to provide a callback for
-applications to get logging output from the library)doc";
-
-static const char *__doc_OpenVDS_LogHandler_LogHandler = R"doc()doc";
-
-static const char *__doc_OpenVDS_LogHandler_LogHandler_2 = R"doc()doc";
-
-static const char *__doc_OpenVDS_LogHandler_callback = R"doc()doc";
-
-static const char *__doc_OpenVDS_LogHandler_userHandle = R"doc()doc";
-
 static const char *__doc_OpenVDS_LogLevel = R"doc()doc";
 
 static const char *__doc_OpenVDS_LogLevel_2 = R"doc()doc";
@@ -3181,7 +2954,8 @@ Returns:
     the VolumeDataAccessManager)doc";
 
 static const char *__doc_OpenVDS_Open_2 =
-R"doc(Open an existing VDS
+R"doc(Open an existing VDS. This is a simple wrapper that uses an empty
+connectionString
 
 Parameters:
 -----------
@@ -3189,13 +2963,6 @@ Parameters:
 url :
     The url scheme specific to each cloud provider Available schemes
     are s3:// azure://
-
-connectionString :
-    The cloud provider specific connection string Specifies additional
-    arguments for the cloud provider
-
-logHandler :
-    The logging handler
 
 error :
     If an error occured, the error code and message will be written to
@@ -3207,15 +2974,13 @@ Returns:
     the VolumeDataAccessManager)doc";
 
 static const char *__doc_OpenVDS_Open_3 =
-R"doc(Open an existing VDS. This is a simple wrapper that uses an empty
-connectionString
+R"doc(Open an existing VDS
 
 Parameters:
 -----------
 
-url :
-    The url scheme specific to each cloud provider Available schemes
-    are s3:// azure://
+options :
+    The options for the connection
 
 error :
     If an error occured, the error code and message will be written to
@@ -3227,18 +2992,14 @@ Returns:
     the VolumeDataAccessManager)doc";
 
 static const char *__doc_OpenVDS_Open_4 =
-R"doc(Open an existing VDS. This is a simple wrapper that uses an empty
-connectionString
+R"doc(Open an existing VDS
 
 Parameters:
 -----------
 
-url :
-    The url scheme specific to each cloud provider Available schemes
-    are s3:// azure://
-
-logHandler :
-    The logging handler
+ioManager :
+    The IOManager for the connection, it will be deleted automatically
+    when the VDS handle is closed
 
 error :
     If an error occured, the error code and message will be written to
@@ -3255,73 +3016,12 @@ R"doc(Open an existing VDS
 Parameters:
 -----------
 
-options :
-    The options for the connection
-
-error :
-    If an error occured, the error code and message will be written to
-    this output parameter
-
-Returns:
---------
-    The VDS handle that can be used to get the VolumeDataLayout and
-    the VolumeDataAccessManager)doc";
-
-static const char *__doc_OpenVDS_Open_6 =
-R"doc(Open an existing VDS
-
-Parameters:
------------
-
-options :
-    The options for the connection
-
-logHandler :
-    The logging handler
-
-error :
-    If an error occured, the error code and message will be written to
-    this output parameter
-
-Returns:
---------
-    The VDS handle that can be used to get the VolumeDataLayout and
-    the VolumeDataAccessManager)doc";
-
-static const char *__doc_OpenVDS_Open_7 =
-R"doc(Open an existing VDS
-
-Parameters:
------------
-
-ioManager :
-    The IOManager for the connection, it will be deleted automatically
-    when the VDS handle is closed
-
-error :
-    If an error occured, the error code and message will be written to
-    this output parameter
-
-Returns:
---------
-    The VDS handle that can be used to get the VolumeDataLayout and
-    the VolumeDataAccessManager)doc";
-
-static const char *__doc_OpenVDS_Open_8 =
-R"doc(Open an existing VDS
-
-Parameters:
------------
-
 ioManager :
     The IOManager for the connection, it will be deleted automatically
     when the VDS handle is closed
 
 logLevel :
     The logging threshold
-
-logHandler :
-    The logging handler
 
 error :
     If an error occured, the error code and message will be written to
@@ -3397,8 +3097,6 @@ static const char *__doc_OpenVDS_OpenVDSInterface_Create = R"doc()doc";
 static const char *__doc_OpenVDS_OpenVDSInterface_Create_2 = R"doc()doc";
 
 static const char *__doc_OpenVDS_OpenVDSInterface_Create_3 = R"doc()doc";
-
-static const char *__doc_OpenVDS_OpenVDSInterface_CreateDefaultLogHandler = R"doc()doc";
 
 static const char *__doc_OpenVDS_OpenVDSInterface_CreateOpenOptions = R"doc()doc";
 
@@ -3490,38 +3188,6 @@ Returns:
     The VDS handle that can be used to get the VolumeDataLayout and
     the VolumeDataAccessManager)doc";
 
-static const char *__doc_OpenVDS_OpenWithAdaptiveCompressionRatio_2 =
-R"doc(Open an existing VDS with adaptive compression ratio.
-
-Parameters:
------------
-
-url :
-    The url scheme specific to each cloud provider Available schemes
-    are s3:// azure://
-
-connectionString :
-    The cloud provider specific connection string Specifies additional
-    arguments for the cloud provider
-
-waveletAdaptiveRatio :
-    Wavelet adaptive ratio. This will try to read the dataset as-if it
-    was compressed with the given ratio even if it was compressed with
-    a lower ratio or lossless. A compression ratio of 5.0 corresponds
-    to compressed data which is 20% of the original.
-
-logHandler :
-    The logging handler
-
-error :
-    If an error occured, the error code and message will be written to
-    this output parameter
-
-Returns:
---------
-    The VDS handle that can be used to get the VolumeDataLayout and
-    the VolumeDataAccessManager)doc";
-
 static const char *__doc_OpenVDS_OpenWithAdaptiveCompressionTolerance =
 R"doc(Open an existing VDS with adaptive compression tolerance.
 
@@ -3540,37 +3206,6 @@ waveletAdaptiveTolerance :
     Wavelet adaptive tolerance. This will try to read the dataset as-
     if it was compressed with the given tolerance even if it was
     compressed with a lower tolerance or lossless.
-
-error :
-    If an error occured, the error code and message will be written to
-    this output parameter
-
-Returns:
---------
-    The VDS handle that can be used to get the VolumeDataLayout and
-    the VolumeDataAccessManager)doc";
-
-static const char *__doc_OpenVDS_OpenWithAdaptiveCompressionTolerance_2 =
-R"doc(Open an existing VDS with adaptive compression tolerance.
-
-Parameters:
------------
-
-url :
-    The url scheme specific to each cloud provider Available schemes
-    are s3:// azure://
-
-connectionString :
-    The cloud provider specific connection string Specifies additional
-    arguments for the cloud provider
-
-waveletAdaptiveTolerance :
-    Wavelet adaptive tolerance. This will try to read the dataset as-
-    if it was compressed with the given tolerance even if it was
-    compressed with a lower tolerance or lossless.
-
-logHandler :
-    The logging handler
 
 error :
     If an error occured, the error code and message will be written to

@@ -268,11 +268,11 @@ VDSInfo --metadata-name TextHeader -b -e -w 80 s3://bluware-jorgen-dev/volve
 
   if(OpenVDS::IsSupportedProtocol(url))
   {
-    handle = OpenVDS::Open(url, connection, printer.logHandler, openError);
+    handle = OpenVDS::Open(url, connection, openError);
   }
   else
   {
-    handle = OpenVDS::Open(OpenVDS::VDSFileOpenOptions(url), printer.logHandler, openError);
+    handle = OpenVDS::Open(OpenVDS::VDSFileOpenOptions(url), openError);
   }
 
   if(openError.code != 0)

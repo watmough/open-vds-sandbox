@@ -59,8 +59,8 @@ void ReleaseVolumeDataAccessManager(VolumeDataAccessManagerImpl *);
 
 struct VDS
 {
-  VDS(LogLevel level, const LogHandler &logger)
-    : logger(level, logger)
+  VDS(LogLevel level)
+    : logger(static_cast<GlobalStateImpl*>(OpenVDS::GetGlobalState())->logInterface, level)
   {}
 
   VolumeDataLayoutDescriptor

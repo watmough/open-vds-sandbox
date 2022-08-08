@@ -91,6 +91,21 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_GlobalState_GetChunksDecompre
   CPPJNI_CATCH
   return 0;
 }
+///AUTOGEN-FAIL: CXX_METHOD SetLogCallback void (void (*)(OpenVDS::LogLevel, const char *, uint64_t, void *), void *) FUNCTIONPROTO
+
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_GlobalState_SetDefaultLogCallbackImpl
+  (JNIEnv * env, jobject object, jlong native_handle)
+{
+  JNIEnvGuard
+    envGuard(env);
+
+  CPPJNI_TRY
+  {
+    auto pInstance = CPPJNI_cast<OpenVDS::GlobalState>(native_handle);
+    pInstance->SetDefaultLogCallback();
+  }
+  CPPJNI_CATCH
+}
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_GlobalState_dtorImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)

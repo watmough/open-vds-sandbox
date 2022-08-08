@@ -279,11 +279,11 @@ main(int argc, char *argv[])
   
   if(OpenVDS::IsSupportedProtocol(url))
   {
-    handle = OpenVDS::Open(url, connection, outputPrinter.logHandler, openError);
+    handle = OpenVDS::Open(url, connection, openError);
   }
   else
   {
-    handle = OpenVDS::Open(OpenVDS::VDSFileOpenOptions(url), outputPrinter.logHandler, openError);
+    handle = OpenVDS::Open(OpenVDS::VDSFileOpenOptions(url), openError);
   }
 
   if(openError.code != 0)

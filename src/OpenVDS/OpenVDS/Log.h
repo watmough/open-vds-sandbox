@@ -32,27 +32,8 @@ enum class LogLevel
   Info = 3,
   Trace = 4
 };
-/// <summary>
-/// The OpenVDS Logging interface is used to provide a callback for
-/// applications to get logging output from the library
-/// </summary>
-struct LogHandler
-{
-  typedef void (*LogCallback)(LogLevel level, const char* message, size_t messageSize, void* userHandle);
 
-  LogHandler()
-    : callback(nullptr)
-    , userHandle(nullptr)
-  {}
-
-  LogHandler(LogCallback callback, void* userHandle = nullptr)
-    : callback(callback)
-    , userHandle(userHandle)
-  {}
-
-  LogCallback callback;
-  void* userHandle;
-};
+typedef void (*LogCallback)(LogLevel level, const char* message, size_t messageSize, void* userHandle);
 }
 
 #endif

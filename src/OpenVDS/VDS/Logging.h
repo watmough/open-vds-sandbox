@@ -19,54 +19,55 @@
 #define OPENVDSLOGGING_H_INCLUDE
 
 #include <OpenVDS/OpenVDS.h>
+#include "GlobalStateImpl.h"
 #include <string>
 
 namespace OpenVDS
 {
 struct Logger
 {
-  Logger(LogLevel level, const LogHandler& handler)
-    : level(level)
-    , handler(handler)
+  Logger(GlobalLogInterface &logInterface, LogLevel level)
+    : logInterface(logInterface)
+    , level(level)
   {}
+  GlobalLogInterface &logInterface;
   LogLevel level;
-  LogHandler handler;
 
-  inline void LogTrace(const char* message, size_t size)
+  inline void LogTrace(const char* message, size_t size) const
   {
     if (int(level) >= int(LogLevel::Trace))
-      handler.callback(LogLevel::Trace, message, size, handler.userHandle);
+      logInterface.Log(LogLevel::Trace, message, size);
   }
-  inline void LogTrace(const std::string& message) { LogTrace(message.c_str(), message.size()); }
+  inline void LogTrace(const std::string& message) const { LogTrace(message.c_str(), message.size()); }
   template<size_t SIZE>
-  inline void LogTrace(const char(&message)[SIZE]) { LogTrace(message, SIZE - 1); }
+  inline void LogTrace(const char(&message)[SIZE]) const { LogTrace(message, SIZE - 1); }
 
-  inline void LogInfo(const char* message, size_t size)
+  inline void LogInfo(const char* message, size_t size) const
   {
     if (int(level) >= int(LogLevel::Info))
-      handler.callback(LogLevel::Info, message, size, handler.userHandle);
+      logInterface.Log(LogLevel::Info, message, size);
   }
-  inline void LogInfo(const std::string& message) { LogInfo(message.c_str(), message.size()); }
+  inline void LogInfo(const std::string& message) const { LogInfo(message.c_str(), message.size()); }
   template<size_t SIZE>
-  inline void LogInfo(const char(&message)[SIZE]) { LogInfo(message, SIZE - 1); }
+  inline void LogInfo(const char(&message)[SIZE]) const { LogInfo(message, SIZE - 1); }
 
-  inline void LogWarning(const char* message, size_t size)
+  inline void LogWarning(const char* message, size_t size) const
   {
     if (int(level) >= int(LogLevel::Warning))
-      handler.callback(LogLevel::Warning, message, size, handler.userHandle);
+      logInterface.Log(LogLevel::Warning, message, size);
   }
-  inline void LogWarning(const std::string& message) { LogWarning(message.c_str(), message.size()); }
+  inline void LogWarning(const std::string& message) const { LogWarning(message.c_str(), message.size()); }
   template<size_t SIZE>
-  inline void LogWarning(const char(&message)[SIZE]) { LogWarning(message, SIZE - 1); }
+  inline void LogWarning(const char(&message)[SIZE]) const { LogWarning(message, SIZE - 1); }
 
-  inline void LogError(const char* message, size_t size)
+  inline void LogError(const char* message, size_t size) const
   {
     if (int(level) >= int(LogLevel::Error))
-      handler.callback(LogLevel::Error, message, size, handler.userHandle);
+      logInterface.Log(LogLevel::Error, message, size);
   }
-  inline void LogError(const std::string& message) { LogError(message.c_str(), message.size()); }
+  inline void LogError(const std::string& message) const { LogError(message.c_str(), message.size()); }
   template<size_t SIZE>
-  inline void LogError(const char(&message)[SIZE]) { LogError(message, SIZE - 1); }
+  inline void LogError(const char(&message)[SIZE]) const { LogError(message, SIZE - 1); }
 };
 }
 

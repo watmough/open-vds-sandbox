@@ -4,6 +4,7 @@
 #include <json/json.h>
 #include <fmt/format.h>
 #include <OpenVDS/OpenVDS.h>
+#include <OpenVDS/GlobalState.h>
 #include <mutex>
 
 namespace OpenVDS
@@ -15,7 +16,6 @@ struct OutputPrinter
   bool printingPercentage;
   std::mutex mutex;
   LogLevel logLevel;
-  LogHandler logHandler;
 
   struct PrintingPercentageGuard
   {
@@ -36,8 +36,7 @@ struct OutputPrinter
     , printingPercentage(false)
     , logLevel(logLevel)
   {
-    logHandler.userHandle = this;
-    logHandler.callback = [](LogLevel level, const char* message, size_t messageSize, void* userHandle)
+    auto callback = [](LogLevel level, const char* message, size_t messageSize, void* userHandle)
     {
       auto* self = static_cast<OutputPrinter*>(userHandle);
       PrintingPercentageGuard guard(self);
@@ -57,6 +56,11 @@ struct OutputPrinter
         self->printInfoUnguarded("OpenVDS", messageStr);
       }
     };
+    OpenVDS::GetGlobalState()->SetLogCallback(callback, this);
+  }
+  ~OutputPrinter()
+  {
+    OpenVDS::GetGlobalState()->SetDefaultLogCallback();
   }
   static LogLevel getLogLevel(bool disableWarning, bool disableInfo)
   {

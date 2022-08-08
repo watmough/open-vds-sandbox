@@ -27,45 +27,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_LogHandler_ctorImpl
-  (JNIEnv * env, jclass cls)
-{
-  JNIEnvGuard
-    envGuard(env);
-
-  CPPJNI_TRY
-  {
-    auto context = CPPJNI_createObjectContext<OpenVDS::LogHandler>();
-
-    auto native_handle = context->handle();
-    context->setObject(CPPJNI_makeShared<OpenVDS::LogHandler>());
-
-    return native_handle;
-  }
-  CPPJNI_CATCH
-  return 0;
-}
-
-///AUTOGEN-FAIL: CONSTRUCTOR LogHandler void (void (*)(OpenVDS::LogLevel, const char *, uint64_t, void *), void *) FUNCTIONPROTO
-///AUTOGEN-FAIL: FIELD_DECL callback void (*)(OpenVDS::LogLevel, const char *, uint64_t, void *) POINTER
-///AUTOGEN-FAIL: FIELD_DECL userHandle void * POINTER
-
-JNIEXPORT void JNICALL Java_org_opengroup_openvds_LogHandler_dtorImpl
-  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
-{
-  JNIEnvGuard
-    envGuard(env);
-
-  CPPJNI_TRY
-  {
-    CPPJNI_destroyHandle<OpenVDS::LogHandler>(native_handle, is_disposing);
-  }
-  CPPJNI_CATCH
-}
-
-
-
 #ifdef __cplusplus
 }
 #endif

@@ -119,19 +119,19 @@ static DataProvider CreateDataProviderFromFile(const std::string &filename, Open
   return DataProvider(file.release());
 }
 
-static DataProvider CreateDataProviderFromOpenOptions(const std::string &url, const std::string &connectionString, const OpenVDS::LogHandler &logHandler, OpenVDS::Error &error)
+static DataProvider CreateDataProviderFromOpenOptions(const std::string &url, const std::string &connectionString, OpenVDS::Error &error)
 {
-  std::unique_ptr<OpenVDS::IOManager> ioManager(OpenVDS::IOManager::CreateIOManager(url, connectionString, OpenVDS::IOManager::AccessPattern::ReadOnly, logHandler, error));
+  std::unique_ptr<OpenVDS::IOManager> ioManager(OpenVDS::IOManager::CreateIOManager(url, connectionString, OpenVDS::IOManager::AccessPattern::ReadOnly, error));
   if (error.code)
     return DataProvider("", (OpenVDS::IOManager*)nullptr, error);
   return DataProvider(url, ioManager.release(), error);
 }
 
-DataProvider CreateDataProvider(const std::string& url, const std::string& connection, const OpenVDS::LogHandler &logHandler, OpenVDS::Error& error)
+DataProvider CreateDataProvider(const std::string& url, const std::string& connection, OpenVDS::Error& error)
 {
   if (OpenVDS::IsSupportedProtocol(url))
   {
-    return CreateDataProviderFromOpenOptions(url, connection, logHandler, error);
+    return CreateDataProviderFromOpenOptions(url, connection, error);
   }
   else
   {
@@ -140,14 +140,14 @@ DataProvider CreateDataProvider(const std::string& url, const std::string& conne
   return DataProvider(nullptr);
 }
 
-static std::vector<DataProvider> CreateDataProviders(const std::vector<std::string> &fileNames, const std::string &connection, const OpenVDS::LogHandler &logHandler, OpenVDS::Error &error, std::string &errorFileName)
+static std::vector<DataProvider> CreateDataProviders(const std::vector<std::string> &fileNames, const std::string &connection, OpenVDS::Error &error, std::string &errorFileName)
 {
   std::vector<DataProvider>
     dataProviders;
 
   for (const auto& fileName : fileNames)
   {
-    dataProviders.push_back(CreateDataProvider(fileName, connection, logHandler, error));
+    dataProviders.push_back(CreateDataProvider(fileName, connection, error));
 
     if (error.code != 0)
     {
@@ -2870,7 +2870,7 @@ main(int argc, char* argv[])
   {
     OpenVDS::Error
       error;
-    DataProvider headerFormatDataProvider = CreateDataProvider(headerFormatFileName, inputConnection, outputPrinter.logHandler, error);
+    DataProvider headerFormatDataProvider = CreateDataProvider(headerFormatFileName, inputConnection, error);
 
     if (error.code != 0)
     {
@@ -2980,7 +2980,7 @@ main(int argc, char* argv[])
   OpenVDS::Error
     error;
   std::string errorFileName;
-  auto dataProviders = CreateDataProviders(fileNames, inputConnection, outputPrinter.logHandler, error, errorFileName);
+  auto dataProviders = CreateDataProviders(fileNames, inputConnection, error, errorFileName);
   if (error.code != 0)
   {
     // TODO need to name which file failed to open
@@ -3101,7 +3101,7 @@ main(int argc, char* argv[])
               return EXIT_FAILURE;
             }
             std::string scanUrl = dirname + parameters;
-            std::unique_ptr<OpenVDS::IOManager> ioManager(OpenVDS::IOManager::CreateIOManager(scanUrl, urlConnection, OpenVDS::IOManager::ReadWrite, OpenVDS::CreateDefaultLogHandler(), error));
+            std::unique_ptr<OpenVDS::IOManager> ioManager(OpenVDS::IOManager::CreateIOManager(scanUrl, urlConnection, OpenVDS::IOManager::ReadWrite, error));
             if (error.code)
             {
               outputPrinter.printError("IO", "Failed to creating IOManager for", fileInfoFileName, error.string);
@@ -3153,7 +3153,7 @@ main(int argc, char* argv[])
       const auto
         & fileInfoFileName = fileInfoFileNames[fileIndex];
 
-      DataProvider fileInfoDataProvider = CreateDataProvider(fileInfoFileName, inputConnection, outputPrinter.logHandler, error);
+      DataProvider fileInfoDataProvider = CreateDataProvider(fileInfoFileName, inputConnection, error);
 
       if (error.code != 0)
       {
@@ -3478,11 +3478,11 @@ main(int argc, char* argv[])
       baseUrl.insert(baseUrl.end(), persistentID.begin(), persistentID.end());
       url = baseUrl + parameters;
     }
-    handle = OpenVDS::Create(url, urlConnection, layoutDescriptor, axisDescriptors, channelDescriptors, metadataContainer, compressionMethod, compressionTolerance, outputPrinter.logHandler, createError);
+    handle = OpenVDS::Create(url, urlConnection, layoutDescriptor, axisDescriptors, channelDescriptors, metadataContainer, compressionMethod, compressionTolerance, createError);
   }
   else
   {
-    handle = OpenVDS::Create(OpenVDS::VDSFileOpenOptions(url), layoutDescriptor, axisDescriptors, channelDescriptors, metadataContainer, compressionMethod, compressionTolerance, outputPrinter.logHandler, createError);
+    handle = OpenVDS::Create(OpenVDS::VDSFileOpenOptions(url), layoutDescriptor, axisDescriptors, channelDescriptors, metadataContainer, compressionMethod, compressionTolerance, createError);
   }
 
   if (createError.code != 0)

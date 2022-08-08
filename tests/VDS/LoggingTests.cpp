@@ -21,14 +21,13 @@
 GTEST_TEST(VDS_integration, Logging)
 {
   int count = 0;
-  OpenVDS::LogHandler logHandler;
-  logHandler.userHandle = &count;
-  logHandler.callback = [](OpenVDS::LogLevel level, const char* message, size_t messageSize, void* userHandle)
+  auto callback = [](OpenVDS::LogLevel level, const char* message, size_t messageSize, void* userHandle)
   {
     auto local_count = static_cast<int*>(userHandle);
     (*local_count)++;
   };
-  OpenVDS::Logger logger(OpenVDS::LogLevel::None, logHandler);
+  OpenVDS::GetGlobalState()->SetLogCallback(callback, &count);
+  OpenVDS::Logger logger(static_cast<OpenVDS::GlobalStateImpl*>(OpenVDS::GetGlobalState())->logInterface, OpenVDS::LogLevel::None);
 
   logger.level = OpenVDS::LogLevel::None;
   logger.LogError("hello world");
@@ -79,4 +78,5 @@ GTEST_TEST(VDS_integration, Logging)
   EXPECT_EQ(9, count);
   logger.LogTrace("hello world");
   EXPECT_EQ(10, count);
+  OpenVDS::GetGlobalState()->SetDefaultLogCallback();
 }

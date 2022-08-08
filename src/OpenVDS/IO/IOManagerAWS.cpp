@@ -102,9 +102,9 @@ namespace OpenVDS
   class OpenVDSAwsLogger : public Aws::Utils::Logging::LogSystemInterface
   {
   public:
-    OpenVDSAwsLogger(LogLevel logLevel, LogHandler logHandler)
-      : awsLogLevel(resolveLoglevel(logLevel))
-      , logHandler(logHandler)
+    OpenVDSAwsLogger(const Logger &logger)
+      : awsLogLevel(resolveLoglevel(logger.level))
+      , logger(logger)
     {
     }
 
@@ -134,18 +134,18 @@ namespace OpenVDS
 #endif // _WIN32
 
       auto str = std::string(tag) + ": " + ss.str();
-      logHandler.callback(resolveAwsLogLevel(logLevel), str.c_str(), str.size(), logHandler.userHandle);
+      logger.logInterface.Log(resolveAwsLogLevel(logLevel), str.c_str(), str.size());
       va_end(args);
     }
     void LogStream(Aws::Utils::Logging::LogLevel logLevel, const char* tag, const Aws::OStringStream& messageStream) override final
     {
       auto str = std::string(tag) + ": " + messageStream.str();
-      logHandler.callback(resolveAwsLogLevel(logLevel), str.c_str(), str.size(), logHandler.userHandle);
+      logger.logInterface.Log(resolveAwsLogLevel(logLevel), str.c_str(), str.size());
     }
     void Flush() override final {}
   private:
     Aws::Utils::Logging::LogLevel awsLogLevel;
-    LogHandler logHandler;
+    Logger logger;
   };
 
   static void initializeAWSSDK(const Logger &logger)
@@ -155,7 +155,7 @@ namespace OpenVDS
     if (initialize_sdk == 1)
     {
 
-      Aws::Utils::Logging::InitializeAWSLogging(Aws::MakeShared<OpenVDSAwsLogger>("OpenVDS-S3 Integration", logger.level, logger.handler));
+      Aws::Utils::Logging::InitializeAWSLogging(Aws::MakeShared<OpenVDSAwsLogger>("OpenVDS-S3 Integration", logger));
       Aws::InitAPI(initialize_sdk_options);
     }
   }

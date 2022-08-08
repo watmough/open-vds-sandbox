@@ -137,11 +137,11 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
 
   if(OpenVDS::IsSupportedProtocol(sourceUrl))
   {
-    sourceHandle = OpenVDS::Open(sourceUrl, sourceConnection, outputPrinter.logHandler, error);
+    sourceHandle = OpenVDS::Open(sourceUrl, sourceConnection, error);
   }
   else
   {
-    sourceHandle = OpenVDS::Open(OpenVDS::VDSFileOpenOptions(sourceUrl), outputPrinter.logHandler, error);
+    sourceHandle = OpenVDS::Open(OpenVDS::VDSFileOpenOptions(sourceUrl), error);
   }
 
   if(error.code != 0)
@@ -203,7 +203,7 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
 
 
   OpenVDS::ScopedVDSHandle destinationHandle;
-  destinationHandle = OpenVDS::Create(destinationUrl, destinationConnection, layoutDescriptor, axisDescriptors, channelDescriptors, *layout, compressionMethod, compressionTolerance, outputPrinter.logHandler, error);
+  destinationHandle = OpenVDS::Create(destinationUrl, destinationConnection, layoutDescriptor, axisDescriptors, channelDescriptors, *layout, compressionMethod, compressionTolerance, error);
   if(error.code != 0)
   {
     outputPrinter.printError("VDS", fmt::format("Could not create VDS {}", destinationUrl), error.string);

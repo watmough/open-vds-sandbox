@@ -45,7 +45,6 @@ class IOManager;
 class IVolumeDataAccessManager;
 
 struct OpenOptions;
-struct LogHandler;
 
 enum class CompressionMethod;
 
@@ -119,18 +118,17 @@ protected:
 public:
   typedef void (*ErrorHandler)(Error *error, int errorCode, const char *errorMessage);
 
-  virtual LogHandler            CreateDefaultLogHandler() = 0;
-  virtual OpenOptions*              CreateOpenOptions(StringWrapper url, StringWrapper connectionString, const LogHandler &logHandler, ErrorHandler errorHandler, Error *error=nullptr) = 0;
+  virtual OpenOptions*              CreateOpenOptions(StringWrapper url, StringWrapper connectionString, ErrorHandler errorHandler, Error *error=nullptr) = 0;
   virtual bool                      IsSupportedProtocol(StringWrapper url) = 0;
-  virtual VDSHandle                 Open(StringWrapper url, StringWrapper connectionString, const LogHandler &logHandler, ErrorHandler errorHandler, Error *error=nullptr) = 0;
-  virtual VDSHandle                 OpenWithAdaptiveCompressionTolerance(StringWrapper url, StringWrapper connectionString, float waveletAdaptiveTolerance, const LogHandler &logHandler, ErrorHandler errorHandler, Error *error=nullptr) = 0;
-  virtual VDSHandle                 OpenWithAdaptiveCompressionRatio(StringWrapper url, StringWrapper connectionString, float waveletAdaptiveRatio, const LogHandler &logHandler, ErrorHandler errorHandler, Error *error=nullptr) = 0;
-  virtual VDSHandle                 Open(const OpenOptions& options, const LogHandler &logHandler, ErrorHandler errorHandler, Error *error=nullptr) = 0;
-  virtual VDSHandle                 Open(IOManager*ioManager, LogLevel logLevel, const LogHandler &logHandler, ErrorHandler errorHandler, Error *error=nullptr) = 0;
+  virtual VDSHandle                 Open(StringWrapper url, StringWrapper connectionString, ErrorHandler errorHandler, Error *error=nullptr) = 0;
+  virtual VDSHandle                 OpenWithAdaptiveCompressionTolerance(StringWrapper url, StringWrapper connectionString, float waveletAdaptiveTolerance, ErrorHandler errorHandler, Error *error=nullptr) = 0;
+  virtual VDSHandle                 OpenWithAdaptiveCompressionRatio(StringWrapper url, StringWrapper connectionString, float waveletAdaptiveRatio, ErrorHandler errorHandler, Error *error=nullptr) = 0;
+  virtual VDSHandle                 Open(const OpenOptions& options, ErrorHandler errorHandler, Error *error=nullptr) = 0;
+  virtual VDSHandle                 Open(IOManager*ioManager, LogLevel logLevel, ErrorHandler errorHandler, Error *error=nullptr) = 0;
   virtual bool                      IsCompressionMethodSupported(CompressionMethod compressionMethod) = 0;
-  virtual VDSHandle                 Create(StringWrapper url, StringWrapper connectionString, VolumeDataLayoutDescriptor const& layoutDescriptor, VectorWrapper<VolumeDataAxisDescriptor> axisDescriptors, VectorWrapper<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const& metadata, CompressionMethod compressionMethod, float compressionTolerance, const LogHandler &logHandler, ErrorHandler errorHandler, Error *error=nullptr) = 0;
-  virtual VDSHandle                 Create(const OpenOptions& options, VolumeDataLayoutDescriptor const& layoutDescriptor, VectorWrapper<VolumeDataAxisDescriptor> axisDescriptors, VectorWrapper<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const& metadata, CompressionMethod compressionMethod, float compressionTolerance, const LogHandler &logHandler, ErrorHandler errorHandler, Error *error=nullptr) = 0;
-  virtual VDSHandle                 Create(IOManager* ioManager, VolumeDataLayoutDescriptor const &layoutDescriptor, VectorWrapper<VolumeDataAxisDescriptor> axisDescriptors, VectorWrapper<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const &metadata, CompressionMethod compressionMethod, float compressionTolerance, LogLevel logLevel, const LogHandler &logHandler, ErrorHandler errorHandler, Error *error=nullptr) = 0;
+  virtual VDSHandle                 Create(StringWrapper url, StringWrapper connectionString, VolumeDataLayoutDescriptor const& layoutDescriptor, VectorWrapper<VolumeDataAxisDescriptor> axisDescriptors, VectorWrapper<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const& metadata, CompressionMethod compressionMethod, float compressionTolerance, ErrorHandler errorHandler, Error *error=nullptr) = 0;
+  virtual VDSHandle                 Create(const OpenOptions& options, VolumeDataLayoutDescriptor const& layoutDescriptor, VectorWrapper<VolumeDataAxisDescriptor> axisDescriptors, VectorWrapper<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const& metadata, CompressionMethod compressionMethod, float compressionTolerance, ErrorHandler errorHandler, Error *error=nullptr) = 0;
+  virtual VDSHandle                 Create(IOManager* ioManager, VolumeDataLayoutDescriptor const &layoutDescriptor, VectorWrapper<VolumeDataAxisDescriptor> axisDescriptors, VectorWrapper<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const &metadata, CompressionMethod compressionMethod, float compressionTolerance, LogLevel logLevel, ErrorHandler errorHandler, Error *error=nullptr) = 0;
   virtual VolumeDataLayout         *GetLayout(VDSHandle handle) = 0;
   virtual IVolumeDataAccessManager *GetAccessManagerInterface(VDSHandle handle) = 0;
   virtual CompressionMethod         GetCompressionMethod(VDSHandle handle) = 0;

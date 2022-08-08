@@ -83,6 +83,22 @@ public class GlobalState extends ManagedBase {
         return GetChunksDecompressedImpl(getNativeObject(), ManagedBase.requireNonNull(connectionType, "connectionType may not be null").value());
     }
 
+    ///AUTOGEN-FAIL: CXX_METHOD SetLogCallback void (void (*)(OpenVDS::LogLevel, const char *, uint64_t, void *), void *) FUNCTIONPROTO
+
+    ///AUTOGEN-OK: CXX_METHOD SetDefaultLogCallback void () FUNCTIONPROTO
+    native private void SetDefaultLogCallbackImpl(long native_object);
+
+    /**
+     * Set the default LogCallback
+     * This function sets the default logging interface that will print
+     * trace and info to stdout. It will print Warning and Error to the stderr
+     * file stream.
+     * 
+     */
+    public void setDefaultLogCallback() {
+        SetDefaultLogCallbackImpl(getNativeObject());
+    }
+
     GlobalState(long nativeobject) {
         super(nativeobject);
     }

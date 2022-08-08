@@ -61,6 +61,23 @@ public:
   /// <param name="connectionType"> The counter to be retireved. </param>
   /// <returns>Number of chunks decompressed.</returns>
   virtual uint64_t GetChunksDecompressed(OpenOptions::ConnectionType connectionType) = 0;
+
+
+  /// <summary>
+  /// Set the log callback used to receive log messages from OpenVDS.
+  /// It is safe to set the LogCallback before any other OpenVDS function is called.
+  /// </summary>
+  /// <param name="callback"> The function pointer to the callback. </param>
+  /// <param name="userHandle"> This is the pointer that will be passed into the callback functions userHandle parameter. </param>
+  virtual void SetLogCallback(LogCallback callback, void* userHandle) = 0;
+
+  /// <summary>
+  /// Set the default LogCallback
+  /// This function sets the default logging interface that will print
+  /// trace and info to stdout. It will print Warning and Error to the stderr
+  /// file stream.
+  /// </summary>
+  virtual void SetDefaultLogCallback() = 0;
 };
 
 } // end namespace OpenVDS

@@ -77,6 +77,7 @@ else()
     VDS/VolumeIndexer.cpp
     VDS/Env.cpp
     VDS/StringToDouble.cpp
+    VDS/GlobalStateImpl.cpp
     ${WAVELET_SOURCES}
     ${COMMON_DIR}/Base64/Base64.cpp)
 
