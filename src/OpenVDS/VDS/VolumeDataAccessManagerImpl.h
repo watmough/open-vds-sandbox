@@ -159,8 +159,12 @@ private:
   std::vector<std::pair<VolumeDataChunk, std::future<Error>>> m_copyJobs[2];
   IntrusiveList<VolumeDataPageAccessorImpl, &VolumeDataPageAccessorImpl::m_volumeDataPageAccessorListNode> m_volumeDataPageAccessorList;
   std::mutex m_mutex;
-  std::vector<std::unique_ptr<UploadError>> m_uploadErrors;
-  uint32_t m_currentErrorIndex;
+  struct
+  {
+    uint32_t currentErrorIndex = 0;
+    std::vector<std::unique_ptr<UploadError>> errors;
+    std::mutex mutex;
+  } m_uploadErrors;
   Error m_currentDownloadError;
 };
 

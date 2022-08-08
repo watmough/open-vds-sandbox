@@ -43,13 +43,12 @@ VolumeDataAccessManagerImpl::VolumeDataAccessManagerImpl(VDS &vds)
   , m_copyJobIndex(false)
   , m_vds(vds)
   , m_requestProcessor(new VolumeDataRequestProcessor(*this))
-  , m_currentErrorIndex(0)
 {
 }
 
 VolumeDataAccessManagerImpl::~VolumeDataAccessManagerImpl()
 {
-  if (m_uploadErrors.size())
+  if (m_uploadErrors.errors.size())
   {
     fprintf(stderr, "VolumeDataAccessManager destructor: there where upload errors\n");
   }
@@ -727,9 +726,7 @@ void VolumeDataAccessManagerImpl::AddCopyPageJob(VolumeDataChunk& chunk, VolumeD
       {
         auto& jobChunk = job.first;
         std::string url = fmt::format("Chunk: {}, Channel: {} LOD: {}", jobChunk.index, jobChunk.layer->GetChannelIndex(), jobChunk.layer->GetLOD());
-        lock.unlock();
         AddUploadError(error, url);
-        lock.lock();
       }
     }
     otherjobs.clear();
@@ -749,9 +746,7 @@ void VolumeDataAccessManagerImpl::FlushCopyPageJobs()
       {
         auto& jobChunk = job.first;
         std::string url = fmt::format("Chunk: {}, Channel: {} LOD: {}", jobChunk.index, jobChunk.layer->GetChannelIndex(), jobChunk.layer->GetLOD());
-        lock.unlock();
         AddUploadError(error, url);
-        lock.lock();
       }
     }
     jobsMap.clear();
@@ -766,35 +761,36 @@ int64_t VolumeDataAccessManagerImpl::AddRemapJob(VolumeDataPageImpl &targetPage,
 
 void VolumeDataAccessManagerImpl::AddUploadError(Error const &error, const std::string &url)
 {
-  std::unique_lock<std::mutex> lock(m_mutex);
-  m_uploadErrors.emplace_back(new UploadError(error, url));
+  std::unique_lock<std::mutex> lock(m_uploadErrors.mutex);
+  m_uploadErrors.errors.emplace_back(new UploadError(error, url));
 }
 
 void VolumeDataAccessManagerImpl::ClearUploadErrors()
 {
-  std::unique_lock<std::mutex> lock(m_mutex);
-  m_uploadErrors.erase(m_uploadErrors.begin(), m_uploadErrors.begin() + m_currentErrorIndex);
-  m_currentErrorIndex = 0;
+  std::unique_lock<std::mutex> lock(m_uploadErrors.mutex);
+  m_uploadErrors.errors.erase(m_uploadErrors.errors.begin(), m_uploadErrors.errors.begin() + m_uploadErrors.currentErrorIndex);
+  m_uploadErrors.currentErrorIndex = 0;
 }
 
 void VolumeDataAccessManagerImpl::ForceClearAllUploadErrors()
 {
-  std::unique_lock<std::mutex> lock(m_mutex);
-  m_uploadErrors.clear();
-  m_currentErrorIndex = 0;
+  std::unique_lock<std::mutex> lock(m_uploadErrors.mutex);
+  m_uploadErrors.errors.erase(m_uploadErrors.errors.begin(), m_uploadErrors.errors.begin() + m_uploadErrors.currentErrorIndex);
+  m_uploadErrors.errors.clear();
+  m_uploadErrors.currentErrorIndex = 0;
 }
 
 
 int32_t VolumeDataAccessManagerImpl::UploadErrorCount()
 {
-  std::unique_lock<std::mutex> lock(m_mutex);
-  return int32_t(m_uploadErrors.size() - m_currentErrorIndex);
+  std::unique_lock<std::mutex> lock(m_uploadErrors.mutex);
+  return int32_t(m_uploadErrors.errors.size() - m_uploadErrors.currentErrorIndex);
 }
 
 void VolumeDataAccessManagerImpl::GetCurrentUploadError(const char** objectId, int32_t* errorCode, const char** errorString)
 {
-  std::unique_lock<std::mutex> lock(m_mutex);
-  if (m_currentErrorIndex >= m_uploadErrors.size())
+  std::unique_lock<std::mutex> lock(m_uploadErrors.mutex);
+  if (m_uploadErrors.currentErrorIndex >= m_uploadErrors.errors.size())
   {
     if (objectId)
       *objectId = "";
@@ -805,8 +801,8 @@ void VolumeDataAccessManagerImpl::GetCurrentUploadError(const char** objectId, i
     return;
   }
 
-  const auto &error = m_uploadErrors[m_currentErrorIndex];
-  m_currentErrorIndex++;
+  const auto &error = m_uploadErrors.errors[m_uploadErrors.currentErrorIndex];
+  m_uploadErrors.currentErrorIndex++;
   if (objectId)
     *objectId = error->urlObject.c_str();
   if (errorCode)
