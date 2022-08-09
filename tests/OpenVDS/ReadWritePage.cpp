@@ -1026,7 +1026,7 @@ TEST_P(LODRoundingParameterTest, TestProjectedSubsetLODRounding)
     minCoords[6] = { 0, minCoord, minCoord, 0, 0, 0 },
     maxCoords[6] = { 1, maxCoord, maxCoord, 1, 1, 1 };
 
-  size_t voxelCount = 1;
+  int voxelCount = 1;
   for (int i = 0; i < 6; ++i)
     voxelCount *= OpenVDS::GetLODSize(minCoords[i], maxCoords[i], lod);
 

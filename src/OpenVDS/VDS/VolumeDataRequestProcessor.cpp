@@ -121,9 +121,12 @@ static bool RequestSubsetProcessPage(VolumeDataPageImpl* page, const VolumeDataC
 
     if (volumeDataLayout->IsDimensionLODDecimated(dimension))
     {
-      globalSourceOffset[dimension] = (overlapMin[dimension] - sourceMin[dimension]) >> LOD;
-      globalTargetOffset[dimension] = (overlapMin[dimension] - destMin[dimension]) >> LOD;
-      globalOverlapSize[dimension] = GetLODSize(overlapMin[dimension], overlapMax[dimension], LOD, overlapMax[dimension] == destMax[dimension]);
+      int effectiveOverlapMin = destMin[dimension] + ((overlapMin[dimension] - destMin[dimension] - 1) & ~((1 << LOD) - 1)) + 1;
+      int effectiveOverlapMax = destMin[dimension] + ((overlapMax[dimension] - destMin[dimension] - 1) & ~((1 << LOD) - 1)) + 1;
+
+      globalSourceOffset[dimension] = (effectiveOverlapMin - sourceMin[dimension]) >> LOD;
+      globalTargetOffset[dimension] = (effectiveOverlapMin - destMin[dimension]) >> LOD;
+      globalOverlapSize[dimension] = (effectiveOverlapMax - effectiveOverlapMin) >> LOD;
     }
     else
     {
