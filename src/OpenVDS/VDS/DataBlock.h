@@ -82,7 +82,7 @@ public:
 };
 
 bool InitializeDataBlock(const DataBlockDescriptor &descriptor, DataBlock &dataBlock, Error &error);
-bool InitializeDataBlock(VolumeDataFormat format, VolumeDataComponents components, enum DataBlock::Dimensionality dimensionality, int32_t (&size)[DataBlock::Dimensionality_Max], DataBlock &dataBlock, Error &error);
+bool InitializeDataBlock(VolumeDataFormat format, VolumeDataComponents components, enum DataBlock::Dimensionality dimensionality, const int32_t (&size)[DataBlock::Dimensionality_Max], DataBlock &dataBlock, Error &error);
 
 inline int32_t GetVoxelFormatByteSize(VolumeDataFormat format)
 {

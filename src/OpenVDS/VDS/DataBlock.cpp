@@ -31,7 +31,7 @@ bool InitializeDataBlock(const DataBlockDescriptor &descriptor, DataBlock &dataB
   return InitializeDataBlock(descriptor.Format, descriptor.Components, (enum DataBlock::Dimensionality)(descriptor.Dimensionality), size, dataBlock, error);
 }
 
-bool InitializeDataBlock(VolumeDataFormat format, VolumeDataComponents components, enum DataBlock::Dimensionality dimensionality, int32_t (&size)[DataBlock::Dimensionality_Max], DataBlock &dataBlock, Error &error)
+bool InitializeDataBlock(VolumeDataFormat format, VolumeDataComponents components, enum DataBlock::Dimensionality dimensionality, const int32_t (&size)[DataBlock::Dimensionality_Max], DataBlock &dataBlock, Error &error)
 {
   dataBlock.Components = components;
   dataBlock.Format = format;
