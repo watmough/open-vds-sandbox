@@ -86,36 +86,36 @@ bool VolumeDataRegion::IsChunkInRegion(VolumeDataChunk const &volumeDataChunk) c
   return false;
 }
 
-VolumeDataRegion::VolumeDataRegion(VolumeDataLayer const &volumeDataLayer, const IndexArray &min, const IndexArray &max, bool excludeDuplicatedVoxels)
+VolumeDataRegion::VolumeDataRegion(VolumeDataLayer const &volumeDataLayer, const IndexArray &min, const IndexArray &max, bool snapVoxelMax)
   : m_volumeDataLayer(&volumeDataLayer)
 {
   const VolumeDataChannelMapping *volumeDataChannelMapping = volumeDataLayer.GetVolumeDataChannelMapping();
 
   int64_t modulo = 1;
+  const int LOD = volumeDataLayer.GetLOD();
 
   for(int dimension = 0; dimension < ArraySize(m_chunkMin); dimension++)
   {
-    int inclusiveVoxelMin = min[dimension];
-    int inclusiveVoxelMax = max[dimension] - 1;
+    int voxelMin = min[dimension];
+    int voxelMax = max[dimension];
 
-    // Round to voxel boundaries to avoid including voxels that are duplicated between chunks
-    if(volumeDataLayer.GetLOD() > 0 && excludeDuplicatedVoxels && volumeDataLayer.IsDimensionLODDecimated(dimension))
+    // Snap voxel max to the minimum needed to ensure that the LOD size of the subset is the same as the given subset
+    if(snapVoxelMax)
     {
-      int duplicatedVoxels = volumeDataLayer.GetNegativeRenderMargin() % (1 << volumeDataLayer.GetLOD());
-
-      inclusiveVoxelMin += duplicatedVoxels;
-      inclusiveVoxelMax = std::max(inclusiveVoxelMin, inclusiveVoxelMax);
+      voxelMax = voxelMin + ((voxelMax - voxelMin - 1) & ~((1 << LOD) - 1)) + 1;
+      assert(GetLODSize(min[dimension], max[dimension], LOD) == GetLODSize(voxelMin, voxelMax, LOD));
+      assert(GetLODSize(min[dimension], max[dimension], LOD) == GetLODSize(voxelMin, voxelMax - 1, LOD) + 1);
     }
 
     if(volumeDataChannelMapping)
     {
-      m_chunkMin[dimension] = volumeDataChannelMapping->GetMappedChunkIndexFromVoxel(volumeDataLayer.GetPrimaryChannelLayer(), inclusiveVoxelMin, dimension);
-      m_chunkMax[dimension] = volumeDataChannelMapping->GetMappedChunkIndexFromVoxel(volumeDataLayer.GetPrimaryChannelLayer(), inclusiveVoxelMax, dimension);
+      m_chunkMin[dimension] = volumeDataChannelMapping->GetMappedChunkIndexFromVoxel(volumeDataLayer.GetPrimaryChannelLayer(), voxelMin, dimension);
+      m_chunkMax[dimension] = volumeDataChannelMapping->GetMappedChunkIndexFromVoxel(volumeDataLayer.GetPrimaryChannelLayer(), voxelMax, dimension);
     }
     else
     {
-      m_chunkMin[dimension] = volumeDataLayer.VoxelToIndex(inclusiveVoxelMin, dimension);
-      m_chunkMax[dimension] = volumeDataLayer.VoxelToIndex(inclusiveVoxelMax, dimension);
+      m_chunkMin[dimension] = volumeDataLayer.VoxelToIndex(voxelMin, dimension);
+      m_chunkMax[dimension] = volumeDataLayer.VoxelToIndex(voxelMax, dimension);
     }
 
     m_layerModulo[dimension] = volumeDataLayer.m_modulo[dimension];

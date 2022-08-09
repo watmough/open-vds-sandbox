@@ -50,7 +50,7 @@ public:
   VolumeDataRegion(VolumeDataLayer const &volumeDataLayer,
                    const IndexArray &min,
                    const IndexArray &max,
-                   bool excludeDuplicatedVoxels = true);
+                   bool snapVoxelMax = true);
 
   static VolumeDataRegion VolumeDataRegionOverlappingChunk(VolumeDataLayer const &volumeDataLayer, VolumeDataChunk const &volumeDataChunk, const IndexArray &offset);
 };
