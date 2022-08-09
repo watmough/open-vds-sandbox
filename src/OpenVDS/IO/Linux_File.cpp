@@ -223,6 +223,11 @@ void File::Close()
 {
   assert(IsOpen());
 
+  if (m_pFileMappingObject)
+  {
+    FileView::SystemFileMappingObject::Close(&m_pFileMappingObject);
+  }
+
   if(_pxPlatformHandleRead != _pxPlatformHandleReadWrite)
   {
     int fd  = (int)(intptr_t)_pxPlatformHandleRead;
@@ -409,6 +414,7 @@ bool FileView::SystemFileMappingObject::Open(SystemFileMappingObject** ppcFileMa
 void FileView::SystemFileMappingObject::Close(SystemFileMappingObject** ppcFileMappingObject)
 {
   assert(ppcFileMappingObject && *ppcFileMappingObject);
+  *ppcFileMappingObject = nullptr;
 }
 
 SystemFileView::SignalHandlerInstaller SystemFileView::m_cSignalHandlerInstaller; 

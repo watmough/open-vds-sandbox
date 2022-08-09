@@ -102,6 +102,7 @@ void FileView::SystemFileMappingObject::Close(SystemFileMappingObject** ppcFileM
 
     return (void)dwError;
   }
+  *ppcFileMappingObject = nullptr;
 }
 
 class SystemFileView : public FileView
@@ -267,6 +268,11 @@ bool File::Open(const std::string& filename, bool isCreate, bool isDestroyExisti
 void File::Close()
 {
   assert(IsOpen());
+
+  if (m_pFileMappingObject)
+  {
+    FileView::SystemFileMappingObject::Close(&m_pFileMappingObject);
+  }
 
   if(_pxPlatformHandleRead != _pxPlatformHandleReadWrite)
   {
