@@ -144,7 +144,7 @@ static int curl_easy_debug_callback(CURL* handle, curl_infotype type, char* data
     break;
   }
 
-  fmt::print(stderr, "{} - {}\n", text, datastr);
+  fputs(fmt::format("{} - {}\n", text, datastr).c_str(), stderr);
   return 0;
 }
 
@@ -409,7 +409,7 @@ static void beforeBlockCB(uv_prepare_t *handle)
           case 503: // SERVICE_UNAVAILABLE
             if (socketContext->shouldRetry())
             {
-              fmt::print(stderr, "CURL respons error {}. Automatic rety {}", responseCode, url);
+              fputs(fmt::format("CURL respons error {}. Automatic rety {}", responseCode, url).c_str(), stderr);
               curl_multi_remove_handle(eventLoopData->curlMulti, socketContext->curlEasy);
 
               CURL* dup = curl_easy_duphandle(socketContext->curlEasy);
@@ -439,7 +439,7 @@ static void beforeBlockCB(uv_prepare_t *handle)
       {
         char* url = NULL;
         curl_easy_getinfo(socketContext->curlEasy, CURLINFO_EFFECTIVE_URL, &url);
-        fmt::print(stderr, "CURL timeout. Automatic rety {}", url);
+        fputs(fmt::format("CURL timeout. Automatic rety {}", url).c_str(), stderr);
         curl_multi_remove_handle(eventLoopData->curlMulti, socketContext->curlEasy);
 
         CURL* dup = curl_easy_duphandle(socketContext->curlEasy);
@@ -604,7 +604,7 @@ void CurlDownloadHandler::handleDone(int responseCode, const Error &error)
   case 207: // MULTI-STATUS
   case 208: // ALREADY REPORTED
   case 226: // IM USED
-    fmt::print(stderr, "Unexpected Success code: {} -> {}\n", responseCode, downloadRequest->GetObjectName());
+    fputs(fmt::format("Unexpected Success code: {} -> {}\n", responseCode, downloadRequest->GetObjectName()).c_str(), stderr);
   }
   std::unique_lock<std::mutex> lock(downloadRequest->m_mutex);
   downloadRequest->m_error = error;

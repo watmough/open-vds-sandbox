@@ -250,7 +250,7 @@ VolumeDataStore::VolumeDataStore(OpenOptions::ConnectionType connectionType)
 VolumeDataStore::~VolumeDataStore()
 {
   if (m_requests.size())
-    fmt::print(stderr, "VolumeDataStore request cache is not empty {}\n", m_requests.size());
+    fputs(fmt::format("VolumeDataStore request cache is not empty {}\n", m_requests.size()).c_str(), stderr);
 }
 
 bool

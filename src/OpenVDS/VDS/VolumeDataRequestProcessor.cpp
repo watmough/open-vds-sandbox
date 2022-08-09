@@ -2608,7 +2608,7 @@ bool VolumeDataRequestProcessor::IsCanceled(int64_t jobID, Error &error)
           error.string = "OK";
         out += fmt::format("Request channel {} chunk {} result: {}\n", job->pages[i].chunk.layer->GetChannelIndex(), job->pages[i].chunk.index, error.string);
       }
-      fmt::print(stderr, "{}", out);
+      fputs(out.c_str(), stderr);
     }
     SetErrorForJob(job);
     m_manager.SetCurrentDownloadError(job->completedError);
