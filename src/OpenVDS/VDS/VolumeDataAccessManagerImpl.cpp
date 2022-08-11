@@ -391,8 +391,8 @@ VolumeDataAccessManagerImpl::CreateVolumeDataPageAccessor(DimensionsND dimension
 
   if(accessMode != VolumeDataPageAccessor::AccessMode_ReadOnly)
   {
-    int chunkDimensionality = DimensionGroupUtil::GetDimensionality(DimensionGroupUtil::GetDimensionGroupFromDimensionsND(dimensionsND));
-    assert(chunkDimensionality == 2 || chunkDimensionality == 3);
+    assert(DimensionGroupUtil::GetDimensionality(DimensionGroupUtil::GetDimensionGroupFromDimensionsND(dimensionsND)) == 2
+      || DimensionGroupUtil::GetDimensionality(DimensionGroupUtil::GetDimensionGroupFromDimensionsND(dimensionsND)) == 3);
 
     bool success = GetVolumeDataStore()->AddLayer(volumeDataLayer, chunkMetadataPageSize);
     if(!success)
