@@ -9,6 +9,15 @@ from segyimport_test_config import test_data_dir, ImportExecutor, TempVDSGuard, 
 
 
 @pytest.fixture
+def crs_wkt() -> str:
+    """
+    A WKT to stuff into VDS metadata.  Not necessarily actually associated with the data, just something to
+    test against.
+    """
+    return 'PROJCS["NAD27 / Wyoming East Central",GEOGCS["NAD27",DATUM["North_American_Datum_1927",SPHEROID["Clarke 1866",6378206.4,294.9786982138982,AUTHORITY["EPSG","7008"]],AUTHORITY["EPSG","6267"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.01745329251994328,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4267"]],UNIT["US survey foot",0.3048006096012192,AUTHORITY["EPSG","9003"]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",40.66666666666666],PARAMETER["central_meridian",-107.3333333333333],PARAMETER["scale_factor",0.999941177],PARAMETER["false_easting",500000],PARAMETER["false_northing",0],AUTHORITY["EPSG","32056"],AXIS["X",EAST],AXIS["Y",NORTH]]'
+
+
+@pytest.fixture
 def output_vds() -> TempVDSGuard:
     return TempVDSGuard("import_offset_sorted_test")
 
@@ -47,12 +56,13 @@ def conventional_output_vds() -> TempVDSGuard:
 
 
 @pytest.fixture
-def offset_sorted_executor(offset_sorted_segy, output_vds) -> Tuple[ImportExecutor, TempVDSGuard]:
+def offset_sorted_executor(offset_sorted_segy, output_vds, crs_wkt) -> Tuple[ImportExecutor, TempVDSGuard]:
     """Fixture to setup an ImportExecutor with common options for offset-sorted SEGY"""
     ex = ImportExecutor()
 
     ex.add_args(["--header-field", "offset=177:4"])
 
+    ex.add_args(["--crs-wkt", crs_wkt])
     ex.add_arg("--offset-sorted")
     ex.add_args(["--vdsfile", output_vds.filename])
 
@@ -118,9 +128,10 @@ def test_produce_status(offset_sorted_executor):
             openvds.DimensionsND.Dimensions_013) == openvds.VDSProduceStatus.Unavailable
 
 
-def test_survey_coordinate_system(offset_sorted_executor):
+def test_survey_coordinate_system(offset_sorted_executor, crs_wkt):
     ex, output_vds = offset_sorted_executor
 
+    s = ex.command_line()
     result = ex.run()
 
     assert result == 0, ex.output()
@@ -140,6 +151,10 @@ def test_survey_coordinate_system(offset_sorted_executor):
             openvds.KnownMetadata.surveyCoordinateSystemCrosslineSpacing().category,
             openvds.KnownMetadata.surveyCoordinateSystemCrosslineSpacing().name)
 
+        assert layout.isMetadataStringAvailable(
+            openvds.KnownMetadata.surveyCoordinateSystemCRSWkt().category,
+            openvds.KnownMetadata.surveyCoordinateSystemCRSWkt().name)
+
         # verify coordinate system component values
         value = layout.getMetadataDoubleVector2(
             openvds.KnownMetadata.surveyCoordinateSystemOrigin().category,
@@ -158,6 +173,11 @@ def test_survey_coordinate_system(offset_sorted_executor):
             openvds.KnownMetadata.surveyCoordinateSystemCrosslineSpacing().name)
         assert value[0] == pytest.approx(-12.13, abs=0.05)
         assert value[1] == pytest.approx(3.02, abs=0.05)
+
+        value = layout.getMetadataString(
+            openvds.KnownMetadata.surveyCoordinateSystemCRSWkt().category,
+            openvds.KnownMetadata.surveyCoordinateSystemCRSWkt().name)
+        assert value == crs_wkt
 
 
 def test_axes(offset_sorted_executor):
