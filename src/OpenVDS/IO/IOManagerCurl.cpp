@@ -390,12 +390,11 @@ static void beforeBlockCB(uv_prepare_t *handle)
       {
         CURLcode curlCode = curl_easy_getinfo(socketContext->curlEasy, CURLINFO_HTTP_CODE, &responseCode);
 
+        char* url = NULL;
+        curl_easy_getinfo(socketContext->curlEasy, CURLINFO_EFFECTIVE_URL, &url);
+
         if (curlCode == CURLE_OK)
         {
-          char* url = NULL;
-
-          curl_easy_getinfo(socketContext->curlEasy, CURLINFO_EFFECTIVE_URL, &url);
-
           switch (responseCode)
           {
           case 201: // CREATED
@@ -440,16 +439,30 @@ static void beforeBlockCB(uv_prepare_t *handle)
         }
         else
         {
-          error.code = curlCode;
-          error.string = CURLErrorMessage(socketContext->curlEasy, code);
-          eventLoopData->logger.LogError(fmt::format("Unexpected CURL response {}. {}", code, error.string));
+          if (socketContext->shouldRetry())
+          {
+            eventLoopData->logger.LogWarning(fmt::format("CURL respons error {}. Automatic rety {}", responseCode, url));
+            curl_multi_remove_handle(eventLoopData->curlMulti, socketContext->curlEasy);
+
+            CURL* dup = curl_easy_duphandle(socketContext->curlEasy);
+            curl_easy_cleanup(socketContext->curlEasy);
+            socketContext->curlEasy = dup;
+            curl_multi_add_handle(eventLoopData->curlMulti, dup);
+            continue;
+          }
+          else
+          {
+            error.code = curlCode;
+            error.string = CURLErrorMessage(socketContext->curlEasy, code);
+            eventLoopData->logger.LogError(fmt::format("Unexpected CURL response {}. {}", code, error.string));
+          }
         }
       }
-      else if (code == CURLE_OPERATION_TIMEDOUT && socketContext->shouldRetry())
+      else if ((code == CURLE_OPERATION_TIMEDOUT || code == CURLE_PARTIAL_FILE) && socketContext->shouldRetry())
       {
         char* url = NULL;
         curl_easy_getinfo(socketContext->curlEasy, CURLINFO_EFFECTIVE_URL, &url);
-        eventLoopData->logger.LogWarning(fmt::format("CURL timeout. Automatic retries {}", url));
+        eventLoopData->logger.LogWarning(fmt::format("CURL error: {}. Automatic retries {}", CURLErrorMessage(socketContext->curlEasy, code), url));
         curl_multi_remove_handle(eventLoopData->curlMulti, socketContext->curlEasy);
 
         CURL* dup = curl_easy_duphandle(socketContext->curlEasy);
@@ -462,7 +475,7 @@ static void beforeBlockCB(uv_prepare_t *handle)
       {
         error.code = code;
         error.string = CURLErrorMessage(socketContext->curlEasy, code);
-        eventLoopData->logger.LogError(fmt::format("CURL timeout. No more retries {}", error.string));
+        eventLoopData->logger.LogError(fmt::format("CURL Unexpected curl code: {} - {}", code, error.string));
       }
 
       socketContext->handleDone(responseCode, error);
