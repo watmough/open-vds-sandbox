@@ -970,7 +970,7 @@ TEST_P(LODRoundingParameterTest, TestLODRounding)
   {
     EXPECT_NE(rvsBuffer[i], static_cast<float>(-i));
   }
-};
+}
 
 TEST_P(LODRoundingParameterTest, TestProjectedSubsetLODRounding)
 {
@@ -1058,8 +1058,6 @@ TEST_P(LODRoundingParameterTest, TestProjectedSubsetLODRounding)
   auto rpvs = accessManager.RequestProjectedVolumeSubset(rpvsBuffer.data(), rpvsBuffer.size() * sizeof(float), dimensionsND, lod, channel, minCoords, maxCoords, voxelPlane, projectedDimensions, format, OpenVDS::InterpolationMethod::Nearest);
   auto rvs = accessManager.RequestVolumeSamples(rvsBuffer.data(), rvsBuffer.size() * sizeof(float), dimensionsND, lod, channel, samplePositions, voxelCount, OpenVDS::InterpolationMethod::Nearest);
 
-  delete[] samplePositions;
-
   ASSERT_TRUE(rpvs->WaitForCompletion());
   ASSERT_FALSE(rpvs->IsCanceled());
 
@@ -1068,10 +1066,20 @@ TEST_P(LODRoundingParameterTest, TestProjectedSubsetLODRounding)
 
   for (size_t i = 0; i < rpvsBuffer.size(); ++i)
   {
-    EXPECT_NE(rpvsBuffer[i], -(float)(i + 1));
-    EXPECT_EQ(rvsBuffer[i], rpvsBuffer[i]) << "Index: " << i;
+    if(rpvsBuffer[i] == -(float)(i + 1))
+    {
+      EXPECT_NE(rpvsBuffer[i], -(float)(i + 1)) << "Index: " << i;
+      break;
+    }
+    if(rvsBuffer[i] != rpvsBuffer[i])
+    {
+      EXPECT_EQ(rvsBuffer[i], rpvsBuffer[i]) << "Index: " << i;
+      break;
+    }
   }
-};
+
+  delete[] samplePositions;
+}
 
 INSTANTIATE_TEST_SUITE_P(
   LODRoundingTests,
