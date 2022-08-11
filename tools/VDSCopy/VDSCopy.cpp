@@ -63,6 +63,7 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
   std::string compressionMethodString;
   float compressionTolerance = std::nanf("nan");
 
+  bool ignoreErrors = false;
   bool useJsonOutput = false;
   bool help = false;
   bool helpConnection = false;
@@ -86,6 +87,7 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
   options.add_option("", "", "compression-method", std::string("Compression method. Supported compression methods are: ") + supportedCompressionMethods + ".", cxxopts::value<std::string>(compressionMethodString), "<string>");
   options.add_option("", "", "tolerance", "This parameter specifies the compression tolerance when using the wavelet compression method. This value is the maximum deviation from the original data value when the data is converted to 8-bit using the value range. A value of 1 means the maximum allowable loss is the same as quantizing to 8-bit (but the average loss will be much much lower than quantizing to 8-bit). It is not a good idea to directly relate the tolerance to the quality of the compressed data, as the average loss will in general be an order of magnitude lower than the allowable loss.", cxxopts::value<float>(compressionTolerance), "<value>");
 
+  options.add_option("", "f", "force", "Force/ignore errors", cxxopts::value<bool>(ignoreErrors), "");
   options.add_option("", "q", "quiet", "Disable info level output.", cxxopts::value<bool>(disableInfo), "");
   options.add_option("", "Q", "very-quiet", "Disable warning level output.", cxxopts::value<bool>(disableWarning), "");
   options.add_option("", "", "json-output", "Enable json output.", cxxopts::value<bool>(useJsonOutput), "");
@@ -265,15 +267,17 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
   OpenVDS::printInfo(printConfig, destinationUrl, fmt::format("Copying {} to {}. Total chunks to copy is {}", sourceUrl, destinationUrl, totalChunks));
   if (!OpenVDS::isJson(printConfig) && OpenVDS::isInfo(printConfig))
     fmt::print(stdout, "\n");
-  for (int lod = 0; lod <= layoutDescriptor.GetLODLevels(); lod++)
+  bool error_encountered = false;
+  bool keep_processing = true;
+  for (int lod = 0; lod <= layoutDescriptor.GetLODLevels() && keep_processing; lod++)
   {
-    for (int dim = 0; dim <= OpenVDS::DimensionsND::Dimensions_45; dim++)
+    for (int dim = 0; dim <= OpenVDS::DimensionsND::Dimensions_45 && keep_processing; dim++)
     {
       std::vector<std::unique_ptr<OpenVDS::VolumeDataPageAccessor, decltype(sourceAccessorDestroyer)>> sourceAccessors;
       sourceAccessors.reserve(channelCount);
       std::vector<std::unique_ptr<OpenVDS::VolumeDataPageAccessor, decltype(destinationAccessorDestroyer)>> destinationAccessors;
       destinationAccessors.reserve(channelCount);
-      for (int channel = 0; channel < channelCount; channel++)
+      for (int channel = 0; channel < channelCount && keep_processing; channel++)
       {
         if (sourceAccessManager.GetVDSProduceStatus(OpenVDS::DimensionsND(dim), lod, channel) == OpenVDS::VDSProduceStatus::Normal)
         {
@@ -291,9 +295,9 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
         continue;
 
       CopyError copyError;
-      for (int64_t chunk = 0; chunk < sourceAccessors[0]->GetChunkCount() && copyError.code == 0; chunk++)
+      for (int64_t chunk = 0; chunk < sourceAccessors[0]->GetChunkCount() && keep_processing; chunk++)
       {
-        for (int channel = 0; channel < channelCount && copyError.code == 0; channel++)
+        for (int channel = 0; channel < channelCount && keep_processing; channel++)
         {
           if (sourceAccessors[channel])
           {
@@ -316,6 +320,9 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
                   copyError.code = errorCode;
                   OpenVDS::printError(printConfig, "Failed to copy chunk ", copyError.message);
                 }
+                error_encountered = true;
+                if (!ignoreErrors)
+                  keep_processing = false;
               }
             }
           }
@@ -324,12 +331,18 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
     }
   }
 
-  if (!OpenVDS::isJson(printConfig) && OpenVDS::isInfo(printConfig))
+  if (keep_processing)
   {
-    printPercentage(100.0f);
-    fprintf(stdout, "\n");
+    if (!OpenVDS::isJson(printConfig) && OpenVDS::isInfo(printConfig))
+    {
+      printPercentage(100.0f);
+      fprintf(stdout, "\n");
+    }
+    if (error_encountered)
+      OpenVDS::printInfo(printConfig, destinationUrl, fmt::format("Copied with errors: {} to {}", sourceUrl, destinationUrl));
+    else
+      OpenVDS::printInfo(printConfig, destinationUrl, fmt::format("Successfully copied {} to {}", sourceUrl, destinationUrl));
+    return EXIT_SUCCESS;
   }
-
-  OpenVDS::printInfo(printConfig, destinationUrl, fmt::format("Successfully copied {} to {}", sourceUrl, destinationUrl));
-  return EXIT_SUCCESS;
+  return EXIT_FAILURE;
 }
