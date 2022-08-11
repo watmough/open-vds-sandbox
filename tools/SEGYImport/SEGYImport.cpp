@@ -1509,6 +1509,19 @@ createSurveyCoordinateSystemMetadata(SEGYFileInfo const& fileInfo, SEGY::BinaryH
 {
   if (fileInfo.m_segmentInfoLists.empty() && fileInfo.m_segmentInfoListsByOffset.empty()) return;
 
+  if (!crsWkt.empty())
+  {
+    metadataContainer.SetMetadataString(LATTICE_CATEGORY, CRS_WKT, crsWkt);
+  }
+  if (segyMeasurementSystem == SEGY::BinaryHeader::MeasurementSystem::Meters)
+  {
+    metadataContainer.SetMetadataString(LATTICE_CATEGORY, LATTICE_UNIT, KNOWNMETADATA_UNIT_METER);
+  }
+  else if (segyMeasurementSystem == SEGY::BinaryHeader::MeasurementSystem::Feet)
+  {
+    metadataContainer.SetMetadataString(LATTICE_CATEGORY, LATTICE_UNIT, KNOWNMETADATA_UNIT_FOOT);
+  }
+
   if (fileInfo.Is2D()) return;
 
   double secondarySpacing[2] = { 0, 0 };
@@ -1655,19 +1668,6 @@ createSurveyCoordinateSystemMetadata(SEGYFileInfo const& fileInfo, SEGY::BinaryH
   metadataContainer.SetMetadataDoubleVector2(LATTICE_CATEGORY, LATTICE_ORIGIN, OpenVDS::DoubleVector2(ConvertDistance(segyMeasurementSystem, origin[0]), ConvertDistance(segyMeasurementSystem, origin[1])));
   metadataContainer.SetMetadataDoubleVector2(LATTICE_CATEGORY, LATTICE_INLINE_SPACING, OpenVDS::DoubleVector2(ConvertDistance(segyMeasurementSystem, inlineSpacing[0]), ConvertDistance(segyMeasurementSystem, inlineSpacing[1])));
   metadataContainer.SetMetadataDoubleVector2(LATTICE_CATEGORY, LATTICE_CROSSLINE_SPACING, OpenVDS::DoubleVector2(ConvertDistance(segyMeasurementSystem, crosslineSpacing[0]), ConvertDistance(segyMeasurementSystem, crosslineSpacing[1])));
-
-  if(!crsWkt.empty())
-  {
-    metadataContainer.SetMetadataString(LATTICE_CATEGORY, CRS_WKT, crsWkt);
-  }
-  if(segyMeasurementSystem == SEGY::BinaryHeader::MeasurementSystem::Meters)
-  {
-    metadataContainer.SetMetadataString(LATTICE_CATEGORY, LATTICE_UNIT, KNOWNMETADATA_UNIT_METER);
-  }
-  else if(segyMeasurementSystem == SEGY::BinaryHeader::MeasurementSystem::Feet)
-  {
-    metadataContainer.SetMetadataString(LATTICE_CATEGORY, LATTICE_UNIT, KNOWNMETADATA_UNIT_FOOT);
-  }
 }
 
 /////////////////////////////////////////////////////////////////////////////
