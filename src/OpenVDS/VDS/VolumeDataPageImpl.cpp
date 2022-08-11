@@ -442,21 +442,23 @@ void VolumeDataPageImpl::WriteIntoLOD()
         sourceMin = childMinExcludingMargin[dimension];
       }
 
+      if (childMax[dimension] >= parentMaxExcludingMargin[dimension])
+      {
+        sourceMax = childMax[dimension];
+      }
+      else
+      {
+        sourceMax = childMaxExcludingMargin[dimension];
+      }
+
       if (parentLayer->IsDimensionLODDecimated(dimension))
       {
-        targetOffset[dataBlockDimension] = (sourceMin - parentMin[dimension]) >> parentLOD;
-        sourceOffset[dataBlockDimension] = (sourceMin - childMin[dimension]) >> childLOD;
+        int effectiveOverlapMin = parentMin[dimension] + ((sourceMin - parentMin[dimension] - 1) | ((1 << parentLOD) - 1)) + 1;
+        int effectiveOverlapMax = parentMin[dimension] + ((sourceMax - parentMin[dimension] - 1) | ((1 << parentLOD) - 1)) + 1;
 
-        if (childMax[dimension] >= parentMaxExcludingMargin[dimension])
-        {
-          sourceMax = childMax[dimension];
-          targetSize[dataBlockDimension] = GetLODSize(sourceMin, sourceMax, parentLOD, true);
-        }
-        else
-        {
-          sourceMax = childMaxExcludingMargin[dimension];
-          targetSize[dataBlockDimension] = GetLODSize(sourceMin, sourceMax, parentLOD, false);
-        }
+        targetOffset[dataBlockDimension] = (effectiveOverlapMin - parentMin[dimension]) >> parentLOD;
+        sourceOffset[dataBlockDimension] = (effectiveOverlapMin - childMin[dimension]) >> childLOD;
+        targetSize[dataBlockDimension] = (effectiveOverlapMax - effectiveOverlapMin) >> parentLOD;
       }
       else
       {
@@ -464,17 +466,7 @@ void VolumeDataPageImpl::WriteIntoLOD()
 
         targetOffset[dataBlockDimension] = sourceMin - parentMin[dimension];
         sourceOffset[dataBlockDimension] = sourceMin - childMin[dimension];
-
-        if (childMax[dimension] >= parentMaxExcludingMargin[dimension])
-        {
-          sourceMax = childMax[dimension];
-          targetSize[dataBlockDimension] = sourceMax - sourceMin;
-        }
-        else
-        {
-          sourceMax = childMaxExcludingMargin[dimension];
-          targetSize[dataBlockDimension] = sourceMax - sourceMin;
-        }
+        targetSize[dataBlockDimension] = sourceMax - sourceMin;
       }
     }
   }
