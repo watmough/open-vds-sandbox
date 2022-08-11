@@ -121,31 +121,31 @@ static int curl_easy_debug_callback(CURL* handle, curl_infotype type, char* data
   fmt::string_view datastr(data, size);
   char* url_ptr = nullptr;
   curl_easy_getinfo(handle, CURLINFO_EFFECTIVE_URL, &url_ptr);
-  std::string url = url_ptr;
+  std::string url(url_ptr);
 
   switch (type) {
   case CURLINFO_TEXT:
-    logger.LogTrace(fmt::format("{}:\n== Info: {}", url, datastr)); FALLTHROUGH;
+    logger.LogTrace(fmt::format("{}:\n  == Info: {}", url, datastr)); FALLTHROUGH;
   default: /* in case a new one is introduced to shock us */
     return 0;
 
   case CURLINFO_HEADER_OUT:
-    logger.LogTrace(fmt::format("{}:\n=> Send header - {}",url, datastr));
+    logger.LogTrace(fmt::format("{}:\n  => Send header - {}",url, datastr));
     break;
   case CURLINFO_DATA_OUT:
-    logger.LogTrace(fmt::format("{}:\n=> Send data - length: {}",url, size));
+    logger.LogTrace(fmt::format("{}:\n  => Send data - length: {}",url, size));
     break;
   case CURLINFO_SSL_DATA_OUT:
-    logger.LogTrace(fmt::format("{}:\n=> Send SSL data - {}", url, datastr));
+    logger.LogTrace(fmt::format("{}:\n  => Send SSL data - length: {}", url, size));
     break;
   case CURLINFO_HEADER_IN:
-    logger.LogTrace(fmt::format("{}:\n<= Recv header - {}", url, datastr));
+    logger.LogTrace(fmt::format("{}:\n  <= Recv header - {}", url, datastr));
     break;
   case CURLINFO_DATA_IN:
-    logger.LogTrace(fmt::format("{}:\n<= Recv data - length: {}", url, size));
+    logger.LogTrace(fmt::format("{}:\n  <= Recv data - length: {}", url, size));
     break;
   case CURLINFO_SSL_DATA_IN:
-    logger.LogTrace(fmt::format("{}:\n<= Recv SSL data - {}", url, datastr));
+    logger.LogTrace(fmt::format("{}:\n  <= Recv SSL data - length {}", url, size));
     break;
   }
 
@@ -449,7 +449,7 @@ static void beforeBlockCB(uv_prepare_t *handle)
       {
         char* url = NULL;
         curl_easy_getinfo(socketContext->curlEasy, CURLINFO_EFFECTIVE_URL, &url);
-        eventLoopData->logger.LogWarning(fmt::format("CURL timeout. Automatic rety {}", url));
+        eventLoopData->logger.LogWarning(fmt::format("CURL timeout. Automatic retries {}", url));
         curl_multi_remove_handle(eventLoopData->curlMulti, socketContext->curlEasy);
 
         CURL* dup = curl_easy_duphandle(socketContext->curlEasy);
@@ -462,6 +462,7 @@ static void beforeBlockCB(uv_prepare_t *handle)
       {
         error.code = code;
         error.string = CURLErrorMessage(socketContext->curlEasy, code);
+        eventLoopData->logger.LogError(fmt::format("CURL timeout. No more retries {}", error.string));
       }
 
       socketContext->handleDone(responseCode, error);
