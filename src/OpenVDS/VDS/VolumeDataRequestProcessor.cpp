@@ -121,8 +121,8 @@ static bool RequestSubsetProcessPage(VolumeDataPageImpl* page, const VolumeDataC
 
     if (volumeDataLayout->IsDimensionLODDecimated(dimension))
     {
-      int effectiveOverlapMin = destMin[dimension] + ((overlapMin[dimension] - destMin[dimension] - 1) & ~((1 << LOD) - 1)) + 1;
-      int effectiveOverlapMax = destMin[dimension] + ((overlapMax[dimension] - destMin[dimension] - 1) & ~((1 << LOD) - 1)) + 1;
+      int effectiveOverlapMin = destMin[dimension] + ((overlapMin[dimension] - destMin[dimension] - 1) | ((1 << LOD) - 1)) + 1;
+      int effectiveOverlapMax = destMin[dimension] + ((overlapMax[dimension] - destMin[dimension] - 1) | ((1 << LOD) - 1)) + 1;
 
       globalSourceOffset[dimension] = (effectiveOverlapMin - sourceMin[dimension]) >> LOD;
       globalTargetOffset[dimension] = (effectiveOverlapMin - destMin[dimension]) >> LOD;
@@ -703,21 +703,17 @@ static void VoxelIndexToLocalIndexFloat(const IndexValues &indexValues, const fl
 template <typename T, typename S, InterpolationMethod INTERPMETHOD, bool isUseNoValue>
 void ProjectValuesKernelInner(T *output, const S *input, const ProjectVars &projectVars, const IndexValues &inputIndexer, const int32_t (&voxelOutIndex)[Dimensionality_Max], VolumeSampler<S, INTERPMETHOD, isUseNoValue> &sampler, QuantizingValueConverterWithNoValue<T, typename InterpolatedRealType<S>::type, isUseNoValue> &converter, float voxelCenterOffset)
 {
-  float zValue = (projectVars.voxelPlane.X * (voxelOutIndex[projectVars.projectedDimensions[0]] + voxelCenterOffset) + projectVars.voxelPlane.Y * (voxelOutIndex[projectVars.projectedDimensions[1]] + voxelCenterOffset) + projectVars.voxelPlane.T) / (-projectVars.voxelPlane.Z);
+  int dim0 = projectVars.projectedDimensions[0];
+  int dim1 = projectVars.projectedDimensions[1];
+
+  float zValue = projectVars.voxelPlane.T;
+  zValue += projectVars.voxelPlane.X * (voxelOutIndex[dim0] + voxelCenterOffset);
+  zValue += projectVars.voxelPlane.Y * (voxelOutIndex[dim1] + voxelCenterOffset);
+  zValue /= -projectVars.voxelPlane.Z;
 
   //clamp so it's inside the volume
-  if (zValue < 0) zValue = 0;
-  else if (zValue >= inputIndexer.axisNumSamples[projectVars.projectionDimension]) zValue = (float)(inputIndexer.axisNumSamples[projectVars.projectionDimension] - 1);
-
-  float voxelCenterInIndex[Dimensionality_Max];
-  voxelCenterInIndex[0] = (float)voxelOutIndex[0] + voxelCenterOffset;
-  voxelCenterInIndex[1] = (float)voxelOutIndex[1] + voxelCenterOffset;
-  voxelCenterInIndex[2] = (float)voxelOutIndex[2] + voxelCenterOffset;
-  voxelCenterInIndex[3] = (float)voxelOutIndex[3] + voxelCenterOffset;
-  voxelCenterInIndex[4] = (float)voxelOutIndex[4] + voxelCenterOffset;
-  voxelCenterInIndex[5] = (float)voxelOutIndex[5] + voxelCenterOffset;
-
-  voxelCenterInIndex[projectVars.projectionDimension] = zValue;
+  if (zValue < 0.5f) zValue = 0.5f;
+  else if (zValue > inputIndexer.axisNumSamples[projectVars.projectionDimension] - 0.5f) zValue = float(inputIndexer.axisNumSamples[projectVars.projectionDimension] - 0.5f);
 
   int32_t voxelInIndexInt[Dimensionality_Max];
   voxelInIndexInt[0] = voxelOutIndex[0];
@@ -731,9 +727,20 @@ void ProjectValuesKernelInner(T *output, const S *input, const ProjectVars &proj
 
   if (VoxelIndexInProcessArea(inputIndexer, voxelInIndexInt))
   {
+    float voxelCenterInIndex[Dimensionality_Max];
+    for (int i = 0; i < 6; ++i)
+      voxelCenterInIndex[i] = (float)voxelOutIndex[i];
+
+    voxelCenterInIndex[projectVars.projectionDimension] = zValue;
+
     float localInIndex[Dimensionality_Max];
     VoxelIndexToLocalIndexFloat(inputIndexer, voxelCenterInIndex, localInIndex);
     FloatVector3 localInIndex3D(localInIndex[0], localInIndex[1], localInIndex[2]);
+    for (int i = 0; i < 3; ++i)
+    {
+      if (inputIndexer.dimensionMap[i] != projectVars.projectionDimension)
+        localInIndex3D[i] = floor(localInIndex3D[i]) + 0.5f; // Force to voxel center.
+    }
 
     typedef typename InterpolatedRealType<S>::type TREAL;
     TREAL value = sampler.Sample3D(input, localInIndex3D);
@@ -753,11 +760,23 @@ void ProjectValuesKernel(T *pxOutput, const S *pxInput, const ProjectVars &proje
 
   for (int i = 0; i < 2; i++)
   {
-    int nMin = std::max(projectVars.requestedMin[projectVars.projectedDimensions[i]], indexValues.voxelMin[projectVars.projectedDimensions[i]]);
-    int nMax = std::min(projectVars.requestedMax[projectVars.projectedDimensions[i]], indexValues.voxelMax[projectVars.projectedDimensions[i]]);
+    int destMin = projectVars.requestedMin[projectVars.projectedDimensions[i]];
+    int destMax = projectVars.requestedMax[projectVars.projectedDimensions[i]];
 
-    numSamples[i] = GetLODSize(nMin, nMax, projectVars.LOD, nMax == projectVars.requestedMax[projectVars.projectedDimensions[i]]);
-    offsetPair[i] = (nMin - projectVars.requestedMin[projectVars.projectedDimensions[i]]) >> projectVars.LOD;
+    int overlapMin = std::max(destMin, indexValues.voxelMin[projectVars.projectedDimensions[i]]);
+    int overlapMax = std::min(destMax, indexValues.voxelMax[projectVars.projectedDimensions[i]]);
+
+    int effectiveOverlapMin = destMin + ((overlapMin - destMin - 1) | ((1 << projectVars.LOD) - 1)) + 1;
+    int effectiveOverlapMax = destMin + ((overlapMax - destMin - 1) | ((1 << projectVars.LOD) - 1)) + 1;
+
+    numSamples[i] = (effectiveOverlapMax - effectiveOverlapMin) >> projectVars.LOD;
+    offsetPair[i] = (effectiveOverlapMin - destMin) >> projectVars.LOD;
+
+    int sampleMin = ((overlapMin - destMin - 1) >> projectVars.LOD) + 1;
+    int sampleMax = ((overlapMax - destMin - 1) >> projectVars.LOD) + 1;
+
+    numSamples[i] = sampleMax - sampleMin;
+    offsetPair[i] = sampleMin;
   }
 
   float voxelCenterOffset = (1 << projectVars.LOD) / 2.0f;
@@ -770,7 +789,7 @@ void ProjectValuesKernel(T *pxOutput, const S *pxInput, const ProjectVars &proje
     // this looks really strange, but since we know that the chunk dimension group for the input is always the projected and projection dimensions, this works
     int32_t localChunkIndex[Dimensionality_Max];
     for (int i = 0; i < 6; i++)
-      localChunkIndex[i] = (indexValues.voxelMin[i] - projectVars.requestedMin[i]) >> projectVars.LOD;
+      localChunkIndex[i] = ((indexValues.voxelMin[i] - projectVars.requestedMin[i] - 1) >> projectVars.LOD) + 1;
 
     localChunkIndex[projectVars.projectedDimensions[0]] = dimension0 + offsetPair[0];
     localChunkIndex[projectVars.projectedDimensions[1]] = dimension1 + offsetPair[1];
