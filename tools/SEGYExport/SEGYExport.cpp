@@ -36,6 +36,9 @@
 
 #include "SEGYUtils/VDSSEGYInfo.h"
 
+#ifndef WIN32
+#include <signal.h>
+#endif
 template <SEGY::Endianness ENDIANNESS, SEGY::BinaryHeader::DataSampleFormatCode FORMAT>
 void
 copySamplesToSEGY(const float* prVDSData, unsigned char* puSEGYData, int iSampleMin, int iSampleMax)
@@ -191,6 +194,9 @@ copySamplesToSEGY(SEGY::Endianness endianess, SEGY::BinaryHeader::DataSampleForm
 int
 main(int argc, char *argv[])
 {
+#ifndef WIN32
+  signal(SIGPIPE, SIG_IGN);
+#endif
   //auto start_time = std::chrono::high_resolution_clock::now();
 
   cxxopts::Options options("SEGYExport", "SEGYExport - A tool to export a volume data store (VDS) to a SEG-Y file\n\nUse -H or see online documentation for connection string paramters:\nhttp://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/seismic/open-vds/connection.html\n");

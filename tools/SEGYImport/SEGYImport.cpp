@@ -87,6 +87,7 @@ int64_t GetTotalSystemMemory()
 }
 
 #include <cfloat>
+#include <signal.h>
 #endif
 
 constexpr double METERS_PER_FOOT = 0.3048;
@@ -2538,6 +2539,9 @@ main(int argc, char* argv[])
   bool is_tty = _isatty(_fileno(stdout)) != 0;
 #else
   bool is_tty = isatty(fileno(stdout));
+#endif
+#ifndef WIN32
+  signal(SIGPIPE, SIG_IGN);
 #endif
   //auto start_time = std::chrono::high_resolution_clock::now();
   cxxopts::Options options("SEGYImport", "SEGYImport - A tool to scan and import a SEG-Y file to a volume data store (VDS)\n\nUse -H or see online documentation for connection string parameters:\nhttp://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/seismic/open-vds/connection.html\n");
