@@ -397,20 +397,21 @@ static void beforeBlockCB(uv_prepare_t *handle)
         {
           switch (responseCode)
           {
+          case 200: // OK
           case 201: // CREATED
           case 202: // ACCEPTED
           case 203: // NON-AUTHORITATIVE INFORMATION
           case 204: // NO CONTENT
           case 205: // RESET CONTENT
+          case 206: // PARTIAL CONTENT. Will happen when using range-headers for adaptive compression.
           case 207: // MULTI-STATUS
           case 208: // ALREADY REPORTED
           case 226: // IM USED
-          case 200: // OK
-          case 206: // PARTIAL CONTENT. Will happen when using range-headers for adaptive compression.
             break; //success
 
           case 409: // CONFLICT
           case 500: // INTERNAL_SERVER_ERROR
+          case 502: // BAD GATEWAY
           case 503: // SERVICE_UNAVAILABLE
             if (socketContext->shouldRetry())
             {
@@ -458,18 +459,21 @@ static void beforeBlockCB(uv_prepare_t *handle)
           }
         }
       }
-      else if ((code == CURLE_OPERATION_TIMEDOUT || code == CURLE_PARTIAL_FILE) && socketContext->shouldRetry())
+      else if (socketContext->shouldRetry())
       {
-        char* url = NULL;
-        curl_easy_getinfo(socketContext->curlEasy, CURLINFO_EFFECTIVE_URL, &url);
-        eventLoopData->logger.LogWarning(fmt::format("CURL error: {}. Automatic retries {}", CURLErrorMessage(socketContext->curlEasy, code), url));
-        curl_multi_remove_handle(eventLoopData->curlMulti, socketContext->curlEasy);
+        if (code != CURLE_SSL_CACERT && code != CURLE_ABORTED_BY_CALLBACK)
+        {
+          char* url = NULL;
+          curl_easy_getinfo(socketContext->curlEasy, CURLINFO_EFFECTIVE_URL, &url);
+          eventLoopData->logger.LogWarning(fmt::format("CURL error: {}. Automatic retries {}", CURLErrorMessage(socketContext->curlEasy, code), url));
+          curl_multi_remove_handle(eventLoopData->curlMulti, socketContext->curlEasy);
 
-        CURL* dup = curl_easy_duphandle(socketContext->curlEasy);
-        curl_easy_cleanup(socketContext->curlEasy);
-        socketContext->curlEasy = dup;
-        curl_multi_add_handle(eventLoopData->curlMulti, dup);
-        continue;
+          CURL* dup = curl_easy_duphandle(socketContext->curlEasy);
+          curl_easy_cleanup(socketContext->curlEasy);
+          socketContext->curlEasy = dup;
+          curl_multi_add_handle(eventLoopData->curlMulti, dup);
+          continue;
+        }
       }
       else
       {
