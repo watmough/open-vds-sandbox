@@ -11,6 +11,10 @@
 
 #include <assert.h>
 
+#ifndef WIN32
+#include <signal.h>
+#endif
+
 inline char asciitolower(char in) {
   if (in <= 'Z' && in >= 'A')
     return in - ('Z' - 'z');
@@ -36,6 +40,9 @@ static void printProgress(OpenVDS::OutputPrinter &outputPrinter, int64_t totalCh
 
 int main(int argc, char **argv)
 {
+#ifndef WIN32
+  signal(SIGPIPE, SIG_IGN);
+#endif
   std::string info = R"help(VDSCopy - A tool for copying a VDS between locations
 
 VDSCopy will create a new dataset in the target location and copy the content of the source.
