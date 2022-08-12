@@ -110,12 +110,12 @@ VolumeDataRegion::VolumeDataRegion(VolumeDataLayer const &volumeDataLayer, const
     if(volumeDataChannelMapping)
     {
       m_chunkMin[dimension] = volumeDataChannelMapping->GetMappedChunkIndexFromVoxel(volumeDataLayer.GetPrimaryChannelLayer(), voxelMin, dimension);
-      m_chunkMax[dimension] = volumeDataChannelMapping->GetMappedChunkIndexFromVoxel(volumeDataLayer.GetPrimaryChannelLayer(), voxelMax, dimension);
+      m_chunkMax[dimension] = volumeDataChannelMapping->GetMappedChunkIndexFromVoxel(volumeDataLayer.GetPrimaryChannelLayer(), voxelMax - 1, dimension);
     }
     else
     {
       m_chunkMin[dimension] = volumeDataLayer.VoxelToIndex(voxelMin, dimension);
-      m_chunkMax[dimension] = volumeDataLayer.VoxelToIndex(voxelMax, dimension);
+      m_chunkMax[dimension] = volumeDataLayer.VoxelToIndex(voxelMax - 1, dimension);
     }
 
     m_layerModulo[dimension] = volumeDataLayer.m_modulo[dimension];
