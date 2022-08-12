@@ -5,7 +5,7 @@ from typing import Tuple
 import pytest
 import openvds
 
-from segyimport_test_config import test_data_dir, ImportExecutor, TempVDSGuard
+from segyimport_test_config import ImportExecutor, TempVDSGuard, segyimport_test_data_dir
 
 
 @pytest.fixture
@@ -14,8 +14,8 @@ def output_vds() -> TempVDSGuard:
 
 
 @pytest.fixture
-def mutes_segy() -> str:
-    return os.path.join(test_data_dir, "Plugins", "ImportPlugins", "SEGYUnittest", "Mutes",
+def mutes_segy(segyimport_test_data_dir) -> str:
+    return os.path.join(segyimport_test_data_dir, "Mutes",
                         "ST0202R08_PS_PrSDM_CIP_gathers_in_PP_Time_modified_subset.segy")
 
 

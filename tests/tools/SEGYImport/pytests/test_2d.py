@@ -4,7 +4,7 @@ from pathlib import Path
 import pytest
 import openvds
 
-from segyimport_test_config import test_data_dir, ImportExecutor, TempVDSGuard
+from segyimport_test_config import ImportExecutor, TempVDSGuard, platform_integration_test_data_dir
 
 
 @pytest.fixture
@@ -22,15 +22,13 @@ def output_vds() -> TempVDSGuard:
 
 
 @pytest.fixture
-def poststack_2d_segy() -> str:
-    return os.path.join(test_data_dir, "HeadwavePlatform", "PlatformIntegration", "PICEANCE-2D",
-                        "A_raw_migr_stack_FF04_03.segy")
+def poststack_2d_segy(platform_integration_test_data_dir) -> str:
+    return os.path.join(platform_integration_test_data_dir, "PICEANCE-2D", "A_raw_migr_stack_FF04_03.segy")
 
 
 @pytest.fixture
-def prestack_2d_segy() -> str:
-    return os.path.join(test_data_dir, "HeadwavePlatform", "PlatformIntegration", "PICEANCE-2D",
-                        "PostMigration_CDP_NMO_FF04_03_031314.sgy")
+def prestack_2d_segy(platform_integration_test_data_dir) -> str:
+    return os.path.join(platform_integration_test_data_dir, "PICEANCE-2D", "PostMigration_CDP_NMO_FF04_03_031314.sgy")
 
 
 def test_2d_poststack_volume_info(poststack_2d_segy, output_vds):

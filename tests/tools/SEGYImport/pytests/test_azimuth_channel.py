@@ -6,7 +6,7 @@ import pytest
 import openvds
 import numpy as np
 
-from segyimport_test_config import test_data_dir, ImportExecutor, TempVDSGuard
+from segyimport_test_config import platform_integration_test_data_dir, tt_test_data_dir, ImportExecutor, TempVDSGuard
 
 
 @pytest.fixture
@@ -15,14 +15,13 @@ def output_vds() -> TempVDSGuard:
 
 
 @pytest.fixture
-def azimuth_degrees_segy() -> str:
-    return os.path.join(test_data_dir, "HeadwavePlatform", "PlatformIntegration", "WAZ", "waz_trial.segy")
+def azimuth_degrees_segy(platform_integration_test_data_dir) -> str:
+    return os.path.join(platform_integration_test_data_dir, "WAZ", "waz_trial.segy")
 
 
 @pytest.fixture
-def azimuth_offset_xy_segy() -> str:
-    return os.path.join(test_data_dir, "HeadwavePlatform", "PlatformIntegration", "Teleport", "Teleport_Trim",
-                        "waz", "CG3_090008B32871_subset.segy")
+def azimuth_offset_xy_segy(tt_test_data_dir) -> str:
+    return os.path.join(tt_test_data_dir, "waz", "CG3_090008B32871_subset.segy")
 
 
 @pytest.fixture

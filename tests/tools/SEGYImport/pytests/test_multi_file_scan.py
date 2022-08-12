@@ -5,7 +5,7 @@ from typing import List
 import pytest
 import openvds
 
-from segyimport_test_config import test_data_dir, ImportExecutor, TempScanFileGuard, TempVDSGuard
+from segyimport_test_config import segyimport_test_data_dir, ImportExecutor, TempScanFileGuard, TempVDSGuard
 
 
 @pytest.fixture
@@ -20,8 +20,8 @@ def multi_file_input_parts_count() -> int:
 
 
 @pytest.fixture
-def multi_file_input_dir() -> str:
-    return os.path.join(test_data_dir, "Plugins", "ImportPlugins", "SEGYUnittest", "MultiFile", "ST0202R08_Gather_Time")
+def multi_file_input_dir(segyimport_test_data_dir) -> str:
+    return os.path.join(segyimport_test_data_dir, "MultiFile", "ST0202R08_Gather_Time")
 
 
 @pytest.fixture

@@ -5,7 +5,7 @@ from typing import Tuple
 import pytest
 import openvds
 
-from segyimport_test_config import test_data_dir, ImportExecutor, TempVDSGuard, TempScanFileGuard
+from segyimport_test_config import ImportExecutor, TempVDSGuard, TempScanFileGuard, segyimport_test_data_dir
 
 
 @pytest.fixture
@@ -28,26 +28,23 @@ def output_scan() -> TempScanFileGuard:
 
 
 @pytest.fixture
-def offset_sorted_segy() -> str:
-    return os.path.join(test_data_dir, "Plugins", "ImportPlugins", "SEGYUnittest", "OffsetSorted", "ST0202.segy")
+def offset_sorted_segy(segyimport_test_data_dir) -> str:
+    return os.path.join(segyimport_test_data_dir, "OffsetSorted", "ST0202.segy")
 
 
 @pytest.fixture
-def offset_sorted_deduped_segy() -> str:
-    return os.path.join(test_data_dir, "Plugins", "ImportPlugins", "SEGYUnittest", "OffsetSorted",
-                        "ST0202_deduped.segy")
+def offset_sorted_deduped_segy(segyimport_test_data_dir) -> str:
+    return os.path.join(segyimport_test_data_dir, "OffsetSorted", "ST0202_deduped.segy")
 
 
 @pytest.fixture
-def offset_sorted_scan() -> str:
-    return os.path.join(test_data_dir, "Plugins", "ImportPlugins", "SEGYUnittest", "OffsetSorted",
-                        "ST0202.segy.scan.json")
+def offset_sorted_scan(segyimport_test_data_dir) -> str:
+    return os.path.join(segyimport_test_data_dir, "OffsetSorted", "ST0202.segy.scan.json")
 
 
 @pytest.fixture
-def conventional_sorted_segy() -> str:
-    return os.path.join(test_data_dir, "Plugins", "ImportPlugins", "SEGYUnittest", "OffsetSorted",
-                        "ST0202_conventional.segy")
+def conventional_sorted_segy(segyimport_test_data_dir) -> str:
+    return os.path.join(segyimport_test_data_dir, "OffsetSorted", "ST0202_conventional.segy")
 
 
 @pytest.fixture

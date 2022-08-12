@@ -5,8 +5,8 @@ import openvds
 import pytest
 import os
 
-from segyimport_test_config import ImportExecutor, TempVDSGuard, segyimport_test_data_dir, teleport_test_data_dir, \
-    platform_integration_test_data_dir, volve_data_dir
+from segyimport_test_config import ImportExecutor, TempVDSGuard, segyimport_test_data_dir, tt_test_data_dir, \
+    platform_integration_test_data_dir, volve_data_dir, platform_integration_test_data_dir_non_fixture
 
 
 def construct_crossline_executor(segy_filename: str, output_vds: TempVDSGuard,
@@ -34,8 +34,8 @@ def conventional_output_vds() -> TempVDSGuard:
 
 
 @pytest.fixture
-def teleport_conventional_segy(teleport_test_data_dir) -> str:
-    return os.path.join(teleport_test_data_dir, "Teleport_Trim", "3D_Stack", "ST0202R08_TIME.segy")
+def teleport_conventional_segy(tt_test_data_dir) -> str:
+    return os.path.join(tt_test_data_dir, "3D_Stack", "ST0202R08_TIME.segy")
 
 
 @pytest.fixture
@@ -45,7 +45,8 @@ def teleport_crossline_sorted_segy(segyimport_test_data_dir) -> str:
 
 @pytest.fixture
 def volve_crossline_sorted_segy(volve_data_dir) -> str:
-    return os.path.join(volve_data_dir, "ST0202", "Stacks", "ST0202R08_PS_PSDM_FULL_OFFSET_PP_TIME.MIG_FIN.POST_STACK.3D.JS-017534_crossline_sorted.segy")
+    return os.path.join(volve_data_dir, "ST0202", "Stacks",
+                        "ST0202R08_PS_PSDM_FULL_OFFSET_PP_TIME.MIG_FIN.POST_STACK.3D.JS-017534_crossline_sorted.segy")
 
 
 @pytest.fixture
@@ -224,9 +225,9 @@ prestack_survey_vectors = [
     (19.555556, 15.573333)
 ]
 
-poststack_segy_filename = os.path.join(platform_integration_test_data_dir(), "ImporterTests",
+poststack_segy_filename = os.path.join(platform_integration_test_data_dir_non_fixture(), "ImporterTests",
                                        "poststack_Xl-inc_In-inc.segy")
-prestack_segy_filename = os.path.join(platform_integration_test_data_dir(), "ImporterTests",
+prestack_segy_filename = os.path.join(platform_integration_test_data_dir_non_fixture(), "ImporterTests",
                                       "prestack_Xl-inc_In-inc_2031-2040.segy")
 
 
