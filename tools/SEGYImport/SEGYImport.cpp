@@ -1505,7 +1505,7 @@ createSEGYMetadata(DataProvider &dataProvider, SEGYFileInfo const &fileInfo, Ope
 }
 
 void
-createSurveyCoordinateSystemMetadata(SEGYFileInfo const& fileInfo, SEGY::BinaryHeader::MeasurementSystem segyMeasurementSystem, std::string const &crsWkt, OpenVDS::MetadataContainer& metadataContainer, PrimaryKeyValue primaryKey)
+createSurveyCoordinateSystemWKTAndUnitMetadata(SEGYFileInfo const& fileInfo, SEGY::BinaryHeader::MeasurementSystem segyMeasurementSystem, std::string const& crsWkt, OpenVDS::MetadataContainer& metadataContainer)
 {
   if (fileInfo.m_segmentInfoLists.empty() && fileInfo.m_segmentInfoListsByOffset.empty()) return;
 
@@ -1521,6 +1521,12 @@ createSurveyCoordinateSystemMetadata(SEGYFileInfo const& fileInfo, SEGY::BinaryH
   {
     metadataContainer.SetMetadataString(LATTICE_CATEGORY, LATTICE_UNIT, KNOWNMETADATA_UNIT_FOOT);
   }
+}
+
+void
+createSurveyCoordinateSystemMetadata(SEGYFileInfo const& fileInfo, SEGY::BinaryHeader::MeasurementSystem segyMeasurementSystem, OpenVDS::MetadataContainer& metadataContainer, PrimaryKeyValue primaryKey)
+{
+  if (fileInfo.m_segmentInfoLists.empty() && fileInfo.m_segmentInfoListsByOffset.empty()) return;
 
   if (fileInfo.Is2D()) return;
 
@@ -3432,10 +3438,13 @@ main(int argc, char* argv[])
     return EXIT_FAILURE;
   }
 
+  // Always create metadata for WKT (if set) and SEGY units
+  createSurveyCoordinateSystemWKTAndUnitMetadata(fileInfo, segyMeasurementSystem, crsWkt, metadataContainer);
+
   if (primaryKeyValue == PrimaryKeyValue::InlineNumber || primaryKeyValue == PrimaryKeyValue::CrosslineNumber)
   {
     // only create the lattice metadata if the primary key is Inline or Crossline, else we may not have Inline/Crossline bin data
-    createSurveyCoordinateSystemMetadata(fileInfo, segyMeasurementSystem, crsWkt, metadataContainer, primaryKeyValue);
+    createSurveyCoordinateSystemMetadata(fileInfo, segyMeasurementSystem, metadataContainer, primaryKeyValue);
   }
 
   create2DTraceInformationMetadata(is2D, traceInfo2DManager.get(), metadataContainer, error);
