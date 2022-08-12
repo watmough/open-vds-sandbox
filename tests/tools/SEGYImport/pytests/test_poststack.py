@@ -4,7 +4,7 @@ from pathlib import Path
 import pytest
 import openvds
 
-from segyimport_test_config import test_data_dir, ImportExecutor, TempVDSGuard
+from segyimport_test_config import ImportExecutor, TempVDSGuard, tt_test_data_dir
 
 
 @pytest.fixture
@@ -22,9 +22,8 @@ def output_vds() -> TempVDSGuard:
 
 
 @pytest.fixture
-def poststack_segy() -> str:
-    return os.path.join(test_data_dir, "HeadwavePlatform", "PlatformIntegration", "Teleport", "Teleport_Trim",
-                        "3D_Stack", "ST0202R08_TIME.segy")
+def poststack_segy(tt_test_data_dir) -> str:
+    return os.path.join(tt_test_data_dir, "3D_Stack", "ST0202R08_TIME.segy")
 
 
 def test_crs_wkt(poststack_segy, output_vds, crs_wkt):

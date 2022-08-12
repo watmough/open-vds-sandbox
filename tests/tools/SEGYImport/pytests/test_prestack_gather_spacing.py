@@ -5,7 +5,7 @@ from typing import Tuple, Union
 import pytest
 import openvds
 
-from segyimport_test_config import test_data_dir, ImportExecutor, TempVDSGuard
+from segyimport_test_config import ImportExecutor, TempVDSGuard, tt_test_data_dir
 
 
 def construct_respace_executor(output_vds: TempVDSGuard, segy_name: str, respace_setting: Union[str, None]) -> ImportExecutor:
@@ -28,9 +28,8 @@ def output_vds() -> TempVDSGuard:
 
 
 @pytest.fixture
-def prestack_segy() -> str:
-    return os.path.join(test_data_dir, "HeadwavePlatform", "PlatformIntegration", "Teleport", "Teleport_Trim",
-                        "3D_Prestack", "ST0202R08_Gather_Time.segy")
+def prestack_segy(tt_test_data_dir) -> str:
+    return os.path.join(tt_test_data_dir, "3D_Prestack", "ST0202R08_Gather_Time.segy")
 
 
 @pytest.fixture
