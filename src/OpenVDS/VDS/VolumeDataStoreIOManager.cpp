@@ -797,7 +797,9 @@ bool VolumeDataStoreIOManager::WriteChunkImpl(const VolumeDataChunk& chunk, std:
       auto &uploadRequest = m_pendingUploadRequests[jobId];
       if (uploadRequest.attempts < 2)
       {
+        m_vds.logger.LogWarning(fmt::format("Upload error on {} : {} Retrying", uploadRequest.retryInfo.url, error.string));
         uploadRequest.Retry(*m_ioManager);
+
         return;
       }
       else
