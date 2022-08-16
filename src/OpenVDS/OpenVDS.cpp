@@ -184,7 +184,8 @@ static std::unique_ptr<OpenOptions> createS3OpenOptions(const std::string &url, 
     {
       openOptions->endpointOverride = connectionPair.second;
     }
-    else if (connectionPair.first == "accesskeyid" || connectionPair.first == "access_key_id" || connectionPair.first == "awsaccesskeyid" || connectionPair.first == "aws_access_key_id")
+    else if (connectionPair.first == "accesskeyid" || connectionPair.first == "access_key_id"
+      || connectionPair.first == "awsaccesskeyid" || connectionPair.first == "aws_access_key_id")
     {
       openOptions->accessKeyId = connectionPair.second;
     }
