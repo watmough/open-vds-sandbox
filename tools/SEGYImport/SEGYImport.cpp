@@ -92,6 +92,66 @@ int64_t GetTotalSystemMemory()
 
 constexpr double METERS_PER_FOOT = 0.3048;
 
+namespace OpenVDS
+{
+  extern Json::Value SerializeVolumeDataLayoutDescriptor(VolumeDataLayout const &volumeDataLayout);
+  extern Json::Value SerializeAxisDescriptors(VolumeDataLayout const &volumeDataLayout);
+  extern Json::Value SerializeChannelDescriptors(VolumeDataLayout const &volumeDataLayout);
+  extern Json::Value SerializeVolumeDataLayoutDescriptor(VolumeDataLayoutDescriptor const& layoutDescriptor);
+  extern Json::Value SerializeAxisDescriptor(VolumeDataAxisDescriptor const& axisDescriptor);
+  extern Json::Value SerializeChannelDescriptor(VolumeDataChannelDescriptor const& channelDescriptor);
+}
+
+static std::string convertToString(const Json::Value &value)
+{
+  std::stringstream stream;
+  Json::StreamWriterBuilder builder;
+  builder["commentStyle"] = "None";
+  builder["indentation"] = "   ";  // or whatever you like
+  std::unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
+  writer->write(value, &stream);
+  return stream.str();
+}
+
+
+Json::Value SerializeAxisDescriptors(std::vector<OpenVDS::VolumeDataAxisDescriptor> const& axisDescriptors)
+{
+  Json::Value axisDescriptorsJson(Json::arrayValue);
+
+  for(auto &axisDescriptor : axisDescriptors)
+  {
+    axisDescriptorsJson.append(OpenVDS::SerializeAxisDescriptor(axisDescriptor));
+  }
+  return axisDescriptorsJson;
+}
+
+Json::Value SerializeChannelDescriptors(std::vector<OpenVDS::VolumeDataChannelDescriptor> const &channelDescriptors)
+{
+  Json::Value channelDescriptorsJson(Json::arrayValue);
+
+  for(auto &channelDescriptor : channelDescriptors)
+  {
+    channelDescriptorsJson.append(OpenVDS::SerializeChannelDescriptor(channelDescriptor));
+  }
+  return channelDescriptorsJson;
+}
+
+
+std::string GetUrlWithPersistentID(const std::string& url, const std::string& persistentID, bool isUrlHttpSupported)
+{
+  if (persistentID.empty() || !isUrlHttpSupported)
+    return url;
+  
+  std::string baseUrl;
+  std::string parameters;
+  splitUrlOnParameters(url, baseUrl, parameters);
+  if (baseUrl.back() != '/')
+  {
+    baseUrl.push_back('/');
+  }
+  baseUrl.insert(baseUrl.end(), persistentID.begin(), persistentID.end());
+  return baseUrl;
+}
 enum class TraceSpacingByOffset
 {
   Off = 0,
@@ -2586,10 +2646,12 @@ main(int argc, char* argv[])
   bool version = false;
   bool disableInfo = false;
   bool disableWarning = false;
-  std::string attributeName = AMPLITUDE_ATTRIBUTE_NAME;
-  std::string attributeUnit;
   bool isMutes = false;
   bool isAzimuth = false;
+  bool resumeMode = false;
+  int flushFrequency = 60;
+  std::string attributeName = AMPLITUDE_ATTRIBUTE_NAME;
+  std::string attributeUnit;
   SEGY::AzimuthType azimuthType = SEGY::AzimuthType::Azimuth;
   SEGY::AzimuthUnits azimuthUnit = SEGY::AzimuthUnits::Degrees;
   float azimuthScaleFactor = 1.0f;
@@ -2662,6 +2724,8 @@ main(int argc, char* argv[])
   options.add_option("", "", "azimuth-unit", std::string("Azimuth unit. Supported azimuth units are: ") + supportedAzimuthUnits + ".", cxxopts::value<std::string>(azimuthUnitString), "<string>");
   options.add_option("", "", "azimuth-scale", "Azimuth scale factor. Trace header field Azimuth values will be multiplied by this factor.", cxxopts::value<float>(azimuthScaleFactor), "<value>");
   options.add_option("", "", "respace-gathers", std::string("Respace traces in prestack gathers by Offset trace header field. Supported options are: ") + supportedTraceSpacingTypes + ".", cxxopts::value<std::string>(traceSpacingByOffsetString), "<string>");
+  options.add_option("", "", "resume", std::string("Resume mode."), cxxopts::value<bool>(resumeMode), "");
+  options.add_option("", "", "flush-frequency", std::string("Flush frequency in seconds. SEGYImport can resume imports at flush checkpoints. 0 (zero) results in never flushing. Default is 60"), cxxopts::value<int>(flushFrequency), "<value>");
   options.add_option("", "q", "quiet", "Disable info level output.", cxxopts::value<bool>(disableInfo), "");
   options.add_option("", "Q", "very-quiet", "Disable warning level output.", cxxopts::value<bool>(disableWarning), "");
   options.add_option("", "h", "help", "Print this help information", cxxopts::value<bool>(help), "");
@@ -3473,35 +3537,59 @@ main(int argc, char* argv[])
     return EXIT_FAILURE;
   }
 
-  OpenVDS::Error createError;
-
   OpenVDS::ScopedVDSHandle handle;
-
-  if(OpenVDS::IsSupportedProtocol(url))
+  url = GetUrlWithPersistentID(url, persistentID, OpenVDS::IsSupportedProtocol(url));
+  if (resumeMode)
   {
-    if (!persistentID.empty())
+    OpenVDS::Error openError;
+    handle = OpenVDS::Open(url, urlConnection, openError);
+    if (openError.code != 0)
     {
-      std::string baseUrl;
-      std::string parameters;
-      splitUrlOnParameters(url, baseUrl, parameters);
-      if (baseUrl.back() != '/')
-      {
-        baseUrl.push_back('/');
-      }
-      baseUrl.insert(baseUrl.end(), persistentID.begin(), persistentID.end());
-      url = baseUrl + parameters;
+      outputPrinter.printError("VDS", "Could not open VDS in resume mode", openError.string);
+      return EXIT_FAILURE;
     }
-    handle = OpenVDS::Create(url, urlConnection, layoutDescriptor, axisDescriptors, channelDescriptors, metadataContainer, compressionMethod, compressionTolerance, createError);
+    auto layout = OpenVDS::GetLayout(handle);
+    {
+      auto layoutJson = OpenVDS::SerializeVolumeDataLayoutDescriptor(*layout);
+      auto generatedlayoutJson = OpenVDS::SerializeVolumeDataLayoutDescriptor(layoutDescriptor);
+      if (layoutJson["forceFullResolutionDimension"].asBool() == generatedlayoutJson["forceFullResolutionDimension"].asBool())
+        generatedlayoutJson["fullResolutionDimension"] = layoutJson["fullResolutionDimension"];
+      if (layoutJson != generatedlayoutJson)
+      {
+        outputPrinter.printError("VDS", "VolumeDataLayout mismatch. The opened VolumeDataLayout does match the VolumeDataLayout generated from input.", fmt::format("\nOpened: {}\nGenerated: {}\n", convertToString(layoutJson), convertToString(generatedlayoutJson)));
+        return EXIT_FAILURE;
+      }
+    }
+    {
+      auto axisJson = OpenVDS::SerializeAxisDescriptors(*layout);
+      auto generatedAxisJson = SerializeAxisDescriptors(axisDescriptors);
+      if (axisJson != generatedAxisJson)
+      {
+        outputPrinter.printError("VDS", "VolumeDataAxisDescriptors mismatch. The Axis descriptors from the opened VDS does not match the axis descriptors generated from input."
+          , fmt::format("\nOpened: {}\nGenerated: {}\n", convertToString(axisJson), convertToString(generatedAxisJson)));
+        return EXIT_FAILURE;
+      }
+    }
+    {
+      auto channelJson = OpenVDS::SerializeChannelDescriptors(*layout);
+      auto generatedChannelJson = SerializeChannelDescriptors(channelDescriptors);
+      if (channelJson != generatedChannelJson)
+      {
+        outputPrinter.printError("VDS", "VolumeDataChannelDescriptors mismatch. The Channel descriptors from the opened VDS does not match the channel descriptors generated from input."
+          , fmt::format("\nOpened: {}\nGenerated: {}\n", convertToString(channelJson), convertToString(generatedChannelJson)));
+        return EXIT_FAILURE;
+      }
+    }
   }
   else
   {
-    handle = OpenVDS::Create(OpenVDS::VDSFileOpenOptions(url), layoutDescriptor, axisDescriptors, channelDescriptors, metadataContainer, compressionMethod, compressionTolerance, createError);
-  }
-
-  if (createError.code != 0)
-  {
-    outputPrinter.printError("VDS", "Could not create VDS", createError.string);
-    return EXIT_FAILURE;
+    OpenVDS::Error createError;
+    handle = OpenVDS::Create(url, urlConnection, layoutDescriptor, axisDescriptors, channelDescriptors, metadataContainer, compressionMethod, compressionTolerance, createError);
+    if (createError.code != 0)
+    {
+      outputPrinter.printError("VDS", "Could not create VDS", createError.string);
+      return EXIT_FAILURE;
+    }
   }
 
   auto accessManager = OpenVDS::GetAccessManager(handle);
@@ -3554,12 +3642,14 @@ main(int argc, char* argv[])
     }
   }
 
-  auto amplitudeAccessor = accessManager.CreateVolumeDataPageAccessor(writeDimensionGroup, 0, 0, 8, OpenVDS::VolumeDataAccessManager::AccessMode_Create);
-  auto traceFlagAccessor = accessManager.CreateVolumeDataPageAccessor(writeDimensionGroup, 0, 1, 8, OpenVDS::VolumeDataAccessManager::AccessMode_Create);
-  auto segyTraceHeaderAccessor = accessManager.CreateVolumeDataPageAccessor(writeDimensionGroup, 0, 2, 8, OpenVDS::VolumeDataAccessManager::AccessMode_Create);
-  auto offsetAccessor = fileInfo.HasGatherOffset() ? accessManager.CreateVolumeDataPageAccessor(writeDimensionGroup, 0, offsetChannelIndex, 8, OpenVDS::VolumeDataAccessManager::AccessMode_Create) : nullptr;
-  auto azimuthAccessor = isAzimuth ? accessManager.CreateVolumeDataPageAccessor(writeDimensionGroup, 0, azimuthChannelIndex, 8, OpenVDS::VolumeDataAccessManager::AccessMode_Create) : nullptr;
-  auto muteAccessor = isMutes ? accessManager.CreateVolumeDataPageAccessor(writeDimensionGroup, 0, muteChannelIndex, 8, OpenVDS::VolumeDataAccessManager::AccessMode_Create) : nullptr;
+  auto accessMode = resumeMode ? OpenVDS::VolumeDataAccessManager::AccessMode_ReadWrite : OpenVDS::VolumeDataAccessManager::AccessMode_Create;
+
+  auto amplitudeAccessor = accessManager.CreateVolumeDataPageAccessor(writeDimensionGroup, 0, 0, 8, accessMode);
+  auto traceFlagAccessor = accessManager.CreateVolumeDataPageAccessor(writeDimensionGroup, 0, 1, 8, accessMode);
+  auto segyTraceHeaderAccessor = accessManager.CreateVolumeDataPageAccessor(writeDimensionGroup, 0, 2, 8, accessMode);
+  auto offsetAccessor = fileInfo.HasGatherOffset() ? accessManager.CreateVolumeDataPageAccessor(writeDimensionGroup, 0, offsetChannelIndex, 8, accessMode) : nullptr;
+  auto azimuthAccessor = isAzimuth ? accessManager.CreateVolumeDataPageAccessor(writeDimensionGroup, 0, azimuthChannelIndex, 8, accessMode) : nullptr;
+  auto muteAccessor = isMutes ? accessManager.CreateVolumeDataPageAccessor(writeDimensionGroup, 0, muteChannelIndex, 8, accessMode) : nullptr;
 
   int64_t traceByteSize = fileInfo.TraceByteSize();
 
@@ -3581,6 +3671,7 @@ main(int argc, char* argv[])
     int primaryKeyStop;
     std::map<size_t, std::pair<size_t, size_t>>
       lowerUpperSegmentIndices;
+    bool skip;
   };
 
   // chunk information for iterating crossline-sorted data in input order (instead of default chunk order)
@@ -3615,12 +3706,27 @@ main(int argc, char* argv[])
 
   std::vector<ChunkInfo> chunkInfos;
   chunkInfos.resize(amplitudeAccessor->GetChunkCount());
-  std::vector<DataRequestInfo> dataRequests;
-  dataRequests.reserve(chunkInfos.capacity());
   for (int64_t chunk = 0; chunk < amplitudeAccessor->GetChunkCount(); chunk++)
   {
     auto &chunkInfo = chunkInfos[chunk];
+    chunkInfo.skip = true;
     amplitudeAccessor->GetChunkMinMax(chunk, chunkInfo.min, chunkInfo.max);
+
+    if (amplitudeAccessor->GetChunkVolumeDataHash(chunk) == 0)
+      chunkInfo.skip = false;
+    if (chunkInfo.min[0] == 0)
+    {
+      if (traceFlagAccessor->GetChunkVolumeDataHash(traceFlagAccessor->GetMappedChunkIndex(chunk)) == 0)
+        chunkInfo.skip = false;
+      if (segyTraceHeaderAccessor->GetChunkVolumeDataHash(segyTraceHeaderAccessor->GetMappedChunkIndex(chunk)) == 0)
+        chunkInfo.skip = false;
+      if (offsetAccessor != nullptr && offsetAccessor->GetChunkVolumeDataHash(offsetAccessor->GetMappedChunkIndex(chunk)) == 0)
+        chunkInfo.skip = false;
+      if (azimuthAccessor != nullptr && azimuthAccessor->GetChunkVolumeDataHash(azimuthAccessor->GetMappedChunkIndex(chunk)) == 0)
+        chunkInfo.skip = false;
+      if (muteAccessor != nullptr && muteAccessor->GetChunkVolumeDataHash(muteAccessor->GetMappedChunkIndex(chunk)) == 0)
+        chunkInfo.skip = false;
+    }
 
     if (primaryKeyValue == PrimaryKeyValue::CrosslineNumber)
     {
@@ -3729,7 +3835,8 @@ main(int argc, char* argv[])
         const size_t upperSegmentIndex = std::distance(segmentInfoList.begin(), upper);
         chunkInfo.lowerUpperSegmentIndices[fileIndex] = std::make_pair(lowerSegmentIndex, upperSegmentIndex);
 
-        traceDataManagers[fileIndex].addDataRequests(chunkInfo.secondaryKeyStart, chunkInfo.secondaryKeyStop, lower, upper);
+        if (!chunkInfo.skip)
+          traceDataManagers[fileIndex].addDataRequests(chunkInfo.secondaryKeyStart, chunkInfo.secondaryKeyStop, lower, upper);
       }
     }
   }
@@ -3738,6 +3845,12 @@ main(int argc, char* argv[])
   {
     dimChunkPitches[i] = dimChunkPitches[i - 1] * dimChunkCounts[i - 1];
   }
+
+  if (flushFrequency == 0)
+  {
+    flushFrequency = std::numeric_limits<decltype(flushFrequency)>::max();
+  }
+  auto last_flush = std::chrono::steady_clock::now();
 
   for (int64_t chunkSequence = 0; chunkSequence < amplitudeAccessor->GetChunkCount() && error.code == 0; chunkSequence++)
   {
@@ -3796,41 +3909,47 @@ main(int argc, char* argv[])
     }
 
     auto &chunkInfo = chunkInfos[chunk];
-
+    if (chunkInfo.skip)
+      continue;
     // if we've crossed to a new primary key range then trim the trace page cache
     if (chunk > 0)
     {
       const auto& previousChunkInfo = chunkInfos[chunk - 1];
-
-      for (size_t chunkFileIndex = 0; chunkFileIndex < dataProviders.size(); ++chunkFileIndex)
+      if (!previousChunkInfo.skip)
       {
-        auto prevIndexIter = previousChunkInfo.lowerUpperSegmentIndices.find(chunkFileIndex);
-        if (prevIndexIter != previousChunkInfo.lowerUpperSegmentIndices.end())
+
+        for (size_t chunkFileIndex = 0; chunkFileIndex < dataProviders.size(); ++chunkFileIndex)
         {
-          auto currentIndexIter = chunkInfo.lowerUpperSegmentIndices.find(chunkFileIndex);
-          if (currentIndexIter != chunkInfo.lowerUpperSegmentIndices.end())
+          auto prevIndexIter = previousChunkInfo.lowerUpperSegmentIndices.find(chunkFileIndex);
+          if (prevIndexIter != previousChunkInfo.lowerUpperSegmentIndices.end())
           {
-            // This file is active in both the current and previous chunks. Check to see if we've progressed to a new set of primary keys.
-            auto previousLowerSegmentIndex = std::get<0>(prevIndexIter->second);
-            auto currentLowerSegmentIndex = std::get<0>(currentIndexIter->second);
-            if (currentLowerSegmentIndex > previousLowerSegmentIndex)
+            auto currentIndexIter = chunkInfo.lowerUpperSegmentIndices.find(chunkFileIndex);
+            if (currentIndexIter != chunkInfo.lowerUpperSegmentIndices.end())
             {
-              // we've progressed to a new set of primary keys; remove earlier pages from the cache
-              traceDataManagers[chunkFileIndex].retirePagesBefore(fileInfo.m_segmentInfoLists[chunkFileIndex][currentLowerSegmentIndex].m_traceStart);
+              // This file is active in both the current and previous chunks. Check to see if we've progressed to a new set of primary keys.
+              auto previousLowerSegmentIndex = std::get<0>(prevIndexIter->second);
+              auto currentLowerSegmentIndex = std::get<0>(currentIndexIter->second);
+              if (currentLowerSegmentIndex > previousLowerSegmentIndex)
+              {
+                // we've progressed to a new set of primary keys; remove earlier pages from the cache
+                traceDataManagers[chunkFileIndex].retirePagesBefore(fileInfo.m_segmentInfoLists[chunkFileIndex][currentLowerSegmentIndex].m_traceStart);
+              }
+            }
+            else
+            {
+              // This file was active in the previous chunk but not in the current chunk, which implies that we don't
+              // need any more data from this file.
+              traceDataManagers[chunkFileIndex].retireAllPages();
             }
           }
-          else
-          {
-            // This file was active in the previous chunk but not in the current chunk, which implies that we don't
-            // need any more data from this file.
-            traceDataManagers[chunkFileIndex].retireAllPages();
-          }
+          // else This file isn't used in either the previous or current chunks. We don't need to do anything.
         }
-        // else This file isn't used in either the previous or current chunks. We don't need to do anything.
       }
     }
 
-    OpenVDS::VolumeDataPage* amplitudePage = amplitudeAccessor->CreatePage(chunk);
+    OpenVDS::VolumeDataPage* amplitudePage = nullptr;
+    if (amplitudeAccessor->GetChunkVolumeDataHash(chunk) == 0)
+      amplitudePage = amplitudeAccessor->CreatePage(chunk);
     OpenVDS::VolumeDataPage* traceFlagPage = nullptr;
     OpenVDS::VolumeDataPage* segyTraceHeaderPage = nullptr;
     OpenVDS::VolumeDataPage* offsetPage = nullptr;
@@ -3839,17 +3958,19 @@ main(int argc, char* argv[])
 
     if (chunkInfo.min[0] == 0)
     {
-      traceFlagPage = traceFlagAccessor->CreatePage(traceFlagAccessor->GetMappedChunkIndex(chunk));
-      segyTraceHeaderPage = segyTraceHeaderAccessor->CreatePage(segyTraceHeaderAccessor->GetMappedChunkIndex(chunk));
-      if (offsetAccessor != nullptr)
+      if (traceFlagAccessor->GetChunkVolumeDataHash(traceFlagAccessor->GetMappedChunkIndex(chunk)) == 0)
+        traceFlagPage = traceFlagAccessor->CreatePage(traceFlagAccessor->GetMappedChunkIndex(chunk));
+      if (segyTraceHeaderAccessor->GetChunkVolumeDataHash(segyTraceHeaderAccessor->GetMappedChunkIndex(chunk)) == 0)
+        segyTraceHeaderPage = segyTraceHeaderAccessor->CreatePage(segyTraceHeaderAccessor->GetMappedChunkIndex(chunk));
+      if (offsetAccessor != nullptr && offsetAccessor->GetChunkVolumeDataHash(offsetAccessor->GetMappedChunkIndex(chunk)) == 0)
       {
         offsetPage = offsetAccessor->CreatePage(offsetAccessor->GetMappedChunkIndex(chunk));
       }
-      if (azimuthAccessor != nullptr)
+      if (azimuthAccessor != nullptr && azimuthAccessor->GetChunkVolumeDataHash(azimuthAccessor->GetMappedChunkIndex(chunk)) == 0)
       {
         azimuthPage = azimuthAccessor->CreatePage(azimuthAccessor->GetMappedChunkIndex(chunk));
       }
-      if (muteAccessor != nullptr)
+      if (muteAccessor != nullptr && muteAccessor->GetChunkVolumeDataHash(muteAccessor->GetMappedChunkIndex(chunk)) == 0)
       {
         mutePage = muteAccessor->CreatePage(muteAccessor->GetMappedChunkIndex(chunk));
       }
@@ -3862,14 +3983,14 @@ main(int argc, char* argv[])
     int azimuthPitch[OpenVDS::Dimensionality_Max];
     int mutePitch[OpenVDS::Dimensionality_Max];
 
-    void* amplitudeBuffer = amplitudePage->GetWritableBuffer(amplitudePitch);
+    void* amplitudeBuffer = amplitudePage ? amplitudePage->GetWritableBuffer(amplitudePitch) : nullptr;
     void* traceFlagBuffer = traceFlagPage ? traceFlagPage->GetWritableBuffer(traceFlagPitch) : nullptr;
     void* segyTraceHeaderBuffer = segyTraceHeaderPage ? segyTraceHeaderPage->GetWritableBuffer(segyTraceHeaderPitch) : nullptr;
     void* offsetBuffer = offsetPage ? offsetPage->GetWritableBuffer(offsetPitch) : nullptr;
     void* azimuthBuffer = azimuthPage ? azimuthPage->GetWritableBuffer(azimuthPitch) : nullptr;
     void* muteBuffer = mutePage ? mutePage->GetWritableBuffer(mutePitch) : nullptr;
 
-    assert(amplitudePitch[0] == 1);
+    assert(!amplitudeBuffer || amplitudePitch[0] == 1);
     assert(!traceFlagBuffer || traceFlagPitch[fileInfo.IsOffsetSorted() ? 2 : 1] == 1);
     assert(!segyTraceHeaderBuffer || segyTraceHeaderPitch[fileInfo.IsOffsetSorted() ? 2 : 1] == SEGY::TraceHeaderSize);
     assert(!offsetBuffer || offsetPitch[fileInfo.IsOffsetSorted() ? 2 : 1] == 1);
@@ -4061,6 +4182,7 @@ main(int argc, char* argv[])
             targetPrimaryIndex = primaryKeyValue == PrimaryKeyValue::CrosslineNumber ? secondaryIndex : primaryIndex,
             targetSecondaryIndex = primaryKeyValue == PrimaryKeyValue::CrosslineNumber ? primaryIndex : secondaryIndex;
 
+          if (amplitudeBuffer)
           {
             const int targetOffset = VoxelIndexToDataIndex(fileInfo, targetPrimaryIndex, targetSecondaryIndex, tertiaryIndex, chunkInfo.min, amplitudePitch);
             switch (fileInfo.m_dataSampleFormatCode)
@@ -4158,12 +4280,19 @@ main(int argc, char* argv[])
       }
     }
 
-    amplitudePage->Release();
+    if (amplitudePage) amplitudePage->Release();
     if (traceFlagPage) traceFlagPage->Release();
     if (segyTraceHeaderPage) segyTraceHeaderPage->Release();
     if (offsetPage) offsetPage->Release();
     if (azimuthPage) azimuthPage->Release();
     if (mutePage) mutePage->Release();
+
+    auto now = std::chrono::steady_clock::now();
+    if (now - last_flush > std::chrono::seconds(flushFrequency))
+    {
+      last_flush = now;
+      accessManager.FlushUploadQueue(true);
+    }
   }
 
   amplitudeAccessor->Commit();

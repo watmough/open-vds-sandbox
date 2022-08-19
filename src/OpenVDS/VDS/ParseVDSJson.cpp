@@ -522,7 +522,7 @@ static CompressionMethod CompressionMethodFromJson(Json::Value const &jsonCompre
 //  return metadataStatus;
 //}
 
-Json::Value SerializeAxisDescriptor(VolumeDataAxisDescriptor const &axisDescriptor)
+OPENVDS_EXPORT Json::Value SerializeAxisDescriptor(VolumeDataAxisDescriptor const &axisDescriptor)
 {
   Json::Value axisDescriptorJson;
 
@@ -574,7 +574,7 @@ std::string ToString(VolumeDataMapping mapping)
   };
 }
 
-Json::Value SerializeChannelDescriptor(VolumeDataChannelDescriptor const &channelDescriptor)
+OPENVDS_EXPORT Json::Value SerializeChannelDescriptor(VolumeDataChannelDescriptor const &channelDescriptor)
 {
   Json::Value valueRangeJson(Json::arrayValue);
 
@@ -737,10 +737,8 @@ std::string ToString(CompressionMethod compressionMethod)
   };
 }
 
-OPENVDS_EXPORT Json::Value SerializeVolumeDataLayoutDescriptor(VolumeDataLayout const &volumeDataLayout)
+OPENVDS_EXPORT Json::Value SerializeVolumeDataLayoutDescriptor(VolumeDataLayoutDescriptor const &layoutDescriptor)
 {
-  VolumeDataLayoutDescriptor layoutDescriptor = volumeDataLayout.GetLayoutDescriptor();
-
   Json::Value layoutDescriptorJson;
   layoutDescriptorJson["brickSize"] = ToString(layoutDescriptor.GetBrickSize());
   layoutDescriptorJson["negativeMargin"] = layoutDescriptor.GetNegativeMargin();
@@ -751,6 +749,11 @@ OPENVDS_EXPORT Json::Value SerializeVolumeDataLayoutDescriptor(VolumeDataLayout 
   layoutDescriptorJson["forceFullResolutionDimension"] = layoutDescriptor.IsForceFullResolutionDimension();
   layoutDescriptorJson["fullResolutionDimension"] = layoutDescriptor.GetFullResolutionDimension();
   return layoutDescriptorJson;
+}
+OPENVDS_EXPORT Json::Value SerializeVolumeDataLayoutDescriptor(VolumeDataLayout const& volumeDataLayout)
+{
+  VolumeDataLayoutDescriptor layoutDescriptor = volumeDataLayout.GetLayoutDescriptor();
+  return SerializeVolumeDataLayoutDescriptor(layoutDescriptor);
 }
 
 OPENVDS_EXPORT Json::Value SerializeAxisDescriptors(VolumeDataLayout const &volumeDataLayout)
