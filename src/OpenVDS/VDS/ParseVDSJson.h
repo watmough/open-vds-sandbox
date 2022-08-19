@@ -23,7 +23,7 @@
 
 namespace OpenVDS
 {
-bool ParseVolumeDataLayout(const std::vector<uint8_t> &json, VolumeDataLayoutDescriptor &layoutDescriptor, std::vector<VolumeDataAxisDescriptor> &axisDescriptors, std::vector<VolumeDataChannelDescriptor> &channelDescriptors, DescriptorStringContainer &descriptorStrings, MetadataContainer &metadataContainer, const LayerMetadataContainer &layerMetadaContainer, Error &error);
+  bool ParseVolumeDataLayout(const std::vector<uint8_t>& json, VolumeDataLayoutDescriptor& layoutDescriptor, std::vector<VolumeDataAxisDescriptor>& axisDescriptors, std::vector<VolumeDataChannelDescriptor>& channelDescriptors, DescriptorStringContainer& descriptorStrings, MetadataContainer& metadataContainer, const std::function<bool(std::string const& channelName, bool isPrimary)>& isChannelZipped, Error& error);
 bool ParseLayerStatus(const std::vector<uint8_t> &json, VDS &vds, LayerMetadataContainer &layerMetadataContainer, Error &error);
 std::vector<uint8_t> SerializeVolumeDataLayout(VDS& vds);
 std::vector<uint8_t> SerializeLayerStatus(VDS& vds, LayerMetadataContainer const &layerMetadataContainer);

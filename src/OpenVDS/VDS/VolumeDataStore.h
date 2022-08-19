@@ -75,9 +75,9 @@ public:
   virtual bool          AddLayer(VolumeDataLayer* volumeDataLayer, int chunkMetadataPageSize) = 0;
   virtual bool          RemoveLayer(VolumeDataLayer* volumeDataLayer) = 0;
   virtual bool          Close(Error &error) = 0;
-  virtual const LayerMetadataContainer &
-                        GetLayerMetadataContainer() const = 0;
 
+  virtual std::function<bool(std::string const& channelName, bool isPrimary)>
+                        IsChannelZipped() const = 0;
 
   bool DeserializeVolumeData(const VolumeDataChunk &volumeDataChunk, const std::vector<uint8_t>& serializedData, const std::vector<uint8_t>& metadata, CompressionMethod compressionMethod, int32_t adaptiveLevel, VolumeDataChannelDescriptor::Format loadFormat, DataBlock &dataBlock, std::vector<uint8_t>& target, uint64_t& targetHash, Error& error);
 

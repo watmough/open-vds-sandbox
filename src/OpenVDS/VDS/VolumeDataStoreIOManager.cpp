@@ -938,20 +938,23 @@ VolumeDataStoreIOManager::GetMetadataStatus(std::string const &layerName, Metada
   }
 }
 
-bool
-VolumeDataStoreIOManager::IsChannelZipped(std::string const& channelName, bool isPrimaryChannel) const
+std::function<bool(std::string const& channelName, bool isPrimary)>
+VolumeDataStoreIOManager::IsChannelZipped() const
 {
-  (void)isPrimaryChannel;
-  std::unique_lock<std::mutex> lock(m_mutex);
-  for (auto& metadataManager : m_metadataManagers)
+  return [this](std::string const& channelName, bool isPrimaryChannel)
   {
-    const std::string &metaChannelName = metadataManager.second->ChannelName();
-    if (metaChannelName == channelName)
+    (void)isPrimaryChannel;
+    std::unique_lock<std::mutex> lock(m_mutex);
+    for (auto& metadataManager : m_metadataManagers)
     {
-      return metadataManager.second->GetMetadataStatus().m_compressionMethod == CompressionMethod::Zip;
+      const std::string& metaChannelName = metadataManager.second->ChannelName();
+      if (metaChannelName == channelName)
+      {
+        return metadataManager.second->GetMetadataStatus().m_compressionMethod == CompressionMethod::Zip;
+      }
     }
-  }
-  return false;
+    return false;
+  };
 }
 
 void

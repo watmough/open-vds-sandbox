@@ -30,7 +30,7 @@
 namespace OpenVDS
 {
 
-class VolumeDataStoreVDSFile : public VolumeDataStore, public LayerMetadataContainer
+class VolumeDataStoreVDSFile : public VolumeDataStore
 {
   struct LayerFile
   {
@@ -79,12 +79,8 @@ public:
   bool          RemoveLayer(VolumeDataLayer* volumeDataLayer) override { return false; }
   bool          Close(Error &error) override;
 
-  bool          GetMetadataStatus(std::string const &layerName, MetadataStatus &metadataStatus) const override;
-  bool          IsChannelZipped(std::string const& channelName, bool isPrimary) const override;
-  void          SetMetadataStatus(std::string const &layerName, std::string const &channelName, MetadataStatus &metadataStatus, int pageLimit) override;
-
-  const LayerMetadataContainer &
-                GetLayerMetadataContainer() const override { return *this;  }
+  std::function<bool(std::string const& channelName, bool isPrimary)>
+                IsChannelZipped() const override;
 
   VolumeDataStoreVDSFile(VDS &vds, const std::string &fileName, Mode mode, Error &error);
  ~VolumeDataStoreVDSFile();

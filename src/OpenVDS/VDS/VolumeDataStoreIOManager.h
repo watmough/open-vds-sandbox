@@ -137,11 +137,10 @@ public:
   bool          Close(Error &error) override { return m_ioManager->Close(error); }
 
   bool          GetMetadataStatus(std::string const &layerName, MetadataStatus &metadataStatus) const override;
-  bool          IsChannelZipped(std::string const& channelName, bool isPrimaryChannel) const override;
   void          SetMetadataStatus(std::string const &layerName, std::string const &channelName, MetadataStatus &metadataStatus, int pageLimit) override;
-
-  const LayerMetadataContainer &
-                GetLayerMetadataContainer() const override { return *this;  }
+  
+  std::function<bool(std::string const& channelName, bool isPrimary)>
+                IsChannelZipped() const override;
 
   VolumeDataStoreIOManager(VDS &vds, IOManager *ioManager);
  ~VolumeDataStoreIOManager();

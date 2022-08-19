@@ -899,34 +899,7 @@ WriteJson(Json::Value root)
   return result;
 }
 
-bool DownloadAndParseVolumeDataLayoutAndLayerStatus(VDS& vds, Error& error)
-{
-  std::vector<uint8_t> serializedVolumeDataLayout;
-
-  if(!vds.volumeDataStore->ReadSerializedVolumeDataLayout(serializedVolumeDataLayout, error))
-  {
-    return false;
-  }
-
-  try
-  {
-    if (!ParseVolumeDataLayout(serializedVolumeDataLayout, vds.layoutDescriptor, vds.axisDescriptors, vds.channelDescriptors, vds.descriptorStrings, vds.metadataContainer, vds.volumeDataStore->GetLayerMetadataContainer(), error))
-      return false;
-  }
-
-  catch (Json::Exception& e)
-  {
-    error.string = e.what();
-    error.code = -2;
-    return false;
-  }
-
-  CreateVolumeDataLayout(vds);
-
-  return true;
-}
-
-bool ParseVolumeDataLayout(const std::vector<uint8_t> &json, VolumeDataLayoutDescriptor &layoutDescriptor, std::vector<VolumeDataAxisDescriptor> &axisDescriptors, std::vector<VolumeDataChannelDescriptor> &channelDescriptors, DescriptorStringContainer &descriptorStrings, MetadataContainer &metadataContainer, const LayerMetadataContainer &layerMetadaContainer, Error &error)
+bool ParseVolumeDataLayout(const std::vector<uint8_t> &json, VolumeDataLayoutDescriptor &layoutDescriptor, std::vector<VolumeDataAxisDescriptor> &axisDescriptors, std::vector<VolumeDataChannelDescriptor> &channelDescriptors, DescriptorStringContainer &descriptorStrings, MetadataContainer &metadataContainer, const std::function<bool(std::string const& channelName, bool isPrimary)> &isChannelZipped, Error &error)
 {
   Json::Value root;
 
@@ -971,7 +944,7 @@ bool ParseVolumeDataLayout(const std::vector<uint8_t> &json, VolumeDataLayoutDes
     bool primary = true;
     for (const Json::Value &channelDescriptorJson : root["channelDescriptors"])
     {
-      bool noLossyCompressionUseZip = layerMetadaContainer.IsChannelZipped(channelDescriptorJson["name"].asString(), primary) && !channelDescriptorJson["allowLossyCompression"].asBool();
+      bool noLossyCompressionUseZip = isChannelZipped(channelDescriptorJson["name"].asString(), primary) && !channelDescriptorJson["allowLossyCompression"].asBool();
       primary = false;
       if (channelDescriptorJson["useNoValue"].asBool())
       {

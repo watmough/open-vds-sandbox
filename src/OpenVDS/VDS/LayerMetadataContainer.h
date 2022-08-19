@@ -24,7 +24,6 @@ class LayerMetadataContainer
 {
 public:
   virtual bool GetMetadataStatus(std::string const &layerName, MetadataStatus &metadataStatus) const = 0;
-  virtual bool IsChannelZipped(std::string const& channelName, bool isPrimary) const = 0;
   virtual void SetMetadataStatus(std::string const &layerName, std::string const &channelName, MetadataStatus &metadataStatus, int pageLimit) = 0;
 };
 }

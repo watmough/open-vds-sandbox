@@ -530,56 +530,32 @@ bool VolumeDataStoreVDSFile::AddLayer(VolumeDataLayer* volumeDataLayer, int chun
   return true;
 }
 
-bool VolumeDataStoreVDSFile::GetMetadataStatus(std::string const &layerName, MetadataStatus &metadataStatus) const
+std::function<bool(std::string const& channelName, bool isPrimary)> VolumeDataStoreVDSFile::IsChannelZipped() const
 {
-  LayerFile* layerFile = GetLayerFile(layerName);
-
-  if(!layerFile)
+  return [this](std::string const& channelName, bool isPrimary)
   {
+    for (auto& layerFileEntry : m_layerFiles)
+    {
+      const LayerFile* layerFile = &layerFileEntry.second;
+      std::string layerName = layerFile->fileInterface->GetFileName();
+
+      size_t lodIndex = layerName.rfind("LOD");
+      size_t dimensionsIndex = layerName.rfind("Dimensions_");
+
+      if (lodIndex == std::string::npos || dimensionsIndex == std::string::npos || lodIndex < dimensionsIndex)
+      {
+        continue;
+      }
+
+      std::string cName = layerName.substr(0, dimensionsIndex);
+
+      if ((isPrimary && cName.empty()) || cName == channelName)
+      {
+        return CompressionMethod(layerFile->layerMetadata.m_compressionMethod) == CompressionMethod::Zip;
+      }
+    }
     return false;
-  }
-
-  HueBulkDataStore::FileInterface *fileInterface = layerFile->fileInterface;
-
-  metadataStatus.m_chunkIndexCount = fileInterface->GetChunkCount();
-  metadataStatus.m_chunkMetadataPageSize = 0;
-  metadataStatus.m_chunkMetadataByteSize = fileInterface->GetChunkMetadataLength();
-  metadataStatus.m_compressionTolerance = layerFile->layerMetadata.m_compressionTolerance;
-  metadataStatus.m_compressionMethod = CompressionMethod(layerFile->layerMetadata.m_compressionMethod);
-  metadataStatus.m_uncompressedSize = layerFile->layerMetadata.m_uncompressedSize;
-  std::copy(layerFile->layerMetadata.m_adaptiveLevelSizes + 0, layerFile->layerMetadata.m_adaptiveLevelSizes + sizeof(layerFile->layerMetadata.m_adaptiveLevelSizes) / sizeof(layerFile->layerMetadata.m_adaptiveLevelSizes[0]), metadataStatus.m_adaptiveLevelSizes);
-
-  return true;
-}
-
-bool VolumeDataStoreVDSFile::IsChannelZipped(std::string const& channelName, bool isPrimary) const
-{
-  for(auto &layerFileEntry : m_layerFiles)
-  {
-    const LayerFile *layerFile = &layerFileEntry.second;
-    std::string layerName = layerFile->fileInterface->GetFileName();
-
-    size_t lodIndex = layerName.rfind("LOD");
-    size_t dimensionsIndex = layerName.rfind("Dimensions_");
-
-    if(lodIndex == std::string::npos || dimensionsIndex == std::string::npos || lodIndex < dimensionsIndex)
-    {
-      continue;
-    }
-
-    std::string cName = layerName.substr(0, dimensionsIndex);
-
-    if ((isPrimary && cName.empty()) || cName == channelName)
-    {
-      return CompressionMethod(layerFile->layerMetadata.m_compressionMethod) == CompressionMethod::Zip;
-    }
-  }
-  return false;
-}
-
-void VolumeDataStoreVDSFile::SetMetadataStatus(std::string const &layerName, std::string const &channelName, MetadataStatus &metadataStatus, int pageLimit)
-{
-  assert(0 && "Not implemented");
+  };
 }
 
 VolumeDataStoreVDSFile::VolumeDataStoreVDSFile(VDS &vds, const std::string &vdsFileName, Mode mode, Error &error)

@@ -612,7 +612,7 @@ static bool Init(VDS *vds, VolumeDataStore *volumeDataStore, Error& error)
   {
     return false;
   }
-  if(!ParseVolumeDataLayout(serializedVolumeDataLayout, vds->layoutDescriptor, vds->axisDescriptors, vds->channelDescriptors, vds->descriptorStrings, vds->metadataContainer, vds->volumeDataStore->GetLayerMetadataContainer(), error))
+  if(!ParseVolumeDataLayout(serializedVolumeDataLayout, vds->layoutDescriptor, vds->axisDescriptors, vds->channelDescriptors, vds->descriptorStrings, vds->metadataContainer, volumeDataStore->IsChannelZipped(), error))
   {
     return false;
   }
