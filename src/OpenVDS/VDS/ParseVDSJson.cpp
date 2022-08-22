@@ -816,6 +816,14 @@ Json::Value SerializeMetadataStatus(MetadataStatus const &metadataStatus)
   metadataStatusJson["compressionMethod"]     = ToString(metadataStatus.m_compressionMethod);
   metadataStatusJson["compressionTolerance"]  = metadataStatus.m_compressionTolerance;
   metadataStatusJson["uncompressedSize"] = metadataStatus.m_uncompressedSize;
+  if (!metadataStatus.m_pageDirectory.empty())
+  {
+    Json::Value pageDirectory;
+    pageDirectory.resize(Json::Value::ArrayIndex(metadataStatus.m_pageDirectory.size()));
+    for (int i = 0; i < int(metadataStatus.m_pageDirectory.size()); i++)
+      pageDirectory[i] = metadataStatus.m_pageDirectory[i];
+    metadataStatusJson["pageDirectory"] = pageDirectory;
+  }
 
   Json::Value
     adaptiveLevelSizesJson(Json::arrayValue);
@@ -1135,6 +1143,23 @@ bool ParseLayerStatus(const std::vector<uint8_t> &json, VDS &vds, LayerMetadataC
         for (int i = 0; i < WAVELET_ADAPTIVE_LEVELS; i++)
         {
           metadataStatus.m_adaptiveLevelSizes[i] = adaptiveLevelSizesJson[i].asInt64();
+        }
+      }
+
+      bool hasPageDirectory = layerStatus.isMember("pageDirectory");
+      if (hasPageDirectory)
+      {
+        metadataStatus.m_pageDirectory.resize((metadataStatus.m_chunkIndexCount - 1) / metadataStatus.m_chunkMetadataPageSize + 1, -1);
+        auto& pageDirectory = layerStatus["pageDirectory"];
+        if (pageDirectory.size() != metadataStatus.m_pageDirectory.size())
+        {
+          error.string = fmt::format("Invalid size of the parsed pageDirectory in LayerStatus object. Parsed size: {}, expected size: {}", pageDirectory.size(), metadataStatus.m_pageDirectory.size());
+          error.code = -1;
+          return false;
+        }
+        for (int i = 0; i < int(metadataStatus.m_pageDirectory.size()); i++)
+        {
+          metadataStatus.m_pageDirectory[i] = pageDirectory[i].asInt();
         }
       }
 

@@ -123,7 +123,7 @@ MetadataManager::LockPage(int pageIndex, bool* initiateTransfer)
     m_pageList.emplace_front(this, pageIndex);
     mi = m_pageMap.insert(MetadataPageMap::value_type(pageIndex, m_pageList.begin())).first;
 
-    if(m_createEmptyPages)
+    if(m_createEmptyPages || (!m_metadataStatus.m_pageDirectory.empty() && m_metadataStatus.m_pageDirectory[pageIndex] == -1))
     {
       m_pageList.begin()->m_data.resize(m_metadataStatus.m_chunkMetadataByteSize * m_metadataStatus.m_chunkMetadataPageSize);
       m_pageList.begin()->m_valid = true;
@@ -188,6 +188,8 @@ void MetadataManager::UploadDirtyPages(VolumeDataStoreIOManager *volumeDataStore
     bool success = volumeDataStore->WriteMetadataPage(&page, page.m_data);
     if(success)
     {
+      assert(page.m_pageIndex < int(m_metadataStatus.m_pageDirectory.size()));
+      m_metadataStatus.m_pageDirectory[page.m_pageIndex] = page.m_pageIndex;
       page.m_dirty = false;
       m_pageList.splice(m_pageList.begin(), m_dirtyPageList, it);
     }

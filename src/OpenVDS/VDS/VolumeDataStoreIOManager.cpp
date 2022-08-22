@@ -305,6 +305,8 @@ VolumeDataStoreIOManager::AddLayer(VolumeDataLayer* volumeDataLayer, int chunkMe
 
   int pageLimit = volumeDataLayer->GetLayout()->GetDimensionality() <= 3 ? 64 : 1024;
 
+  metadataStatus.m_pageDirectory.resize(((volumeDataLayer->GetTotalChunkCount() - 1) / chunkMetadataPageSize) + 1, -1);
+
   std::string channelName = volumeDataLayer->GetLayout()->GetChannelName(volumeDataLayer->GetChannelIndex());;
   std::string layerName = GetLayerName(*volumeDataLayer);
 
@@ -372,7 +374,8 @@ bool VolumeDataStoreIOManager::PrepareReadChunkImpl(const VolumeDataChunk &chunk
 
     if (initiateTransfer)
     {
-      std::string url = fmt::format("{}/ChunkMetadata/{}", layerName, pageIndex);
+      int pageName = !metadataStatus.m_pageDirectory.empty() ? metadataStatus.m_pageDirectory[pageIndex] : pageIndex;
+      std::string url = fmt::format("{}/ChunkMetadata/{}", layerName, pageName);
 
       metadataManager->InitiateTransfer(this, metadataPage, url);
     }
@@ -573,6 +576,19 @@ bool VolumeDataStoreIOManager::ReadChunkDataHash(const VolumeDataChunk& chunk, u
     int pageIndex  = (int)(chunk.index / metadataStatus.m_chunkMetadataPageSize);
     int entryIndex = (int)(chunk.index % metadataStatus.m_chunkMetadataPageSize);
 
+    if (!metadataStatus.m_pageDirectory.empty())
+    {
+      if (int(metadataStatus.m_pageDirectory.size()) <= pageIndex)
+      {
+        error.string = fmt::format("Wrong size of the metadata page directory. Got: {}, expected atleast {}.", metadataStatus.m_pageDirectory.size(), pageIndex);
+        error.code = -1;
+        return false;
+      }
+      if (metadataStatus.m_pageDirectory[pageIndex] == -1)
+      {
+        return true;
+      }
+    }
     bool initiateTransfer;
 
     MetadataPage* metadataPage = metadataManager->LockPage(pageIndex, &initiateTransfer);

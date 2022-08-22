@@ -50,6 +50,7 @@ namespace OpenVDS
     CompressionMethod   m_compressionMethod;
     int64_t             m_uncompressedSize;
     int64_t             m_adaptiveLevelSizes[WAVELET_ADAPTIVE_LEVELS];
+    std::vector<int>    m_pageDirectory;
   };
 
   class Request;
@@ -134,7 +135,10 @@ namespace OpenVDS
 
     void UnlockPage(MetadataPage *page);
 
-    MetadataStatus const &GetMetadataStatus() const { return m_metadataStatus; }
+    MetadataStatus GetMetadataStatus() const {
+      std::unique_lock<std::mutex> lock(const_cast<MetadataManager *>(this)->m_mutex);
+      return m_metadataStatus; 
+    }
     void UpdateMetadataStatus(int64_t uncompressedSize, int serializedSize, bool subtract, const uint8_t (&targetLevels)[WAVELET_ADAPTIVE_LEVELS]);
   };
 }
