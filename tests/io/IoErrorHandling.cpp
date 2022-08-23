@@ -18,6 +18,7 @@
 #include <OpenVDS/OpenVDS.h>
 #include <OpenVDS/VolumeDataLayout.h>
 #include <OpenVDS/VolumeDataAccess.h>
+#include <OpenVDS/GlobalState.h>
 
 #include <IO/IOManagerInMemory.h>
 #include <ThreadPool/ThreadPool.h>
@@ -254,8 +255,14 @@ TEST_F(IOErrorHandlingFixture, ErrorHandlingChangedMetadataTag)
         metaHeader.second[4] = 'a';
     }
   }
-  
-  OpenVDS::ScopedVDSHandle handle(OpenVDS::Open(facadeIoManager, error));
+
+  std::string log;
+  OpenVDS::GetGlobalState()->SetLogCallback([](OpenVDS::LogLevel level, const char* message, size_t messageSize, void* userHandle)
+    {
+      auto& str = *static_cast<std::string*>(userHandle);
+      str.insert(str.size(), message, messageSize);
+    }, &log);
+  OpenVDS::ScopedVDSHandle handle(OpenVDS::Open(facadeIoManager, OpenVDS::LogLevel::Info, error));
   ASSERT_TRUE(handle);
   auto accessManager = OpenVDS::GetAccessManager(handle);
 
@@ -263,12 +270,11 @@ TEST_F(IOErrorHandlingFixture, ErrorHandlingChangedMetadataTag)
   int32_t maxPos[OpenVDS::Dimensionality_Max] = { 55, 55, 55 };
   auto request = accessManager.RequestVolumeSubset<float>(OpenVDS::Dimensions_012, 0, 0, minPos, maxPos);
   bool finished = request->WaitForCompletion();
-  ASSERT_FALSE(finished);
-  int errorCode = 0;
-  const char* errorString = nullptr;
-  accessManager.GetCurrentDownloadError(&errorCode, &errorString);
-  ASSERT_TRUE(strContains(errorString, "Inconsistent metadata"));
-  ASSERT_TRUE(request->IsCanceled());
+  ASSERT_TRUE(finished);
+  ASSERT_TRUE(strContains(log, "Inconsistent metadata"));
+  ASSERT_FALSE(request->IsCanceled());
+
+  OpenVDS::GetGlobalState()->SetDefaultLogCallback();
 }
 
 TEST(IOErrorHandlingUpload, ErrorHandlingVolumeDataLayoutHttpError)
