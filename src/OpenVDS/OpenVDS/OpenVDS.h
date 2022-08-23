@@ -1000,6 +1000,20 @@ inline VolumeDataAccessManager GetAccessManager(VDSHandle handle)
 }
 
 /// <summary>
+/// Get the MetadataWriteAccess interface for a VDS
+/// </summary>
+/// <param name="handle">
+/// The handle of the VDS
+/// </param>
+/// <returns>
+/// The MetadataWriteAccess interface of the VDS
+/// </returns>
+inline MetadataWriteAccess *GetMetadataWriteAccessInterface(VDSHandle handle)
+{
+  return GetOpenVDSInterface(OPENVDS_VERSION).GetMetadataWriteAccessInterface(handle);
+}
+
+/// <summary>
 /// Get the primary CompressionMethod for a VDS
 /// </summary>
 /// <param name="handle">

@@ -134,7 +134,7 @@ public:
         case MetadataType::BLOB:
           std::vector<uint8_t> data;
           metadataReadAccess->GetMetadataBLOB(key.GetCategory(), key.GetName(), data);
-          SetMetadataBLOB(key.GetCategory(), key.GetName(), data);
+          SetMetadataBLOB(key.GetCategory(), key.GetName(), data.data(), data.size());
           break;
         }
       }

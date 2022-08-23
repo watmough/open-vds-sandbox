@@ -16,6 +16,7 @@
 ****************************************************************************/
 
 #include <OpenVDS/OpenVDS.h>
+#include <OpenVDS/MetadataContainer.h>
 
 #include <cstdlib>
 
@@ -42,4 +43,63 @@ GTEST_TEST(OpenVDS_integration, OpenCloseVDSFile)
 
   OpenVDS::ScopedVDSHandle handle(OpenVDS::Open(OpenVDS::VDSFileOpenOptions(fileName), error));
   ASSERT_TRUE(handle);
+}
+
+TEST(OpenVDS_integration, CreateAndModifyMetadata)
+{
+  const std::string
+    category = "Answers",
+    key = "LifeUniverseAndEverything";
+
+  const int
+    initialValue = 42,
+    modifiedValue = 2022;
+
+  int negativeMargin = 4;
+  int positiveMargin = 4;
+  int brickSize2DMultiplier = 4;
+  auto LODLevels = OpenVDS::VolumeDataLayoutDescriptor::LODLevels_1;
+  auto layoutOptions = OpenVDS::VolumeDataLayoutDescriptor::Options_None;
+  OpenVDS::VolumeDataLayoutDescriptor layoutDescriptor(OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, negativeMargin, positiveMargin, brickSize2DMultiplier, LODLevels, layoutOptions);
+
+  std::vector<OpenVDS::VolumeDataAxisDescriptor> axisDescriptors;
+  axisDescriptors.emplace_back(100, "X", "", 1.0f, 100.f);
+  axisDescriptors.emplace_back(100, "Y", "", 1.f,  100.f);
+  axisDescriptors.emplace_back(100, "Z", "", 1.f,  100.f);
+
+  std::vector<OpenVDS::VolumeDataChannelDescriptor> channelDescriptors;
+  float rangeMin = 0.0f;
+  float rangeMax = 1.0f;
+  float integerScale = 0;
+  float integerOffset = 0;
+  channelDescriptors.push_back(OpenVDS::VolumeDataChannelDescriptor(OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataChannelDescriptor::Components_1, "", "", rangeMin, rangeMax, OpenVDS::VolumeDataMapping::Direct, 1, OpenVDS::VolumeDataChannelDescriptor::Default, 0.f, integerScale, integerOffset));
+
+  OpenVDS::MetadataContainer metadataContainer;
+
+  metadataContainer.SetMetadataInt(category.c_str(), key.c_str(), initialValue);
+
+  {
+    OpenVDS::Error error;
+    OpenVDS::ScopedVDSHandle handle = OpenVDS::Create("inmemory://CreateAndModifyMetadata", "", layoutDescriptor, axisDescriptors, channelDescriptors, metadataContainer, error);
+
+    auto accessManager = OpenVDS::GetAccessManager(handle);
+    auto layout = accessManager.GetVolumeDataLayout();
+    EXPECT_EQ(layout->GetMetadataInt(category.c_str(), key.c_str()), initialValue);
+
+    auto metadataWriteAccess = OpenVDS::GetMetadataWriteAccessInterface(handle);
+    metadataWriteAccess->SetMetadataInt(category.c_str(), key.c_str(), modifiedValue);
+
+    EXPECT_EQ(layout->GetMetadataInt(category.c_str(), key.c_str()), modifiedValue);
+
+    accessManager.FlushUploadQueue();
+  }
+
+  {
+    OpenVDS::Error error;
+    OpenVDS::ScopedVDSHandle handle = OpenVDS::Open("inmemory://CreateAndModifyMetadata", "", error);
+
+    auto accessManager = OpenVDS::GetAccessManager(handle);
+    auto layout = accessManager.GetVolumeDataLayout();
+    EXPECT_EQ(layout->GetMetadataInt(category.c_str(), key.c_str()), modifiedValue);
+  }
 }

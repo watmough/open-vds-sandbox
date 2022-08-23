@@ -897,6 +897,14 @@ bool VolumeDataStoreIOManager::Flush(bool writeUpdatedLayerStatus)
       m_vds.accessManager->AddUploadError(error, "LayerStatus");
       return false;
     }
+
+    if(m_vds.metadataContainer.IsDirty())
+    {
+      if (!m_vds.volumeDataStore->WriteSerializedVolumeDataLayout(SerializeVolumeDataLayout(m_vds), error))
+        return false;
+
+      m_vds.metadataContainer.ClearDirtyFlag();
+    }
   }
 
   return true;

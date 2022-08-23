@@ -854,6 +854,7 @@ public:
   VDSHandle                 Create(IOManager* ioManager, VolumeDataLayoutDescriptor const &layoutDescriptor, VectorWrapper<VolumeDataAxisDescriptor> axisDescriptors, VectorWrapper<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const &metadata, CompressionMethod compressionMethod, float compressionTolerance, LogLevel logLevel, ErrorHandler errorHandler, Error *errorPtr=nullptr) final override;
   VolumeDataLayout         *GetLayout(VDSHandle handle) final override;
   IVolumeDataAccessManager *GetAccessManagerInterface(VDSHandle handle) final override;
+  MetadataWriteAccess      *GetMetadataWriteAccessInterface(VDSHandle handle) final override;
   CompressionMethod         GetCompressionMethod(VDSHandle handle) final override;
   float                     GetCompressionTolerance(VDSHandle handle) final override;
   void                      Close(VDSHandle handle) final override;
@@ -995,6 +996,13 @@ IVolumeDataAccessManager *OpenVDSInterfaceImpl::GetAccessManagerInterface(VDS *v
   if (!vds)
     return nullptr;
   return vds->accessManager.get();
+}
+
+MetadataWriteAccess *OpenVDSInterfaceImpl::GetMetadataWriteAccessInterface(VDS *vds)
+{
+  if (!vds)
+    return nullptr;
+  return &vds->metadataContainer;
 }
 
 bool OpenVDSInterfaceImpl::IsCompressionMethodSupported(CompressionMethod compressionMethod)

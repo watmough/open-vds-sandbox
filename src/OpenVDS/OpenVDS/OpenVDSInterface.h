@@ -35,6 +35,7 @@ typedef struct VDSError Error;
 
 class VolumeDataLayout;
 class MetadataReadAccess;
+class MetadataWriteAccess;
 class VolumeDataAccessManager;
 class VolumeDataPageAccessor;
 class VolumeDataLayoutDescriptor;
@@ -131,6 +132,7 @@ public:
   virtual VDSHandle                 Create(IOManager* ioManager, VolumeDataLayoutDescriptor const &layoutDescriptor, VectorWrapper<VolumeDataAxisDescriptor> axisDescriptors, VectorWrapper<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const &metadata, CompressionMethod compressionMethod, float compressionTolerance, LogLevel logLevel, ErrorHandler errorHandler, Error *error=nullptr) = 0;
   virtual VolumeDataLayout         *GetLayout(VDSHandle handle) = 0;
   virtual IVolumeDataAccessManager *GetAccessManagerInterface(VDSHandle handle) = 0;
+  virtual MetadataWriteAccess      *GetMetadataWriteAccessInterface(VDSHandle handle) = 0;
   virtual CompressionMethod         GetCompressionMethod(VDSHandle handle) = 0;
   virtual float                     GetCompressionTolerance(VDSHandle handle) = 0;
   virtual void                      Close(VDSHandle handle) = 0;
