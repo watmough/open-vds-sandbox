@@ -699,6 +699,12 @@ void VolumeDataAccessManagerImpl::AddCopyPageJob(VolumeDataChunk& chunk, VolumeD
 {
   Error error;
   VolumeDataChunk sourceChunk = { source.GetLayer(), chunk.index };
+
+  if (source.GetChunkVolumeDataHash(chunk.index) == destination.GetChunkVolumeDataHash(chunk.index))
+  {
+    return;
+  }
+
   source.GetManager()->GetVolumeDataStore()->PrepareReadChunk(sourceChunk, sourceChunk.layer->GetEffectiveWaveletAdaptiveLoadLevel(), error);
   std::unique_lock<std::mutex> lock(m_mutex);
   if (error.code)

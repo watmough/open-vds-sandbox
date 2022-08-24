@@ -15,6 +15,19 @@
 #include <signal.h>
 #endif
 
+std::string getCompressionMethodString(OpenVDS::CompressionMethod compressionMethod)
+{
+  static const char* names[] = {
+  "None",
+  "Wavelet",
+  "RLE",
+  "Zip",
+  "WaveletNormalizeBlock",
+  "WaveletLossless",
+  "WaveletNormalizeBlockLossless"
+  };
+  return names[int(compressionMethod)];
+}
 inline char asciitolower(char in) {
   if (in <= 'Z' && in >= 'A')
     return in - ('Z' - 'z');
@@ -61,6 +74,9 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
   std::string compressionMethodString;
   float compressionTolerance = std::nanf("nan");
 
+  bool resumeMode = false;
+  int flushFrequency = 60;
+
   bool ignoreErrors = false;
   bool useJsonOutput = false;
   bool help = false;
@@ -84,6 +100,9 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
 
   options.add_option("", "", "compression-method", std::string("Compression method. Supported compression methods are: ") + supportedCompressionMethods + ".", cxxopts::value<std::string>(compressionMethodString), "<string>");
   options.add_option("", "", "tolerance", "This parameter specifies the compression tolerance when using the wavelet compression method. This value is the maximum deviation from the original data value when the data is converted to 8-bit using the value range. A value of 1 means the maximum allowable loss is the same as quantizing to 8-bit (but the average loss will be much much lower than quantizing to 8-bit). It is not a good idea to directly relate the tolerance to the quality of the compressed data, as the average loss will in general be an order of magnitude lower than the allowable loss.", cxxopts::value<float>(compressionTolerance), "<value>");
+
+  options.add_option("", "", "resume", "Resume a copy of a previous partial copy", cxxopts::value<bool>(resumeMode), "");
+  options.add_option("", "", "flush-frequency", std::string("Flush frequency in seconds. VDSCopy can resume imports at flush checkpoints. 0 (zero) results in never flushing. Default is 60"), cxxopts::value<int>(flushFrequency), "<value>");
 
   options.add_option("", "f", "force", "Force/ignore errors", cxxopts::value<bool>(ignoreErrors), "");
   options.add_option("", "q", "quiet", "Disable info level output.", cxxopts::value<bool>(disableInfo), "");
@@ -193,30 +212,49 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
     return EXIT_FAILURE;
   }
 
-  int dimensionCount = layout->GetDimensionality();
-  std::vector<OpenVDS::VolumeDataAxisDescriptor> axisDescriptors;
-  axisDescriptors.reserve(dimensionCount);
-  for (int i = 0; i < dimensionCount; i++)
-  {
-    axisDescriptors.emplace_back(layout->GetAxisDescriptor(i));
-  }
-
   int channelCount = layout->GetChannelCount();
-  std::vector<OpenVDS::VolumeDataChannelDescriptor> channelDescriptors;
-  channelDescriptors.reserve(channelCount);
-  for (int i = 0; i < channelCount; i++)
-  {
-    channelDescriptors.emplace_back(layout->GetChannelDescriptor(i));
-  }
   OpenVDS::VolumeDataLayoutDescriptor layoutDescriptor = layout->GetLayoutDescriptor();
 
-
   OpenVDS::ScopedVDSHandle destinationHandle;
-  destinationHandle = OpenVDS::Create(destinationUrl, destinationConnection, layoutDescriptor, axisDescriptors, channelDescriptors, *layout, compressionMethod, compressionTolerance, error);
-  if(error.code != 0)
+  if (resumeMode)
   {
-    outputPrinter.printError("VDS", fmt::format("Could not create VDS {}", destinationUrl), error.string);
-    return EXIT_FAILURE;
+    destinationHandle = OpenVDS::Open(destinationUrl, destinationConnection, error);
+    if (error.code)
+    {
+      outputPrinter.printError("VDS", fmt::format("Could not open VDS {}", destinationUrl), error.string);
+      return EXIT_FAILURE;
+    }
+    if (compressionMethod != OpenVDS::GetCompressionMethod(destinationHandle) && !compressionMethodString.empty())
+    {
+      outputPrinter.printError("VDS", fmt::format("Resumed VDS does not match specified compression method. Opened: {}, Requested: {}",
+        getCompressionMethodString(OpenVDS::GetCompressionMethod(destinationHandle)), compressionMethodString));
+      return EXIT_FAILURE;
+    }
+  }
+  else
+  {
+    int dimensionCount = layout->GetDimensionality();
+    std::vector<OpenVDS::VolumeDataAxisDescriptor> axisDescriptors;
+    axisDescriptors.reserve(dimensionCount);
+    for (int i = 0; i < dimensionCount; i++)
+    {
+      axisDescriptors.emplace_back(layout->GetAxisDescriptor(i));
+    }
+
+    std::vector<OpenVDS::VolumeDataChannelDescriptor> channelDescriptors;
+    channelDescriptors.reserve(channelCount);
+    for (int i = 0; i < channelCount; i++)
+    {
+      channelDescriptors.emplace_back(layout->GetChannelDescriptor(i));
+    }
+
+    destinationHandle = OpenVDS::Create(destinationUrl, destinationConnection, layoutDescriptor, axisDescriptors, channelDescriptors, *layout, compressionMethod, compressionTolerance, error);
+    if (error.code != 0)
+    {
+      outputPrinter.printError("VDS", fmt::format("Could not create VDS {}", destinationUrl), error.string);
+      return EXIT_FAILURE;
+    }
+
   }
 
   outputPrinter.printVersion("VDSCopy");
@@ -263,6 +301,13 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
   outputPrinter.printInfo(destinationUrl, fmt::format("Copying {} to {}. Total chunks to copy is {}", sourceUrl, destinationUrl, totalChunks));
   bool error_encountered = false;
   bool keep_processing = true;
+
+  if (flushFrequency == 0)
+  {
+    flushFrequency = std::numeric_limits<decltype(flushFrequency)>::max();
+  }
+  auto last_flush = std::chrono::steady_clock::now();
+
   for (int lod = 0; lod <= layoutDescriptor.GetLODLevels() && keep_processing; lod++)
   {
     for (int dim = 0; dim <= OpenVDS::DimensionsND::Dimensions_45 && keep_processing; dim++)
@@ -291,6 +336,15 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
       CopyError copyError;
       for (int64_t chunk = 0; chunk < sourceAccessors[0]->GetChunkCount() && keep_processing; chunk++)
       {
+        if (chunk % 10 == 0)
+        {
+          auto now = std::chrono::steady_clock::now();
+          if (now - last_flush > std::chrono::seconds(flushFrequency))
+          {
+            last_flush = now;
+            destinationAccessManager.FlushUploadQueue(true);
+          }
+        }
         for (int channel = 0; channel < channelCount && keep_processing; channel++)
         {
           if (sourceAccessors[channel])
