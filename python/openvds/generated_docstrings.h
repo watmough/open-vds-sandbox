@@ -998,6 +998,19 @@ Returns:
 --------
     The VolumeDataLayout of the VDS)doc";
 
+static const char *__doc_OpenVDS_GetMetadataWriteAccessInterface =
+R"doc(Get the MetadataWriteAccess interface for a VDS
+
+Parameters:
+-----------
+
+handle :
+    The handle of the VDS
+
+Returns:
+--------
+    The MetadataWriteAccess interface of the VDS)doc";
+
 static const char *__doc_OpenVDS_GetOpenVDSInterface = R"doc()doc";
 
 static const char *__doc_OpenVDS_GetOpenVDSName =
@@ -2529,27 +2542,15 @@ static const char *__doc_OpenVDS_Length_2 = R"doc()doc";
 
 static const char *__doc_OpenVDS_LogLevel = R"doc()doc";
 
-static const char *__doc_OpenVDS_LogLevel_2 = R"doc()doc";
-
 static const char *__doc_OpenVDS_LogLevel_Error = R"doc()doc";
-
-static const char *__doc_OpenVDS_LogLevel_Error_2 = R"doc()doc";
 
 static const char *__doc_OpenVDS_LogLevel_Info = R"doc()doc";
 
-static const char *__doc_OpenVDS_LogLevel_Info_2 = R"doc()doc";
-
 static const char *__doc_OpenVDS_LogLevel_None = R"doc()doc";
-
-static const char *__doc_OpenVDS_LogLevel_None_2 = R"doc()doc";
 
 static const char *__doc_OpenVDS_LogLevel_Trace = R"doc()doc";
 
-static const char *__doc_OpenVDS_LogLevel_Trace_2 = R"doc()doc";
-
 static const char *__doc_OpenVDS_LogLevel_Warning = R"doc()doc";
-
-static const char *__doc_OpenVDS_LogLevel_Warning_2 = R"doc()doc";
 
 static const char *__doc_OpenVDS_M4 = R"doc()doc";
 
@@ -2880,6 +2881,8 @@ static const char *__doc_OpenVDS_MetadataType_String = R"doc()doc";
 
 static const char *__doc_OpenVDS_MetadataWriteAccess = R"doc(Interface for write access to Metadata)doc";
 
+static const char *__doc_OpenVDS_MetadataWriteAccess_2 = R"doc()doc";
+
 static const char *__doc_OpenVDS_MetadataWriteAccess_ClearMetadata = R"doc()doc";
 
 static const char *__doc_OpenVDS_MetadataWriteAccess_ClearMetadata_2 = R"doc()doc";
@@ -3110,6 +3113,8 @@ static const char *__doc_OpenVDS_OpenVDSInterface_GetGlobalState = R"doc()doc";
 
 static const char *__doc_OpenVDS_OpenVDSInterface_GetLayout = R"doc()doc";
 
+static const char *__doc_OpenVDS_OpenVDSInterface_GetMetadataWriteAccessInterface = R"doc()doc";
+
 static const char *__doc_OpenVDS_OpenVDSInterface_IsCompressionMethodSupported = R"doc()doc";
 
 static const char *__doc_OpenVDS_OpenVDSInterface_IsSupportedProtocol = R"doc()doc";
@@ -3129,20 +3134,6 @@ static const char *__doc_OpenVDS_OpenVDSInterface_OpenWithAdaptiveCompressionTol
 static const char *__doc_OpenVDS_OpenVDSInterface_RetryableClose = R"doc()doc";
 
 static const char *__doc_OpenVDS_OpenVDSInterface_RetryableClose_2 = R"doc()doc";
-
-static const char *__doc_OpenVDS_OpenVDSLogging =
-R"doc(The OpenVDS Logging interface is used to provide a callback for
-applications to get logging output from the library)doc";
-
-static const char *__doc_OpenVDS_OpenVDSLogging_OpenVDSLogging = R"doc()doc";
-
-static const char *__doc_OpenVDS_OpenVDSLogging_OpenVDSLogging_2 = R"doc()doc";
-
-static const char *__doc_OpenVDS_OpenVDSLogging_callback = R"doc()doc";
-
-static const char *__doc_OpenVDS_OpenVDSLogging_level = R"doc()doc";
-
-static const char *__doc_OpenVDS_OpenVDSLogging_userHandle = R"doc()doc";
 
 static const char *__doc_OpenVDS_OpenVDSVersioningInterface =
 R"doc(The OpenVDS versioning interface is a stable base class for the
@@ -4522,9 +4513,7 @@ static const char *__doc_OpenVDS_VolumeDataAccessManager_m_IVolumeDataAccessMana
 
 static const char *__doc_OpenVDS_VolumeDataAccessManager_operator_assign = R"doc()doc";
 
-static const char *__doc_OpenVDS_VolumeDataAxisDescriptor =
-R"doc(Describes the number of samples, name, unit and coordinates
-(annotation) of an axis (dimension) of the volume)doc";
+static const char *__doc_OpenVDS_VolumeDataAxisDescriptor = R"doc()doc";
 
 static const char *__doc_OpenVDS_VolumeDataAxisDescriptor_2 = R"doc()doc";
 

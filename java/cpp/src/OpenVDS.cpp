@@ -3125,6 +3125,22 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_GetAccessManagerImpl
   return 0;
 }
 
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_GetMetadataWriteAccessInterfaceImpl
+  (JNIEnv * env, jclass cls, jlong handle)
+{
+  JNIEnvGuard
+    envGuard(env);
+
+  CPPJNI_TRY
+  {
+    auto result = OpenVDS::GetMetadataWriteAccessInterface(CPPJNI_cast<OpenVDS::VDS>(handle));
+    auto context = CPPJNI_createNonOwningObjectContext(result);
+    return context->handle();
+  }
+  CPPJNI_CATCH
+  return 0;
+}
+
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_GetCompressionMethodImpl
   (JNIEnv * env, jclass cls, jlong handle)
 {

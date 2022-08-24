@@ -26,104 +26,208 @@ import java.nio.ByteBuffer;
  * Interface for write access to Metadata
  * 
  */
-public interface MetadataWriteAccess {
+public class MetadataWriteAccess extends ManagedBase {
+
+    ///AUTOGEN-OK: CXX_METHOD SetMetadataInt void (const char *, const char *, int) FUNCTIONPROTO
+    native private void SetMetadataIntImpl(long native_object, String category, String name, int value);
 
     /**
      * Sets a metadata int with the given category and name to the given value
      * 
      */
-    public void setMetadataInt(String category, String name, int value);
+    public void setMetadataInt(String category, String name, int value) {
+        SetMetadataIntImpl(getNativeObject(), ManagedBase.requireNonNull(category, "category may not be null"), ManagedBase.requireNonNull(name, "name may not be null"), value);
+    }
+
+    ///AUTOGEN-OK: CXX_METHOD SetMetadataIntVector2 void (const char *, const char *, OpenVDS::Vector<int, 2>) FUNCTIONPROTO
+    native private void SetMetadataIntVector2Impl(long native_object, String category, String name, ByteBuffer value, long value_byteoffset);
 
     /**
      * Sets a metadata IntVector2 with the given category and name to the given value
      * 
      */
-    public void setMetadataIntVector2(String category, String name, IntVector2 value);
+    public void setMetadataIntVector2(String category, String name, IntVector2 value) {
+        SetMetadataIntVector2Impl(getNativeObject(), ManagedBase.requireNonNull(category, "category may not be null"), ManagedBase.requireNonNull(name, "name may not be null"), ManagedBase.requireNonNull(value, "value may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(value, "value may not be null").getByteBufferOffset());
+    }
+
+    ///AUTOGEN-OK: CXX_METHOD SetMetadataIntVector3 void (const char *, const char *, OpenVDS::Vector<int, 3>) FUNCTIONPROTO
+    native private void SetMetadataIntVector3Impl(long native_object, String category, String name, ByteBuffer value, long value_byteoffset);
 
     /**
      * Sets a metadata IntVector3 with the given category and name to the given value
      * 
      */
-    public void setMetadataIntVector3(String category, String name, IntVector3 value);
+    public void setMetadataIntVector3(String category, String name, IntVector3 value) {
+        SetMetadataIntVector3Impl(getNativeObject(), ManagedBase.requireNonNull(category, "category may not be null"), ManagedBase.requireNonNull(name, "name may not be null"), ManagedBase.requireNonNull(value, "value may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(value, "value may not be null").getByteBufferOffset());
+    }
+
+    ///AUTOGEN-OK: CXX_METHOD SetMetadataIntVector4 void (const char *, const char *, OpenVDS::Vector<int, 4>) FUNCTIONPROTO
+    native private void SetMetadataIntVector4Impl(long native_object, String category, String name, ByteBuffer value, long value_byteoffset);
 
     /**
      * Sets a metadata IntVector4 with the given category and name to the given value
      * 
      */
-    public void setMetadataIntVector4(String category, String name, IntVector4 value);
+    public void setMetadataIntVector4(String category, String name, IntVector4 value) {
+        SetMetadataIntVector4Impl(getNativeObject(), ManagedBase.requireNonNull(category, "category may not be null"), ManagedBase.requireNonNull(name, "name may not be null"), ManagedBase.requireNonNull(value, "value may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(value, "value may not be null").getByteBufferOffset());
+    }
+
+    ///AUTOGEN-OK: CXX_METHOD SetMetadataFloat void (const char *, const char *, float) FUNCTIONPROTO
+    native private void SetMetadataFloatImpl(long native_object, String category, String name, float value);
 
     /**
      * Sets a metadata float with the given category and name to the given value
      * 
      */
-    public void setMetadataFloat(String category, String name, float value);
+    public void setMetadataFloat(String category, String name, float value) {
+        SetMetadataFloatImpl(getNativeObject(), ManagedBase.requireNonNull(category, "category may not be null"), ManagedBase.requireNonNull(name, "name may not be null"), value);
+    }
+
+    ///AUTOGEN-OK: CXX_METHOD SetMetadataFloatVector2 void (const char *, const char *, OpenVDS::Vector<float, 2>) FUNCTIONPROTO
+    native private void SetMetadataFloatVector2Impl(long native_object, String category, String name, ByteBuffer value, long value_byteoffset);
 
     /**
      * Sets a metadata FloatVector2 with the given category and name to the given value
      * 
      */
-    public void setMetadataFloatVector2(String category, String name, FloatVector2 value);
+    public void setMetadataFloatVector2(String category, String name, FloatVector2 value) {
+        SetMetadataFloatVector2Impl(getNativeObject(), ManagedBase.requireNonNull(category, "category may not be null"), ManagedBase.requireNonNull(name, "name may not be null"), ManagedBase.requireNonNull(value, "value may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(value, "value may not be null").getByteBufferOffset());
+    }
+
+    ///AUTOGEN-OK: CXX_METHOD SetMetadataFloatVector3 void (const char *, const char *, OpenVDS::Vector<float, 3>) FUNCTIONPROTO
+    native private void SetMetadataFloatVector3Impl(long native_object, String category, String name, ByteBuffer value, long value_byteoffset);
 
     /**
      * Sets a metadata FloatVector3 with the given category and name to the given value
      * 
      */
-    public void setMetadataFloatVector3(String category, String name, FloatVector3 value);
+    public void setMetadataFloatVector3(String category, String name, FloatVector3 value) {
+        SetMetadataFloatVector3Impl(getNativeObject(), ManagedBase.requireNonNull(category, "category may not be null"), ManagedBase.requireNonNull(name, "name may not be null"), ManagedBase.requireNonNull(value, "value may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(value, "value may not be null").getByteBufferOffset());
+    }
+
+    ///AUTOGEN-OK: CXX_METHOD SetMetadataFloatVector4 void (const char *, const char *, OpenVDS::Vector<float, 4>) FUNCTIONPROTO
+    native private void SetMetadataFloatVector4Impl(long native_object, String category, String name, ByteBuffer value, long value_byteoffset);
 
     /**
      * Sets a metadata FloatVector4 with the given category and name to the given value
      * 
      */
-    public void setMetadataFloatVector4(String category, String name, FloatVector4 value);
+    public void setMetadataFloatVector4(String category, String name, FloatVector4 value) {
+        SetMetadataFloatVector4Impl(getNativeObject(), ManagedBase.requireNonNull(category, "category may not be null"), ManagedBase.requireNonNull(name, "name may not be null"), ManagedBase.requireNonNull(value, "value may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(value, "value may not be null").getByteBufferOffset());
+    }
+
+    ///AUTOGEN-OK: CXX_METHOD SetMetadataDouble void (const char *, const char *, double) FUNCTIONPROTO
+    native private void SetMetadataDoubleImpl(long native_object, String category, String name, double value);
 
     /**
      * Sets a metadata double with the given category and name to the given value
      * 
      */
-    public void setMetadataDouble(String category, String name, double value);
+    public void setMetadataDouble(String category, String name, double value) {
+        SetMetadataDoubleImpl(getNativeObject(), ManagedBase.requireNonNull(category, "category may not be null"), ManagedBase.requireNonNull(name, "name may not be null"), value);
+    }
+
+    ///AUTOGEN-OK: CXX_METHOD SetMetadataDoubleVector2 void (const char *, const char *, OpenVDS::Vector<double, 2>) FUNCTIONPROTO
+    native private void SetMetadataDoubleVector2Impl(long native_object, String category, String name, ByteBuffer value, long value_byteoffset);
 
     /**
      * Sets a metadata DoubleVector2 with the given category and name to the given value
      * 
      */
-    public void setMetadataDoubleVector2(String category, String name, DoubleVector2 value);
+    public void setMetadataDoubleVector2(String category, String name, DoubleVector2 value) {
+        SetMetadataDoubleVector2Impl(getNativeObject(), ManagedBase.requireNonNull(category, "category may not be null"), ManagedBase.requireNonNull(name, "name may not be null"), ManagedBase.requireNonNull(value, "value may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(value, "value may not be null").getByteBufferOffset());
+    }
+
+    ///AUTOGEN-OK: CXX_METHOD SetMetadataDoubleVector3 void (const char *, const char *, OpenVDS::Vector<double, 3>) FUNCTIONPROTO
+    native private void SetMetadataDoubleVector3Impl(long native_object, String category, String name, ByteBuffer value, long value_byteoffset);
 
     /**
      * Sets a metadata DoubleVector3 with the given category and name to the given value
      * 
      */
-    public void setMetadataDoubleVector3(String category, String name, DoubleVector3 value);
+    public void setMetadataDoubleVector3(String category, String name, DoubleVector3 value) {
+        SetMetadataDoubleVector3Impl(getNativeObject(), ManagedBase.requireNonNull(category, "category may not be null"), ManagedBase.requireNonNull(name, "name may not be null"), ManagedBase.requireNonNull(value, "value may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(value, "value may not be null").getByteBufferOffset());
+    }
+
+    ///AUTOGEN-OK: CXX_METHOD SetMetadataDoubleVector4 void (const char *, const char *, OpenVDS::Vector<double, 4>) FUNCTIONPROTO
+    native private void SetMetadataDoubleVector4Impl(long native_object, String category, String name, ByteBuffer value, long value_byteoffset);
 
     /**
      * Sets a metadata DoubleVector4 with the given category and name to the given value
      * 
      */
-    public void setMetadataDoubleVector4(String category, String name, DoubleVector4 value);
+    public void setMetadataDoubleVector4(String category, String name, DoubleVector4 value) {
+        SetMetadataDoubleVector4Impl(getNativeObject(), ManagedBase.requireNonNull(category, "category may not be null"), ManagedBase.requireNonNull(name, "name may not be null"), ManagedBase.requireNonNull(value, "value may not be null").getBackingByteBuffer(), ManagedBase.requireNonNull(value, "value may not be null").getByteBufferOffset());
+    }
+
+    ///AUTOGEN-OK: CXX_METHOD SetMetadataString void (const char *, const char *, const char *) FUNCTIONPROTO
+    native private void SetMetadataStringImpl(long native_object, String category, String name, String value);
 
     /**
      * Sets a metadata string with the given category and name to the given value
      * 
      */
-    public void setMetadataString(String category, String name, String value);
+    public void setMetadataString(String category, String name, String value) {
+        SetMetadataStringImpl(getNativeObject(), ManagedBase.requireNonNull(category, "category may not be null"), ManagedBase.requireNonNull(name, "name may not be null"), ManagedBase.requireNonNull(value, "value may not be null"));
+    }
+
+    ///AUTOGEN-OK: CXX_METHOD SetMetadataBLOB void (const char *, const char *, const void *, uint64_t) FUNCTIONPROTO
+    native private void SetMetadataBLOBImpl(long native_object, String category, String name, ByteBuffer data);
 
     /**
      * Sets a metadata BLOB with the given category and name to the given value
      * 
      */
-    public void setMetadataBLOB(String category, String name, ByteBuffer data);
-    public void copyMetadata(String category, MetadataReadAccess metadataReadAccess);
+    public void setMetadataBLOB(String category, String name, ByteBuffer data) {
+        SetMetadataBLOBImpl(getNativeObject(), ManagedBase.requireNonNull(category, "category may not be null"), ManagedBase.requireNonNull(name, "name may not be null"), ManagedBuffer.ensureByteBufferValid(data));
+    }
+
+    ///AUTOGEN-OK: CXX_METHOD CopyMetadata void (const char *, const OpenVDS::MetadataReadAccess *) FUNCTIONPROTO
+    native private void CopyMetadataImpl(long native_object, String category, long metadataReadAccess);
+    public void copyMetadata(String category, MetadataReadAccess metadataReadAccess) {
+        CopyMetadataImpl(getNativeObject(), ManagedBase.requireNonNull(category, "category may not be null"), ManagedBase.requireNonNull(metadataReadAccess, "metadataReadAccess may not be null").getNativeObject());
+    }
+
+    ///AUTOGEN-OK: CXX_METHOD ClearMetadata void (const char *, const char *) FUNCTIONPROTO
+    native private void ClearMetadataImpl(long native_object, String category, String name);
 
     /**
      * Clear the metadata with the given category and name
      * 
      */
-    public void clearMetadata(String category, String name);
+    public void clearMetadata(String category, String name) {
+        ClearMetadataImpl(getNativeObject(), ManagedBase.requireNonNull(category, "category may not be null"), ManagedBase.requireNonNull(name, "name may not be null"));
+    }
+
+    ///AUTOGEN-OK: CXX_METHOD ClearMetadata void (const char *) FUNCTIONPROTO
+    native private void ClearMetadata2Impl(long native_object, String category);
 
     /**
      * Clear the metadata with the given category
      * 
      */
-    public void clearMetadata(String category);
+    public void clearMetadata(String category) {
+        ClearMetadata2Impl(getNativeObject(), ManagedBase.requireNonNull(category, "category may not be null"));
+    }
+
+    MetadataWriteAccess(long nativeobject) {
+        super(nativeobject);
+    }
+    native private long dtorImpl(long nativeobject, boolean isDisposing);
+
+    @Override
+    protected void onDisposing(long native_object, boolean isDisposing) {
+        dtorImpl(native_object, isDisposing);
+    }
+
+    static MetadataWriteAccess fromNativeObject(long nativeobject) {
+        if (nativeobject == 0) {
+           return null;
+        }
+        return new MetadataWriteAccess(nativeobject);
+    }
+
+
 
 
 }

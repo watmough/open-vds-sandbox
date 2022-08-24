@@ -592,6 +592,19 @@ Available schemes are s3:// azure://
         return VolumeDataAccessManager.fromNativeObject(GetAccessManagerImpl(ManagedBase.requireNonNull(handle, "handle may not be null").getNativeObject()));
     }
 
+    ///AUTOGEN-OK: FUNCTION_DECL GetMetadataWriteAccessInterface OpenVDS::MetadataWriteAccess *(OpenVDS::VDS *) FUNCTIONPROTO
+    native private static long GetMetadataWriteAccessInterfaceImpl(long handle);
+
+    /**
+     * Get the MetadataWriteAccess interface for a VDS
+     * 
+     * @param handle The handle of the VDS
+     * @return The MetadataWriteAccess interface of the VDS
+     */
+    public static MetadataWriteAccess getMetadataWriteAccessInterface(VDS handle) {
+        return MetadataWriteAccess.fromNativeObject(GetMetadataWriteAccessInterfaceImpl(ManagedBase.requireNonNull(handle, "handle may not be null").getNativeObject()));
+    }
+
     ///AUTOGEN-OK: FUNCTION_DECL GetCompressionMethod OpenVDS::CompressionMethod (OpenVDS::VDS *) FUNCTIONPROTO
     native private static long GetCompressionMethodImpl(long handle);
 

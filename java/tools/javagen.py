@@ -181,7 +181,7 @@ _bytebuffer_backed = {
 
 _interfaces = {
 #    "OpenVDS::MetadataReadAccess",
-    "OpenVDS::MetadataWriteAccess", 
+#    "OpenVDS::MetadataWriteAccess", 
 }
 
 _smart_ptr_types = [
