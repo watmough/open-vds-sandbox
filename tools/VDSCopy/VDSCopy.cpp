@@ -226,9 +226,15 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
     }
     if (compressionMethod != OpenVDS::GetCompressionMethod(destinationHandle) && !compressionMethodString.empty())
     {
-      outputPrinter.printError("VDS", fmt::format("Resumed VDS does not match specified compression method. Opened: {}, Requested: {}",
-        getCompressionMethodString(OpenVDS::GetCompressionMethod(destinationHandle)), compressionMethodString));
+      outputPrinter.printError("VDS", fmt::format("Resumed VDS does not match specified compression method. Opened destination: {}, Requested: {}",
+        getCompressionMethodString(OpenVDS::GetCompressionMethod(destinationHandle)), getCompressionMethodString(compressionMethod)));
       return EXIT_FAILURE;
+    }
+    if (OpenVDS::GetLayout(destinationHandle)->GetLayoutHash() != layout->GetLayoutHash())
+    {
+      outputPrinter.printError("VDS", "Layout hashes are not matching", "Resuming copy where layout hashes are not matching is not permitted.");
+      if (!ignoreErrors)
+        return EXIT_FAILURE;
     }
   }
   else

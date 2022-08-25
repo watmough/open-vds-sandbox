@@ -41,6 +41,9 @@ public:
   virtual uint64_t
                 GetContentsHash() const = 0; ///< gets the contents hash of this VDS
 
+  virtual uint64_t
+                GetLayoutHash() const = 0; ///< gets the hash for the layout properties including axis and channels
+
   virtual int   GetDimensionality() const = 0; ///< gets the number of dimensions in this VDS
 
   virtual int   GetChannelCount() const = 0; ///< gets the number of channels in this VDS

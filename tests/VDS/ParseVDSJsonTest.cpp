@@ -142,6 +142,8 @@ GTEST_TEST(VDS_integration, ParseVolumeDataLayoutAndLayerStatus)
   // Create volume data layout from descriptors
   CreateVolumeDataLayout(handle);
 
+  EXPECT_EQ(handle.volumeDataLayout->GetLayoutHash(), 4347295037026364373ULL);
+
   // Serialize volume data layout
   std::vector<uint8_t>
     serializedVolumeDataLayoutResult = OpenVDS::SerializeVolumeDataLayout(handle);

@@ -99,6 +99,7 @@ public:
   VDS       &GetHandle() { return m_vds; }
 
   uint64_t         GetContentsHash() const override { return uint64_t(m_contentsHash); }
+  uint64_t         GetLayoutHash() const override;
   VolumeDataLayer::VolumeDataLayerID AddDataLayer(VolumeDataLayer *layer);
 
   FloatRange const &GetChannelValueRange(int32_t channel) const { ValidateChannelIndex(channel); return m_volumeDataChannelDescriptor[channel].GetValueRange(); }

@@ -308,6 +308,189 @@ VolumeDataLayoutImpl::~VolumeDataLayoutImpl()
 {
 }
 
+static int GetComponentsIntPacked(VolumeDataComponents components)
+{
+  switch (components)
+  {
+  case VolumeDataComponents::Components_1: return 0;
+  case VolumeDataComponents::Components_2: return 1;
+  case VolumeDataComponents::Components_4: return 2;
+  }
+  return 0xff;
+}
+
+static uint64_t CalculateHash(const VolumeDataAxisDescriptor& axisDescriptor)
+{
+  return (uint64_t)(axisDescriptor.GetNumSamples() * 895243543543LL + 953454356664LL);
+}
+
+// added LL to force long long values
+#define ASCII_CALCULATEHASH_MULTIPLIER0_DEFAULT     0x78f1239a0bcde456LL
+#define ASCII_CALCULATEHASH_MULTIPLIER1_DEFAULT     0x9abd23015ef6784cLL
+#define ASCII_CALCULATEHASH_MULTIPLIERDELTA_DEFAULT 0xb256d09f3c78ae41LL
+#define ASCII_CALCULATEHASH_CONSTANT1               0xa37d4ef12589bc60LL
+#define ASCII_CALCULATEHASH_CONSTANT2               0x09c761bde345a28fLL
+#define ASCII_CALCULATEHASH_CONSTANT3               0x5def340178abc629LL
+
+
+template<bool isIgnoreWordOrder, bool isCaseSensitive, bool isIgnoreWhiteSpace>
+int64_t
+ASCII_CalculateHashI64(const std::string &str)
+{
+  if (str.empty()) 
+  {
+    return 0;
+  }
+
+  int64_t
+    nTotal = 0;
+
+  bool
+    isNewWord = true;
+
+  int64_t 
+    nMultiplier0     = ASCII_CALCULATEHASH_MULTIPLIER0_DEFAULT,
+    nMultiplier1     = ASCII_CALCULATEHASH_MULTIPLIER1_DEFAULT,
+    nMultiplierDelta = ASCII_CALCULATEHASH_MULTIPLIERDELTA_DEFAULT;
+
+  int
+    nLength = (int)str.size();
+
+  for (int iCount = 0; iCount < nLength; iCount++)
+  {
+    char
+      zASCII = str[iCount];
+
+    bool
+      isCountThis = true;
+
+    if (zASCII <= ' ' || zASCII == '.' || zASCII == ',' || zASCII == ';' || zASCII == '+' || zASCII == '-')
+    {
+      isNewWord = true;
+
+      if (isIgnoreWhiteSpace)
+      {
+        isCountThis = false;
+      }
+    }
+    else
+    {
+      if (!isCaseSensitive && zASCII >= 'A' && zASCII <= 'Z')
+      {
+        zASCII += 'a' - 'A';
+      };
+
+      if (isNewWord && isIgnoreWordOrder)
+      {
+        nMultiplier0     = ASCII_CALCULATEHASH_MULTIPLIER0_DEFAULT;
+        nMultiplier1     = ASCII_CALCULATEHASH_MULTIPLIER1_DEFAULT;
+        nMultiplierDelta = ASCII_CALCULATEHASH_MULTIPLIERDELTA_DEFAULT;
+
+        isNewWord = true;
+      }
+    }
+
+    if (isCountThis)
+    {
+      nTotal += zASCII * nMultiplier0;
+
+      nMultiplier0 += nMultiplier1;
+      nMultiplier0 ^= ASCII_CALCULATEHASH_CONSTANT1;
+
+      nMultiplier1 += nMultiplier0 * nMultiplierDelta;
+      nMultiplier1 ^= nMultiplier0 >> 23;
+
+      nMultiplierDelta += ASCII_CALCULATEHASH_CONSTANT2;
+      nMultiplierDelta ^= ASCII_CALCULATEHASH_CONSTANT3;
+    }
+  }
+
+  return nTotal;
+}
+template<bool isIgnoreWordOrder, bool isCaseSensitive, bool isIgnoreWhiteSpace>
+uint64_t ASCII_CalculateHashU64(const std::string &str)
+{
+  return ASCII_CalculateHashI64<isIgnoreWordOrder, isCaseSensitive, isIgnoreWhiteSpace>(str) & 0x7fffffffffffffffLL;
+}
+
+static uint64_t CalculateExactStringHash(const std::string &str)
+{
+  return ASCII_CalculateHashU64<false, true, false>(str);
+}
+
+uint64_t CalculateHash(const VolumeDataChannelDescriptor& channelDescriptor)
+{
+  uint64_t nHash = 0;
+
+  nHash += int(channelDescriptor.GetFormat()) * 0x9872350974325LL;
+  nHash += GetComponentsIntPacked(channelDescriptor.GetComponents()) * 0x2104972392057LL;
+  nHash += CalculateExactStringHash(channelDescriptor.GetName());
+  nHash += CalculateExactStringHash(channelDescriptor.GetUnit());
+  nHash += InternalHasher<std::remove_const<std::remove_reference<decltype(channelDescriptor.GetValueRange())>::type>::type>::CalculateHash(channelDescriptor.GetValueRange());
+  nHash += channelDescriptor.GetMappedValueCount() * 0x6548675423497LL;
+
+  nHash += ConvertToIntForHashing(channelDescriptor.GetIntegerScale())  * 0x3845365301871LL;
+  nHash += ConvertToIntForHashing(channelDescriptor.GetIntegerOffset()) * 0x5879741098339LL;
+
+  nHash += channelDescriptor.IsRenderable() * 0x5432189723153LL;
+
+  return nHash;
+}
+
+uint64_t VolumeDataLayoutImpl::GetLayoutHash() const
+{
+  auto ld= GetLayoutDescriptor();
+  auto pc = GetChannelDescriptor(0);
+
+  uint64_t 
+    uHash = 0;
+
+  uHash += ld.GetNegativeMargin() * 56900043432LL;
+  uHash += ld.GetPositiveMargin() * 76755432236LL;
+  uHash += ld.GetLODLevels()      * 78111234535LL;
+  uHash += ld.IsCreate2DLODs()    * 92183678326LL;
+  uHash += ld.GetBrickSize()      * 44322906541LL;
+  uHash += int(pc.GetFormat()) * 66542043254LL;
+  uHash += GetComponentsIntPacked(pc.GetComponents()) * 81528764823LL;
+  uHash += pc.IsDiscrete() * 41895438942LL;
+  uHash += (GetDimensionality()-1)  * 89954354312LL;
+
+  uHash += ld.IsForceFullResolutionDimension() * 443547515963LL;
+  uHash += ld.GetFullResolutionDimension() * 321500823418LL;
+
+  uHash += ConvertToIntForHashing(pc.GetIntegerScale()) * 568478951336LL;
+  uHash += ConvertToIntForHashing(pc.GetIntegerOffset()) * 458796213678LL;
+
+  if (pc.IsUseNoValue())
+  {
+    uHash += ConvertToIntForHashing(pc.GetNoValue()) * 57203371915LL + 789314456921LL;
+  }
+
+  int dimension = GetDimensionality();
+  int lod = ld.GetLODLevels() + 1;
+
+  for (int iCount = 0; iCount < dimension; iCount++)
+  {
+    auto axisDescriptor = GetAxisDescriptor(iCount);
+    uHash += CalculateHash(axisDescriptor) * (65354363545LL + 6575642 * iCount);
+  }
+
+  for (int iCount = 0; iCount < lod; iCount++)
+  {
+    uHash += 1 * (4143824934LL + 328543543LL * iCount);
+  }
+
+
+  for (int iChannel = 1; iChannel < int(m_volumeDataChannelDescriptor.size()); iChannel++)
+  {
+      auto &volumeDataChannelDescriptor = m_volumeDataChannelDescriptor[iChannel];
+
+    uHash += CalculateHash(volumeDataChannelDescriptor);
+  }
+
+  return uHash & 0x7fffffffffffffffLL;
+}
+
 VolumeDataLayer::VolumeDataLayerID VolumeDataLayoutImpl::AddDataLayer(VolumeDataLayer *layer)
 {
   m_volumeDataLayers.emplace_back(layer, [](VolumeDataLayer *layer) { delete layer; });

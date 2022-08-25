@@ -29,6 +29,8 @@ PyVolumeDataLayout::initModule(py::module& m)
 
   VolumeDataLayout_.def("getContentsHash"             , static_cast<uint64_t(VolumeDataLayout::*)() const>(&VolumeDataLayout::GetContentsHash), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(VolumeDataLayout_GetContentsHash));
   VolumeDataLayout_.def_property_readonly("contentsHash", &VolumeDataLayout::GetContentsHash, OPENVDS_DOCSTRING(VolumeDataLayout_GetContentsHash));
+  VolumeDataLayout_.def("getLayoutHash"               , static_cast<uint64_t(VolumeDataLayout::*)() const>(&VolumeDataLayout::GetLayoutHash), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(VolumeDataLayout_GetLayoutHash));
+  VolumeDataLayout_.def_property_readonly("layoutHash", &VolumeDataLayout::GetLayoutHash, OPENVDS_DOCSTRING(VolumeDataLayout_GetLayoutHash));
   VolumeDataLayout_.def("getDimensionality"           , static_cast<int(VolumeDataLayout::*)() const>(&VolumeDataLayout::GetDimensionality), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(VolumeDataLayout_GetDimensionality));
   VolumeDataLayout_.def_property_readonly("dimensionality", &VolumeDataLayout::GetDimensionality, OPENVDS_DOCSTRING(VolumeDataLayout_GetDimensionality));
   VolumeDataLayout_.def("getChannelCount"             , static_cast<int(VolumeDataLayout::*)() const>(&VolumeDataLayout::GetChannelCount), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(VolumeDataLayout_GetChannelCount));

@@ -41,6 +41,17 @@ public class VolumeDataLayout extends MetadataReadAccess {
         return GetContentsHashImpl(getNativeObject());
     }
 
+    ///AUTOGEN-OK: CXX_METHOD GetLayoutHash uint64_t () const FUNCTIONPROTO
+    native private long GetLayoutHashImpl(long native_object);
+
+    /**
+     * gets the hash for the layout properties including axis and channels
+     * 
+     */
+    public long getLayoutHash() {
+        return GetLayoutHashImpl(getNativeObject());
+    }
+
     ///AUTOGEN-OK: CXX_METHOD GetDimensionality int () const FUNCTIONPROTO
     native private int GetDimensionalityImpl(long native_object);
 

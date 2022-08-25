@@ -44,6 +44,22 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetContentsH
   return 0;
 }
 
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetLayoutHashImpl
+  (JNIEnv * env, jobject object, jlong native_handle)
+{
+  JNIEnvGuard
+    envGuard(env);
+
+  CPPJNI_TRY
+  {
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataLayout>(native_handle);
+    auto result = pInstance->GetLayoutHash();
+    return result;
+  }
+  CPPJNI_CATCH
+  return 0;
+}
+
 JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataLayout_GetDimensionalityImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {

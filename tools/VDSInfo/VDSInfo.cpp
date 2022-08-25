@@ -294,6 +294,7 @@ VDSInfo --metadata-name TextHeader -b -e -w 80 s3://bluware-jorgen-dev/volve
   if (volumeDataLayout)
   {
     layoutJson["layoutDescriptor"] = OpenVDS::SerializeVolumeDataLayoutDescriptor(*layout);
+    layoutJson["layoutHash"] = layout->GetLayoutHash();
   }
   if (compressionInfo)
   {
