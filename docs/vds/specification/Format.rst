@@ -73,8 +73,18 @@ The `base brick size` of a 3D brick is always a power-of-two (64, 128, 256 etc.)
 in each dimension. 2D tiles have a size that is a multiple (usually 4 times) of the base brick size in order to reduce
 the overhead of having a lot of separate objects.
 
+Chunk metadata
+--------------
+
 To enable sparse datasets to be efficiently represented, as well as chunk compression methods that can use
 adaptive/progressive compression (i.e. use a prefix of the serialized chunk data to produce a lower-quality version of
 the chunk), we can have a small amount of extra binary data (typically 8-40 bytes for each chunk) that are available as
-a 1D array divided into pages of a fixed number of chunk entries. The interpretation of this chunk-metadata is dictated by the
-serialization method for the layer in question.
+a 1D array divided into pages of a fixed number of chunk entries.
+
+The interpretation of this chunk-metadata is dictated by the serialization method for the layer in question.
+The 8 first bytes is the volume data hash which is used to detect duplicates. It does not have to be a real hash of the data, the only requirement is
+that if the volume data hash of two chunks is identical we can assume the data stored for that chunk is the same.
+Chunk-metadata page entries with a value of 0 indicate a chunk has not been written, and this is not a legal volume data hash. There are special values of
+the volume data hash to indicate the whole chunk is NoValue (0xFFFFFFFFFFFFFFFF) or constant (first 4 bytes is an IEEE floating point value, next 4 bytes is 0x01010101).
+For wavelet compressed data a small table is stored in the next 16 bytes where each byte represents how many 255ths of the size of the previous level (starting with
+the size of the full object) are required in order to decompress that quality level.
