@@ -319,66 +319,6 @@ inline void OutputPrinter::printError(const std::string& title, const std::strin
     fmt::print(stderr, "[{}] {}: {}\n", message, value, systemError);
   }
 }
-struct PrintWarningContext
-{
-  Json::Value arrayAcc;
-  std::string title;
-  std::string fatalMsg;
-  OutputPrinter &outputPrinter;
-  bool printForceMessage;
-  PrintWarningContext(OutputPrinter &outputPrinter, const std::string& title, bool printForceMessage, const std::string fatalMsg)
-    : title(title)
-    , outputPrinter(outputPrinter)
-  {
-
-  }
-  ~PrintWarningContext()
-  {
-    if (outputPrinter.logLevel == LogLevel::None)
-      return;
-    OutputPrinter::PrintingPercentageGuard guard(&outputPrinter);
-    if (outputPrinter.json)
-    {
-      Json::Value root;
-      if (printForceMessage)
-      {
-        root["error"] = arrayAcc;
-        root["info"] = fatalMsg;
-      }
-      else
-      {
-        root["warning"] = arrayAcc;
-      }
-      Json::StreamWriterBuilder wbuilder;
-      wbuilder["indentation"] = "  ";
-      std::string document = Json::writeString(wbuilder, root);
-      fmt::print(stdout, "{}\n", document);
-    }
-    else
-    {
-      if (printForceMessage)
-        outputPrinter.printErrorUnguarded("VDS", fatalMsg);
-    }
-  }
-
-  void addWarning(const std::string& message, const std::string& value, const std::string& systemError)
-  {
-    if (outputPrinter.json)
-    {
-      Json::Value obj;
-      obj["message"] = message;
-      obj["title"] = title;
-      obj["value"] = value;
-      obj["error"] = systemError;
-      arrayAcc.append(obj);
-    }
-    else
-    {
-      OutputPrinter::PrintingPercentageGuard guard(&outputPrinter);
-      fmt::print(stderr, "[{}] {}: {}\n", message, value, systemError);
-    }
-  }
-};
 }
 
 #endif

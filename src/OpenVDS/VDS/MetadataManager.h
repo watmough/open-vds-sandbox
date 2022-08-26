@@ -65,6 +65,7 @@ namespace OpenVDS
     bool m_valid;
     bool m_dirty;
     int m_lockCount;
+    int m_retryCount;
     Error m_transferError;
 
     std::shared_ptr<Request> m_activeTransfer;
@@ -83,6 +84,7 @@ namespace OpenVDS
       , m_valid(false)
       , m_dirty(false)
       , m_lockCount(0)
+      , m_retryCount(0)
       , m_activeTransfer(nullptr)
     {}
   };

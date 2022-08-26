@@ -3852,6 +3852,7 @@ main(int argc, char* argv[])
   }
   auto last_flush = std::chrono::steady_clock::now();
 
+  bool encountedErrors = false;
   for (int64_t chunkSequence = 0; chunkSequence < amplitudeAccessor->GetChunkCount() && error.code == 0; chunkSequence++)
   {
     double new_percentage = double(chunkSequence) / amplitudeAccessor->GetChunkCount() * 100.0;
@@ -3860,20 +3861,6 @@ main(int argc, char* argv[])
       percentage = new_percentage;
       outputPrinter.printPercentage(percentage);
     }
-    int32_t errorCount = accessManager.UploadErrorCount();
-    if (errorCount)
-    {
-      OpenVDS::PrintWarningContext warningContext(outputPrinter, "VDS", !force, "Use -f/--force to continue uploading after upload errors");
-      for (int i = 0; i < errorCount; i++)
-      {
-        const char* object_id;
-        int32_t error_code;
-        const char* error_string;
-        accessManager.GetCurrentUploadError(&object_id, &error_code, &error_string);
-        warningContext.addWarning("Failed to upload object", fmt::format("{}", object_id), fmt::format("Error code {}: {}", object_id, error_code, error_string));
-      }
-    }
-
     auto
       chunk = chunkSequence;
 
@@ -4291,7 +4278,21 @@ main(int argc, char* argv[])
     if (now - last_flush > std::chrono::seconds(flushFrequency))
     {
       last_flush = now;
-      accessManager.FlushUploadQueue(true);
+      accessManager.Flush(error);
+      if (error.code)
+      {
+        encountedErrors = true;
+        if (!force)
+        {
+          outputPrinter.printError("VDS","Use -f/--force to continue uploading after upload errors");
+          outputPrinter.printError("Failed to upload object", error.string);
+        }
+        else
+        {
+          outputPrinter.printWarning("Failed to upload object", error.string);
+          error = OpenVDS::Error();
+        }
+      }
     }
   }
 
@@ -4306,14 +4307,32 @@ main(int argc, char* argv[])
   traceDataManagers.clear();
   dataViewManagers.clear();
 
+  do {
+    error = {};
+    accessManager.Flush(error);
+    if (error.code)
+    {
+      outputPrinter.printWarning("Failed to upload object", error.string);
+    }
+  } while (error.code);
+
+  if (error.code || encountedErrors)
+  {
+    outputPrinter.printPercentage(100.0);
+    outputPrinter.printInfo("Done", fmt::format("Completed importing with errors into {}", url));
+  }
+  else
+  {
+    outputPrinter.printPercentage(100.0);
+    outputPrinter.printInfo("Done", fmt::format("Successfully imported into {}", url));
+  }
+
+  //double elapsed = std::chrono::duration<double, std::milli>(std::chrono::high_resolution_clock::now() - start_time).count();
+  //fmt::print("Elapsed time is {}.\n", elapsed / 1000);
   if (error.code != 0)
   {
     return EXIT_FAILURE;
   }
-  outputPrinter.printPercentage(100.0);
-  outputPrinter.printInfo("Done", fmt::format("Successfully imported into {}", url));
-  //double elapsed = std::chrono::duration<double, std::milli>(std::chrono::high_resolution_clock::now() - start_time).count();
-  //fmt::print("Elapsed time is {}.\n", elapsed / 1000);
 
   return EXIT_SUCCESS;
 }

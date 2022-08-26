@@ -91,7 +91,7 @@ TEST(OpenVDS_integration, CreateAndModifyMetadata)
 
     EXPECT_EQ(layout->GetMetadataInt(category.c_str(), key.c_str()), modifiedValue);
 
-    accessManager.FlushUploadQueue();
+    accessManager.Flush(error);
   }
 
   {

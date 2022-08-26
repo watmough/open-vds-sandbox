@@ -631,8 +631,8 @@ Available schemes are s3:// azure://
         return GetCompressionToleranceImpl(ManagedBase.requireNonNull(handle, "handle may not be null").getNativeObject());
     }
 
-    ///AUTOGEN-OK: FUNCTION_DECL Close void (OpenVDS::VDS *, OpenVDS::VDSError &) FUNCTIONPROTO
-    native private static void CloseImpl(long handle, long error);
+    ///AUTOGEN-OK: FUNCTION_DECL Close void (OpenVDS::VDS *, OpenVDS::VDSError &, bool) FUNCTIONPROTO
+    native private static void CloseImpl(long handle, long error, boolean flush);
 
     /**
      * Close a VDS and free up all associated resources
@@ -640,19 +640,12 @@ Available schemes are s3:// azure://
      * @param handle The handle of the VDS
      * @param error If an error occured, the error code and message will be written to this output parameter
      */
-    public static void close(VDS handle, VDSError error) {
-        CloseImpl(ManagedBase.requireNonNull(handle, "handle may not be null").getNativeObject(), ManagedBase.requireNonNull(error, "error may not be null").getNativeObject());
-    }
-    public static void close(VDS handle) throws java.io.IOException {
-        VDSError error = new VDSError();
-        close(handle, error);
-        if (error.getCode() != 0) {
-            throw new java.io.IOException(error.getString());
-        }
+    public static void close(VDS handle, VDSError error, boolean flush) {
+        CloseImpl(ManagedBase.requireNonNull(handle, "handle may not be null").getNativeObject(), ManagedBase.requireNonNull(error, "error may not be null").getNativeObject(), flush);
     }
 
-    ///AUTOGEN-OK: FUNCTION_DECL RetryableClose void (OpenVDS::VDS *, OpenVDS::VDSError &) FUNCTIONPROTO
-    native private static void RetryableCloseImpl(long handle, long error);
+    ///AUTOGEN-OK: FUNCTION_DECL RetryableClose void (OpenVDS::VDS *, OpenVDS::VDSError &, bool) FUNCTIONPROTO
+    native private static void RetryableCloseImpl(long handle, long error, boolean flush);
 
     /**
      * Close a VDS and free up all associated resources if the close succeeds
@@ -660,15 +653,8 @@ Available schemes are s3:// azure://
      * @param handle The handle of the VDS
      * @param error If an error occured, the error code and message will be written to this output parameter
      */
-    public static void retryableClose(VDS handle, VDSError error) {
-        RetryableCloseImpl(ManagedBase.requireNonNull(handle, "handle may not be null").getNativeObject(), ManagedBase.requireNonNull(error, "error may not be null").getNativeObject());
-    }
-    public static void retryableClose(VDS handle) throws java.io.IOException {
-        VDSError error = new VDSError();
-        retryableClose(handle, error);
-        if (error.getCode() != 0) {
-            throw new java.io.IOException(error.getString());
-        }
+    public static void retryableClose(VDS handle, VDSError error, boolean flush) {
+        RetryableCloseImpl(ManagedBase.requireNonNull(handle, "handle may not be null").getNativeObject(), ManagedBase.requireNonNull(error, "error may not be null").getNativeObject(), flush);
     }
 
     ///AUTOGEN-OK: FUNCTION_DECL GetGlobalState OpenVDS::GlobalState *() FUNCTIONPROTO

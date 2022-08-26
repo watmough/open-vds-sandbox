@@ -498,15 +498,8 @@ public:
   /// <summary>
   /// Flush any pending writes and write updated layer status
   /// </summary>
-  /// <param name="writeUpdatedLayerStatus">
-  /// Write the updated layer status (or only flush pending writes of chunks and chunk-metadata).
-  /// </param>
-  virtual void FlushUploadQueue(bool writeUpdatedLayerStatus, ErrorHandler errorHandler, Error *error=nullptr) = 0;
+  virtual void Flush(ErrorHandler errorHandler, Error *error=nullptr) = 0;
 
-  virtual void ClearUploadErrors() = 0;
-  virtual void ForceClearAllUploadErrors() = 0;
-  virtual int32_t UploadErrorCount() = 0;
-  virtual void GetCurrentUploadError(const char **objectId, int32_t *errorCode, const char **errorString) = 0;
   virtual void GetCurrentDownloadError(int *code, const char** errorString) = 0;
 };
 
@@ -2360,54 +2353,10 @@ public:
   /// <summary>
   /// Flush any pending writes and write updated layer status
   /// </summary>
-  /// <param name="writeUpdatedLayerStatus">
-  /// Write the updated layer status (or only flush pending writes of chunks and chunk-metadata).
-  /// </param>
-  Error
-  FlushUploadQueue(bool writeUpdatedLayerStatus = true)
+  void Flush(Error &error)
   {
     EnsureValid();
-    Error error;
-    m_IVolumeDataAccessManager->FlushUploadQueue(writeUpdatedLayerStatus, [](Error* error, int errorCode, const char* errorMessage) { error->code = errorCode; error->string = errorMessage; }, &error);
-    return error;
-  }
-
-  /// <summary>
-  /// Clear all upload errors that have been retrieved
-  /// </summary>
-  void ClearUploadErrors()
-  {
-    EnsureValid();
-    return m_IVolumeDataAccessManager->ClearUploadErrors();
-  }
-
-  /// <summary>
-  /// Clear all upload errors
-  /// </summary>
-  void ForceClearAllUploadErrors()
-  {
-    EnsureValid();
-    return m_IVolumeDataAccessManager->ForceClearAllUploadErrors();
-  }
-
-  /// <summary>
-  /// Get the number of unretrieved upload errors
-  /// </summary>
-  int32_t
-  UploadErrorCount()
-  {
-    EnsureValid();
-    return m_IVolumeDataAccessManager->UploadErrorCount();
-  }
-
-  /// <summary>
-  /// Get the next unretrieved upload error or an empty error if there are no more errors to retrieve
-  /// </summary>
-  void
-  GetCurrentUploadError(const char **objectId, int32_t *errorCode, const char **errorString)
-  {
-    EnsureValid();
-    return m_IVolumeDataAccessManager->GetCurrentUploadError(objectId, errorCode, errorString);
+    m_IVolumeDataAccessManager->Flush([](Error* error, int errorCode, const char* errorMessage) { error->code = errorCode; error->string = errorMessage; }, &error);
   }
 
   /// <summary>

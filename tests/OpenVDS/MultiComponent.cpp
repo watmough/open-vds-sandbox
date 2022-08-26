@@ -77,8 +77,8 @@ TEST(OpenVDS_integration, MultiComponent)
       page->Release();
     }
     pageAccessor->Commit();
-    pageAccessor->SetMaxPages(0);
-    accessManager.FlushUploadQueue();
+    accessManager.Flush(error);
+    ASSERT_EQ(error.code, 0);
     accessManager.DestroyVolumeDataPageAccessor(pageAccessor);
   }
   OpenVDS::Close(handle);

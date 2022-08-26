@@ -117,6 +117,9 @@ class VolumeDataStoreIOManager : public VolumeDataStore, public LayerMetadataCon
 
   std::unordered_map<std::string, std::unique_ptr<MetadataManager>> m_metadataManagers;
 
+  int                   m_uploadLayerStatusRetryCount;
+  int                   m_uploadVolumeDataLayoutRetryCount;
+
   MetadataManager *GetMetadataMangerForLayer(const std::string &layerName) const;
 
   bool          SerializeAndUploadLayerStatus(VDS& vds, Error& error);
@@ -129,7 +132,7 @@ public:
   bool          CancelReadChunkImpl(const VolumeDataChunk& chunk, Error& error) override;
   bool          ReadChunkDataHash(const VolumeDataChunk& chunk, uint64_t &chunkDataHash, Error& error) override;
   bool          WriteChunkImpl(const VolumeDataChunk& chunk, std::shared_ptr<std::vector<uint8_t>>& serializedData, const std::vector<uint8_t>& metadata, std::function<void(const Error &error)> completed) override;
-  void          Flush(bool writeUpdatedLayerStatus, Error &error) override;
+  void          Flush(Error &error) override;
   bool          ReadSerializedVolumeDataLayout(std::vector<uint8_t>& serializedVolumeDataLayout, Error &error) override;
   bool          WriteSerializedVolumeDataLayout(const std::vector<uint8_t>& serializedVolumeDataLayout, Error &error) override;
   bool          AddLayer(VolumeDataLayer* volumeDataLayer, int chunkMetadataPageSize) override;

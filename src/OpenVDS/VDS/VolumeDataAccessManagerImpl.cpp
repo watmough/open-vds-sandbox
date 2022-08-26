@@ -676,10 +676,21 @@ IVolumeDataAccessor* VolumeDataAccessManagerImpl::CloneVolumeDataAccessor(IVolum
   return volumeDataAccessorBase->Clone(*volumeDataAccessorBase->GetVolumeDataPageAccessor());
 }
 
-void VolumeDataAccessManagerImpl::FlushUploadQueue(bool writeUpdatedLayerStatus, ErrorHandler errorHandler, Error* error)
+void VolumeDataAccessManagerImpl::Flush(ErrorHandler errorHandler, Error* error)
 {
   ErrorGuard errorGuard(errorHandler, error);
-  GetVolumeDataStore()->Flush(writeUpdatedLayerStatus, errorGuard);
+  {
+    std::unique_lock<std::mutex> lock(m_uploadErrors.mutex);
+    if (m_uploadErrors.errors.size())
+    {
+      auto& front = m_uploadErrors.errors.front();
+      errorGuard.string = fmt::format("{}: {}", front.urlObject, front.error.string);
+      errorGuard.code = front.error.code;
+      m_uploadErrors.errors.erase(m_uploadErrors.errors.begin());
+      return;
+    }
+  }
+  GetVolumeDataStore()->Flush(errorGuard);
 }
 
 static bool isPureCopy(const VolumeDataChunk &a, const VolumeDataChunk &b)
@@ -809,53 +820,7 @@ int64_t VolumeDataAccessManagerImpl::AddRemapJob(VolumeDataPageImpl &targetPage,
 void VolumeDataAccessManagerImpl::AddUploadError(Error const &error, const std::string &url)
 {
   std::unique_lock<std::mutex> lock(m_uploadErrors.mutex);
-  m_uploadErrors.errors.emplace_back(new UploadError(error, url));
-}
-
-void VolumeDataAccessManagerImpl::ClearUploadErrors()
-{
-  std::unique_lock<std::mutex> lock(m_uploadErrors.mutex);
-  m_uploadErrors.errors.erase(m_uploadErrors.errors.begin(), m_uploadErrors.errors.begin() + m_uploadErrors.currentErrorIndex);
-  m_uploadErrors.currentErrorIndex = 0;
-}
-
-void VolumeDataAccessManagerImpl::ForceClearAllUploadErrors()
-{
-  std::unique_lock<std::mutex> lock(m_uploadErrors.mutex);
-  m_uploadErrors.errors.erase(m_uploadErrors.errors.begin(), m_uploadErrors.errors.begin() + m_uploadErrors.currentErrorIndex);
-  m_uploadErrors.errors.clear();
-  m_uploadErrors.currentErrorIndex = 0;
-}
-
-
-int32_t VolumeDataAccessManagerImpl::UploadErrorCount()
-{
-  std::unique_lock<std::mutex> lock(m_uploadErrors.mutex);
-  return int32_t(m_uploadErrors.errors.size() - m_uploadErrors.currentErrorIndex);
-}
-
-void VolumeDataAccessManagerImpl::GetCurrentUploadError(const char** objectId, int32_t* errorCode, const char** errorString)
-{
-  std::unique_lock<std::mutex> lock(m_uploadErrors.mutex);
-  if (m_uploadErrors.currentErrorIndex >= m_uploadErrors.errors.size())
-  {
-    if (objectId)
-      *objectId = "";
-    if (errorCode)
-      *errorCode = 0;
-    if (errorString)
-      *errorString = "";
-    return;
-  }
-
-  const auto &error = m_uploadErrors.errors[m_uploadErrors.currentErrorIndex];
-  m_uploadErrors.currentErrorIndex++;
-  if (objectId)
-    *objectId = error->urlObject.c_str();
-  if (errorCode)
-    *errorCode = error->error.code;
-  if (errorString)
-    *errorString = error->error.string.c_str();
+  m_uploadErrors.errors.emplace_back(error, url);
 }
 
 void VolumeDataAccessManagerImpl::GetCurrentDownloadError(int* errorCode, const char** errorString)

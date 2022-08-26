@@ -2732,8 +2732,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Prefe
   return 0;
 }
 
-JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_FlushUploadQueueImpl
-  (JNIEnv * env, jobject object, jlong native_handle, jboolean writeUpdatedLayerStatus)
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_FlushImpl
+  (JNIEnv * env, jobject object, jlong native_handle, jlong error)
 {
   JNIEnvGuard
     envGuard(env);
@@ -2741,56 +2741,9 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Flush
   CPPJNI_TRY
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
-    auto result = pInstance->FlushUploadQueue(writeUpdatedLayerStatus ? true : false);
-    auto context = CPPJNI_createObjectContext(CPPJNI_makeShared<OpenVDS::VDSError>(result));
-    return context->handle();
+    pInstance->Flush(*CPPJNI_cast<OpenVDS::VDSError>(error));
   }
   CPPJNI_CATCH
-  return 0;
-}
-
-JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_ClearUploadErrorsImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
-{
-  JNIEnvGuard
-    envGuard(env);
-
-  CPPJNI_TRY
-  {
-    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
-    pInstance->ClearUploadErrors();
-  }
-  CPPJNI_CATCH
-}
-
-JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_ForceClearAllUploadErrorsImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
-{
-  JNIEnvGuard
-    envGuard(env);
-
-  CPPJNI_TRY
-  {
-    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
-    pInstance->ForceClearAllUploadErrors();
-  }
-  CPPJNI_CATCH
-}
-
-JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_UploadErrorCountImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
-{
-  JNIEnvGuard
-    envGuard(env);
-
-  CPPJNI_TRY
-  {
-    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
-    auto result = pInstance->UploadErrorCount();
-    return result;
-  }
-  CPPJNI_CATCH
-  return 0;
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_dtorImpl
@@ -3602,35 +3555,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
 
 }
 
-///AUTOGEN-IGNORE: CXX_METHOD GetCurrentUploadError void (const char **, int *, const char **) FUNCTIONPROTO
 ///AUTOGEN-IGNORE: CXX_METHOD GetCurrentDownloadError void (int *, const char **) FUNCTIONPROTO	
-
-JNIEXPORT jobjectArray JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_GetCurrentUploadErrorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
-{
-  JNIEnvGuard
-    envGuard(env);
-
-  CPPJNI_TRY
-  {
-    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
-    const char* objectID = nullptr;
-    int32_t code = 0;
-    const char* errorString = nullptr;
-    pInstance->GetCurrentUploadError(&objectID, &code, &errorString);
-    auto arr = CPPJNI_createJavaArray(3);
-    if (arr)
-    {
-      env->SetObjectArrayElement(arr, 0, env->NewStringUTF(objectID));
-      env->SetObjectArrayElement(arr, 1, CPPJNI_createPODJavaObject<int>(code));
-      env->SetObjectArrayElement(arr, 2, env->NewStringUTF(errorString));
-
-    }
-    return arr;
-  }
-  CPPJNI_CATCH
-  return 0;
-}
 
 JNIEXPORT jobjectArray JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_GetCurrentDownloadErrorImpl
   (JNIEnv * env, jobject object, jlong native_handle)

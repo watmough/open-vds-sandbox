@@ -1658,49 +1658,15 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeDataRequest.fromNativeObject(PrefetchVolumeChunkImpl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, chunkIndex));
     }
 
-    ///AUTOGEN-OK: CXX_METHOD FlushUploadQueue OpenVDS::VDSError (bool) FUNCTIONPROTO
-    native private long FlushUploadQueueImpl(long native_object, boolean writeUpdatedLayerStatus);
+    ///AUTOGEN-OK: CXX_METHOD Flush void (OpenVDS::VDSError &) FUNCTIONPROTO
+    native private void FlushImpl(long native_object, long error);
 
     /**
      * Flush any pending writes and write updated layer status
      * 
-     * @param writeUpdatedLayerStatus Write the updated layer status (or only flush pending writes of chunks and chunk-metadata).
      */
-    public VDSError flushUploadQueue(boolean writeUpdatedLayerStatus) {
-        return VDSError.fromNativeObject(FlushUploadQueueImpl(getNativeObject(), writeUpdatedLayerStatus));
-    }
-
-    ///AUTOGEN-OK: CXX_METHOD ClearUploadErrors void () FUNCTIONPROTO
-    native private void ClearUploadErrorsImpl(long native_object);
-
-    /**
-     * Clear all upload errors that have been retrieved
-     * 
-     */
-    public void clearUploadErrors() {
-        ClearUploadErrorsImpl(getNativeObject());
-    }
-
-    ///AUTOGEN-OK: CXX_METHOD ForceClearAllUploadErrors void () FUNCTIONPROTO
-    native private void ForceClearAllUploadErrorsImpl(long native_object);
-
-    /**
-     * Clear all upload errors
-     * 
-     */
-    public void forceClearAllUploadErrors() {
-        ForceClearAllUploadErrorsImpl(getNativeObject());
-    }
-
-    ///AUTOGEN-OK: CXX_METHOD UploadErrorCount int () FUNCTIONPROTO
-    native private int UploadErrorCountImpl(long native_object);
-
-    /**
-     * Get the number of unretrieved upload errors
-     * 
-     */
-    public int uploadErrorCount() {
-        return UploadErrorCountImpl(getNativeObject());
+    public void flush(VDSError error) {
+        FlushImpl(getNativeObject(), ManagedBase.requireNonNull(error, "error may not be null").getNativeObject());
     }
 
 /*

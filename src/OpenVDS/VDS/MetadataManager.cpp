@@ -181,6 +181,8 @@ void MetadataManager::UploadDirtyPages(VolumeDataStoreIOManager *volumeDataStore
   {
     auto &page = *it;
     assert(page.IsDirty());
+    if (page.m_retryCount > 3)
+      continue;
 
     // We need to keep a separate 'next' iterator since we're moving the current element to another list if the write is successful
     next = std::next(it);
@@ -188,10 +190,17 @@ void MetadataManager::UploadDirtyPages(VolumeDataStoreIOManager *volumeDataStore
     bool success = volumeDataStore->WriteMetadataPage(&page, page.m_data, error);
     if(success)
     {
+      page.m_retryCount = 0;
       assert(page.m_pageIndex < int(m_metadataStatus.m_pageDirectory.size()));
       m_metadataStatus.m_pageDirectory[page.m_pageIndex] = page.m_pageIndex;
       page.m_dirty = false;
       m_pageList.splice(m_pageList.begin(), m_dirtyPageList, it);
+    }
+    else
+    {
+      page.m_retryCount++;
+      m_dirtyPageList.splice(m_dirtyPageList.end(), m_dirtyPageList, it);
+      return;
     }
   }
 }

@@ -304,7 +304,7 @@ bool VolumeDataStoreVDSFile::WriteChunkImpl(const VolumeDataChunk& chunk, std::s
   return true;
 }
 
-void VolumeDataStoreVDSFile::Flush(bool writeUpdatedLayerStatus, Error &error)
+void VolumeDataStoreVDSFile::Flush(Error &error)
 {
   std::unique_lock<std::mutex> lock(m_mutex);
   bool success = true;

@@ -1569,8 +1569,6 @@ Parameters:
 requestID :
     The RequestID to cancel.)doc";
 
-static const char *__doc_OpenVDS_IVolumeDataAccessManager_ClearUploadErrors = R"doc()doc";
-
 static const char *__doc_OpenVDS_IVolumeDataAccessManager_CloneVolumeDataAccessor = R"doc()doc";
 
 static const char *__doc_OpenVDS_IVolumeDataAccessManager_Create2DInterpolatingVolumeDataAccessorR32 = R"doc()doc";
@@ -1675,17 +1673,7 @@ Parameters:
 volumeDataPageAccessor :
     The VolumeDataPageAccessor object to destroy.)doc";
 
-static const char *__doc_OpenVDS_IVolumeDataAccessManager_FlushUploadQueue =
-R"doc(Flush any pending writes and write updated layer status
-
-Parameters:
------------
-
-writeUpdatedLayerStatus :
-    Write the updated layer status (or only flush pending writes of
-    chunks and chunk-metadata).)doc";
-
-static const char *__doc_OpenVDS_IVolumeDataAccessManager_ForceClearAllUploadErrors = R"doc()doc";
+static const char *__doc_OpenVDS_IVolumeDataAccessManager_Flush = R"doc(Flush any pending writes and write updated layer status)doc";
 
 static const char *__doc_OpenVDS_IVolumeDataAccessManager_GetCompletionFactor =
 R"doc(Get the completion factor (between 0 and 1) of the request.
@@ -1702,8 +1690,6 @@ Returns:
     been completed.)doc";
 
 static const char *__doc_OpenVDS_IVolumeDataAccessManager_GetCurrentDownloadError = R"doc()doc";
-
-static const char *__doc_OpenVDS_IVolumeDataAccessManager_GetCurrentUploadError = R"doc()doc";
 
 static const char *__doc_OpenVDS_IVolumeDataAccessManager_GetProjectedVolumeSubsetBufferSize =
 R"doc(Compute the buffer size (in bytes) for a projected volume subset
@@ -2123,8 +2109,6 @@ Returns:
 --------
     The RequestID which can be used to query the status of the
     request, cancel the request or wait for the request to complete.)doc";
-
-static const char *__doc_OpenVDS_IVolumeDataAccessManager_UploadErrorCount = R"doc()doc";
 
 static const char *__doc_OpenVDS_IVolumeDataAccessManager_WaitForCompletion =
 R"doc(Wait for a request to complete successfully. If the request completed,
@@ -3534,8 +3518,6 @@ static const char *__doc_OpenVDS_VolumeDataAccessManager = R"doc()doc";
 
 static const char *__doc_OpenVDS_VolumeDataAccessManager_2 = R"doc()doc";
 
-static const char *__doc_OpenVDS_VolumeDataAccessManager_ClearUploadErrors = R"doc(Clear all upload errors that have been retrieved)doc";
-
 static const char *__doc_OpenVDS_VolumeDataAccessManager_CreateInterpolatingVolumeDataAccessor = R"doc()doc";
 
 static const char *__doc_OpenVDS_VolumeDataAccessManager_CreateInterpolatingVolumeDataAccessor_2 = R"doc()doc";
@@ -3798,23 +3780,9 @@ static const char *__doc_OpenVDS_VolumeDataAccessManager_DoRequestVolumeTraces =
 
 static const char *__doc_OpenVDS_VolumeDataAccessManager_EnsureValid = R"doc()doc";
 
-static const char *__doc_OpenVDS_VolumeDataAccessManager_FlushUploadQueue =
-R"doc(Flush any pending writes and write updated layer status
-
-Parameters:
------------
-
-writeUpdatedLayerStatus :
-    Write the updated layer status (or only flush pending writes of
-    chunks and chunk-metadata).)doc";
-
-static const char *__doc_OpenVDS_VolumeDataAccessManager_ForceClearAllUploadErrors = R"doc(Clear all upload errors)doc";
+static const char *__doc_OpenVDS_VolumeDataAccessManager_Flush = R"doc(Flush any pending writes and write updated layer status)doc";
 
 static const char *__doc_OpenVDS_VolumeDataAccessManager_GetCurrentDownloadError = R"doc(Get the download error from the most recent operation that failed)doc";
-
-static const char *__doc_OpenVDS_VolumeDataAccessManager_GetCurrentUploadError =
-R"doc(Get the next unretrieved upload error or an empty error if there are
-no more errors to retrieve)doc";
 
 static const char *__doc_OpenVDS_VolumeDataAccessManager_GetProjectedVolumeSubsetBufferSize =
 R"doc(Compute the buffer size (in bytes) for a projected volume subset
@@ -4526,8 +4494,6 @@ Returns:
 --------
     A VolumeDataRequest instance encapsulating the request status and
     buffer.)doc";
-
-static const char *__doc_OpenVDS_VolumeDataAccessManager_UploadErrorCount = R"doc(Get the number of unretrieved upload errors)doc";
 
 static const char *__doc_OpenVDS_VolumeDataAccessManager_VolumeDataAccessManager = R"doc()doc";
 

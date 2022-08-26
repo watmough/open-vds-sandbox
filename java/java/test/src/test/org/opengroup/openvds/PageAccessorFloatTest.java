@@ -326,7 +326,8 @@ public class PageAccessorFloatTest {
                 inputPage.release();
             }
             pageAccessor.close();
-            VDSError error = accessManager.flushUploadQueue(true);
+            VDSError error = new VDSError();
+            accessManager.flush(error);
             Assert.assertEquals(error.getCode(), 0);
             vdsCopy.close();
     }

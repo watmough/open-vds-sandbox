@@ -51,6 +51,15 @@ static void printProgress(OpenVDS::OutputPrinter &outputPrinter, int64_t totalCh
   }
 }
 
+static void printError(OpenVDS::OutputPrinter &outputPrinter, const OpenVDS::Error &error, bool ignoreErrors, bool &error_encountered, bool &keep_processing)
+{
+  error_encountered = true;
+  if (!ignoreErrors)
+    keep_processing = false;
+  auto message = fmt::format("{}: {}", error.code, error.string);
+  outputPrinter.printError("Failed to copy chunk ", message);
+}
+
 int main(int argc, char **argv)
 {
 #ifndef WIN32
@@ -339,7 +348,6 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
       if (!sourceAccessors[0])
         continue;
 
-      CopyError copyError;
       for (int64_t chunk = 0; chunk < sourceAccessors[0]->GetChunkCount() && keep_processing; chunk++)
       {
         if (chunk % 10 == 0)
@@ -348,7 +356,12 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
           if (now - last_flush > std::chrono::seconds(flushFrequency))
           {
             last_flush = now;
-            destinationAccessManager.FlushUploadQueue(true);
+            destinationAccessManager.Flush(error);
+            if (error.code)
+            {
+              printError(outputPrinter, error, ignoreErrors, error_encountered, keep_processing);
+              break;
+            }
           }
         }
         for (int channel = 0; channel < channelCount && keep_processing; channel++)
@@ -361,28 +374,16 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
               destinationAccessors[channel]->CopyPage(mappedChunk, *sourceAccessors[channel]);
               doneChunks++;
               printProgress(outputPrinter, totalChunks, doneChunks, percentage);
-              int errorCount = destinationAccessManager.UploadErrorCount();
-              for (int errorIndex = 0; errorIndex < errorCount; errorIndex++)
-              {
-                const char* objectId;
-                int32_t errorCode;
-                const char* errorString;
-                destinationAccessManager.GetCurrentUploadError(&objectId, &errorCode, &errorString);
-                if (errorIndex == 0)
-                {
-                  copyError.message = fmt::format("{}: {}", objectId, errorString);
-                  copyError.code = errorCode;
-                  outputPrinter.printError("Failed to copy chunk ", copyError.message);
-                }
-                error_encountered = true;
-                if (!ignoreErrors)
-                  keep_processing = false;
-              }
             }
           }
         }
       }
     }
+  }
+  destinationAccessManager.Flush(error);
+  if (error.code)
+  {
+    printError(outputPrinter, error, ignoreErrors, error_encountered, keep_processing);
   }
 
   if (keep_processing)

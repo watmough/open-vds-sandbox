@@ -16,20 +16,22 @@
 
 //#define IN_MEMORY_TEST 1
 
-int handleUploadErrors(OpenVDS::VolumeDataAccessManager &accessManager)
+bool handleUploadErrors(OpenVDS::VolumeDataAccessManager &accessManager)
 {
-  int32_t errorCount = accessManager.UploadErrorCount();
-  for (int errorIndex = 0; errorIndex < errorCount; errorIndex++)
+  bool hasError = false;
+  OpenVDS::Error error;
+  do
   {
-    const char *object_id;
-    int32_t error_code;
-    const char *error_string;
-    accessManager.GetCurrentUploadError(&object_id, &error_code, &error_string);
-    fprintf(stderr, "\nFailed to upload object: %s. Error code %d: %s\n", object_id, error_code, error_string);
-  }
-  if (errorCount)
-    accessManager.ClearUploadErrors();
-  return errorCount;
+    error = {};
+    accessManager.Flush(error);
+    if (error.code)
+    {
+      fmt::print(stderr, "\nFailed to upload object. Error code {}: {}\n", error.code, error.string);
+      hasError = true;
+
+    }
+  } while (error.code);
+  return hasError;
 }
 
 TEST(IOTests, CreateSyntheticVDSAndVerifyUpload)
@@ -120,8 +122,8 @@ TEST(IOTests, CreateSyntheticVDSAndVerifyUpload)
 
     for (int64_t i = 0; i < chunkCount; i++)
     {
-      int uploadErrors = handleUploadErrors(networkAccessManager);
-      ASSERT_TRUE(uploadErrors == 0);
+      bool uploadErrors = handleUploadErrors(networkAccessManager);
+      ASSERT_TRUE(uploadErrors == false);
       int32_t min[OpenVDS::Dimensionality_Max];
       int32_t max[OpenVDS::Dimensionality_Max];
       int32_t size[OpenVDS::Dimensionality_Max];
@@ -148,8 +150,8 @@ TEST(IOTests, CreateSyntheticVDSAndVerifyUpload)
       networkPage->Release();
     }
     networkPageAccessor->Commit();
-    int uploadErrors = handleUploadErrors(networkAccessManager);
-    ASSERT_TRUE(uploadErrors == 0);
+    bool uploadErrors = handleUploadErrors(networkAccessManager);
+    ASSERT_TRUE(uploadErrors == false);
     networkAccessManager.DestroyVolumeDataPageAccessor(networkPageAccessor);
   }
 
@@ -295,8 +297,8 @@ TEST(IOTests, CreateSyntheticVDSAndVerifyCreateVDSFile)
 
     for (int64_t i = 0; i < chunkCount; i++)
     {
-      int uploadErrors = handleUploadErrors(fileAccessManager);
-      ASSERT_TRUE(uploadErrors == 0);
+      bool uploadErrors = handleUploadErrors(fileAccessManager);
+      ASSERT_TRUE(uploadErrors == false);
       int32_t min[OpenVDS::Dimensionality_Max];
       int32_t max[OpenVDS::Dimensionality_Max];
       int32_t size[OpenVDS::Dimensionality_Max];
@@ -323,8 +325,8 @@ TEST(IOTests, CreateSyntheticVDSAndVerifyCreateVDSFile)
       filePage->Release();
     }
     filePageAccessor->Commit();
-    int uploadErrors = handleUploadErrors(fileAccessManager);
-    ASSERT_TRUE(uploadErrors == 0);
+    bool uploadErrors = handleUploadErrors(fileAccessManager);
+    ASSERT_TRUE(uploadErrors == false);
     fileAccessManager.DestroyVolumeDataPageAccessor(filePageAccessor);
   }
 

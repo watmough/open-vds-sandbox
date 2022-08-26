@@ -1033,7 +1033,7 @@ inline float GetCompressionTolerance(VDSHandle handle) { return GetOpenVDSInterf
 /// <param name="handle">
 /// The handle of the VDS
 /// </param>
-inline void Close(VDSHandle handle) { return GetOpenVDSInterface(OPENVDS_VERSION).Close(handle); }
+inline void Close(VDSHandle handle, bool flush = true) { return GetOpenVDSInterface(OPENVDS_VERSION).Close(handle, flush); }
 #endif
 
 /// <summary>
@@ -1045,7 +1045,7 @@ inline void Close(VDSHandle handle) { return GetOpenVDSInterface(OPENVDS_VERSION
 /// <param name="error">
 /// If an error occured, the error code and message will be written to this output parameter
 /// </param>
-inline void Close(VDSHandle handle, Error &error) { return GetOpenVDSInterface(OPENVDS_VERSION).Close(handle, [](Error *error, int errorCode, const char *errorMessage) { error->code = errorCode; error->string = errorMessage; }, &error); }
+inline void Close(VDSHandle handle, Error &error, bool flush = true) { return GetOpenVDSInterface(OPENVDS_VERSION).Close(handle, flush, [](Error *error, int errorCode, const char *errorMessage) { error->code = errorCode; error->string = errorMessage; }, &error); }
 
 #if !defined(JAVA_WRAPPER_GENERATOR)
 /// <summary>
@@ -1054,7 +1054,7 @@ inline void Close(VDSHandle handle, Error &error) { return GetOpenVDSInterface(O
 /// <param name="handle">
 /// The handle of the VDS
 /// </param>
-inline void RetryableClose(VDSHandle handle) { return GetOpenVDSInterface(OPENVDS_VERSION).RetryableClose(handle); }
+inline void RetryableClose(VDSHandle handle, bool flush = true) { return GetOpenVDSInterface(OPENVDS_VERSION).RetryableClose(handle, flush); }
 #endif
 
 /// <summary>
@@ -1066,7 +1066,7 @@ inline void RetryableClose(VDSHandle handle) { return GetOpenVDSInterface(OPENVD
 /// <param name="error">
 /// If an error occured, the error code and message will be written to this output parameter
 /// </param>
-inline void RetryableClose(VDSHandle handle, Error &error) { return GetOpenVDSInterface(OPENVDS_VERSION).RetryableClose(handle, [](Error *error, int errorCode, const char *errorMessage) { error->code = errorCode; error->string = errorMessage; }, &error); }
+inline void RetryableClose(VDSHandle handle, Error &error, bool flush = true) { return GetOpenVDSInterface(OPENVDS_VERSION).RetryableClose(handle, flush, [](Error *error, int errorCode, const char *errorMessage) { error->code = errorCode; error->string = errorMessage; }, &error); }
 
 /// <summary>
 /// Get the GlobalState interface 

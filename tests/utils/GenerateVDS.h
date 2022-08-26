@@ -90,8 +90,8 @@ inline void fill3DVDSWithNoise(OpenVDS::VDS *vds, int32_t channel = 0, const Ope
     page->Release();
   }
   pageAccessor->Commit();
-  pageAccessor->SetMaxPages(0);
-  accessManager.FlushUploadQueue();
+  OpenVDS::Error error;
+  accessManager.Flush(error);
   accessManager.DestroyVolumeDataPageAccessor(pageAccessor);
 
 }
@@ -143,8 +143,8 @@ inline void fill3DVDSWithBitNoise(OpenVDS::VDS *vds, int32_t channel = 0)
     page->Release();
   }
   pageAccessor->Commit();
-  pageAccessor->SetMaxPages(0);
-  accessManager.FlushUploadQueue();
+  OpenVDS::Error error;
+  accessManager.Flush(error);
   accessManager.DestroyVolumeDataPageAccessor(pageAccessor);
 
 }

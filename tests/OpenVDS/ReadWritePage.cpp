@@ -265,12 +265,8 @@ TEST(OpenVDS_integration, ReadWriteVDSFile)
   pageAccessor->Commit();
   accessManager.DestroyVolumeDataPageAccessor(pageAccessor);
 
-  const char* object = "";
-  int         errorCode = 0;
-  const char* errorString = "";
-
-  accessManager.GetCurrentUploadError(&object, &errorCode, &errorString);
-  EXPECT_EQ(errorCode, 0) << "Error " << errorCode << " writing " << object << ": " << errorString;
+  accessManager.Flush(error);
+  EXPECT_EQ(error.code, 0) << "Error " << error.code << " writing " << error.string;
 
   handle.Close(error);
   EXPECT_EQ(error.code, 0);
@@ -291,8 +287,9 @@ TEST(OpenVDS_integration, ReadWriteVDSFile)
         }
   }
 
-  accessManager.GetCurrentUploadError(&object, &errorCode, &errorString);
-  EXPECT_EQ(errorCode, 0) << "Error " << errorCode << " writing " << object << ": " << errorString;
+
+  accessManager.Flush(error);
+  EXPECT_EQ(error.code, 0) << "Error " << error.code << " writing " << error.string;
 
   // Close VDS and remove file
   handle.Close(error);

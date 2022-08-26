@@ -336,7 +336,7 @@ def generateVDS(vds_name, axis_names):
   manager = openvds.getAccessManager(vds)
   accessor = manager.createVolumeDataPageAccessor(openvds.DimensionsND.Dimensions_012, 0, 0, 8, openvds.VolumeDataAccessManager.AccessMode.AccessMode_Create, 1024)
   accessor.commit()
-  manager.manager.flushUploadQueue()
+  manager.manager.flush()
   manager.manager.destroyVolumeDataPageAccessor(accessor)
   openvds.close(vds)
 

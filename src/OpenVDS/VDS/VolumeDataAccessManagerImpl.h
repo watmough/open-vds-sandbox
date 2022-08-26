@@ -147,11 +147,7 @@ public:
 
   void AddUploadError(Error const &error, const std::string &url);
 
-  void FlushUploadQueue(bool writeUpdatedLayerStatus, ErrorHandler errorHandler, Error* error = nullptr) override;
-  void ClearUploadErrors() override;
-  void ForceClearAllUploadErrors() override;
-  int32_t UploadErrorCount() override;
-  void GetCurrentUploadError(const char **objectId, int32_t *errorCode, const char **errorString) override;
+  void Flush(ErrorHandler errorHandler, Error* error = nullptr) override;
 
   void GetCurrentDownloadError(int *code, const char** errorString) override;
  
@@ -172,8 +168,7 @@ private:
   std::mutex m_mutex;
   struct
   {
-    uint32_t currentErrorIndex = 0;
-    std::vector<std::unique_ptr<UploadError>> errors;
+    std::vector<UploadError> errors;
     std::mutex mutex;
   } m_uploadErrors;
   Error m_currentDownloadError;

@@ -184,6 +184,7 @@ VolumeDataStoreIOManager:: VolumeDataStoreIOManager(VDS &vds, IOManager *ioManag
   , m_vds(vds)
   , m_ioManager(ioManager)
   , m_warnedAboutMissingMetadataTag(getBooleanEnvironmentVariable("OPENVDS_DISABLE_WARNINGS"))
+  , m_uploadLayerStatusRetryCount(0)
 {
 }
 
@@ -257,19 +258,33 @@ VolumeDataStoreIOManager::ReadSerializedVolumeDataLayout(std::vector<uint8_t>& s
 bool
 VolumeDataStoreIOManager::WriteSerializedVolumeDataLayout(const std::vector<uint8_t>& serializedVolumeDataLayout, Error &error)
 {
+  {
+    std::unique_lock<std::mutex> lock(m_mutex);
+    if (m_uploadVolumeDataLayoutRetryCount > 3)
+      return true;
+  }
   auto request = m_ioManager->UploadJson("VolumeDataLayout", std::make_shared<std::vector<uint8_t>>(serializedVolumeDataLayout));
 
   if (!request->WaitForFinish(error))
   {
     error.string = "Error on uploading VolumeDataLayout object: " + error.string;
+    std::unique_lock<std::mutex> lock(m_mutex);
+    m_uploadVolumeDataLayoutRetryCount++;
     return false;
   }
 
+  std::unique_lock<std::mutex> lock(m_mutex);
+  m_uploadVolumeDataLayoutRetryCount = 0;
   return true;
 }
 
 bool VolumeDataStoreIOManager::SerializeAndUploadLayerStatus(VDS& vds, Error& error)
 {
+  {
+    std::unique_lock<std::mutex> lock(m_mutex);
+    if (m_uploadLayerStatusRetryCount > 3)
+      return true;
+  }
   auto serializedLayerStatus = std::make_shared<std::vector<uint8_t>>(SerializeLayerStatus(vds, *this));
 
   auto request = m_ioManager->UploadJson("LayerStatus", serializedLayerStatus);
@@ -277,8 +292,13 @@ bool VolumeDataStoreIOManager::SerializeAndUploadLayerStatus(VDS& vds, Error& er
   if (!request->WaitForFinish(error))
   {
     error.string = "Error on uploading LayerStatus object: " + error.string;
+    std::unique_lock<std::mutex> lock(m_mutex);
+    m_uploadLayerStatusRetryCount++;
     return false;
   }
+
+  std::unique_lock<std::mutex> lock(m_mutex);
+  m_uploadLayerStatusRetryCount = 0;
 
   return true;
 }
@@ -703,7 +723,7 @@ bool VolumeDataStoreIOManager::WriteMetadataPage(MetadataPage* metadataPage, con
 
   if(!success)
   {
-    m_vds.accessManager->AddUploadError(error, url);
+    error.string = fmt::format("{}: {}", url, error.string);
   }
 
   return success;
@@ -876,7 +896,7 @@ bool VolumeDataStoreIOManager::WriteChunkImpl(const VolumeDataChunk& chunk, std:
   return true;
 }
 
-void VolumeDataStoreIOManager::Flush(bool writeUpdatedLayerStatus, Error &error)
+void VolumeDataStoreIOManager::Flush(Error &error)
 {
   while(true)
   {
@@ -886,7 +906,6 @@ void VolumeDataStoreIOManager::Flush(bool writeUpdatedLayerStatus, Error &error)
     lock.unlock();
     if (!request->WaitForFinish(error))
     {
-      m_vds.accessManager->AddUploadError(error, request->GetObjectName());
       return;
     }
   }
@@ -900,23 +919,19 @@ void VolumeDataStoreIOManager::Flush(bool writeUpdatedLayerStatus, Error &error)
       return;
   }
 
-  if(writeUpdatedLayerStatus)
+  SerializeAndUploadLayerStatus(m_vds, error);
+
+  if (error.code != 0)
   {
-    SerializeAndUploadLayerStatus(m_vds, error);
+    return;
+  }
 
-    if(error.code != 0)
-    {
-      m_vds.accessManager->AddUploadError(error, "LayerStatus");
+  if (m_vds.metadataContainer.IsDirty())
+  {
+    if (!m_vds.volumeDataStore->WriteSerializedVolumeDataLayout(SerializeVolumeDataLayout(m_vds), error))
       return;
-    }
 
-    if(m_vds.metadataContainer.IsDirty())
-    {
-      if (!m_vds.volumeDataStore->WriteSerializedVolumeDataLayout(SerializeVolumeDataLayout(m_vds), error))
-        return;
-
-      m_vds.metadataContainer.ClearDirtyFlag();
-    }
+    m_vds.metadataContainer.ClearDirtyFlag();
   }
 }
 

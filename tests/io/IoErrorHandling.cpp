@@ -30,6 +30,10 @@
 #include "../utils/FacadeIOManager.h"
 
 
+bool contains(const std::string& a, const std::string& b)
+{
+  return a.find(b) != std::string::npos;
+}
 struct IOErrorHandlingFixture : public ::testing::Test
 {
    protected:
@@ -362,16 +366,11 @@ TEST(IOErrorHandlingUpload, ErrorHandlingChunkHttpError)
     page->Release();
   }
   pageAccessor->Commit();
-  pageAccessor->SetMaxPages(0);
   accessManager.DestroyVolumeDataPageAccessor(pageAccessor);
+  accessManager.Flush(error);
 
-  ASSERT_EQ(accessManager.UploadErrorCount(), 1);
-  const char *object;
-  int errorCode;
-  const char *errorString;
-  accessManager.GetCurrentUploadError(&object, &errorCode, &errorString);
-  ASSERT_EQ(errorCode, 489);
-  ASSERT_EQ(std::string(object), std::string("Dimensions_012LOD0/1"));
+  ASSERT_EQ(error.code, 489);
+  ASSERT_TRUE(contains(error.string, std::string("Dimensions_012LOD0/1")));
 }
 
 TEST(IOErrorHandlingUpload, ErrorHandlingLayerStatusHttpError)
@@ -422,16 +421,11 @@ TEST(IOErrorHandlingUpload, ErrorHandlingLayerStatusHttpError)
     page->Release();
   }
   pageAccessor->Commit();
-  pageAccessor->SetMaxPages(0);
   accessManager.DestroyVolumeDataPageAccessor(pageAccessor);
+  accessManager.Flush(error);
 
-  ASSERT_EQ(accessManager.UploadErrorCount(), 1);
-  const char *object;
-  int errorCode;
-  const char *errorString;
-  accessManager.GetCurrentUploadError(&object, &errorCode, &errorString);
-  ASSERT_EQ(errorCode, 466);
-  ASSERT_EQ(std::string(object), std::string("LayerStatus"));
+  ASSERT_EQ(error.code, 466);
+  ASSERT_TRUE(contains(error.string, "LayerStatus"));
 }
 
 TEST(IOErrorHandlingUpload, ErrorHandlingChunkMetadataHttpError)
@@ -482,14 +476,9 @@ TEST(IOErrorHandlingUpload, ErrorHandlingChunkMetadataHttpError)
     page->Release();
   }
   pageAccessor->Commit();
-  pageAccessor->SetMaxPages(0);
   accessManager.DestroyVolumeDataPageAccessor(pageAccessor);
+  accessManager.Flush(error);
 
-  ASSERT_EQ(accessManager.UploadErrorCount(), 1);
-  const char *object;
-  int errorCode;
-  const char *errorString;
-  accessManager.GetCurrentUploadError(&object, &errorCode, &errorString);
-  ASSERT_EQ(errorCode, 433);
-  ASSERT_EQ(std::string(object), std::string("Dimensions_012LOD0/ChunkMetadata/0"));
+  ASSERT_EQ(error.code, 433);
+  ASSERT_TRUE(contains(error.string, "Dimensions_012LOD0/ChunkMetadata/0"));
 }

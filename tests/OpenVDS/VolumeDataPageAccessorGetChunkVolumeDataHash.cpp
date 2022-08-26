@@ -92,7 +92,8 @@ GTEST_TEST(OpenVDS_integration, VolumeDataPageAccessorGetChunkVolumeDataHash)
 
   // Destroy volume data page accessor
   accessManager.DestroyVolumeDataPageAccessor(pageAccessor);
-  accessManager.FlushUploadQueue();
+  accessManager.Flush(error);
+  ASSERT_EQ(error.code, 0);
 
   // Close VDS
   handle.Close();
@@ -176,7 +177,8 @@ GTEST_TEST(OpenVDS_integration, VolumeDataPageAccessorGetChunkVolumeDataHash_VDS
 
   // Destroy volume data page accessor
   accessManager.DestroyVolumeDataPageAccessor(pageAccessor);
-  accessManager.FlushUploadQueue();
+  accessManager.Flush(error);
+  ASSERT_EQ(0, error.code);
 
   // Close VDS
   handle.Close();

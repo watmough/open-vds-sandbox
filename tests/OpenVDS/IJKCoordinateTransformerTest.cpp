@@ -468,8 +468,7 @@ static OpenVDS::VDSHandle generateVDS(const std::string &vds_name, const char *(
   //ASSERT_TRUE(pageAccessor);
 
   pageAccessor->Commit();
-  pageAccessor->SetMaxPages(0);
-  accessManager.FlushUploadQueue();
+  accessManager.Flush(error);
   accessManager.DestroyVolumeDataPageAccessor(pageAccessor);
   OpenVDS::Close(handle);
 

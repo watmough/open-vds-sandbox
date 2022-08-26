@@ -135,10 +135,10 @@ public:
   virtual MetadataWriteAccess      *GetMetadataWriteAccessInterface(VDSHandle handle) = 0;
   virtual CompressionMethod         GetCompressionMethod(VDSHandle handle) = 0;
   virtual float                     GetCompressionTolerance(VDSHandle handle) = 0;
-  virtual void                      Close(VDSHandle handle) = 0;
-  virtual void                      Close(VDSHandle handle, ErrorHandler errorHandler, Error *error=nullptr) = 0;
-  virtual void                      RetryableClose(VDSHandle handle) = 0;
-  virtual void                      RetryableClose(VDSHandle handle, ErrorHandler errorHandler, Error *error=nullptr) = 0;
+  virtual void                      Close(VDSHandle handle, bool flush) = 0;
+  virtual void                      Close(VDSHandle handle, bool flush, ErrorHandler errorHandler, Error *error=nullptr) = 0;
+  virtual void                      RetryableClose(VDSHandle handle, bool flush) = 0;
+  virtual void                      RetryableClose(VDSHandle handle, bool flush, ErrorHandler errorHandler, Error *error=nullptr) = 0;
   virtual GlobalState              *GetGlobalState() = 0;
 };
 

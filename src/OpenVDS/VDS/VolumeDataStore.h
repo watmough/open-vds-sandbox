@@ -69,7 +69,7 @@ public:
   virtual bool          ReadChunkDataHash(const VolumeDataChunk& chunk, uint64_t &chunkDataHash, Error& error) = 0;
           bool          WriteChunk(const VolumeDataChunk& chunk, const std::vector<uint8_t>& serializedData, const std::vector<uint8_t>& metadata);
   virtual bool          WriteChunkImpl(const VolumeDataChunk& chunk, std::shared_ptr<std::vector<uint8_t>> &serializedData, const std::vector<uint8_t>& metadata, std::function<void(const Error &error)> completed) = 0;
-  virtual void          Flush(bool writeUpdatedLayerStatus, Error &error) = 0;
+  virtual void          Flush(Error &error) = 0;
   virtual bool          ReadSerializedVolumeDataLayout(std::vector<uint8_t>& serializedVolumeDataLayout, Error &error) = 0;
   virtual bool          WriteSerializedVolumeDataLayout(const std::vector<uint8_t>& serializedVolumeDataLayout, Error &error) = 0;
   virtual bool          AddLayer(VolumeDataLayer* volumeDataLayer, int chunkMetadataPageSize) = 0;

@@ -176,7 +176,8 @@ public class CreateVDSTest {
     @Test
     public void testCreateVDS() {
         VDS openvds1 = OpenVDS.create(url, "", ld, vda, vdc, md, error);
-        error = openvds1.getAccessManager().flushUploadQueue(true);
+        openvds1.getAccessManager().flush(error);
+        assertEquals(error.getCode(), 0);
 
         VDS openvds2 = OpenVDS.open(url, "", error);
 

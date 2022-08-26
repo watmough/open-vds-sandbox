@@ -858,10 +858,10 @@ public:
   MetadataWriteAccess      *GetMetadataWriteAccessInterface(VDSHandle handle) final override;
   CompressionMethod         GetCompressionMethod(VDSHandle handle) final override;
   float                     GetCompressionTolerance(VDSHandle handle) final override;
-  void                      Close(VDSHandle handle) final override;
-  void                      Close(VDSHandle handle, ErrorHandler errorHandler, Error *errorPtr=nullptr) final override;
-  void                      RetryableClose(VDSHandle handle) final override;
-  void                      RetryableClose(VDSHandle handle, ErrorHandler errorHandler, Error *errorPtr=nullptr) final override;
+  void                      Close(VDSHandle handle, bool flush) final override;
+  void                      Close(VDSHandle handle, bool flush, ErrorHandler errorHandler, Error *errorPtr=nullptr) final override;
+  void                      RetryableClose(VDSHandle handle, bool flush) final override;
+  void                      RetryableClose(VDSHandle handle, bool flush, ErrorHandler errorHandler, Error *errorPtr=nullptr) final override;
   GlobalState              *GetGlobalState() final override;
   const char               *GetOpenVDSName() final override;
   const char               *GetOpenVDSVersion() final override;
@@ -1083,37 +1083,63 @@ float OpenVDSInterfaceImpl::GetCompressionTolerance(VDSHandle handle)
   return handle->volumeDataLayout->GetCompressionTolerance();
 }
 
-void OpenVDSInterfaceImpl::Close(VDS *vds)
+void OpenVDSInterfaceImpl::Close(VDS *vds, bool flush)
 {
   if (!vds)
     return;
+  Error flushError;
+  if (flush)
+    vds->accessManager->Flush([](Error* error, int errorCode, const char* errorMessage) { error->code = errorCode; error->string = errorMessage; }, &flushError);
   Error error;
   bool success = vds->volumeDataStore->Close(error);
   vds->accessManager->Invalidate();
   delete vds;
+  if (flushError.code)
+  {
+    throw InvalidOperation(fmt::format("Flush in Close failed: {}", error.string).c_str());
+  }
   if(!success)
   {
     throw InvalidOperation(fmt::format("Close failed: {}", error.string).c_str());
   }
 }
 
-void OpenVDSInterfaceImpl::Close(VDS *vds, ErrorHandler errorHandler, Error *errorPtr)
+void OpenVDSInterfaceImpl::Close(VDS *vds, bool flush, ErrorHandler errorHandler, Error *errorPtr)
 {
   ErrorGuard error(errorHandler, errorPtr);
 
   if (!vds)
     return;
 
-  vds->volumeDataStore->Close(error);
+  if (flush)
+  {
+    vds->accessManager->Flush([](Error* error, int errorCode, const char* errorMessage) { error->code = errorCode; error->string = errorMessage; }, &error);
+  }
+
+  if (error.code)
+  {
+    Error throwawayError;
+    vds->volumeDataStore->Close(throwawayError);
+  }
+  else
+  {
+    vds->volumeDataStore->Close(error);
+  }
   vds->accessManager->Invalidate();
   delete vds;
 }
 
-void OpenVDSInterfaceImpl::RetryableClose(VDS *vds)
+void OpenVDSInterfaceImpl::RetryableClose(VDS *vds, bool flush)
 {
   if (!vds)
     return;
   Error error;
+  if (flush)
+  {
+    vds->accessManager->Flush([](Error* error, int errorCode, const char* errorMessage) { error->code = errorCode; error->string = errorMessage; }, &error);
+    throw InvalidOperation(fmt::format("Flush in Close failed: {}", error.string).c_str());
+  }
+
   bool success = vds->volumeDataStore->Close(error);
   if(!success)
   {
@@ -1123,11 +1149,20 @@ void OpenVDSInterfaceImpl::RetryableClose(VDS *vds)
   delete vds;
 }
 
-void OpenVDSInterfaceImpl::RetryableClose(VDS *vds, ErrorHandler errorHandler, Error *errorPtr)
+void OpenVDSInterfaceImpl::RetryableClose(VDS *vds, bool flush, ErrorHandler errorHandler, Error *errorPtr)
 {
   ErrorGuard error(errorHandler, errorPtr);
+
   if (!vds)
     return;
+
+  if (flush)
+  {
+    vds->accessManager->Flush([](Error* error, int errorCode, const char* errorMessage) { error->code = errorCode; error->string = errorMessage; }, &error);
+    if (error.code)
+      return;
+  }
+
   if(vds->volumeDataStore->Close(error))
   {
     vds->accessManager->Invalidate();
