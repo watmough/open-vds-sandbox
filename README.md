@@ -26,7 +26,7 @@ In order to implement these components there are a number of internal components
 
 Licensed under [**Apache 2.0**](https://gitlab.opengroup.org/osdu/open-vds/blob/master/LICENSE)
 
-Latest build of the [**OpenVDS-Documentation**](http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/seismic/open-vds)
+Latest build of the [**OpenVDS-Documentation**](https://osdu.pages.opengroup.org/platform/domain-data-mgmt-services/seismic/open-vds/)
 
 ### Building
 OpenVDS uses the master branch as the main development branch. It should be in
