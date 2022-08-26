@@ -563,15 +563,15 @@ public:
   /// </summary>
   static const char *Sample() { return KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_AXISNAME_SAMPLE; }
   /// <summary>
-  /// String representing the name of the axis corresponding to the I step vector (\ref SurveyCoordinateSystemIStep)
+  /// String representing the name of the axis corresponding to the I step vector (\ref SurveyCoordinateSystemIStepVector)
   /// </summary>
   static const char *I() { return KNOWNMETADATA_SURVEYCOORDINATE_3DIJK_AXISNAME_I; }
   /// <summary>
-  /// String representing the name of the axis corresponding to the J step vector (\ref SurveyCoordinateSystemIStep)
+  /// String representing the name of the axis corresponding to the J step vector (\ref SurveyCoordinateSystemIStepVector)
   /// </summary>
   static const char *J() { return KNOWNMETADATA_SURVEYCOORDINATE_3DIJK_AXISNAME_J; }
   /// <summary>
-  /// String representing the name of the axis corresponding to the K step vector (\ref SurveyCoordinateSystemKStep)
+  /// String representing the name of the axis corresponding to the K step vector (\ref SurveyCoordinateSystemKStepVector)
   /// </summary>
   static const char *K() { return KNOWNMETADATA_SURVEYCOORDINATE_3DIJK_AXISNAME_K; }
   /// <summary>

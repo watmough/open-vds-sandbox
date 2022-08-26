@@ -1096,17 +1096,17 @@ inline const char *GetOpenVDSName() { return GetOpenVDSInterface(OPENVDS_VERSION
 /// <summary>
 /// Get the version for the OpenVDS implementation
 /// </summary>
-/// <returnes>
+/// <returns>
 /// A version string
-/// </returnes>
+/// </returns>
 inline const char *GetOpenVDSVersion() { return GetOpenVDSInterface(OPENVDS_VERSION).GetOpenVDSVersion(); }
 
 /// <summary>
 /// Get revision of the OpenVDS build
 /// </summary>
-/// <returnes>
+/// <returns>
 /// A revision string
-/// </returnes>
+/// </returns>
 inline const char *GetOpenVDSRevision() { return GetOpenVDSInterface(OPENVDS_VERSION).GetOpenVDSRevision(); }
 
 #if !defined(PYTHON_WRAPPER_GENERATOR) && !defined(JAVA_WRAPPER_GENERATOR)
