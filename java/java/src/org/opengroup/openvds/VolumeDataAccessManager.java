@@ -1658,25 +1658,16 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeDataRequest.fromNativeObject(PrefetchVolumeChunkImpl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, chunkIndex));
     }
 
-    ///AUTOGEN-OK: CXX_METHOD FlushUploadQueue void (bool) FUNCTIONPROTO
-    native private void FlushUploadQueueImpl(long native_object, boolean writeUpdatedLayerStatus);
+    ///AUTOGEN-OK: CXX_METHOD FlushUploadQueue OpenVDS::VDSError (bool) FUNCTIONPROTO
+    native private long FlushUploadQueueImpl(long native_object, boolean writeUpdatedLayerStatus);
 
     /**
      * Flush any pending writes and write updated layer status
      * 
      * @param writeUpdatedLayerStatus Write the updated layer status (or only flush pending writes of chunks and chunk-metadata).
      */
-    public void flushUploadQueue(boolean writeUpdatedLayerStatus) {
-        FlushUploadQueueImpl(getNativeObject(), writeUpdatedLayerStatus);
-    }
-
-    /**
-     * Flush any pending writes and write updated layer status
-     * 
-     */
-
-    public void flushUploadQueue() {
-        flushUploadQueue(/*writeUpdatedLayerStatus=*/true);
+    public VDSError flushUploadQueue(boolean writeUpdatedLayerStatus) {
+        return VDSError.fromNativeObject(FlushUploadQueueImpl(getNativeObject(), writeUpdatedLayerStatus));
     }
 
     ///AUTOGEN-OK: CXX_METHOD ClearUploadErrors void () FUNCTIONPROTO

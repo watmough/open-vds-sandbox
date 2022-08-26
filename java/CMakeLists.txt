@@ -205,6 +205,7 @@ add_library(openvds-javacpp
   cpp/src/CPPJNICommon.cpp
   cpp/src/CPPJNICommon.h
   cpp/src/Exceptions.cpp
+  cpp/src/Error.cpp
   cpp/src/GlobalMetadataCommon.cpp
   cpp/src/GlobalState.cpp
   cpp/src/IJKCoordinateTransformer.cpp

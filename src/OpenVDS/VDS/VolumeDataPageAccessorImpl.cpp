@@ -791,7 +791,6 @@ void VolumeDataPageAccessorImpl::Commit()
     // FIXME: Make sure *all* invalidates are received, this is just a stop-gap measure.
     pageListMutexLock.unlock();
     m_layer->GetLayout()->CompletePendingWriteChunkRequests(0);
-    m_accessManager->FlushUploadQueue();
   }
 }
 }

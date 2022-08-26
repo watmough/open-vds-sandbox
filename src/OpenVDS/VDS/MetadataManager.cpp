@@ -173,7 +173,7 @@ void MetadataManager::CompleteTransfer(MetadataPage* page)
   }
 }
 
-void MetadataManager::UploadDirtyPages(VolumeDataStoreIOManager *volumeDataStore)
+void MetadataManager::UploadDirtyPages(VolumeDataStoreIOManager *volumeDataStore, Error &error)
 {
   std::unique_lock<std::mutex> lock(m_mutex);
 
@@ -185,7 +185,7 @@ void MetadataManager::UploadDirtyPages(VolumeDataStoreIOManager *volumeDataStore
     // We need to keep a separate 'next' iterator since we're moving the current element to another list if the write is successful
     next = std::next(it);
 
-    bool success = volumeDataStore->WriteMetadataPage(&page, page.m_data);
+    bool success = volumeDataStore->WriteMetadataPage(&page, page.m_data, error);
     if(success)
     {
       assert(page.m_pageIndex < int(m_metadataStatus.m_pageDirectory.size()));

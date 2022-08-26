@@ -2732,7 +2732,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Prefe
   return 0;
 }
 
-JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_FlushUploadQueueImpl
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_FlushUploadQueueImpl
   (JNIEnv * env, jobject object, jlong native_handle, jboolean writeUpdatedLayerStatus)
 {
   JNIEnvGuard
@@ -2741,9 +2741,12 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_FlushU
   CPPJNI_TRY
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
-    pInstance->FlushUploadQueue(writeUpdatedLayerStatus ? true : false);
+    auto result = pInstance->FlushUploadQueue(writeUpdatedLayerStatus ? true : false);
+    auto context = CPPJNI_createObjectContext(CPPJNI_makeShared<OpenVDS::VDSError>(result));
+    return context->handle();
   }
   CPPJNI_CATCH
+  return 0;
 }
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_ClearUploadErrorsImpl

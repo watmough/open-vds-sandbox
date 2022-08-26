@@ -18,6 +18,7 @@
 #ifndef OPENVDS_VOLUMEDATAACCESSMANAGER_H
 #define OPENVDS_VOLUMEDATAACCESSMANAGER_H
 
+#include <OpenVDS/Error.h>
 #include <OpenVDS/VolumeDataAccess.h>
 #include <OpenVDS/VolumeDataLayout.h>
 #include <OpenVDS/VolumeData.h>
@@ -35,6 +36,8 @@ protected:
           IVolumeDataAccessManager() {}
   virtual ~IVolumeDataAccessManager() {}
 public:
+  typedef void (*ErrorHandler)(Error *error, int errorCode, const char *errorMessage);
+
   virtual void AddRef() = 0;
   virtual void Release() = 0;
   virtual int  RefCount() const = 0;
@@ -498,7 +501,7 @@ public:
   /// <param name="writeUpdatedLayerStatus">
   /// Write the updated layer status (or only flush pending writes of chunks and chunk-metadata).
   /// </param>
-  virtual void FlushUploadQueue(bool writeUpdatedLayerStatus = true) = 0;
+  virtual void FlushUploadQueue(bool writeUpdatedLayerStatus, ErrorHandler errorHandler, Error *error=nullptr) = 0;
 
   virtual void ClearUploadErrors() = 0;
   virtual void ForceClearAllUploadErrors() = 0;
@@ -2360,11 +2363,13 @@ public:
   /// <param name="writeUpdatedLayerStatus">
   /// Write the updated layer status (or only flush pending writes of chunks and chunk-metadata).
   /// </param>
-  void
+  Error
   FlushUploadQueue(bool writeUpdatedLayerStatus = true)
   {
     EnsureValid();
-    return m_IVolumeDataAccessManager->FlushUploadQueue(writeUpdatedLayerStatus);
+    Error error;
+    m_IVolumeDataAccessManager->FlushUploadQueue(writeUpdatedLayerStatus, [](Error* error, int errorCode, const char* errorMessage) { error->code = errorCode; error->string = errorMessage; }, &error);
+    return error;
   }
 
   /// <summary>

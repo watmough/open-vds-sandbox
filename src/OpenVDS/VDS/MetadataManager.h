@@ -128,7 +128,7 @@ namespace OpenVDS
 
     void InitiateTransfer(VolumeDataStoreIOManager* accessManager, MetadataPage* page, std::string const& url);
     void CompleteTransfer(MetadataPage *page);
-    void UploadDirtyPages(VolumeDataStoreIOManager* accessManager);
+    void UploadDirtyPages(VolumeDataStoreIOManager* accessManager, Error &error);
 
     uint8_t const *GetPageEntry(MetadataPage *page, int entry) const;
     void SetPageEntry(MetadataPage *page, int entryIndex, uint8_t const *metadata, int metadataLength, uint8_t *oldMetadata = nullptr);

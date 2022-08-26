@@ -24,6 +24,7 @@
 #ifndef OPENVDS_VERSION
 #include <OpenVDS/OpenVDSVersion.h>
 #endif
+#include <OpenVDS/Error.h>
 #include <OpenVDS/OpenVDSInterface.h>
 #include <OpenVDS/MetadataAccess.h>
 #include <OpenVDS/VolumeData.h>
@@ -566,16 +567,6 @@ struct VDSFileOpenOptions : OpenOptions
   /// </param>
   VDSFileOpenOptions(const std::string &fileName) : OpenOptions(VDSFile), fileName(fileName) {}
 };
-
-struct VDSError
-{
-  VDSError() = default;
-  
-  int code = 0;
-  std::string string;
-};
-
-typedef VDSError Error;
 
 /// <summary>
 /// Create an OpenOptions struct from a url and connection string

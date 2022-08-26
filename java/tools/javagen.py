@@ -2120,6 +2120,7 @@ free_function_header_list = [
 header_list = [ 
     'OpenVDS.h',
     'CoordinateTransformer.h',
+    'Error.h',
     'Exceptions.h',
     'GlobalMetadataCommon.h',
     'GlobalState.h',

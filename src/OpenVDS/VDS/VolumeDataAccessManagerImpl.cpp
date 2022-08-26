@@ -676,9 +676,10 @@ IVolumeDataAccessor* VolumeDataAccessManagerImpl::CloneVolumeDataAccessor(IVolum
   return volumeDataAccessorBase->Clone(*volumeDataAccessorBase->GetVolumeDataPageAccessor());
 }
 
-void VolumeDataAccessManagerImpl::FlushUploadQueue(bool writeUpdatedLayerStatus)
+void VolumeDataAccessManagerImpl::FlushUploadQueue(bool writeUpdatedLayerStatus, ErrorHandler errorHandler, Error* error)
 {
-  GetVolumeDataStore()->Flush(writeUpdatedLayerStatus);
+  ErrorGuard errorGuard(errorHandler, error);
+  GetVolumeDataStore()->Flush(writeUpdatedLayerStatus, errorGuard);
 }
 
 static bool isPureCopy(const VolumeDataChunk &a, const VolumeDataChunk &b)

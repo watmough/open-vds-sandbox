@@ -61,6 +61,15 @@ class VolumeDataAccessManagerImpl : public IVolumeDataAccessManager, public IVol
   VolumeDataAccessManagerImpl(VDS &vds);
   ~VolumeDataAccessManagerImpl() override;
 
+  class ErrorGuard : public Error
+  {
+    ErrorHandler m_errorHandler;
+    Error       *m_errorPtr;
+  public:
+    ErrorGuard(ErrorHandler errorHandler, Error *errorPtr) : Error(), m_errorHandler(errorHandler), m_errorPtr(errorPtr) {}
+   ~ErrorGuard() noexcept(false) { m_errorHandler(m_errorPtr, code, string.c_str()); }
+  };
+
 public:
   static VolumeDataAccessManagerImpl *  Create(VDS &vds); // Increments RefCount
   void                                  Invalidate();
@@ -138,7 +147,7 @@ public:
 
   void AddUploadError(Error const &error, const std::string &url);
 
-  void FlushUploadQueue(bool writeUpdatedLayerStatus = true) override;
+  void FlushUploadQueue(bool writeUpdatedLayerStatus, ErrorHandler errorHandler, Error* error = nullptr) override;
   void ClearUploadErrors() override;
   void ForceClearAllUploadErrors() override;
   int32_t UploadErrorCount() override;

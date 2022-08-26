@@ -687,7 +687,7 @@ void VolumeDataStoreIOManager::PageTransferCompleted(MetadataPage* metadataPage,
   m_pendingRequestChangedCondition.notify_all();
 }
 
-bool VolumeDataStoreIOManager::WriteMetadataPage(MetadataPage* metadataPage, const std::vector<uint8_t> &data)
+bool VolumeDataStoreIOManager::WriteMetadataPage(MetadataPage* metadataPage, const std::vector<uint8_t> &data, Error &error)
 {
   assert(metadataPage->IsValid());
 
@@ -696,8 +696,6 @@ bool VolumeDataStoreIOManager::WriteMetadataPage(MetadataPage* metadataPage, con
   std::string url = fmt::format("{}/ChunkMetadata/{}", metadataManager->LayerUrlStr(), metadataPage->PageIndex());
 
   std::string contentDispositionName = fmt::format("{}_ChunkMetadata_{}", metadataManager->LayerUrlStr(), metadataPage->PageIndex());
-
-  Error error;
 
   auto req = m_ioManager->UploadBinary(url, contentDispositionName, std::vector<std::pair<std::string, std::string>>(), std::make_shared<std::vector<uint8_t>>(data));
 
@@ -878,7 +876,7 @@ bool VolumeDataStoreIOManager::WriteChunkImpl(const VolumeDataChunk& chunk, std:
   return true;
 }
 
-bool VolumeDataStoreIOManager::Flush(bool writeUpdatedLayerStatus)
+void VolumeDataStoreIOManager::Flush(bool writeUpdatedLayerStatus, Error &error)
 {
   while(true)
   {
@@ -886,10 +884,10 @@ bool VolumeDataStoreIOManager::Flush(bool writeUpdatedLayerStatus)
     if(m_pendingUploadRequests.empty()) break;
     std::shared_ptr<Request> request = m_pendingUploadRequests.begin()->second.request;
     lock.unlock();
-    Error error;
     if (!request->WaitForFinish(error))
     {
       m_vds.accessManager->AddUploadError(error, request->GetObjectName());
+      return;
     }
   }
 
@@ -897,30 +895,29 @@ bool VolumeDataStoreIOManager::Flush(bool writeUpdatedLayerStatus)
   {
     auto metadataManager = it->second.get();
 
-    metadataManager->UploadDirtyPages(this);
+    metadataManager->UploadDirtyPages(this, error);
+    if (error.code != 0)
+      return;
   }
 
   if(writeUpdatedLayerStatus)
   {
-    Error error;
     SerializeAndUploadLayerStatus(m_vds, error);
 
     if(error.code != 0)
     {
       m_vds.accessManager->AddUploadError(error, "LayerStatus");
-      return false;
+      return;
     }
 
     if(m_vds.metadataContainer.IsDirty())
     {
       if (!m_vds.volumeDataStore->WriteSerializedVolumeDataLayout(SerializeVolumeDataLayout(m_vds), error))
-        return false;
+        return;
 
       m_vds.metadataContainer.ClearDirtyFlag();
     }
   }
-
-  return true;
 }
 
 MetadataManager *

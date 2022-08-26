@@ -63,7 +63,9 @@ public class WriteDataTest {
         OpenVDS.writeArray(vds, src1, "chan1");
         OpenVDS.writeArray(vds, src2, "chan2");
 
-        vds.getAccessManager().flushUploadQueue();
+        vdsError = vds.getAccessManager().flushUploadQueue(true);
+        assertEquals(vdsError.getCode(),0);
+
         vds.close();
 
         try (VDS vds2 = OpenVDS.open(options, vdsError);
@@ -122,7 +124,9 @@ public class WriteDataTest {
         OpenVDS.writeArray(vds, src1, "chan1");
         OpenVDS.writeArray(vds, src2, "chan2");
 
-        vds.getAccessManager().flushUploadQueue();
+        vdsError = vds.getAccessManager().flushUploadQueue(true);
+        assertEquals(vdsError.getCode(),0);
+
         vds.close();
 
         try (VDS vds2 = OpenVDS.open(options, vdsError);

@@ -229,14 +229,6 @@ PyGlobal::initModule(py::module& m)
   VDSFileOpenOptions_.def(py::init<const std::string &           >(), py::arg("fileName").none(false), OPENVDS_DOCSTRING(VDSFileOpenOptions_VDSFileOpenOptions_2));
   VDSFileOpenOptions_.def_readwrite("fileName"                    , &VDSFileOpenOptions::fileName  , OPENVDS_DOCSTRING(VDSFileOpenOptions_fileName));
 
-  // VDSError
-  py::class_<VDSError> 
-    VDSError_(m,"VDSError", OPENVDS_DOCSTRING(VDSError));
-
-  VDSError_.def(py::init<                              >(), OPENVDS_DOCSTRING(VDSError_VDSError));
-  VDSError_.def_readwrite("code"                        , &VDSError::code                , OPENVDS_DOCSTRING(VDSError_code));
-  VDSError_.def_readwrite("string"                      , &VDSError::string              , OPENVDS_DOCSTRING(VDSError_string));
-
   m.def("createOpenOptions"           , static_cast<native::OpenOptions *(*)(std::string, std::string, native::Error &)>(&CreateOpenOptions), py::arg("url").none(false), py::arg("connectionString").none(false), py::arg("error").none(false), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(CreateOpenOptions));
   m.def("createOpenOptions"           , [](std::string url, std::string connectionString) { native::Error err; auto ret = CreateOpenOptions(url, connectionString, err); if (err.code) { throw std::runtime_error(err.string); } return ret; }, py::call_guard<py::gil_scoped_release>(), py::arg("url").none(false), py::arg("connectionString").none(false));
   m.def("isSupportedProtocol"         , static_cast<bool(*)(std::string)>(&IsSupportedProtocol), py::arg("url").none(false), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(IsSupportedProtocol));
@@ -290,8 +282,6 @@ PyGlobal::initModule(py::module& m)
   m.def("getOpenVDSVersion"           , static_cast<const char *(*)()>(&GetOpenVDSVersion), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(GetOpenVDSVersion));
   m.def("getOpenVDSRevision"          , static_cast<const char *(*)()>(&GetOpenVDSRevision), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(GetOpenVDSRevision));
 //AUTOGEN-END
-  VDSError_.def("__repr__", [](native::Error const& self){ std::string tmp = std::to_string(self.code); return std::string("Error(code=") + tmp + ", string='" + self.string + "')"; });
-
   OpenOptions_.def("__repr__", [](OpenOptions const& self)
     {
       std::string conn = "Unknown";

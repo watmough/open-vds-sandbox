@@ -304,7 +304,7 @@ bool VolumeDataStoreVDSFile::WriteChunkImpl(const VolumeDataChunk& chunk, std::s
   return true;
 }
 
-bool VolumeDataStoreVDSFile::Flush(bool writeUpdatedLayerStatus)
+void VolumeDataStoreVDSFile::Flush(bool writeUpdatedLayerStatus, Error &error)
 {
   std::unique_lock<std::mutex> lock(m_mutex);
   bool success = true;
@@ -320,7 +320,8 @@ bool VolumeDataStoreVDSFile::Flush(bool writeUpdatedLayerStatus)
 
       if(!success)
       {
-        std::string message = fmt::format("Commit on layer {} failed: {}", layerFile->fileInterface->GetFileName(), m_dataStore->GetErrorMessage());
+        error.string = fmt::format("Commit on layer {} failed: {}", layerFile->fileInterface->GetFileName(), m_dataStore->GetErrorMessage());
+        error.code = -1;
       }
       else
       {
@@ -328,8 +329,6 @@ bool VolumeDataStoreVDSFile::Flush(bool writeUpdatedLayerStatus)
       }
     }
   }
-
-  return success;
 }
 
 bool VolumeDataStoreVDSFile::Close(Error &error)
