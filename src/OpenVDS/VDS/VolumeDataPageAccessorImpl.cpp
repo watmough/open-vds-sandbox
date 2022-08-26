@@ -781,16 +781,5 @@ void VolumeDataPageAccessorImpl::Commit()
   CommitInternal(pageListMutexLock);
   m_isCommitInProgress = false;
   m_commitFinishedCondition.notify_all();
-
-  // Only access the layout if there has been any write requests.
-  // This allows for deleting read and interpolating accessors after their VDS has been deleted,
-  // which can happen during project unload in Headwave.
-  if (IsReadWrite() && m_pagesWritten > 0 && m_layer)
-  {
-    m_accessManager->FlushCopyPageJobs();
-    // FIXME: Make sure *all* invalidates are received, this is just a stop-gap measure.
-    pageListMutexLock.unlock();
-    m_layer->GetLayout()->CompletePendingWriteChunkRequests(0);
-  }
 }
 }
