@@ -380,11 +380,15 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
       }
     }
   }
-  destinationAccessManager.Flush(error);
-  if (error.code)
+  do
   {
-    printError(outputPrinter, error, ignoreErrors, error_encountered, keep_processing);
-  }
+    error = {};
+    destinationAccessManager.Flush(error);
+    if (error.code)
+    {
+      printError(outputPrinter, error, ignoreErrors, error_encountered, keep_processing);
+    }
+  } while (error.code);
 
   if (keep_processing)
   {
