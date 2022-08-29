@@ -707,7 +707,7 @@ static bool isPureCopy(const VolumeDataChunk &a, const VolumeDataChunk &b)
   return false;
 }
 
-void VolumeDataAccessManagerImpl::AddCopyPageJob(VolumeDataChunk& chunk, VolumeDataPageAccessorImpl &destination, VolumeDataPageAccessorImpl const &source)
+void VolumeDataAccessManagerImpl::AddCopyPageJob(VolumeDataChunk& chunk, VolumeDataPageAccessorImpl &destination, VolumeDataPageAccessorImpl &source)
 {
   Error error;
   VolumeDataChunk sourceChunk = { source.GetLayer(), chunk.index };
@@ -727,9 +727,11 @@ void VolumeDataAccessManagerImpl::AddCopyPageJob(VolumeDataChunk& chunk, VolumeD
   }
   auto threadCount = m_requestProcessor->GetThreadPool().ThreadCount();
 
+  source.AddReference();
   destination.AddReference();
   m_copyJobs[m_copyJobIndex].emplace_back(chunk, m_requestProcessor->GetThreadPool().Enqueue([this, chunk, sourceChunk, threadCount, &destination, &source]
     {
+      std::shared_ptr<VolumeDataPageAccessorImpl> sourceDeleter(&source, [](VolumeDataPageAccessorImpl *pageAccessor) { if(pageAccessor->RemoveReference() == 0) { pageAccessor->GetManager()->DestroyVolumeDataPageAccessor(pageAccessor); } } );
       std::shared_ptr<VolumeDataPageAccessorImpl> destinationDeleter(&destination, [this](VolumeDataPageAccessorImpl *pageAccessor) { if(pageAccessor->RemoveReference() == 0) { DestroyVolumeDataPageAccessor(pageAccessor); } } );
 
       Error error;

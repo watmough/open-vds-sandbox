@@ -140,7 +140,7 @@ public:
 
   VolumeDataStore *GetVolumeDataStore();
 
-  void AddCopyPageJob(VolumeDataChunk& chunk, VolumeDataPageAccessorImpl& destination, VolumeDataPageAccessorImpl const &source);
+  void AddCopyPageJob(VolumeDataChunk& chunk, VolumeDataPageAccessorImpl& destination, VolumeDataPageAccessorImpl &source);
   void FlushCopyPageJobs();
 
   int64_t AddRemapJob(VolumeDataPageImpl &targetPage, std::vector<VolumeDataChunk> const &sourceChunks);

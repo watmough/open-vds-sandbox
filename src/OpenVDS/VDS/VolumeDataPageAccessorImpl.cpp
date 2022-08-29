@@ -559,7 +559,7 @@ void VolumeDataPageAccessorImpl::CopyPage(int64_t chunkIndex, VolumeDataPageAcce
   }
 
   VolumeDataChunk chunk = m_layer->GetChunkFromIndex(chunkIndex);
-  m_accessManager->AddCopyPageJob(chunk, *this, sourceVolumeDataPageAccessor);
+  m_accessManager->AddCopyPageJob(chunk, *this, const_cast<VolumeDataPageAccessorImpl &>(sourceVolumeDataPageAccessor));
   m_pagesWritten++;
 }
 
