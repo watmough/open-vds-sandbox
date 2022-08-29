@@ -726,15 +726,18 @@ void VolumeDataAccessManagerImpl::AddCopyPageJob(VolumeDataChunk& chunk, VolumeD
     return;
   }
   auto threadCount = m_requestProcessor->GetThreadPool().ThreadCount();
+
+  destination.AddReference();
   m_copyJobs[m_copyJobIndex].emplace_back(chunk, m_requestProcessor->GetThreadPool().Enqueue([this, chunk, sourceChunk, threadCount, &destination, &source]
     {
+      std::shared_ptr<VolumeDataPageAccessorImpl> destinationDeleter(&destination, [this](VolumeDataPageAccessorImpl *pageAccessor) { if(pageAccessor->RemoveReference() == 0) { DestroyVolumeDataPageAccessor(pageAccessor); } } );
+
       Error error;
       std::vector<uint8_t> serializedData;
       std::vector<uint8_t> metadata;
       CompressionInfo compressionInfo;
 
       auto sourceDataStore = source.GetManager()->GetVolumeDataStore();
-      auto destDataStore = GetVolumeDataStore();
       sourceDataStore->ReadChunk(sourceChunk, sourceChunk.layer->GetEffectiveWaveletAdaptiveLoadLevel(), serializedData, metadata, compressionInfo, error);
       if (error.code)
       {
@@ -754,7 +757,7 @@ void VolumeDataAccessManagerImpl::AddCopyPageJob(VolumeDataChunk& chunk, VolumeD
 
       if (isPureCopy(chunk, sourceChunk))
       {
-        destDataStore->WriteChunk(chunk, serializedData, metadata);
+        GetVolumeDataStore()->WriteChunk(chunk, serializedData, metadata);
       }
       else
       {
@@ -770,7 +773,7 @@ void VolumeDataAccessManagerImpl::AddCopyPageJob(VolumeDataChunk& chunk, VolumeD
 
         destination.RequestWritePage(chunk.index, destDataBlock, deserializedData, hash);
       }
-      destination.GetManager()->GetVolumeDataLayout()->CompletePendingWriteChunkRequests(int32_t(threadCount));
+      PrivateGetLayout()->CompletePendingWriteChunkRequests(int32_t(threadCount));
       return error;
     }));
 

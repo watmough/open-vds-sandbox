@@ -277,15 +277,6 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
   auto sourceAccessManager = OpenVDS::GetAccessManager(sourceHandle);
   auto destinationAccessManager = OpenVDS::GetAccessManager(destinationHandle);
 
-  auto sourceAccessorDestroyer = [&sourceAccessManager](OpenVDS::VolumeDataPageAccessor* acc) { if (acc) sourceAccessManager.DestroyVolumeDataPageAccessor(acc); };
-  auto destinationAccessorDestroyer = [&destinationAccessManager](OpenVDS::VolumeDataPageAccessor* acc)
-  {
-    if (!acc)
-      return;
-    acc->Commit();
-    destinationAccessManager.DestroyVolumeDataPageAccessor(acc);
-  };
-
   int64_t totalChunks = 0;
   int64_t doneChunks = 0;
   int percentage = 0;
@@ -327,21 +318,14 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
   {
     for (int dim = 0; dim <= OpenVDS::DimensionsND::Dimensions_45 && keep_processing; dim++)
     {
-      std::vector<std::unique_ptr<OpenVDS::VolumeDataPageAccessor, decltype(sourceAccessorDestroyer)>> sourceAccessors;
-      sourceAccessors.reserve(channelCount);
-      std::vector<std::unique_ptr<OpenVDS::VolumeDataPageAccessor, decltype(destinationAccessorDestroyer)>> destinationAccessors;
-      destinationAccessors.reserve(channelCount);
+      std::vector<std::shared_ptr<OpenVDS::VolumeDataPageAccessor>> sourceAccessors(channelCount);
+      std::vector<std::shared_ptr<OpenVDS::VolumeDataPageAccessor>> destinationAccessors(channelCount);
       for (int channel = 0; channel < channelCount && keep_processing; channel++)
       {
         if (sourceAccessManager.GetVDSProduceStatus(OpenVDS::DimensionsND(dim), lod, channel) == OpenVDS::VDSProduceStatus::Normal)
         {
-          sourceAccessors.emplace_back(std::unique_ptr<OpenVDS::VolumeDataPageAccessor, decltype(sourceAccessorDestroyer)>(sourceAccessManager.CreateVolumeDataPageAccessor(OpenVDS::DimensionsND(dim), lod, channel, OpenVDS::VolumeDataAccessManager::maxPagesDefault, OpenVDS::VolumeDataPageAccessor::AccessMode_ReadOnly), sourceAccessorDestroyer));
-          destinationAccessors.emplace_back(std::unique_ptr<OpenVDS::VolumeDataPageAccessor, decltype(destinationAccessorDestroyer)>(destinationAccessManager.CreateVolumeDataPageAccessor(OpenVDS::DimensionsND(dim), lod, channel, OpenVDS::VolumeDataAccessManager::maxPagesDefault, OpenVDS::VolumeDataPageAccessor::AccessMode_CreateWithoutLODGeneration), destinationAccessorDestroyer));
-        }
-        else
-        {
-          sourceAccessors.emplace_back(std::unique_ptr<OpenVDS::VolumeDataPageAccessor, decltype(sourceAccessorDestroyer)>(nullptr, sourceAccessorDestroyer));
-          destinationAccessors.emplace_back(std::unique_ptr<OpenVDS::VolumeDataPageAccessor, decltype(destinationAccessorDestroyer)>(nullptr, destinationAccessorDestroyer));
+          sourceAccessors[channel]      = std::shared_ptr<OpenVDS::VolumeDataPageAccessor>(sourceAccessManager.CreateVolumeDataPageAccessor(OpenVDS::DimensionsND(dim), lod, channel, OpenVDS::VolumeDataAccessManager::maxPagesDefault, OpenVDS::VolumeDataPageAccessor::AccessMode_ReadOnly), [&sourceAccessManager](OpenVDS::VolumeDataPageAccessor* pageAccessor) { if(pageAccessor->RemoveReference() == 0) { sourceAccessManager.DestroyVolumeDataPageAccessor(pageAccessor); } });
+          destinationAccessors[channel] = std::shared_ptr<OpenVDS::VolumeDataPageAccessor>(destinationAccessManager.CreateVolumeDataPageAccessor(OpenVDS::DimensionsND(dim), lod, channel, OpenVDS::VolumeDataAccessManager::maxPagesDefault, OpenVDS::VolumeDataPageAccessor::AccessMode_CreateWithoutLODGeneration), [&destinationAccessManager](OpenVDS::VolumeDataPageAccessor* pageAccessor) { if(pageAccessor->RemoveReference() == 0) { destinationAccessManager.DestroyVolumeDataPageAccessor(pageAccessor); } });
         }
       }
 
@@ -376,6 +360,14 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
               printProgress(outputPrinter, totalChunks, doneChunks, percentage);
             }
           }
+        }
+      }
+
+      for(auto &destinationAccessor : destinationAccessors)
+      {
+        if(destinationAccessor)
+        {
+          destinationAccessor->Commit();
         }
       }
     }
