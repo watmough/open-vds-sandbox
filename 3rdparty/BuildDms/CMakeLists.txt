@@ -99,6 +99,7 @@ endif()
 
 
 add_library (sdapi_objects OBJECT ${SOURCES} ${VersionFilesOutputVariable})
+target_link_libraries(sdapi_objects PRIVATE crc32c)
 
 get_property(link_3rdparty GLOBAL PROPERTY OPENVDS_LINK_LIBRARIES)
 get_property(include_3rdparty      GLOBAL PROPERTY OPENVDS_INCLUDE_LIBRARIES)

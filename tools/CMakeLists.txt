@@ -1,5 +1,6 @@
 set(TOOLS_FOLDER "${CMAKE_CURRENT_LIST_DIR}")
 function(setCompilerFlagsForTools target)
+  setCompilerFlagsForTarget(${target})
   set_target_properties(${target} PROPERTIES FOLDER tools)
   setWarningFlagsForTarget(${target})
   copyDllForTarget(${target})

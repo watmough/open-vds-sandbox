@@ -157,6 +157,8 @@ else()
   option(USE_LIBRESSL "Build libressl as part of the openVDS build and use it instead of OpenSSL" ${DEFAULT_USE_LIBRESSL})
   option(AUTODETECT_CA_CERTIFICATES "Make python initialization script autodetect location of ca certificates" OFF)
   option(AUTO_ADJUST_UUID "When building on MacOS atumatically auto adjust finding UUID" ON)
+  option(ENABLE_ASAN "Build this OpenVDS with AddressSanitizer" OFF)
+
 
   include(CMakeDependentOption)
 

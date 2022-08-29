@@ -1,4 +1,5 @@
 cmrc_add_resource_library(help_connection ALIAS help::connection NAMESPACE help connection.rst)
+setCompilerFlagsForTarget(help_connection)
 
 if (BUILD_DOCS)
   # Based on https://devblogs.microsoft.com/cppblog/clear-functional-c-documentation-with-sphinx-breathe-doxygen-cmake/

@@ -54,6 +54,13 @@
       }
     },
     {
+      "name": "openvds_asan",
+      "hidden": true,
+      "cacheVariables": {
+        "ENABLE_ASAN": "ON"
+      }
+    },
+    {
       "name": "VS2015_x64",
       "hidden": true,
       "environment": {
@@ -74,6 +81,15 @@
       "inherits": [
         "openvds_single_config",
         "openvds_debug"
+      ]
+    },
+    {
+      "name": "DebugAsan",
+      "description": "Built using the default Visual Studio version.",
+      "inherits": [
+        "openvds_single_config",
+        "openvds_debug",
+        "openvds_asan"
       ]
     },
     {

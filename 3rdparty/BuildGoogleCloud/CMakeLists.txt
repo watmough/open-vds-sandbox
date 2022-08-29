@@ -82,6 +82,8 @@ add_library(google_cloud_ovds STATIC
   ${CMAKE_BINARY_DIR}/google-cloud-cpp/internal/build_info.cc
 )
 
+setCommonTargetProperties(google_cloud_ovds)
+
 if (MSVC AND (CMAKE_CXX_COMPILER_ID STREQUAL "Clang"))
   target_sources(google_cloud_ovds PRIVATE ${google-cloud-cpp_SOURCE_DIR}/google/cloud/terminate_handler.cc)
 endif()
@@ -117,3 +119,4 @@ else()
   find_package(CURL REQUIRED)
   target_link_libraries(google_cloud_ovds PRIVATE CURL::libcurl)
 endif()
+target_link_libraries(google_cloud_ovds PRIVATE crc32c)

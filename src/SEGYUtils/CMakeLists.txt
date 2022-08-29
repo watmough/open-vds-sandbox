@@ -11,6 +11,7 @@ add_library(segyutils
     SEGYFileInfo.cpp
     VDSSEGYInfo.cpp
     )
+setCompilerFlagsForTarget(segyutils)
 setCommonTargetProperties(segyutils)
 setExportedHeadersForTarget(segyutils ${EXPORTED_HEADER_FILES})
 target_compile_definitions(segyutils PRIVATE openvds_EXPORTS)
