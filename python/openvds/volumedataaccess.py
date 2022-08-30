@@ -262,17 +262,6 @@ class VolumeDataAccessManager(object):
     """
     return self._manager.createVolumeDataPageAccessor(dimensionsND, lod, channel, maxPages, accessMode, chunkMetadataPageSize)
 
-  def destroyVolumeDataPageAccessor(self, volumeDataPageAccessor):
-    """Destroy a volume data page accessor object.
-
-    Parameters:
-    -----------
-
-    volumeDataPageAccessor :
-        The VolumeDataPageAccessor object to destroy.)
-    """
-    return self._manager.destroyVolumeDataPageAccessor(volumeDataPageAccessor)
-
   def getVolumeSubsetBufferSize(self, min: Tuple[int], max: Tuple[int], format=VoxelFormat.Format_R32, lod=0, channel=0):
     """Compute the buffer size (in bytes) for a volume subset request.
 

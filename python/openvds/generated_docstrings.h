@@ -1023,12 +1023,16 @@ Returns:
 static const char *__doc_OpenVDS_GetOpenVDSRevision =
 R"doc(Get revision of the OpenVDS build
 
-<returnes> A revision string </returnes>)doc";
+Returns:
+--------
+    A revision string)doc";
 
 static const char *__doc_OpenVDS_GetOpenVDSVersion =
 R"doc(Get the version for the OpenVDS implementation
 
-<returnes> A version string </returnes>)doc";
+Returns:
+--------
+    A version string)doc";
 
 static const char *__doc_OpenVDS_GlobalState = R"doc(Object that contains global runtime data)doc";
 
@@ -2298,7 +2302,7 @@ z direction.)doc";
 
 static const char *__doc_OpenVDS_KnownAxisNames_I =
 R"doc(String representing the name of the axis corresponding to the I step
-vector (SurveyCoordinateSystemIStep))doc";
+vector (SurveyCoordinateSystemIStepVector))doc";
 
 static const char *__doc_OpenVDS_KnownAxisNames_Inline =
 R"doc(String representing the name of the axis corresponding to the inline
@@ -2306,11 +2310,11 @@ spacing.)doc";
 
 static const char *__doc_OpenVDS_KnownAxisNames_J =
 R"doc(String representing the name of the axis corresponding to the J step
-vector (SurveyCoordinateSystemIStep))doc";
+vector (SurveyCoordinateSystemIStepVector))doc";
 
 static const char *__doc_OpenVDS_KnownAxisNames_K =
 R"doc(String representing the name of the axis corresponding to the K step
-vector (SurveyCoordinateSystemKStep))doc";
+vector (SurveyCoordinateSystemKStepVector))doc";
 
 static const char *__doc_OpenVDS_KnownAxisNames_Sample =
 R"doc(String representing the name of the axis corresponding to the negative
@@ -2524,27 +2528,15 @@ static const char *__doc_OpenVDS_Length_2 = R"doc()doc";
 
 static const char *__doc_OpenVDS_LogLevel = R"doc()doc";
 
-static const char *__doc_OpenVDS_LogLevel_2 = R"doc()doc";
-
 static const char *__doc_OpenVDS_LogLevel_Error = R"doc()doc";
-
-static const char *__doc_OpenVDS_LogLevel_Error_2 = R"doc()doc";
 
 static const char *__doc_OpenVDS_LogLevel_Info = R"doc()doc";
 
-static const char *__doc_OpenVDS_LogLevel_Info_2 = R"doc()doc";
-
 static const char *__doc_OpenVDS_LogLevel_None = R"doc()doc";
-
-static const char *__doc_OpenVDS_LogLevel_None_2 = R"doc()doc";
 
 static const char *__doc_OpenVDS_LogLevel_Trace = R"doc()doc";
 
-static const char *__doc_OpenVDS_LogLevel_Trace_2 = R"doc()doc";
-
 static const char *__doc_OpenVDS_LogLevel_Warning = R"doc()doc";
-
-static const char *__doc_OpenVDS_LogLevel_Warning_2 = R"doc()doc";
 
 static const char *__doc_OpenVDS_M4 = R"doc()doc";
 
@@ -3128,20 +3120,6 @@ static const char *__doc_OpenVDS_OpenVDSInterface_OpenWithAdaptiveCompressionTol
 static const char *__doc_OpenVDS_OpenVDSInterface_RetryableClose = R"doc()doc";
 
 static const char *__doc_OpenVDS_OpenVDSInterface_RetryableClose_2 = R"doc()doc";
-
-static const char *__doc_OpenVDS_OpenVDSLogging =
-R"doc(The OpenVDS Logging interface is used to provide a callback for
-applications to get logging output from the library)doc";
-
-static const char *__doc_OpenVDS_OpenVDSLogging_OpenVDSLogging = R"doc()doc";
-
-static const char *__doc_OpenVDS_OpenVDSLogging_OpenVDSLogging_2 = R"doc()doc";
-
-static const char *__doc_OpenVDS_OpenVDSLogging_callback = R"doc()doc";
-
-static const char *__doc_OpenVDS_OpenVDSLogging_level = R"doc()doc";
-
-static const char *__doc_OpenVDS_OpenVDSLogging_userHandle = R"doc()doc";
 
 static const char *__doc_OpenVDS_OpenVDSVersioningInterface =
 R"doc(The OpenVDS versioning interface is a stable base class for the
@@ -3756,15 +3734,6 @@ static const char *__doc_OpenVDS_VolumeDataAccessManager_CreateVolumeDataReadAcc
 static const char *__doc_OpenVDS_VolumeDataAccessManager_CreateVolumeDataReadWriteAccessor = R"doc()doc";
 
 static const char *__doc_OpenVDS_VolumeDataAccessManager_CreateVolumeDataReadWriteAccessor_2 = R"doc()doc";
-
-static const char *__doc_OpenVDS_VolumeDataAccessManager_DestroyVolumeDataPageAccessor =
-R"doc(Destroy a volume data page accessor object.
-
-Parameters:
------------
-
-volumeDataPageAccessor :
-    The VolumeDataPageAccessor object to destroy.)doc";
 
 static const char *__doc_OpenVDS_VolumeDataAccessManager_Dispose = R"doc()doc";
 
@@ -4501,9 +4470,7 @@ static const char *__doc_OpenVDS_VolumeDataAccessManager_m_IVolumeDataAccessMana
 
 static const char *__doc_OpenVDS_VolumeDataAccessManager_operator_assign = R"doc()doc";
 
-static const char *__doc_OpenVDS_VolumeDataAxisDescriptor =
-R"doc(Describes the number of samples, name, unit and coordinates
-(annotation) of an axis (dimension) of the volume)doc";
+static const char *__doc_OpenVDS_VolumeDataAxisDescriptor = R"doc()doc";
 
 static const char *__doc_OpenVDS_VolumeDataAxisDescriptor_2 = R"doc()doc";
 
