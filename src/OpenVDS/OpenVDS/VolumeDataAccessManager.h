@@ -1045,22 +1045,10 @@ public:
   /// <returns>
   /// A VolumeDataPageAccessor object for the VDS.
   /// </returns>
-  VolumeDataPageAccessor *CreateVolumeDataPageAccessor(DimensionsND dimensionsND, int LOD, int channel, int maxPages, AccessMode accessMode, int chunkMetadataPageSize = 1024)
+  std::shared_ptr<VolumeDataPageAccessor> CreateVolumeDataPageAccessor(DimensionsND dimensionsND, int LOD, int channel, int maxPages, AccessMode accessMode, int chunkMetadataPageSize = 1024)
   {
     EnsureValid();
-    return m_IVolumeDataAccessManager->CreateVolumeDataPageAccessor(dimensionsND, LOD, channel, maxPages, accessMode, chunkMetadataPageSize);
-  }
-
-  /// <summary>
-  /// Destroy a volume data page accessor object.
-  /// </summary>
-  /// <param name="volumeDataPageAccessor">
-  /// The VolumeDataPageAccessor object to destroy.
-  /// </param>
-  void DestroyVolumeDataPageAccessor(VolumeDataPageAccessor *volumeDataPageAccessor)
-  {
-    EnsureValid();
-    return m_IVolumeDataAccessManager->DestroyVolumeDataPageAccessor(volumeDataPageAccessor);
+    return std::shared_ptr<VolumeDataPageAccessor>(m_IVolumeDataAccessManager->CreateVolumeDataPageAccessor(dimensionsND, LOD, channel, maxPages, accessMode, chunkMetadataPageSize), [this](VolumeDataPageAccessor *volumeDataPageAccessor) { if(volumeDataPageAccessor->RemoveReference() == 0 && m_IVolumeDataAccessManager) m_IVolumeDataAccessManager->DestroyVolumeDataPageAccessor(volumeDataPageAccessor); });
   }
 
   //-----------------------------------------------------------------------------
