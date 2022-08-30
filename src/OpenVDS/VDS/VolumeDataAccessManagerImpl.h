@@ -160,12 +160,19 @@ public:
 private:
   std::atomic<int> m_refCount;
   bool m_invalidated;
-  bool m_copyJobIndex;
   VDS &m_vds;
   std::unique_ptr<VolumeDataRequestProcessor> m_requestProcessor;
-  std::vector<std::pair<VolumeDataChunk, std::future<Error>>> m_copyJobs[2];
   IntrusiveList<VolumeDataPageAccessorImpl, &VolumeDataPageAccessorImpl::m_volumeDataPageAccessorListNode> m_volumeDataPageAccessorList;
   std::mutex m_mutex;
+
+  void FlushCurrentJobBuffer(std::unique_lock<std::mutex>& lock);
+  struct
+  {
+    bool jobIndex = false;
+    bool flushingBuffer = false;
+    std::condition_variable waitForFlush;
+    std::vector<std::pair<VolumeDataChunk, std::future<Error>>> jobs[2];
+  } copyState;
   struct
   {
     std::vector<UploadError> errors;

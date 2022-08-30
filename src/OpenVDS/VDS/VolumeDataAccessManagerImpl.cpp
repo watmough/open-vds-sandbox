@@ -41,7 +41,6 @@ namespace OpenVDS
 VolumeDataAccessManagerImpl::VolumeDataAccessManagerImpl(VDS &vds)
   : m_refCount(0)
   , m_invalidated(false)
-  , m_copyJobIndex(false)
   , m_vds(vds)
   , m_requestProcessor(new VolumeDataRequestProcessor(*this, vds.logger))
 {
@@ -729,7 +728,7 @@ void VolumeDataAccessManagerImpl::AddCopyPageJob(VolumeDataChunk& chunk, VolumeD
 
   source.AddReference();
   destination.AddReference();
-  m_copyJobs[m_copyJobIndex].emplace_back(chunk, m_requestProcessor->GetThreadPool().Enqueue([this, chunk, sourceChunk, threadCount, &destination, &source]
+  copyState.jobs[copyState.jobIndex].emplace_back(chunk, m_requestProcessor->GetThreadPool().Enqueue([this, chunk, sourceChunk, threadCount, &destination, &source]
     {
       std::unique_ptr<VolumeDataPageAccessorImpl, void(*)(VolumeDataPageAccessorImpl *)> sourceDeleter(&source, [](VolumeDataPageAccessorImpl *pageAccessor) { if(pageAccessor->RemoveReference() == 0) { pageAccessor->GetManager()->DestroyVolumeDataPageAccessor(pageAccessor); } } );
       std::unique_ptr<VolumeDataPageAccessorImpl, void(*)(VolumeDataPageAccessorImpl *)> destinationDeleter(&destination, [](VolumeDataPageAccessorImpl *pageAccessor) { if(pageAccessor->RemoveReference() == 0) { pageAccessor->GetManager()->DestroyVolumeDataPageAccessor(pageAccessor); } } );
@@ -779,42 +778,56 @@ void VolumeDataAccessManagerImpl::AddCopyPageJob(VolumeDataChunk& chunk, VolumeD
       return error;
     }));
 
-  if (m_copyJobs[m_copyJobIndex].size() == m_requestProcessor->GetThreadPool().ThreadCount())
+  if (copyState.jobs[copyState.jobIndex].size() == m_requestProcessor->GetThreadPool().ThreadCount())
   {
-    auto& otherjobs = m_copyJobs[!m_copyJobIndex];
-    for (auto& job : otherjobs)
+    if (copyState.flushingBuffer)
     {
-      auto error = job.second.get();
-      if (error.code)
-      {
-        auto& jobChunk = job.first;
-        std::string url = fmt::format("Chunk: {}, Channel: {} LOD: {}", jobChunk.index, jobChunk.layer->GetChannelIndex(), jobChunk.layer->GetLOD());
-        AddUploadError(error, url);
-      }
+      copyState.waitForFlush.wait(lock, [this]() {
+        return copyState.flushingBuffer == false;
+        });
     }
-    otherjobs.clear();
-    m_copyJobIndex = !m_copyJobIndex;
+    else
+    {
+      FlushCurrentJobBuffer(lock);
+    }
   }
+}
+
+template<typename T, int SIZE>
+int GetArraySize(const T(&)[SIZE])
+{
+  return SIZE;
 }
 
 void VolumeDataAccessManagerImpl::FlushCopyPageJobs()
 {
   std::unique_lock<std::mutex> lock(m_mutex);
-  for (auto& jobsMap : m_copyJobs)
+  for (int i = 0; i < GetArraySize(copyState.jobs); i++)
   {
-    for (auto& job : jobsMap)
-    {
-      auto error = job.second.get();
-      if (error.code)
-      {
-        auto& jobChunk = job.first;
-        std::string url = fmt::format("Chunk: {}, Channel: {} LOD: {}", jobChunk.index, jobChunk.layer->GetChannelIndex(), jobChunk.layer->GetLOD());
-        AddUploadError(error, url);
-      }
-    }
-    jobsMap.clear();
+    FlushCurrentJobBuffer(lock);
   }
-
+}
+  
+void VolumeDataAccessManagerImpl::FlushCurrentJobBuffer(std::unique_lock<std::mutex> &lock)
+{
+  copyState.flushingBuffer = true;
+  auto& otherjobs = copyState.jobs[!copyState.jobIndex];
+  lock.unlock();
+  for (auto& job : otherjobs)
+  {
+    auto error = job.second.get();
+    if (error.code)
+    {
+      auto& jobChunk = job.first;
+      std::string url = fmt::format("Chunk: {}, Channel: {} LOD: {}", jobChunk.index, jobChunk.layer->GetChannelIndex(), jobChunk.layer->GetLOD());
+      AddUploadError(error, url);
+    }
+  }
+  otherjobs.clear();
+  lock.lock();
+  copyState.jobIndex = !copyState.jobIndex;
+  copyState.flushingBuffer = false;
+  copyState.waitForFlush.notify_all();
 }
 
 int64_t VolumeDataAccessManagerImpl::AddRemapJob(VolumeDataPageImpl &targetPage, std::vector<VolumeDataChunk> const &sourceChunks)
