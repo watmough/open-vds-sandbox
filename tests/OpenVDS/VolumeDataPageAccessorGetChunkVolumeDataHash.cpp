@@ -58,7 +58,7 @@ GTEST_TEST(OpenVDS_integration, VolumeDataPageAccessorGetChunkVolumeDataHash)
   auto accessManager = OpenVDS::GetAccessManager(handle);
   const int channel = 0;
   const int lod = 0;
-  OpenVDS::VolumeDataPageAccessor* pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::DimensionsND::Dimensions_012, channel, lod, 100, OpenVDS::VolumeDataAccessManager::AccessMode_Create);
+  std::shared_ptr<OpenVDS::VolumeDataPageAccessor> pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::DimensionsND::Dimensions_012, channel, lod, 100, OpenVDS::VolumeDataAccessManager::AccessMode_Create);
 
   // Verify chunk 0 volume data hash is 0 / unknown
   auto volumeDataHash = pageAccessor->GetChunkVolumeDataHash(0);
@@ -91,7 +91,7 @@ GTEST_TEST(OpenVDS_integration, VolumeDataPageAccessorGetChunkVolumeDataHash)
   ASSERT_NE(0, volumeDataHash);
 
   // Destroy volume data page accessor
-  accessManager.DestroyVolumeDataPageAccessor(pageAccessor);
+  pageAccessor.reset();
   accessManager.Flush(error);
   ASSERT_EQ(error.code, 0);
 
@@ -143,7 +143,7 @@ GTEST_TEST(OpenVDS_integration, VolumeDataPageAccessorGetChunkVolumeDataHash_VDS
   auto accessManager = OpenVDS::GetAccessManager(handle);
   const int channel = 0;
   const int lod = 0;
-  OpenVDS::VolumeDataPageAccessor* pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::DimensionsND::Dimensions_012, channel, lod, 100, OpenVDS::VolumeDataAccessManager::AccessMode_Create);
+  std::shared_ptr<OpenVDS::VolumeDataPageAccessor> pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::DimensionsND::Dimensions_012, channel, lod, 100, OpenVDS::VolumeDataAccessManager::AccessMode_Create);
 
   // Verify chunk 0 volume data hash is 0 / unknown
   auto volumeDataHash = pageAccessor->GetChunkVolumeDataHash(0);
@@ -176,7 +176,7 @@ GTEST_TEST(OpenVDS_integration, VolumeDataPageAccessorGetChunkVolumeDataHash_VDS
   ASSERT_NE(0, volumeDataHash);
 
   // Destroy volume data page accessor
-  accessManager.DestroyVolumeDataPageAccessor(pageAccessor);
+  pageAccessor.reset();
   accessManager.Flush(error);
   ASSERT_EQ(0, error.code);
 

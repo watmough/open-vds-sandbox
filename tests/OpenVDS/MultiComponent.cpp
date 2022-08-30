@@ -60,7 +60,7 @@ TEST(OpenVDS_integration, MultiComponent)
     ASSERT_TRUE(layout);
     OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle);
 
-    OpenVDS::VolumeDataPageAccessor* pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, 0, 0, 100, OpenVDS::VolumeDataAccessManager::AccessMode_Create);
+    std::shared_ptr<OpenVDS::VolumeDataPageAccessor> pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, 0, 0, 100, OpenVDS::VolumeDataAccessManager::AccessMode_Create);
     //ASSERT_TRUE(pageAccessor);
 
     int32_t chunkCount = int32_t(pageAccessor->GetChunkCount());
@@ -79,7 +79,7 @@ TEST(OpenVDS_integration, MultiComponent)
     pageAccessor->Commit();
     accessManager.Flush(error);
     ASSERT_EQ(error.code, 0);
-    accessManager.DestroyVolumeDataPageAccessor(pageAccessor);
+    pageAccessor.reset();
   }
   OpenVDS::Close(handle);
   handle = OpenVDS::Open("inmemory://MultiComponent", "", error);

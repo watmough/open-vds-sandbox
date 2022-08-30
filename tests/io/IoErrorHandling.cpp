@@ -352,7 +352,7 @@ TEST(IOErrorHandlingUpload, ErrorHandlingChunkHttpError)
   ASSERT_TRUE(handle);
 
   OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle);
-  OpenVDS::VolumeDataPageAccessor *pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, 0, 0, 100, OpenVDS::VolumeDataAccessManager::AccessMode_Create);
+  auto pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, 0, 0, 100, OpenVDS::VolumeDataAccessManager::AccessMode_Create);
   ASSERT_TRUE(pageAccessor);
 
   int32_t chunkCount = int32_t(pageAccessor->GetChunkCount());
@@ -366,7 +366,7 @@ TEST(IOErrorHandlingUpload, ErrorHandlingChunkHttpError)
     page->Release();
   }
   pageAccessor->Commit();
-  accessManager.DestroyVolumeDataPageAccessor(pageAccessor);
+  pageAccessor.reset();
   accessManager.Flush(error);
 
   ASSERT_EQ(error.code, 489);
@@ -407,7 +407,7 @@ TEST(IOErrorHandlingUpload, ErrorHandlingLayerStatusHttpError)
   ASSERT_TRUE(handle);
 
   OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle);
-  OpenVDS::VolumeDataPageAccessor *pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, 0, 0, 100, OpenVDS::VolumeDataAccessManager::AccessMode_Create);
+  std::shared_ptr<OpenVDS::VolumeDataPageAccessor> pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, 0, 0, 100, OpenVDS::VolumeDataAccessManager::AccessMode_Create);
   ASSERT_TRUE(pageAccessor);
 
   int32_t chunkCount = int32_t(pageAccessor->GetChunkCount());
@@ -421,7 +421,7 @@ TEST(IOErrorHandlingUpload, ErrorHandlingLayerStatusHttpError)
     page->Release();
   }
   pageAccessor->Commit();
-  accessManager.DestroyVolumeDataPageAccessor(pageAccessor);
+  pageAccessor.reset();
   accessManager.Flush(error);
 
   ASSERT_EQ(error.code, 466);
@@ -462,7 +462,7 @@ TEST(IOErrorHandlingUpload, ErrorHandlingChunkMetadataHttpError)
   ASSERT_TRUE(handle);
 
   OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle);
-  OpenVDS::VolumeDataPageAccessor *pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, 0, 0, 100, OpenVDS::VolumeDataAccessManager::AccessMode_Create);
+  std::shared_ptr<OpenVDS::VolumeDataPageAccessor> pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, 0, 0, 100, OpenVDS::VolumeDataAccessManager::AccessMode_Create);
   ASSERT_TRUE(pageAccessor);
 
   int32_t chunkCount = int32_t(pageAccessor->GetChunkCount());
@@ -476,7 +476,7 @@ TEST(IOErrorHandlingUpload, ErrorHandlingChunkMetadataHttpError)
     page->Release();
   }
   pageAccessor->Commit();
-  accessManager.DestroyVolumeDataPageAccessor(pageAccessor);
+  pageAccessor.reset();
   accessManager.Flush(error);
 
   ASSERT_EQ(error.code, 433);

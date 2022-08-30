@@ -72,7 +72,7 @@ inline void fill3DVDSWithNoise(OpenVDS::VDS *vds, int32_t channel = 0, const Ope
   //ASSERT_TRUE(layout);
   OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(vds);
 
-  OpenVDS::VolumeDataPageAccessor *pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, channel, 0, 100, createLODs ? OpenVDS::VolumeDataAccessManager::AccessMode_Create : OpenVDS::VolumeDataAccessManager::AccessMode_CreateWithoutLODGeneration);
+  std::shared_ptr<OpenVDS::VolumeDataPageAccessor> pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, channel, 0, 100, createLODs ? OpenVDS::VolumeDataAccessManager::AccessMode_Create : OpenVDS::VolumeDataAccessManager::AccessMode_CreateWithoutLODGeneration);
   //ASSERT_TRUE(pageAccessor);
 
   int32_t chunkCount = int32_t(pageAccessor->GetChunkCount());
@@ -92,8 +92,6 @@ inline void fill3DVDSWithNoise(OpenVDS::VDS *vds, int32_t channel = 0, const Ope
   pageAccessor->Commit();
   OpenVDS::Error error;
   accessManager.Flush(error);
-  accessManager.DestroyVolumeDataPageAccessor(pageAccessor);
-
 }
 
 inline void fill3DVDSWithBitNoise(OpenVDS::VDS *vds, int32_t channel = 0)
@@ -102,7 +100,7 @@ inline void fill3DVDSWithBitNoise(OpenVDS::VDS *vds, int32_t channel = 0)
   //ASSERT_TRUE(layout);
   OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(vds);
 
-  OpenVDS::VolumeDataPageAccessor *pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, channel, 0, 100, OpenVDS::VolumeDataAccessManager::AccessMode_Create);
+  std::shared_ptr<OpenVDS::VolumeDataPageAccessor> pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, channel, 0, 100, OpenVDS::VolumeDataAccessManager::AccessMode_Create);
   //ASSERT_TRUE(pageAccessor);
 
   int32_t chunkCount = int32_t(pageAccessor->GetChunkCount());
@@ -145,6 +143,4 @@ inline void fill3DVDSWithBitNoise(OpenVDS::VDS *vds, int32_t channel = 0)
   pageAccessor->Commit();
   OpenVDS::Error error;
   accessManager.Flush(error);
-  accessManager.DestroyVolumeDataPageAccessor(pageAccessor);
-
 }

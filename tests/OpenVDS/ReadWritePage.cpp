@@ -109,10 +109,10 @@ TEST(OpenVDS_integration, WriteReadPage)
   OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle);
   
   auto pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, 0, 0, 1024, OpenVDS::VolumeDataAccessManager::AccessMode_ReadWrite);
-  writeBuffer(pageAccessor, Read, 2, 1234.5f);
+  writeBuffer(pageAccessor.get(), Read, 2, 1234.5f);
   pageAccessor->Commit();
 
-  ASSERT_TRUE(compareBuffer(pageAccessor, 2, 1234.5f));
+  ASSERT_TRUE(compareBuffer(pageAccessor.get(), 2, 1234.5f));
 }
 
 TEST(OpenVDS_integration, ReadWritePage)
@@ -139,10 +139,10 @@ TEST(OpenVDS_integration, ReadWritePage)
     page->Release();
   }
 
-  writeBuffer(pageAccessor, Read, 2, 1234.5f);
+  writeBuffer(pageAccessor.get(), Read, 2, 1234.5f);
   pageAccessor->Commit();
 
-  ASSERT_TRUE(compareBuffer(pageAccessor, 2, 1234.5f));
+  ASSERT_TRUE(compareBuffer(pageAccessor.get(), 2, 1234.5f));
 }
 
 TEST(OpenVDS_integration, CopyPage)
@@ -241,7 +241,7 @@ TEST(OpenVDS_integration, ReadWriteVDSFile)
   auto layout = accessManager.GetVolumeDataLayout();
   const int channel = 0;
 
-  OpenVDS::VolumeDataPageAccessor* pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, channel, 0, 100, OpenVDS::VolumeDataAccessManager::AccessMode_Create);
+  std::shared_ptr<OpenVDS::VolumeDataPageAccessor> pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, channel, 0, 100, OpenVDS::VolumeDataAccessManager::AccessMode_Create);
   OpenVDS::VolumeDataFormat expectedFormat = OpenVDS::VolumeDataFormat::Format_R32;
   EXPECT_EQ(layout->GetChannelFormat(channel), expectedFormat);
   EXPECT_EQ(layout->GetChannelFormat(channel), pageAccessor->GetChannelDescriptor().GetFormat());
@@ -265,7 +265,7 @@ TEST(OpenVDS_integration, ReadWriteVDSFile)
     page->Release();
   }
   pageAccessor->Commit();
-  accessManager.DestroyVolumeDataPageAccessor(pageAccessor);
+  pageAccessor.reset();
 
   accessManager.Flush(error);
   EXPECT_EQ(error.code, 0) << "Error " << error.code << " writing " << error.string;
@@ -314,10 +314,10 @@ TEST(OpenVDS_integration, WriteReadMultiPageAccessorPage)
   OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle);
   
   auto readWritePageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, 0, 0, 1024, OpenVDS::VolumeDataAccessManager::AccessMode_ReadWrite);
-  writeBuffer(readWritePageAccessor, Read, 2, 1234.5f);
+  writeBuffer(readWritePageAccessor.get(), Read, 2, 1234.5f);
   readWritePageAccessor->SetMaxPages(0); // Make sure the buffer is flushed to the write queue, without committing
 
-  ASSERT_TRUE(compareBuffer(readWritePageAccessor, 2, 1234.5f));
+  ASSERT_TRUE(compareBuffer(readWritePageAccessor.get(), 2, 1234.5f));
 }
 
 TEST(OpenVDS_integration, ReadWriteReadMultiPageAccessorPage)
@@ -350,14 +350,14 @@ TEST(OpenVDS_integration, ReadWriteReadMultiPageAccessorPage)
     std::thread threadWrite([&readWritePageAccessor]
       {
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
-        writeBuffer(readWritePageAccessor, Create, 2, 1234.5f);
+        writeBuffer(readWritePageAccessor.get(), Create, 2, 1234.5f);
         readWritePageAccessor->SetMaxPages(0); // Make sure the buffer is flushed to the write queue, without committing
       });
     threadRead.join();
     threadWrite.join();
   }
 
-  ASSERT_TRUE(compareBuffer(readWritePageAccessor, 2, 1234.5f));
+  ASSERT_TRUE(compareBuffer(readWritePageAccessor.get(), 2, 1234.5f));
 }
 
 TEST(OpenVDS_integration, CreateMultiplePageAccessors)
@@ -390,15 +390,13 @@ TEST(OpenVDS_integration, CreateMultiplePageAccessors)
   OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle);
   
   {
-    OpenVDS::VolumeDataPageAccessor* pageAccessor0 = accessManager.CreateVolumeDataPageAccessor(
+    std::shared_ptr<OpenVDS::VolumeDataPageAccessor> pageAccessor0 = accessManager.CreateVolumeDataPageAccessor(
       OpenVDS::Dimensions_012, 0, 0, 100, OpenVDS::VolumeDataAccessManager::AccessMode_Create);
-    accessManager.DestroyVolumeDataPageAccessor(pageAccessor0);
   }
 
   {
-    OpenVDS::VolumeDataPageAccessor* pageAccessor1 = accessManager.CreateVolumeDataPageAccessor(
+    std::shared_ptr<OpenVDS::VolumeDataPageAccessor> pageAccessor1 = accessManager.CreateVolumeDataPageAccessor(
       OpenVDS::Dimensions_012, 0, 0, 100, OpenVDS::VolumeDataAccessManager::AccessMode_Create);
-    accessManager.DestroyVolumeDataPageAccessor(pageAccessor1);
   }
 
   OpenVDS::Close(handle);
@@ -433,10 +431,10 @@ TEST(OpenVDS_integration, CreateMultiplePageAccessorsAndWriteData)
   auto handle = OpenVDS::Create(in_memory_name, std::string(""), layoutDescriptor, axisDescriptors, channelDescriptors, metadataContainer, error);
   OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle);
   
-  OpenVDS::VolumeDataPageAccessor* pageAccessor = accessManager.CreateVolumeDataPageAccessor(
+  std::shared_ptr<OpenVDS::VolumeDataPageAccessor> pageAccessor = accessManager.CreateVolumeDataPageAccessor(
     OpenVDS::Dimensions_012, 0, 0, 100, OpenVDS::VolumeDataAccessManager::AccessMode_Create);
 
-  OpenVDS::VolumeDataPageAccessor* pageAccessor2 = accessManager.CreateVolumeDataPageAccessor(
+  std::shared_ptr<OpenVDS::VolumeDataPageAccessor> pageAccessor2 = accessManager.CreateVolumeDataPageAccessor(
     OpenVDS::Dimensions_012, 0, 0, 100, OpenVDS::VolumeDataAccessManager::AccessMode_Create);
 
   OpenVDS::VolumeDataPage *page =  pageAccessor->CreatePage(0);
@@ -458,8 +456,8 @@ TEST(OpenVDS_integration, CreateMultiplePageAccessorsAndWriteData)
   EXPECT_NO_THROW(page =  pageAccessor2->ReadPage(0));
   page->Release();
 
-  accessManager.DestroyVolumeDataPageAccessor(pageAccessor);
-  accessManager.DestroyVolumeDataPageAccessor(pageAccessor2);
+  pageAccessor.reset();
+  pageAccessor2.reset();
 
   OpenVDS::Close(handle);
 }
@@ -501,7 +499,7 @@ TEST(OpenVDS_integration, GenerateLOD)
 
     ASSERT_EQ(accessManager.GetVDSProduceStatus(OpenVDS::Dimensions_012, LOD, 0), OpenVDS::VDSProduceStatus::Normal);
 
-    OpenVDS::VolumeDataPageAccessor* pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, LOD, 0, 100, OpenVDS::VolumeDataAccessManager::AccessMode_ReadOnly);
+    std::shared_ptr<OpenVDS::VolumeDataPageAccessor> pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, LOD, 0, 100, OpenVDS::VolumeDataAccessManager::AccessMode_ReadOnly);
 
     for(int64_t chunk = 0, chunkCount = pageAccessor->GetChunkCount(); chunk < chunkCount; chunk++)
     {
@@ -530,7 +528,7 @@ TEST(OpenVDS_integration, GenerateLOD)
       page->Release();
     }
 
-    accessManager.DestroyVolumeDataPageAccessor(pageAccessor);
+    pageAccessor.reset();
   }
 }
 
@@ -571,7 +569,7 @@ TEST(OpenVDS_integration, RemapLOD)
 
     ASSERT_EQ(accessManager.GetVDSProduceStatus(OpenVDS::Dimensions_012, LOD, 0), OpenVDS::VDSProduceStatus::Remapped);
 
-    OpenVDS::VolumeDataPageAccessor* pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, LOD, 0, 100, OpenVDS::VolumeDataAccessManager::AccessMode_ReadOnly);
+    std::shared_ptr<OpenVDS::VolumeDataPageAccessor> pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, LOD, 0, 100, OpenVDS::VolumeDataAccessManager::AccessMode_ReadOnly);
 
     for(int64_t chunk = 0, chunkCount = pageAccessor->GetChunkCount(); chunk < chunkCount; chunk++)
     {
@@ -600,7 +598,7 @@ TEST(OpenVDS_integration, RemapLOD)
       page->Release();
     }
 
-    accessManager.DestroyVolumeDataPageAccessor(pageAccessor);
+    pageAccessor.reset();
   }
 }
 
@@ -702,9 +700,9 @@ OpenVDS::VDS *CreateVolumeDataAccessorLODTestVDS(int dimensionality, int fullRes
   for(int LOD = 0; LOD <= int(LODLevels); LOD++)
   {
     const int channel = 0;
-    OpenVDS::VolumeDataPageAccessor* pageAccessor = accessManager.CreateVolumeDataPageAccessor(dimensionality == 2 ? OpenVDS::DimensionsND::Dimensions_01 : OpenVDS::Dimensions_012, LOD, channel, 100, OpenVDS::VolumeDataAccessManager::AccessMode_CreateWithoutLODGeneration);
-    FillPages(pageAccessor, LODTestVoxelValue);
-    accessManager.DestroyVolumeDataPageAccessor(pageAccessor);
+    std::shared_ptr<OpenVDS::VolumeDataPageAccessor> pageAccessor = accessManager.CreateVolumeDataPageAccessor(dimensionality == 2 ? OpenVDS::DimensionsND::Dimensions_01 : OpenVDS::Dimensions_012, LOD, channel, 100, OpenVDS::VolumeDataAccessManager::AccessMode_CreateWithoutLODGeneration);
+    FillPages(pageAccessor.get(), LODTestVoxelValue);
+    pageAccessor.reset();
   }
 
   return handle;

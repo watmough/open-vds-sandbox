@@ -464,12 +464,12 @@ static OpenVDS::VDSHandle generateVDS(const std::string &vds_name, const char *(
   OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle);
 
   //Generate Layerstatus
-  OpenVDS::VolumeDataPageAccessor *pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, 0, 0, 100, OpenVDS::VolumeDataAccessManager::AccessMode_Create);
+  std::shared_ptr<OpenVDS::VolumeDataPageAccessor> pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, 0, 0, 100, OpenVDS::VolumeDataAccessManager::AccessMode_Create);
   //ASSERT_TRUE(pageAccessor);
 
   pageAccessor->Commit();
   accessManager.Flush(error);
-  accessManager.DestroyVolumeDataPageAccessor(pageAccessor);
+  pageAccessor.reset();
   OpenVDS::Close(handle);
 
   return OpenVDS::Open(in_memory_name, std::string(""), error);

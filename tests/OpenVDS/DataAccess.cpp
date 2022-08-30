@@ -47,7 +47,7 @@ GTEST_TEST(OpenVDS_integration, SimpleVolumeDataPageRead)
   OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle);
   OpenVDS::VolumeDataLayout *layout = OpenVDS::GetLayout(handle);
 
-  OpenVDS::VolumeDataPageAccessor *pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, 0, 0, 10, OpenVDS::VolumeDataAccessManager::AccessMode_ReadOnly);
+  std::shared_ptr<OpenVDS::VolumeDataPageAccessor> pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, 0, 0, 10, OpenVDS::VolumeDataAccessManager::AccessMode_ReadOnly);
   ASSERT_TRUE(pageAccessor);
 
   int pos[OpenVDS::Dimensionality_Max] = {layout->GetDimensionNumSamples(0) / 2, layout->GetDimensionNumSamples(1) /2, layout->GetDimensionNumSamples(2) / 2};
@@ -83,7 +83,7 @@ GTEST_TEST(OpenVDS_integration, SimpleVolumeDataPageReadVDSFile)
   OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle);
   OpenVDS::VolumeDataLayout *layout = OpenVDS::GetLayout(handle);
 
-  OpenVDS::VolumeDataPageAccessor *pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, 0, 0, 10, OpenVDS::VolumeDataAccessManager::AccessMode_ReadOnly);
+  std::shared_ptr<OpenVDS::VolumeDataPageAccessor> pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, 0, 0, 10, OpenVDS::VolumeDataAccessManager::AccessMode_ReadOnly);
   ASSERT_TRUE(pageAccessor);
 
   int pos[OpenVDS::Dimensionality_Max] = {layout->GetDimensionNumSamples(0) / 2, layout->GetDimensionNumSamples(1) /2, layout->GetDimensionNumSamples(2) / 2};
@@ -121,7 +121,7 @@ GTEST_TEST(OpenVDS_integration, SimpleVolumeDataPageReadVDSFileWithAdaptiveCompr
   OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle);
   OpenVDS::VolumeDataLayout *layout = OpenVDS::GetLayout(handle);
 
-  OpenVDS::VolumeDataPageAccessor *pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, 0, 0, 10, OpenVDS::VolumeDataAccessManager::AccessMode_ReadOnly);
+  std::shared_ptr<OpenVDS::VolumeDataPageAccessor> pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, 0, 0, 10, OpenVDS::VolumeDataAccessManager::AccessMode_ReadOnly);
   ASSERT_TRUE(pageAccessor);
 
   int pos[OpenVDS::Dimensionality_Max] = {layout->GetDimensionNumSamples(0) / 2, layout->GetDimensionNumSamples(1) /2, layout->GetDimensionNumSamples(2) / 2};
