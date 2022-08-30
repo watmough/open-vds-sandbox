@@ -4307,6 +4307,8 @@ main(int argc, char* argv[])
   traceDataManagers.clear();
   dataViewManagers.clear();
 
+  int max_flush_retry_count = 100;
+  int flush_count = 0;
   do {
     error = {};
     accessManager.Flush(error);
@@ -4314,7 +4316,7 @@ main(int argc, char* argv[])
     {
       outputPrinter.printWarning("Failed to upload object", error.string);
     }
-  } while (error.code);
+  } while (error.code && flush_count++ < max_flush_retry_count);
 
   if (error.code || encountedErrors)
   {

@@ -372,6 +372,8 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
       }
     }
   }
+  int max_flush_retry_count = 100;
+  int flush_count = 0;
   do
   {
     error = {};
@@ -380,7 +382,7 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
     {
       printError(outputPrinter, error, ignoreErrors, error_encountered, keep_processing);
     }
-  } while (error.code);
+  } while (error.code && flush_count++ < max_flush_retry_count);
 
   if (keep_processing)
   {
