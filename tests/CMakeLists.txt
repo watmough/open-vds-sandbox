@@ -65,82 +65,83 @@ function(add_test_executable name)
   target_sources(${name} PRIVATE "LinuxLinkerChainHack.cpp")
 endfunction()
 
-add_test_executable(io_tests
-  io/filetest.cpp
-  io/InMemoryIo.cpp
-  io/IoManagerBasic.cpp
-  )
+if (NOT ENABLE_ASAN)
+  add_test_executable(io_tests
+    io/filetest.cpp
+    io/InMemoryIo.cpp
+    io/IoManagerBasic.cpp
+    )
 
-add_test_executable(io_performance_test
-  io/IoPerformance.cpp
-  )
+  add_test_executable(io_performance_test
+    io/IoPerformance.cpp
+    )
 
-add_test_executable(io_vds_roundtrip_test
-  io/IoVDSRoundtrip.cpp
-)
+  add_test_executable(io_vds_roundtrip_test
+    io/IoVDSRoundtrip.cpp
+    )
 
-add_test_executable(io_error_handling_tests
-  io/IoErrorHandling.cpp
-  io/IoManagerProtocol.cpp
-  )
+  add_test_executable(io_error_handling_tests
+    io/IoErrorHandling.cpp
+    io/IoManagerProtocol.cpp
+    )
 
-add_test_executable(jsoncpp_tests
-  jsoncpp/jsoncpp_parse.cpp
-  jsoncpp/jsoncpp_serialize.cpp)
+  add_test_executable(jsoncpp_tests
+    jsoncpp/jsoncpp_parse.cpp
+    jsoncpp/jsoncpp_serialize.cpp)
 
-add_test_executable(fmt_tests
-  fmt/basic_fmt.cpp)
+  add_test_executable(fmt_tests
+    fmt/basic_fmt.cpp)
 
-add_test_executable(segy_tests
-  SEG-Y/SEGYScanTest.cpp
-  ../src/SEGYUtils/SEGY.cpp
-  ../src/SEGYUtils/SEGYFileInfo.cpp
-  ../src/SEGYUtils/SEGYUtils/SEGYFileInfo.h)
-target_include_directories(segy_tests PRIVATE ../src/SEGYUtils)
+  add_test_executable(segy_tests
+    SEG-Y/SEGYScanTest.cpp
+    ../src/SEGYUtils/SEGY.cpp
+    ../src/SEGYUtils/SEGYFileInfo.cpp
+    ../src/SEGYUtils/SEGYUtils/SEGYFileInfo.h)
+  target_include_directories(segy_tests PRIVATE ../src/SEGYUtils)
 
-add_test_executable(deserialize VDS/DeserializeVolumeDataTest.cpp)
+  add_test_executable(deserialize VDS/DeserializeVolumeDataTest.cpp)
 
-add_test_executable(vds_integration_tests
-  VDS/ParseVDSJsonTest.cpp
-  VDS/RequestVolumeCleanupThread.cpp
-  VDS/ParseConnectionStringTest.cpp
-  VDS/LoggingTests.cpp
-  )
+  add_test_executable(vds_integration_tests
+    VDS/ParseVDSJsonTest.cpp
+    VDS/RequestVolumeCleanupThread.cpp
+    VDS/ParseConnectionStringTest.cpp
+    VDS/LoggingTests.cpp
+    )
 
-add_test_executable(openvds_integration_tests
-  OpenVDS/OpenVDSIntegrationTest.cpp
-  OpenVDS/DataAccess.cpp
-  OpenVDS/RequestVolumeSamples.cpp
-  OpenVDS/RequestVolumeTraces.cpp
-  OpenVDS/RequestVolumeSubsetFormat.cpp
-  OpenVDS/DataAccessorClone.cpp
-  OpenVDS/WaitForCompletion.cpp
-  OpenVDS/RequestCancellation.cpp
-  OpenVDS/VolumeIndexerSymbols.cpp
-  OpenVDS/RequestVolumeError.cpp
-  OpenVDS/IJKCoordinateTransformerTest.cpp
-  OpenVDS/MultiComponent.cpp
-  OpenVDS/ReadWritePage.cpp
-  OpenVDS/VolumeDataPageAccessorGetChunkVolumeDataHash.cpp
-  )
+  add_test_executable(openvds_integration_tests
+    OpenVDS/OpenVDSIntegrationTest.cpp
+    OpenVDS/DataAccess.cpp
+    OpenVDS/RequestVolumeSamples.cpp
+    OpenVDS/RequestVolumeTraces.cpp
+    OpenVDS/RequestVolumeSubsetFormat.cpp
+    OpenVDS/DataAccessorClone.cpp
+    OpenVDS/WaitForCompletion.cpp
+    OpenVDS/RequestCancellation.cpp
+    OpenVDS/VolumeIndexerSymbols.cpp
+    OpenVDS/RequestVolumeError.cpp
+    OpenVDS/IJKCoordinateTransformerTest.cpp
+    OpenVDS/MultiComponent.cpp
+    OpenVDS/ReadWritePage.cpp
+    OpenVDS/VolumeDataPageAccessorGetChunkVolumeDataHash.cpp
+    )
 
-add_test_executable(multithreaded_requests
-  OpenVDS/MultiThreadedRequests.cpp
-)
+  add_test_executable(multithreaded_requests
+    OpenVDS/MultiThreadedRequests.cpp
+    )
 
-add_test_executable(global_state
-  OpenVDS/GlobalStateTest.cpp
-)
+  add_test_executable(global_state
+    OpenVDS/GlobalStateTest.cpp
+    )
 
 
-add_test_executable(openvds_mixed_request
-  OpenVDS/RequestVolumeSubsetAndPageAccessor.cpp
-)
+  add_test_executable(openvds_mixed_request
+    OpenVDS/RequestVolumeSubsetAndPageAccessor.cpp
+    )
 
-add_test_executable(tools
-  tools/SplitUrlTest.cpp
-)
-
+  add_test_executable(tools
+    tools/SplitUrlTest.cpp
+    )
+endif()
 if (TEST_SEGY_FILE AND TEST_URL)
   add_test(NAME "tools.SegyRoundtrip"
     COMMAND ${CMAKE_COMMAND}
