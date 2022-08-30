@@ -111,6 +111,13 @@ namespace OpenVDS
     MetadataPageList m_pageList;
     MetadataPageList m_dirtyPageList;
 
+    int                 m_lockedPageCount;
+
+    bool                m_isFlushInProgress;
+
+    std::condition_variable
+                        m_noLockedPageCondition,
+                        m_flushFinishedCondition;
     void LimitPages();
   public:
     MetadataManager(IOManager *iomanager, std::string const &layerURL, std::string const &channelName, MetadataStatus const &MetadataStatus, int pageLimit, bool createEmptyPages = false);

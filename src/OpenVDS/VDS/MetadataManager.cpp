@@ -76,6 +76,8 @@ MetadataManager::MetadataManager(IOManager *iomanager, std::string const &layerU
   , m_metadataStatus(metadataStatus)
   , m_pageLimit(pageLimit)
   , m_createEmptyPages(createEmptyPages)
+  , m_lockedPageCount(0)
+  , m_isFlushInProgress(false)
 {
 }
 
@@ -102,6 +104,11 @@ MetadataManager::LockPage(int pageIndex, bool* initiateTransfer)
   assert(initiateTransfer);
 
   std::unique_lock<std::mutex> lock(m_mutex);
+
+  if (m_isFlushInProgress)
+  {
+    m_flushFinishedCondition.wait(lock, [this] { return !this->m_isFlushInProgress; });
+  }
 
   assert(m_pageMap.size() == m_pageList.size() + m_dirtyPageList.size());
 
@@ -136,7 +143,10 @@ MetadataManager::LockPage(int pageIndex, bool* initiateTransfer)
   }
 
   MetadataPage &page = *mi->second;
-
+  if(page.m_lockCount == 0)
+  {
+    m_lockedPageCount++;
+  }
   page.m_lockCount++;
 
   LimitPages();
@@ -176,6 +186,19 @@ void MetadataManager::CompleteTransfer(MetadataPage* page)
 void MetadataManager::UploadDirtyPages(VolumeDataStoreIOManager *volumeDataStore, Error &error)
 {
   std::unique_lock<std::mutex> lock(m_mutex);
+
+  if (m_isFlushInProgress)
+  {
+    m_flushFinishedCondition.wait(lock, [this] { return !this->m_isFlushInProgress; });
+  }
+
+  m_isFlushInProgress = true;
+
+  if (m_lockedPageCount > 0)
+  {
+    m_noLockedPageCondition.wait(lock, [this] { return this->m_lockedPageCount == 0; });
+  }
+
   for(MetadataPageList::iterator it = m_dirtyPageList.begin(), next; it != m_dirtyPageList.end(); it = next)
   {
     auto &page = *it;
@@ -197,6 +220,9 @@ void MetadataManager::UploadDirtyPages(VolumeDataStoreIOManager *volumeDataStore
       return;
     }
   }
+
+  m_isFlushInProgress = false;
+  m_flushFinishedCondition.notify_all();
 }
 
 void MetadataManager::PageTransferError(VolumeDataStoreIOManager* volumeDataStore, MetadataPage* page, const Error &error)
@@ -260,6 +286,15 @@ void MetadataManager::UnlockPage(MetadataPage *page)
   assert(m_pageMap.find(page->m_pageIndex) != m_pageMap.end());
 
   page->m_lockCount--;
+
+  if (page->m_lockCount == 0)
+  {
+    m_lockedPageCount--;
+    if (m_lockedPageCount == 0)
+    {
+      m_noLockedPageCondition.notify_all();
+    }
+  }
 
   if(page->m_lockCount == 0 && !page->m_valid)
   {
