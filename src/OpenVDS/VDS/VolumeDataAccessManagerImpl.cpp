@@ -731,8 +731,8 @@ void VolumeDataAccessManagerImpl::AddCopyPageJob(VolumeDataChunk& chunk, VolumeD
   destination.AddReference();
   m_copyJobs[m_copyJobIndex].emplace_back(chunk, m_requestProcessor->GetThreadPool().Enqueue([this, chunk, sourceChunk, threadCount, &destination, &source]
     {
-      std::shared_ptr<VolumeDataPageAccessorImpl> sourceDeleter(&source, [](VolumeDataPageAccessorImpl *pageAccessor) { if(pageAccessor->RemoveReference() == 0) { pageAccessor->GetManager()->DestroyVolumeDataPageAccessor(pageAccessor); } } );
-      std::shared_ptr<VolumeDataPageAccessorImpl> destinationDeleter(&destination, [this](VolumeDataPageAccessorImpl *pageAccessor) { if(pageAccessor->RemoveReference() == 0) { DestroyVolumeDataPageAccessor(pageAccessor); } } );
+      std::unique_ptr<VolumeDataPageAccessorImpl, void(*)(VolumeDataPageAccessorImpl *)> sourceDeleter(&source, [](VolumeDataPageAccessorImpl *pageAccessor) { if(pageAccessor->RemoveReference() == 0) { pageAccessor->GetManager()->DestroyVolumeDataPageAccessor(pageAccessor); } } );
+      std::unique_ptr<VolumeDataPageAccessorImpl, void(*)(VolumeDataPageAccessorImpl *)> destinationDeleter(&destination, [](VolumeDataPageAccessorImpl *pageAccessor) { if(pageAccessor->RemoveReference() == 0) { pageAccessor->GetManager()->DestroyVolumeDataPageAccessor(pageAccessor); } } );
 
       Error error;
       std::vector<uint8_t> serializedData;
