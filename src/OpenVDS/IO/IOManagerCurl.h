@@ -60,6 +60,8 @@ struct CurlEasyHandler
   
   bool shouldRetry();
 
+  void retry();
+
   virtual void handleDone(int responsCode, const Error &error) = 0;
   virtual void handleHeaderData(char* buffer, size_t size) = 0;
   virtual void handleWriteData(char* ptr, size_t size) = 0;

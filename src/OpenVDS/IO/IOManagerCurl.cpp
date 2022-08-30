@@ -416,18 +416,12 @@ static void beforeBlockCB(uv_prepare_t *handle)
             if (socketContext->shouldRetry())
             {
               eventLoopData->logger.LogWarning(fmt::format("CURL http respons error {}. Automatic rety {}", responseCode, url));
-              curl_multi_remove_handle(eventLoopData->curlMulti, socketContext->curlEasy);
-
-              CURL* dup = curl_easy_duphandle(socketContext->curlEasy);
-              curl_easy_cleanup(socketContext->curlEasy);
-              socketContext->curlEasy = dup;
-              curl_multi_add_handle(eventLoopData->curlMulti, dup);
+              socketContext->retry();
               continue;
             }
             else
             {
               eventLoopData->logger.LogError(fmt::format("CURL http respons error {}. No more retries {}", responseCode, url));
-              curl_multi_remove_handle(eventLoopData->curlMulti, socketContext->curlEasy);
               error.code = responseCode;
               error.string = CurlHttpErrorMessage(responseCode, url);
             }
@@ -443,12 +437,7 @@ static void beforeBlockCB(uv_prepare_t *handle)
           if (socketContext->shouldRetry())
           {
             eventLoopData->logger.LogWarning(fmt::format("CURL respons error {}. Automatic rety {}", responseCode, url));
-            curl_multi_remove_handle(eventLoopData->curlMulti, socketContext->curlEasy);
-
-            CURL* dup = curl_easy_duphandle(socketContext->curlEasy);
-            curl_easy_cleanup(socketContext->curlEasy);
-            socketContext->curlEasy = dup;
-            curl_multi_add_handle(eventLoopData->curlMulti, dup);
+            socketContext->retry();
             continue;
           }
           else
@@ -466,12 +455,7 @@ static void beforeBlockCB(uv_prepare_t *handle)
           char* url = NULL;
           curl_easy_getinfo(socketContext->curlEasy, CURLINFO_EFFECTIVE_URL, &url);
           eventLoopData->logger.LogWarning(fmt::format("CURL error: {}. Automatic retries {}", CURLErrorMessage(socketContext->curlEasy, code), url));
-          curl_multi_remove_handle(eventLoopData->curlMulti, socketContext->curlEasy);
-
-          CURL* dup = curl_easy_duphandle(socketContext->curlEasy);
-          curl_easy_cleanup(socketContext->curlEasy);
-          socketContext->curlEasy = dup;
-          curl_multi_add_handle(eventLoopData->curlMulti, dup);
+          socketContext->retry();
           continue;
         }
       }
@@ -611,10 +595,17 @@ static int curlTimerCallback(CURLM* multi, long timeout_ms, void* userp)
 
 bool CurlEasyHandler::shouldRetry()
 {
+  return retry_count < 4;
+}
+
+void CurlEasyHandler::retry()
+{
   retry_count++;
-  if (retry_count < 4)
-    return true;
-  return false;
+  curl_multi_remove_handle(eventLoopData->curlMulti, curlEasy);
+  CURL* dup = curl_easy_duphandle(curlEasy);
+  curl_easy_cleanup(curlEasy);
+  curlEasy = dup;
+  curl_multi_add_handle(eventLoopData->curlMulti, dup);
 }
 
 void CurlDownloadHandler::handleDone(int responseCode, const Error &error)
