@@ -75,7 +75,7 @@ public class VolumeDataAccessManager extends ManagedBase implements AutoCloseabl
         return GetVDSChunkCountImpl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel);
     }
 
-    ///AUTOGEN-OK: CXX_METHOD CreateVolumeDataPageAccessor OpenVDS::VolumeDataPageAccessor *(OpenVDS::DimensionsND, int, int, int, OpenVDS::VolumeDataPageAccessor::AccessMode, int) FUNCTIONPROTO
+    ///AUTOGEN-OK: CXX_METHOD CreateVolumeDataPageAccessor std::shared_ptr<OpenVDS::VolumeDataPageAccessor> (OpenVDS::DimensionsND, int, int, int, OpenVDS::VolumeDataPageAccessor::AccessMode, int) FUNCTIONPROTO
     native private long CreateVolumeDataPageAccessorImpl(long native_object, long dimensionsND, int LOD, int channel, int maxPages, long accessMode, int chunkMetadataPageSize);
 
     /**

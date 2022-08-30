@@ -687,6 +687,7 @@ Available schemes are s3:// azure://
     /**
      * Get the version for the OpenVDS implementation
      * 
+     * @return A version string
      */
     public static String getOpenVDSVersion() {
         return GetOpenVDSVersionImpl();
@@ -698,6 +699,7 @@ Available schemes are s3:// azure://
     /**
      * Get revision of the OpenVDS build
      * 
+     * @return A revision string
      */
     public static String getOpenVDSRevision() {
         return GetOpenVDSRevisionImpl();

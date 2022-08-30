@@ -152,7 +152,7 @@ void copy_data(const VDSHandle handle, const T *src, size_t src_length, const st
                                                                    OpenVDS::VolumeDataAccessManager::AccessMode_Create);
 
     for (int chunk = 0; chunk < pageAccessor->GetChunkCount(); chunk++) {
-        copy_fcn(pageAccessor, src, src_length, layout, chunk);
+        copy_fcn(pageAccessor.get(), src, src_length, layout, chunk);
     }
 
     pageAccessor->Commit();

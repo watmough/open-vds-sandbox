@@ -84,7 +84,7 @@ public class KnownAxisNames extends ManagedBase {
     native private static String IImpl();
 
     /**
-     * String representing the name of the axis corresponding to the I step vector (\ref SurveyCoordinateSystemIStep)
+     * String representing the name of the axis corresponding to the I step vector (\ref SurveyCoordinateSystemIStepVector)
      * 
      */
     public static String I() {
@@ -95,7 +95,7 @@ public class KnownAxisNames extends ManagedBase {
     native private static String JImpl();
 
     /**
-     * String representing the name of the axis corresponding to the J step vector (\ref SurveyCoordinateSystemIStep)
+     * String representing the name of the axis corresponding to the J step vector (\ref SurveyCoordinateSystemIStepVector)
      * 
      */
     public static String J() {
@@ -106,7 +106,7 @@ public class KnownAxisNames extends ManagedBase {
     native private static String KImpl();
 
     /**
-     * String representing the name of the axis corresponding to the K step vector (\ref SurveyCoordinateSystemKStep)
+     * String representing the name of the axis corresponding to the K step vector (\ref SurveyCoordinateSystemKStepVector)
      * 
      */
     public static String K() {

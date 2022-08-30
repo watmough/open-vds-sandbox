@@ -364,25 +364,11 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Creat
                                maxPages, 
                                (enum OpenVDS::VolumeDataPageAccessor::AccessMode)accessMode, 
                                chunkMetadataPageSize);
-    auto context = CPPJNI_createNonOwningObjectContext(result, native_handle, pInstance);
+    auto context = CPPJNI_createObjectContext(result);
     return context->handle();
   }
   CPPJNI_CATCH
   return 0;
-}
-
-JNIEXPORT void JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_DestroyVolumeDataPageAccessorImpl
-  (JNIEnv * env, jobject object, jlong native_handle, jlong volumeDataPageAccessor)
-{
-  JNIEnvGuard
-    envGuard(env);
-
-  CPPJNI_TRY
-  {
-    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
-    pInstance->DestroyVolumeDataPageAccessor(CPPJNI_cast<OpenVDS::VolumeDataPageAccessor>(volumeDataPageAccessor));
-  }
-  CPPJNI_CATCH
 }
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_CreateVolumeData2DInterpolatingAccessorR64Impl

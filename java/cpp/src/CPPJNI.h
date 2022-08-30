@@ -28,7 +28,6 @@ using CPPJNILibraryException = OpenVDS::Exception;
 void CPPJNI_onVDSError(OpenVDS::VDSError const& error);
 
 CPPJNI_SPECIALIZE_SHAREDPTR_NODELETE(OpenVDS::VDS)
-CPPJNI_SPECIALIZE_SHAREDPTR_NODELETE(OpenVDS::VolumeDataPageAccessor)
 
 template<>
 struct Cleaner<OpenVDS::VDS>
@@ -54,25 +53,6 @@ struct Cleaner<OpenVDS::VolumeDataPage>
     if (is_disposing)
     {
       instancePtr.get()->Release();
-    }
-    //else
-    //{
-    //  int debug = 0;
-    //}
-  }
-};
-
-template<>
-struct Cleaner<OpenVDS::VolumeDataPageAccessor>
-{
-  static void 
-  cleanup(struct CPPJNIObjectContext& context, std::shared_ptr<OpenVDS::VolumeDataPageAccessor> instancePtr, bool is_disposing) 
-  { 
-    if (is_disposing)
-    {
-      instancePtr.get()->Commit();
-      auto creator = context.getCreator<OpenVDS::VolumeDataAccessManager>(); // May throw
-      creator->DestroyVolumeDataPageAccessor(instancePtr.get());
     }
     //else
     //{
