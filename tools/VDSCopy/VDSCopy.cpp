@@ -324,8 +324,8 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
       {
         if (sourceAccessManager.GetVDSProduceStatus(OpenVDS::DimensionsND(dim), lod, channel) == OpenVDS::VDSProduceStatus::Normal)
         {
-          sourceAccessors[channel]      = std::shared_ptr<OpenVDS::VolumeDataPageAccessor>(sourceAccessManager.CreateVolumeDataPageAccessor(OpenVDS::DimensionsND(dim), lod, channel, OpenVDS::VolumeDataAccessManager::maxPagesDefault, OpenVDS::VolumeDataPageAccessor::AccessMode_ReadOnly), [&sourceAccessManager](OpenVDS::VolumeDataPageAccessor* pageAccessor) { if(pageAccessor->RemoveReference() == 0) { sourceAccessManager.DestroyVolumeDataPageAccessor(pageAccessor); } });
-          destinationAccessors[channel] = std::shared_ptr<OpenVDS::VolumeDataPageAccessor>(destinationAccessManager.CreateVolumeDataPageAccessor(OpenVDS::DimensionsND(dim), lod, channel, OpenVDS::VolumeDataAccessManager::maxPagesDefault, OpenVDS::VolumeDataPageAccessor::AccessMode_CreateWithoutLODGeneration), [&destinationAccessManager](OpenVDS::VolumeDataPageAccessor* pageAccessor) { if(pageAccessor->RemoveReference() == 0) { destinationAccessManager.DestroyVolumeDataPageAccessor(pageAccessor); } });
+          sourceAccessors[channel]      = sourceAccessManager.CreateVolumeDataPageAccessor(OpenVDS::DimensionsND(dim), lod, channel, OpenVDS::VolumeDataAccessManager::maxPagesDefault, OpenVDS::VolumeDataPageAccessor::AccessMode_ReadOnly);
+          destinationAccessors[channel] = destinationAccessManager.CreateVolumeDataPageAccessor(OpenVDS::DimensionsND(dim), lod, channel, OpenVDS::VolumeDataAccessManager::maxPagesDefault, OpenVDS::VolumeDataPageAccessor::AccessMode_CreateWithoutLODGeneration);
         }
       }
 
