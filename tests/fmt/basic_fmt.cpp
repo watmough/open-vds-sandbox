@@ -21,10 +21,8 @@
 
 GTEST_TEST(Fmt, basic_fmt)
 {
-  fmt::memory_buffer out;
-  fmt::format_to(out, "Print some number: {} and a string {}", 44.50, "hello world");
+  std::string out_str = fmt::format("Print some number: {} and a string {}", 44.50, "hello world");
 
-  std::string out_str(out.begin(), out.end());
   ASSERT_EQ(out_str, "Print some number: 44.5 and a string hello world");
 
 }

@@ -217,6 +217,8 @@ void MetadataManager::UploadDirtyPages(VolumeDataStoreIOManager *volumeDataStore
     else
     {
       m_dirtyPageList.splice(m_dirtyPageList.end(), m_dirtyPageList, it);
+      m_isFlushInProgress = false;
+      m_flushFinishedCondition.notify_all();
       return;
     }
   }

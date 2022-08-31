@@ -330,15 +330,14 @@ def generateVDS(vds_name, axis_names):
   metaData.setMetadataDoubleVector3(openvds.KnownMetadata.categorySurveyCoordinateSystem(), openvds.KnownMetadata.surveyCoordinateSystemKStepVector().getName(), (0, 0, -1))
 
   vds_url = "inmemory://{}".format(vds_name)
-  vds = openvds.create(vds_url, "", layoutDescriptor, axisDescriptors, channelDescriptors, metaData)
-  layout = openvds.getLayout(vds)
-  
-  manager = openvds.getAccessManager(vds)
-  accessor = manager.createVolumeDataPageAccessor(openvds.DimensionsND.Dimensions_012, 0, 0, 8, openvds.VolumeDataAccessManager.AccessMode.AccessMode_Create, 1024)
-  accessor.commit()
-  manager.manager.flush()
-  manager.manager.destroyVolumeDataPageAccessor(accessor)
-  openvds.close(vds)
+  with openvds.create(vds_url, "", layoutDescriptor, axisDescriptors, channelDescriptors, metaData) as vds:
+    layout = openvds.getLayout(vds)
+    
+    manager = openvds.getAccessManager(vds)
+    accessor = manager.createVolumeDataPageAccessor(openvds.DimensionsND.Dimensions_012, 0, 0, 8, openvds.VolumeDataAccessManager.AccessMode.AccessMode_Create, 1024)
+    accessor.commit()
+    manager.manager.flush()
+    manager.manager.destroyVolumeDataPageAccessor(accessor)
 
   return openvds.open(vds_url, "")
     

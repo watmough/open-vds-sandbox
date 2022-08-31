@@ -467,7 +467,7 @@ main(int argc, char *argv[])
      dataSampleFormatCode != SEGY::BinaryHeader::DataSampleFormatCode::Int8 &&
      dataSampleFormatCode != SEGY::BinaryHeader::DataSampleFormatCode::UInt8)
   {
-    outputPrinter.printError("SEGY", "Unsupported data sample format", fmt::format("{}", dataSampleFormatCode));
+    outputPrinter.printError("SEGY", "Unsupported data sample format", fmt::format("{}", int(dataSampleFormatCode)));
     return EXIT_FAILURE;
   }
 

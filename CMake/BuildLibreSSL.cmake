@@ -5,10 +5,11 @@ function(BuildLibreSSL)
       set(TOOLSET_VERSION ${MSVC_TOOLSET_VERSION_LOCAL})
     endif()
     list(APPEND LIBRESSL_LIBS_LIST "lib/crypto-49.lib")
-    list(APPEND LIBRESSL_LIBS_LIST "lib/tls-24.lib")
+    list(APPEND LIBRESSL_LIBS_LIST "lib/tls-25.lib")
     
     list(APPEND LIBRESSL_DLLS_LIST "bin/crypto-49.dll")
-    list(APPEND LIBRESSL_DLLS_LIST "bin/tls-24.dll")
+    list(APPEND LIBRESSL_DLLS_LIST "bin/tls-25.dll")
+    list(APPEND LIBRESSL_DLLS_LIST "bin/ssl-52.dll")
 
     list(APPEND CMAKE_ARGS "-DLIBRESSL_APPS=OFF")
     list(APPEND CMAKE_ARGS "-DLIBRESSL_TESTS=OFF")
