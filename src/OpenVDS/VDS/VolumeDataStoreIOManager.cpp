@@ -580,6 +580,19 @@ bool VolumeDataStoreIOManager::CancelReadChunkImpl(const VolumeDataChunk& chunk,
   return true;
 }
 
+struct PageUnlocker
+{
+  PageUnlocker(MetadataManager* manager, MetadataPage* page)
+    : manager(manager)
+    , page(page)
+  {}
+  ~PageUnlocker()
+  {
+    manager->UnlockPage(page);
+  }
+  MetadataManager* manager;
+  MetadataPage* page;
+};
 bool VolumeDataStoreIOManager::ReadChunkDataHash(const VolumeDataChunk& chunk, uint64_t &chunkDataHash, Error &error)
 {
   std::string layerName = GetLayerName(*chunk.layer);
@@ -609,7 +622,7 @@ bool VolumeDataStoreIOManager::ReadChunkDataHash(const VolumeDataChunk& chunk, u
     bool initiateTransfer;
 
     MetadataPage* metadataPage = metadataManager->LockPage(pageIndex, &initiateTransfer);
-
+    PageUnlocker unlocker(metadataManager, metadataPage);
     assert(pageIndex == metadataPage->PageIndex());
 
     if (initiateTransfer)
