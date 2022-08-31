@@ -1048,7 +1048,8 @@ public:
   std::shared_ptr<VolumeDataPageAccessor> CreateVolumeDataPageAccessor(DimensionsND dimensionsND, int LOD, int channel, int maxPages, AccessMode accessMode, int chunkMetadataPageSize = 1024)
   {
     EnsureValid();
-    return std::shared_ptr<VolumeDataPageAccessor>(m_IVolumeDataAccessManager->CreateVolumeDataPageAccessor(dimensionsND, LOD, channel, maxPages, accessMode, chunkMetadataPageSize), [this](VolumeDataPageAccessor *volumeDataPageAccessor) { if(volumeDataPageAccessor->RemoveReference() == 0 && m_IVolumeDataAccessManager) m_IVolumeDataAccessManager->DestroyVolumeDataPageAccessor(volumeDataPageAccessor); });
+    auto volumeDataAccessManagerInterface = (m_IVolumeDataAccessManager->AddRef(), m_IVolumeDataAccessManager);
+    return std::shared_ptr<VolumeDataPageAccessor>(m_IVolumeDataAccessManager->CreateVolumeDataPageAccessor(dimensionsND, LOD, channel, maxPages, accessMode, chunkMetadataPageSize), [volumeDataAccessManagerInterface](VolumeDataPageAccessor *volumeDataPageAccessor) { if(volumeDataPageAccessor->RemoveReference() == 0) volumeDataAccessManagerInterface->DestroyVolumeDataPageAccessor(volumeDataPageAccessor); volumeDataAccessManagerInterface->Release(); });
   }
 
   //-----------------------------------------------------------------------------
