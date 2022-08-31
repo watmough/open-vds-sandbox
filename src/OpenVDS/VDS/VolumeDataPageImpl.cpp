@@ -212,6 +212,7 @@ void VolumeDataPageImpl::SetBufferData(const DataBlock &dataBlock, DimensionGrou
 
 void VolumeDataPageImpl::WriteBack(VolumeDataLayer const* volumeDataLayer, std::unique_lock<std::mutex>& pageListMutexLock)
 {
+  assert(volumeDataLayer);
   assert(m_isDirty);
   if(m_parentPage)
   {

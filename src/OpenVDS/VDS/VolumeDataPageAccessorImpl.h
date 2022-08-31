@@ -71,6 +71,8 @@ public:
   VolumeDataPageAccessorImpl(VolumeDataAccessManagerImpl *acccessManager, VolumeDataPageAccessorImpl *parentVolumeDataPageAccessor, VolumeDataLayer const* layer, int maxPages, AccessMode accessMode, Logger &logHandler);
   ~VolumeDataPageAccessorImpl();
 
+  void Invalidate();
+
   bool IsReadWrite() const { return m_accessMode != AccessMode_ReadOnly; }
 
   VolumeDataLayout const* GetLayout() const override;

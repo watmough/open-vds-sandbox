@@ -109,17 +109,16 @@ VolumeDataAccessManagerImpl::IsValid()
   return !m_invalidated;
 }
 
-void                                  
+void
 VolumeDataAccessManagerImpl::Invalidate()
 {
   std::unique_lock<std::mutex> lock(m_mutex);
   m_invalidated = true;
-  m_requestProcessor.reset();
-  while (auto volumeDataPageAccessor = m_volumeDataPageAccessorList.GetFirstItem())
+  for (auto volumeDataPageAccessor = m_volumeDataPageAccessorList.GetFirstItem(); volumeDataPageAccessor; volumeDataPageAccessor = volumeDataPageAccessor->m_volumeDataPageAccessorListNode.m_next)
   {
-    m_volumeDataPageAccessorList.Remove(volumeDataPageAccessor);
-    delete volumeDataPageAccessor;
+    volumeDataPageAccessor->Invalidate();
   }
+  m_requestProcessor.reset();
 }
 
 void

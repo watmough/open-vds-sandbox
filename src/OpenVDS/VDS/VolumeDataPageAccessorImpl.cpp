@@ -70,7 +70,16 @@ VolumeDataPageAccessorImpl::~VolumeDataPageAccessorImpl()
   }
 }
 
-  
+void
+VolumeDataPageAccessorImpl::Invalidate()
+{
+  std::unique_lock<std::mutex> pageListMutexLock(m_pagesMutex);
+
+  m_maxPages = 0;
+  m_layer = nullptr;
+  LimitPageListSize(0, pageListMutexLock);
+}
+
 VolumeDataLayout const* VolumeDataPageAccessorImpl::GetLayout() const
 {
   return m_layer->GetLayout();
@@ -673,7 +682,7 @@ void VolumeDataPageAccessorImpl::LimitPageListSize(int maxPages, std::unique_loc
 
     m_pages.erase(std::prev(page_it.base()));
 
-    if(page->IsDirty())
+    if(page->IsDirty() && m_layer)
     {
       page->WriteBack(m_layer, pageListMutexLock);
       m_pagesWritten++;
