@@ -782,7 +782,7 @@ void VolumeDataAccessManagerImpl::AddCopyPageJob(VolumeDataChunk& chunk, VolumeD
     }));
 
   int minConcurrentCopyJobs = int(std::max(size_t(16), m_requestProcessor->GetThreadPool().ThreadCount()));
-  if (copyState.jobs.size() > minConcurrentCopyJobs * 2)
+  if (int(copyState.jobs.size()) > minConcurrentCopyJobs * 2)
   {
     if (copyState.flushingBuffer)
     {

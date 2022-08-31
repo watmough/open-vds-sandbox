@@ -34,6 +34,7 @@
 #include <vector>
 #include <map>
 #include <condition_variable>
+#include <functional>
 
 namespace OpenVDS
 {

@@ -24,6 +24,7 @@
 #include <mutex>
 #include <list>
 #include <memory>
+#include <condition_variable>
 
 
 #include <OpenVDS/OpenVDS.h>
