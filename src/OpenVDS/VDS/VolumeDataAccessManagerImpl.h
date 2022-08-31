@@ -32,6 +32,8 @@
 #include <map>
 #include <Base64/Base64.h>
 
+#include <deque>
+
 namespace OpenVDS
 {
 struct UploadError
@@ -141,7 +143,7 @@ public:
   VolumeDataStore *GetVolumeDataStore();
 
   void AddCopyPageJob(VolumeDataChunk& chunk, VolumeDataPageAccessorImpl& destination, VolumeDataPageAccessorImpl &source);
-  void FlushCopyPageJobs();
+  void FlushCopyPageJobs(Error &error);
 
   int64_t AddRemapJob(VolumeDataPageImpl &targetPage, std::vector<VolumeDataChunk> const &sourceChunks);
 
@@ -165,13 +167,12 @@ private:
   IntrusiveList<VolumeDataPageAccessorImpl, &VolumeDataPageAccessorImpl::m_volumeDataPageAccessorListNode> m_volumeDataPageAccessorList;
   std::mutex m_mutex;
 
-  void FlushCurrentJobBuffer(std::unique_lock<std::mutex>& lock);
+  void FlushCurrentJobBuffer(std::unique_lock<std::mutex>& lock, int flushCount, Error &error);
   struct
   {
-    bool jobIndex = false;
     bool flushingBuffer = false;
     std::condition_variable waitForFlush;
-    std::vector<std::pair<VolumeDataChunk, std::future<Error>>> jobs[2];
+    std::deque<std::pair<VolumeDataChunk, std::future<Error>>> jobs;
   } copyState;
   struct
   {
