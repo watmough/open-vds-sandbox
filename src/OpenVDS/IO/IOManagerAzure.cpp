@@ -20,7 +20,6 @@
 
 #include <cpprest/filestream.h>
 
-#include <fmt/format.h>
 #include <mutex>
 #include <string>
 #include <functional>
