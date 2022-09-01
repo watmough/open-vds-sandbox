@@ -1933,7 +1933,6 @@ bool  VolumeDataRequestProcessor::IsActive(int64_t jobID)
 bool  VolumeDataRequestProcessor::IsCompleted(int64_t jobID)
 {
   std::unique_lock<std::mutex> lock(m_mutex);
-  m_manager.SetCurrentDownloadError(Error());
   auto job_it = std::find_if(m_jobs.begin(), m_jobs.end(), [jobID](const std::unique_ptr<Job> &job) { return job->jobId == jobID; });
   if (job_it == m_jobs.end())
     return false;
@@ -1950,7 +1949,6 @@ bool  VolumeDataRequestProcessor::IsCompleted(int64_t jobID)
 bool VolumeDataRequestProcessor::IsCanceled(int64_t jobID, Error &error)
 {
   std::unique_lock<std::mutex> lock(m_mutex);
-  m_manager.SetCurrentDownloadError(Error());
   auto job_it = std::find_if(m_jobs.begin(), m_jobs.end(), [jobID](const std::unique_ptr<Job> &job) { return job->jobId == jobID; });
   if (job_it == m_jobs.end())
     return false;
@@ -1972,7 +1970,6 @@ bool VolumeDataRequestProcessor::IsCanceled(int64_t jobID, Error &error)
       }
     }
     SetErrorForJob(job);
-    m_manager.SetCurrentDownloadError(job->completedError);
     error = job->completedError;
     m_jobs.erase(job_it);
     return true;
@@ -1983,7 +1980,6 @@ bool VolumeDataRequestProcessor::IsCanceled(int64_t jobID, Error &error)
 bool VolumeDataRequestProcessor::WaitForCompletion(int64_t jobID, int millisecondsBeforeTimeout)
 {
   std::unique_lock<std::mutex> lock(m_mutex);
-  m_manager.SetCurrentDownloadError(Error());
   auto job_it = std::find_if(m_jobs.begin(), m_jobs.end(), [jobID](const std::unique_ptr<Job> &job) { return job->jobId == jobID; });
   if (job_it == m_jobs.end())
     return false;
@@ -2016,7 +2012,6 @@ bool VolumeDataRequestProcessor::WaitForCompletion(int64_t jobID, int millisecon
   if (job->cancelled)
   {
     SetErrorForJob(job);
-    m_manager.SetCurrentDownloadError(job->completedError);
   }
   return false;
 }
@@ -2024,7 +2019,6 @@ bool VolumeDataRequestProcessor::WaitForCompletion(int64_t jobID, int millisecon
 void VolumeDataRequestProcessor::Cancel(int64_t jobID)
 {
   std::unique_lock<std::mutex> lock(m_mutex);
-  m_manager.SetCurrentDownloadError(Error());
   auto job_it = std::find_if(m_jobs.begin(), m_jobs.end(), [jobID](std::unique_ptr<Job> &job) { return job->jobId == jobID; });
   if (job_it == m_jobs.end())
     return;
@@ -2035,7 +2029,6 @@ void VolumeDataRequestProcessor::Cancel(int64_t jobID)
 float VolumeDataRequestProcessor::GetCompletionFactor(int64_t jobID)
 {
   std::unique_lock<std::mutex> lock(m_mutex);
-  m_manager.SetCurrentDownloadError(Error());
   auto job_it = std::find_if(m_jobs.begin(), m_jobs.end(), [jobID](std::unique_ptr<Job> &job) { return job->jobId == jobID; });
   if (job_it == m_jobs.end())
     return 0.f;
@@ -2045,7 +2038,6 @@ float VolumeDataRequestProcessor::GetCompletionFactor(int64_t jobID)
 int VolumeDataRequestProcessor::CountActivePages()
 {
   std::unique_lock<std::mutex> lock(m_mutex);
-  m_manager.SetCurrentDownloadError(Error());
   int ret = 0;
   for (auto &pa : m_pageAccessors)
     ret += pa.second->GetMaxPages();

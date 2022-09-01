@@ -499,8 +499,6 @@ public:
   /// Flush any pending writes and write updated layer status
   /// </summary>
   virtual void Flush(ErrorHandler errorHandler, Error *error=nullptr) = 0;
-
-  virtual void GetCurrentDownloadError(int *code, const char** errorString) = 0;
 };
 
 class IHasVolumeDataAccess
@@ -2357,16 +2355,6 @@ public:
   {
     EnsureValid();
     m_IVolumeDataAccessManager->Flush([](Error* error, int errorCode, const char* errorMessage) { error->code = errorCode; error->string = errorMessage; }, &error);
-  }
-
-  /// <summary>
-  /// Get the download error from the most recent operation that failed
-  /// </summary>
-  void
-  GetCurrentDownloadError(int *code, const char** errorString)
-  {
-    EnsureValid();
-    return m_IVolumeDataAccessManager->GetCurrentDownloadError(code, errorString);
   }
 };
 

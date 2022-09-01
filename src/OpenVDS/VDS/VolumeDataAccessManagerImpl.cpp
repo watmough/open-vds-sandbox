@@ -866,12 +866,4 @@ void VolumeDataAccessManagerImpl::AddUploadError(Error const &error, const std::
   m_uploadErrors.errors.emplace_back(error, url);
 }
 
-void VolumeDataAccessManagerImpl::GetCurrentDownloadError(int* errorCode, const char** errorString)
-{
-  if (errorCode)
-    *errorCode = m_currentDownloadError.code;
-  if (errorString)
-    *errorString = m_currentDownloadError.string.c_str();
-}
-
 }

@@ -3555,33 +3555,6 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
 
 }
 
-///AUTOGEN-IGNORE: CXX_METHOD GetCurrentDownloadError void (int *, const char **) FUNCTIONPROTO	
-
-JNIEXPORT jobjectArray JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_GetCurrentDownloadErrorImpl
-  (JNIEnv * env, jobject object, jlong native_handle)
-{
-  JNIEnvGuard
-    envGuard(env);
-
-  CPPJNI_TRY
-  {
-    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
-    int32_t code = 0;
-    const char* errorString = "";
-    pInstance->GetCurrentDownloadError(&code, &errorString);
-    auto arr = CPPJNI_createJavaArray(2);
-    if (arr)
-    {
-      env->SetObjectArrayElement(arr, 0, CPPJNI_createPODJavaObject<int>(code));
-      env->SetObjectArrayElement(arr, 1, env->NewStringUTF(errorString));
-
-    }
-    return arr;
-  }
-  CPPJNI_CATCH
-  return 0;
-}
-
 /* FIXME? DOES NOT EXIST IN OPENVDS 
 ///AUTOGEN-IGNORE: CXX_METHOD RequestVolumeTraceRanges std::shared_ptr<OpenVDS::VolumeDataRequest_t<float>> (OpenVDS::DimensionsND, int, int, float const (*)[6], int, OpenVDS::InterpolationMethod, int, int, int, OpenVDS::optional<float>) FUNCTIONPROTO
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestVolumeTraceRangesImpl

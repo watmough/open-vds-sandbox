@@ -151,13 +151,6 @@ public:
 
   void Flush(ErrorHandler errorHandler, Error* error = nullptr) override;
 
-  void GetCurrentDownloadError(int *code, const char** errorString) override;
- 
-  void SetCurrentDownloadError(const Error& error)
-  {
-    m_currentDownloadError = error;
-  }
-
   int CountActivePages() { return m_requestProcessor->CountActivePages(); }
 private:
   std::atomic<int> m_refCount;
@@ -179,7 +172,6 @@ private:
     std::vector<UploadError> errors;
     std::mutex mutex;
   } m_uploadErrors;
-  Error m_currentDownloadError;
 };
 
 }

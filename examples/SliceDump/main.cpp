@@ -188,10 +188,10 @@ int main(int argc, char **argv)
   bool finished = request->WaitForCompletion();
   if (!finished)
   {
-    int code;
-    const char* errorstr;
-    accessManager.GetCurrentDownloadError(&code, &errorstr);
-    fprintf(stderr, "Failed to download request: %d - %s\n", code, errorstr);
+    request->IsCanceled(); //get the error
+    int code = request->GetErrorCode();
+    std::string errorstr = request->GetErrorMessage();
+    fprintf(stderr, "Failed to download request: %d - %s\n", code, errorstr.c_str());
     return -2;
   }
 

@@ -648,56 +648,6 @@ class VolumeDataAccessManager(object):
     req._request = self._manager.prefetchVolumeChunk(req.dimensionsND, req.lod, req.channel, req.chunkIndex)
     return req
 
-  def flushUploadQueue(self, writeUpdatedLayerStatus = True):
-    """Flush any pending writes and write updated layer status.
-
-    Parameters
-    ----------
-    writeUpdatedLayerStatus: bool, optional
-        Write the updated layer status (or only flush pending writes of chunks and chunk-metadata).
-    """
-    self._manager.flushUploadQueue(writeUpdatedLayerStatus)
-
-  def clearUploadErrors(self):
-    """Clear all upload errors that have been retrieved
-    """
-    self._manager.clearUploadErrors(self)
-
-  def forceClearAllUploadErrors(self):
-    """Clear all upload errors
-    """
-    self._manager.forceClearAllUploadErrors()
-
-  def getUploadErrorCount(self):
-    """Get the number of unretrieved upload errors
-
-    Returns
-    -------
-    count : int
-        The number of errors you can retrieve with getCurrentUploadError()
-    """
-    return self._manager.getUploadErrorCount()
-  
-  def getCurrentUploadError(self):
-    """Get the next unretrieved upload error or an empty error if there are no more errors to retrieve
-
-    Returns
-    -------
-    error : Tuple(object: string, code: int, message: string)
-        An tuple indicating the error or None if there are no more errors
-    """
-    return self._manager.getCurrentUploadError()
-
-  def getCurrentDownloadError(self):
-    """Get the download error from the most recent operation that failed
-
-    Returns
-    -------
-    error : Tuple(code: int, message: string)
-        An tuple indicating the error or None if there is no error
-    """
-    return self._manager.getCurrentDownloadError()
-
   ##############################################################################
   # 2D VolumeDataAccessors
   ##############################################################################

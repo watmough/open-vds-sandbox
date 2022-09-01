@@ -563,27 +563,27 @@ main(int argc, char *argv[])
     // Need to queue the writing on another thread to get max. performance
     if (!dataRequest->WaitForCompletion())
     {
-      int errorCode;
-      const char* errorString;
-      accessManager.GetCurrentDownloadError(&errorCode, &errorString);
+      dataRequest->IsCanceled(); //get the error
+      int errorCode = dataRequest->GetErrorCode();
+      std::string errorString = dataRequest->GetErrorMessage();
       outputPrinter.printError("Error in data request", errorString, fmt::format("{}", errorCode));
       assert(dataRequest->IsCanceled());
       exit(1);
     }
     if (!traceFlagRequest->WaitForCompletion())
     {
-      int errorCode;
-      const char* errorString;
-      accessManager.GetCurrentDownloadError(&errorCode, &errorString);
+      dataRequest->IsCanceled(); //get the error
+      int errorCode = dataRequest->GetErrorCode();
+      std::string errorString = dataRequest->GetErrorMessage();
       outputPrinter.printError("Error in traceFlag request", errorString, fmt::format("{}", errorCode));
       assert(traceFlagRequest->IsCanceled());
       exit(1);
     }
     if (!segyTraceHaderRequest->WaitForCompletion())
     {
-      int errorCode;
-      const char* errorString;
-      accessManager.GetCurrentDownloadError(&errorCode, &errorString);
+      dataRequest->IsCanceled(); //get the error
+      int errorCode = dataRequest->GetErrorCode();
+      std::string errorString = dataRequest->GetErrorMessage();
       outputPrinter.printError("Error in segyTraceHeader request", errorString, fmt::format("{}", errorCode));
       assert(segyTraceHaderRequest->IsCanceled());
       exit(1);

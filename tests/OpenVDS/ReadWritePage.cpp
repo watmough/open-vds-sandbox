@@ -192,6 +192,8 @@ TEST(OpenVDS_integration, CopyPage)
   {
     copyToPageAccessor->CopyPage(2, *pageAccessor);
     copyToPageAccessor->Commit();
+    copyToAccessManager.Flush(error);
+    ASSERT_EQ(error.code, 0);
   }
 
   {

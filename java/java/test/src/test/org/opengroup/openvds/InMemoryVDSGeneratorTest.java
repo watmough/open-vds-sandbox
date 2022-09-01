@@ -517,14 +517,4 @@ public class InMemoryVDSGeneratorTest {
 
         generator.close();
     }
-
-    @Test
-    public void testErrors() {
-        try (InMemoryVDSGenerator generator = new InMemoryVDSGenerator(100, 100, 100, Format_U8)) {
-            DownloadError dl = generator.getAccessManager().getCurrentDownloadError();
-            assertTrue("".equals(dl.ErrorString));
-            assertTrue(dl.ErrorCode == 0);
-        }
-    }
-    
 }

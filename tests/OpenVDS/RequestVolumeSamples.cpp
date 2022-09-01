@@ -87,11 +87,11 @@ GTEST_TEST(OpenVDS_integration, SimpleRequestVolumeSamples)
   {
     if(request->IsCanceled())
     {
-      int errorCode = 0;
-      const char *errorMessage = nullptr;
-      accessManager.GetCurrentDownloadError(&errorCode, &errorMessage);
+      request->IsCanceled(); //get the error
+      int errorCode = request->GetErrorCode();
+      std::string errorMessage = request->GetErrorMessage();
       ASSERT_NE(errorCode, 0);
-      ASSERT_NE(errorMessage, nullptr);
+      ASSERT_NE(errorMessage.size(), 0);
       FAIL() << std::string(errorMessage);
     }
     else

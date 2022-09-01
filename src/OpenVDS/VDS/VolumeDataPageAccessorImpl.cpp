@@ -396,15 +396,12 @@ bool VolumeDataPageAccessorImpl::ReadPreparedPaged(VolumeDataPage* page)
 
       if(!success)
       {
-        bool canceled = m_accessManager->IsCanceled(jobID);
+        ReadErrorException readError("", 0);
+        bool canceled = m_accessManager->IsCanceled(jobID, &readError);
         (void)canceled;
         assert(canceled);
-
-        int errorCode = 0;
-        const char* errorString = nullptr;
-        m_accessManager->GetCurrentDownloadError(&errorCode, &errorString);
-        error.code = errorCode;
-        error.string = errorString ? errorString : "";
+        error.code = readError.GetErrorCode();
+        error.string = readError.GetErrorMessage();
 
         pageListMutexLock.lock();
         pageImpl->SetError(error);

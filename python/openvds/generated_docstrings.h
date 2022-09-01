@@ -1689,8 +1689,6 @@ Returns:
     A factor (between 0 and 1) indicating how much of the request has
     been completed.)doc";
 
-static const char *__doc_OpenVDS_IVolumeDataAccessManager_GetCurrentDownloadError = R"doc()doc";
-
 static const char *__doc_OpenVDS_IVolumeDataAccessManager_GetProjectedVolumeSubsetBufferSize =
 R"doc(Compute the buffer size (in bytes) for a projected volume subset
 request.
@@ -3781,8 +3779,6 @@ static const char *__doc_OpenVDS_VolumeDataAccessManager_DoRequestVolumeTraces =
 static const char *__doc_OpenVDS_VolumeDataAccessManager_EnsureValid = R"doc()doc";
 
 static const char *__doc_OpenVDS_VolumeDataAccessManager_Flush = R"doc(Flush any pending writes and write updated layer status)doc";
-
-static const char *__doc_OpenVDS_VolumeDataAccessManager_GetCurrentDownloadError = R"doc(Get the download error from the most recent operation that failed)doc";
 
 static const char *__doc_OpenVDS_VolumeDataAccessManager_GetProjectedVolumeSubsetBufferSize =
 R"doc(Compute the buffer size (in bytes) for a projected volume subset
