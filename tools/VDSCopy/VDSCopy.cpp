@@ -110,15 +110,15 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
   options.add_option("", "", "compression-method", std::string("Compression method. Supported compression methods are: ") + supportedCompressionMethods + ".", cxxopts::value<std::string>(compressionMethodString), "<string>");
   options.add_option("", "", "tolerance", "This parameter specifies the compression tolerance when using the wavelet compression method. This value is the maximum deviation from the original data value when the data is converted to 8-bit using the value range. A value of 1 means the maximum allowable loss is the same as quantizing to 8-bit (but the average loss will be much much lower than quantizing to 8-bit). It is not a good idea to directly relate the tolerance to the quality of the compressed data, as the average loss will in general be an order of magnitude lower than the allowable loss.", cxxopts::value<float>(compressionTolerance), "<value>");
 
-  options.add_option("", "", "resume", "Resume a copy of a previous partial copy", cxxopts::value<bool>(resumeMode), "");
-  options.add_option("", "", "flush-frequency", std::string("Flush frequency in seconds. VDSCopy can resume imports at flush checkpoints. 0 (zero) results in never flushing. Default is 60"), cxxopts::value<int>(flushFrequency), "<value>");
+  options.add_option("", "", "resume", "Resume a copy of a previous partial copy.", cxxopts::value<bool>(resumeMode), "");
+  options.add_option("", "", "flush-frequency", std::string("Flush frequency in seconds. VDSCopy can resume imports at flush checkpoints. 0 (zero) results in never flushing. Default is 60."), cxxopts::value<int>(flushFrequency), "<value>");
 
-  options.add_option("", "f", "force", "Force/ignore errors", cxxopts::value<bool>(ignoreErrors), "");
+  options.add_option("", "f", "force", "Force/ignore errors.", cxxopts::value<bool>(ignoreErrors), "");
   options.add_option("", "q", "quiet", "Disable info level output.", cxxopts::value<bool>(disableInfo), "");
   options.add_option("", "Q", "very-quiet", "Disable warning level output.", cxxopts::value<bool>(disableWarning), "");
   options.add_option("", "", "json-output", "Enable json output.", cxxopts::value<bool>(useJsonOutput), "");
-  options.add_option("", "h", "help", "Print this help information", cxxopts::value<bool>(help), "");
-  options.add_option("", "H", "help-connection", "Print help information about the connection string", cxxopts::value<bool>(helpConnection), "");
+  options.add_option("", "h", "help", "Print this help information.", cxxopts::value<bool>(help), "");
+  options.add_option("", "H", "help-connection", "Print help information about the connection string.", cxxopts::value<bool>(helpConnection), "");
   options.add_option("", "", "version", "Print version information.", cxxopts::value<bool>(version), "");
 
   options.parse_positional("urls");

@@ -9,13 +9,19 @@ VDSCopy [OPTION...] <source_url> <destination_url>
 
 | Option                        | Decription |
 |-------------------------------|------------|
-|  -s, --source-connection      | Vendor specific connection string.
-|  -d, --destination-connection | Vendor specific connection string.
-| --compression-method          | Compression method. Supported compression methods are: None, RLE, Zip.
-| --tolerance                   | This parameter specifies the compression tolerance when using the wavelet compression method. This value is the maximum deviation from the original data value when the data is converted to 8-bit using the value range. A value of 1 means the maximum allowable loss is the same as quantizing to 8-bit (but the average loss will be much much lower than quantizing to 8-bit). It is not a good idea to directly relate the tolerance to the quality of the compressed data, as the average loss will in general be an order of magnitude lower than the allowable loss.
-| --json-output                 | Enable json output.
-|  -h, --help                   | Print this help information
-| --version                     | Print version information.
+|  -s, --source-connection      | Vendor specific connection string. |
+|  -d, --destination-connection | Vendor specific connection string. |
+| --compression-method          | Compression method. Supported compression methods are: None, RLE, Zip. |
+| --tolerance                   | This parameter specifies the compression tolerance when using the wavelet compression method. This value is the maximum deviation from the original data value when the data is converted to 8-bit using the value range. A value of 1 means the maximum allowable loss is the same as quantizing to 8-bit (but the average loss will be much much lower than quantizing to 8-bit). It is not a good idea to directly relate the tolerance to the quality of the compressed data, as the average loss will in general be an order of magnitude lower than the allowable loss. |
+|     --resume                  | Resume a copy of a previous partial copy. |
+|     --flush-frequency <value> | Flush frequency in seconds. VDSCopy can resume imports at flush checkpoints. 0 (zero) results in never flushing. Default is 60. |
+| -f, --force                   | Force/ignore errors. |
+| -q, --quiet                   | Disable info level output. |
+| -Q, --very-quiet              | Disable warning level output. |
+|     --json-output             | Enable json output. |
+| -h, --help                    | Print this help information. |
+| -H, --help-connection         | Print help information about the connection string. |
+|     --version                 | Print version information. |
 
 VDSCopy can use any url specifier. This makes it possible to copy from
 - cloud to cloud (between different cloud vendors)

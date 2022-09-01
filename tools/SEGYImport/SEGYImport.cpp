@@ -2725,11 +2725,11 @@ main(int argc, char* argv[])
   options.add_option("", "", "azimuth-scale", "Azimuth scale factor. Trace header field Azimuth values will be multiplied by this factor.", cxxopts::value<float>(azimuthScaleFactor), "<value>");
   options.add_option("", "", "respace-gathers", std::string("Respace traces in prestack gathers by Offset trace header field. Supported options are: ") + supportedTraceSpacingTypes + ".", cxxopts::value<std::string>(traceSpacingByOffsetString), "<string>");
   options.add_option("", "", "resume", std::string("Resume mode."), cxxopts::value<bool>(resumeMode), "");
-  options.add_option("", "", "flush-frequency", std::string("Flush frequency in seconds. SEGYImport can resume imports at flush checkpoints. 0 (zero) results in never flushing. Default is 60"), cxxopts::value<int>(flushFrequency), "<value>");
+  options.add_option("", "", "flush-frequency", std::string("Flush frequency in seconds. SEGYImport can resume imports at flush checkpoints. 0 (zero) results in never flushing. Default is 60."), cxxopts::value<int>(flushFrequency), "<value>");
   options.add_option("", "q", "quiet", "Disable info level output.", cxxopts::value<bool>(disableInfo), "");
   options.add_option("", "Q", "very-quiet", "Disable warning level output.", cxxopts::value<bool>(disableWarning), "");
-  options.add_option("", "h", "help", "Print this help information", cxxopts::value<bool>(help), "");
-  options.add_option("", "H", "help-connection", "Print help information about the connection string", cxxopts::value<bool>(helpConnection), "");
+  options.add_option("", "h", "help", "Print this help information.", cxxopts::value<bool>(help), "");
+  options.add_option("", "H", "help-connection", "Print help information about the connection string.", cxxopts::value<bool>(helpConnection), "");
   options.add_option("", "", "version", "Print version information.", cxxopts::value<bool>(version), "");
 
   options.add_option("", "", "input", "", cxxopts::value<std::vector<std::string>>(fileNames), "");

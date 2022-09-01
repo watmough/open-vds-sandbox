@@ -47,7 +47,13 @@ SEGYImport [OPTION...] <input file>
 |     --azimuth-unit                | Azimuth unit. Supported azimuth units are: Radians, Degrees (default). |
 |     --azimuth-scale               | Azimuth scale factor. Trace header field Azimuth values will be multiplied by this factor. |
 |     --respace-gathers             | Respace sparse traces in prestack gathers by Offset trace header field. Supported options are: Off, On, Auto (default). |
+|     --resume                      | Resume mode. |
+|     --flush-frequency \<value>    | Flush frequency in seconds. SEGYImport can resume imports at flush checkpoints. 0 (zero) results in never flushing. Default is 60. |
+| -q, --quiet                       | Disable info level output. |
+| -Q, --very-quiet                  | Disable warning level output. |
 | -h, --help                        | Print this help information. |
+| -H, --help-connection             | Print help information about the connection string. |
+|     --version                     | Print version information. |
 
 For more information about the ``--url`` and ``--url-connection`` parameter please see:
 http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/seismic/open-vds/connection.html
