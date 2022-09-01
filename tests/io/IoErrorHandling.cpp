@@ -481,8 +481,8 @@ TEST(IOErrorHandlingUpload, ErrorHandlingChunkMetadataHttpError)
 
   ASSERT_EQ(error.code, 433);
   ASSERT_TRUE(contains(error.string, "Dimensions_012LOD0/ChunkMetadata/0"));
-  handle.Close(error);
   error = {};
+  handle.Close(error);
   ASSERT_EQ(error.code, 433);
   ASSERT_TRUE(contains(error.string, "Dimensions_012LOD0/ChunkMetadata/0"));
 }
