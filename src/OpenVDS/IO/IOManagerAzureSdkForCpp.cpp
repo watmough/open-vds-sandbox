@@ -25,6 +25,7 @@
 #include <algorithm>
 
 #include <azure/storage/blobs.hpp>
+#include <azure/storage/common/crypt.hpp>
 
 namespace OpenVDS
 {
@@ -241,9 +242,8 @@ namespace OpenVDS
       return;
     }
 
-    auto this_is_to_work_around_linking_inn_azure_storage_common = Azure::Storage::_internal::UrlEncodeQueryParameter(openOptions.connectionString);
+    auto this_is_to_work_around_linking_inn_azure_storage_common = Azure::Storage::_internal::UrlEncodePath(openOptions.connectionString);
     (void)this_is_to_work_around_linking_inn_azure_storage_common;
-
     if (openOptions.connectionString.size())
     {
       try
@@ -317,5 +317,11 @@ namespace OpenVDS
     std::shared_ptr<UploadRequestAzureSdkForCpp> azureRequest = std::make_shared<UploadRequestAzureSdkForCpp>(id, completedCallback);
     azureRequest->run(m_threadPool, *m_serviceClient, m_containerStr, id, contentDispositionFilename, contentType, metadataHeader, data, azureRequest);
     return azureRequest;
+  }
+
+  bool IOManagerAzureSdkForCpp::Close(Error& error)
+  {
+    (void)error;
+    return true;
   }
 }
