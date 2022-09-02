@@ -681,6 +681,7 @@ void VolumeDataAccessManagerImpl::Flush(ErrorHandler errorHandler, Error* error)
   FlushCopyPageJobs(errorGuard);
   if (errorGuard.code)
     return;
+  m_vds.volumeDataLayout->CompletePendingWriteChunkRequests(0);
   {
     std::unique_lock<std::mutex> lock(m_uploadErrors.mutex);
     if (m_uploadErrors.errors.size())
