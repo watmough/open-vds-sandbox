@@ -261,8 +261,10 @@ def format_class_decl(node, classnode, all_, indent, parent_prefix):
         basesdecl += ', {}'.format(getnativename(b.get_definition(), all_))
     deletor = ''
     dtor = getdestructor(node, all_)
-    if getnativename(node, all_).startswith('VolumeDataRequest') or getnativename(node, all_).startswith('VolumeDataPageAccessor'):
+    if getnativename(node, all_).startswith('VolumeDataRequest'):
         deletor = ", std::shared_ptr<{}>".format(getnativename(node, all_))
+    elif getnativename(node, all_).startswith('VolumeDataPageAccessor'):
+        deletor = ", SharedPtrNoDeleteWrapper<{}>".format(getnativename(node, all_))
     elif dtor and not dtor.access_specifier == cindex.AccessSpecifier.PUBLIC:
         deletor = ", std::unique_ptr<{}, py::nodelete>".format(getnativename(node, all_))
     code = [ 

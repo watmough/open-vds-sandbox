@@ -417,4 +417,15 @@ public:
   }
 };
 
+template <typename T>
+class SharedPtrNoDeleteWrapper : private std::shared_ptr<T>
+{
+public:
+  SharedPtrNoDeleteWrapper(std::shared_ptr<T> const &ptr) : std::shared_ptr<T>(ptr) {}
+  SharedPtrNoDeleteWrapper(T *ptr) : std::shared_ptr<T>(ptr, [](T *){}) {}
+  T *get() { return std::shared_ptr<T>::get(); }
+};
+
+PYBIND11_DECLARE_HOLDER_TYPE(T, SharedPtrNoDeleteWrapper<T>)
+
 #endif

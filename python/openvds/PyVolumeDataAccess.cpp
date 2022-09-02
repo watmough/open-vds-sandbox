@@ -154,7 +154,7 @@ PyVolumeDataAccess::initModule(py::module& m)
   VolumeDataPage_.def("release"                     , static_cast<void(VolumeDataPage::*)()>(&VolumeDataPage::Release), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(VolumeDataPage_Release));
 
   // VolumeDataPageAccessor
-  py::class_<VolumeDataPageAccessor, std::shared_ptr<VolumeDataPageAccessor>> 
+  py::class_<VolumeDataPageAccessor, SharedPtrNoDeleteWrapper<VolumeDataPageAccessor>> 
     VolumeDataPageAccessor_(m,"VolumeDataPageAccessor", OPENVDS_DOCSTRING(VolumeDataPageAccessor));
 
   VolumeDataPageAccessor_.def("getLayout"                   , static_cast<const native::VolumeDataLayout *(VolumeDataPageAccessor::*)() const>(&VolumeDataPageAccessor::GetLayout), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(VolumeDataPageAccessor_GetLayout));
