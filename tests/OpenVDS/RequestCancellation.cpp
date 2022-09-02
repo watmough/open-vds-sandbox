@@ -58,3 +58,23 @@ TEST(OpenVDS_integration, RequestCancellation)
       }
   }
 }
+
+TEST(OpenVDS_integration, RequestCancellationOnClose)
+{
+  OpenVDS::InMemoryOpenOptions options;
+  OpenVDS::Error error;
+  std::unique_ptr<OpenVDS::IOManager> inMemory(OpenVDS::IOManagerInMemory::CreateIOManager(options, OpenVDS::IOManager::AccessPattern::ReadWrite, error));
+  SlowIOManager* slowIOManager = new SlowIOManager(50, inMemory.get());
+  OpenVDS::ScopedVDSHandle handle(generateSimpleInMemory3DVDS(60,60,60, OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, slowIOManager));
+  fill3DVDSWithBitNoise(handle);
+  OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle);
+
+  int32_t minPos[OpenVDS::Dimensionality_Max];
+  int32_t maxPos[OpenVDS::Dimensionality_Max];
+  minPos[0] = 0; minPos[1] = 10; minPos[2] = 10;
+  maxPos[0] = 50; maxPos[1] = 60; maxPos[2] = 50;
+
+  auto request = accessManager.RequestVolumeSubset<float>(OpenVDS::Dimensions_012, 0, 0, minPos, maxPos);
+  handle.Close();
+  EXPECT_TRUE(request->IsCanceled());
+}

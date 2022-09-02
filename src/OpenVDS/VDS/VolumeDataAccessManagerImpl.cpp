@@ -87,7 +87,7 @@ VolumeDataAccessManagerImpl::ValidateRequest(int64_t requestID)
   }
 }
 
-VolumeDataAccessManagerImpl*  
+VolumeDataAccessManagerImpl*
 VolumeDataAccessManagerImpl::Create(VDS &vds)
 {
   auto volumeDataAccessManager = new VolumeDataAccessManagerImpl(vds);
@@ -96,7 +96,7 @@ VolumeDataAccessManagerImpl::Create(VDS &vds)
   return volumeDataAccessManager;
 }
 
-bool                                  
+bool
 VolumeDataAccessManagerImpl::IsValid()
 {
   if (!m_invalidated)
@@ -114,11 +114,11 @@ VolumeDataAccessManagerImpl::Invalidate()
 {
   std::unique_lock<std::mutex> lock(m_mutex);
   m_invalidated = true;
+  m_requestProcessor.reset();
   for (auto volumeDataPageAccessor = m_volumeDataPageAccessorList.GetFirstItem(); volumeDataPageAccessor; volumeDataPageAccessor = volumeDataPageAccessor->m_volumeDataPageAccessorListNode.m_next)
   {
     volumeDataPageAccessor->Invalidate();
   }
-  m_requestProcessor.reset();
 }
 
 void
@@ -429,7 +429,7 @@ VolumeDataAccessManagerImpl::DestroyVolumeDataPageAccessor(VolumeDataPageAccesso
   delete pageAccessor;
 }
 
-int64_t 
+int64_t
 VolumeDataAccessManagerImpl::GetVolumeSubsetBufferSize(const int (&minVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], const int (&maxVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], VolumeDataChannelDescriptor::Format format, int LOD, int channel)
 {
   if (IsValid())
@@ -442,7 +442,7 @@ VolumeDataAccessManagerImpl::GetVolumeSubsetBufferSize(const int (&minVoxelCoord
   }
 }
 
-int64_t 
+int64_t
 VolumeDataAccessManagerImpl::RequestVolumeSubset(void *buffer, int64_t bufferByteSize, DimensionsND dimensionsND, int LOD, int channel, const int (&minVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], const int (&maxVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], VolumeDataChannelDescriptor::Format format, optional<float> replacementNoValue)
 {
   if (IsValid())
@@ -457,7 +457,7 @@ VolumeDataAccessManagerImpl::RequestVolumeSubset(void *buffer, int64_t bufferByt
   }
 }
 
-int64_t 
+int64_t
 VolumeDataAccessManagerImpl::GetProjectedVolumeSubsetBufferSize(const int (&minVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], const int (&maxVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], DimensionsND projectedDimensions, VolumeDataChannelDescriptor::Format format, int LOD, int channel)
 {
   if (IsValid())
@@ -470,7 +470,7 @@ VolumeDataAccessManagerImpl::GetProjectedVolumeSubsetBufferSize(const int (&minV
   }
 }
 
-int64_t 
+int64_t
 VolumeDataAccessManagerImpl::RequestProjectedVolumeSubset(void *buffer, int64_t bufferByteSize, DimensionsND dimensionsND, int LOD, int channel, const int (&minVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], const int (&maxVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], FloatVector4 const &voxelPlane, DimensionsND projectedDimensions, VolumeDataChannelDescriptor::Format format, InterpolationMethod interpolationMethod, optional<float> replacementNoValue)
 {
   if (IsValid())
@@ -485,7 +485,7 @@ VolumeDataAccessManagerImpl::RequestProjectedVolumeSubset(void *buffer, int64_t 
   }
 }
 
-int64_t 
+int64_t
 VolumeDataAccessManagerImpl::GetVolumeSamplesBufferSize(int nSampleCount, int channel)
 {
   if (IsValid())
@@ -498,7 +498,7 @@ VolumeDataAccessManagerImpl::GetVolumeSamplesBufferSize(int nSampleCount, int ch
   }
 }
 
-int64_t 
+int64_t
 VolumeDataAccessManagerImpl::RequestVolumeSamples(float *buffer, int64_t bufferByteSize, DimensionsND dimensionsND, int LOD, int channel, const float (*SamplePositions)[VolumeDataLayout::Dimensionality_Max], int nSampleCount, InterpolationMethod interpolationMethod, optional<float> replacementNoValue)
 {
   if (IsValid())
@@ -513,7 +513,7 @@ VolumeDataAccessManagerImpl::RequestVolumeSamples(float *buffer, int64_t bufferB
   }
 }
 
-int64_t 
+int64_t
 VolumeDataAccessManagerImpl::GetVolumeTracesBufferSize(int traceCount, int traceDimension, int LOD, int channel)
 {
   if (IsValid())
@@ -526,7 +526,7 @@ VolumeDataAccessManagerImpl::GetVolumeTracesBufferSize(int traceCount, int trace
   }
 }
 
-int64_t 
+int64_t
 VolumeDataAccessManagerImpl::RequestVolumeTraces(float *buffer, int64_t bufferByteSize, DimensionsND dimensionsND, int LOD, int channel, const float(*tracePositions)[VolumeDataLayout::Dimensionality_Max], int traceCount, InterpolationMethod interpolationMethod, int traceDimension, optional<float> replacementNoValue)
 {
   if (IsValid())
@@ -541,7 +541,7 @@ VolumeDataAccessManagerImpl::RequestVolumeTraces(float *buffer, int64_t bufferBy
   }
 }
 
-int64_t 
+int64_t
 VolumeDataAccessManagerImpl::PrefetchVolumeChunk(DimensionsND dimensionsND, int LOD, int channel, int64_t chunkIndex)
 {
   if (IsValid())
@@ -554,9 +554,11 @@ VolumeDataAccessManagerImpl::PrefetchVolumeChunk(DimensionsND dimensionsND, int 
   }
 }
 
-bool    
+bool
 VolumeDataAccessManagerImpl::IsCompleted(int64_t requestID)
 {
+  if (!IsValid()) return false;
+
   ValidateRequest(requestID);
   return m_requestProcessor->IsCompleted(requestID);
 }
@@ -564,6 +566,8 @@ VolumeDataAccessManagerImpl::IsCompleted(int64_t requestID)
 bool
 VolumeDataAccessManagerImpl::IsCanceled(int64_t requestID)
 {
+  if (!IsValid()) return true;
+
   ValidateRequest(requestID);
   Error error;
   return m_requestProcessor->IsCanceled(requestID, error);
@@ -572,6 +576,8 @@ VolumeDataAccessManagerImpl::IsCanceled(int64_t requestID)
 bool
 VolumeDataAccessManagerImpl::IsCanceled(int64_t requestID, ReadErrorException* readErrorException)
 {
+  if (!IsValid()) return true;
+
   ValidateRequest(requestID);
   Error error;
   bool isCanceled = m_requestProcessor->IsCanceled(requestID, error);
@@ -582,25 +588,29 @@ VolumeDataAccessManagerImpl::IsCanceled(int64_t requestID, ReadErrorException* r
   return isCanceled;
 }
 
-bool    
+bool
 VolumeDataAccessManagerImpl::WaitForCompletion(int64_t requestID, int millisecondsBeforeTimeout)
 {
+  if (!IsValid()) return false;
+
   ValidateRequest(requestID);
   return m_requestProcessor->WaitForCompletion(requestID, millisecondsBeforeTimeout);
 }
 
-void    
+void
 VolumeDataAccessManagerImpl::Cancel(int64_t requestID)
 {
+  if (!IsValid()) return;
+
   ValidateRequest(requestID);
   return m_requestProcessor->Cancel(requestID);
 }
 
-void    
+void
 VolumeDataAccessManagerImpl::CancelAndWaitForCompletion(int64_t requestID)
 {
-  if (m_invalidated)
-    return;
+  if (!IsValid()) return;
+
   ValidateRequest(requestID);
   Error error;
   if(!m_requestProcessor->IsCanceled(requestID, error))
@@ -620,6 +630,8 @@ VolumeDataAccessManagerImpl::CancelAndWaitForCompletion(int64_t requestID)
 float
 VolumeDataAccessManagerImpl::GetCompletionFactor(int64_t requestID)
 {
+  if (!IsValid()) return 1.0f;
+
   ValidateRequest(requestID);
   return m_requestProcessor->GetCompletionFactor(requestID);
 }
