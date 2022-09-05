@@ -61,4 +61,21 @@ struct Cleaner<OpenVDS::VolumeDataPage>
   }
 };
 
+template<>
+struct Cleaner<OpenVDS::VolumeDataPageAccessor>
+{
+  static void 
+  cleanup(struct CPPJNIObjectContext& context, std::shared_ptr<OpenVDS::VolumeDataPageAccessor> instancePtr, bool is_disposing) 
+  { 
+    if (is_disposing)
+    {
+      instancePtr.get()->Commit();
+    }
+    //else
+    //{
+    //  int debug = 0;
+    //}
+  }
+};
+
 #endif
