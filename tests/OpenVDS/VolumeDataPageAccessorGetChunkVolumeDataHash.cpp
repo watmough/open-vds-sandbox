@@ -57,8 +57,8 @@ GTEST_TEST(OpenVDS_integration, VolumeDataPageAccessorGetChunkVolumeDataHash)
   // Create volume data page accessor
   auto accessManager = OpenVDS::GetAccessManager(handle);
   const int channel = 0;
-  const int lod = 0;
-  std::shared_ptr<OpenVDS::VolumeDataPageAccessor> pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::DimensionsND::Dimensions_012, channel, lod, 100, OpenVDS::VolumeDataAccessManager::AccessMode_Create);
+  const int LOD = 0;
+  std::shared_ptr<OpenVDS::VolumeDataPageAccessor> pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::DimensionsND::Dimensions_012, LOD, channel, 100, OpenVDS::VolumeDataAccessManager::AccessMode_Create);
 
   // Verify chunk 0 volume data hash is 0 / unknown
   auto volumeDataHash = pageAccessor->GetChunkVolumeDataHash(0);
@@ -104,10 +104,22 @@ GTEST_TEST(OpenVDS_integration, VolumeDataPageAccessorGetChunkVolumeDataHash)
 
   // Create volume data page accessor
   accessManager = OpenVDS::GetAccessManager(handle);
-  pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, channel, lod, 100, OpenVDS::VolumeDataAccessManager::AccessMode_ReadOnly);
+  pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, LOD, channel, 100, OpenVDS::VolumeDataAccessManager::AccessMode_ReadOnly);
 
   // Verify chunk 0 volume data hash is equal to expected value
   ASSERT_EQ(volumeDataHash, pageAccessor->GetChunkVolumeDataHash(0));
+
+  pageAccessor.reset();
+  pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, LOD, channel, 100, OpenVDS::VolumeDataAccessManager::AccessMode_ReadWriteWithoutLODGeneration);
+
+  // Verify chunk 0 volume data hash is equal to expected value in read/write mode
+  ASSERT_EQ(volumeDataHash, pageAccessor->GetChunkVolumeDataHash(0));
+
+  pageAccessor.reset();
+  pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, LOD, channel, 100, OpenVDS::VolumeDataAccessManager::AccessMode_CreateWithoutLODGeneration);
+
+  // Verify chunk 0 volume data hash is equal to expected value in overwrite mode
+  ASSERT_EQ(0, pageAccessor->GetChunkVolumeDataHash(0));
 }
 
 GTEST_TEST(OpenVDS_integration, VolumeDataPageAccessorGetChunkVolumeDataHash_VDSFile)
@@ -142,8 +154,8 @@ GTEST_TEST(OpenVDS_integration, VolumeDataPageAccessorGetChunkVolumeDataHash_VDS
   // Create volume data page accessor
   auto accessManager = OpenVDS::GetAccessManager(handle);
   const int channel = 0;
-  const int lod = 0;
-  std::shared_ptr<OpenVDS::VolumeDataPageAccessor> pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::DimensionsND::Dimensions_012, channel, lod, 100, OpenVDS::VolumeDataAccessManager::AccessMode_Create);
+  const int LOD = 0;
+  std::shared_ptr<OpenVDS::VolumeDataPageAccessor> pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::DimensionsND::Dimensions_012, LOD, channel, 100, OpenVDS::VolumeDataAccessManager::AccessMode_Create);
 
   // Verify chunk 0 volume data hash is 0 / unknown
   auto volumeDataHash = pageAccessor->GetChunkVolumeDataHash(0);
@@ -189,10 +201,22 @@ GTEST_TEST(OpenVDS_integration, VolumeDataPageAccessorGetChunkVolumeDataHash_VDS
 
   // Create volume data page accessor
   accessManager = OpenVDS::GetAccessManager(handle);
-  pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, channel, lod, 100, OpenVDS::VolumeDataAccessManager::AccessMode_ReadOnly);
+  pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, LOD, channel, 100, OpenVDS::VolumeDataAccessManager::AccessMode_ReadOnly);
 
   // Verify chunk 0 volume data hash is equal to expected value
   ASSERT_EQ(volumeDataHash, pageAccessor->GetChunkVolumeDataHash(0));
+
+  pageAccessor.reset();
+  pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, LOD, channel, 100, OpenVDS::VolumeDataAccessManager::AccessMode_ReadWriteWithoutLODGeneration);
+
+  // Verify chunk 0 volume data hash is equal to expected value in read/write mode
+  ASSERT_EQ(volumeDataHash, pageAccessor->GetChunkVolumeDataHash(0));
+
+  pageAccessor.reset();
+  pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, LOD, channel, 100, OpenVDS::VolumeDataAccessManager::AccessMode_CreateWithoutLODGeneration);
+
+  // Verify chunk 0 volume data hash is equal to expected value in overwrite mode
+  ASSERT_EQ(0, pageAccessor->GetChunkVolumeDataHash(0));
 
   // Close VDS and delete file
   handle.Close();

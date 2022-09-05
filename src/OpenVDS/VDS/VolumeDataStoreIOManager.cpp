@@ -284,7 +284,7 @@ bool VolumeDataStoreIOManager::SerializeAndUploadLayerStatus(VDS& vds, Error& er
 }
 
 bool
-VolumeDataStoreIOManager::AddLayer(VolumeDataLayer* volumeDataLayer, int chunkMetadataPageSize)
+VolumeDataStoreIOManager::AddLayer(VolumeDataLayer* volumeDataLayer, int chunkMetadataPageSize, bool overwriteExisting)
 {
   assert(chunkMetadataPageSize > 0);
   MetadataStatus metadataStatus = {};
@@ -311,9 +311,9 @@ VolumeDataStoreIOManager::AddLayer(VolumeDataLayer* volumeDataLayer, int chunkMe
   std::string layerName = GetLayerName(*volumeDataLayer);
 
   std::unique_lock<std::mutex> lock(m_mutex);
-  if (m_metadataManagers.find(layerName) == m_metadataManagers.end())
+  if (overwriteExisting || m_metadataManagers.find(layerName) == m_metadataManagers.end())
   {
-    m_metadataManagers.insert(std::make_pair(layerName, std::unique_ptr<MetadataManager>(new MetadataManager(m_ioManager.get(), layerName, channelName, metadataStatus, pageLimit, true))));
+    m_metadataManagers[layerName] = std::unique_ptr<MetadataManager>(new MetadataManager(m_ioManager.get(), layerName, channelName, metadataStatus, pageLimit, true));
   }
   return true;
 }

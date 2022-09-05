@@ -5228,6 +5228,10 @@ R"doc(< The volume data page accessor will be used for reading and writing
 (can only be used with LOD 0, the other LODs will be automatically
 updated))doc";
 
+static const char *__doc_OpenVDS_VolumeDataPageAccessor_AccessMode_AccessMode_ReadWriteWithoutLODGeneration =
+R"doc(< The volume data page accessor will be used used for reading and
+writing (each LOD has to be created separately))doc";
+
 static const char *__doc_OpenVDS_VolumeDataPageAccessor_AddReference = R"doc()doc";
 
 static const char *__doc_OpenVDS_VolumeDataPageAccessor_Commit = R"doc()doc";

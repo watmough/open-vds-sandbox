@@ -363,7 +363,9 @@ VolumeDataAccessManagerImpl::CreateVolumeDataPageAccessor(VolumeDataLayer const 
 {
   VolumeDataPageAccessorImpl *parentVolumeDataPageAccessor = nullptr;
 
-  if(accessMode != VolumeDataPageAccessor::AccessMode_ReadOnly && accessMode != VolumeDataPageAccessor::AccessMode_CreateWithoutLODGeneration)
+  const bool createLODs = (accessMode == VolumeDataPageAccessor::AccessMode_ReadWrite || accessMode == VolumeDataPageAccessor::AccessMode_Create);
+
+  if(createLODs)
   {
     if(volumeDataLayer->GetParentLayer() && volumeDataLayer->GetParentLayer()->GetLayerType() != VolumeDataLayer::Virtual)
     {
@@ -387,24 +389,27 @@ VolumeDataAccessManagerImpl::CreateVolumeDataPageAccessor(DimensionsND dimension
     throw InvalidOperation("LODs can only be automatically created/updated when accessing LOD 0, use AccessMode_CreateWithoutLODGeneration to write LODs directly");
   }
 
+  const bool createLODs        = (accessMode == VolumeDataPageAccessor::AccessMode_ReadWrite || accessMode == VolumeDataPageAccessor::AccessMode_Create);
+  const bool overwriteExisting = (accessMode == VolumeDataPageAccessor::AccessMode_Create || accessMode == VolumeDataPageAccessor::AccessMode_CreateWithoutLODGeneration);
+
   if(accessMode != VolumeDataPageAccessor::AccessMode_ReadOnly)
   {
     assert(DimensionGroupUtil::GetDimensionality(DimensionGroupUtil::GetDimensionGroupFromDimensionsND(dimensionsND)) == 2
       || DimensionGroupUtil::GetDimensionality(DimensionGroupUtil::GetDimensionGroupFromDimensionsND(dimensionsND)) == 3);
 
-    bool success = GetVolumeDataStore()->AddLayer(volumeDataLayer, chunkMetadataPageSize);
+    bool success = GetVolumeDataStore()->AddLayer(volumeDataLayer, chunkMetadataPageSize, overwriteExisting);
     if(!success)
     {
       throw InvalidOperation("Failed to create layer");
     }
     volumeDataLayer->SetProduceStatus(VolumeDataLayer::ProduceStatus_Normal);
 
-    if(accessMode == VolumeDataPageAccessor::AccessMode_Create)
+    if(createLODs)
     {
       VolumeDataLayer *LODLayer = volumeDataLayer->GetParentLayer();
       while(LODLayer && LODLayer->GetLayerType() != VolumeDataLayer::Virtual)
       {
-        bool success = GetVolumeDataStore()->AddLayer(LODLayer, chunkMetadataPageSize);
+        bool success = GetVolumeDataStore()->AddLayer(LODLayer, chunkMetadataPageSize, overwriteExisting);
         if(!success)
         {
           throw InvalidOperation("Failed to create LOD layer");

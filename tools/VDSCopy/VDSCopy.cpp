@@ -325,7 +325,7 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
         if (sourceAccessManager.GetVDSProduceStatus(OpenVDS::DimensionsND(dim), lod, channel) == OpenVDS::VDSProduceStatus::Normal)
         {
           sourceAccessors[channel]      = sourceAccessManager.CreateVolumeDataPageAccessor(OpenVDS::DimensionsND(dim), lod, channel, OpenVDS::VolumeDataAccessManager::maxPagesDefault, OpenVDS::VolumeDataPageAccessor::AccessMode_ReadOnly);
-          destinationAccessors[channel] = destinationAccessManager.CreateVolumeDataPageAccessor(OpenVDS::DimensionsND(dim), lod, channel, OpenVDS::VolumeDataAccessManager::maxPagesDefault, OpenVDS::VolumeDataPageAccessor::AccessMode_CreateWithoutLODGeneration);
+          destinationAccessors[channel] = destinationAccessManager.CreateVolumeDataPageAccessor(OpenVDS::DimensionsND(dim), lod, channel, OpenVDS::VolumeDataAccessManager::maxPagesDefault, resumeMode ? OpenVDS::VolumeDataPageAccessor::AccessMode_ReadWriteWithoutLODGeneration : OpenVDS::VolumeDataPageAccessor::AccessMode_CreateWithoutLODGeneration);
         }
       }
 
