@@ -70,6 +70,21 @@ case $key in
 esac
 done
 
+if which javac ; then
+  java_home=$(which java)
+  java_home=$(dirname "$java_home")
+  java_home=$(realpath "$java_home/..")
+  if [[ "$platform_name" == "win" ]]; then
+    java_home=$(cygpath -m "$java_home")
+  fi
+
+  java_cmake_arg="-DJAVA_HOME=$java_home"
+  echo "CMAKE_ARG $java_cmake_arg"
+else
+  java_cmake_arg=""
+fi
+
+
 if [ -n "${VIRTUAL_ENV:-}" ] ; then
   BUILD_PACKAGE_OLD_VIRTUAL_ENV="${VIRTUAL_ENV:-}"
 
@@ -159,7 +174,7 @@ for python_executable in "${python_executables[@]}"; do
   echo "Do $python_executable to $skbuild_dir"
   cd "$openvds_path"
 
-  "$cmake_executable" -DPython3_ROOT_DIR="$python_root_dir" -DENABLE_MSVC_TOOLSET_DIR=OFF -DCMAKE_INSTALL_PREFIX=$skbuild_dir/cmake-install $cmake_args --preset Release
+  "$cmake_executable" -DPython3_ROOT_DIR="$python_root_dir" "$java_cmake_arg" -DENABLE_MSVC_TOOLSET_DIR=OFF -DCMAKE_INSTALL_PREFIX=$skbuild_dir/cmake-install $cmake_args --preset Release
   "$ninja_executable" -C out/build/Release install
 
   [[ -d "$skbuild_dir/cmake-build" ]] || mkdir -p "$skbuild_dir/cmake-build"
@@ -209,9 +224,9 @@ for python_executable in "${python_executables[@]}"; do
   if [[ "$platform_name" == "win" ]]; then
     cd "$openvds_path"
     rm -rf $skbuild_dir/cmake-install
-    "$cmake_executable" -DPython3_ROOT_DIR="$python_root_dir" -DENABLE_MSVC_TOOLSET_DIR=ON -DCMAKE_INSTALL_PREFIX=$skbuild_dir/cmake-install $cmake_args --preset Release
+    "$cmake_executable" -DPython3_ROOT_DIR="$python_root_dir" "$java_cmake_arg" --DENABLE_MSVC_TOOLSET_DIR=ON -DCMAKE_INSTALL_PREFIX=$skbuild_dir/cmake-install $cmake_args --preset Release
     "$ninja_executable" -C out/build/Release install
-    "$cmake_executable" -DPython3_ROOT_DIR="$python_root_dir" -DENABLE_MSVC_TOOLSET_DIR=ON -DCMAKE_INSTALL_PREFIX=$skbuild_dir/cmake-install $cmake_args --preset Debug
+    "$cmake_executable" -DPython3_ROOT_DIR="$python_root_dir" "$java_cmake_arg" --DENABLE_MSVC_TOOLSET_DIR=ON -DCMAKE_INSTALL_PREFIX=$skbuild_dir/cmake-install $cmake_args --preset Debug
     "$ninja_executable" -C out/build/Debug install
   fi
   cd "$openvds_path"
