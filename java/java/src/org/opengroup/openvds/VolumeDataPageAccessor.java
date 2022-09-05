@@ -42,7 +42,11 @@ public class VolumeDataPageAccessor extends ManagedBase implements AutoCloseable
         /**
          * The volume data page accessor will be used to write new data, overwriting any existing data (each LOD has to be created separately)
          */
-        AccessMode_CreateWithoutLODGeneration(3);
+        AccessMode_CreateWithoutLODGeneration(3),
+        /**
+         * The volume data page accessor will be used used for reading and writing (each LOD has to be created separately)
+         */
+        AccessMode_ReadWriteWithoutLODGeneration(4);
     
         private final int value;
     
@@ -59,6 +63,7 @@ public class VolumeDataPageAccessor extends ManagedBase implements AutoCloseable
             if (value == 1) return AccessMode_ReadWrite;
             if (value == 2) return AccessMode_Create;
             if (value == 3) return AccessMode_CreateWithoutLODGeneration;
+            if (value == 4) return AccessMode_ReadWriteWithoutLODGeneration;
             return AccessMode.values()[0];
         }
     

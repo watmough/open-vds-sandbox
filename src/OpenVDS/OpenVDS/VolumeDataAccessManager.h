@@ -867,10 +867,11 @@ class VolumeDataAccessManager
 {
 public:
   typedef VolumeDataPageAccessor::AccessMode AccessMode;
-  static constexpr AccessMode AccessMode_ReadOnly                   = VolumeDataPageAccessor::AccessMode_ReadOnly;
-  static constexpr AccessMode AccessMode_ReadWrite                  = VolumeDataPageAccessor::AccessMode_ReadWrite;
-  static constexpr AccessMode AccessMode_Create                     = VolumeDataPageAccessor::AccessMode_Create;
-  static constexpr AccessMode AccessMode_CreateWithoutLODGeneration = VolumeDataPageAccessor::AccessMode_CreateWithoutLODGeneration;
+  static constexpr AccessMode AccessMode_ReadOnly                      = VolumeDataPageAccessor::AccessMode_ReadOnly;
+  static constexpr AccessMode AccessMode_ReadWrite                     = VolumeDataPageAccessor::AccessMode_ReadWrite;
+  static constexpr AccessMode AccessMode_Create                        = VolumeDataPageAccessor::AccessMode_Create;
+  static constexpr AccessMode AccessMode_CreateWithoutLODGeneration    = VolumeDataPageAccessor::AccessMode_CreateWithoutLODGeneration;
+  static constexpr AccessMode AccessMode_ReadWriteWithoutLODGeneration = VolumeDataPageAccessor::AccessMode_ReadWriteWithoutLODGeneration;
 
   static constexpr int Dimensionality_Max = VolumeDataLayout::Dimensionality_Max;  ///< the maximum number of dimensions a VDS can have
 

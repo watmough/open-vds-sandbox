@@ -479,7 +479,7 @@ bool VolumeDataStoreVDSFile::WriteSerializedVolumeDataLayout(const std::vector<u
   return success;
 }
 
-bool VolumeDataStoreVDSFile::AddLayer(VolumeDataLayer* volumeDataLayer, int chunkMetadataPageSize)
+bool VolumeDataStoreVDSFile::AddLayer(VolumeDataLayer* volumeDataLayer, int chunkMetadataPageSize, bool overwriteExisting)
 {
   assert(volumeDataLayer);
   assert(chunkMetadataPageSize > 0);
@@ -498,7 +498,7 @@ bool VolumeDataStoreVDSFile::AddLayer(VolumeDataLayer* volumeDataLayer, int chun
   std::string layerName = GetLayerName(*volumeDataLayer);
 
   // Check if layer is already added
-  if(m_layerFiles.find(layerName) != m_layerFiles.end())
+  if(!overwriteExisting && m_layerFiles.find(layerName) != m_layerFiles.end())
   {
     return true;
   }
@@ -516,7 +516,7 @@ bool VolumeDataStoreVDSFile::AddLayer(VolumeDataLayer* volumeDataLayer, int chun
     fileMetadataLength  = int(sizeof(VDSLayerMetadataWaveletAdaptive));
   }
 
-  HueBulkDataStore::FileInterface *fileInterface = m_dataStore->AddFile(layerName.c_str(), (int)volumeDataLayer->GetTotalChunkCount(), chunkMetadataPageSize, FILETYPE_VDS_LAYER, chunkMetadataLength, fileMetadataLength, true);
+  HueBulkDataStore::FileInterface *fileInterface = m_dataStore->AddFile(layerName.c_str(), (int)volumeDataLayer->GetTotalChunkCount(), chunkMetadataPageSize, FILETYPE_VDS_LAYER, chunkMetadataLength, fileMetadataLength, overwriteExisting);
   assert(fileInterface);
 
   VDSLayerMetadataWaveletAdaptive layerMetadata = VDSLayerMetadataWaveletAdaptive();
