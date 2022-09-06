@@ -224,9 +224,9 @@ for python_executable in "${python_executables[@]}"; do
   if [[ "$platform_name" == "win" ]]; then
     cd "$openvds_path"
     rm -rf $skbuild_dir/cmake-install
-    "$cmake_executable" -DPython3_ROOT_DIR="$python_root_dir" "$java_cmake_arg" --DENABLE_MSVC_TOOLSET_DIR=ON -DCMAKE_INSTALL_PREFIX=$skbuild_dir/cmake-install $cmake_args --preset Release
+    "$cmake_executable" -DPython3_ROOT_DIR="$python_root_dir" "$java_cmake_arg" -DENABLE_MSVC_TOOLSET_DIR=ON -DCMAKE_INSTALL_PREFIX=$skbuild_dir/cmake-install $cmake_args --preset Release
     "$ninja_executable" -C out/build/Release install
-    "$cmake_executable" -DPython3_ROOT_DIR="$python_root_dir" "$java_cmake_arg" --DENABLE_MSVC_TOOLSET_DIR=ON -DCMAKE_INSTALL_PREFIX=$skbuild_dir/cmake-install $cmake_args --preset Debug
+    "$cmake_executable" -DPython3_ROOT_DIR="$python_root_dir" "$java_cmake_arg" -DENABLE_MSVC_TOOLSET_DIR=ON -DCMAKE_INSTALL_PREFIX=$skbuild_dir/cmake-install $cmake_args --preset Debug
     "$ninja_executable" -C out/build/Debug install
   fi
   cd "$openvds_path"
