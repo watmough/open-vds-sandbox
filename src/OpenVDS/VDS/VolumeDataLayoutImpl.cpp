@@ -1044,7 +1044,7 @@ VolumeDataLayoutImpl const* VolumeDataLayoutImpl::VerifyDimensionGroup3DMax(Dime
 {
   if (dimensionGroup < 0 || dimensionGroup >= DimensionGroup_3D_Max)
   {
-    throw OpenVDS::InvalidArgument(fmt::format("DimensionGroup {} is not a valid dimension.", dimensionGroup).c_str(), "dimensionGroup");
+    throw OpenVDS::InvalidArgument(fmt::format("DimensionGroup {} is not a valid dimension.", int(dimensionGroup)).c_str(), "dimensionGroup");
   }
   return this;
 }

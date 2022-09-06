@@ -74,7 +74,7 @@ static std::string CURLErrorMessage(CURL *curlEasy, CURLcode curlCode)
 
   if ((CURLE_OK == res) && url)
   {
-    return fmt::format("CURL error received for: '{}'. CURL error code: {}, CURL error string: '{}'", std::string(url), curlCode, curlErrorString);
+    return fmt::format("CURL error received for: '{}'. CURL error code: {}, CURL error string: '{}'", std::string(url), int(curlCode), curlErrorString);
   }
   return std::string();
 }
@@ -443,8 +443,8 @@ static void beforeBlockCB(uv_prepare_t *handle)
           else
           {
             error.code = curlCode;
-            error.string = CURLErrorMessage(socketContext->curlEasy, code);
-            eventLoopData->logger.LogError(fmt::format("Unexpected CURL response {}. {}", code, error.string));
+            error.string = CURLErrorMessage(socketContext->curlEasy, curlCode);
+            eventLoopData->logger.LogError(fmt::format("Unexpected CURL response {}. {}", int(curlCode), error.string));
           }
         }
       }
@@ -463,7 +463,7 @@ static void beforeBlockCB(uv_prepare_t *handle)
       {
         error.code = code;
         error.string = CURLErrorMessage(socketContext->curlEasy, code);
-        eventLoopData->logger.LogError(fmt::format("CURL Unexpected curl code: {} - {}", code, error.string));
+        eventLoopData->logger.LogError(fmt::format("CURL Unexpected curl code: {} - {}", int(code), error.string));
       }
 
       socketContext->handleDone(responseCode, error);

@@ -81,8 +81,6 @@ PyVolumeDataAccessManager::initModule(py::module& m)
   IVolumeDataAccessManager_.def("cancel"                      , static_cast<void(IVolumeDataAccessManager::*)(int64_t)>(&IVolumeDataAccessManager::Cancel), py::arg("requestID").none(false), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(IVolumeDataAccessManager_Cancel));
   IVolumeDataAccessManager_.def("cancelAndWaitForCompletion"  , static_cast<void(IVolumeDataAccessManager::*)(int64_t)>(&IVolumeDataAccessManager::CancelAndWaitForCompletion), py::arg("requestID").none(false), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(IVolumeDataAccessManager_CancelAndWaitForCompletion));
   IVolumeDataAccessManager_.def("getCompletionFactor"         , static_cast<float(IVolumeDataAccessManager::*)(int64_t)>(&IVolumeDataAccessManager::GetCompletionFactor), py::arg("requestID").none(false), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(IVolumeDataAccessManager_GetCompletionFactor));
-  IVolumeDataAccessManager_.def("flush"                       , static_cast<void(IVolumeDataAccessManager::*)(native::IVolumeDataAccessManager::ErrorHandler, native::Error *)>(&IVolumeDataAccessManager::Flush), py::arg("errorHandler").none(false), py::arg("error").none(false), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(IVolumeDataAccessManager_Flush));
-
   // IHasVolumeDataAccess
   py::class_<IHasVolumeDataAccess, std::unique_ptr<IHasVolumeDataAccess, py::nodelete>> 
     IHasVolumeDataAccess_(m,"IHasVolumeDataAccess", OPENVDS_DOCSTRING(IHasVolumeDataAccess));
@@ -272,6 +270,8 @@ PyVolumeDataAccessManager::initModule(py::module& m)
 //AUTOGEN-END
 
 // IMPLEMENTED :  VolumeDataAccessManager_.def("flush"                       , []() { native::Error err; auto ret = VolumeDataAccessManager::Flush(err); if (err.code) { throw std::runtime_error(err.string); } return ret; }, py::call_guard<py::gil_scoped_release>());
+// IMPLEMENTED : IVolumeDataAccessManager_.def("flush"                       , static_cast<void(IVolumeDataAccessManager::*)(native::IVolumeDataAccessManager::ErrorHandler, native::Error *)>(&IVolumeDataAccessManager::Flush), py::arg("errorHandler").none(false), py::arg("error").none(false), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(IVolumeDataAccessManager_Flush));
+
   VolumeDataAccessManager_.def("flush"                       , [](VolumeDataAccessManager *self) { native::Error err; self->Flush(err); if (err.code) { throw std::runtime_error(err.string); } }, py::call_guard<py::gil_scoped_release>());
 
   IVolumeDataAccessManager_.attr("Dimensionality_Max") = py::int_(VolumeDataAccessManager::Dimensionality_Max);
