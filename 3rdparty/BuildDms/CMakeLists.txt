@@ -55,6 +55,11 @@ if (NOT DISABLE_AWS_IOMANAGER)
   set(SOURCES ${SOURCES} ${SRC_LIB_PROVIDERS_IBM})
   set_source_files_properties(${dmsCMakeDir}/src/lib/cloud/providers/ibm/IbmStorage.cc PROPERTIES COMPILE_FLAGS ${DISABLE_WARNING_FLAG})
 
+  add_definitions( -DHAS_ANTHOS_STORAGE_PROVIDER )
+  file(GLOB SRC_LIB_PROVIDERS_ANTHOS  ${dmsCMakeDir}/src/lib/cloud/providers/anthos/*.cc)
+  set(SOURCES ${SOURCES} ${SRC_LIB_PROVIDERS_ANTHOS})
+  set_source_files_properties(${dmsCMakeDir}/src/lib/cloud/providers/anthos/AnthosStorage.cc PROPERTIES COMPILE_FLAGS ${DISABLE_WARNING_FLAG})
+
   #to work around Aws::String problem
   #https://github.com/aws/aws-sdk-cpp/blob/266d7682c3d07d41618c41a3521811e1219c1bc7/aws-cpp-sdk-core/include/aws/core/utils/memory/stl/AWSString.h#L21
   if (NOT MSVC AND NOT APPLE)
