@@ -56,8 +56,10 @@ VolumeDataPageAccessorImpl::VolumeDataPageAccessorImpl(VolumeDataAccessManagerIm
 
 VolumeDataPageAccessorImpl::~VolumeDataPageAccessorImpl()
 {
-  for (auto& page : m_pages)
+  m_pages.clear();
+  while(auto page = m_pages_lru.GetFirstItem())
   {
+    m_pages_lru.Remove(page);
     delete page;
   }
 
@@ -135,10 +137,10 @@ uint64_t VolumeDataPageAccessorImpl::GetChunkVolumeDataHash(int64_t chunkIndex) 
 
   std::unique_lock<std::mutex> pageListMutexLock(m_pagesMutex);
 
-  auto page_it = std::find_if(m_pages.begin(), m_pages.end(), [chunkIndex](VolumeDataPageImpl const *page) { return page->GetChunkIndex() == chunkIndex; });
+  auto page_it = m_pages.find(chunkIndex);
   if(page_it != m_pages.end())
   {
-    return (*page_it)->GetVolumeDataHash();
+    return (*page_it).second->GetVolumeDataHash();
   }
   pageListMutexLock.unlock();
 
@@ -233,7 +235,7 @@ VolumeDataPage* VolumeDataPageAccessorImpl::CreatePage(int64_t chunk)
   // This will throw if we can't acquire the write lock
   AcquireLayerWriteLock();
 
-  auto page_it = std::find_if(m_pages.begin(), m_pages.end(), [chunk](VolumeDataPageImpl *page)->bool { return page->GetChunkIndex() == chunk; });
+  auto page_it = m_pages.find(chunk);
   if(page_it != m_pages.end())
   {
     throw InvalidOperation("Cannot create a page that already exists");
@@ -249,7 +251,8 @@ VolumeDataPage* VolumeDataPageAccessorImpl::CreatePage(int64_t chunk)
   // Create a new page
   VolumeDataPageImpl *page = new VolumeDataPageImpl(this, chunk, parentPage);
 
-  m_pages.push_front(page);
+  m_pages[chunk] = page;
+  m_pages_lru.InsertFirst(page);
 
   assert(page->IsPinned());
 
@@ -310,19 +313,17 @@ VolumeDataPage* VolumeDataPageAccessorImpl::PrepareReadPage(int64_t chunk, Error
     return nullptr;
   }
 
-  for(auto page_it = m_pages.begin(); page_it != m_pages.end(); ++page_it)
+  auto page_it = m_pages.find(chunk);
+  if (page_it != m_pages.end())
   {
-    if((*page_it)->GetChunkIndex() == chunk)
+    if (m_pages_lru.GetFirstItem() != page_it->second)
     {
-      if (page_it != m_pages.begin())
-      {
-        m_pages.splice(m_pages.begin(), m_pages, page_it, std::next(page_it));
-      }
-      (*page_it)->Pin();
-
-      m_pagesFound++;
-      return *page_it;
+      m_pages_lru.Remove(page_it->second);
+      m_pages_lru.InsertFirst(page_it->second);
     }
+    page_it->second->Pin();
+    m_pagesFound++;
+    return page_it->second;
   }
 
   // Wait for commit to finish before inserting a new page
@@ -347,7 +348,8 @@ VolumeDataPage* VolumeDataPageAccessorImpl::PrepareReadPage(int64_t chunk, Error
   // Not found, we need to create a new page
   VolumeDataPageImpl *page = new VolumeDataPageImpl(this, chunk, parentPage);
 
-  m_pages.push_front(page);
+  m_pages[chunk] = page;
+  m_pages_lru.InsertFirst(page);
 
   assert(page->IsPinned());
 
@@ -511,9 +513,12 @@ void VolumeDataPageAccessorImpl::CancelPreparedReadPage(VolumeDataPage* page)
   if (pageImpl->IsPinned())
     return;
 
-  auto page_it = std::find(m_pages.begin(), m_pages.end(), page);
+  auto page_it = m_pages.find(pageImpl->GetChunkIndex());
   if (page_it != m_pages.end())
+  {
+    m_pages_lru.Remove(pageImpl);
     m_pages.erase(page_it);
+  }
   pageListMutexLock.unlock();
 
   if (pageImpl->RequestPrepared())
@@ -614,14 +619,17 @@ void VolumeDataPageAccessorImpl::LimitPageListSize(int maxPages, std::unique_loc
     }
 
     // Find a page to evict
-    auto page_it = std::find_if(m_pages.rbegin(), m_pages.rend(), [](VolumeDataPageImpl *page)->bool { return !page->IsPinned(); });
-
-    if(page_it == m_pages.rend())
+    VolumeDataPageImpl* page = nullptr;
+    for (auto lru_node = m_pages_lru.GetLastItem(); lru_node; lru_node = lru_node->m_lru.m_prev)
     {
-      return;
+      if (!lru_node->IsPinned())
+      {
+        page = lru_node;
+        break;
+      }
     }
-
-    VolumeDataPageImpl *page = *page_it;
+    if (!page)
+      return;
 
     if(page->IsWritten())
     {
@@ -629,12 +637,11 @@ void VolumeDataPageAccessorImpl::LimitPageListSize(int maxPages, std::unique_loc
       while(1)
       {
         bool isReadInProgress = false;
-
-        for(VolumeDataPageImpl *targetPage : m_pages)
+        for (auto targetPage = m_pages_lru.GetFirstItem(); targetPage; targetPage = targetPage->m_lru.m_next)
         {
-          if(page->IsCopyMarginNeeded(targetPage))
+          if (page->IsCopyMarginNeeded(targetPage))
           {
-            if(targetPage->IsEmpty())
+            if (targetPage->IsEmpty())
             {
               isReadInProgress = true;
               break;
@@ -670,7 +677,7 @@ void VolumeDataPageAccessorImpl::LimitPageListSize(int maxPages, std::unique_loc
       // Copy margins
       if(page->IsWritten())
       {
-        for(VolumeDataPageImpl *targetPage : m_pages)
+        for (auto targetPage = m_pages_lru.GetFirstItem(); targetPage; targetPage = targetPage->m_lru.m_next)
         {
           if(page->IsCopyMarginNeeded(targetPage))
           {
@@ -680,7 +687,8 @@ void VolumeDataPageAccessorImpl::LimitPageListSize(int maxPages, std::unique_loc
       }
     }
 
-    m_pages.erase(std::prev(page_it.base()));
+    m_pages.erase(page->GetChunkIndex());
+    m_pages_lru.Remove(page);
 
     if(page->IsDirty() && m_layer)
     {
@@ -725,7 +733,7 @@ void VolumeDataPageAccessorImpl::AcquireLayerWriteLock()
 void VolumeDataPageAccessorImpl::CommitInternal(std::unique_lock<std::mutex>& pageListMutexLock)
 {
   // Finish reading all pages currently being read
-  for(VolumeDataPageImpl *page : m_pages)
+  for(auto page = m_pages_lru.GetFirstItem(); page; page = page->m_lru.m_next)
   {
     while(page->IsEmpty() && !page->IsCanceled())
     {
@@ -735,11 +743,11 @@ void VolumeDataPageAccessorImpl::CommitInternal(std::unique_lock<std::mutex>& pa
   }
 
   // Copy all margins
-  for(VolumeDataPageImpl *page : m_pages)
+  for(auto page = m_pages_lru.GetFirstItem(); page; page = page->m_lru.m_next)
   {
     if(page->IsWritten())
     {
-      for(VolumeDataPageImpl *targetPage : m_pages)
+      for (auto targetPage = m_pages_lru.GetFirstItem(); targetPage; targetPage = targetPage->m_lru.m_next)
       {
         if(page->IsCopyMarginNeeded(targetPage))
         {
@@ -749,7 +757,7 @@ void VolumeDataPageAccessorImpl::CommitInternal(std::unique_lock<std::mutex>& pa
     }
   }
 
-  for(VolumeDataPageImpl *page : m_pages)
+  for(auto page = m_pages_lru.GetFirstItem(); page; page = page->m_lru.m_next)
   {
     if(page->IsDirty() && m_layer)
     {
