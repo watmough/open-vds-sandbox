@@ -22,6 +22,7 @@
 
 #include "DataBlock.h"
 #include "DimensionGroup.h"
+#include "IntrusiveList.h"
 
 #include <mutex>
 #include <vector>
@@ -68,6 +69,9 @@ private:
   int64_t m_copiedToChunkIndexes[26];
 
   int32_t m_chunksCopiedTo;
+
+public:
+  IntrusiveListNode<VolumeDataPageImpl> m_lru;
 
 public:
   VolumeDataPageImpl(VolumeDataPageAccessorImpl *volumeDataPageAccessor, int64_t chunk, VolumeDataPageImpl *parentPage);
