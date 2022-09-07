@@ -22,8 +22,9 @@
 #include <OpenVDS/OpenVDS.h>
 #include <VDS/Logging.h>
 #include "IntrusiveList.h"
+#include "VolumeDataPageImpl.h"
 
-#include <list>
+#include <unordered_map>
 #include <mutex>
 #include <condition_variable>
 #include <vector>
@@ -54,7 +55,8 @@ private:
   bool m_isCommitInProgress;
   bool m_isLayerWriteLocked;
   std::atomic<std::chrono::time_point<std::chrono::steady_clock>> m_lastUsed;
-  std::list<VolumeDataPageImpl *> m_pages;
+  std::unordered_map<int64_t, VolumeDataPageImpl *> m_pages;
+  IntrusiveList<VolumeDataPageImpl, &VolumeDataPageImpl::m_lru> m_pages_lru;
   std::condition_variable m_pageReadCondition;
   std::condition_variable m_commitFinishedCondition;
 
