@@ -139,6 +139,7 @@ if [[ "$platform_name" == "win" ]]; then
     curl -O -L https://github.com/ninja-build/ninja/releases/download/v1.11.0/ninja-win.zip
     unzip ninja-win.zip -d ninja
   fi
+  export PATH="$openvds_path/_skbuild/$cmake_name/bin:$openvds_path/_skbuild/ninja:$PATH"
   cmake_executable="$openvds_path/_skbuild/$cmake_name/bin/cmake.exe"
   ninja_executable="$openvds_path/_skbuild/ninja/ninja.exe"
   cd "$openvds_path"
