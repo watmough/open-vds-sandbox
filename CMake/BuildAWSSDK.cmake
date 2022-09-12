@@ -72,7 +72,7 @@ macro(BuildAWSSDK)
     list(APPEND AWS_DLLS_LIST "lib${LIBSUFFIX}/libaws-c-common.a")
   endif()
 
-  BuildExternal(aws-cpp-sdk ${aws-cpp-sdk_VERSION} "${PLATFORM_DEPNDS}" ${aws-cpp-sdk_SOURCE_DIR} "${AWS_LIBS_LIST}" "${AWS_DLLS_LIST}" OFF "-DBUILD_ONLY=s3$<SEMICOLON>sts$<SEMICOLON>transfer;-DENABLE_TESTING=OFF${PLATFORM_CMAKE_ARGS}")
+  BuildExternal(aws-cpp-sdk ${aws-cpp-sdk_VERSION} "${PLATFORM_DEPNDS}" ${aws-cpp-sdk_SOURCE_DIR} "${AWS_LIBS_LIST}" "${AWS_DLLS_LIST}" OFF "-DBUILD_ONLY=s3$<SEMICOLON>sts$<SEMICOLON>transfer;-DENABLE_TESTING=OFF;-DCMAKE_PREFIX_PATH=AWS_FOOBAR${PLATFORM_CMAKE_ARGS}")
 
   add_definitions(-DUSE_IMPORT_EXPORT)
 
