@@ -27,6 +27,10 @@ phases:
       - if [ $(echo $CODEBUILD_SOURCE_VERSION | grep -c  ^refs/heads.*) -eq 1 ]; then echo "Branch name found"; else echo "This build only supports branch builds" && exit 1; fi
       - apt-get update -y
       - export AWS_ACCOUNT_ID=`aws sts get-caller-identity | grep Account | cut -d':' -f 2 | cut -d'"' -f 2`
+      # Install git secrets
+      - git clone https://github.com/awslabs/git-secrets.git
+      - cd git-secrets && make install && cd ..
+      - git secrets --install && git secrets --register-aws
   pre_build:
     commands:
       - echo "Logging in to Amazon ECR..."
@@ -43,6 +47,9 @@ phases:
 
       - mkdir -p ${OUTPUT_DIR}
       - echo "Placeholder" >> ${OUTPUT_DIR}/build-info.json # touched so that the output directory has some content incase the build fails so that testing reports are uploaded
+
+      - GIT_SECRETS_SCAN_RESULT=$(git secrets --scan 2> ${OUTPUT_DIR}/git_secrets.out.txt && echo OK || echo FAILED)
+      - if [ "$GIT_SECRETS_SCAN_RESULT" = "FAILED" ]; then echo "Secrets detected!" && exit 1; fi
 
       - echo "Logging into Docker Hub..."
       - docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
