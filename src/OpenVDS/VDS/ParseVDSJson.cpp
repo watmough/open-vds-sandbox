@@ -411,7 +411,7 @@ static VolumeDataMapping ChannelMappingFromJson(Json::Value const &jsonChannelMa
 //  throw Json::Exception("Illegal metadata type");
 //}
 
-bool ParseJSONFromBuffer(const std::vector<uint8_t> &json, Json::Value &root, Error &error)
+static bool ParseJSONFromBuffer(const std::vector<uint8_t> &json, Json::Value &root, Error &error)
 {
   try
   {

@@ -30,6 +30,30 @@
 #include <OpenVDS/IO/IOManager.h>
 #include <OpenVDS/IO/IOManagerInMemory.h>
 
+#include <json/json.h>
+
+static bool ParseJSONFromBuffer(const std::vector<uint8_t> &json, Json::Value &root, OpenVDS::Error &error)
+{
+  try
+  {
+    Json::CharReaderBuilder rbuilder;
+    rbuilder["collectComments"] = false;
+
+    std::unique_ptr<Json::CharReader> reader(rbuilder.newCharReader());
+    const char *json_begin = reinterpret_cast<const char *>(json.data());
+    reader->parse(json_begin, json_begin + json.size(), &root, &error.string);
+
+    return true;
+  }
+  catch(Json::Exception &e)
+  {
+    error.code = -1;
+    error.string = e.what() + std::string(" : ") + error.string;
+  }
+
+  return false;
+}
+
 enum WriteBufferAccessor
 {
   Create,
@@ -460,6 +484,170 @@ TEST(OpenVDS_integration, CreateMultiplePageAccessorsAndWriteData)
   pageAccessor2.reset();
 
   OpenVDS::Close(handle);
+}
+
+class SyncTransferHandler : public OpenVDS::TransferDownloadHandler
+{
+public:
+  SyncTransferHandler(std::vector<uint8_t>* data)
+    : data(data)
+  {}
+  void HandleObjectSize(int64_t size) override
+  {
+  }
+  void HandleObjectLastWriteTime(const std::string &lastWriteTimeISO8601) override
+  {
+  }
+  void HandleMetadata(const std::string &key, const std::string &header) override
+  {
+  }
+  void HandleData(std::vector<uint8_t> &&data) override
+  {
+    *(this->data) = std::move(data);
+  }
+  void Completed(const OpenVDS::Request &request, const OpenVDS::Error &error) override
+  {
+    this->error = error;
+  }
+
+  std::vector<uint8_t> *data;
+  OpenVDS::Error error;
+};
+
+std::vector<uint8_t> getBlob(OpenVDS::IOManager* iomanager, const std::string& name)
+{
+  std::vector<uint8_t> ret;
+  auto transferHandler= std::make_shared<SyncTransferHandler>(&ret);
+  auto request = iomanager->ReadObject(name, transferHandler);
+  OpenVDS::Error error;
+  request->WaitForFinish(error);
+  return ret;
+}
+
+TEST(OpenVDS_integration, PageDirectory)
+{
+  const int chunkMetadataPageSize = 10;
+  OpenVDS::Error error;
+  int negativeMargin = 4;
+  int positiveMargin = 4;
+  int brickSize2DMultiplier = 4;
+  auto LODLevels = OpenVDS::VolumeDataLayoutDescriptor::LODLevels_None;
+  auto layoutOptions = OpenVDS::VolumeDataLayoutDescriptor::Options_None;
+  OpenVDS::VolumeDataLayoutDescriptor layoutDescriptor(OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, negativeMargin, positiveMargin, brickSize2DMultiplier, LODLevels, layoutOptions);
+
+  std::vector<OpenVDS::VolumeDataAxisDescriptor> axisDescriptors;
+  axisDescriptors.emplace_back(100, KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_AXISNAME_SAMPLE, "ms", 0.0f, 4.f);
+  axisDescriptors.emplace_back(200, KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_AXISNAME_CROSSLINE, "", 1932.f, 2536.f);
+  axisDescriptors.emplace_back(300, KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_AXISNAME_INLINE,    "", 9985.f, 10369.f);
+
+  std::vector<OpenVDS::VolumeDataChannelDescriptor> channelDescriptors;
+  float rangeMin = -0.1234f;
+  float rangeMax = 0.1234f;
+  float intScale;
+  float intOffset;
+  getScaleOffsetForFormat(rangeMin, rangeMax, true, OpenVDS::VolumeDataChannelDescriptor::Format_U32, intScale, intOffset);
+  channelDescriptors.push_back(OpenVDS::VolumeDataChannelDescriptor(OpenVDS::VolumeDataChannelDescriptor::Format_U32, OpenVDS::VolumeDataChannelDescriptor::Components_1, AMPLITUDE_ATTRIBUTE_NAME, "", rangeMin, rangeMax, OpenVDS::VolumeDataMapping::Direct, 1, OpenVDS::VolumeDataChannelDescriptor::Default, 0.f, intScale, intOffset));
+
+  OpenVDS::MetadataContainer metadataContainer;
+  OpenVDS::InMemoryOpenOptions oo("AddingMetadataPagesInRW");
+  std::unique_ptr<OpenVDS::IOManagerInMemory> inmemory(static_cast<OpenVDS::IOManagerInMemory *>(OpenVDS::IOManagerInMemory::CreateIOManagerInMemory(oo, error)));
+  {
+    IOManagerFacadeLight* facade = new IOManagerFacadeLight(inmemory.get());
+    auto handle = OpenVDS::Create(facade, layoutDescriptor, axisDescriptors, channelDescriptors, metadataContainer, error);
+    OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle);
+
+    std::shared_ptr<OpenVDS::VolumeDataPageAccessor> pageAccessor = accessManager.CreateVolumeDataPageAccessor(
+      OpenVDS::Dimensions_012, 0, 0, 100, OpenVDS::VolumeDataAccessManager::AccessMode_Create, chunkMetadataPageSize);
+
+    OpenVDS::VolumeDataPage* page = pageAccessor->CreatePage(0);
+    int pitch[OpenVDS::VolumeDataLayout::Dimensionality_Max];
+    auto buffer = reinterpret_cast<float*>(page->GetWritableBuffer(pitch));
+    int min[OpenVDS::VolumeDataLayout::Dimensionality_Max], max[OpenVDS::VolumeDataLayout::Dimensionality_Max];
+    page->GetMinMax(min, max);
+    for (int i = min[2]; i < max[2]; i++)
+      for (int j = min[1]; j < max[1]; j++)
+        for (int k = min[0]; k < max[0]; k++)
+        {
+          size_t offset = (i - min[2]) * pitch[2] + (j - min[1]) * pitch[1] + (k - min[0]) * pitch[0];
+          buffer[offset] = float(i + j + k);
+        }
+    page->Release();
+    pageAccessor->Commit();
+
+    pageAccessor.reset();
+    OpenVDS::Close(handle);
+  }
+
+  IOManagerFacadeLight* facade = new IOManagerFacadeLight(inmemory.get());
+  auto handle = OpenVDS::Open(facade, error);
+  auto accessManager = OpenVDS::GetAccessManager(handle);
+  auto chunkCount = accessManager.GetVDSChunkCount(OpenVDS::Dimensions_012, 0, 0);
+  
+  Json::Value layerStatusArray;
+  bool success = ParseJSONFromBuffer(getBlob(inmemory.get(), "LayerStatus"), layerStatusArray, error);
+  ASSERT_TRUE(success);
+  ASSERT_TRUE(layerStatusArray.size() == 1);
+  Json::Value layerStatus = layerStatusArray[0];
+  ASSERT_TRUE(layerStatus.isMember("pageDirectory"));
+  Json::Value pageDirectory = layerStatus["pageDirectory"];
+  ASSERT_EQ(int(pageDirectory.size()), (chunkCount - 1) / chunkMetadataPageSize + 1);
+  ASSERT_EQ(pageDirectory[0].asInt(), 0);
+
+  {
+    std::shared_ptr<OpenVDS::VolumeDataPageAccessor> pageAccessor = accessManager.CreateVolumeDataPageAccessor(
+      OpenVDS::Dimensions_012, 0, 0, 100, OpenVDS::VolumeDataAccessManager::AccessMode_ReadWrite, chunkMetadataPageSize);
+    OpenVDS::VolumeDataPage* page = pageAccessor->CreatePage(chunkMetadataPageSize);
+    int pitch[OpenVDS::VolumeDataLayout::Dimensionality_Max];
+    auto buffer = reinterpret_cast<float*>(page->GetWritableBuffer(pitch));
+    (void)buffer;
+    page->Release();
+    pageAccessor->Commit();
+    accessManager.Flush(error);
+    ASSERT_EQ(error.code, 0);
+    success = ParseJSONFromBuffer(getBlob(inmemory.get(), "LayerStatus"), layerStatusArray, error);
+    ASSERT_TRUE(success);
+    ASSERT_TRUE(layerStatusArray.size() == 1);
+    layerStatus = layerStatusArray[0];
+    ASSERT_TRUE(layerStatus.isMember("pageDirectory"));
+    pageDirectory = layerStatus["pageDirectory"];
+    ASSERT_EQ(pageDirectory[0].asInt(), 0);
+    ASSERT_EQ(pageDirectory[1].asInt(), 1);
+
+    page = pageAccessor->CreatePage(chunkCount - 1);
+    buffer = reinterpret_cast<float*>(page->GetWritableBuffer(pitch));
+    page->Release();
+    pageAccessor->Commit();
+    accessManager.Flush(error);
+    ASSERT_EQ(error.code, 0);
+
+    success = ParseJSONFromBuffer(getBlob(inmemory.get(), "LayerStatus"), layerStatusArray, error);
+    ASSERT_TRUE(success);
+    ASSERT_TRUE(layerStatusArray.size() == 1);
+    layerStatus = layerStatusArray[0];
+    ASSERT_TRUE(layerStatus.isMember("pageDirectory"));
+    pageDirectory = layerStatus["pageDirectory"];
+    ASSERT_EQ(pageDirectory[0].asInt(), 0);
+    ASSERT_EQ(pageDirectory[1].asInt(), 1);
+    for (int i = 2; i < int(pageDirectory.size()) - 1; i++)
+    {
+      ASSERT_EQ(pageDirectory[i].asInt(), -1);
+    }
+    ASSERT_EQ(pageDirectory[pageDirectory.size() - 1].asInt(), pageDirectory.size() - 1);
+
+    page = pageAccessor->ReadPage(chunkMetadataPageSize);
+    buffer = reinterpret_cast<float*>(page->GetWritableBuffer(pitch));
+    page->Release();
+    pageAccessor->Commit();
+    accessManager.Flush(error);
+    ASSERT_EQ(pageDirectory[0].asInt(), 0);
+    ASSERT_EQ(pageDirectory[1].asInt(), 1);
+    for (int i = 2; i < int(pageDirectory.size()) - 1; i++)
+    {
+      ASSERT_EQ(pageDirectory[i].asInt(), -1);
+    }
+    ASSERT_EQ(pageDirectory[pageDirectory.size() - 1].asInt(), pageDirectory.size() - 1);
+
+  }
 }
 
 TEST(OpenVDS_integration, GenerateLOD)
