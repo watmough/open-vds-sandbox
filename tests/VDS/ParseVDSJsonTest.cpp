@@ -27,7 +27,7 @@
 #include <gtest/gtest.h>
 
 // Copied from ParseVDSJson.cpp
-bool ParseJSONFromBuffer(const std::vector<uint8_t> &json, Json::Value &root, OpenVDS::Error &error)
+static bool ParseJSONFromBuffer(const std::vector<uint8_t> &json, Json::Value &root, OpenVDS::Error &error)
 {
   try
   {
