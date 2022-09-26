@@ -1096,7 +1096,7 @@ void OpenVDSInterfaceImpl::Close(VDS *vds, bool flush)
   delete vds;
   if (flushError.code)
   {
-    throw InvalidOperation(fmt::format("Flush in Close failed: {}", error.string).c_str());
+    throw InvalidOperation(fmt::format("Flush in Close failed: {}", flushError.string).c_str());
   }
   if(!success)
   {
