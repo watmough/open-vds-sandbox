@@ -101,6 +101,8 @@ target_include_directories(google_cloud_ovds PUBLIC
   ${absl_SOURCE_DIR}
   )
 
+target_compile_options(google_cloud_ovds PRIVATE ${DISABLE_WARNING_FLAG})
+
 if (NOT WIN32)
   target_include_directories(google_cloud_ovds PRIVATE ${OPENSSL_INCLUDE_DIR})
 endif()
