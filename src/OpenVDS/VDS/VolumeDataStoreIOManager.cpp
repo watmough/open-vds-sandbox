@@ -267,6 +267,10 @@ VolumeDataStoreIOManager::WriteSerializedVolumeDataLayout(const std::vector<uint
 
   return true;
 }
+bool VolumeDataStoreIOManager::SerializeAndWriteLayerStatus(Error& error)
+{
+  return SerializeAndUploadLayerStatus(m_vds, error);
+}
 
 bool VolumeDataStoreIOManager::SerializeAndUploadLayerStatus(VDS& vds, Error& error)
 {

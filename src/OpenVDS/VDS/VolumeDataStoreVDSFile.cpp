@@ -479,6 +479,11 @@ bool VolumeDataStoreVDSFile::WriteSerializedVolumeDataLayout(const std::vector<u
   return success;
 }
 
+bool VolumeDataStoreVDSFile::SerializeAndWriteLayerStatus(Error&)
+{
+  return true;
+}
+
 bool VolumeDataStoreVDSFile::AddLayer(VolumeDataLayer* volumeDataLayer, int chunkMetadataPageSize, bool overwriteExisting)
 {
   assert(volumeDataLayer);

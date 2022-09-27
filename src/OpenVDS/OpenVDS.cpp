@@ -813,6 +813,8 @@ static bool Init(VDS *vds, VolumeDataStore* volumeDataStore, VolumeDataLayoutDes
 
   if (!vds->volumeDataStore->WriteSerializedVolumeDataLayout(SerializeVolumeDataLayout(*vds), error))
     return false;
+  if (!vds->volumeDataStore->SerializeAndWriteLayerStatus(error))
+    return false;
 
   vds->accessManager = std::shared_ptr<VolumeDataAccessManagerImpl>(VolumeDataAccessManagerImpl::Create(*vds), [](VolumeDataAccessManagerImpl *accessManager) { accessManager->Release(); });
   return true;
