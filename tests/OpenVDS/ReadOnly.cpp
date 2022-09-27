@@ -106,6 +106,11 @@ GTEST_TEST(OpenVDS_integration, VerifyReadOnly)
       EXPECT_TRUE(buffer != nullptr);
       page->Release();
     }
+
+    auto metadataWriteAccess = OpenVDS::GetMetadataWriteAccessInterface(handle);
+    metadataWriteAccess->SetMetadataInt("hello", "world", 3);
+    accessManager.Flush(error);
+    EXPECT_EQ(error.code, 0);
   }
   EXPECT_TRUE(chunkCount != 0);
   EXPECT_EQ(counter.WriteCount, 0);
