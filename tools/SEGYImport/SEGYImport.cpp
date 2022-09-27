@@ -1574,13 +1574,9 @@ createSurveyCoordinateSystemWKTAndUnitMetadata(SEGYFileInfo const& fileInfo, SEG
   {
     metadataContainer.SetMetadataString(LATTICE_CATEGORY, CRS_WKT, crsWkt);
   }
-  if (segyMeasurementSystem == SEGY::BinaryHeader::MeasurementSystem::Meters)
+  if (segyMeasurementSystem == SEGY::BinaryHeader::MeasurementSystem::Meters || segyMeasurementSystem == SEGY::BinaryHeader::MeasurementSystem::Feet)
   {
     metadataContainer.SetMetadataString(LATTICE_CATEGORY, LATTICE_UNIT, KNOWNMETADATA_UNIT_METER);
-  }
-  else if (segyMeasurementSystem == SEGY::BinaryHeader::MeasurementSystem::Feet)
-  {
-    metadataContainer.SetMetadataString(LATTICE_CATEGORY, LATTICE_UNIT, KNOWNMETADATA_UNIT_FOOT);
   }
 }
 
