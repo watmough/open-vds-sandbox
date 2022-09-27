@@ -204,6 +204,8 @@ unit-tests:
   - ctest -V
   only:
   - merge_requests
+  dependencies:
+  - compile-merge-request
   artifacts:
     when: always
     reports:
@@ -220,6 +222,8 @@ unit-tests-manylinux:
   - ctest -V
   only:
   - merge_requests
+  dependencies:
+  - compile-merge-request-manylinux
   artifacts:
     when: always
     reports:
@@ -236,6 +240,8 @@ unit-tests-centos7dev7:
   - ctest -V
   only:
   - merge_requests
+  dependencies:
+  - compile-merge-request-centos7dev7
   artifacts:
     when: always
     reports:
