@@ -21,12 +21,6 @@ file(GLOB SRC_LIB_AUTH ${dmsCMakeDir}/src/lib/auth/*.cc)
 file(GLOB SRC_LIB_SHARED ${dmsCMakeDir}/src/lib/shared/*.cc)
 set(SOURCES ${SRC_CORE} ${SRC_LIB_ACCESSORS} ${SRC_LIB_PROVIDERS} ${SRC_LIB_HTTP} ${SRC_LIB_JSON} ${SRC_LIB_AUTH} ${SRC_LIB_SHARED})
 
-if (MSVC)
-  set(DISABLE_WARNING_FLAG "/W0 /WX-")
-else()
-  set(DISABLE_WARNING_FLAG "-w")
-endif()
-
 if ((NOT DISABLE_AZURE_IOMANAGER) OR (NOT DISABLE_AZURESDKFORCPP_IOMANAGER))
   file(GLOB SRC__LIB_PROVIDERS_AZURE_COMMON ${dmsCMakeDir}/src/lib/cloud/providers/azure/*.cc)
   set(SOURCES ${SOURCES} ${SRC__LIB_PROVIDERS_AZURE_COMMON})

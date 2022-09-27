@@ -101,6 +101,7 @@ target_include_directories(google_cloud_ovds PUBLIC
   ${absl_SOURCE_DIR}
   )
 
+string(REPLACE " " ";" DISABLE_WARNING_FLAG ${DISABLE_WARNING_FLAG})
 target_compile_options(google_cloud_ovds PRIVATE ${DISABLE_WARNING_FLAG})
 
 if (NOT WIN32)
