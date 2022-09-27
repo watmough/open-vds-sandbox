@@ -894,20 +894,29 @@ void VolumeDataStoreIOManager::Flush(Error &error)
     }
   }
 
+  bool layerStatusDirty = false;
   for(auto it = m_metadataManagers.begin(); it != m_metadataManagers.end(); ++it)
   {
     auto metadataManager = it->second.get();
 
-    metadataManager->UploadDirtyPages(this, error);
+    layerStatusDirty |= metadataManager->UploadDirtyPages(this, error);
     if (error.code != 0)
       return;
   }
 
-  SerializeAndUploadLayerStatus(m_vds, error);
-
-  if (error.code != 0)
+  if (layerStatusDirty)
   {
-    return;
+    if (SerializeAndUploadLayerStatus(m_vds, error))
+    {
+      for (auto& metadataManager : m_metadataManagers)
+      {
+        metadataManager.second->MakeDirty(false);
+      }
+    }
+    else
+    {
+      return;
+    }
   }
 
   if (m_vds.metadataContainer.IsDirty())
