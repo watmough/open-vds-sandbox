@@ -76,6 +76,7 @@ MetadataManager::MetadataManager(IOManager *iomanager, std::string const &layerU
   , m_metadataStatus(metadataStatus)
   , m_pageLimit(pageLimit)
   , m_createEmptyPages(createEmptyPages)
+  , m_dirty(createEmptyPages)
   , m_lockedPageCount(0)
   , m_isFlushInProgress(false)
 {
@@ -183,7 +184,7 @@ void MetadataManager::CompleteTransfer(MetadataPage* page)
   }
 }
 
-void MetadataManager::UploadDirtyPages(VolumeDataStoreIOManager *volumeDataStore, Error &error)
+bool MetadataManager::UploadDirtyPages(VolumeDataStoreIOManager *volumeDataStore, Error &error)
 {
   std::unique_lock<std::mutex> lock(m_mutex);
 
@@ -199,6 +200,7 @@ void MetadataManager::UploadDirtyPages(VolumeDataStoreIOManager *volumeDataStore
     m_noLockedPageCondition.wait(lock, [this] { return this->m_lockedPageCount == 0; });
   }
 
+  bool layerStatusNeedsFlush = m_dirty;
   for(MetadataPageList::iterator it = m_dirtyPageList.begin(), next; it != m_dirtyPageList.end(); it = next)
   {
     auto &page = *it;
@@ -213,18 +215,20 @@ void MetadataManager::UploadDirtyPages(VolumeDataStoreIOManager *volumeDataStore
       m_metadataStatus.m_pageDirectory[page.m_pageIndex] = page.m_pageIndex;
       page.m_dirty = false;
       m_pageList.splice(m_pageList.begin(), m_dirtyPageList, it);
+      layerStatusNeedsFlush = true;
     }
     else
     {
       m_dirtyPageList.splice(m_dirtyPageList.end(), m_dirtyPageList, it);
       m_isFlushInProgress = false;
       m_flushFinishedCondition.notify_all();
-      return;
+      return layerStatusNeedsFlush;
     }
   }
 
   m_isFlushInProgress = false;
   m_flushFinishedCondition.notify_all();
+  return layerStatusNeedsFlush;
 }
 
 void MetadataManager::PageTransferError(VolumeDataStoreIOManager* volumeDataStore, MetadataPage* page, const Error &error)
@@ -331,6 +335,12 @@ void MetadataManager::UpdateMetadataStatus(int64_t uncompressedSize, int seriali
   }
 
   Wavelet::Wavelet_AccumulateAdaptiveLevelSizes(serializedSize, m_metadataStatus.m_adaptiveLevelSizes, subtract, targetLevels);
+}
+
+void MetadataManager::MakeDirty(bool dirty)
+{
+  std::unique_lock<std::mutex> lock(m_mutex);
+  m_dirty = dirty;
 }
 
 }

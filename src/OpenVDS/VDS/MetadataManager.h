@@ -105,6 +105,7 @@ namespace OpenVDS
     int m_pageLimit;
 
     bool m_createEmptyPages;
+    bool m_dirty;
 
     typedef std::unordered_map<int, MetadataPageList::iterator> MetadataPageMap;
 
@@ -136,7 +137,7 @@ namespace OpenVDS
 
     void InitiateTransfer(VolumeDataStoreIOManager* accessManager, MetadataPage* page, std::string const& url);
     void CompleteTransfer(MetadataPage *page);
-    void UploadDirtyPages(VolumeDataStoreIOManager* accessManager, Error &error);
+    bool UploadDirtyPages(VolumeDataStoreIOManager* accessManager, Error &error);
 
     uint8_t const *GetPageEntry(MetadataPage *page, int entry) const;
     void SetPageEntry(MetadataPage *page, int entryIndex, uint8_t const *metadata, int metadataLength, uint8_t *oldMetadata = nullptr);
@@ -148,6 +149,8 @@ namespace OpenVDS
       return m_metadataStatus; 
     }
     void UpdateMetadataStatus(int64_t uncompressedSize, int serializedSize, bool subtract, const uint8_t (&targetLevels)[WAVELET_ADAPTIVE_LEVELS]);
+
+    void MakeDirty(bool dirty);
   };
 }
 
