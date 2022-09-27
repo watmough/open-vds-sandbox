@@ -398,12 +398,21 @@ TEST(IOErrorHandlingUpload, ErrorHandlingLayerStatusHttpError)
 
   OpenVDS::MetadataContainer metadataContainer;
 
+  {
+    std::unique_ptr<OpenVDS::IOManager> inMemoryIO(OpenVDS::IOManagerInMemory::CreateIOManagerInMemory("", error));
+    IOManagerFacade* ioManager = new IOManagerFacade(inMemoryIO.get());
+    auto& chunk = ioManager->m_data["LayerStatus"];
+    chunk.error.code = 466;
+    chunk.error.string = "No Layerstatus";
+    OpenVDS::ScopedVDSHandle handle = OpenVDS::Create(ioManager, layoutDescriptor, axisDescriptors, channelDescriptors, metadataContainer, error);
+    ASSERT_EQ(error.code, 466);
+    ASSERT_TRUE(contains(error.string, "LayerStatus"));
+    error = {};
+  }
+
   std::unique_ptr<OpenVDS::IOManager> inMemoryIO(OpenVDS::IOManagerInMemory::CreateIOManagerInMemory("", error));
-  IOManagerFacade *ioManager = new IOManagerFacade(inMemoryIO.get());
-  auto &chunk = ioManager->m_data["LayerStatus"];
-  chunk.error.code = 466;
-  chunk.error.string = "No Layerstatus";
-  OpenVDS::ScopedVDSHandle handle(OpenVDS::Create(ioManager, layoutDescriptor, axisDescriptors, channelDescriptors, metadataContainer, error));
+  IOManagerFacade* ioManager = new IOManagerFacade(inMemoryIO.get());
+  OpenVDS::ScopedVDSHandle handle = OpenVDS::Create(ioManager, layoutDescriptor, axisDescriptors, channelDescriptors, metadataContainer, error);
   ASSERT_TRUE(handle);
 
   OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle);
@@ -420,6 +429,13 @@ TEST(IOErrorHandlingUpload, ErrorHandlingLayerStatusHttpError)
     (void)buffer;
     page->Release();
   }
+
+  {
+    auto& chunk = ioManager->m_data["LayerStatus"];
+    chunk.error.code = 466;
+    chunk.error.string = "No Layerstatus";
+  }
+
   pageAccessor->Commit();
   pageAccessor.reset();
   accessManager.Flush(error);
