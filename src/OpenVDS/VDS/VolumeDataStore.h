@@ -73,6 +73,7 @@ public:
   virtual void          Flush(Error &error) = 0;
   virtual bool          ReadSerializedVolumeDataLayout(std::vector<uint8_t>& serializedVolumeDataLayout, Error &error) = 0;
   virtual bool          WriteSerializedVolumeDataLayout(const std::vector<uint8_t>& serializedVolumeDataLayout, Error &error) = 0;
+  virtual bool          SerializeAndWriteLayerStatus(Error& error) = 0;
   virtual bool          AddLayer(VolumeDataLayer* volumeDataLayer, int chunkMetadataPageSize, bool overwriteExisting) = 0;
   virtual bool          RemoveLayer(VolumeDataLayer* volumeDataLayer) = 0;
   virtual bool          Close(Error &error) = 0;

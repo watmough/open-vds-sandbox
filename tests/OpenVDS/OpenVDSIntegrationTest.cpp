@@ -97,7 +97,7 @@ TEST(OpenVDS_integration, CreateAndModifyMetadata)
   {
     OpenVDS::Error error;
     OpenVDS::ScopedVDSHandle handle = OpenVDS::Open("inmemory://CreateAndModifyMetadata", "", error);
-
+    EXPECT_TRUE(handle);
     auto accessManager = OpenVDS::GetAccessManager(handle);
     auto layout = accessManager.GetVolumeDataLayout();
     EXPECT_EQ(layout->GetMetadataInt(category.c_str(), key.c_str()), modifiedValue);
