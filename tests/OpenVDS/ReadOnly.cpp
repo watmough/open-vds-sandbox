@@ -36,7 +36,7 @@ struct Counter
 {
   int ReadInfoCount = 0;
   int ReadCount = 0;
-  int WriteCount = 0;
+  std::vector<std::string> WriteNames;
 };
 
 class IOManagerCounting : public OpenVDS::IOManager
@@ -62,7 +62,7 @@ public:
 
   std::shared_ptr<OpenVDS::Request> WriteObject(const std::string &objectName, const std::string& contentDispostionFilename, const std::string& contentType, const std::vector<std::pair<std::string, std::string>>& metadataHeader, std::shared_ptr<std::vector<uint8_t>> data, std::function<void(const OpenVDS::Request & request, const OpenVDS::Error & error)> completedCallback = nullptr) override
   {
-    counter.WriteCount++;
+    counter.WriteNames.emplace_back(objectName);
     return backend->WriteObject(objectName, contentDispostionFilename, contentType, metadataHeader, data, completedCallback);
   }
 
@@ -89,30 +89,56 @@ GTEST_TEST(OpenVDS_integration, VerifyReadOnly)
     fill3DVDSWithNoise(handle);
   }
 
-  Counter counter;
-  int64_t chunkCount = 0;
   {
-    IOManagerCounting* countingIoManager = new IOManagerCounting(inMemory, counter);
-    OpenVDS::ScopedVDSHandle handle = OpenVDS::Open(countingIoManager, error);
-    EXPECT_EQ(error.code, 0);
-    auto accessManager = OpenVDS::GetAccessManager(handle);
-    auto pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, 0, 0, 1000, OpenVDS::VolumeDataPageAccessor::AccessMode_ReadWrite);
-    chunkCount = pageAccessor->GetChunkCount();
-    for (int64_t i = 0; i < chunkCount; i++)
+    Counter counter;
+    int64_t chunkCount = 0;
     {
-      auto page = pageAccessor->ReadPage(i);
-      int pitch[6];
-      auto buffer = page->GetBuffer(pitch);
-      EXPECT_TRUE(buffer != nullptr);
-      page->Release();
+      IOManagerCounting* countingIoManager = new IOManagerCounting(inMemory, counter);
+      OpenVDS::ScopedVDSHandle handle = OpenVDS::Open(countingIoManager, error);
+      EXPECT_EQ(error.code, 0);
+      auto accessManager = OpenVDS::GetAccessManager(handle);
+      auto pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, 0, 0, 1000, OpenVDS::VolumeDataPageAccessor::AccessMode_ReadWrite);
+      chunkCount = pageAccessor->GetChunkCount();
+      for (int64_t i = 0; i < chunkCount; i++)
+      {
+        auto page = pageAccessor->ReadPage(i);
+        int pitch[6];
+        auto buffer = page->GetBuffer(pitch);
+        EXPECT_TRUE(buffer != nullptr);
+        page->Release();
+      }
     }
-
-    auto metadataWriteAccess = OpenVDS::GetMetadataWriteAccessInterface(handle);
-    metadataWriteAccess->SetMetadataInt("hello", "world", 3);
-    accessManager.Flush(error);
-    EXPECT_EQ(error.code, 0);
+    EXPECT_TRUE(chunkCount != 0);
+    EXPECT_EQ(counter.WriteNames.size(), 0);
+    EXPECT_TRUE(counter.ReadCount > chunkCount);
   }
-  EXPECT_TRUE(chunkCount != 0);
-  EXPECT_EQ(counter.WriteCount, 0);
-  EXPECT_TRUE(counter.ReadCount > chunkCount);
+  {
+    Counter counter;
+    int64_t chunkCount = 0;
+    {
+      IOManagerCounting* countingIoManager = new IOManagerCounting(inMemory, counter);
+      OpenVDS::ScopedVDSHandle handle = OpenVDS::Open(countingIoManager, error);
+      EXPECT_EQ(error.code, 0);
+      auto accessManager = OpenVDS::GetAccessManager(handle);
+      auto pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, 0, 0, 1000, OpenVDS::VolumeDataPageAccessor::AccessMode_ReadWrite);
+      chunkCount = pageAccessor->GetChunkCount();
+      for (int64_t i = 0; i < chunkCount; i++)
+      {
+        auto page = pageAccessor->ReadPage(i);
+        int pitch[6];
+        auto buffer = page->GetBuffer(pitch);
+        EXPECT_TRUE(buffer != nullptr);
+        page->Release();
+      }
+
+      auto metadataWriteAccess = OpenVDS::GetMetadataWriteAccessInterface(handle);
+      metadataWriteAccess->SetMetadataInt("hello", "world", 3);
+      accessManager.Flush(error);
+      EXPECT_EQ(error.code, 0);
+    }
+    EXPECT_TRUE(chunkCount != 0);
+    EXPECT_EQ(counter.WriteNames.size(), 1);
+    EXPECT_EQ(counter.WriteNames.front(), std::string("VolumeDataLayout"));
+    EXPECT_TRUE(counter.ReadCount > chunkCount);
+  }
 }
