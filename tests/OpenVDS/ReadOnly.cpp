@@ -87,6 +87,8 @@ GTEST_TEST(OpenVDS_integration, VerifyReadOnly)
     OpenVDS::ScopedVDSHandle handle(generateSimpleInMemory3DVDS(100, 100, 100, OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, createIoManager));
     ASSERT_TRUE(handle);
     fill3DVDSWithNoise(handle);
+    auto metadataWriteAccess = OpenVDS::GetMetadataWriteAccessInterface(handle);
+    metadataWriteAccess->SetMetadataInt("foo", "bar", 42);
   }
 
   {

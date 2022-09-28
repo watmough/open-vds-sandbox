@@ -616,6 +616,7 @@ static bool Init(VDS *vds, VolumeDataStore *volumeDataStore, Error& error)
   {
     return false;
   }
+  vds->metadataContainer.ClearDirtyFlag();
   CreateVolumeDataLayout(*vds);
 
   vds->accessManager = std::shared_ptr<VolumeDataAccessManagerImpl>(VolumeDataAccessManagerImpl::Create(*vds), [](VolumeDataAccessManagerImpl *accessManager) { accessManager->Release(); });
