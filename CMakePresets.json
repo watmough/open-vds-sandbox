@@ -118,6 +118,18 @@
       ]
     },
     {
+      "name": "ReleaseNoLto",
+      "description": "Built using the default Visual Studio version.",
+      "inherits": [
+        "openvds_single_config",
+        "openvds_release"
+      ],
+      "cacheVariables": {
+        "DISABLE_LTO": "ON",
+        "CMAKE_INTERPROCEDURAL_OPTIMIZATION": "OFF"
+      }
+    },
+    {
       "name": "ReleaseClang",
       "description": "Built using the default Visual Studio version.",
       "inherits": [
