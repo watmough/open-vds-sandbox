@@ -710,6 +710,17 @@ void VolumeDataAccessManagerImpl::Flush(ErrorHandler errorHandler, Error* error)
     }
   }
   GetVolumeDataStore()->Flush(errorGuard);
+
+  if (errorGuard.code)
+    return;
+
+  if (m_vds.metadataContainer.IsDirty())
+  {
+    if (!m_vds.volumeDataStore->WriteSerializedVolumeDataLayout(SerializeVolumeDataLayout(m_vds), errorGuard))
+      return;
+
+    m_vds.metadataContainer.ClearDirtyFlag();
+  }
 }
 
 static bool isPureCopy(const VolumeDataChunk &a, const VolumeDataChunk &b)
