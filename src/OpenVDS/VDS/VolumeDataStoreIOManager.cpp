@@ -918,14 +918,6 @@ void VolumeDataStoreIOManager::Flush(Error &error)
       return;
     }
   }
-
-  if (m_vds.metadataContainer.IsDirty())
-  {
-    if (!m_vds.volumeDataStore->WriteSerializedVolumeDataLayout(SerializeVolumeDataLayout(m_vds), error))
-      return;
-
-    m_vds.metadataContainer.ClearDirtyFlag();
-  }
 }
 
 MetadataManager *
