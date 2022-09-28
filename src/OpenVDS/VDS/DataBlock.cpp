@@ -509,6 +509,18 @@ FixupBorder(T * buffer, int offset, const int (&pitch)[DataBlock::Dimensionality
         for (int dim0 = 0; dim0 < borderSize[0]; dim0++)
         {
           int
+            writeOffset = dim0 * pitch[0] +
+                          dim1 * pitch[1] + 
+                          dim2 * pitch[2] + 
+                          dim3 * pitch[3] + offset;
+
+          if(borderMode == BorderMode::Clear || borderMode == BorderMode::None)
+          {
+            WriteElement(buffer, writeOffset, T());
+            continue;
+          }
+
+          int
             writePos[DataBlock::Dimensionality_Max],
             readPos[DataBlock::Dimensionality_Max];
 
@@ -517,18 +529,8 @@ FixupBorder(T * buffer, int offset, const int (&pitch)[DataBlock::Dimensionality
           writePos[2] = borderMin[2] + dim2;
           writePos[3] = borderMin[3] + dim3;
 
-          int
-            writeOffset = dim0 * pitch[0] +
-                          dim1 * pitch[1] + 
-                          dim2 * pitch[2] + 
-                          dim3 * pitch[3] + offset;
 
-          if(borderMode == BorderMode::Clear)
-          {
-            WriteElement(buffer, writeOffset, T());
-            continue;
-          }
-          else if(borderMode == BorderMode::Mirror)
+          if(borderMode == BorderMode::Mirror)
           {
             for (int i = 0; i < DataBlock::Dimensionality_Max; i++)
             {
@@ -543,8 +545,9 @@ FixupBorder(T * buffer, int offset, const int (&pitch)[DataBlock::Dimensionality
               readPos[i] = newPos;
             }
           }
-          else if(borderMode == BorderMode::Repeat)
+          else //if(borderMode == BorderMode::Repeat)
           {
+            assert(borderMode == BorderMode::Repeat);
             for (int i = 0; i < DataBlock::Dimensionality_Max; i++)
             {
               int

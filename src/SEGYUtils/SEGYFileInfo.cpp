@@ -249,8 +249,8 @@ SEGYFileInfo::Scan(const std::vector<DataProvider>& dataProviders, OpenVDS::Erro
     int readCount = 1;
 
     int
-      testOffset,
-      nextOffset;
+      testOffset = 0,
+      nextOffset = 0;
 
     while (segmentInfo.m_traceStop != lastTrace)
     {
