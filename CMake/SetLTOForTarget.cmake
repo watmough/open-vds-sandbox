@@ -1,6 +1,8 @@
 function(setLTOForTarget target)
-  set_target_properties(${target}
-    PROPERTIES
-    INTERPROCEDURAL_OPTIMIZATION_RELEASE ON
-  )
+  if (NOT DISABLE_LTO)
+    set_target_properties(${target}
+      PROPERTIES
+      INTERPROCEDURAL_OPTIMIZATION_RELEASE ON
+    )
+  endif()
 endfunction()
