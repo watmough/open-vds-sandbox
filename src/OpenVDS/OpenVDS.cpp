@@ -552,7 +552,7 @@ OpenOptions* CreateOpenOptions(StringWrapper urlWrapper, StringWrapper connectio
   std::string url(urlWrapper.data, urlWrapper.size);
   std::string connectionString(connectionStringWrapper.data, connectionStringWrapper.size);
 
-  WaveletAdaptiveMode adaptiveMode;
+  WaveletAdaptiveMode adaptiveMode = WaveletAdaptiveMode::Tolerance;
   float adaptiveTolerance = 0.0f;
   float adaptiveRatio = 0.0f;
   bool adaptiveDataSet = GetWaveletAdaptiveInfo(connectionString, adaptiveMode, adaptiveTolerance, adaptiveRatio, error);
