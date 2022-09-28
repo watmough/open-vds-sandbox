@@ -5,13 +5,8 @@ stages:
 - deploy
 variables:
   SHA_IMAGE_TAG: "$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:1"
-  SHA_MANYLINUX_IMAGE_TAG: "$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:manylinux-1"
-  SHA_CENTOS7DEV7_IMAGE_TAG: "$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:centos7dev7-1"
-  CMAKE_OPTIONS: "-GNinja -DCMAKE_BUILD_TYPE=Release -DDISABLE_LTO=ON -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=OFF"
-cache:
-  paths:
-  - ccache
-  - 3rdparty
+  SHA_MANYLINUX2014_IMAGE_TAG: "$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:manylinux2014-1"
+  SHA_MANYLINUX2_24_IMAGE_TAG: "$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:manylinux2_24-1"
 devel-container-gitlab:
   stage: prepare
   image: docker:19.03
@@ -69,26 +64,26 @@ devel-container-merge-request:
   - docker push $SHA_IMAGE_TAG
   only:
   - merge_requests
-devel-container-manylinux-merge-request:
+devel-container-manylinux-2014-merge-request:
   stage: prepare
   image: docker:19.03
   tags:
   - docker-runner
   script:
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-  - docker build -t $SHA_MANYLINUX_IMAGE_TAG -f docker/manylinux-2014.Dockerfile .
-  - docker push $SHA_MANYLINUX_IMAGE_TAG
+  - docker build -t $SHA_MANYLINUX2014_IMAGE_TAG -f docker/manylinux-2014.Dockerfile .
+  - docker push $SHA_MANYLINUX2014_IMAGE_TAG
   only:
   - merge_requests
-devel-container-centos7dev7-merge-request:
+devel-container-manylinux-2-24-merge-request:
   stage: prepare
   image: docker:19.03
   tags:
   - docker-runner
   script:
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-  - docker build -t $SHA_CENTOS7DEV7_IMAGE_TAG -f docker/centos7.Dockerfile .
-  - docker push $SHA_CENTOS7DEV7_IMAGE_TAG
+  - docker build -t $SHA_MANYLINUX2_24_IMAGE_TAG -f docker/manylinux-2_24.Dockerfile .
+  - docker push $SHA_MANYLINUX2_24_IMAGE_TAG
   only:
   - merge_requests
 compile:
@@ -96,23 +91,27 @@ compile:
   image: "$SHA_IMAGE_TAG"
   tags:
   - docker-runner
+  cache:
+    paths:
+    - ccache_master
+    - 3rdparty
   artifacts:
     expire_in: 1 hr
     paths:
     - build
   before_script:
   - export CCACHE_BASEDIR="$PWD"
-  - export CCACHE_DIR="$PWD/ccache"
+  - export CCACHE_DIR="$PWD/ccache_master"
   - export CCACHE_COMPILERCHECK=content
   - ccache --zero-stats || true
   - ccache --show-stats || true
   script:
-  - mkdir -p build
-  - cd build
-  - cmake -DBUILD_DOCS=ON $CMAKE_OPTIONS ..
+  - export CCACHE_DIR="$PWD/ccache_master"
+  - cmake --preset GitLabAlpineMasterBranch
+  - cd out/build/GitLabAlpineMasterBranch
   - ninja
   after_script:
-  - export CCACHE_DIR="$PWD/ccache"
+  - export CCACHE_DIR="$PWD/ccache_master"
   - ccache --show-stats
   only:
   - master
@@ -121,76 +120,85 @@ compile-merge-request:
   image: "$SHA_IMAGE_TAG"
   tags:
   - docker-runner
+  cache:
+    paths:
+    - ccache_alpine
+    - 3rdparty
   artifacts:
     expire_in: 1 hr
     paths:
-    - build
+    - out/build/MergeRequestAlpine
   before_script:
   - export CCACHE_BASEDIR="$PWD"
-  - export CCACHE_DIR="$PWD/ccache"
+  - export CCACHE_DIR="$PWD/ccache_alpine"
   - export CCACHE_COMPILERCHECK=content
   - ccache --zero-stats || true
   - ccache --show-stats || true
   script:
-  - export CCACHE_DIR="$PWD/ccache"
-  - mkdir -p build
-  - cd build
-  - cmake $CMAKE_OPTIONS ..
+  - export CCACHE_DIR="$PWD/ccache_alpine"
+  - cmake --preset MergeRequestAlpine
+  - cd out/build/MergeRequestAlpine
   - ninja
   after_script:
-  - export CCACHE_DIR="$PWD/ccache"
+  - export CCACHE_DIR="$PWD/ccache_alpine"
   - ccache --show-stats
   only:
   - merge_requests
-compile-merge-request-manylinux:
+compile-merge-request-manylinux2014:
   stage: build
-  image: "$SHA_MANYLINUX_IMAGE_TAG"
+  image: "$SHA_MANYLINUX2014_IMAGE_TAG"
   tags:
   - docker-runner
+  cache:
+    paths:
+    - ccache_manylinux2014
+    - 3rdparty
   artifacts:
     expire_in: 1 hr
     paths:
-    - build-manylinux
+    - out/build/MergeRequestManyLinux2014
   before_script:
   - export CCACHE_BASEDIR="$PWD"
-  - export CCACHE_DIR="$PWD/ccache-manylinux"
+  - export CCACHE_DIR="$PWD/ccache_manylinux2014"
   - export CCACHE_COMPILERCHECK=content
   - ccache --zero-stats || true
   - ccache --show-stats || true
   script:
-  - export CCACHE_DIR="$PWD/ccache-manylinux"
-  - mkdir -p build-manylinux
-  - cd build-manylinux
-  - cmake $CMAKE_OPTIONS -DPython3_ROOT_DIR="/opt/python/cp310-cp310" -DBOOST_INCLUDEDIR=/usr/include/boost169 -DBOOST_LIBRARYDIR=/usr/lib64/boost169 ..
+  - export CCACHE_DIR="$PWD/ccache_manylinux2014"
+  - cmake --preset MergeRequestManyLinux2014
+  - cd out/build/MergeRequestManyLinux2014
   - ninja
   after_script:
-  - export CCACHE_DIR="$PWD/ccache-manylinux"
+  - export CCACHE_DIR="$PWD/ccache_manylinux2014"
   - ccache --show-stats
   only:
   - merge_requests
-compile-merge-request-centos7dev7:
+compile-merge-request-manylinux2_24:
   stage: build
-  image: "$SHA_CENTOS7DEV7_IMAGE_TAG"
+  image: "$SHA_MANYLINUX2_24_IMAGE_TAG"
   tags:
   - docker-runner
+  cache:
+    paths:
+    - ccache_manylinux2_24
+    - 3rdparty
   artifacts:
     expire_in: 1 hr
     paths:
-    - build-centos7dev7
+    - out/build/MergeRequestManyLinux2_24
   before_script:
   - export CCACHE_BASEDIR="$PWD"
-  - export CCACHE_DIR="$PWD/ccache-centos7dev7"
+  - export CCACHE_DIR="$PWD/ccache_manylinux2_24"
   - export CCACHE_COMPILERCHECK=content
   - ccache --zero-stats || true
   - ccache --show-stats || true
   script:
-  - export CCACHE_DIR="$PWD/ccache-centos7dev7"
-  - mkdir -p build-centos7dev7
-  - cd build-centos7dev7
-  - cmake $CMAKE_OPTIONS -DBOOST_INCLUDEDIR=/usr/include/boost169 -DBOOST_LIBRARYDIR=/usr/lib64/boost169 ..
+  - export CCACHE_DIR="$PWD/ccache_manylinux2_24"
+  - cmake --preset MergeRequestManyLinux2_24
+  - cd out/build/MergeRequestManyLinux2_24
   - ninja
   after_script:
-  - export CCACHE_DIR="$PWD/ccache-centos7dev7"
+  - export CCACHE_DIR="$PWD/ccache_manylinux2_24"
   - ccache --show-stats
   only:
   - merge_requests
@@ -199,8 +207,11 @@ unit-tests:
   image: "$SHA_IMAGE_TAG"
   tags:
   - docker-runner
+  cache:
+    paths:
+    - 3rdparty
   script:
-  - cd build
+  - cd out/build/MergeRequestAlpine
   - ctest -V
   only:
   - merge_requests
@@ -212,49 +223,55 @@ unit-tests:
       junit:
         - build/test_results/*.xml
         - build/test_results_java/junitreports/*.xml
-unit-tests-manylinux:
+unit-tests-manylinux2014:
   stage: test
-  image: "$SHA_MANYLINUX_IMAGE_TAG"
+  image: "$SHA_MANYLINUX2014_IMAGE_TAG"
   tags:
   - docker-runner
+  cache:
+    paths:
+    - 3rdparty
   script:
-  - cd build-manylinux
+  - cd out/build/MergeRequestManyLinux2014
   - ctest -V
   only:
   - merge_requests
   dependencies:
-  - compile-merge-request-manylinux
+  - compile-merge-request-manylinux2014
   artifacts:
     when: always
     reports:
       junit:
-        - build-manylinux/test_results/*.xml
-        - build-manylinux/test_results_java/junitreports/*.xml
-unit-tests-centos7dev7:
+        - out/build/MergeRequestManyLinux2014/test_results/*.xml
+        - out/build/MergeRequestManyLinux2014/test_results_java/junitreports/*.xml
+unit-tests-manylinux2_24:
   stage: test
-  image: "$SHA_CENTOS7DEV7_IMAGE_TAG"
+  image: "$SHA_MANYLINUX2_24_IMAGE_TAG"
   tags:
   - docker-runner
+  cache:
+    paths:
+    - 3rdparty
   script:
-  - cd build-centos7dev7
+  - cd out/build/MergeRequestManyLinux2_24
   - ctest -V
   only:
   - merge_requests
   dependencies:
-  - compile-merge-request-centos7dev7
+  - compile-merge-request-manylinux2_24
   artifacts:
     when: always
     reports:
       junit:
-        - build-centos7dev7/test_results/*.xml
-        - build-centos7dev7/test_results_java/junitreports/*.xml
+        - out/build/MergeRequestManyLinux2_24/test_results/*.xml
+        - out/build/MergeRequestManyLinux2_24/test_results_java/junitreports/*.xml
 pages:
   stage: deploy
   image: "$SHA_IMAGE_TAG"
   tags:
   - docker-runner
   script:
-  - mv build/docs/html public
+  - mv out/build/GitLabAlpineMasterBranch/docs/html public
   artifacts:
     paths:
     - public
