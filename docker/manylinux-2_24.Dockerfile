@@ -5,7 +5,7 @@ RUN unzip ninja.zip && mv ninja /usr/local/bin/ && rm -vf ninja* && ln -s /usr/l
 
 ENV DEBIAN_FRONTEND="noninteractive" TZ="Europe/London"
 RUN apt-get update
-RUN apt-get install -y vim libboost-dev git doxygen openjdk-8-jdk libxml2-dev zlib1g-dev libcurl4-openssl-dev libuv1-dev uuid-dev gdb bash libssl-dev libboost-all-dev
+RUN apt-get install -y vim libboost-dev git doxygen openjdk-8-jdk libxml2-dev zlib1g-dev libcurl4-openssl-dev libuv1-dev uuid-dev gdb bash libssl-dev libboost-all-dev ccache
 
 COPY python/requirements-dev-with-docs.txt /tmp/requirements-dev.txt
 
