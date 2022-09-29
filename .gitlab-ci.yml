@@ -98,7 +98,7 @@ compile:
   artifacts:
     expire_in: 1 hr
     paths:
-    - build
+    - out/build/GitLabAlpineMasterBranch
   before_script:
   - export CCACHE_BASEDIR="$PWD"
   - export CCACHE_DIR="$PWD/ccache_master"
@@ -270,6 +270,8 @@ pages:
   image: "$SHA_IMAGE_TAG"
   tags:
   - docker-runner
+  dependencies:
+  - compile
   script:
   - mv out/build/GitLabAlpineMasterBranch/docs/html public
   artifacts:
