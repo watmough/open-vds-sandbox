@@ -295,7 +295,7 @@ VolumeDataPage* VolumeDataPageAccessorImpl::CreatePage(int64_t chunk)
   return page;
 }
 
-VolumeDataPage* VolumeDataPageAccessorImpl::PrepareReadPage(int64_t chunk, Error &error)
+VolumeDataPageImpl* VolumeDataPageAccessorImpl::PrepareReadPage(int64_t chunk, Error &error)
 {
   std::unique_lock<std::mutex> pageListMutexLock(m_pagesMutex);
 
@@ -380,11 +380,9 @@ VolumeDataPage* VolumeDataPageAccessorImpl::PrepareReadPage(int64_t chunk, Error
   return page;
 }
 
-bool VolumeDataPageAccessorImpl::ReadPreparedPaged(VolumeDataPage* page)
+bool VolumeDataPageAccessorImpl::ReadPreparedPage(VolumeDataPageImpl* pageImpl)
 {
   std::unique_lock<std::mutex> pageListMutexLock(m_pagesMutex, std::defer_lock);
-
-  VolumeDataPageImpl *pageImpl = static_cast<VolumeDataPageImpl *>(page);
 
   if (!pageImpl->RequestPrepared())
     return pageImpl->GetErrorInternal().code == 0;
@@ -496,20 +494,13 @@ bool VolumeDataPageAccessorImpl::ReadPreparedPaged(VolumeDataPage* page)
   if (pageImpl->GetErrorInternal().code)
     return false;
 
-  if(!m_layer)
-  {
-    page = nullptr;
-  }
-
   LimitPageListSize(m_maxPages, pageListMutexLock);
   return m_layer != nullptr;
 }
 
-void VolumeDataPageAccessorImpl::CancelPreparedReadPage(VolumeDataPage* page)
+void VolumeDataPageAccessorImpl::CancelPreparedReadPage(VolumeDataPageImpl* pageImpl)
 {
   std::unique_lock<std::mutex> pageListMutexLock(m_pagesMutex);
-
-  VolumeDataPageImpl *pageImpl = static_cast<VolumeDataPageImpl *>(page);
 
   pageImpl->UnPin();
   if (pageImpl->IsPinned())
@@ -590,10 +581,10 @@ VolumeDataPage* VolumeDataPageAccessorImpl::ReadPage(int64_t chunk)
 
   Error error;
 
-  VolumeDataPage *page = PrepareReadPage(chunk, error);
+  VolumeDataPageImpl *page = PrepareReadPage(chunk, error);
   if (page)
   {
-    (void)ReadPreparedPaged(page);
+    (void)ReadPreparedPage(page);
   }
   return page;
 }

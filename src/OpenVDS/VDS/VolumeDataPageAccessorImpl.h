@@ -97,9 +97,9 @@ public:
   int   RemoveReference() override;
   int   GetReferenceCount() const { return m_references.load(); }
 
-  VolumeDataPage* PrepareReadPage(int64_t chunk, Error &error);
-  bool ReadPreparedPaged(VolumeDataPage *page);
-  void CancelPreparedReadPage(VolumeDataPage *page);
+  VolumeDataPageImpl* PrepareReadPage(int64_t chunk, Error &error);
+  bool ReadPreparedPage(VolumeDataPageImpl *page);
+  void CancelPreparedReadPage(VolumeDataPageImpl *page);
 
   int   GetMaxPages() override;
   void  SetMaxPages(int maxPages) override;
