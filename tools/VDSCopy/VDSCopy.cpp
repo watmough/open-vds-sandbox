@@ -28,10 +28,100 @@ std::string getCompressionMethodString(OpenVDS::CompressionMethod compressionMet
   };
   return names[int(compressionMethod)];
 }
+
 inline char asciitolower(char in) {
   if (in <= 'Z' && in >= 'A')
     return in - ('Z' - 'z');
   return in;
+}
+
+bool
+DimensionGroupFromString(std::string const& dimensionGroupString, OpenVDS::DimensionsND &dimensionGroup)
+{
+  if (dimensionGroupString == "012") 
+    dimensionGroup = OpenVDS::DimensionsND::Dimensions_012;
+  else if (dimensionGroupString == "013")
+    dimensionGroup = OpenVDS::DimensionsND::Dimensions_013;
+  else if (dimensionGroupString == "014")
+    dimensionGroup = OpenVDS::DimensionsND::Dimensions_014;
+  else if (dimensionGroupString == "015")
+    dimensionGroup = OpenVDS::DimensionsND::Dimensions_015;
+  else if (dimensionGroupString == "123")
+    dimensionGroup = OpenVDS::DimensionsND::Dimensions_123;
+  else if (dimensionGroupString == "124")
+    dimensionGroup = OpenVDS::DimensionsND::Dimensions_124;
+  else if (dimensionGroupString == "125")
+    dimensionGroup = OpenVDS::DimensionsND::Dimensions_125;
+  else if (dimensionGroupString == "134")
+    dimensionGroup = OpenVDS::DimensionsND::Dimensions_134;
+  else if (dimensionGroupString == "135")
+    dimensionGroup = OpenVDS::DimensionsND::Dimensions_135;
+  else if (dimensionGroupString == "145")
+    dimensionGroup = OpenVDS::DimensionsND::Dimensions_145;
+  else if (dimensionGroupString == "234")
+    dimensionGroup = OpenVDS::DimensionsND::Dimensions_234;
+  else if (dimensionGroupString == "235")
+    dimensionGroup = OpenVDS::DimensionsND::Dimensions_235;
+  else if (dimensionGroupString == "245")
+    dimensionGroup = OpenVDS::DimensionsND::Dimensions_245;
+  else if (dimensionGroupString == "345")
+    dimensionGroup = OpenVDS::DimensionsND::Dimensions_345;
+  else if (dimensionGroupString == "01")
+    dimensionGroup = OpenVDS::DimensionsND::Dimensions_01;
+  else if (dimensionGroupString == "02")
+    dimensionGroup = OpenVDS::DimensionsND::Dimensions_02;
+  else if (dimensionGroupString == "03")
+    dimensionGroup = OpenVDS::DimensionsND::Dimensions_03;
+  else if (dimensionGroupString == "04")
+    dimensionGroup = OpenVDS::DimensionsND::Dimensions_04;
+  else if (dimensionGroupString == "05")
+    dimensionGroup = OpenVDS::DimensionsND::Dimensions_05;
+  else if (dimensionGroupString == "12")
+    dimensionGroup = OpenVDS::DimensionsND::Dimensions_12;
+  else if (dimensionGroupString == "13")
+    dimensionGroup = OpenVDS::DimensionsND::Dimensions_13;
+  else if (dimensionGroupString == "04")
+    dimensionGroup = OpenVDS::DimensionsND::Dimensions_14;
+  else if (dimensionGroupString == "15")
+    dimensionGroup = OpenVDS::DimensionsND::Dimensions_15;
+  else if (dimensionGroupString == "23")
+    dimensionGroup = OpenVDS::DimensionsND::Dimensions_23;
+  else if (dimensionGroupString == "24")
+    dimensionGroup = OpenVDS::DimensionsND::Dimensions_24;
+  else if (dimensionGroupString == "25")
+    dimensionGroup = OpenVDS::DimensionsND::Dimensions_25;
+  else if (dimensionGroupString == "34")
+    dimensionGroup = OpenVDS::DimensionsND::Dimensions_34;
+  else if (dimensionGroupString == "35")
+    dimensionGroup = OpenVDS::DimensionsND::Dimensions_35;
+  else if (dimensionGroupString == "45")
+    dimensionGroup = OpenVDS::DimensionsND::Dimensions_45;
+  else
+    return false;
+
+  return true;
+}
+
+bool AddDimensionGroups(OpenVDS::VolumeDataAccessManager &sourceAccessManager, OpenVDS::OutputPrinter &outputPrinter, std::vector<OpenVDS::DimensionsND> &dimensionGroups, std::vector<std::string> dimensionGroupStrings)
+{
+  for(auto const& dimensionGroupString : dimensionGroupStrings)
+  {
+    OpenVDS::DimensionsND
+      dimensionsND;
+
+    if(!DimensionGroupFromString(dimensionGroupString, dimensionsND))
+    {
+      outputPrinter.printError("DimensionGroup", "Unknown dimension group", dimensionGroupString);
+      return false;
+    }
+    if (sourceAccessManager.GetVDSProduceStatus(OpenVDS::DimensionsND(dimensionsND), 0, 0) == OpenVDS::VDSProduceStatus::Unavailable)
+    {
+      outputPrinter.printError("DimensionGroup", "Dimension group is unavailable", dimensionGroupString);
+      return false;
+    }
+    dimensionGroups.push_back(dimensionsND);
+  }
+  return true;
 }
 
 struct CopyError
@@ -80,6 +170,8 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
   std::vector<std::string> urlarg;
   std::string sourceConnection;
   std::string destinationConnection;
+  std::vector<std::string> dimensionGroupStrings;
+  std::vector<std::string> additionalDimensionGroupStrings;
   std::string compressionMethodString;
   float compressionTolerance = std::nanf("nan");
 
@@ -106,6 +198,9 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
   options.add_option("", "", "urls", "Urls with vendor specific protocol.", cxxopts::value<std::vector<std::string>>(urlarg), "<string>");
   options.add_option("", "s", "source-connection", "Vendor specific connection string.", cxxopts::value<std::string>(sourceConnection), "<string>");
   options.add_option("", "d", "destination-connection", "Vendor specific connection string.", cxxopts::value<std::string>(destinationConnection), "<string>");
+
+  options.add_option("", "g", "dimension-group", "Dimension group to copy. Multiple dimension groups can be specified by repeating this option. This overrides the default dimension groups to copy.", cxxopts::value<std::vector<std::string>>(dimensionGroupStrings), "<string>");
+  options.add_option("", "a", "additional-dimension-group", "Additional dimension group to copy. Multiple additional dimension groups can be specified by repeating this option.", cxxopts::value<std::vector<std::string>>(additionalDimensionGroupStrings), "<string>");
 
   options.add_option("", "", "compression-method", std::string("Compression method. Supported compression methods are: ") + supportedCompressionMethods + ".", cxxopts::value<std::string>(compressionMethodString), "<string>");
   options.add_option("", "", "tolerance", "This parameter specifies the compression tolerance when using the wavelet compression method. This value is the maximum deviation from the original data value when the data is converted to 8-bit using the value range. A value of 1 means the maximum allowable loss is the same as quantizing to 8-bit (but the average loss will be much much lower than quantizing to 8-bit). It is not a good idea to directly relate the tolerance to the quality of the compressed data, as the average loss will in general be an order of magnitude lower than the allowable loss.", cxxopts::value<float>(compressionTolerance), "<value>");
@@ -194,6 +289,32 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
     return EXIT_FAILURE;
   }
 
+  auto sourceAccessManager = OpenVDS::GetAccessManager(sourceHandle);
+
+  std::vector<OpenVDS::DimensionsND>
+    dimensionGroups;
+
+  if(dimensionGroupStrings.empty())
+  {
+    for (int dim = 0; dim <= OpenVDS::DimensionsND::Dimensions_45; dim++)
+    {
+      auto dimensionGroup = OpenVDS::DimensionsND(dim);
+    
+      if (sourceAccessManager.GetVDSProduceStatus(dimensionGroup, 0, 0) == OpenVDS::VDSProduceStatus::Normal)
+      {
+        dimensionGroups.push_back(dimensionGroup);
+      }
+    }
+  }
+  else
+  {
+    if(!AddDimensionGroups(sourceAccessManager, outputPrinter, dimensionGroups, dimensionGroupStrings))
+      return EXIT_FAILURE;
+  }
+
+  if(!AddDimensionGroups(sourceAccessManager, outputPrinter, dimensionGroups, additionalDimensionGroupStrings))
+    return EXIT_FAILURE;
+
   if (std::isnan(compressionTolerance))
   {
     compressionTolerance = OpenVDS::GetCompressionTolerance(sourceHandle);
@@ -269,26 +390,24 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
       outputPrinter.printError("VDS", fmt::format("Could not create VDS {}", destinationUrl), error.string);
       return EXIT_FAILURE;
     }
-
   }
 
-  outputPrinter.printVersion("VDSCopy");
-
-  auto sourceAccessManager = OpenVDS::GetAccessManager(sourceHandle);
   auto destinationAccessManager = OpenVDS::GetAccessManager(destinationHandle);
+
+  outputPrinter.printVersion("VDSCopy");
 
   int64_t totalChunks = 0;
   int64_t doneChunks = 0;
   int percentage = 0;
   for (int lod = 0; lod <= layoutDescriptor.GetLODLevels(); lod++)
   {
-    for (int dim = 0; dim <= OpenVDS::DimensionsND::Dimensions_45; dim++)
+    for (auto dimensionGroup : dimensionGroups)
     {
       for (int channel = 0; channel < channelCount; channel++)
       {
-        if (sourceAccessManager.GetVDSProduceStatus(OpenVDS::DimensionsND(dim), lod, channel) == OpenVDS::VDSProduceStatus::Normal)
+        if (sourceAccessManager.GetVDSProduceStatus(dimensionGroup, lod, channel) != OpenVDS::VDSProduceStatus::Unavailable)
         {
-          totalChunks += sourceAccessManager.GetVDSChunkCount(OpenVDS::DimensionsND(dim), lod, channel);
+          totalChunks += sourceAccessManager.GetVDSChunkCount(dimensionGroup, lod, channel);
         }
       }
     }
@@ -316,16 +435,18 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
 
   for (int lod = 0; lod <= layoutDescriptor.GetLODLevels() && keep_processing; lod++)
   {
-    for (int dim = 0; dim <= OpenVDS::DimensionsND::Dimensions_45 && keep_processing; dim++)
+    for (auto dimensionGroup : dimensionGroups)
     {
+      if(!keep_processing) break;
+      
       std::vector<std::shared_ptr<OpenVDS::VolumeDataPageAccessor>> sourceAccessors(channelCount);
       std::vector<std::shared_ptr<OpenVDS::VolumeDataPageAccessor>> destinationAccessors(channelCount);
       for (int channel = 0; channel < channelCount && keep_processing; channel++)
       {
-        if (sourceAccessManager.GetVDSProduceStatus(OpenVDS::DimensionsND(dim), lod, channel) == OpenVDS::VDSProduceStatus::Normal)
+        if (sourceAccessManager.GetVDSProduceStatus(dimensionGroup, lod, channel) != OpenVDS::VDSProduceStatus::Unavailable)
         {
-          sourceAccessors[channel]      = sourceAccessManager.CreateVolumeDataPageAccessor(OpenVDS::DimensionsND(dim), lod, channel, OpenVDS::VolumeDataAccessManager::maxPagesDefault, OpenVDS::VolumeDataPageAccessor::AccessMode_ReadOnly);
-          destinationAccessors[channel] = destinationAccessManager.CreateVolumeDataPageAccessor(OpenVDS::DimensionsND(dim), lod, channel, OpenVDS::VolumeDataAccessManager::maxPagesDefault, resumeMode ? OpenVDS::VolumeDataPageAccessor::AccessMode_ReadWriteWithoutLODGeneration : OpenVDS::VolumeDataPageAccessor::AccessMode_CreateWithoutLODGeneration);
+          sourceAccessors[channel]      = sourceAccessManager.CreateVolumeDataPageAccessor(dimensionGroup, lod, channel, OpenVDS::VolumeDataAccessManager::maxPagesDefault, OpenVDS::VolumeDataPageAccessor::AccessMode_ReadOnly);
+          destinationAccessors[channel] = destinationAccessManager.CreateVolumeDataPageAccessor(dimensionGroup, lod, channel, OpenVDS::VolumeDataAccessManager::maxPagesDefault, resumeMode ? OpenVDS::VolumeDataPageAccessor::AccessMode_ReadWriteWithoutLODGeneration : OpenVDS::VolumeDataPageAccessor::AccessMode_CreateWithoutLODGeneration);
         }
       }
 

@@ -7,10 +7,12 @@ Usage:
 VDSCopy [OPTION...] <source_url> <destination_url>
 ```
 
-| Option                        | Decription |
-|-------------------------------|------------|
-|  -s, --source-connection      | Vendor specific connection string. |
-|  -d, --destination-connection | Vendor specific connection string. |
+| Option                                     | Decription |
+|--------------------------------------------|------------|
+|  -s, --source-connection                   | Vendor specific connection string. |
+|  -d, --destination-connection              | Vendor specific connection string. |
+|  -g, --dimension-group <string>            | Dimension group to copy. Multiple dimension groups can be specified by repeating this option. This overrides the default dimension groups to copy. |
+|  -a, --additional-dimension-group <string> | Additional dimension group to copy. Multiple additional dimension groups can be specified by repeating this option. |
 | --compression-method          | Compression method. Supported compression methods are: None, RLE, Zip. |
 | --tolerance                   | This parameter specifies the compression tolerance when using the wavelet compression method. This value is the maximum deviation from the original data value when the data is converted to 8-bit using the value range. A value of 1 means the maximum allowable loss is the same as quantizing to 8-bit (but the average loss will be much much lower than quantizing to 8-bit). It is not a good idea to directly relate the tolerance to the quality of the compressed data, as the average loss will in general be an order of magnitude lower than the allowable loss. |
 |     --resume                  | Resume a copy of a previous partial copy. |
@@ -32,6 +34,9 @@ VDSCopy does not handle persistentIDs. It is therefore necessary to append any p
 
 For more information about the ``[source|destination]_url`` and ``--[source|destination]-connection`` parameter please see:
 http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/seismic/open-vds/connection.html
+
+VDSCopy can add additional dimension groups that are not stored in the original file using the ``--additional-dimension-group`` option (short form ``-a``). This can e.g. be used to increase performance of access to 2D subsets (slices) at the cost of storing additional copies of the data. It is also possible to selectively copy dimension groups using the ``--dimension-group``option (short form ``-g``) in case you don't want the copy to have all the dimension groups of the original.
+
 Some examples:
 
 ```
@@ -55,6 +60,17 @@ $ VDSCopy.exe --compression-method Zip local_file.vds s3://openvds-test/volve
 ```
 This will copy the vds in local_file.vds to the s3 bucket `openvds-test` and name the dataset volve.
 But it will change the compression method used in the destination dataset to Zip.
+
+```
+$ VDSCopy.exe -a 01 -a 02 -a 12 local_file.vds local_file_with_fast_slices.vds
+```
+This will copy the vds in local_file.vds to local_file_with_fast_slices.vds, producing a larger file that
+ has additional dimension groups for fast access to 2D slices of the dataset.
+
+```
+$ VDSCopy.exe -g 012 local_file_with_fast_slices.vds local_file.vds
+```
+This will copy only dimension group 012 of the vds in local_file_with_fast_slices.vds to local_file.vds, producing a smaller file that doesn't have additional dimension groups for fast access to 2D slices of the dataset.
 
 *Note:* Currently VDSCopy will decompress the data. If a dataset with Wavelet lossy compression is copied with OpenVDS+, this will result in a recompression of the data with a lossy compression.
 
