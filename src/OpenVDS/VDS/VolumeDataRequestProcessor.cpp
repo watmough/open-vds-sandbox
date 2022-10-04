@@ -376,8 +376,8 @@ int64_t VolumeDataRequestProcessor::RequestRemap(VolumeDataPageImpl& targetPage,
     else if(!sourceHash.IsConstant() || sharedData->m_constantValueHash != uint64_t(sourceHash))
     {
       sharedData->m_constantValueHash = VolumeDataHash::UNKNOWN;
-      sharedDataLock.unlock();
     }
+    sharedDataLock.unlock();
 
     int globalSourceSize[Dimensionality_Max];
 

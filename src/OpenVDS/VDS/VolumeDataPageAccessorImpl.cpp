@@ -422,6 +422,8 @@ bool VolumeDataPageAccessorImpl::ReadPreparedPaged(VolumeDataPage* page)
         m_logger.LogError(fmt::format("Failed when waiting for chunk: {}", error.string.c_str()));
         return false;
       }
+      
+      pageListMutexLock.lock();
     }
     else
     {
