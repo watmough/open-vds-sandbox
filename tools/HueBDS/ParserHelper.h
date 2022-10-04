@@ -1,5 +1,3 @@
-#ifndef PARSERHELPER_H
-#define PARSERHELPER_H
 /****************************************************************************
 ** Copyright 2022 The Open Group
 ** Copyright 2022 Bluware, Inc.
@@ -16,6 +14,9 @@
 ** See the License for the specific language governing permissions and
 ** limitations under the License.
 ****************************************************************************/
+
+#ifndef PARSERHELPER_H
+#define PARSERHELPER_H
 
 #include <cstdlib>
 #include <cstdio>
