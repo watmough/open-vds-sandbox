@@ -723,14 +723,14 @@ void VolumeDataAccessManagerImpl::Flush(ErrorHandler errorHandler, Error* error)
   }
 }
 
-static bool isPureCopy(const VolumeDataChunk &a, const VolumeDataChunk &b)
+static bool isPureCopy(const VolumeDataLayer *a, const VolumeDataLayer *b)
 {
-  auto sourceCompressionMethod = a.layer->GetEffectiveCompressionMethod();
-  if (sourceCompressionMethod == b.layer->GetEffectiveCompressionMethod())
+  auto sourceCompressionMethod = a->GetEffectiveCompressionMethod();
+  if (sourceCompressionMethod == b->GetEffectiveCompressionMethod())
   {
     if (CompressionMethod_IsWavelet(sourceCompressionMethod))
     {
-      return a.layer->GetEffectiveCompressionTolerance() == b.layer->GetEffectiveCompressionTolerance();
+      return a->GetEffectiveCompressionTolerance() == b->GetEffectiveCompressionTolerance();
     }
     return true;
   }
@@ -741,73 +741,104 @@ void VolumeDataAccessManagerImpl::AddCopyPageJob(VolumeDataChunk& chunk, VolumeD
 {
   Error error;
   VolumeDataChunk sourceChunk = { source.GetLayer(), chunk.index };
+  VolumeDataHash sourceVolumeDataHash = source.GetChunkVolumeDataHash(chunk.index);
 
-  if (source.GetChunkVolumeDataHash(chunk.index) == destination.GetChunkVolumeDataHash(chunk.index))
+  if ((source.GetLayer()->GetProduceStatus() == VolumeDataLayer::ProduceStatus_Normal || sourceVolumeDataHash.IsDefined()) &&
+      sourceVolumeDataHash == destination.GetChunkVolumeDataHash(chunk.index))
   {
     return;
   }
 
-  source.GetManager()->GetVolumeDataStore()->PrepareReadChunk(sourceChunk, sourceChunk.layer->GetEffectiveWaveletAdaptiveLoadLevel(), error);
-  std::unique_lock<std::mutex> lock(m_mutex);
-  if (error.code)
-  {
-    std::string url = fmt::format("Chunk: {}, Channel: {} LOD: {}", chunk.index, chunk.layer->GetChannelIndex(), chunk.layer->GetLOD());
-    AddUploadError(error, url);
-    return;
-  }
-  auto threadCount = m_requestProcessor->GetThreadPool().ThreadCount();
+  std::unique_lock<std::mutex> lock(m_mutex, std::defer_lock);
 
-  source.AddReference();
-  destination.AddReference();
-  copyState.jobs.emplace_back(chunk, m_requestProcessor->GetThreadPool().Enqueue([this, chunk, sourceChunk, threadCount, &destination, &source]
+  if(source.GetLayer()->GetProduceStatus() == VolumeDataLayer::ProduceStatus_Normal && isPureCopy(source.GetLayer(), destination.GetLayer()))
+  {
+    source.GetManager()->GetVolumeDataStore()->PrepareReadChunk(sourceChunk, sourceChunk.layer->GetEffectiveWaveletAdaptiveLoadLevel(), error);
+    lock.lock();
+    if (error.code)
     {
-      std::unique_ptr<VolumeDataPageAccessorImpl, void(*)(VolumeDataPageAccessorImpl *)> sourceDeleter(&source, [](VolumeDataPageAccessorImpl *pageAccessor) { if(pageAccessor->RemoveReference() == 0) { pageAccessor->GetManager()->DestroyVolumeDataPageAccessor(pageAccessor); } } );
-      std::unique_ptr<VolumeDataPageAccessorImpl, void(*)(VolumeDataPageAccessorImpl *)> destinationDeleter(&destination, [](VolumeDataPageAccessorImpl *pageAccessor) { if(pageAccessor->RemoveReference() == 0) { pageAccessor->GetManager()->DestroyVolumeDataPageAccessor(pageAccessor); } } );
+      std::string url = fmt::format("Chunk: {}, Channel: {} LOD: {}", chunk.index, chunk.layer->GetChannelIndex(), chunk.layer->GetLOD());
+      AddUploadError(error, url);
+      return;
+    }
+    auto threadCount = m_requestProcessor->GetThreadPool().ThreadCount();
 
-      Error error;
-      std::vector<uint8_t> serializedData;
-      std::vector<uint8_t> metadata;
-      CompressionInfo compressionInfo;
+    source.AddReference();
+    destination.AddReference();
+    copyState.jobs.emplace_back(chunk, m_requestProcessor->GetThreadPool().Enqueue([this, chunk, sourceChunk, threadCount, &destination, &source]
+      {
+        std::unique_ptr<VolumeDataPageAccessorImpl, void(*)(VolumeDataPageAccessorImpl *)> sourceDeleter(&source, [](VolumeDataPageAccessorImpl *pageAccessor) { if(pageAccessor->RemoveReference() == 0) { pageAccessor->GetManager()->DestroyVolumeDataPageAccessor(pageAccessor); } } );
+        std::unique_ptr<VolumeDataPageAccessorImpl, void(*)(VolumeDataPageAccessorImpl *)> destinationDeleter(&destination, [](VolumeDataPageAccessorImpl *pageAccessor) { if(pageAccessor->RemoveReference() == 0) { pageAccessor->GetManager()->DestroyVolumeDataPageAccessor(pageAccessor); } } );
 
-      auto sourceDataStore = source.GetManager()->GetVolumeDataStore();
-      sourceDataStore->ReadChunk(sourceChunk, sourceChunk.layer->GetEffectiveWaveletAdaptiveLoadLevel(), serializedData, metadata, compressionInfo, error);
-      if (error.code)
-      {
-        return error;
-      }
+        Error error;
+        std::vector<uint8_t> serializedData;
+        std::vector<uint8_t> metadata;
+        CompressionInfo compressionInfo;
 
-      uint64_t hash = VolumeDataHash::UNKNOWN;
-      if(metadata.size() >= sizeof(uint64_t))
-      {
-        memcpy(&hash, metadata.data(), sizeof(uint64_t));
-        if(hash == VolumeDataHash::UNKNOWN)
-        {
-          // We don't copy chunks that have not been written in the source
-          return error;
-        }
-      }
-
-      if (isPureCopy(chunk, sourceChunk))
-      {
-        GetVolumeDataStore()->WriteChunk(chunk, serializedData, metadata);
-      }
-      else
-      {
-        auto destFormat = PrivateGetLayout()->GetChannelFormat(chunk.layer->GetChannelIndex());
-        DataBlock destDataBlock;
-        std::vector<uint8_t> deserializedData;
-        uint64_t hash = VolumeDataHash::UNKNOWN;
-        sourceDataStore->DeserializeVolumeData(sourceChunk, serializedData, metadata, compressionInfo.GetCompressionMethod(), sourceChunk.layer->GetEffectiveWaveletAdaptiveLoadLevel(), destFormat, destDataBlock, deserializedData, hash, error);
+        auto sourceDataStore = source.GetManager()->GetVolumeDataStore();
+        sourceDataStore->ReadChunk(sourceChunk, sourceChunk.layer->GetEffectiveWaveletAdaptiveLoadLevel(), serializedData, metadata, compressionInfo, error);
         if (error.code)
         {
           return error;
         }
 
-        destination.RequestWritePage(chunk.index, destDataBlock, deserializedData, hash);
-      }
-      PrivateGetLayout()->CompletePendingWriteChunkRequests(int32_t(threadCount));
-      return error;
-    }));
+        uint64_t hash = VolumeDataHash::UNKNOWN;
+        if(metadata.size() >= sizeof(uint64_t))
+        {
+          memcpy(&hash, metadata.data(), sizeof(uint64_t));
+          if(hash == VolumeDataHash::UNKNOWN)
+          {
+            // We don't copy chunks that have not been written in the source
+            return error;
+          }
+        }
+
+        GetVolumeDataStore()->WriteChunk(chunk, serializedData, metadata);
+
+        PrivateGetLayout()->CompletePendingWriteChunkRequests(int32_t(threadCount));
+        return error;
+      }));
+  }
+  else
+  {
+    Error error;
+
+    VolumeDataPageImpl *page = source.PrepareReadPage(chunk.index, error);
+    lock.lock();
+    if (error.code)
+    {
+      std::string url = fmt::format("Chunk: {}, Channel: {} LOD: {}", chunk.index, chunk.layer->GetChannelIndex(), chunk.layer->GetLOD());
+      AddUploadError(error, url);
+      return;
+    }
+    auto threadCount = m_requestProcessor->GetThreadPool().ThreadCount();
+
+    source.AddReference();
+    destination.AddReference();
+    copyState.jobs.emplace_back(chunk, m_requestProcessor->GetThreadPool().Enqueue([this, chunk, page, threadCount, &destination, &source]
+      {
+        std::unique_ptr<VolumeDataPageAccessorImpl, void(*)(VolumeDataPageAccessorImpl *)> sourceDeleter(&source, [](VolumeDataPageAccessorImpl *pageAccessor) { if(pageAccessor->RemoveReference() == 0) { pageAccessor->GetManager()->DestroyVolumeDataPageAccessor(pageAccessor); } } );
+        std::unique_ptr<VolumeDataPageAccessorImpl, void(*)(VolumeDataPageAccessorImpl *)> destinationDeleter(&destination, [](VolumeDataPageAccessorImpl *pageAccessor) { if(pageAccessor->RemoveReference() == 0) { pageAccessor->GetManager()->DestroyVolumeDataPageAccessor(pageAccessor); } } );
+
+        Error error;
+        std::vector<uint8_t> serializedData;
+        std::vector<uint8_t> metadata;
+        CompressionInfo compressionInfo;
+
+        source.ReadPreparedPage(page);
+        error = page->GetErrorInternal();
+        if (error.code)
+        {
+          return error;
+        }
+
+        destination.RequestWritePage(chunk.index, page->GetDataBlock(), page->GetBLOBInternal(), page->GetVolumeDataHash());
+        page->Release();
+        
+        PrivateGetLayout()->CompletePendingWriteChunkRequests(int32_t(threadCount));
+        return error;
+      }));
+  }
 
   int minConcurrentCopyJobs = int(std::max(size_t(16), m_requestProcessor->GetThreadPool().ThreadCount()));
   if (int(copyState.jobs.size()) > minConcurrentCopyJobs * 2)

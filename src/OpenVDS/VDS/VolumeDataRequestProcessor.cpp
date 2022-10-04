@@ -377,6 +377,7 @@ int64_t VolumeDataRequestProcessor::RequestRemap(VolumeDataPageImpl& targetPage,
     {
       sharedData->m_constantValueHash = VolumeDataHash::UNKNOWN;
     }
+    
     sharedDataLock.unlock();
 
     int globalSourceSize[Dimensionality_Max];
@@ -1779,7 +1780,7 @@ static Error ProcessPageInJob(Job *job, int pageIndex, VolumeDataPageAccessorImp
     jobPage.page = nullptr;
     pageAccessor->CancelPreparedReadPage(page);
   }
-  else if (pageAccessor->ReadPreparedPaged(jobPage.page))
+  else if (pageAccessor->ReadPreparedPage(jobPage.page))
   {
     processor(jobPage.page, jobPage.chunk, error);
   }

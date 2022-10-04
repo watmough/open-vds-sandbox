@@ -97,6 +97,9 @@ public:
   void          WriteBack(VolumeDataLayer const *volumeDataLayer, std::unique_lock<std::mutex> &pageListMutexLock);
   void *        GetBufferInternal(int(&sizeND)[Dimensionality_Max], int(&pitchND)[Dimensionality_Max], bool isReadWrite);
   void *        GetRawBufferInternal() { return m_blob.data(); }
+  const std::vector<uint8_t> &
+                GetBLOBInternal() const { return m_blob; }
+  
   bool          IsCopyMarginNeeded(VolumeDataPageImpl *targetPage);
   void          CopyMargin(VolumeDataPageImpl *targetPage);
   void          WriteIntoLOD();
