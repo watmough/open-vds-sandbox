@@ -1,5 +1,3 @@
-#ifndef UTIL_H
-#define UTIL_H
 /****************************************************************************
 ** Copyright 2022 The Open Group
 ** Copyright 2022 Bluware, Inc.
@@ -17,6 +15,8 @@
 ** limitations under the License.
 ****************************************************************************/
 
+#ifndef UTIL_H
+#define UTIL_H
 
 #include "HueBulkDataStoreFileTypes.h"
 #include <string.h>
