@@ -1746,27 +1746,14 @@ createImportInformationMetadata(const std::vector<DataProvider> &dataProviders, 
   std::string importTimeStamp = fmt::format("{:04d}-{:02d}-{:02d}T{:02d}:{:02d}:{:02d}.{:03d}Z", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec, millis);
 
   // Join all the input names into a single comma delimited string
-  const char pathSeparators[] = { '/', '\\', ':' };
-  std::stringstream
-    allNames;
-  size_t
-    nameCount = 0;
-  for (auto iter = dataProviders.begin(); iter != dataProviders.end(); ++iter, ++nameCount)
+  std::stringstream allNames;
+  for (auto it = dataProviders.begin(); it != dataProviders.end(); ++it)
   {
-    // Strip the path from the file/object name
-    std::string
-      currentName = iter->FileOrObjectName();
-    for (auto pathSeparator : pathSeparators)
-    {
-      size_t pos = currentName.rfind(pathSeparator);
-      if (pos != std::string::npos) currentName = currentName.substr(pos + 1);
-    }
-
-    allNames << currentName;
-    if (nameCount < dataProviders.size() - 1)
+    if(it != dataProviders.begin())
     {
       allNames << ",";
     }
+    allNames << it->GetFileOrObjectName();
   }
 
   std::string inputFileName = allNames.str();

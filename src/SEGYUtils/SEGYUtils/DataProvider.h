@@ -139,9 +139,58 @@ struct DataProvider
     return "";
   }
 
-  std::string FileOrObjectName() const
+  static std::string URLDecode(const std::string & url)
   {
-    return m_file ? m_file->FileName() : m_url;
+    std::string result;
+    result.reserve(url.size());
+    int len = int(url.size());
+
+    for(int i = 0; i < len; i++)
+    {
+      if(url[i] == '+')
+      {
+        result.push_back(' ');
+      }
+      else if(url[i] == '%')
+      {
+        char temp[5] = "0x";
+        if(i + 1 < (int)url.size()) temp[2] = url[++i];
+        if(i + 1 < (int)url.size()) temp[3] = url[++i];
+        result.push_back(strtol(temp, NULL, 0));
+      }
+      else
+      {
+        result.push_back(url[i]);
+      }
+    }
+    return result;
+  }
+
+  std::string GetPathFromURL(std::string url) const
+  {
+    // Skip protocol if present
+    auto start = url.find_first_of(":/?#");
+    start = (start == std::string::npos || url[start] != ':') ? 0 : start + 1;
+    // Skip host if present
+    if(url.compare(start, 2, "//") == 0)
+    {
+      start = url.find_first_of("/?#", start + 2);
+    }
+    // Stop at query or fragment
+    auto stop = url.find_first_of("?#", start);
+    return (stop == std::string::npos) ? url.substr(start) : url.substr(start, stop - start);
+  }
+
+  std::string GetPath() const
+  {
+    return m_file ? m_file->FileName() : URLDecode(GetPathFromURL(m_url));
+  }
+
+  std::string GetFileOrObjectName() const
+  {
+    std::string path = GetPath();
+    auto pos = path.find_last_of(":/\\");
+    return (pos == std::string::npos) ? path : path.substr(pos + 1);
   }
 
   std::unique_ptr<OpenVDS::File> m_file;
