@@ -65,3 +65,20 @@ TEST(SEGYScanTest, scan)
 
   EXPECT_TRUE(fileInfo.m_segmentInfoLists.front().back().m_traceStop == fileInfo.m_traceCounts[0] - 1);
 }
+
+TEST(SEGYScanTest, GetFileOrObjectName)
+{
+  OpenVDS::Error error;
+  DataProvider
+    dataProvider("https://myaccount.blob.core.windows.net/container/path/mysegy.segy?sp=r&st=2022-09-30T09%3A32%3A03Z&se=2022-09-30T17%3A32%3A03Z&spr=https&sv=2021-06-08&sr=b&sig=redacted", nullptr, error);
+  std::string objectName = dataProvider.GetFileOrObjectName();
+  EXPECT_EQ(objectName, "mysegy.segy");
+  DataProvider
+    dataProvider2("/myaccount.blob.core.windows.net/container/path/mysegy+.segy", nullptr, error);
+  std::string objectName2 = dataProvider2.GetFileOrObjectName();
+  EXPECT_EQ(objectName2, "mysegy .segy");
+  DataProvider
+    dataProvider3("/myaccount.blob.core.windows.net/container/path/mysegy%23.segy#?#?", nullptr, error);
+  std::string objectName3 = dataProvider3.GetFileOrObjectName();
+  EXPECT_EQ(objectName3, "mysegy#.segy");
+}
