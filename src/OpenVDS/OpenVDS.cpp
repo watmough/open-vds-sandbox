@@ -106,31 +106,31 @@ static std::string removeProtocol(const std::string &str, const std::string &lit
   return std::string(str.begin() + literal.size(), str.end());
 }
 
-static std::string urlDecode(const std::string & url)
+static std::string URLDecode(const std::string & url)
 {
-  const char *input = url.data();
-  std::vector<char> output;
-  output.reserve(url.size());
+  std::string result;
+  result.reserve(url.size());
+  int len = int(url.size());
 
-  for(int i = 0; i < (int)url.size(); i++)
+  for(int i = 0; i < len; i++)
   {
-    if(input[i] == '+')
+    if(url[i] == '+')
     {
-      output.push_back(' ');
+      result.push_back(' ');
     }
-    else if(input[i] == '%')
+    else if(url[i] == '%')
     {
       char temp[5] = "0x";
-      if(i + 1 < (int)url.size()) temp[2] = input[++i];
-      if(i + 1 < (int)url.size()) temp[3] = input[++i];
-      output.push_back(atoi(temp));
+      if(i + 1 < (int)url.size()) temp[2] = url[++i];
+      if(i + 1 < (int)url.size()) temp[3] = url[++i];
+      result.push_back(strtol(temp, NULL, 0));
     }
     else
     {
-      output.push_back(input[i]);
+      result.push_back(url[i]);
     }
   }
-  return std::string(output.data(), output.data() + output.size());
+  return result;
 }
 
 static bool isTrue(const std::string& str)
@@ -443,14 +443,14 @@ static std::unique_ptr<OpenOptions> createHttpOpenOptions(const std::string & ur
 static std::unique_ptr<OpenOptions> createVDSFileOpenOptions(const std::string & url, const std::string & connectionString, Error& error)
 {
   std::unique_ptr<VDSFileOpenOptions> openOptions(new VDSFileOpenOptions());
-  openOptions->fileName = urlDecode(url);
+  openOptions->fileName = URLDecode(url);
   return openOptions;
 }
 
 static std::unique_ptr<OpenOptions> createInMemoryOpenOptions(const std::string & url, const std::string & connectionString, Error& error)
 {
   std::unique_ptr<InMemoryOpenOptions> openOptions(new InMemoryOpenOptions());
-  openOptions->name =  urlDecode(url);
+  openOptions->name =  URLDecode(url);
   return openOptions;
 }
 
