@@ -85,6 +85,8 @@ struct SEGYFileInfo
 
   double        m_sampleIntervalMilliseconds;
 
+  int           m_detectedScale;
+
   // per-file trace counts
   std::vector<int64_t>
                 m_traceCounts;
@@ -126,6 +128,8 @@ struct SEGYFileInfo
   OPENVDS_EXPORT bool Is2D() const;
 
   OPENVDS_EXPORT bool IsOffsetSorted() const;
+
+  OPENVDS_EXPORT static double convertScaleToScaleFactor(int scale);
 };
 
 #endif  // SEGY_FILE_INFO_H
