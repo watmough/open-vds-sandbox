@@ -60,6 +60,19 @@ SEGYFileInfo::IsOffsetSorted() const
   return m_segyType == SEGYType::PrestackOffsetSorted;
 }
 
+double SEGYFileInfo::convertScaleToScaleFactor(int scale)
+{
+  if (scale < 0)
+  {
+    return 1.0 / float(std::abs(scale));
+  }
+  else if (scale > 0)
+  {
+    return 1.0 * float(std::abs(scale));
+  }
+  return 1.0;
+}
+
 SEGYBinInfo
 SEGYFileInfo::readBinInfoFromHeader(const char *header, SEGYBinInfoHeaderFields const &headerFields, Endianness endianness, int segmentTraceIndex) const
 {
@@ -74,14 +87,7 @@ SEGYFileInfo::readBinInfoFromHeader(const char *header, SEGYBinInfoHeaderFields 
   if(headerFields.m_scaleOverride == 0.0)
   {
     int scale = ReadFieldFromHeader(header, TraceHeader::CoordinateScaleHeaderField, endianness);
-    if(scale < 0)
-    {
-      scaleFactor = 1.0 / float(std::abs(scale));
-    }
-    else if(scale > 0)
-    {
-      scaleFactor = 1.0 * float(std::abs(scale));
-    }
+    scaleFactor = convertScaleToScaleFactor(scale);
   }
   else
   {
@@ -158,6 +164,8 @@ SEGYFileInfo::Scan(const std::vector<DataProvider>& dataProviders, OpenVDS::Erro
   m_startTimeMilliseconds = ReadFieldFromHeader(traceHeader, startTimeHeaderField, m_headerEndianness);
 
   m_sampleIntervalMilliseconds = ReadFieldFromHeader(binaryFileHeader, BinaryHeader::SampleIntervalHeaderField, m_headerEndianness) / 1000.0;
+
+  m_detectedScale = ReadFieldFromHeader(traceHeader, TraceHeader::CoordinateScaleHeaderField, m_headerEndianness);
 
   for (const auto& dataProvider : dataProviders)
   {

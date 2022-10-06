@@ -3124,6 +3124,13 @@ main(int argc, char* argv[])
       fileInfo.m_dataSampleFormatCode = overrideSampleFormat;
     }
 
+    if (fileInfo.m_detectedScale > 1 && scale == 0.0)
+    {
+      double scaleUsed = SEGYFileInfo::convertScaleToScaleFactor(fileInfo.m_detectedScale);
+      double proposedScale = SEGYFileInfo::convertScaleToScaleFactor(-fileInfo.m_detectedScale);
+      std::string warning = fmt::format("Detected scale factor: {} larger than 1.0 in SEG-Y. Usually this is an error. Instead try and add the argument: --scale {}", scaleUsed, proposedScale);
+      outputPrinter.printWarning("ScaleFactor", warning);
+    }
     // If we are in scan mode we serialize the result of the file scan either to a fileInfo file (if specified) or to stdout and exit
     if (scan)
     {
