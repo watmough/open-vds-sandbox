@@ -128,6 +128,26 @@ VolumeDataRegion::VolumeDataRegion(VolumeDataLayer const &volumeDataLayer, const
   m_chunksInRegion = modulo;
 }
 
+VolumeDataRegion::VolumeDataRegion(VolumeDataLayer const &volumeDataLayer, const IndexArray &chunkMin, const IndexArray &chunkMax, struct FromChunkMinMax)
+  : m_volumeDataLayer(&volumeDataLayer)
+{
+  int64_t modulo = 1;
+
+  for(int dimension = 0; dimension < ArraySize(m_chunkMin); dimension++)
+  {
+    m_chunkMin[dimension] = chunkMin[dimension];
+    m_chunkMax[dimension] = chunkMax[dimension];
+
+    m_layerModulo[dimension] = volumeDataLayer.m_modulo[dimension];
+    m_modulo[dimension] = modulo;
+    modulo *= m_chunkMax[dimension] - m_chunkMin[dimension] + 1;
+
+    assert(m_chunkMin[dimension] <= m_chunkMax[dimension]);
+  }
+
+  m_chunksInRegion = modulo;
+}
+
 VolumeDataRegion VolumeDataRegion::VolumeDataRegionOverlappingChunk(VolumeDataLayer const &volumeDataLayer, VolumeDataChunk const &volumeDataChunk, const IndexArray &offset)
 {
   IndexArray min;

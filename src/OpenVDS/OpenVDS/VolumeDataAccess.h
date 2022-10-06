@@ -152,6 +152,9 @@ public:
 protected:
                 VolumeDataPageAccessor() {}
   virtual      ~VolumeDataPageAccessor() {}
+
+  virtual int     GetChunkCountInSuperChunk(int64_t superChunkIndex) const = 0;
+  virtual void    GetChunkIndicesInSuperChunk(int64_t *chunkIndices, int64_t superChunkIndex) const = 0;
 public:
   virtual VolumeDataLayout const *GetLayout() const = 0;
 
@@ -203,6 +206,37 @@ public:
   /// The primary channel chunk index corresponding to the given chunk index for this VolumeDataPageAccessor.
   /// </returns>
   virtual int64_t GetPrimaryChannelChunkIndex(int64_t chunkIndex) const = 0;
+
+  /// <summary>
+  /// Get the number of super-chunks for this VolumeDataPageAccessor.
+  /// Each super-chunk is an overlapping block of chunks from the remap source of this VolumeDataPageAccessor and the chunks in this VolumeDataPageAccessor.
+  /// In order to produce the chunks as efficiently as possible (if there are more chunks than super-chunks), any code that iterates over all the chunks of
+  /// a page accessor should iterate over the super-chunks and then over the chunks within each super-chunk.
+  /// </summary>
+  /// <returns>
+  /// The number of super-chunks for this VolumeDataPageAccessor.
+  /// </returns>
+  virtual int64_t GetSuperChunkCount() const = 0;
+
+  /// <summary>
+  /// Get the list of chunks in the given super-chunk.
+  /// Each super-chunk is an overlapping block of chunks from the remap source of this VolumeDataPageAccessor and the chunks in this VolumeDataPageAccessor.
+  /// In order to produce the chunks as efficiently as possible (if there are more chunks than super-chunks), any code that iterates over all the chunks of
+  /// a page accessor should iterate over the super-chunks and then over the chunks within each super-chunk.
+  /// </summary>
+  /// <param name="superChunkIndex">
+  /// The super-chunk index for this VolumeDataPageAccessor that we want the list of chunks in.
+  /// </param>
+  /// <returns>
+  /// The list of chunks in the super-chunk
+  /// </returns>
+  std::vector<int64_t>
+  GetChunkIndicesInSuperChunk(int64_t superChunkIndex) const
+  {
+    std::vector<int64_t> chunkIndicesInSuperChunk(GetChunkCountInSuperChunk(superChunkIndex));
+    GetChunkIndicesInSuperChunk(chunkIndicesInSuperChunk.data(), superChunkIndex);
+    return chunkIndicesInSuperChunk;
+  }
 
   virtual int   AddReference() = 0;
   virtual int   RemoveReference() = 0;

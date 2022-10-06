@@ -463,4 +463,39 @@ int64_t VolumeDataPartition::GetTotalVoxels(bool isIncludeMargins) const
   }
   return nTotalLayerSize;
 }
+
+void VolumeDataPartition::GetChunkIndexMinMaxInSuperChunk(VolumeDataPartition const &superPartition, int64_t superChunk, IndexArray &chunkMin, IndexArray &chunkMax) const
+{
+  int
+    superChunkIndexArray[Dimensionality_Max];
+
+  superPartition.ChunkIndexToIndexArray(superChunk, superChunkIndexArray);
+
+  int
+    superChunkMin[Dimensionality_Max],
+    superChunkMax[Dimensionality_Max];
+
+  superPartition.GetChunkMinMax(superChunk, superChunkMin, superChunkMax, false);
+
+  for(int iDimension = 0; iDimension < Dimensionality_Max; iDimension++)
+  {
+    chunkMin[iDimension] = VoxelToIndex(superChunkMin[iDimension], iDimension);
+
+    // Check if this is the last super-chunk in this dimension
+    if(superChunkIndexArray[iDimension] == superPartition.GetNumChunksInDimension(iDimension) - 1)
+    {
+      // For the last super-chunk in the dimension, the max chunk (exclusive range) is the number of chunks in this dimension,
+      // we subtract one to make the range inclusive as expected by VolumeDataRegionFromChunkMinMax.
+      chunkMax[iDimension] = GetNumChunksInDimension(iDimension) - 1;
+    }
+    else
+    {
+      // The max chunk (exclusive range) is the chunk that the start of the next super-chunk in this dimension falls in,
+      // we subtract one to make the range inclusive as expected by VolumeDataRegionFromChunkMinMax.
+      chunkMax[iDimension] = VoxelToIndex(superChunkMax[iDimension], iDimension) - 1;
+    }
+
+    assert(chunkMax[iDimension] >= chunkMin[iDimension]);
+  }
+}
 }

@@ -20,6 +20,7 @@
 #include "VolumeDataChannelMapping.h"
 #include "VolumeDataAccessManagerImpl.h"
 #include "VolumeDataLayer.h"
+#include "VolumeDataRegion.h"
 #include "VolumeDataPageImpl.h"
 #include "VolumeDataStore.h"
 #include "MetadataManager.h"
@@ -70,6 +71,14 @@ VolumeDataPageAccessorImpl::~VolumeDataPageAccessorImpl()
       delete m_parentVolumeDataPageAccessor;
     }
   }
+}
+
+void
+VolumeDataPageAccessorImpl::CreateSuperPartition()
+{
+  assert(m_layer);
+  VolumeDataLayer const *remapFromLayer = m_layer->GetLayerToRemapFrom();
+  m_superPartition.reset(new VolumeDataPartition(VolumeDataPartition::StaticFindSuperPartition(*m_layer, *remapFromLayer)));
 }
 
 void
@@ -187,6 +196,40 @@ int64_t VolumeDataPageAccessorImpl::GetPrimaryChannelChunkIndex(int64_t chunkInd
   else
   {
     return chunkIndex;
+  }
+}
+
+int64_t VolumeDataPageAccessorImpl::GetSuperChunkCount() const
+{
+  EnsureSuperPartitionCreated();
+  return m_superPartition->GetTotalChunkCount();
+}
+
+int VolumeDataPageAccessorImpl::GetChunkCountInSuperChunk(int64_t superChunk) const
+{
+  EnsureSuperPartitionCreated();
+
+  IndexArray chunkMin, chunkMax;
+  m_layer->GetChunkIndexMinMaxInSuperChunk(*m_superPartition, superChunk, chunkMin, chunkMax);
+
+  VolumeDataRegion superChunkRegion = VolumeDataRegion::VolumeDataRegionFromChunkMinMax(*m_layer, chunkMin, chunkMax);
+
+  return superChunkRegion.GetNumChunksInRegion();
+}
+
+void VolumeDataPageAccessorImpl::GetChunkIndicesInSuperChunk(int64_t *chunkIndices, int64_t superChunk) const
+{
+  EnsureSuperPartitionCreated();
+
+  IndexArray chunkMin, chunkMax;
+  m_layer->GetChunkIndexMinMaxInSuperChunk(*m_superPartition, superChunk, chunkMin, chunkMax);
+
+  VolumeDataRegion superChunkRegion = VolumeDataRegion::VolumeDataRegionFromChunkMinMax(*m_layer, chunkMin, chunkMax);
+
+  int64_t numChunksInRegion = superChunkRegion.GetNumChunksInRegion();
+  for(int64_t chunkInRegion = 0; chunkInRegion < numChunksInRegion; chunkInRegion++)
+  {
+    chunkIndices[chunkInRegion] = superChunkRegion.GetChunkIndexInRegion(chunkInRegion);
   }
 }
 

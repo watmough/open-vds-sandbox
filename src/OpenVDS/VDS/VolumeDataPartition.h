@@ -25,6 +25,7 @@
 
 #include <assert.h>
 #include <cstddef>
+#include <vector>
 
 namespace OpenVDS
 {
@@ -139,6 +140,8 @@ public:
   void GetChunkMinMax(int64_t chunk, int32_t *min, int32_t *max, bool isIncludeMargin) const;
 
   void GetChunkVoxelSize(int64_t chunk, ChunkVoxelSize &size) const;
+
+  void GetChunkIndexMinMaxInSuperChunk(VolumeDataPartition const &superPartition, int64_t superChunk, IndexArray &chunkMin, IndexArray &chunkMax) const;
 
   static VolumeDataPartition StaticMapPartition(VolumeDataPartition const &primaryPartition, const VolumeDataChannelMapping *volumeDataChannelMapping, int32_t mappedValues);
 

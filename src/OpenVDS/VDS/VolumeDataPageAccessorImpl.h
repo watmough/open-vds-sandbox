@@ -46,6 +46,8 @@ private:
   VolumeDataAccessManagerImpl *m_accessManager;
   VolumeDataPageAccessorImpl *m_parentVolumeDataPageAccessor;
   VolumeDataLayer const *m_layer;
+  std::unique_ptr<VolumeDataPartition>
+      m_superPartition;
   int m_pagesFound;
   int m_pagesRead;
   int m_pagesWritten;
@@ -68,6 +70,8 @@ private:
 private:
   void LimitPageListSize(int maxPages, std::unique_lock<std::mutex> &pageListMutexLock);
   void CommitInternal(std::unique_lock<std::mutex>& pageListMutexLock);
+  void CreateSuperPartition();
+  void EnsureSuperPartitionCreated() const { if(!m_superPartition) { static std::mutex mutex; std::unique_lock<std::mutex> mutexLock(mutex); if(!m_superPartition) { const_cast<VolumeDataPageAccessorImpl *>(this)->CreateSuperPartition(); } } }
 
 public:
   VolumeDataPageAccessorImpl(VolumeDataAccessManagerImpl *acccessManager, VolumeDataPageAccessorImpl *parentVolumeDataPageAccessor, VolumeDataLayer const* layer, int maxPages, AccessMode accessMode, Logger &logHandler);
@@ -92,6 +96,10 @@ public:
   int64_t GetChunkIndex(const int(&position)[Dimensionality_Max]) const override;
   int64_t GetMappedChunkIndex(int64_t primaryChannelChunkIndex) const override;
   int64_t GetPrimaryChannelChunkIndex(int64_t chunkIndex) const override;
+
+  int64_t GetSuperChunkCount() const override;
+  int     GetChunkCountInSuperChunk(int64_t superChunk) const override;
+  void    GetChunkIndicesInSuperChunk(int64_t *chunkIndices, int64_t superChunk) const override;
 
   int   AddReference() override;
   int   RemoveReference() override;

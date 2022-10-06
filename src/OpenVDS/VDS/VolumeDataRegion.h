@@ -39,6 +39,8 @@ private:
   int64_t m_layerModulo[Dimensionality_Max];
 
 public:
+  struct FromChunkMinMax {};
+
   int64_t GetNumChunksInRegion() const;
   int64_t GetChunkIndexInRegion(int64_t chunkInRegion) const;
   void GetChunkInRegion(int64_t chunkInRegion, VolumeDataChunk *volumeDataChunk) const { *volumeDataChunk = m_volumeDataLayer->GetChunkFromIndex(GetChunkIndexInRegion(chunkInRegion)); }
@@ -52,7 +54,13 @@ public:
                    const IndexArray &max,
                    bool snapVoxelMax = true);
 
+  VolumeDataRegion(VolumeDataLayer const &volumeDataLayer,
+                   const IndexArray &chunkMin,
+                   const IndexArray &chunkMax,
+                   struct FromChunkMinMax);
+
   static VolumeDataRegion VolumeDataRegionOverlappingChunk(VolumeDataLayer const &volumeDataLayer, VolumeDataChunk const &volumeDataChunk, const IndexArray &offset);
+  static VolumeDataRegion VolumeDataRegionFromChunkMinMax(VolumeDataLayer const &volumeDataLayer, IndexArray const &chunkMin, IndexArray const &chunkMax) { return VolumeDataRegion(volumeDataLayer, chunkMin, chunkMax, FromChunkMinMax()); }
 };
 }
 #endif //VOLUMEDATAREGION_H
