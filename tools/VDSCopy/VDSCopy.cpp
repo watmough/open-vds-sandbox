@@ -449,13 +449,12 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
     flushFrequency = std::numeric_limits<decltype(flushFrequency)>::max();
   }
   auto last_flush = std::chrono::steady_clock::now();
+  int flushCheck = 0;
 
   for (int lod = 0; lod <= layoutDescriptor.GetLODLevels() && keep_processing; lod++)
   {
     for (auto dimensionGroup : dimensionGroups)
-    {
-      if(!keep_processing) break;
-      
+    {      
       std::vector<std::shared_ptr<OpenVDS::VolumeDataPageAccessor>> sourceAccessors(channelCount);
       std::vector<std::shared_ptr<OpenVDS::VolumeDataPageAccessor>> destinationAccessors(channelCount);
       for (int channel = 0; channel < channelCount && keep_processing; channel++)
@@ -469,44 +468,56 @@ http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/sei
 
       if (!sourceAccessors[0])
         continue;
-
-      for (int64_t chunk = 0; chunk < sourceAccessors[0]->GetChunkCount() && keep_processing; chunk++)
+      
+      for (int64_t superChunk = 0; superChunk < sourceAccessors[0]->GetSuperChunkCount() && keep_processing; superChunk++)
       {
-        if (chunk % 10 == 0)
-        {
-          auto now = std::chrono::steady_clock::now();
-          if (now - last_flush > std::chrono::seconds(flushFrequency))
+        for (int64_t chunk : sourceAccessors[0]->GetChunkIndicesInSuperChunk(superChunk))
+        {         
+          if (++flushCheck % 10 == 0)
           {
-            last_flush = now;
-            destinationAccessManager.Flush(error);
-            if (error.code)
+            auto now = std::chrono::steady_clock::now();
+            if (now - last_flush > std::chrono::seconds(flushFrequency))
             {
-              printError(outputPrinter, error, ignoreErrors, error_encountered, keep_processing);
-              break;
+              last_flush = now;
+              destinationAccessManager.Flush(error);
+              if (error.code)
+              {
+                printError(outputPrinter, error, ignoreErrors, error_encountered, keep_processing);
+                break;
+              }
             }
           }
-        }
-        for (int channel = 0; channel < channelCount && keep_processing; channel++)
-        {
-          if (sourceAccessors[channel])
+          for (int channel = 0; channel < channelCount && keep_processing; channel++)
           {
-            int64_t mappedChunk = sourceAccessors[channel]->GetMappedChunkIndex(chunk);
-            if (sourceAccessors[channel]->GetPrimaryChannelChunkIndex(mappedChunk) == chunk)
+            if (sourceAccessors[channel])
             {
-              destinationAccessors[channel]->CopyPage(mappedChunk, *sourceAccessors[channel]);
-              doneChunks++;
-              printProgress(outputPrinter, totalChunks, doneChunks, percentage);
+              int64_t mappedChunk = sourceAccessors[channel]->GetMappedChunkIndex(chunk);
+              if (sourceAccessors[channel]->GetPrimaryChannelChunkIndex(mappedChunk) == chunk)
+              {
+                destinationAccessors[channel]->CopyPage(mappedChunk, *sourceAccessors[channel]);
+                doneChunks++;
+                printProgress(outputPrinter, totalChunks, doneChunks, percentage);
+              }
             }
           }
+
+          if(!keep_processing) break;
         }
       }
 
-      for(auto &destinationAccessor : destinationAccessors)
+      if(keep_processing)
       {
-        if(destinationAccessor)
+        for(auto &destinationAccessor : destinationAccessors)
         {
-          destinationAccessor->Commit();
+          if(destinationAccessor)
+          {
+            destinationAccessor->Commit();
+          }
         }
+      }
+      else
+      {
+        break;
       }
     }
   }
