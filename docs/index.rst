@@ -14,6 +14,7 @@ Welcome to OpenVDS's documentation!
   connection
   vds/specification/index
   vds/deepdive/deepdive
+  vds/interpolation/interpolation
 
   cppdoc/cpp-important-types-and-functions
   cppdoc/cpp-api
