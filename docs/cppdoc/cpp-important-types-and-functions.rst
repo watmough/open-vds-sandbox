@@ -5,13 +5,15 @@ C++ important types and functions
 
 .. doxygenfunction:: OpenVDS::Open(const OpenOptions &options, Error &error)
 
-.. doxygenfunction:: OpenVDS::Open(IOManager *ioManager, Error &error)
+.. doxygenfunction:: OpenVDS::Open(std::string url, std::string connectionString, Error &error)
 
-.. doxygenfunction:: OpenVDS::Create(const OpenOptions &options, VolumeDataLayoutDescriptor const &layoutDescriptor, VectorWrapper<VolumeDataAxisDescriptor> axisDescriptors, VectorWrapper<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const &metadata, Error &error)
+.. doxygenfunction:: OpenVDS::OpenWithAdaptiveCompressionTolerance(std::string url, std::string connectionString, float waveletAdaptiveTolerance, Error &error)
+  
+.. doxygenfunction:: OpenVDS::Create(const OpenOptions &options, VolumeDataLayoutDescriptor const &layoutDescriptor, std::vector<VolumeDataAxisDescriptor> axisDescriptors, std::vector<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const &metadata, CompressionMethod compressionMethod, float compressionTolerance, Error &error)
 
-.. doxygenfunction:: OpenVDS::Create(IOManager *ioManager, VolumeDataLayoutDescriptor const &layoutDescriptor, VectorWrapper<VolumeDataAxisDescriptor> axisDescriptors, VectorWrapper<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const &metadata, Error &error)
+.. doxygenfunction:: OpenVDS::Create(std::string url, std::string connectionString, VolumeDataLayoutDescriptor const &layoutDescriptor, std::vector<VolumeDataAxisDescriptor> axisDescriptors, std::vector<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const &metadata, CompressionMethod compressionMethod, float compressionTolerance, Error &error)
 
-.. doxygenfunction:: OpenVDS::Close(VDSHandle handle)
+.. doxygenfunction:: OpenVDS::Close(VDSHandle handle, bool flush)
 
 .. doxygenstruct:: OpenVDS::AWSOpenOptions
   :members:
