@@ -77,53 +77,53 @@ public:
   VolumeDataChannelDescriptor()
     : m_format(Format_Any), m_components(Components_1), m_name(nullptr), m_unit(nullptr), m_valueRange(0.0f,0.0f), m_mapping(VolumeDataMapping::Direct), m_mappedValueCount(1), m_flags(Default), m_useNoValue(false), m_noValue(0.0f), m_integerScale(1.0f), m_integerOffset(0.0f) {}
 
-  /// The minimum constructor for a VolumeDataChannelDescriptor. This will use direct mapping, default flags, and no No Value
+  /// The minimum constructor for a VolumeDataChannelDescriptor. This will use direct mapping, default flags, and no NoValue
   /// \param format the data format for this channel
-  /// \param components the vector count for this channel
+  /// \param components the number of vector components (1 for scalar data) for this channel
   /// \param name the name of this channel
   /// \param unit the unit of this channel
-  /// \param valueRangeMin the value range minimum of this channel
-  /// \param valueRangeMax the value range maximum of this channel
+  /// \param valueRangeMin The estimated minimum value of this channel, with outliers removed, suitable for displaying the data and used for automatic conversion between R32 and quantized U8 and U16 representations of the data
+  /// \param valueRangeMax The estimated maximum value of this channel, with outliers removed
   VolumeDataChannelDescriptor(Format format, Components components, const char *name, const char *unit, float valueRangeMin, float valueRangeMax)
     : m_format(format), m_components(components), m_name(name), m_unit(unit), m_valueRange(valueRangeMin, valueRangeMax), m_mapping(VolumeDataMapping::Direct), m_mappedValueCount(1), m_flags(Default), m_useNoValue(false), m_noValue(0.0f), m_integerScale(1.0f), m_integerOffset(0.0f) {}
 
   /// \param format the data format for this channel
-  /// \param components the vector count for this channel
+  /// \param components the number of vector components (1 for scalar data) for this channel
   /// \param name the name of this channel
   /// \param unit the unit of this channel
-  /// \param valueRangeMin the value range minimum of this channel
-  /// \param valueRangeMax the value range maximum of this channel
+  /// \param valueRangeMin The estimated minimum value of this channel, with outliers removed, suitable for displaying the data and used for automatic conversion between R32 and quantized U8 and U16 representations of the data
+  /// \param valueRangeMax The estimated maximum value of this channel, with outliers removed
   /// \param mapping the mapping for this channel
   VolumeDataChannelDescriptor(Format format, Components components, const char *name, const char *unit, float valueRangeMin, float valueRangeMax, VolumeDataMapping mapping)
     : m_format(format), m_components(components), m_name(name), m_unit(unit), m_valueRange(valueRangeMin, valueRangeMax), m_mapping(mapping), m_mappedValueCount(1), m_flags(Default), m_useNoValue(false), m_noValue(0.0f), m_integerScale(1.0f), m_integerOffset(0.0f) {}
 
   /// \param format the data format for this channel
-  /// \param components the vector count for this channel
+  /// \param components the number of vector components (1 for scalar data) for this channel
   /// \param name the name of this channel
   /// \param unit the unit of this channel
-  /// \param valueRangeMin the value range minimum of this channel
-  /// \param valueRangeMax the value range maximum of this channel
+  /// \param valueRangeMin The estimated minimum value of this channel, with outliers removed, suitable for displaying the data and used for automatic conversion between R32 and quantized U8 and U16 representations of the data
+  /// \param valueRangeMax The estimated maximum value of this channel, with outliers removed
   /// \param flags the flags for this channel
   VolumeDataChannelDescriptor(Format format, Components components, const char *name, const char *unit, float valueRangeMin, float valueRangeMax, enum Flags flags)
     : m_format(format), m_components(components), m_name(name), m_unit(unit), m_valueRange(valueRangeMin, valueRangeMax), m_mapping(VolumeDataMapping::Direct), m_mappedValueCount(1), m_flags(flags), m_useNoValue(false), m_noValue(0.0f), m_integerScale(1.0f), m_integerOffset(0.0f) {}
 
   /// \param format the data format for this channel
-  /// \param components the vector count for this channel
+  /// \param components the number of vector components (1 for scalar data) for this channel
   /// \param name the name of this channel
   /// \param unit the unit of this channel
-  /// \param valueRangeMin the value range minimum of this channel
-  /// \param valueRangeMax the value range maximum of this channel
+  /// \param valueRangeMin The estimated minimum value of this channel, with outliers removed, suitable for displaying the data and used for automatic conversion between R32 and quantized U8 and U16 representations of the data
+  /// \param valueRangeMax The estimated maximum value of this channel, with outliers removed
   /// \param mapping the mapping for this channel
   /// \param flags the flags for this channel
   VolumeDataChannelDescriptor(Format format, Components components, const char *name, const char *unit, float valueRangeMin, float valueRangeMax, VolumeDataMapping mapping, enum Flags flags)
     : m_format(format), m_components(components), m_name(name), m_unit(unit), m_valueRange(valueRangeMin, valueRangeMax), m_mapping(mapping), m_mappedValueCount(1), m_flags(flags), m_useNoValue(false), m_noValue(0.0f), m_integerScale(1.0f), m_integerOffset(0.0f) {}
 
   /// \param format the data format for this channel
-  /// \param components the vector count for this channel
+  /// \param components the number of vector components (1 for scalar data) for this channel
   /// \param name the name of this channel
   /// \param unit the unit of this channel
-  /// \param valueRangeMin the value range minimum of this channel
-  /// \param valueRangeMax the value range maximum of this channel
+  /// \param valueRangeMin The estimated minimum value of this channel, with outliers removed, suitable for displaying the data and used for automatic conversion between R32 and quantized U8 and U16 representations of the data
+  /// \param valueRangeMax The estimated maximum value of this channel, with outliers removed
   /// \param mapping the mapping for this channel
   /// \param mappedValueCount When using per trace mapping, the number of values to store per trace
   /// \param flags the flags for this channel
@@ -133,21 +133,21 @@ public:
     : m_format(format), m_components(components), m_name(name), m_unit(unit), m_valueRange(valueRangeMin, valueRangeMax), m_mapping(mapping), m_mappedValueCount(mappedValueCount), m_flags(flags), m_useNoValue(false), m_noValue(0.0f), m_integerScale(integerScale), m_integerOffset(integerOffset) {}
 
   /// \param format the data format for this channel
-  /// \param components the vector count for this channel
+  /// \param components the number of vector components (1 for scalar data) for this channel
   /// \param name the name of this channel
   /// \param unit the unit of this channel
-  /// \param valueRangeMin the value range minimum of this channel
-  /// \param valueRangeMax the value range maximum of this channel
+  /// \param valueRangeMin The estimated minimum value of this channel, with outliers removed, suitable for displaying the data and used for automatic conversion between R32 and quantized U8 and U16 representations of the data
+  /// \param valueRangeMax The estimated maximum value of this channel, with outliers removed
   /// \param noValue the No Value for this channel
   VolumeDataChannelDescriptor(Format format, Components components, const char *name, const char *unit, float valueRangeMin, float valueRangeMax, float noValue)
     : m_format(format), m_components(components), m_name(name), m_unit(unit), m_valueRange(valueRangeMin, valueRangeMax), m_mapping(VolumeDataMapping::Direct), m_mappedValueCount(1), m_flags(Default), m_useNoValue(true), m_noValue(noValue), m_integerScale(1.0f), m_integerOffset(0.0f) {}
 
   /// \param format the data format for this channel
-  /// \param components the vector count for this channel
+  /// \param components the number of vector components (1 for scalar data) for this channel
   /// \param name the name of this channel
   /// \param unit the unit of this channel
-  /// \param valueRangeMin the value range minimum of this channel
-  /// \param valueRangeMax the value range maximum of this channel
+  /// \param valueRangeMin The estimated minimum value of this channel, with outliers removed, suitable for displaying the data and used for automatic conversion between R32 and quantized U8 and U16 representations of the data
+  /// \param valueRangeMax The estimated maximum value of this channel, with outliers removed
   /// \param noValue the No Value for this channel
   /// \param mapping the mapping for this channel
   /// \param flags the flags for this channel
@@ -155,11 +155,11 @@ public:
     : m_format(format), m_components(components), m_name(name), m_unit(unit), m_valueRange(valueRangeMin, valueRangeMax), m_mapping(mapping), m_mappedValueCount(1), m_flags(flags), m_useNoValue(true), m_noValue(noValue), m_integerScale(1.0f), m_integerOffset(0.0f) {}
   
   /// \param format the data format for this channel
-  /// \param components the vector count for this channel
+  /// \param components the number of vector components (1 for scalar data) for this channel
   /// \param name the name of this channel
   /// \param unit the unit of this channel
-  /// \param valueRangeMin the value range minimum of this channel
-  /// \param valueRangeMax the value range maximum of this channel
+  /// \param valueRangeMin The estimated minimum value of this channel, with outliers removed, suitable for displaying the data and used for automatic conversion between R32 and quantized U8 and U16 representations of the data
+  /// \param valueRangeMax The estimated maximum value of this channel, with outliers removed
   /// \param mapping the mapping for this channel
   /// \param mappedValueCount When using per trace mapping, the number of values to store per trace
   /// \param flags the flags for this channel
@@ -194,11 +194,11 @@ public:
 
   /// Named constructor for a trace mapped channel
   /// \param format the data format for this channel
-  /// \param components the vector count for this channel
+  /// \param components the number of vector components (1 for scalar data) for this channel
   /// \param name the name of this channel
   /// \param unit the unit of this channel
-  /// \param valueRangeMin the value range minimum of this channel
-  /// \param valueRangeMax the value range maximum of this channel
+  /// \param valueRangeMin The estimated minimum value of this channel, with outliers removed, suitable for displaying the data and used for automatic conversion between R32 and quantized U8 and U16 representations of the data
+  /// \param valueRangeMax The estimated maximum value of this channel, with outliers removed
   /// \param mappedValueCount When using per trace mapping, the number of values to store per trace
   /// \param flags the flags for this channel
   /// \return a trace mapped descriptor
@@ -210,11 +210,11 @@ public:
 
   /// Named constructor for a trace mapped channel
   /// \param format the data format for this channel
-  /// \param components the vector count for this channel
+  /// \param components the number of vector components (1 for scalar data) for this channel
   /// \param name the name of this channel
   /// \param unit the unit of this channel
-  /// \param valueRangeMin the value range minimum of this channel
-  /// \param valueRangeMax the value range maximum of this channel
+  /// \param valueRangeMin The estimated minimum value of this channel, with outliers removed, suitable for displaying the data and used for automatic conversion between R32 and quantized U8 and U16 representations of the data
+  /// \param valueRangeMax The estimated maximum value of this channel, with outliers removed
   /// \param mappedValueCount When using per trace mapping, the number of values to store per trace
   /// \param flags the flags for this channel
   /// \param noValue the No Value for this channel
