@@ -310,7 +310,7 @@ public class VolumeDataChannelDescriptor extends ManagedBase {
     ///AUTOGEN-OK: CXX_METHOD GetMapping OpenVDS::VolumeDataMapping () const FUNCTIONPROTO
     native private long GetMappingImpl(long native_object);
     public VolumeDataMapping getMapping() {
-        return VolumeDataMapping.fromInt((long)GetMappingImpl(getNativeObject()));
+        return VolumeDataMapping.fromInt((int)GetMappingImpl(getNativeObject()));
     }
 
     ///AUTOGEN-OK: CXX_METHOD GetMappedValueCount int () const FUNCTIONPROTO

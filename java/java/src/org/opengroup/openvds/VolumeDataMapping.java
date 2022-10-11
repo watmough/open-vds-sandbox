@@ -28,25 +28,25 @@ public enum VolumeDataMapping {
     /**
      * Each voxel in the volume has a value
      */
-    Direct(-1L),
+    Direct(0),
     /**
-     * Each trace in the volume has a specified number of values. A trace is the entire length of dimension 0
+     * Each line of voxels along dimension 0 in the volume has a number of values specifed by the MappedValueCount of the VolumeDataChannelDescriptor
      */
-    PerTrace(1976800267773298824L);
+    PerTrace(1);
 
-    private final long value;
+    private final int value;
 
-    VolumeDataMapping(long value) {
+    VolumeDataMapping(int value) {
         this.value = value;
     }
 
-    public long value() {
+    public int value() {
         return this.value;
     }
 
-    public static VolumeDataMapping fromInt(long value) {
-        if (value == -1L) return Direct;
-        if (value == 1976800267773298824L) return PerTrace;
+    public static VolumeDataMapping fromInt(int value) {
+        if (value == 0) return Direct;
+        if (value == 1) return PerTrace;
         return VolumeDataMapping.values()[0];
     }
 

@@ -5207,8 +5207,9 @@ static const char *__doc_OpenVDS_VolumeDataMapping = R"doc(Mapping volume data c
 static const char *__doc_OpenVDS_VolumeDataMapping_Direct = R"doc(< Each voxel in the volume has a value)doc";
 
 static const char *__doc_OpenVDS_VolumeDataMapping_PerTrace =
-R"doc(< Each trace in the volume has a specified number of values. A trace
-is the entire length of dimension 0)doc";
+R"doc(< Each line of voxels along dimension 0 in the volume has a number of
+values specifed by the MappedValueCount of the
+VolumeDataChannelDescriptor)doc";
 
 static const char *__doc_OpenVDS_VolumeDataPage = R"doc()doc";
 

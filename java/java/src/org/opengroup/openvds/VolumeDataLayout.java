@@ -247,7 +247,7 @@ public class VolumeDataLayout extends MetadataReadAccess {
      * 
      */
     public VolumeDataMapping getChannelMapping(int channel) {
-        return VolumeDataMapping.fromInt((long)GetChannelMappingImpl(getNativeObject(), channel));
+        return VolumeDataMapping.fromInt((int)GetChannelMappingImpl(getNativeObject(), channel));
     }
 
     ///AUTOGEN-OK: CXX_METHOD GetDimensionNumSamples int (int) const FUNCTIONPROTO

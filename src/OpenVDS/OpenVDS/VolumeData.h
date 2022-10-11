@@ -123,10 +123,10 @@ enum DimensionsND
 };
 
 /// Mapping volume data channels
-enum class VolumeDataMapping : uint64_t
+enum class VolumeDataMapping
 {
-  Direct   = 0xFFFFFFFFFFFFFFFFULL, ///< Each voxel in the volume has a value 
-  PerTrace = 0x1B6F015EB8864888ULL  ///< Each trace in the volume has a specified number of values. A trace is the entire length of dimension 0
+  Direct,   ///< Each voxel in the volume has a value
+  PerTrace, ///< Each line of voxels along dimension 0 in the volume has a number of values specifed by the MappedValueCount of the VolumeDataChannelDescriptor
 };
 
 enum class CompressionMethod
