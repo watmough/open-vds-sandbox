@@ -98,7 +98,10 @@ if (BUILD_DOCS)
   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/conf.py.in ${CMAKE_CURRENT_BINARY_DIR}/conf.py)
   
   make_directory(${CMAKE_CURRENT_BINARY_DIR}/cppdoc)
-  
+
+  if (BUILD_JAVA)
+    set(JAVADOC_DEPENDENCY openvds-javadoc)
+  endif()
   add_custom_command(OUTPUT ${SPHINX_INDEX_FILE}
                      COMMAND ${CMAKE_COMMAND} -E copy_if_different ${RST_FILES} ${CMAKE_CURRENT_BINARY_DIR}
                      COMMAND ${CMAKE_COMMAND} -E copy_if_different ${RST_CPP_FILES} ${CMAKE_CURRENT_BINARY_DIR}/cppdoc/
@@ -123,7 +126,7 @@ if (BUILD_DOCS)
                      ${CMAKE_CURRENT_SOURCE_DIR}/../tools/VDSInfo/README.md
                      ${CMAKE_CURRENT_SOURCE_DIR}/apidoc.py
                      Doxygen
-                     openvds-javadoc
+                     ${JAVADOC_DEPENDENCY}
                      MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/conf.py.in
                      COMMENT "Generating documentation with Sphinx")
   
