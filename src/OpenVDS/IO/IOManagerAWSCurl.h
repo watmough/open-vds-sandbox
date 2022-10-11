@@ -15,28 +15,21 @@
 
 namespace OpenVDS
 {
-
-  struct InitAws
+  class AwsCrtApiHandle
   {
-    InitAws()
-    {
-      std::unique_lock<std::mutex> lock(mutex);
-      if (!apiHandle)
-        apiHandle.reset(new Aws::Crt::ApiHandle());
-      count++;
-    }
-    ~InitAws()
-    {
-      std::unique_lock<std::mutex> lock(mutex);
-      count--;
-      if (count == 0)
-        apiHandle.reset();
-    }
+    std::unique_ptr<Aws::Crt::ApiHandle> apiHandle;
+    std::unique_ptr<Aws::Crt::Io::EventLoopGroup> eventLoopGroup;
+    std::unique_ptr<Aws::Crt::Io::DefaultHostResolver> hostResolver;
+    std::unique_ptr<Aws::Crt::Io::ClientBootstrap> clientBootstrap;
 
-    static std::mutex mutex;
-    static int count;
-    static std::unique_ptr<Aws::Crt::ApiHandle> apiHandle;
+    AwsCrtApiHandle(Aws::Crt::ApiHandle *apiHandle, Aws::Crt::Io::EventLoopGroup *eventLoopGroup, Aws::Crt::Io::DefaultHostResolver *hostResolver, Aws::Crt::Io::ClientBootstrap *clientBootstrap) : apiHandle(apiHandle), eventLoopGroup(eventLoopGroup), hostResolver(hostResolver), clientBootstrap(clientBootstrap) {}
+
+  public:
+    Aws::Crt::Io::ClientBootstrap* GetClientBootstrap() { return clientBootstrap.get(); }
+
+    static std::shared_ptr<AwsCrtApiHandle> GetAwsCrtApiHandle(bool disableInitAPI);
   };
+
   class IOManagerAWSCurl : public IOManager
   {
     public:
@@ -49,10 +42,7 @@ namespace OpenVDS
       bool Close(Error &error) override { return true; }
     private:
       CurlHandler m_curlHandler;
-      std::unique_ptr<InitAws> m_awsInitDeinit;
-      Aws::Crt::Io::EventLoopGroup m_eventLoopGroup;
-      Aws::Crt::Io::DefaultHostResolver m_hostResolver;
-      Aws::Crt::Io::ClientBootstrap m_clientBootstrap;
+      std::shared_ptr<AwsCrtApiHandle> m_awsCrtApiHandle;
       std::shared_ptr<Aws::Crt::Auth::ICredentialsProvider> m_credentialsProvider;
       bool m_useVirtualAddressing;
       bool m_secureSocket;

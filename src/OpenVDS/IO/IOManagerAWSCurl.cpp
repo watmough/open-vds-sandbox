@@ -14,10 +14,6 @@
 namespace OpenVDS
 {
 
-std::mutex InitAws::mutex;
-int InitAws::count = 0;
-std::unique_ptr<Aws::Crt::ApiHandle> InitAws::apiHandle;
-
 inline char asciitolower(char in)
 {
   if (in <= 'Z' && in >= 'A')
@@ -160,13 +156,28 @@ void assignByteCursorFromString(Aws::Crt::ByteCursor& cursor, const std::string&
   cursor.len = source.size();
 }
 
+std::shared_ptr<AwsCrtApiHandle> AwsCrtApiHandle::GetAwsCrtApiHandle(bool disableInitAPI)
+{
+  static std::weak_ptr<AwsCrtApiHandle> sharedApiHandle;
+  static std::mutex mutex;
+  std::unique_lock<std::mutex> lock(mutex);
+  auto awsCrtAPIHandle = sharedApiHandle.lock();
+  if(!awsCrtAPIHandle)
+  {
+    auto apiHandle = disableInitAPI ? nullptr : new Aws::Crt::ApiHandle();
+    auto eventLoopGroup = new Aws::Crt::Io::EventLoopGroup(1);
+    auto hostResolver = new Aws::Crt::Io::DefaultHostResolver(*eventLoopGroup, 1000, 1000);
+    auto clientBootstrap = new Aws::Crt::Io::ClientBootstrap(*eventLoopGroup, *hostResolver);
+    awsCrtAPIHandle.reset(new AwsCrtApiHandle(apiHandle, eventLoopGroup, hostResolver, clientBootstrap));
+    sharedApiHandle = awsCrtAPIHandle;
+  }
+  return awsCrtAPIHandle;
+}
+
 IOManagerAWSCurl::IOManagerAWSCurl(const AWSOpenOptions& openOptions, const Logger &logger, Error& error)
   : IOManager(OpenOptions::AWS)
   , m_curlHandler(error, logger)
-  , m_awsInitDeinit(openOptions.disableInitApi ? nullptr : new InitAws())
-  , m_eventLoopGroup(1)
-  , m_hostResolver(m_eventLoopGroup, 1000, 1000)
-  , m_clientBootstrap(m_eventLoopGroup, m_hostResolver)
+  , m_awsCrtApiHandle(AwsCrtApiHandle::GetAwsCrtApiHandle(openOptions.disableInitApi))
   , m_useVirtualAddressing(true)
   , m_secureSocket(true)
   , m_region(openOptions.region)
@@ -193,7 +204,7 @@ IOManagerAWSCurl::IOManagerAWSCurl(const AWSOpenOptions& openOptions, const Logg
   else
   {
     Aws::Crt::Auth::CredentialsProviderChainDefaultConfig config;
-    config.Bootstrap = &m_clientBootstrap;
+    config.Bootstrap = m_awsCrtApiHandle->GetClientBootstrap();
     m_credentialsProvider = Aws::Crt::Auth::CredentialsProvider::CreateCredentialsProviderChainDefault(config);
   }
 
