@@ -81,6 +81,7 @@ PyVolumeDataAccessManager::initModule(py::module& m)
   IVolumeDataAccessManager_.def("cancel"                      , static_cast<void(IVolumeDataAccessManager::*)(int64_t)>(&IVolumeDataAccessManager::Cancel), py::arg("requestID").none(false), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(IVolumeDataAccessManager_Cancel));
   IVolumeDataAccessManager_.def("cancelAndWaitForCompletion"  , static_cast<void(IVolumeDataAccessManager::*)(int64_t)>(&IVolumeDataAccessManager::CancelAndWaitForCompletion), py::arg("requestID").none(false), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(IVolumeDataAccessManager_CancelAndWaitForCompletion));
   IVolumeDataAccessManager_.def("getCompletionFactor"         , static_cast<float(IVolumeDataAccessManager::*)(int64_t)>(&IVolumeDataAccessManager::GetCompletionFactor), py::arg("requestID").none(false), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(IVolumeDataAccessManager_GetCompletionFactor));
+
   // IHasVolumeDataAccess
   py::class_<IHasVolumeDataAccess, std::unique_ptr<IHasVolumeDataAccess, py::nodelete>> 
     IHasVolumeDataAccess_(m,"IHasVolumeDataAccess", OPENVDS_DOCSTRING(IHasVolumeDataAccess));

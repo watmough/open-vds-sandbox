@@ -1262,7 +1262,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return createVolumeData4DReadWriteAccessorR64(dimensionsND, LOD, channel, /*replacementNoValue=*/null);
     }
 
-    ///AUTOGEN-OK: CXX_METHOD GetVolumeSubsetBufferSize int64_t (int const (&)[6], int const (&)[6], OpenVDS::VolumeDataFormat, int, int) FUNCTIONPROTO
+    ///AUTOGEN-OK: CXX_METHOD GetVolumeSubsetBufferSize int64_t (const int (&)[6], const int (&)[6], OpenVDS::VolumeDataFormat, int, int) FUNCTIONPROTO
     native private long GetVolumeSubsetBufferSizeImpl(long native_object, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, long format, int LOD, int channel);
 
     /**
@@ -1310,7 +1310,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return getVolumeSubsetBufferSize(minVoxelCoordinates, maxVoxelCoordinates, format, /*LOD=*/0, /*channel=*/0);
     }
 
-    ///AUTOGEN-OK: CXX_METHOD RequestVolumeSubset std::shared_ptr<OpenVDS::VolumeDataRequest> (void *, int64_t, OpenVDS::DimensionsND, int, int, int const (&)[6], int const (&)[6], OpenVDS::VolumeDataFormat, OpenVDS::optional<float>) FUNCTIONPROTO
+    ///AUTOGEN-OK: CXX_METHOD RequestVolumeSubset std::shared_ptr<OpenVDS::VolumeDataRequest> (void *, int64_t, OpenVDS::DimensionsND, int, int, const int (&)[6], const int (&)[6], OpenVDS::VolumeDataFormat, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long RequestVolumeSubsetImpl(long native_object, ByteBuffer buffer, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, long format, float replacementNoValue, boolean use_replacementNoValue);
 
     /**
@@ -1351,7 +1351,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return requestVolumeSubset(buffer, dimensionsND, LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, format, /*replacementNoValue=*/null);
     }
 
-    ///AUTOGEN-OK: CXX_METHOD RequestVolumeSubset1Bit std::shared_ptr<OpenVDS::VolumeDataRequest_t<unsigned char>> (unsigned char *, int64_t, OpenVDS::DimensionsND, int, int, int const (&)[6], int const (&)[6]) FUNCTIONPROTO
+    ///AUTOGEN-OK: CXX_METHOD RequestVolumeSubset1Bit std::shared_ptr<OpenVDS::VolumeDataRequest_t<unsigned char>> (unsigned char *, int64_t, OpenVDS::DimensionsND, int, int, const int (&)[6], const int (&)[6]) FUNCTIONPROTO
     native private long RequestVolumeSubset1BitImpl(long native_object, ByteBuffer buffer, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates);
 
     /**
@@ -1373,7 +1373,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeDataRequest1Bit.fromNativeObject(RequestVolumeSubset1BitImpl(getNativeObject(), ManagedBuffer.ensureByteBufferValid(buffer), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, minVoxelCoordinates, maxVoxelCoordinates));
     }
 
-    ///AUTOGEN-OK: CXX_METHOD RequestVolumeSubset std::shared_ptr<OpenVDS::VolumeDataRequest> (OpenVDS::DimensionsND, int, int, int const (&)[6], int const (&)[6], OpenVDS::VolumeDataFormat, OpenVDS::optional<float>) FUNCTIONPROTO
+    ///AUTOGEN-OK: CXX_METHOD RequestVolumeSubset std::shared_ptr<OpenVDS::VolumeDataRequest> (OpenVDS::DimensionsND, int, int, const int (&)[6], const int (&)[6], OpenVDS::VolumeDataFormat, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long RequestVolumeSubset3Impl(long native_object, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, long format, float replacementNoValue, boolean use_replacementNoValue);
 
     /**
@@ -1412,7 +1412,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return requestVolumeSubset(dimensionsND, LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, format, /*replacementNoValue=*/null);
     }
 
-    ///AUTOGEN-OK: CXX_METHOD RequestVolumeSubset1Bit std::shared_ptr<OpenVDS::VolumeDataRequest_t<unsigned char>> (OpenVDS::DimensionsND, int, int, int const (&)[6], int const (&)[6]) FUNCTIONPROTO
+    ///AUTOGEN-OK: CXX_METHOD RequestVolumeSubset1Bit std::shared_ptr<OpenVDS::VolumeDataRequest_t<unsigned char>> (OpenVDS::DimensionsND, int, int, const int (&)[6], const int (&)[6]) FUNCTIONPROTO
     native private long RequestVolumeSubset1Bit2Impl(long native_object, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates);
 
     /**
@@ -1433,7 +1433,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return VolumeDataRequest1Bit.fromNativeObject(RequestVolumeSubset1Bit2Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, minVoxelCoordinates, maxVoxelCoordinates));
     }
 
-    ///AUTOGEN-OK: CXX_METHOD GetProjectedVolumeSubsetBufferSize int64_t (int const (&)[6], int const (&)[6], OpenVDS::DimensionsND, OpenVDS::VolumeDataFormat, int, int) FUNCTIONPROTO
+    ///AUTOGEN-OK: CXX_METHOD GetProjectedVolumeSubsetBufferSize int64_t (const int (&)[6], const int (&)[6], OpenVDS::DimensionsND, OpenVDS::VolumeDataFormat, int, int) FUNCTIONPROTO
     native private long GetProjectedVolumeSubsetBufferSizeImpl(long native_object, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, long projectedDimensions, long format, int LOD, int channel);
 
     /**
@@ -1484,7 +1484,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return getProjectedVolumeSubsetBufferSize(minVoxelCoordinates, maxVoxelCoordinates, projectedDimensions, format, /*LOD=*/0, /*channel=*/0);
     }
 
-    ///AUTOGEN-OK: CXX_METHOD RequestProjectedVolumeSubset std::shared_ptr<OpenVDS::VolumeDataRequest> (void *, int64_t, OpenVDS::DimensionsND, int, int, int const (&)[6], int const (&)[6], const OpenVDS::Vector<float, 4> &, OpenVDS::DimensionsND, OpenVDS::VolumeDataFormat, OpenVDS::InterpolationMethod, OpenVDS::optional<float>) FUNCTIONPROTO
+    ///AUTOGEN-OK: CXX_METHOD RequestProjectedVolumeSubset std::shared_ptr<OpenVDS::VolumeDataRequest> (void *, int64_t, OpenVDS::DimensionsND, int, int, const int (&)[6], const int (&)[6], const OpenVDS::Vector<float, 4> &, OpenVDS::DimensionsND, OpenVDS::VolumeDataFormat, OpenVDS::InterpolationMethod, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long RequestProjectedVolumeSubsetImpl(long native_object, ByteBuffer buffer, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, ByteBuffer voxelPlane, long voxelPlane_byteoffset, long projectedDimensions, long format, long interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
 
     /**
@@ -1531,7 +1531,7 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return requestProjectedVolumeSubset(buffer, dimensionsND, LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, voxelPlane, projectedDimensions, format, interpolationMethod, /*replacementNoValue=*/null);
     }
 
-    ///AUTOGEN-OK: CXX_METHOD RequestProjectedVolumeSubset std::shared_ptr<OpenVDS::VolumeDataRequest> (OpenVDS::DimensionsND, int, int, int const (&)[6], int const (&)[6], const OpenVDS::Vector<float, 4> &, OpenVDS::DimensionsND, OpenVDS::VolumeDataFormat, OpenVDS::InterpolationMethod, OpenVDS::optional<float>) FUNCTIONPROTO
+    ///AUTOGEN-OK: CXX_METHOD RequestProjectedVolumeSubset std::shared_ptr<OpenVDS::VolumeDataRequest> (OpenVDS::DimensionsND, int, int, const int (&)[6], const int (&)[6], const OpenVDS::Vector<float, 4> &, OpenVDS::DimensionsND, OpenVDS::VolumeDataFormat, OpenVDS::InterpolationMethod, OpenVDS::optional<float>) FUNCTIONPROTO
     native private long RequestProjectedVolumeSubset2Impl(long native_object, long dimensionsND, int LOD, int channel, int[] minVoxelCoordinates, int[] maxVoxelCoordinates, ByteBuffer voxelPlane, long voxelPlane_byteoffset, long projectedDimensions, long format, long interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
 
     /**
@@ -1601,6 +1601,49 @@ of the number of chunks in some of the dimensions. Do not change this from the d
         return getVolumeSamplesBufferSize(sampleCount, /*channel=*/0);
     }
 
+    ///AUTOGEN-OK: CXX_METHOD RequestVolumeSamples std::shared_ptr<OpenVDS::VolumeDataRequest_t<float>> (float *, int64_t, OpenVDS::DimensionsND, int, int, const float (*)[6], int, OpenVDS::InterpolationMethod, OpenVDS::optional<float>) FUNCTIONPROTO
+    native private long RequestVolumeSamplesImpl(long native_object, ByteBuffer buffer, long dimensionsND, int LOD, int channel, float[] samplePositions, int sampleCount, long interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
+
+    /**
+     * Request sampling of the input VDS at the specified coordinates.
+     * 
+     * @param buffer Pointer to a preallocated buffer holding at least sampleCount elements.
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param samplePositions Pointer to array of VolumeDataLayout::Dimensionality_Max-elements indicating the positions to sample. May be deleted once RequestVolumeSamples return, as HueSpace makes a deep copy of the data.
+     * @param sampleCount Number of samples to request.
+     * @param interpolationMethod Interpolation method to use when sampling the buffer.
+     * @param replacementNoValue If specified, this value is used to replace regions of the input VDS that has no data.
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+    public VolumeDataRequestFloat requestVolumeSamples(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, float[] samplePositions, int sampleCount, InterpolationMethod interpolationMethod, Float replacementNoValue) {
+        ManagedBase.requireNonNull(samplePositions, "samplePositions may not be null");
+        if (samplePositions.length != 6) throw new IllegalArgumentException("Array \"samplePositions\" must have length 6");
+        return VolumeDataRequestFloat.fromNativeObject(RequestVolumeSamplesImpl(getNativeObject(), ManagedBuffer.ensureByteBufferValid(buffer), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, samplePositions, sampleCount, ManagedBase.requireNonNull(interpolationMethod, "interpolationMethod may not be null").value(), replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+    ///AUTOGEN-OK: CXX_METHOD RequestVolumeSamples std::shared_ptr<OpenVDS::VolumeDataRequest_t<float>> (OpenVDS::DimensionsND, int, int, const float (*)[6], int, OpenVDS::InterpolationMethod, OpenVDS::optional<float>) FUNCTIONPROTO
+    native private long RequestVolumeSamples2Impl(long native_object, long dimensionsND, int LOD, int channel, float[] samplePositions, int sampleCount, long interpolationMethod, float replacementNoValue, boolean use_replacementNoValue);
+
+    /**
+     * Request sampling of the input VDS at the specified coordinates, using an automatically allocated buffer.
+     * 
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param samplePositions Pointer to array of VolumeDataLayout::Dimensionality_Max-elements indicating the positions to sample. May be deleted once RequestVolumeSamples return, as HueSpace makes a deep copy of the data.
+     * @param sampleCount Number of samples to request.
+     * @param interpolationMethod Interpolation method to use when sampling the buffer.
+     * @param replacementNoValue If specified, this value is used to replace regions of the input VDS that has no data.
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+    public VolumeDataRequestFloat requestVolumeSamples(DimensionsND dimensionsND, int LOD, int channel, float[] samplePositions, int sampleCount, InterpolationMethod interpolationMethod, Float replacementNoValue) {
+        ManagedBase.requireNonNull(samplePositions, "samplePositions may not be null");
+        if (samplePositions.length != 6) throw new IllegalArgumentException("Array \"samplePositions\" must have length 6");
+        return VolumeDataRequestFloat.fromNativeObject(RequestVolumeSamples2Impl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, samplePositions, sampleCount, ManagedBase.requireNonNull(interpolationMethod, "interpolationMethod may not be null").value(), replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
     ///AUTOGEN-OK: CXX_METHOD GetVolumeTracesBufferSize int64_t (int, int, int, int) FUNCTIONPROTO
     native private long GetVolumeTracesBufferSizeImpl(long native_object, int traceCount, int traceDimension, int LOD, int channel);
 
@@ -1640,6 +1683,51 @@ of the number of chunks in some of the dimensions. Do not change this from the d
 
     public long getVolumeTracesBufferSize(int traceCount, int traceDimension) {
         return getVolumeTracesBufferSize(traceCount, traceDimension, /*LOD=*/0, /*channel=*/0);
+    }
+
+    ///AUTOGEN-OK: CXX_METHOD RequestVolumeTraces std::shared_ptr<OpenVDS::VolumeDataRequest_t<float>> (OpenVDS::DimensionsND, int, int, const float (*)[6], int, OpenVDS::InterpolationMethod, int, OpenVDS::optional<float>) FUNCTIONPROTO
+    native private long RequestVolumeTracesImpl(long native_object, long dimensionsND, int LOD, int channel, float[] tracePositions, int traceCount, long interpolationMethod, int traceDimension, float replacementNoValue, boolean use_replacementNoValue);
+
+    /**
+     * Request traces from the input VDS, using an automatically allocated buffer.
+     * 
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param tracePositions Pointer to array of traceCount VolumeDataLayout::Dimensionality_Max-elements indicating the trace positions.
+     * @param traceCount Number of traces to request.
+     * @param interpolationMethod Interpolation method to use when sampling the buffer.
+     * @param traceDimension The dimension to trace
+     * @param replacementNoValue If specified, this value is used to replace regions of the input VDS that has no data.
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+    public VolumeDataRequestFloat requestVolumeTraces(DimensionsND dimensionsND, int LOD, int channel, float[] tracePositions, int traceCount, InterpolationMethod interpolationMethod, int traceDimension, Float replacementNoValue) {
+        ManagedBase.requireNonNull(tracePositions, "tracePositions may not be null");
+        if (tracePositions.length != 6) throw new IllegalArgumentException("Array \"tracePositions\" must have length 6");
+        return VolumeDataRequestFloat.fromNativeObject(RequestVolumeTracesImpl(getNativeObject(), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, tracePositions, traceCount, ManagedBase.requireNonNull(interpolationMethod, "interpolationMethod may not be null").value(), traceDimension, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
+    }
+
+    ///AUTOGEN-OK: CXX_METHOD RequestVolumeTraces std::shared_ptr<OpenVDS::VolumeDataRequest_t<float>> (float *, int64_t, OpenVDS::DimensionsND, int, int, const float (*)[6], int, OpenVDS::InterpolationMethod, int, OpenVDS::optional<float>) FUNCTIONPROTO
+    native private long RequestVolumeTraces2Impl(long native_object, ByteBuffer buffer, long dimensionsND, int LOD, int channel, float[] tracePositions, int traceCount, long interpolationMethod, int traceDimension, float replacementNoValue, boolean use_replacementNoValue);
+
+    /**
+     * Request traces from the input VDS.
+     * 
+     * @param buffer Pointer to a preallocated buffer holding at least traceCount * number of samples in the traceDimension.
+     * @param dimensionsND The dimensiongroup the requested data is read from.
+     * @param LOD The LOD level the requested data is read from.
+     * @param channel The channel index the requested data is read from.
+     * @param tracePositions Pointer to array of traceCount VolumeDataLayout::Dimensionality_Max-elements indicating the trace positions.
+     * @param traceCount Number of traces to request.
+     * @param interpolationMethod Interpolation method to use when sampling the buffer.
+     * @param traceDimension The dimension to trace
+     * @param replacementNoValue If specified, this value is used to replace regions of the input VDS that has no data.
+     * @return A VolumeDataRequest instance encapsulating the request status and buffer.
+     */
+    public VolumeDataRequestFloat requestVolumeTraces(ByteBuffer buffer, DimensionsND dimensionsND, int LOD, int channel, float[] tracePositions, int traceCount, InterpolationMethod interpolationMethod, int traceDimension, Float replacementNoValue) {
+        ManagedBase.requireNonNull(tracePositions, "tracePositions may not be null");
+        if (tracePositions.length != 6) throw new IllegalArgumentException("Array \"tracePositions\" must have length 6");
+        return VolumeDataRequestFloat.fromNativeObject(RequestVolumeTraces2Impl(getNativeObject(), ManagedBuffer.ensureByteBufferValid(buffer), ManagedBase.requireNonNull(dimensionsND, "dimensionsND may not be null").value(), LOD, channel, tracePositions, traceCount, ManagedBase.requireNonNull(interpolationMethod, "interpolationMethod may not be null").value(), traceDimension, replacementNoValue == null ? (float)0 : (float)replacementNoValue, replacementNoValue != null));
     }
 
     ///AUTOGEN-OK: CXX_METHOD PrefetchVolumeChunk std::shared_ptr<OpenVDS::VolumeDataRequest> (OpenVDS::DimensionsND, int, int, int64_t) FUNCTIONPROTO

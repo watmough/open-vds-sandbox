@@ -112,11 +112,11 @@ public class VolumeDataChannelDescriptor extends ManagedBase {
     
     /**
      * @param format the data format for this channel
-     * @param components the vector count for this channel
+     * @param components the number of vector components (1 for scalar data) for this channel
      * @param name the name of this channel
      * @param unit the unit of this channel
-     * @param valueRangeMin the value range minimum of this channel
-     * @param valueRangeMax the value range maximum of this channel
+     * @param valueRangeMin The estimated minimum value of this channel, with outliers removed, suitable for displaying the data and used for automatic conversion between R32 and quantized U8 and U16 representations of the data
+     * @param valueRangeMax The estimated maximum value of this channel, with outliers removed
      * @param mapping the mapping for this channel
      */
     public VolumeDataChannelDescriptor(VolumeDataFormat format, VolumeDataComponents components, String name, String unit, float valueRangeMin, float valueRangeMax, VolumeDataMapping mapping) {
@@ -129,11 +129,11 @@ public class VolumeDataChannelDescriptor extends ManagedBase {
     
     /**
      * @param format the data format for this channel
-     * @param components the vector count for this channel
+     * @param components the number of vector components (1 for scalar data) for this channel
      * @param name the name of this channel
      * @param unit the unit of this channel
-     * @param valueRangeMin the value range minimum of this channel
-     * @param valueRangeMax the value range maximum of this channel
+     * @param valueRangeMin The estimated minimum value of this channel, with outliers removed, suitable for displaying the data and used for automatic conversion between R32 and quantized U8 and U16 representations of the data
+     * @param valueRangeMax The estimated maximum value of this channel, with outliers removed
      * @param flags the flags for this channel
      */
     public VolumeDataChannelDescriptor(VolumeDataFormat format, VolumeDataComponents components, String name, String unit, float valueRangeMin, float valueRangeMax, EnumSet<VolumeDataChannelDescriptor.Flags> flags) {
@@ -146,11 +146,11 @@ public class VolumeDataChannelDescriptor extends ManagedBase {
     
     /**
      * @param format the data format for this channel
-     * @param components the vector count for this channel
+     * @param components the number of vector components (1 for scalar data) for this channel
      * @param name the name of this channel
      * @param unit the unit of this channel
-     * @param valueRangeMin the value range minimum of this channel
-     * @param valueRangeMax the value range maximum of this channel
+     * @param valueRangeMin The estimated minimum value of this channel, with outliers removed, suitable for displaying the data and used for automatic conversion between R32 and quantized U8 and U16 representations of the data
+     * @param valueRangeMax The estimated maximum value of this channel, with outliers removed
      * @param mapping the mapping for this channel
      * @param flags the flags for this channel
      */
@@ -164,11 +164,11 @@ public class VolumeDataChannelDescriptor extends ManagedBase {
     
     /**
      * @param format the data format for this channel
-     * @param components the vector count for this channel
+     * @param components the number of vector components (1 for scalar data) for this channel
      * @param name the name of this channel
      * @param unit the unit of this channel
-     * @param valueRangeMin the value range minimum of this channel
-     * @param valueRangeMax the value range maximum of this channel
+     * @param valueRangeMin The estimated minimum value of this channel, with outliers removed, suitable for displaying the data and used for automatic conversion between R32 and quantized U8 and U16 representations of the data
+     * @param valueRangeMax The estimated maximum value of this channel, with outliers removed
      * @param mapping the mapping for this channel
      * @param mappedValueCount When using per trace mapping, the number of values to store per trace
      * @param flags the flags for this channel
@@ -185,11 +185,11 @@ public class VolumeDataChannelDescriptor extends ManagedBase {
     
     /**
      * @param format the data format for this channel
-     * @param components the vector count for this channel
+     * @param components the number of vector components (1 for scalar data) for this channel
      * @param name the name of this channel
      * @param unit the unit of this channel
-     * @param valueRangeMin the value range minimum of this channel
-     * @param valueRangeMax the value range maximum of this channel
+     * @param valueRangeMin The estimated minimum value of this channel, with outliers removed, suitable for displaying the data and used for automatic conversion between R32 and quantized U8 and U16 representations of the data
+     * @param valueRangeMax The estimated maximum value of this channel, with outliers removed
      * @param noValue the No Value for this channel
      */
     public VolumeDataChannelDescriptor(VolumeDataFormat format, VolumeDataComponents components, String name, String unit, float valueRangeMin, float valueRangeMax, float noValue) {
@@ -202,11 +202,11 @@ public class VolumeDataChannelDescriptor extends ManagedBase {
     
     /**
      * @param format the data format for this channel
-     * @param components the vector count for this channel
+     * @param components the number of vector components (1 for scalar data) for this channel
      * @param name the name of this channel
      * @param unit the unit of this channel
-     * @param valueRangeMin the value range minimum of this channel
-     * @param valueRangeMax the value range maximum of this channel
+     * @param valueRangeMin The estimated minimum value of this channel, with outliers removed, suitable for displaying the data and used for automatic conversion between R32 and quantized U8 and U16 representations of the data
+     * @param valueRangeMax The estimated maximum value of this channel, with outliers removed
      * @param noValue the No Value for this channel
      * @param mapping the mapping for this channel
      * @param flags the flags for this channel
@@ -221,11 +221,11 @@ public class VolumeDataChannelDescriptor extends ManagedBase {
     
     /**
      * @param format the data format for this channel
-     * @param components the vector count for this channel
+     * @param components the number of vector components (1 for scalar data) for this channel
      * @param name the name of this channel
      * @param unit the unit of this channel
-     * @param valueRangeMin the value range minimum of this channel
-     * @param valueRangeMax the value range maximum of this channel
+     * @param valueRangeMin The estimated minimum value of this channel, with outliers removed, suitable for displaying the data and used for automatic conversion between R32 and quantized U8 and U16 representations of the data
+     * @param valueRangeMax The estimated maximum value of this channel, with outliers removed
      * @param mapping the mapping for this channel
      * @param mappedValueCount When using per trace mapping, the number of values to store per trace
      * @param flags the flags for this channel

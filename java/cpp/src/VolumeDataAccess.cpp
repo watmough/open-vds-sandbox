@@ -413,6 +413,38 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_GetPri
   return 0;
 }
 
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_GetSuperChunkCountImpl
+  (JNIEnv * env, jobject object, jlong native_handle)
+{
+  JNIEnvGuard
+    envGuard(env);
+
+  CPPJNI_TRY
+  {
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataPageAccessor>(native_handle);
+    auto result = pInstance->GetSuperChunkCount();
+    return result;
+  }
+  CPPJNI_CATCH
+  return 0;
+}
+
+JNIEXPORT jlongArray JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_GetChunkIndicesInSuperChunkImpl
+  (JNIEnv * env, jobject object, jlong native_handle, jlong superChunkIndex)
+{
+  JNIEnvGuard
+    envGuard(env);
+
+  CPPJNI_TRY
+  {
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataPageAccessor>(native_handle);
+    auto result = pInstance->GetChunkIndicesInSuperChunk(superChunkIndex);
+    return CPPJNIVectorAdapter<int64_t>(env, result).toArray();
+  }
+  CPPJNI_CATCH
+  return 0;
+}
+
 JNIEXPORT jint JNICALL Java_org_opengroup_openvds_VolumeDataPageAccessor_AddReferenceImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {

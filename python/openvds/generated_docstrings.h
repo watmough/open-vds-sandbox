@@ -3327,38 +3327,6 @@ error :
 
 static const char *__doc_OpenVDS_Scale = R"doc()doc";
 
-static const char *__doc_OpenVDS_ScopedVDSHandle = R"doc()doc";
-
-static const char *__doc_OpenVDS_ScopedVDSHandle_Close =
-R"doc(Close the VDS and free up all associated resources. If an error
-occurs, an exception will be thrown.)doc";
-
-static const char *__doc_OpenVDS_ScopedVDSHandle_Close_2 = R"doc(Close the VDS and free up all associated resources.)doc";
-
-static const char *__doc_OpenVDS_ScopedVDSHandle_RetryableClose =
-R"doc(Close the VDS and free up all associated resources if the close
-succeeds. If an error occurs, an exception will be thrown.)doc";
-
-static const char *__doc_OpenVDS_ScopedVDSHandle_RetryableClose_2 =
-R"doc(Close the VDS and free up all associated resources if the close
-succeeds.)doc";
-
-static const char *__doc_OpenVDS_ScopedVDSHandle_ScopedVDSHandle = R"doc()doc";
-
-static const char *__doc_OpenVDS_ScopedVDSHandle_ScopedVDSHandle_2 = R"doc()doc";
-
-static const char *__doc_OpenVDS_ScopedVDSHandle_ScopedVDSHandle_3 = R"doc()doc";
-
-static const char *__doc_OpenVDS_ScopedVDSHandle_m_VDS = R"doc()doc";
-
-static const char *__doc_OpenVDS_ScopedVDSHandle_operator_OpenVDS_VDS = R"doc()doc";
-
-static const char *__doc_OpenVDS_ScopedVDSHandle_operator_assign = R"doc()doc";
-
-static const char *__doc_OpenVDS_ScopedVDSHandle_operator_assign_2 = R"doc()doc";
-
-static const char *__doc_OpenVDS_ScopedVDSHandle_operator_bool = R"doc()doc";
-
 static const char *__doc_OpenVDS_SetOpenVDSInterface = R"doc()doc";
 
 static const char *__doc_OpenVDS_StringWrapper = R"doc()doc";
@@ -4470,7 +4438,9 @@ static const char *__doc_OpenVDS_VolumeDataAccessManager_m_IVolumeDataAccessMana
 
 static const char *__doc_OpenVDS_VolumeDataAccessManager_operator_assign = R"doc()doc";
 
-static const char *__doc_OpenVDS_VolumeDataAxisDescriptor = R"doc()doc";
+static const char *__doc_OpenVDS_VolumeDataAxisDescriptor =
+R"doc(Describes the number of samples, name, unit and coordinates
+(annotation) of an axis (dimension) of the volume)doc";
 
 static const char *__doc_OpenVDS_VolumeDataAxisDescriptor_2 = R"doc()doc";
 
@@ -4657,7 +4627,8 @@ format :
     the data format for this channel
 
 components :
-    the vector count for this channel
+    the number of vector components (1 for scalar data) for this
+    channel
 
 name :
     the name of this channel
@@ -4666,10 +4637,13 @@ unit :
     the unit of this channel
 
 valueRangeMin :
-    the value range minimum of this channel
+    The estimated minimum value of this channel, with outliers
+    removed, suitable for displaying the data and used for automatic
+    conversion between R32 and quantized U8 and U16 representations of
+    the data
 
 valueRangeMax :
-    the value range maximum of this channel
+    The estimated maximum value of this channel, with outliers removed
 
 mappedValueCount :
     When using per trace mapping, the number of values to store per
@@ -4692,7 +4666,8 @@ format :
     the data format for this channel
 
 components :
-    the vector count for this channel
+    the number of vector components (1 for scalar data) for this
+    channel
 
 name :
     the name of this channel
@@ -4701,10 +4676,13 @@ unit :
     the unit of this channel
 
 valueRangeMin :
-    the value range minimum of this channel
+    The estimated minimum value of this channel, with outliers
+    removed, suitable for displaying the data and used for automatic
+    conversion between R32 and quantized U8 and U16 representations of
+    the data
 
 valueRangeMax :
-    the value range maximum of this channel
+    The estimated maximum value of this channel, with outliers removed
 
 mappedValueCount :
     When using per trace mapping, the number of values to store per
@@ -4724,7 +4702,7 @@ static const char *__doc_OpenVDS_VolumeDataChannelDescriptor_VolumeDataChannelDe
 
 static const char *__doc_OpenVDS_VolumeDataChannelDescriptor_VolumeDataChannelDescriptor_2 =
 R"doc(The minimum constructor for a VolumeDataChannelDescriptor. This will
-use direct mapping, default flags, and no No Value
+use direct mapping, default flags, and no NoValue
 
 Parameters:
 -----------
@@ -4733,7 +4711,8 @@ format :
     the data format for this channel
 
 components :
-    the vector count for this channel
+    the number of vector components (1 for scalar data) for this
+    channel
 
 name :
     the name of this channel
@@ -4742,10 +4721,13 @@ unit :
     the unit of this channel
 
 valueRangeMin :
-    the value range minimum of this channel
+    The estimated minimum value of this channel, with outliers
+    removed, suitable for displaying the data and used for automatic
+    conversion between R32 and quantized U8 and U16 representations of
+    the data
 
 valueRangeMax :
-    the value range maximum of this channel)doc";
+    The estimated maximum value of this channel, with outliers removed)doc";
 
 static const char *__doc_OpenVDS_VolumeDataChannelDescriptor_VolumeDataChannelDescriptor_3 =
 R"doc(Parameters:
@@ -4755,7 +4737,8 @@ format :
     the data format for this channel
 
 components :
-    the vector count for this channel
+    the number of vector components (1 for scalar data) for this
+    channel
 
 name :
     the name of this channel
@@ -4764,10 +4747,13 @@ unit :
     the unit of this channel
 
 valueRangeMin :
-    the value range minimum of this channel
+    The estimated minimum value of this channel, with outliers
+    removed, suitable for displaying the data and used for automatic
+    conversion between R32 and quantized U8 and U16 representations of
+    the data
 
 valueRangeMax :
-    the value range maximum of this channel
+    The estimated maximum value of this channel, with outliers removed
 
 mapping :
     the mapping for this channel)doc";
@@ -4780,7 +4766,8 @@ format :
     the data format for this channel
 
 components :
-    the vector count for this channel
+    the number of vector components (1 for scalar data) for this
+    channel
 
 name :
     the name of this channel
@@ -4789,10 +4776,13 @@ unit :
     the unit of this channel
 
 valueRangeMin :
-    the value range minimum of this channel
+    The estimated minimum value of this channel, with outliers
+    removed, suitable for displaying the data and used for automatic
+    conversion between R32 and quantized U8 and U16 representations of
+    the data
 
 valueRangeMax :
-    the value range maximum of this channel
+    The estimated maximum value of this channel, with outliers removed
 
 flags :
     the flags for this channel)doc";
@@ -4805,7 +4795,8 @@ format :
     the data format for this channel
 
 components :
-    the vector count for this channel
+    the number of vector components (1 for scalar data) for this
+    channel
 
 name :
     the name of this channel
@@ -4814,10 +4805,13 @@ unit :
     the unit of this channel
 
 valueRangeMin :
-    the value range minimum of this channel
+    The estimated minimum value of this channel, with outliers
+    removed, suitable for displaying the data and used for automatic
+    conversion between R32 and quantized U8 and U16 representations of
+    the data
 
 valueRangeMax :
-    the value range maximum of this channel
+    The estimated maximum value of this channel, with outliers removed
 
 mapping :
     the mapping for this channel
@@ -4833,7 +4827,8 @@ format :
     the data format for this channel
 
 components :
-    the vector count for this channel
+    the number of vector components (1 for scalar data) for this
+    channel
 
 name :
     the name of this channel
@@ -4842,10 +4837,13 @@ unit :
     the unit of this channel
 
 valueRangeMin :
-    the value range minimum of this channel
+    The estimated minimum value of this channel, with outliers
+    removed, suitable for displaying the data and used for automatic
+    conversion between R32 and quantized U8 and U16 representations of
+    the data
 
 valueRangeMax :
-    the value range maximum of this channel
+    The estimated maximum value of this channel, with outliers removed
 
 mapping :
     the mapping for this channel
@@ -4871,7 +4869,8 @@ format :
     the data format for this channel
 
 components :
-    the vector count for this channel
+    the number of vector components (1 for scalar data) for this
+    channel
 
 name :
     the name of this channel
@@ -4880,10 +4879,13 @@ unit :
     the unit of this channel
 
 valueRangeMin :
-    the value range minimum of this channel
+    The estimated minimum value of this channel, with outliers
+    removed, suitable for displaying the data and used for automatic
+    conversion between R32 and quantized U8 and U16 representations of
+    the data
 
 valueRangeMax :
-    the value range maximum of this channel
+    The estimated maximum value of this channel, with outliers removed
 
 noValue :
     the No Value for this channel)doc";
@@ -4896,7 +4898,8 @@ format :
     the data format for this channel
 
 components :
-    the vector count for this channel
+    the number of vector components (1 for scalar data) for this
+    channel
 
 name :
     the name of this channel
@@ -4905,10 +4908,13 @@ unit :
     the unit of this channel
 
 valueRangeMin :
-    the value range minimum of this channel
+    The estimated minimum value of this channel, with outliers
+    removed, suitable for displaying the data and used for automatic
+    conversion between R32 and quantized U8 and U16 representations of
+    the data
 
 valueRangeMax :
-    the value range maximum of this channel
+    The estimated maximum value of this channel, with outliers removed
 
 noValue :
     the No Value for this channel
@@ -4927,7 +4933,8 @@ format :
     the data format for this channel
 
 components :
-    the vector count for this channel
+    the number of vector components (1 for scalar data) for this
+    channel
 
 name :
     the name of this channel
@@ -4936,10 +4943,13 @@ unit :
     the unit of this channel
 
 valueRangeMin :
-    the value range minimum of this channel
+    The estimated minimum value of this channel, with outliers
+    removed, suitable for displaying the data and used for automatic
+    conversion between R32 and quantized U8 and U16 representations of
+    the data
 
 valueRangeMax :
-    the value range maximum of this channel
+    The estimated maximum value of this channel, with outliers removed
 
 mapping :
     the mapping for this channel
@@ -5259,7 +5269,31 @@ static const char *__doc_OpenVDS_VolumeDataPageAccessor_GetChannelIndex = R"doc(
 
 static const char *__doc_OpenVDS_VolumeDataPageAccessor_GetChunkCount = R"doc()doc";
 
+static const char *__doc_OpenVDS_VolumeDataPageAccessor_GetChunkCountInSuperChunk = R"doc()doc";
+
 static const char *__doc_OpenVDS_VolumeDataPageAccessor_GetChunkIndex = R"doc()doc";
+
+static const char *__doc_OpenVDS_VolumeDataPageAccessor_GetChunkIndicesInSuperChunk = R"doc()doc";
+
+static const char *__doc_OpenVDS_VolumeDataPageAccessor_GetChunkIndicesInSuperChunk_2 =
+R"doc(Get the list of chunks in the given super-chunk. Each super-chunk is
+an overlapping block of chunks from the remap source of this
+VolumeDataPageAccessor and the chunks in this VolumeDataPageAccessor.
+In order to produce the chunks as efficiently as possible (if there
+are more chunks than super-chunks), any code that iterates over all
+the chunks of a page accessor should iterate over the super-chunks and
+then over the chunks within each super-chunk.
+
+Parameters:
+-----------
+
+superChunkIndex :
+    The super-chunk index for this VolumeDataPageAccessor that we want
+    the list of chunks in.
+
+Returns:
+--------
+    The list of chunks in the super-chunk)doc";
 
 static const char *__doc_OpenVDS_VolumeDataPageAccessor_GetChunkMinMax = R"doc()doc";
 
@@ -5326,6 +5360,20 @@ Returns:
 --------
     The primary channel chunk index corresponding to the given chunk
     index for this VolumeDataPageAccessor.)doc";
+
+static const char *__doc_OpenVDS_VolumeDataPageAccessor_GetSuperChunkCount =
+R"doc(Get the number of super-chunks for this VolumeDataPageAccessor. Each
+super-chunk is an overlapping block of chunks from the remap source of
+this VolumeDataPageAccessor and the chunks in this
+VolumeDataPageAccessor. In order to produce the chunks as efficiently
+as possible (if there are more chunks than super-chunks), any code
+that iterates over all the chunks of a page accessor should iterate
+over the super-chunks and then over the chunks within each super-
+chunk.
+
+Returns:
+--------
+    The number of super-chunks for this VolumeDataPageAccessor.)doc";
 
 static const char *__doc_OpenVDS_VolumeDataPageAccessor_ReadPage = R"doc()doc";
 
@@ -6037,63 +6085,15 @@ static const char *__doc_OpenVDS_fastInvert = R"doc()doc";
 
 static const char *__doc_OpenVDS_operator_add = R"doc()doc";
 
-static const char *__doc_OpenVDS_operator_add_2 = R"doc()doc";
-
-static const char *__doc_OpenVDS_operator_add_3 = R"doc()doc";
-
 static const char *__doc_OpenVDS_operator_bor = R"doc()doc";
 
 static const char *__doc_OpenVDS_operator_bor_2 = R"doc()doc";
 
-static const char *__doc_OpenVDS_operator_div = R"doc()doc";
-
-static const char *__doc_OpenVDS_operator_div_2 = R"doc()doc";
-
 static const char *__doc_OpenVDS_operator_eq = R"doc()doc";
-
-static const char *__doc_OpenVDS_operator_eq_2 = R"doc()doc";
-
-static const char *__doc_OpenVDS_operator_eq_3 = R"doc()doc";
-
-static const char *__doc_OpenVDS_operator_ge = R"doc()doc";
-
-static const char *__doc_OpenVDS_operator_ge_2 = R"doc()doc";
-
-static const char *__doc_OpenVDS_operator_gt = R"doc()doc";
-
-static const char *__doc_OpenVDS_operator_gt_2 = R"doc()doc";
-
-static const char *__doc_OpenVDS_operator_iadd = R"doc()doc";
-
-static const char *__doc_OpenVDS_operator_idiv = R"doc()doc";
-
-static const char *__doc_OpenVDS_operator_imul = R"doc()doc";
-
-static const char *__doc_OpenVDS_operator_isub = R"doc()doc";
-
-static const char *__doc_OpenVDS_operator_le = R"doc()doc";
-
-static const char *__doc_OpenVDS_operator_le_2 = R"doc()doc";
-
-static const char *__doc_OpenVDS_operator_lt = R"doc()doc";
-
-static const char *__doc_OpenVDS_operator_lt_2 = R"doc()doc";
-
-static const char *__doc_OpenVDS_operator_mul = R"doc()doc";
-
-static const char *__doc_OpenVDS_operator_mul_2 = R"doc()doc";
 
 static const char *__doc_OpenVDS_operator_ne = R"doc()doc";
 
-static const char *__doc_OpenVDS_operator_ne_2 = R"doc()doc";
-
-static const char *__doc_OpenVDS_operator_ne_3 = R"doc()doc";
-
 static const char *__doc_OpenVDS_operator_sub = R"doc()doc";
-
-static const char *__doc_OpenVDS_operator_sub_2 = R"doc()doc";
-
-static const char *__doc_OpenVDS_operator_sub_3 = R"doc()doc";
 
 static const char *__doc_OpenVDS_optional = R"doc()doc";
 

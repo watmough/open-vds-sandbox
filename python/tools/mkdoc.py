@@ -231,7 +231,7 @@ class ExtractionThread(Thread):
 
 
 def read_args(args):
-    parameters = []
+    parameters = ['-DPYTHON_WRAPPER_GENERATOR', '-DOPENVDS_VERSION=""']
     filenames = []
     if "-x" not in args:
         parameters.extend(['-x', 'c++'])

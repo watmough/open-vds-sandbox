@@ -283,6 +283,23 @@ class Param:
                 return tokens
         return ''
 
+_REPLACE_PATTERNS = {
+    '(, std::allocator<[ a-zA-Z_:@0-9,]+>)>': '',
+}
+_SIMPLE_REPLACE_PATTERNS = {
+    'int const': 'const int',
+    'float const': 'const float',
+}
+def _fix_typename(typename: str) -> str:
+    for pat, rep in _REPLACE_PATTERNS.items():
+        m = re.match(f'.*{pat}', typename)
+        if m:
+            typename = typename.replace(m.groups()[0], '')
+    for pat, rep in _SIMPLE_REPLACE_PATTERNS.items():
+        if pat in typename:
+            typename = typename.replace(pat, rep)
+    return typename
+    
 class Scope(OrderedDict):
     def __init__(self, parent, nodetype, name, prefix, typename, kind, node, overload_name = None):
         super().__init__()
@@ -302,7 +319,7 @@ class Scope(OrderedDict):
     def __repr__(self):
         nodetype = self.nodetype
         name     = self.name
-        typename = self.typename
+        typename = _fix_typename(self.typename)
         kind     = self.kind
         if self.is_static_method:
             typename = "static " + typename

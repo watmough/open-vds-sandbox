@@ -142,7 +142,7 @@ public class VolumeDataPageAccessor extends ManagedBase implements AutoCloseable
         return GetChunkVolumeDataHashImpl(getNativeObject(), chunkIndex);
     }
 
-    ///AUTOGEN-OK: CXX_METHOD GetChunkIndex int64_t (int const (&)[6]) const FUNCTIONPROTO
+    ///AUTOGEN-OK: CXX_METHOD GetChunkIndex int64_t (const int (&)[6]) const FUNCTIONPROTO
     native private long GetChunkIndexImpl(long native_object, int[] position);
     public long getChunkIndex(int[] position) {
         ManagedBase.requireNonNull(position, "position may not be null");
@@ -178,6 +178,37 @@ public class VolumeDataPageAccessor extends ManagedBase implements AutoCloseable
      */
     public long getPrimaryChannelChunkIndex(long chunkIndex) {
         return GetPrimaryChannelChunkIndexImpl(getNativeObject(), chunkIndex);
+    }
+
+    ///AUTOGEN-OK: CXX_METHOD GetSuperChunkCount int64_t () const FUNCTIONPROTO
+    native private long GetSuperChunkCountImpl(long native_object);
+
+    /**
+     * Get the number of super-chunks for this VolumeDataPageAccessor.
+     * Each super-chunk is an overlapping block of chunks from the remap source of this VolumeDataPageAccessor and the chunks in this VolumeDataPageAccessor.
+     * In order to produce the chunks as efficiently as possible (if there are more chunks than super-chunks), any code that iterates over all the chunks of
+     * a page accessor should iterate over the super-chunks and then over the chunks within each super-chunk.
+     * 
+     * @return The number of super-chunks for this VolumeDataPageAccessor.
+     */
+    public long getSuperChunkCount() {
+        return GetSuperChunkCountImpl(getNativeObject());
+    }
+
+    ///AUTOGEN-OK: CXX_METHOD GetChunkIndicesInSuperChunk std::vector<int64_t> (int64_t) const FUNCTIONPROTO
+    native private long[] GetChunkIndicesInSuperChunkImpl(long native_object, long superChunkIndex);
+
+    /**
+     * Get the list of chunks in the given super-chunk.
+     * Each super-chunk is an overlapping block of chunks from the remap source of this VolumeDataPageAccessor and the chunks in this VolumeDataPageAccessor.
+     * In order to produce the chunks as efficiently as possible (if there are more chunks than super-chunks), any code that iterates over all the chunks of
+     * a page accessor should iterate over the super-chunks and then over the chunks within each super-chunk.
+     * 
+     * @param superChunkIndex The super-chunk index for this VolumeDataPageAccessor that we want the list of chunks in.
+     * @return The list of chunks in the super-chunk
+     */
+    public long[] getChunkIndicesInSuperChunk(long superChunkIndex) {
+        return GetChunkIndicesInSuperChunkImpl(getNativeObject(), superChunkIndex);
     }
 
     ///AUTOGEN-OK: CXX_METHOD AddReference int () FUNCTIONPROTO
@@ -229,7 +260,7 @@ public class VolumeDataPageAccessor extends ManagedBase implements AutoCloseable
         return VolumeDataPage.fromNativeObject(ReadPageImpl(getNativeObject(), chunkIndex));
     }
 
-    ///AUTOGEN-OK: CXX_METHOD ReadPageAtPosition OpenVDS::VolumeDataPage *(int const (&)[6]) FUNCTIONPROTO
+    ///AUTOGEN-OK: CXX_METHOD ReadPageAtPosition OpenVDS::VolumeDataPage *(const int (&)[6]) FUNCTIONPROTO
     native private long ReadPageAtPositionImpl(long native_object, int[] position);
     public VolumeDataPage readPageAtPosition(int[] position) {
         ManagedBase.requireNonNull(position, "position may not be null");

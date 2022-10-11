@@ -51,7 +51,7 @@ public class VolumeDataPage extends ManagedBase implements AutoCloseable {
         GetMinMaxExcludingMarginImpl(getNativeObject(), minExcludingMargin, maxExcludingMargin);
     }
 
-    ///AUTOGEN-OK: CXX_METHOD UpdateWrittenRegion void (int const (&)[6], int const (&)[6]) FUNCTIONPROTO
+    ///AUTOGEN-OK: CXX_METHOD UpdateWrittenRegion void (const int (&)[6], const int (&)[6]) FUNCTIONPROTO
     native private void UpdateWrittenRegionImpl(long native_object, int[] writtenMin, int[] writtenMax);
     public void updateWrittenRegion(int[] writtenMin, int[] writtenMax) {
         ManagedBase.requireNonNull(writtenMin, "writtenMin may not be null");
