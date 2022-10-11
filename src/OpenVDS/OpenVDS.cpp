@@ -114,21 +114,25 @@ static std::string URLDecode(const std::string & url)
 
   for(int i = 0; i < len; i++)
   {
-    if(url[i] == '+')
+    char c = url[i];
+
+    if(c == '+')
     {
-      result.push_back(' ');
+      c = ' ';
     }
-    else if(url[i] == '%')
+    else if(c == '%' && i + 2 < len)
     {
-      char temp[5] = "0x";
-      if(i + 1 < (int)url.size()) temp[2] = url[++i];
-      if(i + 1 < (int)url.size()) temp[3] = url[++i];
-      result.push_back(strtol(temp, NULL, 0));
+      char temp[3] = { url[i+1], url[i+2] };
+      char *end;
+      char decoded = char(strtol(temp, &end, 16));
+      if(end == temp + 2)
+      {
+        c = decoded;
+        i += 2;
+      }
     }
-    else
-    {
-      result.push_back(url[i]);
-    }
+
+    result.push_back(c);
   }
   return result;
 }
