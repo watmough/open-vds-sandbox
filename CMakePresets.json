@@ -64,8 +64,8 @@
       "name": "centos7",
       "hidden": true,
       "cacheVariables": {
-        "BOOST_INCLUDEDIR" : "/usr/include/boost169",
-        "BOOST_LIBRARYDIR" : "/usr/lib64/boost169"
+        "BOOST_INCLUDEDIR": "/usr/include/boost169",
+        "BOOST_LIBRARYDIR": "/usr/lib64/boost169"
       }
     },
     {
@@ -166,7 +166,7 @@
         "centos7"
       ],
       "cacheVariables": {
-        "Python3_ROOT_DIR" : "/opt/python/cp310-cp310"
+        "Python3_ROOT_DIR": "/opt/python/cp310-cp310"
       }
     },
     {
@@ -176,7 +176,7 @@
         "ReleaseNoLtoWithAssertGNU"
       ],
       "cacheVariables": {
-        "Python3_ROOT_DIR" : "/opt/python/cp310-cp310"
+        "Python3_ROOT_DIR": "/opt/python/cp310-cp310"
       }
     },
     {
@@ -215,8 +215,18 @@
       "description": "Built using VS2015.",
       "inherits": [
         "openvds_multi_config",
-        "VS2015_x64"
+      "VS2015_x64"
       ]
+    },
+    {
+      "name": "DebugWithDocs",
+      "description": "Debug build with docs",
+      "inherits": [
+        "Debug"
+      ],
+      "cacheVariables": {
+        "BUILD_DOCS": "ON"
+      }
     }
   ]
 }
