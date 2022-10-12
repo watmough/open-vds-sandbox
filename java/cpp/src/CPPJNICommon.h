@@ -133,23 +133,9 @@ struct CPPtoJNI_t
 };
 
 template<> struct CPPtoJNI_t<uint8_t>            { using type = int8_t; };
-template<> struct CPPtoJNI_t<char>               { using type = int8_t; };
-//template<> struct CPPtoJNI_t<unsigned char>      { using type = int8_t; };
-
 template<> struct CPPtoJNI_t<uint16_t>           { using type = int16_t; };
-template<> struct CPPtoJNI_t<short>              { using type = int16_t; };
-//template<> struct CPPtoJNI_t<unsigned short>     { using type = int16_t; };
-
-
 template<> struct CPPtoJNI_t<uint32_t>           { using type = int32_t; };
-template<> struct CPPtoJNI_t<int>                { using type = int32_t; };
-//template<> struct CPPtoJNI_t<unsigned int>       { using type = int32_t; };
-template<> struct CPPtoJNI_t<long>               { using type = int32_t; };
-//template<> struct CPPtoJNI_t<unsigned long>      { using type = int32_t; };
-
 template<> struct CPPtoJNI_t<uint64_t>           { using type = int64_t; };
-template<> struct CPPtoJNI_t<long long>          { using type = int64_t; };
-//template<> struct CPPtoJNI_t<unsigned long long> { using type = int64_t; };
 
 // Adapter class for converting std::vector -> jArray
 template<typename T>
