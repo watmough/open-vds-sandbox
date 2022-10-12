@@ -71,15 +71,8 @@
     {
       "name": "VS2015_x64",
       "hidden": true,
-      "environment": {
-        "ClearDevCommandPromptEnvVars": "false"
-      },
       "toolset": {
-        "value": "version=14.00",
-        "strategy": "external"
-      },
-      "architecture": {
-        "value": "x64",
+        "value": "v140,host=x64,version=14.0",
         "strategy": "external"
       }
     },
@@ -215,7 +208,7 @@
       "description": "Built using VS2015.",
       "inherits": [
         "openvds_multi_config",
-      "VS2015_x64"
+        "VS2015_x64"
       ]
     },
     {
