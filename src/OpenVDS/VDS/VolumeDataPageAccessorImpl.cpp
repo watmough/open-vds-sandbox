@@ -214,7 +214,7 @@ int VolumeDataPageAccessorImpl::GetChunkCountInSuperChunk(int64_t superChunk) co
 
   VolumeDataRegion superChunkRegion = VolumeDataRegion::VolumeDataRegionFromChunkMinMax(*m_layer, chunkMin, chunkMax);
 
-  return superChunkRegion.GetNumChunksInRegion();
+  return int(superChunkRegion.GetNumChunksInRegion());
 }
 
 void VolumeDataPageAccessorImpl::GetChunkIndicesInSuperChunk(int64_t *chunkIndices, int64_t superChunk) const
