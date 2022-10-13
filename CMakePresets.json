@@ -77,6 +77,22 @@
       }
     },
     {
+      "name": "VS2017_x64",
+      "hidden": true,
+      "toolset": {
+        "value": "v141,host=x64,version=14.16",
+        "strategy": "external"
+      }
+    },
+    {
+      "name": "VS2019_x64",
+      "hidden": true,
+      "toolset": {
+        "value": "v142,host=x64,version=14.29",
+        "strategy": "external"
+      }
+    },
+    {
       "name": "Debug",
       "description": "Built using the default Visual Studio version.",
       "inherits": [
@@ -108,6 +124,22 @@
       "inherits": [
         "Debug",
         "VS2015_x64"
+      ]
+    },
+    {
+      "name": "Debug-VS2017",
+      "description": "Built using the default Visual Studio version.",
+      "inherits": [
+        "Debug",
+        "VS2017_x64"
+      ]
+    },
+    {
+      "name": "Debug-VS2019",
+      "description": "Built using the default Visual Studio version.",
+      "inherits": [
+        "Debug",
+        "VS2019_x64"
       ]
     },
     {
