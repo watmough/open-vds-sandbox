@@ -18,41 +18,6 @@ devel-container-gitlab:
   - docker push $SHA_IMAGE_TAG
   only:
   - master
-gcp-containerize-gitlab:
-  stage: prepare
-  image: docker:19.03
-  tags: ["osdu-small"]
-  variables:
-    BUILD_PATH: "docker/alpine-gitlab-ci.Dockerfile"
-    IMAGE_NAME: "openvds-ingestion"
-  script:
-    - export EXTRA_DOCKER_TAG=""
-    - >
-      if [[ "$CI_COMMIT_TAG" != "" ]];
-      then EXTRA_DOCKER_TAG="-t $CI_REGISTRY_IMAGE/$IMAGE_NAME:$CI_COMMIT_TAG";
-      elif [[ "$CI_COMMIT_REF_NAME" = "master" ]];
-      then EXTRA_DOCKER_TAG="-t $CI_REGISTRY_IMAGE/$IMAGE_NAME:latest"; fi
-    - docker build -t $CI_REGISTRY_IMAGE/$IMAGE_NAME:$CI_COMMIT_SHORT_SHA $EXTRA_DOCKER_TAG -f $BUILD_PATH .
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker push $CI_REGISTRY_IMAGE/$IMAGE_NAME
-  rules:
-    - if: "$OSDU_GCP == 'true'"
-      when: on_success
-devel-container-gcr:
-  stage: prepare
-  image: docker:19.03
-  tags: ["osdu-small"]
-  variables:
-    OSDU_GCP_IMAGE_PATH: "seismic/open-vds/openvds-ingestion"
-    OSDU_GCP_GCR_REGISTRY: "gcr.io/osdu-anthos"
-  before_script:
-  - cat $OSDU_GCP_DEPLOY_FILE | docker login -u _json_key --password-stdin https://gcr.io
-  script:
-  - docker build --tag $OSDU_GCP_GCR_REGISTRY/$OSDU_GCP_IMAGE_PATH:$CI_COMMIT_TAG --file docker/alpine-gitlab-ci.Dockerfile .
-  - docker push $OSDU_GCP_GCR_REGISTRY/$OSDU_GCP_IMAGE_PATH:$CI_COMMIT_TAG
-  rules:
-  - if: "$OSDU_GCP == 'true' && $CI_COMMIT_TAG"
-    when: on_success
 devel-container-merge-request:
   stage: prepare
   image: docker:19.03
