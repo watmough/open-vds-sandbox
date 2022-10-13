@@ -27,7 +27,7 @@ TokenRefresher::TokenRefresher(const std::string& authTokenUrl, const std::strin
   {
   }
 
-  std::string TokenRefresher::newToken()
+  std::string TokenRefresher::newToken(Error &error)
   {
     std::vector<std::shared_ptr<std::vector<uint8_t>>> data;
     data.emplace_back(std::make_shared<std::vector<uint8_t>>());
@@ -40,7 +40,6 @@ TokenRefresher::TokenRefresher(const std::string& authTokenUrl, const std::strin
     std::vector<std::string> headers;
     headers.emplace_back("Content-Type: application/x-www-form-urlencoded");
     m_curlHandler.addUploadRequest(request, m_authTokenUrl, headers, true, std::move(data), form.size());
-    Error error;
     request->WaitForFinish(error);
     if (error.code || !request->m_uploadHandler){
       return "";
