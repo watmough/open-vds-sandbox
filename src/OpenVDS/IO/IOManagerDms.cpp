@@ -12,6 +12,8 @@
 #include "IOManagerCurl.h"
 #include "IORefreshToken.h"
 
+#include <SDException.h>
+
 namespace OpenVDS
 {
   GetHeadRequestDms::GetHeadRequestDms(seismicdrive::SDGenericDataset &dataset, const std::string& id, const std::shared_ptr<TransferDownloadHandler>& handler)
@@ -179,10 +181,22 @@ namespace OpenVDS
     });
   }
 
+  struct AuthProviderException : public seismicdrive::SDException
+  {
+    AuthProviderException(const std::string& what)
+      : SDException(what)
+    {}
+  };
   std::string IOManagerDms::AuthProviderCallback(const void* data)
   {
     IOManagerDms* iomanager = static_cast<IOManagerDms*>(const_cast<void*>(data));
-    return iomanager->m_tokenRefresher->newToken();
+    Error error;
+    std::string token = iomanager->m_tokenRefresher->newToken(error);
+    if (error.code)
+    {
+      throw AuthProviderException(error.string);
+    }
+    return token;
   }
 
   IOManagerDms::IOManagerDms(const DMSOpenOptions& openOptions, IOManager::AccessPattern accessPattern, Logger &logger, Error& error)
