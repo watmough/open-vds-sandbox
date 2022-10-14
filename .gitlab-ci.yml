@@ -4,29 +4,30 @@ stages:
 - test
 - deploy
 variables:
-  SHA_IMAGE_TAG: "$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:1"
-  SHA_MANYLINUX2014_IMAGE_TAG: "$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:manylinux2014-1"
-  SHA_MANYLINUX2_24_IMAGE_TAG: "$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:manylinux2_24-1"
-devel-container-gitlab:
+  MASTER_ALPINE_IMAGE_TAG: "$CI_REGISTRY_IMAGE/master:alpine-1"
+  MERGE_REQUEST_BRANCH_ALPINE_IMAGE_TAG: "$CI_REGISTRY_IMAGE/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME:alpine-1"
+  MERGE_REQUEST_BRANCH_MANYLINUX2014_IMAGE_TAG: "$CI_REGISTRY_IMAGE/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME:manylinux2014-1"
+  MERGE_REQUEST_BRANCH_MANYLINUX2_24_IMAGE_TAG: "$CI_REGISTRY_IMAGE/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME:manylinux2_24-1"
+devel-container-alpine-gitlab:
   stage: prepare
   image: docker:19.03
   tags:
   - docker-runner
   script:
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-  - docker build -t $SHA_IMAGE_TAG -f docker/alpine-gitlab-ci.Dockerfile .
-  - docker push $SHA_IMAGE_TAG
+  - docker build -t $MASTER_ALPINE_IMAGE_TAG -f docker/alpine-gitlab-ci.Dockerfile .
+  - docker push $MASTER_ALPINE_IMAGE_TAG
   only:
   - master
-devel-container-merge-request:
+devel-container-alpine-merge-request:
   stage: prepare
   image: docker:19.03
   tags:
   - docker-runner
   script:
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-  - docker build -t $SHA_IMAGE_TAG -f docker/alpine-gitlab-ci.Dockerfile .
-  - docker push $SHA_IMAGE_TAG
+  - docker build -t $MERGE_REQUEST_BRANCH_ALPINE_IMAGE_TAG -f docker/alpine-gitlab-ci.Dockerfile .
+  - docker push $MERGE_REQUEST_BRANCH_ALPINE_IMAGE_TAG
   only:
   - merge_requests
 devel-container-manylinux-2014-merge-request:
@@ -36,8 +37,8 @@ devel-container-manylinux-2014-merge-request:
   - docker-runner
   script:
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-  - docker build -t $SHA_MANYLINUX2014_IMAGE_TAG -f docker/manylinux-2014.Dockerfile .
-  - docker push $SHA_MANYLINUX2014_IMAGE_TAG
+  - docker build -t $MERGE_REQUEST_BRANCH_MANYLINUX2014_IMAGE_TAG -f docker/manylinux-2014.Dockerfile .
+  - docker push $MERGE_REQUEST_BRANCH_MANYLINUX2014_IMAGE_TAG
   only:
   - merge_requests
 devel-container-manylinux-2-24-merge-request:
@@ -47,13 +48,13 @@ devel-container-manylinux-2-24-merge-request:
   - docker-runner
   script:
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-  - docker build -t $SHA_MANYLINUX2_24_IMAGE_TAG -f docker/manylinux-2_24.Dockerfile .
-  - docker push $SHA_MANYLINUX2_24_IMAGE_TAG
+  - docker build -t $MERGE_REQUEST_BRANCH_MANYLINUX2_24_IMAGE_TAG -f docker/manylinux-2_24.Dockerfile .
+  - docker push $MERGE_REQUEST_BRANCH_MANYLINUX2_24_IMAGE_TAG
   only:
   - merge_requests
-compile:
+compile-alpine-master:
   stage: build
-  image: "$SHA_IMAGE_TAG"
+  image: $MASTER_ALPINE_IMAGE_TAG
   tags:
   - docker-runner
   cache:
@@ -80,9 +81,9 @@ compile:
   - ccache --show-stats
   only:
   - master
-compile-merge-request:
+compile-merge-request-alpine:
   stage: build
-  image: "$SHA_IMAGE_TAG"
+  image: $MERGE_REQUEST_BRANCH_ALPINE_IMAGE_TAG
   tags:
   - docker-runner
   cache:
@@ -111,7 +112,7 @@ compile-merge-request:
   - merge_requests
 compile-merge-request-manylinux2014:
   stage: build
-  image: "$SHA_MANYLINUX2014_IMAGE_TAG"
+  image: $MERGE_REQUEST_BRANCH_MANYLINUX2014_IMAGE_TAG
   tags:
   - docker-runner
   cache:
@@ -140,7 +141,7 @@ compile-merge-request-manylinux2014:
   - merge_requests
 compile-merge-request-manylinux2_24:
   stage: build
-  image: "$SHA_MANYLINUX2_24_IMAGE_TAG"
+  image: $MERGE_REQUEST_BRANCH_MANYLINUX2_24_IMAGE_TAG
   tags:
   - docker-runner
   cache:
@@ -167,9 +168,9 @@ compile-merge-request-manylinux2_24:
   - ccache --show-stats
   only:
   - merge_requests
-unit-tests:
+unit-tests-alpine:
   stage: test
-  image: "$SHA_IMAGE_TAG"
+  image: $MERGE_REQUEST_BRANCH_ALPINE_IMAGE_TAG
   tags:
   - docker-runner
   cache:
@@ -181,7 +182,7 @@ unit-tests:
   only:
   - merge_requests
   dependencies:
-  - compile-merge-request
+  - compile-merge-request-alpine
   artifacts:
     when: always
     reports:
@@ -190,7 +191,7 @@ unit-tests:
         - build/test_results_java/junitreports/*.xml
 unit-tests-manylinux2014:
   stage: test
-  image: "$SHA_MANYLINUX2014_IMAGE_TAG"
+  image: $MERGE_REQUEST_BRANCH_MANYLINUX2014_IMAGE_TAG
   tags:
   - docker-runner
   cache:
@@ -211,7 +212,7 @@ unit-tests-manylinux2014:
         - out/build/MergeRequestManyLinux2014/test_results_java/junitreports/*.xml
 unit-tests-manylinux2_24:
   stage: test
-  image: "$SHA_MANYLINUX2_24_IMAGE_TAG"
+  image: $MERGE_REQUEST_BRANCH_MANYLINUX2_24_IMAGE_TAG
   tags:
   - docker-runner
   cache:
@@ -232,11 +233,11 @@ unit-tests-manylinux2_24:
         - out/build/MergeRequestManyLinux2_24/test_results_java/junitreports/*.xml
 pages:
   stage: deploy
-  image: "$SHA_IMAGE_TAG"
+  image: $MASTER_ALPINE_IMAGE_TAG
   tags:
   - docker-runner
   dependencies:
-  - compile
+  - compile-alpine-master
   script:
   - mv out/build/GitLabAlpineMasterBranch/docs/html public
   artifacts:
