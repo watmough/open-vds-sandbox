@@ -637,6 +637,11 @@ class VolumeDataAccessManager(object):
     req._request = self._manager.prefetchVolumeChunk(req.dimensionsND, req.lod, req.channel, req.chunkIndex)
     return req
 
+  def flush(self):
+    """Flush any pending writes and write updated layer status
+    """
+    self._manager.flush()
+
   ##############################################################################
   # 2D VolumeDataAccessors
   ##############################################################################
