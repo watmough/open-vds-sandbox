@@ -42,6 +42,7 @@ data = np.arange(shape[0]*shape[1]*shape[2], step=1.0, dtype=float).reshape(shap
 manager = openvds.getAccessManager(vds)
 accessor = manager.createVolumeDataPageAccessor(openvds.DimensionsND.Dimensions_012, 0, 0, 8, openvds.VolumeDataAccessManager.AccessMode.AccessMode_Create, 1024)
 writePages(accessor, data)
+manager.flush();
 
 req = manager.requestVolumeSubset(min=(0,0,0), max=(shape[2], shape[1], shape[0]))
 result = req.data.reshape(shape)
