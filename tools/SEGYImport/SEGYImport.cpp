@@ -1528,19 +1528,6 @@ ConvertDistance(SEGY::BinaryHeader::MeasurementSystem segyMeasurementSystem, flo
   return static_cast<float>(ConvertDistance(segyMeasurementSystem, static_cast<double>(distance)));
 }
 
-double
-ConvertDistanceInverse(SEGY::BinaryHeader::MeasurementSystem segyMeasurementSystem, double distance)
-{
-  // convert meters to SEGY distance
-  if (segyMeasurementSystem == SEGY::BinaryHeader::MeasurementSystem::Feet)
-  {
-    return distance / METERS_PER_FOOT;
-  }
-
-  // if measurement system field in header is Meters or Unknown then return the value unchanged
-  return distance;
-}
-
 bool
 createSEGYMetadata(DataProvider &dataProvider, SEGYFileInfo const &fileInfo, OpenVDS::MetadataContainer& metadataContainer, SEGY::BinaryHeader::MeasurementSystem &measurementSystem, OpenVDS::Error& error)
 {
@@ -1671,18 +1658,9 @@ createSurveyCoordinateSystemMetadata(SEGYFileInfo const& fileInfo, SEGY::BinaryH
   }
   else
   {
-    if (fileInfo.Is2D())
-    {
-      // Headwave convention is 1, 0 for 2D inline spacing
-      primarySpacing[0] = ConvertDistanceInverse(segyMeasurementSystem, 1.0);
-      primarySpacing[1] = ConvertDistanceInverse(segyMeasurementSystem, 0.0);
-    }
-    else
-    {
-      // make square voxels
-      primarySpacing[0] = secondarySpacing[1];
-      primarySpacing[1] = -secondarySpacing[0];
-    }
+    // make square voxels
+    primarySpacing[0] = secondarySpacing[1];
+    primarySpacing[1] = -secondarySpacing[0];
   }
 
   double
