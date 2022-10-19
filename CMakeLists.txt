@@ -288,6 +288,16 @@ if (NOT EMSCRIPTEN)
 endif()
 install(FILES ${CMAKE_SOURCE_DIR}/Attributions.md ${CMAKE_BINARY_DIR}/README.txt ${CMAKE_SOURCE_DIR}/LICENSE DESTINATION ${CMAKE_INSTALL_PREFIX}/)
 
+configure_file(
+  "${PROJECT_SOURCE_DIR}/CMake/openvds.pc.in"
+  "lib/pkgconfig/openvds.pc"
+  @ONLY
+  )
+install(DIRECTORY "${CMAKE_BINARY_DIR}/lib/pkgconfig"
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  )
+
+
 if (NOT DEFINED CPACK_GENERATOR)
   if (UNIX)
     set (CPACK_GENERATOR "TGZ")
