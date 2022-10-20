@@ -42,8 +42,9 @@ TokenRefresher::TokenRefresher(const std::string& authTokenUrl, const std::strin
     m_curlHandler.addUploadRequest(request, m_authTokenUrl, headers, true, std::move(data), form.size());
     request->WaitForFinish(error);
     if (error.code || !request->m_uploadHandler){
+      error.string = fmt::format("TokenRefresher: {}", error.string);
       return "";
-}
+    }
     std::string respons_data;
     respons_data.insert(respons_data.end(), request->m_uploadHandler->responsData.begin(), request->m_uploadHandler->responsData.end());
     Json::Value value;
@@ -60,7 +61,7 @@ TokenRefresher::TokenRefresher(const std::string& authTokenUrl, const std::strin
     catch (Json::Exception& e)
     {
       error.code = -1;
-      error.string = e.what() + std::string(" : ") + error.string;
+      error.string = fmt::format("TokenRefresher: {} : {}", e.what(), error.string);
       return "";
     }
 
