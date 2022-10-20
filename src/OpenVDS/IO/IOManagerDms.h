@@ -13,7 +13,6 @@
 #endif
 #include <SDManager.h>
 #include <SDGenericDataset.h>
-#include <SDException.h>
 #ifdef _MSC_VER
 #pragma warning(pop)
 #else

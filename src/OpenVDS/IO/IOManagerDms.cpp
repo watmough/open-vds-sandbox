@@ -12,8 +12,6 @@
 #include "IOManagerCurl.h"
 #include "IORefreshToken.h"
 
-#include <SDException.h>
-
 namespace OpenVDS
 {
   GetHeadRequestDms::GetHeadRequestDms(seismicdrive::SDGenericDataset &dataset, const std::string& id, const std::shared_ptr<TransferDownloadHandler>& handler)
@@ -64,7 +62,7 @@ namespace OpenVDS
         size = request->m_dataset.getBlockSize(requestName);
         created_date = request->m_dataset.getCreatedDate();
       }
-      catch (const seismicdrive::SDException& ex)
+      catch (const std::exception& ex)
       {
         request->m_error.code = -1;
         request->m_error.string = ex.what();
@@ -121,7 +119,7 @@ namespace OpenVDS
           }
         }
       }
-      catch (const seismicdrive::SDException& ex)
+      catch (const std::exception & ex)
       {
         request->m_error.code = -1;
         request->m_error.string = ex.what();
@@ -165,7 +163,7 @@ namespace OpenVDS
       {
         request_ptr->m_dataset.writeBlock(requestName, (const char*)data->data(), data->size(), false);
       }
-      catch (const seismicdrive::SDException& ex)
+      catch (const std::exception & ex)
       {
         request_ptr->m_error.code = -1;
         request_ptr->m_error.string = ex.what();
@@ -181,10 +179,11 @@ namespace OpenVDS
     });
   }
 
-  struct AuthProviderException : public seismicdrive::SDException
+  class AuthProviderException : public std::runtime_error
   {
+  public:
     AuthProviderException(const std::string& what)
-      : SDException(what)
+      : std::runtime_error(what)
     {}
   };
   std::string IOManagerDms::AuthProviderCallback(const void* data)
@@ -257,12 +256,7 @@ namespace OpenVDS
       m_dataset->open(disposition);
       m_opened = true;
     }
-    catch (seismicdrive::SDException &exception)
-    {
-      error.string = exception.what();
-      error.code = -1;
-    }
-    catch (std::exception &exception)
+    catch (const std::exception &exception)
     {
       error.string = exception.what();
       error.code = -1;
@@ -287,7 +281,7 @@ namespace OpenVDS
         m_dataset->close();
         (void)m_dataset.release();
       }
-      catch (const seismicdrive::SDException& ex)
+      catch (const std::exception & ex)
       {
         error.code = -1;
         error.string = ex.what();
