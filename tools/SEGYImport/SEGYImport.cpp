@@ -172,6 +172,109 @@ inline char asciitolower(char in) {
   return in;
 }
 
+struct SurveyCoordinateSystemTransformer
+{
+  enum MeasurementSystem
+  {
+    unknown,
+    meters,
+    feet,
+    original,
+    empty,
+    invalid
+  };
+
+  static MeasurementSystem getMeasurementSystem(const std::string& value)
+  {
+    const char* const allowedValues[] = {
+      "unknown",
+      "meters",
+      "feet",
+      "original",
+      "empty"
+    };
+    if (value.empty())
+      return empty;
+    for (int i = 0; i < int(sizeof(allowedValues) / sizeof(*allowedValues)); i++)
+    {
+      if (value == allowedValues[i])
+        return MeasurementSystem(i);
+    }
+    return invalid;
+  }
+
+  static bool assertSegyUnitName(const std::string& segyUnitName)
+  {
+    auto unit = getMeasurementSystem(segyUnitName);
+    switch (unit)
+    {
+    case unknown:
+    case meters:
+    case feet:
+    case empty:
+      return true;
+    default:
+      break;
+    }
+    return false;
+  }
+
+  static bool assertVDSUnitName(const std::string& vdsUnitName)
+  {
+    auto unit = getMeasurementSystem(vdsUnitName);
+    switch (unit)
+    {
+    case meters:
+    case feet:
+    case original:
+    case empty:
+      return true;
+    default:
+      break;
+    }
+    return false;
+  }
+
+  void resolveUnits(const std::string& segyUnitName, SEGY::BinaryHeader::MeasurementSystem foundMeasurementSystem, const std::string& vdsUnitName)
+  {
+    assert(assertSegyUnitName(segyUnitName));
+    assert(assertVDSUnitName(vdsUnitName));
+    auto segyUnit = getMeasurementSystem(segyUnitName);
+    auto vdsUnit = getMeasurementSystem(vdsUnitName);
+    if (segyUnit == empty)
+      segyMeasurementSystem = foundMeasurementSystem;
+    else
+      segyMeasurementSystem = (SEGY::BinaryHeader::MeasurementSystem)segyUnit;
+
+    if (vdsUnit == empty)
+      vdsMeasurementSystem = SEGY::BinaryHeader::MeasurementSystem::Meters;
+    else if (vdsUnit == original)
+      vdsMeasurementSystem = segyMeasurementSystem;
+    else
+      vdsMeasurementSystem = (SEGY::BinaryHeader::MeasurementSystem)vdsUnit;
+  }
+
+  template<typename T>
+  T convertToVdsDistance(T distance) const
+  {
+    if (segyMeasurementSystem == vdsMeasurementSystem)
+      return distance;
+    if (segyMeasurementSystem == SEGY::BinaryHeader::MeasurementSystem::Unknown)
+      return distance;
+    if (segyMeasurementSystem == SEGY::BinaryHeader::MeasurementSystem::Meters)
+      return distance / T(METERS_PER_FOOT);
+
+    assert(segyMeasurementSystem == SEGY::BinaryHeader::MeasurementSystem::Feet);
+    assert(vdsMeasurementSystem == SEGY::BinaryHeader::MeasurementSystem::Meters);
+    return distance * T(METERS_PER_FOOT);
+  }
+
+  SEGY::BinaryHeader::MeasurementSystem
+    segyMeasurementSystem = SEGY::BinaryHeader::MeasurementSystem::Unknown;
+  SEGY::BinaryHeader::MeasurementSystem
+    vdsMeasurementSystem = SEGY::BinaryHeader::MeasurementSystem::Unknown;
+};
+
 static DataProvider CreateDataProviderFromFile(const std::string &filename, OpenVDS::Error &error)
 {
   std::unique_ptr<OpenVDS::File> file(new OpenVDS::File());
@@ -1509,25 +1612,6 @@ BinInfoSecondaryKeyValue(PrimaryKeyValue primaryKey, const SEGYBinInfo& binInfo)
   return binInfo.m_crosslineNumber;
 }
 
-double
-ConvertDistance(SEGY::BinaryHeader::MeasurementSystem segyMeasurementSystem, double distance)
-{
-  // convert SEGY distance to meters
-  if (segyMeasurementSystem == SEGY::BinaryHeader::MeasurementSystem::Feet)
-  {
-    return distance * METERS_PER_FOOT;
-  }
-
-  // if measurement system field in header is Meters or Unknown then return the value unchanged
-  return distance;
-}
-
-float
-ConvertDistance(SEGY::BinaryHeader::MeasurementSystem segyMeasurementSystem, float distance)
-{
-  return static_cast<float>(ConvertDistance(segyMeasurementSystem, static_cast<double>(distance)));
-}
-
 bool
 createSEGYMetadata(DataProvider &dataProvider, SEGYFileInfo const &fileInfo, OpenVDS::MetadataContainer& metadataContainer, SEGY::BinaryHeader::MeasurementSystem &measurementSystem, OpenVDS::Error& error)
 {
@@ -1561,14 +1645,18 @@ createSurveyCoordinateSystemWKTAndUnitMetadata(SEGYFileInfo const& fileInfo, SEG
   {
     metadataContainer.SetMetadataString(LATTICE_CATEGORY, CRS_WKT, crsWkt);
   }
-  if (segyMeasurementSystem == SEGY::BinaryHeader::MeasurementSystem::Meters || segyMeasurementSystem == SEGY::BinaryHeader::MeasurementSystem::Feet)
+  if (segyMeasurementSystem == SEGY::BinaryHeader::MeasurementSystem::Meters)
   {
     metadataContainer.SetMetadataString(LATTICE_CATEGORY, LATTICE_UNIT, KNOWNMETADATA_UNIT_METER);
+  }
+  else if (segyMeasurementSystem == SEGY::BinaryHeader::MeasurementSystem::Feet)
+  {
+    metadataContainer.SetMetadataString(LATTICE_CATEGORY, LATTICE_UNIT, KNOWNMETADATA_UNIT_FOOT);
   }
 }
 
 void
-createSurveyCoordinateSystemMetadata(SEGYFileInfo const& fileInfo, SEGY::BinaryHeader::MeasurementSystem segyMeasurementSystem, OpenVDS::MetadataContainer& metadataContainer, PrimaryKeyValue primaryKey)
+createSurveyCoordinateSystemMetadata(SEGYFileInfo const& fileInfo, const SurveyCoordinateSystemTransformer &surveyCoordinateSystemTransformer, OpenVDS::MetadataContainer& metadataContainer, PrimaryKeyValue primaryKey)
 {
   if (fileInfo.m_segmentInfoLists.empty() && fileInfo.m_segmentInfoListsByOffset.empty()) return;
 
@@ -1706,9 +1794,9 @@ createSurveyCoordinateSystemMetadata(SEGYFileInfo const& fileInfo, SEGY::BinaryH
   origin[1] -= crosslineSpacing[1] * firstSegmentInfo.m_binInfoStart.m_crosslineNumber;
 
   // Set coordinate system
-  metadataContainer.SetMetadataDoubleVector2(LATTICE_CATEGORY, LATTICE_ORIGIN, OpenVDS::DoubleVector2(ConvertDistance(segyMeasurementSystem, origin[0]), ConvertDistance(segyMeasurementSystem, origin[1])));
-  metadataContainer.SetMetadataDoubleVector2(LATTICE_CATEGORY, LATTICE_INLINE_SPACING, OpenVDS::DoubleVector2(ConvertDistance(segyMeasurementSystem, inlineSpacing[0]), ConvertDistance(segyMeasurementSystem, inlineSpacing[1])));
-  metadataContainer.SetMetadataDoubleVector2(LATTICE_CATEGORY, LATTICE_CROSSLINE_SPACING, OpenVDS::DoubleVector2(ConvertDistance(segyMeasurementSystem, crosslineSpacing[0]), ConvertDistance(segyMeasurementSystem, crosslineSpacing[1])));
+  metadataContainer.SetMetadataDoubleVector2(LATTICE_CATEGORY, LATTICE_ORIGIN, OpenVDS::DoubleVector2(surveyCoordinateSystemTransformer.convertToVdsDistance(origin[0]), surveyCoordinateSystemTransformer.convertToVdsDistance(origin[1])));
+  metadataContainer.SetMetadataDoubleVector2(LATTICE_CATEGORY, LATTICE_INLINE_SPACING, OpenVDS::DoubleVector2(surveyCoordinateSystemTransformer.convertToVdsDistance(inlineSpacing[0]), surveyCoordinateSystemTransformer.convertToVdsDistance(inlineSpacing[1])));
+  metadataContainer.SetMetadataDoubleVector2(LATTICE_CATEGORY, LATTICE_CROSSLINE_SPACING, OpenVDS::DoubleVector2(surveyCoordinateSystemTransformer.convertToVdsDistance(crosslineSpacing[0]), surveyCoordinateSystemTransformer.convertToVdsDistance(crosslineSpacing[1])));
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -2633,6 +2721,9 @@ main(int argc, char* argv[])
   std::string defaultPrimaryKey = "InlineNumber";
   std::string defaultSecondaryKey = "CrosslineNumber";
 
+  std::string segySurveyCoordinateSystemUnitString;
+  std::string surveyCoordinateSystemUnitString;
+  SurveyCoordinateSystemTransformer surveyCoordinateSystemTransformer;
 
   std::string supportedCompressionMethods = "None";
   if (OpenVDS::IsCompressionMethodSupported(OpenVDS::CompressionMethod::Wavelet)) supportedCompressionMethods += ", Wavelet";
@@ -2685,6 +2776,8 @@ main(int argc, char* argv[])
   options.add_option("", "", "azimuth-unit", std::string("Azimuth unit. Supported azimuth units are: ") + supportedAzimuthUnits + ".", cxxopts::value<std::string>(azimuthUnitString), "<string>");
   options.add_option("", "", "azimuth-scale", "Azimuth scale factor. Trace header field Azimuth values will be multiplied by this factor.", cxxopts::value<float>(azimuthScaleFactor), "<value>");
   options.add_option("", "", "respace-gathers", std::string("Respace traces in prestack gathers by Offset trace header field. Supported options are: ") + supportedTraceSpacingTypes + ".", cxxopts::value<std::string>(traceSpacingByOffsetString), "<string>");
+  options.add_option("", "", "segy-survey-coordinate-system", std::string("Ignore the unit defined in the SEG-Y file and use the defined unit instead. Possible values: Meters, Feet"), cxxopts::value<std::string>(segySurveyCoordinateSystemUnitString), "<string>");
+  options.add_option("", "", "survey-coordinate-system", std::string("Unit used in the VDS for survey coordinate system. Possible values: Meters (default), Feet, Original"), cxxopts::value<std::string>(surveyCoordinateSystemUnitString), "<string>");
   options.add_option("", "", "resume", std::string("Resume mode."), cxxopts::value<bool>(resumeMode), "");
   options.add_option("", "", "flush-frequency", std::string("Flush frequency in seconds. SEGYImport can resume imports at flush checkpoints. 0 (zero) results in never flushing. Default is 60."), cxxopts::value<int>(flushFrequency), "<value>");
   options.add_option("", "q", "quiet", "Disable info level output.", cxxopts::value<bool>(disableInfo), "");
@@ -2739,6 +2832,23 @@ main(int argc, char* argv[])
   {
     outputPrinter.printVersion("SEGYImport");
     return EXIT_SUCCESS;
+  }
+
+  {
+    std::string originalSegySurveyCoordinatesystemUnitString = segySurveyCoordinateSystemUnitString;
+    std::string originalSurveyCoordinatesystemUnitString = surveyCoordinateSystemUnitString;
+    std::transform(segySurveyCoordinateSystemUnitString.begin(), segySurveyCoordinateSystemUnitString.end(), segySurveyCoordinateSystemUnitString.begin(), asciitolower);
+    std::transform(surveyCoordinateSystemUnitString.begin(), surveyCoordinateSystemUnitString.end(), surveyCoordinateSystemUnitString.begin(), asciitolower);
+    if (!surveyCoordinateSystemTransformer.assertSegyUnitName(segySurveyCoordinateSystemUnitString))
+    {
+      outputPrinter.printError("Args", fmt::format("Invalid segy-survey-coordinate-system specified: {}", originalSegySurveyCoordinatesystemUnitString));
+      return EXIT_FAILURE;
+    }
+    if (!surveyCoordinateSystemTransformer.assertVDSUnitName(surveyCoordinateSystemUnitString))
+    {
+      outputPrinter.printError("Args", fmt::format("Invalid survey-coordinate-system specified: {}", originalSurveyCoordinatesystemUnitString));
+      return EXIT_FAILURE;
+    }
   }
 
   // set up the compression method
@@ -3453,16 +3563,20 @@ main(int argc, char* argv[])
     return EXIT_FAILURE;
   }
 
-  SEGY::BinaryHeader::MeasurementSystem
-    segyMeasurementSystem;
-
-  // get SEGY metadata from first file
-  createSEGYMetadata(dataProviders[0], fileInfo, metadataContainer, segyMeasurementSystem, error);
-
-  if (error.code != 0)
   {
-    outputPrinter.printError("Metadata", error.string);
-    return EXIT_FAILURE;
+    SEGY::BinaryHeader::MeasurementSystem
+      autoDetectedSegyMeasurementSystem;
+
+    // get SEGY metadata from first file
+    createSEGYMetadata(dataProviders[0], fileInfo, metadataContainer, autoDetectedSegyMeasurementSystem, error);
+
+    if (error.code != 0)
+    {
+      outputPrinter.printError("Metadata", error.string);
+      return EXIT_FAILURE;
+    }
+
+    surveyCoordinateSystemTransformer.resolveUnits(segySurveyCoordinateSystemUnitString, autoDetectedSegyMeasurementSystem, surveyCoordinateSystemUnitString);
   }
 
   int offsetStart = 0, offsetEnd = 0;
@@ -3477,7 +3591,10 @@ main(int argc, char* argv[])
   }
 
   OffsetChannelInfo
-    offsetInfo(fileInfo.HasGatherOffset(), ConvertDistance(segyMeasurementSystem, static_cast<float>(offsetStart)), ConvertDistance(segyMeasurementSystem, static_cast<float>(offsetEnd)), ConvertDistance(segyMeasurementSystem, 1.0f));
+    offsetInfo(fileInfo.HasGatherOffset(), 
+       surveyCoordinateSystemTransformer.convertToVdsDistance(static_cast<float>(offsetStart))
+      , surveyCoordinateSystemTransformer.convertToVdsDistance(static_cast<float>(offsetEnd))
+      , surveyCoordinateSystemTransformer.convertToVdsDistance(1.0f));
 
   // Create channel descriptors
   std::vector<OpenVDS::VolumeDataChannelDescriptor> channelDescriptors = createChannelDescriptors(fileInfo, valueRange, offsetInfo, attributeName, attributeUnit, isAzimuth, isMutes, error);
@@ -3489,12 +3606,12 @@ main(int argc, char* argv[])
   }
 
   // Always create metadata for WKT (if set) and SEGY units
-  createSurveyCoordinateSystemWKTAndUnitMetadata(fileInfo, segyMeasurementSystem, crsWkt, metadataContainer);
+  createSurveyCoordinateSystemWKTAndUnitMetadata(fileInfo, surveyCoordinateSystemTransformer.vdsMeasurementSystem, crsWkt, metadataContainer);
 
   if (primaryKeyValue == PrimaryKeyValue::InlineNumber || primaryKeyValue == PrimaryKeyValue::CrosslineNumber)
   {
     // only create the lattice metadata if the primary key is Inline or Crossline, else we may not have Inline/Crossline bin data
-    createSurveyCoordinateSystemMetadata(fileInfo, segyMeasurementSystem, metadataContainer, primaryKeyValue);
+    createSurveyCoordinateSystemMetadata(fileInfo, surveyCoordinateSystemTransformer, metadataContainer, primaryKeyValue);
   }
 
   create2DTraceInformationMetadata(is2D, traceInfo2DManager.get(), metadataContainer, error);
@@ -4182,7 +4299,7 @@ main(int argc, char* argv[])
             const int targetOffset = VoxelIndexToDataIndex(fileInfo, targetPrimaryIndex, targetSecondaryIndex, tertiaryIndex, chunkInfo.min, offsetPitch);
 
             const auto
-              traceOffset = ConvertDistance(segyMeasurementSystem, static_cast<float>(SEGY::ReadFieldFromHeader(header, g_traceHeaderFields["offset"], fileInfo.m_headerEndianness)));
+              traceOffset = surveyCoordinateSystemTransformer.convertToVdsDistance(static_cast<float>(SEGY::ReadFieldFromHeader(header, g_traceHeaderFields["offset"], fileInfo.m_headerEndianness)));
             static_cast<float*>(offsetBuffer)[targetOffset] = traceOffset;
           }
 
