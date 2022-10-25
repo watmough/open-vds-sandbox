@@ -41,6 +41,8 @@
 #include <mutex>
 #include <functional>
 
+#include "SslVerifyPeerEnv.h"
+
 #include <fmt/format.h>
 
 #include <VDS/Logging.h>
@@ -445,7 +447,10 @@ namespace OpenVDS
           request.SetRoleArn(profile.GetRoleArn());
           request.SetRoleSessionName("OpenVDS");
 
-          Aws::STS::STSClient stsClient(sourceProfileCredentials);
+          Aws::Client::ClientConfiguration clientConfig;
+          clientConfig.verifySSL = isDisableSSLVerificationEnvSet();
+          clientConfig.scheme = Aws::Http::Scheme::HTTPS;
+          Aws::STS::STSClient stsClient(sourceProfileCredentials, clientConfig);
           auto result = stsClient.AssumeRole(request);
           if (result.IsSuccess())
           {
@@ -463,6 +468,7 @@ namespace OpenVDS
 
     Aws::Client::AWSAuthV4Signer::PayloadSigningPolicy payloadSigningPolicy = Aws::Client::AWSAuthV4Signer::PayloadSigningPolicy::Never;
     Aws::Client::ClientConfiguration clientConfig;
+    clientConfig.verifySSL = isDisableSSLVerificationEnvSet();
     clientConfig.scheme = Aws::Http::Scheme::HTTPS;
     if (m_region.size())
       clientConfig.region = convertStdString(m_region);

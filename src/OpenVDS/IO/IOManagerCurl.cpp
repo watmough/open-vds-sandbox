@@ -22,6 +22,8 @@
 #include <VDS/CompilerDefines.h>
 #include <VDS/Logging.h>
 
+#include "SslVerifyPeerEnv.h"
+
 #include <sstream>
 #include <iomanip>
 #include <assert.h>
@@ -186,6 +188,7 @@ static void addDownloadCB(uv_async_t *handle)
     curl_easy_setopt(downloadRequest->curlEasy, CURLOPT_HEADERDATA, downloadRequest.get());
     curl_easy_setopt(downloadRequest->curlEasy, CURLOPT_WRITEFUNCTION, &curlWriteCallback);
     curl_easy_setopt(downloadRequest->curlEasy, CURLOPT_WRITEDATA, downloadRequest.get());
+
     if (downloadRequest->verb == CurlDownloadHandler::HEADER)
     {
       curl_easy_setopt(downloadRequest->curlEasy, CURLOPT_NOBODY, 1L);
@@ -194,8 +197,11 @@ static void addDownloadCB(uv_async_t *handle)
     curl_easy_setopt(downloadRequest->curlEasy, CURLOPT_DEBUGDATA, &context->eventLoopData->logger);
     if (int(eventLoopData->logger.level) >= int(LogLevel::Trace))
       curl_easy_setopt(downloadRequest->curlEasy, CURLOPT_VERBOSE, 1L);
+
+    if (isDisableSSLVerificationEnvSet())
+      curl_easy_setopt(downloadRequest->curlEasy, CURLOPT_SSL_VERIFYPEER, 0L);
   }
-  
+
   eventLoopData->queuedRequests.insert(eventLoopData->queuedRequests.end(), downloadRequests.begin(), downloadRequests.end());
   curlAddRequests(eventLoopData);
 }
@@ -298,8 +304,11 @@ static void addUploadCB(uv_async_t *handle)
     curl_easy_setopt(uploadRequest->curlEasy, CURLOPT_DEBUGDATA, &context->eventLoopData->logger);
     if (int(eventLoopData->logger.level) >= int(LogLevel::Trace))
       curl_easy_setopt(uploadRequest->curlEasy, CURLOPT_VERBOSE, 1L);
+
+    if (isDisableSSLVerificationEnvSet())
+      curl_easy_setopt(uploadRequest->curlEasy, CURLOPT_SSL_VERIFYPEER, 0L);
   }
-  
+
   eventLoopData->queuedRequests.insert(eventLoopData->queuedRequests.end(), uploadRequests.begin(), uploadRequests.end());
   curlAddRequests(eventLoopData);
 }

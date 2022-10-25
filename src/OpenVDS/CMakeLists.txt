@@ -55,6 +55,7 @@ else()
     IO/IOManagerDms.cpp
     IO/IOManagerDmsFactory.cpp
     IO/IORefreshToken.cpp
+    IO/SslVerifyPeerEnv.cpp
     VDS/VolumeDataPartition.cpp
     VDS/VolumeDataChannelMapping.cpp
     VDS/VolumeDataLayer.cpp
@@ -98,6 +99,7 @@ else()
     IO/IOManagerRequestImpl.h
     IO/IOManagerTransformer.h
     IO/IORefreshToken.h
+    IO/SslVerifyPeerEnv.h
     VDS/VDS.h
     VDS/VolumeDataPartition.h
     VDS/VolumeDataChannelMapping.h

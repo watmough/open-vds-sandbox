@@ -18,6 +18,8 @@
 
 #include "IOManagerAzure.h"
 
+#include "SslVerifyPeerEnv.h"
+
 #include <cpprest/filestream.h>
 
 #include <mutex>
@@ -313,7 +315,7 @@ IOManagerAzure::IOManagerAzure(const AzureOpenOptions& openOptions, Error& error
     auto storage_credentials = azure::storage::storage_credentials(convertToUtilString(openOptions.accountName), bearerToken);
     m_storage_account = azure::storage::cloud_storage_account(storage_credentials, true);
   }
-  
+
   try
   {
     m_blobClient = m_storage_account.create_cloud_blob_client();
@@ -331,6 +333,7 @@ IOManagerAzure::IOManagerAzure(const AzureOpenOptions& openOptions, Error& error
   m_options = azure::storage::blob_request_options();
   m_options.set_parallelism_factor(openOptions.parallelism_factor);
   m_options.set_maximum_execution_time(std::chrono::seconds(openOptions.max_execution_time));
+  m_options.set_validate_certificates(isDisableSSLVerificationEnvSet());
 }
 
 IOManagerAzure::~IOManagerAzure()
