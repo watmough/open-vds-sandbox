@@ -19,36 +19,25 @@ function(copyDllForTarget target)
 
         file(GLOB runtime_release "${optimized_location}/*.dll")
         file(GLOB runtime_debug "${debug_location}/*.dll")
-        foreach(file ${runtime_release})
-          add_custom_command(TARGET ${target}
-            POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different $<$<NOT:$<CONFIG:Debug>>:${file}> ${CMAKE_SOURCE_DIR}/README.md $<TARGET_FILE_DIR:${target}>)
-        endforeach()
-        foreach(file ${runtime_debug})
-          add_custom_command(TARGET ${target}
-            POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different $<$<CONFIG:Debug>:${file}> ${CMAKE_SOURCE_DIR}/README.md $<TARGET_FILE_DIR:${target}>)
-        endforeach()
+        add_custom_command(TARGET ${target}
+          POST_BUILD
+          COMMAND ${CMAKE_COMMAND} -E copy_if_different "$<$<NOT:$<CONFIG:Debug>>:${runtime_release}>" "$<$<CONFIG:Debug>:${runtime_debug}>" "$<SHELL_PATH:$<TARGET_FILE_DIR:${target}>>"
+          COMMAND_EXPAND_LISTS
+          )
       else()
-	list(APPEND COPY_TARGETS "$<TARGET_FILE:openvds>")
-	list(APPEND COPY_TARGETS "$<TARGET_FILE:segyutils>")
-        if (NOT DISABLE_DMS_IOMANAGER)
-	  list(APPEND COPY_TARGETS "$<TARGET_FILE:sdapi>")
-        endif()
-        add_custom_command(OUTPUT "${target}_copy_vds"
-          COMMAND ${CMAKE_COMMAND} -E copy_if_different ${COPY_TARGETS} $<TARGET_FILE_DIR:${target}>
-          DEPENDS openvds)
-        set_property(SOURCE "${target}_copy_vds"
-                     PROPERTY SYMBOLIC ON
-                    )
-        target_sources(${target} PRIVATE ${target}_copy_vds)
         get_property(runtime_libs GLOBAL PROPERTY OPENVDS_RUNTIME_LIBS)
 
-        foreach(file ${runtime_libs})
-          add_custom_command(TARGET ${target}
-            POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different ${file} $<TARGET_FILE_DIR:${target}>)
-        endforeach()
+	list(APPEND runtime_libs "$<TARGET_FILE:openvds>")
+	list(APPEND runtime_libs "$<TARGET_FILE:segyutils>")
+        if (NOT DISABLE_DMS_IOMANAGER)
+	  list(APPEND runtime_libs "$<TARGET_FILE:sdapi>")
+        endif()
+
+        add_custom_command(TARGET ${target}
+          POST_BUILD
+          COMMAND ${CMAKE_COMMAND} -E copy_if_different "${runtime_libs}" "$<SHELL_PATH:$<TARGET_FILE_DIR:${target}>>"
+          COMMAND_EXPAND_LISTS
+          )
       endif()
     endif()
 endfunction()
