@@ -254,8 +254,6 @@ SEGYFileInfo::Scan(const std::vector<DataProvider>& dataProviders, OpenVDS::Erro
 
     int64_t trace = 1;
 
-    int readCount = 1;
-
     int
       testOffset = 0,
       nextOffset = 0;
@@ -268,7 +266,6 @@ SEGYFileInfo::Scan(const std::vector<DataProvider>& dataProviders, OpenVDS::Erro
       {
         return false;
       }
-      readCount++;
 
       primaryKey = Is2D() ? 0 : ReadFieldFromHeader(traceHeader, primaryKeyHeaderField, m_headerEndianness);
       testOffset = readOffset(traceHeader);
