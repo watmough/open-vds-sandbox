@@ -12,5 +12,6 @@ function(BuildCurl)
   endif()
 
   BuildExternal(curl ${curl_VERSION} "" ${curl_SOURCE_DIR} "${CURL_LIBS_LIST_RELEASE}" "${CURL_DLLS_LIST_RELEASE}" ON "-DBUILD_CURL_EXE=OFF;-DHTTP_ONLY=ON;-DBUILD_TESTING=OFF${PLATFORM_OPTIONS}")
+  set(curl_root ${curl_INSTALL_INT_CONFIG}/lib/cmake/CURL PARENT_SCOPE)
   set(curl_INSTALL_INT_CONFIG ${curl_INSTALL_INT_CONFIG} PARENT_SCOPE)
 endfunction()

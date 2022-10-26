@@ -18,6 +18,8 @@
 
 #include "IOManagerAzureSdkForCpp.h"
 
+#include "SslVerifyPeerEnv.h"
+
 #include <fmt/format.h>
 #include <mutex>
 #include <string>
@@ -26,6 +28,11 @@
 
 #include <azure/storage/blobs.hpp>
 #include <azure/storage/common/crypt.hpp>
+
+//#ifndef BUILD_CURL_HTTP_TRANSPORT_ADAPTER
+//#error "WE ONLY SUPPORT USING CURL"
+//#endif
+
 
 namespace OpenVDS
 {
@@ -248,7 +255,14 @@ namespace OpenVDS
     {
       try
       {
-        Azure::Storage::Blobs::BlobServiceClient serviceClient = Azure::Storage::Blobs::BlobServiceClient::CreateFromConnectionString(openOptions.connectionString);
+
+        Azure::Core::Http::CurlTransportOptions curlOptions;
+        curlOptions.SslVerifyPeer = !isDisableSSLVerificationEnvSet();
+        m_transportAdapter = std::make_shared<Azure::Core::Http::CurlTransport>(curlOptions);
+
+        Azure::Storage::Blobs::BlobClientOptions options;
+        options.Transport.Transport = m_transportAdapter;
+        Azure::Storage::Blobs::BlobServiceClient serviceClient = Azure::Storage::Blobs::BlobServiceClient::CreateFromConnectionString(openOptions.connectionString, options);
         m_serviceClient.reset(new Azure::Storage::Blobs::BlobServiceClient(serviceClient));
       }
       catch (const std::exception& exception)

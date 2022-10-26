@@ -24,11 +24,13 @@
 
 #include <vector>
 #include <string>
+#include <memory>
 
 #include <ThreadPool/ThreadPool.h>
 
 #include <azure/core.hpp>
 #include <azure/storage/blobs.hpp>
+#include "azure/core/http/curl_transport.hpp"
 
 #include <fmt/format.h>
 
@@ -51,6 +53,7 @@ namespace OpenVDS
     std::string m_containerStr;
     std::string m_prefix;
     std::unique_ptr<Azure::Storage::Blobs::BlobServiceClient> m_serviceClient;
+    std::shared_ptr<Azure::Core::Http::CurlTransport> m_transportAdapter;
   };
 }
 
