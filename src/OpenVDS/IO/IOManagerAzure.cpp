@@ -333,7 +333,7 @@ IOManagerAzure::IOManagerAzure(const AzureOpenOptions& openOptions, Error& error
   m_options = azure::storage::blob_request_options();
   m_options.set_parallelism_factor(openOptions.parallelism_factor);
   m_options.set_maximum_execution_time(std::chrono::seconds(openOptions.max_execution_time));
-  m_options.set_validate_certificates(isDisableSSLVerificationEnvSet());
+  m_options.set_validate_certificates(!isDisableSSLVerificationEnvSet());
 }
 
 IOManagerAzure::~IOManagerAzure()
