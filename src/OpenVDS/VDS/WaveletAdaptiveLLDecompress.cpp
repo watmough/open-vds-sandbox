@@ -494,6 +494,7 @@ int32_t WaveletAdaptiveLLDecompress_DecompressAdaptive(const WaveletAdaptiveLL_D
 }
 
 #define ADAPTIVEWAVELET_LOSSLESS_CHANNEL_ZERO            0
+#define ADAPTIVEWAVELET_LOSSLESS_CHANNEL_CONSTANT        1
 #define ADAPTIVEWAVELET_LOSSLESS_CHANNEL_UNCOMPRESSED    -1
 int32_t WaveletAdaptiveLLDecompress_DecompressLossless(uint8_t *in, float *pic, int32_t sizeX, int32_t sizeY, int32_t sizeZ, int32_t allocatedSizeX, int32_t allocatedSizeXY)
 {
@@ -538,18 +539,21 @@ int32_t WaveletAdaptiveLLDecompress_DecompressLossless(uint8_t *in, float *pic, 
 #pragma omp parallel for num_threads(threadCount) schedule(static)
   for (int i = 0; i < 4; i++)
   {
-    if (readSize[i] == ADAPTIVEWAVELET_LOSSLESS_CHANNEL_UNCOMPRESSED)
+    switch (readSize[i])
     {
-      memcpy(count[i], compressedData[i], nPixels);
-    }
-    else if (readSize[i] > 1)
-    {
-      FSE_decompress(count[i], nPixels, compressedData[i], readSize[i]);
-    }
-    else
-    {
-      assert(readSize[i] == ADAPTIVEWAVELET_LOSSLESS_CHANNEL_ZERO);
+    case ADAPTIVEWAVELET_LOSSLESS_CHANNEL_ZERO:
       memset(count[i], 0, nPixels);
+      break;
+    case ADAPTIVEWAVELET_LOSSLESS_CHANNEL_CONSTANT:
+      memset(count[i], compressedData[i][0], nPixels);
+      break;
+    case ADAPTIVEWAVELET_LOSSLESS_CHANNEL_UNCOMPRESSED:
+      memcpy(count[i], compressedData[i], nPixels);
+      break;
+    default:
+      assert(readSize[i] > 1);
+      FSE_decompress(count[i], nPixels, compressedData[i], readSize[i]);
+      break;
     }
   }
   
