@@ -2,7 +2,7 @@ includedir=@CMAKE_INSTALL_FULL_INCLUDEDIR@
 libdir=@CMAKE_INSTALL_FULL_LIBDIR@
 
 Name: OpenVDS
-Description: An open-source reference software implementation which can read and write VDS has been contributed by Bluware Inc. to the OSDU.
+Description: Open-source implementation of the Volume Data Store (VDS) standard for fast random access to multi-dimensional volumetric data.
 Version: @OpenVDSVersion@
 URL: https://community.opengroup.org/osdu/platform/domain-data-mgmt-services/seismic/open-vds
 Libs: -L${libdir} -lopenvds
