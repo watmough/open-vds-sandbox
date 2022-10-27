@@ -56,7 +56,7 @@ SEGYImport [OPTION...] <input file>
 |     --version                     | Print version information. |
 
 For more information about the ``--url`` and ``--url-connection`` parameter please see:
-http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/seismic/open-vds/connection.html
+https://osdu.pages.opengroup.org/platform/domain-data-mgmt-services/seismic/open-vds/connection.html
 
 To create a valid VDS from a SEG-Y file, SEGYImport needs to scan the file to
 determine the extents of the dataset (e.g. number of samples, number of

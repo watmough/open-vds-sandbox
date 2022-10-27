@@ -199,7 +199,7 @@ main(int argc, char *argv[])
 #endif
   //auto start_time = std::chrono::high_resolution_clock::now();
 
-  cxxopts::Options options("SEGYExport", "SEGYExport - A tool to export a volume data store (VDS) to a SEG-Y file\n\nUse -H or see online documentation for connection string paramters:\nhttp://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/seismic/open-vds/connection.html\n");
+  cxxopts::Options options("SEGYExport", "SEGYExport - A tool to export a volume data store (VDS) to a SEG-Y file\n\nUse -H or see online documentation for connection string paramters:\nhttps://osdu.pages.opengroup.org/platform/domain-data-mgmt-services/seismic/open-vds/connection.html\n");
   options.positional_help("<output file>");
 
   std::string url;

@@ -30,7 +30,7 @@ the shortest json for the specific query by eliminating redundant json parent
 structures.
 
 For more information about the ``url`` and ``--connection`` parameter please see:
-http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/seismic/open-vds/connection.html
+https://osdu.pages.opengroup.org/platform/domain-data-mgmt-services/seismic/open-vds/connection.html
 Some examples:
 
 ```

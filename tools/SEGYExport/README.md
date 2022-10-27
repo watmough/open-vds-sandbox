@@ -24,7 +24,7 @@ the VDS was compressed with a lossless algorithm (or uncompressed) and all
 traces fit in the array defined by the VDS (i.e. no duplicate traces).
 
 For more information about the ``--url`` and ``--connection`` parameter please see:
-http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/seismic/open-vds/connection.html
+https://osdu.pages.opengroup.org/platform/domain-data-mgmt-services/seismic/open-vds/connection.html
 
 Example usage:
 ```

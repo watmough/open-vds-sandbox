@@ -178,7 +178,7 @@ VDSCopy will create a new dataset in the target location and copy the content of
 This might inflict data recompression and a slight data degradation if a lossy compression method is used.
 
 Use -H or see online documentation for connection string parameters:
-http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/seismic/open-vds/connection.html
+https://osdu.pages.opengroup.org/platform/domain-data-mgmt-services/seismic/open-vds/connection.html
 )help";
 
   cxxopts::Options options("VDSCopy", info);

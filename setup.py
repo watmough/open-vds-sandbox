@@ -69,7 +69,7 @@ setup(
     download_url="https://bluware.jfrog.io/ui/native/Releases-OpenVDSPlus/2.1",
     project_urls={
         "Bug Tracker": "https://community.opengroup.org/osdu/platform/domain-data-mgmt-services/seismic/open-vds/-/issues",
-        "Documentation": "http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/seismic/open-vds/",
+        "Documentation": "https://osdu.pages.opengroup.org/platform/domain-data-mgmt-services/seismic/open-vds/",
         "Source Code": "https://community.opengroup.org/osdu/platform/domain-data-mgmt-services/seismic/open-vds"
     },
     description=DOCLINES[0],

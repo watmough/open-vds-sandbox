@@ -173,7 +173,7 @@ int main(int argc, char **argv)
   std::string help_info = R"info(VDSInfo - A tool for extracting info from a VDS
 
 Use -H or see online documentation for connection string paramters:
-http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/seismic/open-vds/connection.html
+https://osdu.pages.opengroup.org/platform/domain-data-mgmt-services/seismic/open-vds/connection.html
 
 Example for getting the TextHeader from the imported SEGY file autodecoded EBCDIC to ASCII:
 VDSInfo --metadata-name TextHeader -b -e -w 80 s3://bluware-jorgen-dev/volve

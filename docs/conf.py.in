@@ -80,7 +80,7 @@ html_show_copyright = True  # If true, “(C) Copyright …” is shown in the HTML fo
 html_static_path = ['_static']
 
 # AutoStructify Configuration
-github_doc_root = 'http://osdu.pages.community.opengroup.org/platform/domain-data-mgmt-services/seismic/open-vds/'
+github_doc_root = 'https://osdu.pages.opengroup.org/platform/domain-data-mgmt-services/seismic/open-vds/'
 def setup(app):
     app.add_config_value('recommonmark_config', {
             'url_resolver': lambda url: github_doc_root + url,
