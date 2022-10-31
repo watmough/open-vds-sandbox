@@ -8,6 +8,7 @@ variables:
   MERGE_REQUEST_BRANCH_ALPINE_IMAGE_TAG: "$CI_REGISTRY_IMAGE/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME:alpine-1"
   MERGE_REQUEST_BRANCH_MANYLINUX2014_IMAGE_TAG: "$CI_REGISTRY_IMAGE/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME:manylinux2014-1"
   MERGE_REQUEST_BRANCH_MANYLINUX2_24_IMAGE_TAG: "$CI_REGISTRY_IMAGE/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME:manylinux2_24-1"
+  INGESTION_DOCKER_WITH_PYTHON_IMAGE_TAG: "$CI_REGISTRY_IMAGE/docker_with_python:19.03"
 devel-container-alpine-gitlab:
   stage: prepare
   image: docker:19.03
@@ -52,6 +53,17 @@ devel-container-manylinux-2-24-merge-request:
   - docker push $MERGE_REQUEST_BRANCH_MANYLINUX2_24_IMAGE_TAG
   only:
   - merge_requests
+ingestion-container-docker_with_python:
+  stage: prepare
+  image: docker:19.03
+  tags:
+  - docker-runner
+  script:
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  - docker build -t $INGESTION_DOCKER_WITH_PYTHON_IMAGE_TAG -f docker/docker_with_python.Dockerfile .
+  - docker push $INGESTION_DOCKER_WITH_PYTHON_IMAGE_TAG
+  only:
+  - tags
 compile-alpine-master:
   stage: build
   image: $MASTER_ALPINE_IMAGE_TAG
@@ -168,6 +180,17 @@ compile-merge-request-manylinux2_24:
   - ccache --show-stats
   only:
   - merge_requests
+ingestion-image-docker:
+  stage: build
+  image: $INGESTION_DOCKER_WITH_PYTHON_IMAGE_TAG
+  tags:
+  - docker-runner
+  script:
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  - python3 build_osdu_image.py -t $CI_COMMIT_TAG
+  - docker push $CI_REGISTRY_IMAGE/openvds-ingestion:$CI_COMMIT_TAG
+  only:
+  - tags
 unit-tests-alpine:
   stage: test
   image: $MERGE_REQUEST_BRANCH_ALPINE_IMAGE_TAG
