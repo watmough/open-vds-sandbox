@@ -41,21 +41,25 @@ static void s2ws(const std::string& source, std::wstring& target)
   MultiByteToWideChar(CP_UTF8, 0, source.c_str(), slength, &target[0], len);
 }
 
+static std::string ws2s(const std::wstring& s)
+{
+    int len;
+    int slength = (int)s.length() + 1;
+    len = WideCharToMultiByte(CP_UTF8, 0, s.c_str(), slength, 0, 0, 0, 0); 
+    std::string r(len, '\0');
+    WideCharToMultiByte(CP_UTF8, 0, s.c_str(), slength, &r[0], len, 0, 0); 
+    return r;
+}
+
 static std::string ErrorToString(DWORD error)
 {
-  LPVOID lpMsgBuf;
+  wchar_t buf[256];
+ FormatMessageW(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+               NULL, error, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), 
+               buf, (sizeof(buf) / sizeof(wchar_t)), NULL);
 
-  FormatMessage(
-    FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-    NULL,
-    error,
-    MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-    (LPTSTR)& lpMsgBuf,
-    0, NULL);
-
-  std::string ret((const char*)lpMsgBuf, strlen((const char*)lpMsgBuf));
-  LocalFree(lpMsgBuf);
-  return ret;
+  std::wstring ws(&buf[0]);
+  return ws2s(ws);
 }
 
 static void SetIoError(DWORD error, Error &io_error)
