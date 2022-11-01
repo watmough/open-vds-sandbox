@@ -69,6 +69,13 @@
       }
     },
     {
+      "name": "azuresdkforcpp",
+      "hidden": true,
+      "cacheVariables": {
+        "DISABLE_AZURESDKFORCPP_IOMANAGER": "OFF"
+      }
+    },
+    {
       "name": "VS2015_x64",
       "hidden": true,
       "toolset": {
