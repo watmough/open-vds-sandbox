@@ -32,8 +32,6 @@
 #include <azure/storage/blobs.hpp>
 #include "azure/core/http/curl_transport.hpp"
 
-#include <fmt/format.h>
-
 namespace OpenVDS
 {
   class IOManagerAzureSdkForCpp : public IOManager

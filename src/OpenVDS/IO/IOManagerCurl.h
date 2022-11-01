@@ -40,8 +40,6 @@
 #include <uv.h>
 #include <curl/curl.h>
 
-#include <fmt/format.h>
-
 namespace OpenVDS
 {
 struct UVEventLoopData;
