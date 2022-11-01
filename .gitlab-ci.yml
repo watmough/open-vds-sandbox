@@ -189,6 +189,7 @@ ingestion-image-docker:
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   - python3 build_osdu_image.py -t $CI_COMMIT_TAG
   - docker push $CI_REGISTRY_IMAGE/openvds-ingestion:$CI_COMMIT_TAG
+  - docker push $CI_REGISTRY_IMAGE/openvds-ingestion:latest
   only:
   - tags
 unit-tests-alpine:
