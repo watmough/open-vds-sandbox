@@ -1,3 +1,4 @@
+aws-crt*
 aws-cpp-sdk*
 gtest*
 jsoncpp*
@@ -19,6 +20,7 @@ dms*
 cmakerc*
 azure-sdk-for-cpp*
 libxml2*
-!dms-git
+dms-git
 azure-sdk-for-cpp*
 libxml2*
+sse2neo*

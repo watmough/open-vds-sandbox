@@ -240,7 +240,7 @@ if (APPLE)
   endif()
 endif()
 
-if (NOT WIN32 AND NOT EMSCRIPTEN)
+if (NOT WIN32 AND NOT EMSCRIPTEN AND NOT USE_LIBRESSL)
   find_package(OpenSSL REQUIRED)
 endif()
 

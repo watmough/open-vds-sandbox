@@ -106,7 +106,7 @@ get_property(dependency_targets_3rdparty      GLOBAL PROPERTY OPENVDS_DEPENDENCY
 
 addSystemHeadersToTarget(sdapi_objects "${include_3rdparty}")
 
-if (UNIX)
+if (UNIX AND NOT DISABLE_AZURE_IOMANAGER)
   find_package(Boost REQUIRED COMPONENTS system date_time regex)
   target_include_directories(sdapi_objects PRIVATE ${OPENSSL_INCLUDE_DIR})
   target_link_libraries(sdapi_objects PRIVATE Boost::system)

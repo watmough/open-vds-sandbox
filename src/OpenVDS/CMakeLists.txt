@@ -284,7 +284,7 @@ if (NOT EMSCRIPTEN)
 
   if (WIN32)
     target_link_libraries(openvds_objects PRIVATE crypt32 wsock32 ws2_32)
-  else()
+  elseif(NOT USE_LIBRESSL)
     target_link_libraries(openvds_objects PRIVATE OpenSSL::SSL OpenSSL::Crypto)
   endif()
 
