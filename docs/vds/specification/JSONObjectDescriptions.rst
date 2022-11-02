@@ -116,7 +116,7 @@ produceStatus             Enumeration  The produce status of the layer. Recogniz
 chunkCount                Int          The number of chunks in this layer.
 hasChunkMetadataPages     Boolean      If ‘true’ it is possible to request chunk metadata pages with an URL using the layerName appended with /ChunkMetadata and the page number.
 chunkMetadataPageSize     Int          The number of chunk metadata entries in each chunk metadata page.
-pageDirectory (optional)  Int[]........The stored index of each page (which can be different from the page's index) or -1 if no page exists
+pageDirectory (optional)  Int[]        The stored index of each page (which can be different from the page's index) or -1 if no page exists
 chunkMetadataByteSize     Int          The size of each chunk metadata entry.
 compressionMethod         Enumeration  This indicates which method has been used to serialize chunks in this layer. Recognized values are ``NONE``, ``Wavelet``, ``RLE``, ``Zip``, and ``WaveletLossless``.
 compressionTolerance      Float        For Wavelet and WaveletLossless this indicates how much precision is kept after transforming the data to wavelet domain. A value of 1.0 is equivalent to 8 bits of precision, and each doubling of the tolerance represents a loss of ~1 bit of precision while each halving of the tolerance represents adding ~1 bit of precision. Note that since this is done in wavelet domain it does not directly translate to how much precision is lost from the original. The WaveletLossless method adds a entropy-encoded delta between the Wavelet compressed data and the original, so the tolerance will still affect the compression ratio achieved.
