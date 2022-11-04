@@ -369,7 +369,14 @@ VolumeDataAccessManagerImpl::CreateVolumeDataPageAccessor(VolumeDataLayer const 
   {
     if(volumeDataLayer->GetParentLayer() && volumeDataLayer->GetParentLayer()->GetLayerType() != VolumeDataLayer::Virtual)
     {
-      parentVolumeDataPageAccessor = CreateVolumeDataPageAccessor(volumeDataLayer->GetParentLayer(), (maxPages + 1) / 2, accessMode);
+      auto parentLayer = volumeDataLayer->GetParentLayer();
+      auto dimensionGroup = parentLayer->GetChunkDimensionGroup();
+      int dim0 = DimensionGroupUtil::GetDimension(dimensionGroup, 0);
+      int dim1 = DimensionGroupUtil::GetDimension(dimensionGroup, 1);
+      int parentMaxPages = parentLayer->GetNumChunksInDimension(dim0);
+      if(dim1 != -1) parentMaxPages *= parentLayer->GetNumChunksInDimension(dim1);
+
+      parentVolumeDataPageAccessor = CreateVolumeDataPageAccessor(volumeDataLayer->GetParentLayer(), parentMaxPages, accessMode);
     }
   }
 
