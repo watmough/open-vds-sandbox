@@ -8,8 +8,6 @@ elseif (UNIX)
   set_source_files_properties(${PROJECT_SOURCE_DIR}/src/OpenVDS/IO/Win_File.cpp PROPERTIES HEADER_FILE_ONLY TRUE)
 endif()
 
-setCompilerFlagsForTools(HueBDS)
-
 target_link_libraries(HueBDS PRIVATE hue_bds_objects)
 target_include_directories(HueBDS PRIVATE ${PROJECT_SOURCE_DIR}/src/OpenVDS ${PROJECT_SOURCE_DIR}/src/OpenVDS/BulkDataStore)
 target_compile_definitions(HueBDS PRIVATE _CRT_SECURE_NO_WARNINGS=1 OPENVDS_STATIC_DEFINE)
