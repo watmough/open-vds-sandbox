@@ -910,7 +910,7 @@ VDSHandle OpenVDSInterfaceImpl::Open(IOManager *ioManager, LogLevel loglevel, Er
   ErrorGuard error(errorHandler, errorPtr);
   std::unique_ptr<VDS> ret(new VDS(loglevel));
 
-  if(Init(ret.get(), new VolumeDataStoreIOManager(*ret, ioManager), error))
+  if(Init(ret.get(), new VolumeDataStoreIOManager(*ret, ioManager, IOManager::ReadOnly), error))
   {
     return ret.release();
   }
@@ -934,7 +934,7 @@ VDS *OpenVDSInterfaceImpl::Open(const OpenOptions &options, Error &error)
     if (iomanagerTransformer)
       ioManager.reset(iomanagerTransformer(ioManager.release()));
 
-    volumeDataStore.reset(new VolumeDataStoreIOManager(*ret, ioManager.release()));
+    volumeDataStore.reset(new VolumeDataStoreIOManager(*ret, ioManager.release(), IOManager::ReadOnly));
   }
   else
   {
@@ -993,7 +993,7 @@ VDSHandle OpenVDSInterfaceImpl::Create(IOManager *ioManager, VolumeDataLayoutDes
   ErrorGuard error(errorHandler, errorPtr);
   std::unique_ptr<VDS> ret(new VDS(logLevel));
 
-  if(Init(ret.get(), new VolumeDataStoreIOManager(*ret, ioManager), layoutDescriptor, axisDescriptors, channelDescriptors, metadata, compressionMethod, compressionTolerance, error))
+  if(Init(ret.get(), new VolumeDataStoreIOManager(*ret, ioManager, IOManager::Create), layoutDescriptor, axisDescriptors, channelDescriptors, metadata, compressionMethod, compressionTolerance, error))
   {
     return ret.release();
   }
@@ -1020,11 +1020,11 @@ VDSHandle OpenVDSInterfaceImpl::Create(const OpenOptions& options, VolumeDataLay
 
   if(options.connectionType != OpenOptions::VDSFile)
   {
-    std::unique_ptr<IOManager> ioManager(IOManager::CreateIOManager(options, IOManager::AccessPattern::ReadWrite, error));
+    std::unique_ptr<IOManager> ioManager(IOManager::CreateIOManager(options, IOManager::AccessPattern::Create, error));
     if (error.code)
       return nullptr;
 
-    volumeDataStore.reset(new VolumeDataStoreIOManager(*ret, ioManager.release()));
+    volumeDataStore.reset(new VolumeDataStoreIOManager(*ret, ioManager.release(), IOManager::Create));
   }
   else
   {

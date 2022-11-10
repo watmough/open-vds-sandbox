@@ -339,6 +339,7 @@ bool VolumeDataStoreVDSFile::Close(Error &error)
   {
     error.code = -1;
     error.string = "Datastore not open";
+    return false;
   }
 
   for(auto &layerFileEntry : m_layerFiles)
@@ -348,6 +349,19 @@ bool VolumeDataStoreVDSFile::Close(Error &error)
   m_layerFiles.clear();
   m_dataStore.reset();
   return true;
+}
+
+bool VolumeDataStoreVDSFile::EnableWriting(Error& error)
+{
+  std::unique_lock<std::mutex> lock(m_mutex);
+  if(!m_dataStore)
+  {
+    error.code = -1;
+    error.string = "Datastore not open";
+    return false;
+  }
+
+  return m_dataStore->EnableWriting();
 }
 
 bool VolumeDataStoreVDSFile::ReadSerializedVolumeDataLayout(std::vector<uint8_t>& serializedVolumeDataLayout, Error &error)
