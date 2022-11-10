@@ -49,6 +49,7 @@ namespace OpenVDS
     int                 m_chunkMetadataByteSize;
     float               m_compressionTolerance;
     CompressionMethod   m_compressionMethod;
+    int64_t             m_serializedSize;
     int64_t             m_uncompressedSize;
     int64_t             m_adaptiveLevelSizes[WAVELET_ADAPTIVE_LEVELS];
     std::vector<int>    m_pageDirectory;

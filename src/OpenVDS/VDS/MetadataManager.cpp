@@ -327,10 +327,12 @@ void MetadataManager::UpdateMetadataStatus(int64_t uncompressedSize, int seriali
 
   if(subtract)
   {
+    m_metadataStatus.m_serializedSize -= serializedSize;
     m_metadataStatus.m_uncompressedSize -= uncompressedSize;
   }
   else
   {
+    m_metadataStatus.m_serializedSize += serializedSize;
     m_metadataStatus.m_uncompressedSize += uncompressedSize;
   }
 
