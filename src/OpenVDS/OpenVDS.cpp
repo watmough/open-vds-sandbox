@@ -40,6 +40,7 @@
 #include "VDS/WaveletTypes.h"
 #include "VDS/StringToDouble.h"
 #include "VDS/Env.h"
+#include "VDS/Url.h"
 
 #include "IO/IOManager.h"
 #include "IO/IOManagerTransformer.h"
@@ -104,37 +105,6 @@ static bool isProtocol(const std::string &str, const std::string &literal)
 static std::string removeProtocol(const std::string &str, const std::string &literal)
 {
   return std::string(str.begin() + literal.size(), str.end());
-}
-
-static std::string URLDecode(const std::string & url)
-{
-  std::string result;
-  result.reserve(url.size());
-  int len = int(url.size());
-
-  for(int i = 0; i < len; i++)
-  {
-    char c = url[i];
-
-    if(c == '+')
-    {
-      c = ' ';
-    }
-    else if(c == '%' && i + 2 < len)
-    {
-      char temp[3] = { url[i+1], url[i+2] };
-      char *end;
-      char decoded = char(strtol(temp, &end, 16));
-      if(end == temp + 2)
-      {
-        c = decoded;
-        i += 2;
-      }
-    }
-
-    result.push_back(c);
-  }
-  return result;
 }
 
 static bool isTrue(const std::string& str)
