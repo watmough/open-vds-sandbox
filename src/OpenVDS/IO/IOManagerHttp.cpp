@@ -67,7 +67,7 @@ namespace OpenVDS
     std::string url = getUrl(m_base, objectName, m_suffix);
     std::shared_ptr<DownloadRequestCurl> request = std::make_shared<DownloadRequestCurl>(objectName, handler);
     std::vector<std::string> headers;
-    m_curlHandler.addDownloadRequest(request, url, headers, convertToISO8601, CurlDownloadHandler::HEADER);
+    m_curlHandler.addDownloadRequest(request, url, headers, convertToISO8601, CurlVerb::HEADER);
     return request;
   }
   
@@ -82,7 +82,7 @@ namespace OpenVDS
       auto& header = headers.back();
       header = fmt::format("range: bytes={}-{}", range.start, range.end);
     }
-    m_curlHandler.addDownloadRequest(request, url, headers, convertToISO8601, CurlDownloadHandler::GET);
+    m_curlHandler.addDownloadRequest(request, url, headers, convertToISO8601, CurlVerb::GET);
     return request;
   }
 

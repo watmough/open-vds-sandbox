@@ -100,6 +100,7 @@ else()
     IO/IOManagerTransformer.h
     IO/IORefreshToken.h
     IO/SslVerifyPeerEnv.h
+    IO/ErrorRequest.h
     VDS/VDS.h
     VDS/VolumeDataPartition.h
     VDS/VolumeDataChannelMapping.h
@@ -132,7 +133,8 @@ else()
     ${WAVELET_HEADERS}
     ${COMMON_DIR}/Base64/Base64.h
     ${COMMON_DIR}/ThreadPool/ThreadPool.h
-    json_cpp_include.h)
+    json_cpp_include.h
+    )
 endif()
 
 file(GLOB EXPORTED_HEADER_FILES OpenVDS/*.h)

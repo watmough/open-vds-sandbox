@@ -189,7 +189,7 @@ static void addDownloadCB(uv_async_t *handle)
     curl_easy_setopt(downloadRequest->curlEasy, CURLOPT_WRITEFUNCTION, &curlWriteCallback);
     curl_easy_setopt(downloadRequest->curlEasy, CURLOPT_WRITEDATA, downloadRequest.get());
 
-    if (downloadRequest->verb == CurlDownloadHandler::HEADER)
+    if (downloadRequest->verb == CurlVerb::HEADER)
     {
       curl_easy_setopt(downloadRequest->curlEasy, CURLOPT_NOBODY, 1L);
     }
@@ -290,13 +290,19 @@ static void addUploadCB(uv_async_t *handle)
     curl_easy_setopt(uploadRequest->curlEasy, CURLOPT_WRITEFUNCTION, &curlWriteCallback);
     curl_easy_setopt(uploadRequest->curlEasy, CURLOPT_WRITEDATA, uploadRequest.get());
     curl_off_t filesize = curl_off_t(uploadRequest->completeSize);
-    if (uploadRequest->post)
+    if (uploadRequest->verb == CurlVerb::POST)
     {
       curl_easy_setopt(uploadRequest->curlEasy, CURLOPT_POST, long(1));
       curl_easy_setopt(uploadRequest->curlEasy,CURLOPT_POSTFIELDSIZE_LARGE, filesize);
     }
-    else
+    else if (uploadRequest->verb == CurlVerb::PUT)
     {
+      curl_easy_setopt(uploadRequest->curlEasy, CURLOPT_PUT, long(1));
+      curl_easy_setopt(uploadRequest->curlEasy, CURLOPT_UPLOAD, 1L);
+    }
+    else if (uploadRequest->verb == CurlVerb::PATCH)
+    {
+      curl_easy_setopt(uploadRequest->curlEasy, CURLOPT_CUSTOMREQUEST, "PATCH");
       curl_easy_setopt(uploadRequest->curlEasy, CURLOPT_UPLOAD, 1L);
     }
     curl_easy_setopt(uploadRequest->curlEasy, CURLOPT_INFILESIZE_LARGE, filesize);
@@ -639,8 +645,8 @@ void CurlDownloadHandler::handleDone(int responseCode, const Error &error)
   downloadRequest->m_done = true;
   if (downloadRequest->m_handler)
   {
-    if (responseCode < 300 && data.size())
-      downloadRequest->m_handler->HandleData(std::move(data));
+    if (responseCode < 300 && responseData.size())
+      downloadRequest->m_handler->HandleData(std::move(responseData));
     downloadRequest->m_handler->Completed(*downloadRequest, downloadRequest->m_error);
   }
   downloadRequest->m_waitForFinish.notify_all();
@@ -678,40 +684,41 @@ void CurlDownloadHandler::handleHeaderData(char* b, size_t size)
   auto downloadRequest = request.lock();
   if (!downloadRequest)
     return;
-  if (!downloadRequest->m_handler)
-    return;
 
-  downloadRequest->m_handler->HandleMetadata(name, value);
   std::string lowercase_name = name;
   std::transform(lowercase_name.begin(), lowercase_name.end(), lowercase_name.begin(), asciitolower);
-  if (lowercase_name == "content-length")
+  if (downloadRequest->m_handler)
   {
-    char* end = 0;
-    long long length = strtoll(value.data(), &end, 10);
-    if (end > value.data() && length)
+    downloadRequest->m_handler->HandleMetadata(name, value);
+    if (lowercase_name == "content-length")
     {
-      if (verb == GET)
-        data.reserve(length);
-      downloadRequest->m_handler->HandleObjectSize(length);
+      char* end = 0;
+      long long length = strtoll(value.data(), &end, 10);
+      if (end > value.data() && length)
+      {
+        if (verb == CurlVerb::GET)
+          responseData.reserve(length);
+        downloadRequest->m_handler->HandleObjectSize(length);
+      }
+    }
+    else if (lowercase_name == "last-modified")
+    {
+      if (!toISO8601DateTransformer)
+      {
+        downloadRequest->m_handler->HandleObjectLastWriteTime(value);
+      }
+      else
+      {
+        downloadRequest->m_handler->HandleObjectLastWriteTime(toISO8601DateTransformer(value));
+      }
     }
   }
-  else if (lowercase_name == "last-modified")
-  {
-    if (!toISO8601DateTransformer)
-    {
-      downloadRequest->m_handler->HandleObjectLastWriteTime(value);
-    }
-    else
-    {
-      downloadRequest->m_handler->HandleObjectLastWriteTime(toISO8601DateTransformer(value));
-    }
-  }
-  return;
+  responseHeaders.emplace_back(std::move(lowercase_name), std::move(value));
 }
   
 void CurlDownloadHandler::handleWriteData(char* ptr, size_t size)
 {
-  data.insert(data.end(), ptr, ptr + size);
+  responseData.insert(responseData.end(), ptr, ptr + size);
 }
   
 size_t CurlDownloadHandler::handleReadRequest(char* buffer, size_t size)
@@ -781,6 +788,7 @@ void CurlUploadHandler::handleHeaderData(char* buffer, size_t size)
       responsData.reserve(length);
     }
   }
+  responsHeaders.emplace_back(std::move(name), std::move(value));
 }
 
 void CurlUploadHandler::handleWriteData(char* ptr, size_t size)
@@ -889,7 +897,7 @@ CurlHandler::~CurlHandler()
   m_thread->join();
 }
 
-void CurlHandler::addDownloadRequest(const std::shared_ptr<DownloadRequestCurl>& request, const std::string& url, const std::vector<std::string>& headers, std::function<std::string(const std::string&)> toISO8601DateTransformer, CurlDownloadHandler::Verb verb)
+void CurlHandler::addDownloadRequest(const std::shared_ptr<DownloadRequestCurl>& request, const std::string& url, const std::vector<std::string>& headers, std::function<std::string(const std::string&)> toISO8601DateTransformer, CurlVerb verb)
 {
  auto curlData =  std::make_shared<CurlDownloadHandler>(&m_eventLoopData, request, url, headers, toISO8601DateTransformer, verb);
  request->m_downloadHandler = curlData;
@@ -898,9 +906,9 @@ void CurlHandler::addDownloadRequest(const std::shared_ptr<DownloadRequestCurl>&
  uv_async_send(&m_eventLoopData.asyncAddDownload);
 }
 
-void CurlHandler::addUploadRequest(const std::shared_ptr<UploadRequestCurl>& request, const std::string& url, const std::vector<std::string>& headers, bool post, std::vector<std::shared_ptr<std::vector<uint8_t>>> && data, int64_t completeSize)
+void CurlHandler::addUploadRequest(const std::shared_ptr<UploadRequestCurl>& request, const std::string& url, const std::vector<std::string>& headers, CurlVerb verb, std::vector<std::shared_ptr<std::vector<uint8_t>>> && data, int64_t completeSize)
 {
-  auto curlData = std::make_shared<CurlUploadHandler>(&m_eventLoopData, request, url, headers, post, std::move(data), completeSize);
+  auto curlData = std::make_shared<CurlUploadHandler>(&m_eventLoopData, request, url, headers, verb, std::move(data), completeSize);
   request->m_uploadHandler = curlData;
   std::unique_lock<std::mutex> lock(m_eventLoopData.mutex);
   m_eventLoopData.incommingUploadRequests.push_back(curlData);
