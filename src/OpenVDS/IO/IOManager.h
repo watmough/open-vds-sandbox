@@ -64,7 +64,8 @@ namespace OpenVDS
     enum AccessPattern
     {
       ReadOnly,
-      ReadWrite
+      ReadWrite,
+      Create
     };
 
     IOManager(OpenOptions::ConnectionType connectionType)
@@ -84,6 +85,7 @@ namespace OpenVDS
       return WriteObject(objectName, "", "application/json", std::vector<std::pair<std::string, std::string>>(), data, completedCallback);
     }
     virtual bool Close(Error &error) = 0;
+    virtual bool EnableWriting(Error& error) { (void)error; return true; }
 
     OpenOptions::ConnectionType connectionType() const { return m_connectionType; }
 

@@ -79,6 +79,7 @@ public:
   bool          AddLayer(VolumeDataLayer* volumeDataLayer, int chunkMetadataPageSize, bool overwriteExisting) override;
   bool          RemoveLayer(VolumeDataLayer* volumeDataLayer) override { return false; }
   bool          Close(Error &error) override;
+  bool          EnableWriting(Error& error) override;
 
   std::function<bool(std::string const& channelName, bool isPrimary)>
                 IsChannelZipped() const override;

@@ -114,6 +114,9 @@ class VolumeDataStoreIOManager : public VolumeDataStore, public LayerMetadataCon
                         m_pendingUploadRequests;
 
   bool                  m_warnedAboutMissingMetadataTag;
+ 
+  IOManager::AccessPattern
+                        m_accessPattern;
 
   std::unordered_map<std::string, std::unique_ptr<MetadataManager>> m_metadataManagers;
 
@@ -136,6 +139,7 @@ public:
   bool          AddLayer(VolumeDataLayer* volumeDataLayer, int chunkMetadataPageSize, bool overwriteExisting) override;
   bool          RemoveLayer(VolumeDataLayer* volumeDataLayer) override { return false; }
   bool          Close(Error &error) override { return m_ioManager->Close(error); }
+  bool          EnableWriting(Error& error) override;
 
   bool          GetMetadataStatus(std::string const &layerName, MetadataStatus &metadataStatus) const override;
   void          SetMetadataStatus(std::string const &layerName, std::string const &channelName, MetadataStatus &metadataStatus, int pageLimit) override;
@@ -143,7 +147,7 @@ public:
   std::function<bool(std::string const& channelName, bool isPrimary)>
                 IsChannelZipped() const override;
 
-  VolumeDataStoreIOManager(VDS &vds, IOManager *ioManager);
+  VolumeDataStoreIOManager(VDS &vds, IOManager *ioManager, IOManager::AccessPattern accessPattern);
  ~VolumeDataStoreIOManager();
 
   void PageTransferCompleted(MetadataPage* metadataPage, const Error &error);

@@ -53,6 +53,14 @@ VolumeDataPageAccessorImpl::VolumeDataPageAccessorImpl(VolumeDataAccessManagerIm
   , m_lastUsed(std::chrono::steady_clock::now())
   , m_logger(logger)
 {
+  if (accessMode != AccessMode::AccessMode_ReadOnly)
+  {
+    Error error;
+    if (!m_accessManager->GetVolumeDataStore()->EnableWriting(error))
+    {
+      throw InvalidOperation(fmt::format("Failed to create PageAccessor in write mode: {}", error.string).c_str());
+    }
+  }
 }
 
 VolumeDataPageAccessorImpl::~VolumeDataPageAccessorImpl()

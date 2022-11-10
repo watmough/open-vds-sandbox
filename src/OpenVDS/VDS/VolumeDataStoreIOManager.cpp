@@ -179,12 +179,14 @@ static bool IsConstantChunkHash(uint64_t chunkHash)
   return false;
 }
 
-VolumeDataStoreIOManager:: VolumeDataStoreIOManager(VDS &vds, IOManager *ioManager)
+VolumeDataStoreIOManager:: VolumeDataStoreIOManager(VDS &vds, IOManager *ioManager, IOManager::AccessPattern accessPattern)
   : VolumeDataStore(ioManager->connectionType(), vds.logger)
   , m_vds(vds)
   , m_ioManager(ioManager)
   , m_warnedAboutMissingMetadataTag(getBooleanEnvironmentVariable("OPENVDS_DISABLE_WARNINGS"))
+  , m_accessPattern(accessPattern)
 {
+  assert(accessPattern != IOManager::ReadWrite);
 }
 
 VolumeDataStoreIOManager::~VolumeDataStoreIOManager()
@@ -947,6 +949,19 @@ void VolumeDataStoreIOManager::Flush(Error &error)
       return;
     }
   }
+}
+
+bool
+VolumeDataStoreIOManager::EnableWriting(Error& error)
+{
+  if (m_accessPattern == IOManager::ReadOnly)
+  {
+    bool ret = m_ioManager->EnableWriting(error);
+    if (ret)
+      m_accessPattern = IOManager::ReadWrite;
+    return ret;
+  }
+  return true;
 }
 
 MetadataManager *
