@@ -200,8 +200,11 @@ namespace OpenVDS
 
   IOManagerDms::IOManagerDms(const DMSOpenOptions& openOptions, IOManager::AccessPattern accessPattern, Logger &logger, Error& error)
     : IOManager(openOptions.connectionType)
+    , m_datasetPath(openOptions.datasetPath)
+    , m_logLevel(openOptions.logLevel)
     , m_opened(false)
     , m_useFileNameForSingleFileDatasets(openOptions.useFileNameForSingleFileDatasets)
+    , m_accessPattern(accessPattern)
     , m_threadPool(16)
   {
     if (openOptions.datasetPath.size() && m_useFileNameForSingleFileDatasets)
@@ -249,9 +252,11 @@ namespace OpenVDS
       case IOManager::ReadOnly:
         disposition = seismicdrive::SDDatasetDisposition::READ_ONLY;
         break;
-      case IOManager::ReadWrite:
+      case IOManager::Create:
         disposition = seismicdrive::SDDatasetDisposition::OVERWRITE;
         break;
+      case IOManager::ReadWrite:
+        throw InvalidOperation("Only leagal accessPattern to IOMnagaerDms constructor is ReadOnly and Create");
       }
       m_dataset->open(disposition);
       m_opened = true;
@@ -291,6 +296,28 @@ namespace OpenVDS
       {
         error.code = -1;
         error.string = "Unknown exception in DMS close";
+        return false;
+      }
+    }
+    return true;
+  }
+
+  bool IOManagerDms::EnableWriting(Error& error)
+  {
+    if (m_accessPattern == IOManager::ReadOnly)
+    {
+      try
+      {
+        m_dataset->close();
+        m_dataset.reset();
+        m_dataset.reset(new seismicdrive::SDGenericDataset(m_sdManager.get(), m_datasetPath, m_logLevel != LogLevel::None));
+        m_dataset->open(seismicdrive::SDDatasetDisposition::READ_WRITE);
+        m_accessPattern = IOManager::ReadWrite;
+      }
+      catch (const std::exception& ex)
+      {
+        error.code = -1;
+        error.string = ex.what();
         return false;
       }
     }
