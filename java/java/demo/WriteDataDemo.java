@@ -158,7 +158,8 @@ public class WriteDataDemo {
         OpenVDS.writeArray(vds, src1, "chan1");
         OpenVDS.writeArray(vds, src2, "chan2");
 
-        vds.getAccessManager().flushUploadQueue();
+        VDSError error = new VDSError();
+        vds.getAccessManager().flush(error);
         vds.close();
 
         try (VDS vds2 = OpenVDS.open(options, vdsError);
@@ -214,7 +215,8 @@ public class WriteDataDemo {
         OpenVDS.writeArray(vds, src1, "chan1");
         OpenVDS.writeArray(vds, src2, "chan2");
 
-        vds.getAccessManager().flushUploadQueue();
+        VDSError error = new VDSError();
+        vds.getAccessManager().flush(error);
         vds.close();
 
         try (VDS vds2 = OpenVDS.open(options, vdsError);
