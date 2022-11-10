@@ -483,7 +483,6 @@ struct AzureDMSIOManagerFactory : public DMSIOManagerFactory
     AzureOpenOptions openOptions;
     openOptions.accountName = account;
     openOptions.container = container;
-    openOptions.sasToken = bearer;
     openOptions.blob = blob_prefix;
     
 
