@@ -70,6 +70,7 @@ if (NOT ENABLE_ASAN)
     io/filetest.cpp
     io/InMemoryIo.cpp
     io/IoManagerBasic.cpp
+    io/sdpath.cpp
     )
 
   add_test_executable(io_performance_test

@@ -55,6 +55,7 @@ else()
     IO/IOManagerDms.cpp
     IO/IOManagerDmsFactory.cpp
     IO/IORefreshToken.cpp
+    IO/IOManagerDmsProxy.cpp
     IO/SslVerifyPeerEnv.cpp
     VDS/VolumeDataPartition.cpp
     VDS/VolumeDataChannelMapping.cpp
@@ -80,7 +81,8 @@ else()
     VDS/StringToDouble.cpp
     VDS/GlobalStateImpl.cpp
     ${WAVELET_SOURCES}
-    ${COMMON_DIR}/Base64/Base64.cpp)
+    ${COMMON_DIR}/Base64/Base64.cpp
+    )
 
   set (PRIVATE_HEADER_FILES
     IO/File.h
@@ -100,6 +102,8 @@ else()
     IO/IOManagerTransformer.h
     IO/IORefreshToken.h
     IO/SslVerifyPeerEnv.h
+    IO/IOManagerDmsProxy.h
+    IO/SDPath.h
     IO/ErrorRequest.h
     VDS/VDS.h
     VDS/VolumeDataPartition.h
