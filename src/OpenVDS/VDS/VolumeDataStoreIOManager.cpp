@@ -306,6 +306,7 @@ VolumeDataStoreIOManager::AddLayer(VolumeDataLayer* volumeDataLayer, int chunkMe
   metadataStatus.m_chunkMetadataByteSize = chunkMetadataByteSize;
   metadataStatus.m_compressionMethod = volumeDataLayer->GetEffectiveCompressionMethod();
   metadataStatus.m_compressionTolerance = volumeDataLayer->GetEffectiveCompressionTolerance();
+  metadataStatus.m_hasSerializedSize = true;
 
   int pageLimit = volumeDataLayer->GetLayout()->GetDimensionality() <= 3 ? 64 : 1024;
 
