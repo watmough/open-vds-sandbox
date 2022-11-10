@@ -185,10 +185,10 @@ struct DMSDataset
 
     {
       std::string url;
-      if (accessPattern == IOManager::ReadWrite)
+      if (accessPattern == IOManager::Create)
         url = fmt::format("{}/dataset/tenant/{}/subproject/{}/dataset/{}?path={}", m_manager.m_authorityUrl, URLEncode(m_tenant), URLEncode(m_subproject), URLEncode(m_dataset), URLEncode(m_path));
       else
-        url = fmt::format("{}/dataset/tenant/{}/subproject/{}/dataset/{}/lock?openmode=read&path={}", m_manager.m_authorityUrl, URLEncode(m_tenant), URLEncode(m_subproject), URLEncode(m_dataset), URLEncode(m_path));
+        url = fmt::format("{}/dataset/tenant/{}/subproject/{}/dataset/{}/lock?openmode={}&path={}", m_manager.m_authorityUrl, URLEncode(m_tenant), URLEncode(m_subproject), URLEncode(m_dataset), accessPattern == IOManager::ReadOnly ? "read" : "write", URLEncode(m_path));
       std::shared_ptr<UploadRequestCurl> request = std::make_shared<UploadRequestCurl>("lock_dataset", std::function<void(const Request& request, const Error& error)>());
       std::vector<std::string> headers;
       headers.emplace_back("Content-Type: application/json");
@@ -196,7 +196,7 @@ struct DMSDataset
       headers.emplace_back(fmt::format("x-seismic-dms-lockid: {}", m_lock_id));
       headers.emplace_back(fmt::format("appkey: {}", m_manager.m_appKey));
       headers.emplace_back(fmt::format("authorization: Bearer {}", m_manager.m_sdToken));
-      m_manager.m_curlHandler.addUploadRequest(request, url, headers, accessPattern == IOManager::ReadWrite ? CurlVerb::POST : CurlVerb::PUT, {}, 0);
+      m_manager.m_curlHandler.addUploadRequest(request, url, headers, accessPattern == IOManager::Create ? CurlVerb::POST : CurlVerb::PUT, {}, 0);
       request->WaitForFinish(error);
       std::vector<unsigned char> respons_data;
       respons_data.insert(respons_data.end(), request->m_uploadHandler->responsData.begin(), request->m_uploadHandler->responsData.end());
@@ -246,62 +246,60 @@ struct DMSDataset
     if (!m_opened)
     {
       error.code = -1;
-      error.string = "Seismic DMS: Closing an allready closed DatasetInstance.";
+      error.string = "Seismic DMS: Closing an already closed DatasetInstance.";
       return false;
     }
     if (!m_manager.ensureSdToken(error))
       return false;
 
+    std::string url = fmt::format("{}/dataset/tenant/{}/subproject/{}/dataset/{}?path={}&close={}", m_manager.m_authorityUrl, URLEncode(m_tenant), URLEncode(m_subproject), URLEncode(m_dataset), URLEncode(m_path), m_lock_id);
+    std::shared_ptr<UploadRequestCurl> request = std::make_shared<UploadRequestCurl>("lock_dataset", std::function<void(const Request& request, const Error& error)>());
+    std::vector<std::string> headers;
+    headers.emplace_back("Content-Type: application/json");
+    headers.emplace_back(fmt::format("x-seismic-dms-lockid: {}", m_lock_id));
+    headers.emplace_back(fmt::format("appkey: {}", m_manager.m_appKey));
+    headers.emplace_back(fmt::format("authorization: Bearer {}", m_manager.m_sdToken));
+    m_manager.m_curlHandler.addUploadRequest(request, url, headers, CurlVerb::PATCH, {}, 0);
+    request->WaitForFinish(error);
+    std::vector<unsigned char> respons_data;
+    respons_data.insert(respons_data.end(), request->m_uploadHandler->responsData.begin(), request->m_uploadHandler->responsData.end());
+    if (error.code || !request->m_uploadHandler)
     {
-      std::string url = fmt::format("{}/dataset/tenant/{}/subproject/{}/dataset/{}?path={}&close={}", m_manager.m_authorityUrl, URLEncode(m_tenant), URLEncode(m_subproject), URLEncode(m_dataset), URLEncode(m_path), m_lock_id);
-      std::shared_ptr<UploadRequestCurl> request = std::make_shared<UploadRequestCurl>("lock_dataset", std::function<void(const Request& request, const Error& error)>());
-      std::vector<std::string> headers;
-      headers.emplace_back("Content-Type: application/json");
-      headers.emplace_back(fmt::format("x-seismic-dms-lockid: {}", m_lock_id));
-      headers.emplace_back(fmt::format("appkey: {}", m_manager.m_appKey));
-      headers.emplace_back(fmt::format("authorization: Bearer {}", m_manager.m_sdToken));
-      m_manager.m_curlHandler.addUploadRequest(request, url, headers, CurlVerb::PATCH, {}, 0);
-      request->WaitForFinish(error);
-      std::vector<unsigned char> respons_data;
-      respons_data.insert(respons_data.end(), request->m_uploadHandler->responsData.begin(), request->m_uploadHandler->responsData.end());
-      if (error.code || !request->m_uploadHandler)
-      {
-        std::string respons_str;
-        respons_str.insert(respons_str.end(), respons_data.begin(), respons_data.end());
-        error.string = fmt::format("Seismic dms lock failed: {} - {}", error.string, respons_str);
-        return false;
-      }
-      Json::Value root;
-      if (!ParseJSONFromBuffer(respons_data, root, error))
-      {
-        return false;
-      }
-      try
-      {
-        m_gc_url = root["gcsurl"].asString();
-      }
-      catch (const Json::Exception& ex)
-      {
-        error.code = -1;
-        error.string = fmt::format("Seismic dms lock failed: {}", ex.what());
-        return false;
-      }
-
-      for (auto& header : request->m_uploadHandler->responsHeaders)
-      {
-        if (header.first == "service-provider")
-          m_service_provider = header.second;
-      }
-
-      if (m_service_provider.empty())
-      {
-        error.code = -1;
-        error.string = "Seismic dms lock failed: Missing service-provider header";
-        return false;
-      }
+      std::string respons_str;
+      respons_str.insert(respons_str.end(), respons_data.begin(), respons_data.end());
+      error.string = fmt::format("Seismic dms lock failed: {} - {}", error.string, respons_str);
+      return false;
     }
- 
-    
+    Json::Value root;
+    if (!ParseJSONFromBuffer(respons_data, root, error))
+    {
+      return false;
+    }
+    try
+    {
+      m_gc_url = root["gcsurl"].asString();
+    }
+    catch (const Json::Exception& ex)
+    {
+      error.code = -1;
+      error.string = fmt::format("Seismic dms lock failed: {}", ex.what());
+      return false;
+    }
+
+    for (auto& header : request->m_uploadHandler->responsHeaders)
+    {
+      if (header.first == "service-provider")
+        m_service_provider = header.second;
+    }
+
+    if (m_service_provider.empty())
+    {
+      error.code = -1;
+      error.string = "Seismic dms lock failed: Missing service-provider header";
+      return false;
+    }
+
+    m_opened = false;
     return true;
 
   }
@@ -327,6 +325,7 @@ struct DMSIOManagerFactory
   {}
 
   virtual bool ensureIOManager(std::unique_ptr<IOManager>& iomanager, Error& error) = 0;
+  virtual void invalidate() = 0;
 
   struct GcsAccessToken
   {
@@ -502,6 +501,11 @@ struct AzureDMSIOManagerFactory : public DMSIOManagerFactory
     }
     return true;
   }
+
+  void invalidate() override
+  {
+    m_expire = {};
+  }
   std::chrono::time_point<std::chrono::steady_clock> m_expire;
 };
 class DMSProxyAuthProviderException : public std::runtime_error
@@ -525,6 +529,7 @@ std::string IOManagerDMSProxy::AuthProviderCallback(const void* data)
 
 IOManagerDMSProxy::IOManagerDMSProxy(const DMSOpenOptions& openOptions, IOManager::AccessPattern accessPattern, const Logger& logger, Error& error)
   : IOManager(OpenOptions::DMS)
+  , m_accessPattern(accessPattern)
   , m_logger(logger)
   , m_curlHandler(error, m_logger)
   , m_useFileNameForSingleFileDatasets(openOptions.useFileNameForSingleFileDatasets)
@@ -580,7 +585,24 @@ bool IOManagerDMSProxy::Close(Error& error)
 {
   if (m_dmsDataset)
   {
-    return m_dmsDataset->close(error);
+    bool ret = m_dmsDataset->close(error);
+    if (ret)
+      m_ioManagerFactory->invalidate();
+    return ret;
+  }
+  return true;
+}
+      
+bool IOManagerDMSProxy::EnableWriting(Error& error)
+{
+  if (m_accessPattern == IOManager::ReadOnly)
+  {
+    if (!m_dmsDataset->close(error))
+      return false;
+    if (!m_dmsDataset->open(IOManager::ReadWrite, error))
+      return false;
+    m_ioManagerFactory->invalidate();
+    m_accessPattern = IOManager::ReadWrite;
   }
   return true;
 }
