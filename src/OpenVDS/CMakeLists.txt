@@ -130,6 +130,7 @@ else()
     VDS/StringToDouble.h
     VDS/LayerMetadataContainer.h
     VDS/Logging.h
+    VDS/Url.h
     ${WAVELET_HEADERS}
     ${COMMON_DIR}/Base64/Base64.h
     ${COMMON_DIR}/ThreadPool/ThreadPool.h
