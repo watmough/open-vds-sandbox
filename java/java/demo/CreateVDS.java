@@ -215,7 +215,9 @@ public class CreateVDS {
         int[] chunkPitch = new int[Dimensionality_Max];
         String header = dimensionGroup.toString();
         for (int lod = 0 ; lod <= lodCount ; ++lod) {
-            try (VolumeDataPageAccessor pageAccessor = accessManager.createVolumeDataPageAccessor(dimensionGroup, lod, channel, 200, AccessMode_Create)) {
+            // to generate manually the LOD access mode must be set to AccessMode_CreateWithoutLODGeneration
+            // using AccessMode_Create only allow to generate the LOD automatically
+            try (VolumeDataPageAccessor pageAccessor = accessManager.createVolumeDataPageAccessor(dimensionGroup, lod, channel, 200, AccessMode_CreateWithoutLODGeneration)) {
                 int chunkCount = (int) pageAccessor.getChunkCount();
                 System.out.println(header + " LOD : " + lod + " Chunk count :  " + chunkCount);
                 for (int i = 0; i < chunkCount; i++) {
@@ -245,7 +247,9 @@ public class CreateVDS {
                     }
                 }
             }
-            accessManager.flushUploadQueue();
+            VDSError error = new VDSError();
+            accessManager.flush(error);
+            if (error.getCode() != 0) System.out.println("Error while flushing manager : " + error.getString());
         }
     }
 
