@@ -280,7 +280,7 @@ namespace OpenVDS
       request->m_error.string = "Google Cloud Storage Config error. Unable to generate Authorization Header.";
       return request;
     }
-    m_curlHandler.addDownloadRequest(request, url, headers, convertToISO8601, CurlDownloadHandler::HEADER);
+    m_curlHandler.addDownloadRequest(request, url, headers, convertToISO8601, CurlVerb::HEADER);
     return request;
   }
 
@@ -307,7 +307,7 @@ namespace OpenVDS
         request->m_error.string = "Google Cloud Storage Config error. Unable to generate Authorization Header.";
         return request;
     }
-    m_curlHandler.addDownloadRequest(request, url, headers, convertToISO8601, CurlDownloadHandler::GET);
+    m_curlHandler.addDownloadRequest(request, url, headers, convertToISO8601, CurlVerb::GET);
     return request;
   }
 
@@ -363,7 +363,7 @@ namespace OpenVDS
         return request;
     }
 
-    m_curlHandler.addUploadRequest(request, url, headers, true, std::move(upload_buffers), uploadSize);
+    m_curlHandler.addUploadRequest(request, url, headers, CurlVerb::POST, std::move(upload_buffers), uploadSize);
     return request;
   }
 }

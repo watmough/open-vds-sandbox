@@ -1,5 +1,7 @@
 #include "IOManagerAWSCurl.h"
 
+#include "ErrorRequest.h"
+
 #include <fmt/format.h>
 
 #include <aws/crt/Api.h>
@@ -20,20 +22,6 @@ inline char asciitolower(char in)
     return in - ('Z' - 'z');
   return in;
 }
-
-class ErrorRequest : public Request
-{
-public:
-  ErrorRequest(const std::string& objectName, const std::string &error) : Request(objectName), m_error(error) {}
-  bool WaitForFinish(Error& error) override
-  {
-    error.code = -1;
-    error.string = m_error;
-    return false;
-  }
-  void Cancel() override {}
-  std::string m_error;
-};
 
 static aws_byte_cursor createByteCursor(const std::string& a)
 {
@@ -130,7 +118,7 @@ static std::string GetBucketLocation(const std::shared_ptr<Aws::Crt::Auth::ICred
 
   auto handler = std::make_shared<BucketLocationTransferDownloadHandler>();
   std::shared_ptr<DownloadRequestCurl> request = std::make_shared<DownloadRequestCurl>("", handler);
-  curlHandler.addDownloadRequest(request, url, headers, convertToISO8601, CurlDownloadHandler::GET);
+  curlHandler.addDownloadRequest(request, url, headers, convertToISO8601, CurlVerb::GET);
 
   Error error; //don't propogate error
   request->WaitForFinish(error);
@@ -330,7 +318,7 @@ std::shared_ptr<Request> IOManagerAWSCurl::ReadObjectInfo(const std::string& obj
     return std::make_shared<ErrorRequest>(objectName, error.string);
   }
   std::shared_ptr<DownloadRequestCurl> request = std::make_shared<DownloadRequestCurl>(objectName, handler);
-  m_curlHandler.addDownloadRequest(request, url, headers, convertToISO8601, CurlDownloadHandler::HEADER);
+  m_curlHandler.addDownloadRequest(request, url, headers, convertToISO8601, CurlVerb::HEADER);
   return request;
 }
 
@@ -349,7 +337,7 @@ std::shared_ptr<Request> IOManagerAWSCurl::ReadObject(const std::string& objectN
       return std::make_shared<ErrorRequest>(objectName, error.string);
     }
     std::shared_ptr<DownloadRequestCurl> request = std::make_shared<DownloadRequestCurl>(objectName, handler);
-    m_curlHandler.addDownloadRequest(request, url, headers, convertToISO8601, CurlDownloadHandler::GET);
+    m_curlHandler.addDownloadRequest(request, url, headers, convertToISO8601, CurlVerb::GET);
     return request;
 }
 
