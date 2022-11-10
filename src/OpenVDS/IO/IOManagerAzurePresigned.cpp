@@ -34,6 +34,20 @@ namespace OpenVDS
       return;
     }
 
+    if (suffix.empty())
+    {
+      auto it = std::find(base.begin(), base.end(), '?');
+      if (it != base.end())
+      {
+        m_base = std::string(base.begin(), it);
+        m_suffix = std::string(it, base.end());
+      }
+      else
+      {
+        m_base = base;
+      }
+    }
+
     if (m_base.back() == '/')
       m_base.pop_back();
 
