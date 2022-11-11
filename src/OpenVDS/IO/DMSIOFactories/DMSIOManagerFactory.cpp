@@ -1,0 +1,298 @@
+#include "DMSIOManagerFactory.h"
+
+#include <json_cpp_include.h>
+#include "Base64/Base64.h"
+#include <fmt/chrono.h>
+
+#include "IO/SDPath.h"
+#include "VDS/Url.h"
+
+#include <chrono>
+#include <random>
+
+#include "AzureDMSIOManagerFactory.h"
+
+namespace OpenVDS
+{
+static std::vector<std::string> split(const std::string& text, char sep) 
+{
+  std::vector<std::string> tokens;
+  std::size_t start = 0, end = 0;
+  while ((end = text.find(sep, start)) != std::string::npos) {
+    tokens.push_back(text.substr(start, end - start));
+    start = end + 1;
+  }
+  tokens.push_back(text.substr(start));
+  return tokens;
+}
+
+bool ParseJSONFromBuffer(const std::vector<unsigned char> &json, Json::Value &root, Error &error)
+{
+  try
+  {
+    Json::CharReaderBuilder rbuilder;
+    rbuilder["collectComments"] = false;
+
+    std::unique_ptr<Json::CharReader> reader(rbuilder.newCharReader());
+    const char *json_begin = reinterpret_cast<const char *>(json.data());
+    reader->parse(json_begin, json_begin + json.size(), &root, &error.string);
+
+    return true;
+  }
+  catch(Json::Exception &e)
+  {
+    error.code = -1;
+    error.string = e.what() + std::string(" : ") + error.string;
+  }
+
+  return false;
+}
+
+DMSManager::DMSManager(const std::string& authorityUrl, const std::string& appKey, CurlHandler &curlHandler, Logger& logger)
+  : m_authorityUrl(authorityUrl)
+  , m_appKey(appKey)
+  , m_curlHandler(curlHandler)
+  , m_logger(logger)
+  , m_authProviderCallback(nullptr)
+  , m_authProviderCallbackData(nullptr)
+{}
+
+void DMSManager::setSdTokenDefaultExpiry()
+{
+  m_logger.LogWarning("Failed to parse sd token to find expiry, assuming one hour.");
+  m_sdTokenExpiry = std::chrono::system_clock::now() + std::chrono::hours(1);
+}
+bool DMSManager::ensureSdToken(Error &error)
+{
+  if (m_sdTokenExpiry < std::chrono::system_clock::now() + std::chrono::minutes(1))
+  {
+    try
+    {
+      m_sdToken = m_authProviderCallback(m_authProviderCallbackData);
+    }
+    catch (const std::runtime_error& ex)
+    {
+      error.code = -1;
+      error.string = ex.what();
+      return false;
+    }
+
+    if (m_sdToken.empty())
+    {
+      error.code = -1;
+      error.string = "Got empty sdToken from AuthProviderCallback.";
+      return false;
+    }
+
+    auto tokens = split(m_sdToken, '.');
+    if (tokens.size() < 3)
+    {
+      setSdTokenDefaultExpiry();
+      return true;
+    }
+
+    auto payload = tokens[1];
+    std::vector<unsigned char> decodedData;
+    if (!Base64Decode(payload.c_str(), payload.size(), decodedData))
+    {
+      setSdTokenDefaultExpiry();
+      return true;
+    }
+    Json::Value root;
+    if (!ParseJSONFromBuffer(decodedData, root, error))
+    {
+      error = OpenVDS::Error();
+      setSdTokenDefaultExpiry();
+      return true;
+    }
+    try
+    {
+      if (!root.isMember("exp"))
+      {
+        setSdTokenDefaultExpiry();
+        return true;
+      }
+      m_sdTokenExpiry = std::chrono::system_clock::from_time_t(time_t(root["exp"].asUInt64()));
+    }
+    catch (Json::Exception& e)
+    {
+      (void)e;
+      setSdTokenDefaultExpiry();
+      return true;
+    }
+  }
+  return true;
+}
+
+void DMSManager::addHeaders(std::vector<std::string>& headers)
+{
+  headers.emplace_back("Content-Type: application/json");
+  headers.emplace_back("Accept: application/json");
+  headers.emplace_back(fmt::format("appkey: {}", m_appKey));
+  headers.emplace_back(fmt::format("authorization: Bearer {}", m_sdToken));
+}
+
+static std::string gen_lock_id(IOManager::AccessPattern accessPattern)
+{
+    const char hex_characters[]={'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'};
+    std::random_device rd;
+    std::mt19937 mt(rd());
+    std::uniform_int_distribution<int> dist(0, 15);
+
+    std::string ret;
+    ret.reserve(16);
+    ret.push_back(accessPattern == IOManager::ReadOnly ? 'R' : 'W');
+    for (int i = 0; i < 15; i++)
+    {
+      ret.push_back(hex_characters[dist(mt)]);
+    }
+    return ret;
+}
+
+DMSDataset::DMSDataset(DMSManager& manager, const std::string url, Error &error)
+  : m_manager(manager)
+  , m_url(url)
+  , m_accessPattern(IOManager::ReadOnly)
+  , m_opened(false)
+{
+  if (!getSdPath(url, m_tenant, m_subproject, m_path, m_dataset, error))
+    return;
+
+  if (m_path.empty())
+    m_path = '/';
+}
+
+bool DMSDataset::open(IOManager::AccessPattern accessPattern, Error &error)
+{
+  if (m_opened)
+  {
+    error.code = -1;
+    error.string = "Seismic DMS: Opening an allready opened DatasetInstance.";
+    return false;
+  }
+  if (!m_manager.ensureSdToken(error))
+    return false;
+
+  {
+    std::string url;
+    if (accessPattern == IOManager::Create)
+      url = fmt::format("{}/dataset/tenant/{}/subproject/{}/dataset/{}?path={}", m_manager.m_authorityUrl, URLEncode(m_tenant), URLEncode(m_subproject), URLEncode(m_dataset), URLEncode(m_path));
+    else
+      url = fmt::format("{}/dataset/tenant/{}/subproject/{}/dataset/{}/lock?openmode={}&path={}", m_manager.m_authorityUrl, URLEncode(m_tenant), URLEncode(m_subproject), URLEncode(m_dataset), accessPattern == IOManager::ReadOnly ? "read" : "write", URLEncode(m_path));
+    std::shared_ptr<UploadRequestCurl> request = std::make_shared<UploadRequestCurl>("lock_dataset", std::function<void(const Request& request, const Error& error)>());
+    std::vector<std::string> headers;
+    m_lock_id = gen_lock_id(accessPattern);
+    headers.emplace_back(fmt::format("x-seismic-dms-lockid: {}", m_lock_id));
+    m_manager.addHeaders(headers);
+    m_manager.m_curlHandler.addUploadRequest(request, url, headers, accessPattern == IOManager::Create ? CurlVerb::POST : CurlVerb::PUT, {}, 0);
+    request->WaitForFinish(error);
+    if (error.code || !request->m_uploadHandler)
+    {
+      std::string respons_str;
+      respons_str.insert(respons_str.end(), request->m_uploadHandler->responsData.begin(), request->m_uploadHandler->responsData.end());
+      error.string = fmt::format("Seismic dms lock failed: {} - {}", error.string, respons_str);
+      return false;
+    }
+    m_accessPattern = accessPattern;
+    m_opened = true;
+    Json::Value root;
+    if (!ParseJSONFromBuffer(request->m_uploadHandler->responsData, root, error))
+    {
+      return false;
+    }
+    try
+    {
+      m_gc_url = root["gcsurl"].asString();
+    }
+    catch (const Json::Exception& ex)
+    {
+      error.code = -1;
+      error.string = fmt::format("Seismic dms lock failed: {}", ex.what());
+      return false;
+    }
+
+    for (auto& header : request->m_uploadHandler->responsHeaders)
+    {
+      if (header.first == "service-provider")
+        m_service_provider = header.second;
+    }
+
+    if (m_service_provider.empty())
+    {
+      error.code = -1;
+      error.string = "Seismic dms lock failed: Missing service-provider header";
+      return false;
+    }
+  }
+  return true;
+}
+
+bool DMSDataset::close(Error& error)
+{
+  if (!m_opened)
+  {
+    error.code = -1;
+    error.string = "Seismic DMS: Closing an already closed DatasetInstance.";
+    return false;
+  }
+  if (!m_manager.ensureSdToken(error))
+    return false;
+
+  std::string url = fmt::format("{}/dataset/tenant/{}/subproject/{}/dataset/{}?path={}&close={}", m_manager.m_authorityUrl, URLEncode(m_tenant), URLEncode(m_subproject), URLEncode(m_dataset), URLEncode(m_path), m_lock_id);
+  std::shared_ptr<UploadRequestCurl> request = std::make_shared<UploadRequestCurl>("lock_dataset", std::function<void(const Request& request, const Error& error)>());
+  std::vector<std::string> headers;
+  headers.emplace_back(fmt::format("x-seismic-dms-lockid: {}", m_lock_id));
+  m_manager.addHeaders(headers);
+  m_manager.m_curlHandler.addUploadRequest(request, url, headers, CurlVerb::PATCH, {}, 0);
+  request->WaitForFinish(error);
+  if (error.code || !request->m_uploadHandler)
+  {
+    std::string respons_str;
+    respons_str.insert(respons_str.end(), request->m_uploadHandler->responsData.begin(), request->m_uploadHandler->responsData.end());
+    error.string = fmt::format("Seismic dms close failed: {} - {}", error.string, respons_str);
+    return false;
+  }
+
+  m_opened = false;
+  return true;
+}
+
+DMSIOManagerFactory* DMSIOManagerFactory::createDMSIOManagerFactory(const std::string& serviceProvider, DMSDataset &dataset, Error &error)
+{
+  if (serviceProvider == "azure")
+    return new AzureDMSIOManagerFactory(dataset);
+  error.code = -1;
+  error.string = fmt::format("Not recognized service provider: {}.", serviceProvider);
+  return nullptr;
+}
+
+DMSIOManagerFactory::DMSIOManagerFactory(DMSDataset& dataset)
+  : m_dataset(dataset)
+{}
+DMSIOManagerFactory::~DMSIOManagerFactory()
+{}
+DMSIOManagerFactory::GcsAccessToken DMSIOManagerFactory::gcsAccessToken(Error &error)
+{
+    GcsAccessToken ret;
+    std::string readonly = m_dataset.m_accessPattern == IOManager::ReadOnly ? "true" : "false";
+
+    std::string sdPath = URLEncode(fmt::format("sd://{}/{}", m_dataset.m_tenant, m_dataset.m_subproject));
+    std::string url = fmt::format("{}/utility/gcs-access-token?readonly={}&sdpath={}", m_dataset.m_manager.m_authorityUrl, readonly, sdPath);
+    std::shared_ptr<DownloadRequestCurl> request = std::make_shared<DownloadRequestCurl>("gcs-access-token", nullptr);
+    std::vector<std::string> headers;
+    m_dataset.m_manager.addHeaders(headers);
+    m_dataset.m_manager.m_curlHandler.addDownloadRequest(request, url, headers, {}, CurlVerb::GET);
+    request->WaitForFinish(error);
+    if (error.code || !request->m_downloadHandler)
+    {
+      std::string respons_str;
+      respons_str.insert(respons_str.end(), request->m_downloadHandler->responseData.begin(), request->m_downloadHandler->responseData.end());
+      error.string = fmt::format("Seismic DMS: gcs-access-token failed: {} - {}", error.string, respons_str);
+      return ret;
+    }
+    ret.data = std::move(request->m_downloadHandler->responseData);
+    ret.headers = std::move(request->m_downloadHandler->responseHeaders);
+    return ret;
+}
+
+}

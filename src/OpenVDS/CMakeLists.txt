@@ -56,6 +56,8 @@ else()
     IO/IOManagerDmsFactory.cpp
     IO/IORefreshToken.cpp
     IO/IOManagerDmsProxy.cpp
+    IO/DMSIOFactories/AzureDMSIOManagerFactory.cpp
+    IO/DMSIOFactories/DMSIOManagerFactory.cpp
     IO/SslVerifyPeerEnv.cpp
     VDS/VolumeDataPartition.cpp
     VDS/VolumeDataChannelMapping.cpp
@@ -102,9 +104,11 @@ else()
     IO/IOManagerTransformer.h
     IO/IORefreshToken.h
     IO/SslVerifyPeerEnv.h
-    IO/IOManagerDmsProxy.h
     IO/SDPath.h
     IO/ErrorRequest.h
+    IO/IOManagerDmsProxy.h
+    IO/DMSIOFactories/AzureDMSIOManagerFactory.h
+    IO/DMSIOFactories/DMSIOManagerFactory.h
     VDS/VDS.h
     VDS/VolumeDataPartition.h
     VDS/VolumeDataChannelMapping.h
