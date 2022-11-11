@@ -118,7 +118,8 @@ std::shared_ptr<Request> IOManagerDMSProxy::ReadObjectInfo(const std::string& ob
   {
     return std::make_shared<ErrorRequest>(objectName, "Seismic DMS initialization not successful. No request created\n");
   }
-  return m_proxy->ReadObjectInfo(objectName, handler);
+  std::string toRead = objectName.empty() ? m_filename : objectName;
+  return m_proxy->ReadObjectInfo(toRead, handler);
 }
 std::shared_ptr<Request> IOManagerDMSProxy::ReadObject(const std::string& objectName, std::shared_ptr<TransferDownloadHandler> handler, const IORange& range)
 {
@@ -131,7 +132,8 @@ std::shared_ptr<Request> IOManagerDMSProxy::ReadObject(const std::string& object
   {
     return std::make_shared<ErrorRequest>(objectName, "Seismic DMS initialization not successful. No request created\n");
   }
-  return m_proxy->ReadObject(objectName, handler, range);
+  std::string toRead = objectName.empty() ? m_filename : objectName;
+  return m_proxy->ReadObject(toRead, handler, range);
 }
 std::shared_ptr<Request> IOManagerDMSProxy::WriteObject(const std::string& objectName, const std::string& contentDispostionFilename, const std::string& contentType, const std::vector<std::pair<std::string, std::string>>& metadataHeader, std::shared_ptr<std::vector<uint8_t>> data, std::function<void(const Request& request, const Error& error)> completedCallback)
 {
