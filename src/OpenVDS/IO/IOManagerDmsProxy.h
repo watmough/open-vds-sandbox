@@ -5,15 +5,18 @@
 
 #include "IOManager.h"
 #include "IOManagerCurl.h"
+#include "DMSIOFactories/DMSIOManagerFactory.h"
+#include "json_cpp_include.h"
 
 #include <memory>
 
 namespace OpenVDS
 {
   class TokenRefresher;
-  struct DMSManager;
   struct DMSDataset;
   struct DMSIOManagerFactory;
+
+
   class IOManagerDMSProxy : public IOManager
   {
     public:
