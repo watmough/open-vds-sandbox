@@ -227,7 +227,29 @@ bool DMSDataset::open(IOManager::AccessPattern accessPattern, Error &error)
   return true;
 }
 
-bool DMSDataset::close(Error& error)
+std::vector<uint8_t>
+static WriteJson(Json::Value root)
+{
+  std::vector<uint8_t>
+    result;
+
+  Json::StreamWriterBuilder wbuilder;
+  wbuilder["indentation"] = "    ";
+  std::string document = Json::writeString(wbuilder, root);
+
+  // strip carriage return
+  result.reserve(document.length());
+  for(char c : document)
+  {
+    if(c != '\r')
+    {
+      result.push_back(c);
+    }
+  }
+
+  return result;
+}
+bool DMSDataset::close(uint64_t serializedSize, uint64_t chunkCount, Error& error)
 {
   if (!m_opened)
   {
@@ -243,7 +265,25 @@ bool DMSDataset::close(Error& error)
   std::vector<std::string> headers;
   headers.emplace_back(fmt::format("x-seismic-dms-lockid: {}", m_lock_id));
   m_manager.addHeaders(headers);
-  m_manager.m_curlHandler.addUploadRequest(request, url, headers, CurlVerb::PATCH, {}, 0);
+  std::vector<std::shared_ptr<std::vector<uint8_t>>> data;
+  int64_t completeSize = 0;
+  if (m_accessPattern != IOManager::ReadOnly)
+  {
+    Json::Value root;
+    Json::Value filemetadata;
+    filemetadata["nobjects"] = chunkCount;
+    filemetadata["size"] = serializedSize;
+    filemetadata["type"] = "GENERIC";
+    root["filemetadata"] = filemetadata;
+    root["last_modified_date"] = true;
+
+    data.emplace_back(std::make_shared<std::vector<uint8_t>>());
+    auto& shared_vector = data.back();
+    auto& vector = *shared_vector;
+    vector = std::move(WriteJson(root));
+    completeSize = vector.size();
+  }
+  m_manager.m_curlHandler.addUploadRequest(request, url, headers, CurlVerb::PATCH, std::move(data), completeSize);
   request->WaitForFinish(error);
   if (error.code || !request->m_uploadHandler)
   {

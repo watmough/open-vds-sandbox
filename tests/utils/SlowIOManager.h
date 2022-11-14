@@ -178,7 +178,7 @@ public:
     return m_target->WriteObject(objectName, contentDispostionFilename, contentType, metadataHeader, data, completedCallback);
   }
 
-  bool Close(OpenVDS::Error &error) override { return m_target->Close(error); }
+  bool Close(uint64_t serializedSize, uint64_t chunkCount, OpenVDS::Error &error) override { return m_target->Close(serializedSize, chunkCount, error); }
 
 private:
   int m_delayMs;

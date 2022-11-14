@@ -89,7 +89,7 @@ public:
 #pragma warning(push)
 #pragma warning(disable : 4717)
 #endif
-  bool Close(OpenVDS::Error &error) override { return facade.Close(error); }
+  bool Close(uint64_t serializedSize, uint64_t chunkCount, OpenVDS::Error &error) override { return facade.Close(serializedSize, chunkCount, error); }
 #ifdef _MSC_VER
 #pragma warning(pop)
 #endif

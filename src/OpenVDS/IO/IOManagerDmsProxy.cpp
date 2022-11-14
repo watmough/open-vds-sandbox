@@ -81,11 +81,11 @@ IOManagerDMSProxy::~IOManagerDMSProxy()
 {
 }
 
-bool IOManagerDMSProxy::Close(Error& error)
+bool IOManagerDMSProxy::Close(uint64_t serializedSize, uint64_t chunkCount, Error& error)
 {
   if (m_dmsDataset)
   {
-    bool ret = m_dmsDataset->close(error);
+    bool ret = m_dmsDataset->close(serializedSize, chunkCount, error);
     if (ret)
       m_ioManagerFactory->invalidate();
     return ret;
@@ -97,7 +97,7 @@ bool IOManagerDMSProxy::EnableWriting(Error& error)
 {
   if (m_accessPattern == IOManager::ReadOnly)
   {
-    if (!m_dmsDataset->close(error))
+    if (!m_dmsDataset->close(0, 0, error))
       return false;
     if (!m_dmsDataset->open(IOManager::ReadWrite, error))
       return false;

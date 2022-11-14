@@ -33,7 +33,7 @@ struct DMSDataset
   DMSDataset(DMSManager& manager, const std::string url, Error& error);
 
   bool open(IOManager::AccessPattern accessPattern, Error& error);
-  bool close(Error& error);
+  bool close(uint64_t serializedSize, uint64_t chunkCount, Error& error);
 
   DMSManager& m_manager;
   const std::string m_url;

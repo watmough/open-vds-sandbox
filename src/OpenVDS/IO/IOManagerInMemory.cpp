@@ -139,7 +139,7 @@ public:
     return backend->WriteObject(objectName, contentDispostionFilename, contentType, metadataHeader, data, completedCallback);
   }
 
-  bool Close(Error &error) override { return backend->Close(error); }
+  bool Close(uint64_t serializedSize, uint64_t chunkCount, Error &error) override { return backend->Close(serializedSize, chunkCount, error); }
 
   IOManager *backend;
 };
