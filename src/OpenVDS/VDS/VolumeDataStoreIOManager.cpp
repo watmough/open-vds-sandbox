@@ -952,6 +952,26 @@ void VolumeDataStoreIOManager::Flush(Error &error)
 }
 
 bool
+VolumeDataStoreIOManager::Close(Error& error)
+{
+  uint64_t serializedSize = 0;
+  uint64_t chunkCount = 0;
+
+  {
+    std::unique_lock<std::mutex> lock(m_mutex);
+
+    for (auto& metadataManager : m_metadataManagers)
+    {
+      auto metadataStatus = metadataManager.second->GetMetadataStatus();
+      if (metadataStatus.m_hasSerializedSize)
+        serializedSize += metadataStatus.m_serializedSize;
+      chunkCount += metadataStatus.m_chunkIndexCount;
+    }
+  }
+  return m_ioManager->Close(serializedSize, chunkCount, error);
+}
+
+bool
 VolumeDataStoreIOManager::EnableWriting(Error& error)
 {
   if (m_accessPattern == IOManager::ReadOnly)

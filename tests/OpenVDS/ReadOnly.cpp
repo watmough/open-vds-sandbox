@@ -66,9 +66,9 @@ public:
     return backend->WriteObject(objectName, contentDispostionFilename, contentType, metadataHeader, data, completedCallback);
   }
 
-  bool Close(OpenVDS::Error &error) override
+  bool Close(uint64_t serializedSize, uint64_t chunkCount, OpenVDS::Error &error) override
   {
-    return backend->Close(error);
+    return backend->Close(serializedSize, chunkCount, error);
   }
 
   IOManager *backend;

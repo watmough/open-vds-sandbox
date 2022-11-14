@@ -138,7 +138,7 @@ public:
   bool          SerializeAndWriteLayerStatus(Error& error) override;
   bool          AddLayer(VolumeDataLayer* volumeDataLayer, int chunkMetadataPageSize, bool overwriteExisting) override;
   bool          RemoveLayer(VolumeDataLayer* volumeDataLayer) override { return false; }
-  bool          Close(Error &error) override { return m_ioManager->Close(error); }
+  bool          Close(Error& error) override;
   bool          EnableWriting(Error& error) override;
 
   bool          GetMetadataStatus(std::string const &layerName, MetadataStatus &metadataStatus) const override;

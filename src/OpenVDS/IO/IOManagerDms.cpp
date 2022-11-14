@@ -277,7 +277,7 @@ namespace OpenVDS
   {
   }
 
-  bool IOManagerDms::Close(Error &error)
+  bool IOManagerDms::Close(uint64_t serializedSize, uint64_t chunkCount, Error &error)
   {
     if (m_dataset && m_opened)
     {

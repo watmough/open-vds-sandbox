@@ -84,7 +84,7 @@ namespace OpenVDS
     {
       return WriteObject(objectName, "", "application/json", std::vector<std::pair<std::string, std::string>>(), data, completedCallback);
     }
-    virtual bool Close(Error &error) = 0;
+    virtual bool Close(uint64_t serializedSize, uint64_t chunkCount, Error &error) = 0;
     virtual bool EnableWriting(Error& error) { (void)error; return true; }
 
     OpenOptions::ConnectionType connectionType() const { return m_connectionType; }
