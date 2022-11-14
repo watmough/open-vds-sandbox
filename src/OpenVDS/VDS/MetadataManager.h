@@ -45,6 +45,8 @@ namespace OpenVDS
   struct MetadataStatus
   {
     int                 m_chunkIndexCount;
+    bool                m_hasValidChunkCount;
+    int                 m_validChunkCount;
     int                 m_chunkMetadataPageSize;
     int                 m_chunkMetadataByteSize;
     float               m_compressionTolerance;
@@ -150,7 +152,7 @@ namespace OpenVDS
       std::unique_lock<std::mutex> lock(const_cast<MetadataManager *>(this)->m_mutex);
       return m_metadataStatus; 
     }
-    void UpdateMetadataStatus(int64_t uncompressedSize, int serializedSize, bool subtract, const uint8_t (&targetLevels)[WAVELET_ADAPTIVE_LEVELS]);
+    void UpdateMetadataStatus(int64_t uncompressedSize, int serializedSize, bool subtract, const uint8_t (*targetLevels)[WAVELET_ADAPTIVE_LEVELS] = nullptr);
 
     void MakeDirty(bool dirty);
   };

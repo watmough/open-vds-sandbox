@@ -815,6 +815,10 @@ Json::Value SerializeMetadataStatus(MetadataStatus const &metadataStatus)
   metadataStatusJson["chunkMetadataByteSize"] = metadataStatus.m_chunkMetadataByteSize;
   metadataStatusJson["compressionMethod"]     = ToString(metadataStatus.m_compressionMethod);
   metadataStatusJson["compressionTolerance"]  = metadataStatus.m_compressionTolerance;
+  if(metadataStatus.m_hasValidChunkCount)
+  {
+    metadataStatusJson["validChunkCount"]      = metadataStatus.m_validChunkCount;
+  }
   if(metadataStatus.m_hasSerializedSize)
   {
     metadataStatusJson["serializedSize"]      = metadataStatus.m_serializedSize;
@@ -1133,6 +1137,8 @@ bool ParseLayerStatus(const std::vector<uint8_t> &json, VDS &vds, LayerMetadataC
         metadataStatus = MetadataStatus();
 
       metadataStatus.m_chunkIndexCount = layerStatus["chunkCount"].asInt();
+      metadataStatus.m_hasValidChunkCount = layerStatus.isMember("validChunkCount");
+      metadataStatus.m_validChunkCount = layerStatus["validChunkCount"].asInt();
       metadataStatus.m_chunkMetadataPageSize = layerStatus["chunkMetadataPageSize"].asInt();
       metadataStatus.m_chunkMetadataByteSize = layerStatus["chunkMetadataByteSize"].asInt();
       metadataStatus.m_compressionMethod = CompressionMethodFromJson(layerStatus["compressionMethod"]);

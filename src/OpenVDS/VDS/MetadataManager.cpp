@@ -321,12 +321,16 @@ void MetadataManager::UnlockPage(MetadataPage *page)
   LimitPages();
 }
 
-void MetadataManager::UpdateMetadataStatus(int64_t uncompressedSize, int serializedSize, bool subtract, const uint8_t (&targetLevels)[WAVELET_ADAPTIVE_LEVELS])
+void MetadataManager::UpdateMetadataStatus(int64_t uncompressedSize, int serializedSize, bool subtract, const uint8_t (*targetLevels)[WAVELET_ADAPTIVE_LEVELS])
 {
   std::unique_lock<std::mutex> lock(m_mutex);
 
   if(subtract)
   {
+    if(m_metadataStatus.m_hasValidChunkCount)
+    {
+      m_metadataStatus.m_validChunkCount -= 1;
+    }
     if(m_metadataStatus.m_hasSerializedSize)
     {
       m_metadataStatus.m_serializedSize -= serializedSize;
@@ -335,6 +339,10 @@ void MetadataManager::UpdateMetadataStatus(int64_t uncompressedSize, int seriali
   }
   else
   {
+    if(m_metadataStatus.m_hasValidChunkCount)
+    {
+      m_metadataStatus.m_validChunkCount += 1;
+    }
     if(m_metadataStatus.m_hasSerializedSize)
     {
       m_metadataStatus.m_serializedSize += serializedSize;
@@ -342,7 +350,10 @@ void MetadataManager::UpdateMetadataStatus(int64_t uncompressedSize, int seriali
     m_metadataStatus.m_uncompressedSize += uncompressedSize;
   }
 
-  Wavelet::Wavelet_AccumulateAdaptiveLevelSizes(serializedSize, m_metadataStatus.m_adaptiveLevelSizes, subtract, targetLevels);
+  if(targetLevels)
+  {
+    Wavelet::Wavelet_AccumulateAdaptiveLevelSizes(serializedSize, m_metadataStatus.m_adaptiveLevelSizes, subtract, *targetLevels);
+  }
 }
 
 void MetadataManager::MakeDirty(bool dirty)
