@@ -10,7 +10,7 @@
 namespace OpenVDS
 {
 
-static bool getComponentsFromAccessToken(const std::string& accessToken, std::string& key, std::string& secret, std::string& session, Error& error)
+bool AwsDMSIOManagerFactory::getComponentsFromAccessToken(const std::string& accessToken, std::string& key, std::string& secret, std::string& session, Error& error) const
 {
   if (accessToken.empty())
   {
@@ -42,7 +42,7 @@ static bool getComponentsFromAccessToken(const std::string& accessToken, std::st
   return true;
 }
 
-static void getComponentsFromGCSUrl(const std::string& gcsUrl, std::string& bucket, std::string& prefixPath)
+void AwsDMSIOManagerFactory::getComponentsFromGCSUrl(const std::string& gcsUrl, std::string& bucket, std::string& prefixPath) const
 {
   auto pos = gcsUrl.find("$$");
   if (pos == std::string::npos)

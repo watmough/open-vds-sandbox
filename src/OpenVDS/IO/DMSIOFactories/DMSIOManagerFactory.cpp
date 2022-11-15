@@ -12,6 +12,8 @@
 
 #include "AzureDMSIOManagerFactory.h"
 #include "AwsDMSIOManagerFactory.h"
+#include "AnthosDMSIOManagerFactory.h"
+#include "IbmDMSIOManagerFactory.h"
 
 namespace OpenVDS
 {
@@ -304,6 +306,10 @@ DMSIOManagerFactory* DMSIOManagerFactory::createDMSIOManagerFactory(const std::s
     return new AzureDMSIOManagerFactory(dataset);
   if (serviceProvider == "aws")
     return new AwsDMSIOManagerFactory(dataset, logger);
+  if (serviceProvider == "anthos")
+    return new AnthosDMSIOManagerFactory(dataset, logger);
+  if (serviceProvider == "ibm")
+    return new IbmDMSIOManagerFactory(dataset, logger);
   error.code = -1;
   error.string = fmt::format("Not recognized service provider: {}.", serviceProvider);
   return nullptr;
