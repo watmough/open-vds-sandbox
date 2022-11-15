@@ -955,7 +955,7 @@ bool
 VolumeDataStoreIOManager::Close(Error& error)
 {
   uint64_t serializedSize = 0;
-  uint64_t chunkCount = 0;
+  uint64_t chunkCount = 2;
 
   {
     std::unique_lock<std::mutex> lock(m_mutex);
@@ -963,9 +963,13 @@ VolumeDataStoreIOManager::Close(Error& error)
     for (auto& metadataManager : m_metadataManagers)
     {
       auto metadataStatus = metadataManager.second->GetMetadataStatus();
+      for (auto metadataPageIndex : metadataStatus.m_pageDirectory)
+        if (metadataPageIndex != -1)
+          chunkCount++;
       if (metadataStatus.m_hasSerializedSize)
         serializedSize += metadataStatus.m_serializedSize;
-      chunkCount += metadataStatus.m_chunkIndexCount;
+      if (metadataStatus.m_hasValidChunkCount)
+        chunkCount += metadataStatus.m_validChunkCount;
     }
   }
   return m_ioManager->Close(serializedSize, chunkCount, error);
