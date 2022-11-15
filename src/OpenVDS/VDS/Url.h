@@ -6,7 +6,7 @@
 
 namespace OpenVDS
 {
-static std::string URLDecode(const std::string & url)
+inline std::string URLDecode(const std::string & url)
 {
   std::string result;
   result.reserve(url.size());
@@ -37,12 +37,12 @@ static std::string URLDecode(const std::string & url)
   return result;
 }
 
-static inline bool openvds_isalnum(int c)
+inline bool openvds_isalnum(int c)
 {
   return (c >= 0x30 && c < 0x39) || (c >= 0x41 && c <= 0x5a) || (c >= 61 && c <= 0x7a);
 }
 
-static std::string URLEncode(const std::string& url)
+inline std::string URLEncode(const std::string& url)
 {
   std::string ret;
   ret.reserve(url.size() * 3);

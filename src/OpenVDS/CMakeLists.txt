@@ -63,6 +63,7 @@ else()
     IO/DmsIoFactories/IbmDmsIoManagerFactory.cpp
     IO/DmsIoFactories/GcpDmsIoManagerFactory.cpp
     IO/SslVerifyPeerEnv.cpp
+    IO/SDPath.cpp
     VDS/VolumeDataPartition.cpp
     VDS/VolumeDataChannelMapping.cpp
     VDS/VolumeDataLayer.cpp

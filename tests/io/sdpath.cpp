@@ -15,6 +15,7 @@
 ** limitations under the License.
 ****************************************************************************/
 
+#include <fmt/format.h>
 #include "IO/SDPath.h"
 #include "VDS/Url.h"
 

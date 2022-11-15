@@ -333,8 +333,10 @@ namespace OpenVDS
     return azureRequest;
   }
 
-  bool IOManagerAzureSdkForCpp::Close(Error& error)
+  bool IOManagerAzureSdkForCpp::Close(uint64_t serializedSize, uint64_t chunkCount, Error &error)
   {
+    (void)serializedSize;
+    (void)chunkCount;
     (void)error;
     return true;
   }
