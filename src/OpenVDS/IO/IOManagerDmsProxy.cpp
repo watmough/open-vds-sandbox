@@ -66,6 +66,7 @@ IOManagerDMSProxy::IOManagerDMSProxy(const DMSOpenOptions& openOptions, IOManage
   else
   {
     m_dmsManager->m_sdToken = openOptions.sdToken;
+    m_dmsManager->m_sdTokenExpiry = std::chrono::system_clock::now() + std::chrono::hours(168 * 32);
   }
 
   m_dmsDataset.reset(new DMSDataset(*m_dmsManager.get(), openOptions.datasetPath, error));
