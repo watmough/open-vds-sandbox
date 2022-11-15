@@ -11,6 +11,7 @@
 #include <random>
 
 #include "AzureDMSIOManagerFactory.h"
+#include "AwsDMSIOManagerFactory.h"
 
 namespace OpenVDS
 {
@@ -297,10 +298,12 @@ bool DMSDataset::close(uint64_t serializedSize, uint64_t chunkCount, Error& erro
   return true;
 }
 
-DMSIOManagerFactory* DMSIOManagerFactory::createDMSIOManagerFactory(const std::string& serviceProvider, DMSDataset &dataset, Error &error)
+DMSIOManagerFactory* DMSIOManagerFactory::createDMSIOManagerFactory(const std::string& serviceProvider, DMSDataset &dataset, Logger &logger, Error &error)
 {
   if (serviceProvider == "azure")
     return new AzureDMSIOManagerFactory(dataset);
+  if (serviceProvider == "aws")
+    return new AwsDMSIOManagerFactory(dataset, logger);
   error.code = -1;
   error.string = fmt::format("Not recognized service provider: {}.", serviceProvider);
   return nullptr;

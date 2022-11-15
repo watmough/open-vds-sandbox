@@ -123,6 +123,17 @@ public:
 
     const char
       * basePtr = static_cast<const char *>(pageView->Pointer(error));
+    if (error.code)
+    {
+      return nullptr;
+    }
+
+    if (basePtr == nullptr)
+    {
+      error.code = -1;
+      error.string = "Failed to acquire pageView pointer";
+      return nullptr;
+    }
     return basePtr + (traceNumber - pageTrace) * m_traceByteSize;
   }
 

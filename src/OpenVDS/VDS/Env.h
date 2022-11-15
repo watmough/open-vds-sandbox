@@ -6,6 +6,7 @@
 namespace OpenVDS
 {
 bool getBooleanEnvironmentVariable(const char *name);
+std::string getStringEnvironmentVariable(const char* name);
 
 bool isEnvironmentVariableSet(const char* name);
 
