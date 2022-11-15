@@ -56,12 +56,12 @@ else()
     IO/IOManagerDmsFactory.cpp
     IO/IORefreshToken.cpp
     IO/IOManagerDmsProxy.cpp
-    IO/DMSIOFactories/AzureDMSIOManagerFactory.cpp
-    IO/DMSIOFactories/AwsDMSIOManagerFactory.cpp
-    IO/DMSIOFactories/DMSIOManagerFactory.cpp
-    IO/DMSIOFactories/AnthosDMSIOManagerFactory.cpp
-    IO/DMSIOFactories/IbmDMSIOManagerFactory.cpp
-    IO/DMSIOFactories/GcpDMSIOManagerFactory.cpp
+    IO/DmsIoFactories/AzureDmsIoManagerFactory.cpp
+    IO/DmsIoFactories/AwsDmsIoManagerFactory.cpp
+    IO/DmsIoFactories/DmsIoManagerFactory.cpp
+    IO/DmsIoFactories/AnthosDmsIoManagerFactory.cpp
+    IO/DmsIoFactories/IbmDmsIoManagerFactory.cpp
+    IO/DmsIoFactories/GcpDmsIoManagerFactory.cpp
     IO/SslVerifyPeerEnv.cpp
     VDS/VolumeDataPartition.cpp
     VDS/VolumeDataChannelMapping.cpp
@@ -111,12 +111,12 @@ else()
     IO/SDPath.h
     IO/ErrorRequest.h
     IO/IOManagerDmsProxy.h
-    IO/DMSIOFactories/AzureDMSIOManagerFactory.h
-    IO/DMSIOFactories/AwsDMSIOManagerFactory.h
-    IO/DMSIOFactories/DMSIOManagerFactory.h
-    IO/DMSIOFactories/AnthosDMSIOManagerFactory.h
-    IO/DMSIOFactories/IbmDMSIOManagerFactory.h
-    IO/DMSIOFactories/GcpDMSIOManagerFactory.h
+    IO/DmsIoFactories/AzureDmsIoManagerFactory.h
+    IO/DmsIoFactories/AwsDmsIoManagerFactory.h
+    IO/DmsIoFactories/DmsIoManagerFactory.h
+    IO/DmsIoFactories/AnthosDmsIoManagerFactory.h
+    IO/DmsIoFactories/IbmDmsIoManagerFactory.h
+    IO/DmsIoFactories/GcpDmsIoManagerFactory.h
     VDS/VDS.h
     VDS/VolumeDataPartition.h
     VDS/VolumeDataChannelMapping.h

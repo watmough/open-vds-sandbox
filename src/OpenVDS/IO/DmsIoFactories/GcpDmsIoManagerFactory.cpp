@@ -1,4 +1,4 @@
-#include "GcpDMSIOManagerFactory.h"
+#include "GcpDmsIoManagerFactory.h"
 
 #include <fmt/format.h>
 #include "VDS/Env.h"
@@ -7,8 +7,8 @@
 
 namespace OpenVDS
 {
-GcpDMSIOManagerFactory::GcpDMSIOManagerFactory(DMSDataset& dataset, Logger& logger)
-  : DMSIOManagerFactory(dataset)
+GcpDmsIoManagerFactory::GcpDmsIoManagerFactory(DmsDataset& dataset, Logger& logger)
+  : DmsIoManagerFactory(dataset)
   , m_logger(logger)
 {
 }
@@ -31,7 +31,7 @@ static void getComponentsFromGCSUrl(const std::string& gcsUrl, std::string& buck
   }
 }
 
-bool GcpDMSIOManagerFactory::ensureIOManager(std::unique_ptr<IOManager>& ioManager, Error& error)
+bool GcpDmsIoManagerFactory::ensureIOManager(std::unique_ptr<IOManager>& ioManager, Error& error)
 {
   if (ioManager && m_expire > std::chrono::steady_clock::now() + std::chrono::minutes(1))
     return true;
@@ -74,7 +74,7 @@ bool GcpDMSIOManagerFactory::ensureIOManager(std::unique_ptr<IOManager>& ioManag
   return true;
 }
 
-void GcpDMSIOManagerFactory::invalidate()
+void GcpDmsIoManagerFactory::invalidate()
 {
   m_expire = {};
 }

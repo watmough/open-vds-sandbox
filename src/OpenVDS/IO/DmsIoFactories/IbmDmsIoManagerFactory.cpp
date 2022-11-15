@@ -1,4 +1,4 @@
-#include "IbmDMSIOManagerFactory.h"
+#include "IbmDmsIoManagerFactory.h"
 
 #include "IO/IOManagerAWSCurl.h"
 
@@ -10,13 +10,13 @@
 namespace OpenVDS
 {
 
-IbmDMSIOManagerFactory::IbmDMSIOManagerFactory(DMSDataset& dataset, Logger &logger)
-  : AwsDMSIOManagerFactory(dataset, logger)
+IbmDmsIoManagerFactory::IbmDmsIoManagerFactory(DmsDataset& dataset, Logger &logger)
+  : AwsDmsIoManagerFactory(dataset, logger)
 {
   m_endpointOverride = getStringEnvironmentVariable("IBM_COS_URL");
 }
 
-void IbmDMSIOManagerFactory::getComponentsFromGCSUrl(const std::string& gcsUrl, std::string& bucket, std::string& prefixPath) const 
+void IbmDmsIoManagerFactory::getComponentsFromGCSUrl(const std::string& gcsUrl, std::string& bucket, std::string& prefixPath) const 
 {
   auto pos = gcsUrl.find("/");
   if (pos == std::string::npos)

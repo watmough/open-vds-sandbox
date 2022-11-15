@@ -1,4 +1,4 @@
-#include "DMSIOManagerFactory.h"
+#include "DmsIoManagerFactory.h"
 
 #include <json_cpp_include.h>
 #include "Base64/Base64.h"
@@ -10,11 +10,11 @@
 #include <chrono>
 #include <random>
 
-#include "AzureDMSIOManagerFactory.h"
-#include "AwsDMSIOManagerFactory.h"
-#include "AnthosDMSIOManagerFactory.h"
-#include "IbmDMSIOManagerFactory.h"
-#include "GcpDMSIOManagerFactory.h"
+#include "AzureDmsIoManagerFactory.h"
+#include "AwsDmsIoManagerFactory.h"
+#include "AnthosDmsIoManagerFactory.h"
+#include "IbmDmsIoManagerFactory.h"
+#include "GcpDmsIoManagerFactory.h"
 
 namespace OpenVDS
 {
@@ -52,7 +52,7 @@ bool ParseJSONFromBuffer(const std::vector<unsigned char> &json, Json::Value &ro
   return false;
 }
 
-DMSManager::DMSManager(const std::string& authorityUrl, const std::string& appKey, CurlHandler &curlHandler, Logger& logger)
+DmsManager::DmsManager(const std::string& authorityUrl, const std::string& appKey, CurlHandler &curlHandler, Logger& logger)
   : m_authorityUrl(authorityUrl)
   , m_appKey(appKey)
   , m_curlHandler(curlHandler)
@@ -61,12 +61,12 @@ DMSManager::DMSManager(const std::string& authorityUrl, const std::string& appKe
   , m_authProviderCallbackData(nullptr)
 {}
 
-void DMSManager::setSdTokenDefaultExpiry()
+void DmsManager::setSdTokenDefaultExpiry()
 {
   m_logger.LogWarning("Failed to parse sd token to find expiry, assuming one hour.");
   m_sdTokenExpiry = std::chrono::system_clock::now() + std::chrono::hours(1);
 }
-bool DMSManager::ensureSdToken(Error &error)
+bool DmsManager::ensureSdToken(Error &error)
 {
   if (m_authProviderCallback && m_sdTokenExpiry < std::chrono::system_clock::now() + std::chrono::minutes(1))
   {
@@ -128,7 +128,7 @@ bool DMSManager::ensureSdToken(Error &error)
   return true;
 }
 
-void DMSManager::addHeaders(std::vector<std::string>& headers)
+void DmsManager::addHeaders(std::vector<std::string>& headers)
 {
   headers.emplace_back("Content-Type: application/json");
   headers.emplace_back("Accept: application/json");
@@ -153,7 +153,7 @@ static std::string gen_lock_id(IOManager::AccessPattern accessPattern)
     return ret;
 }
 
-DMSDataset::DMSDataset(DMSManager& manager, const std::string url, Error &error)
+DmsDataset::DmsDataset(DmsManager& manager, const std::string url, Error &error)
   : m_manager(manager)
   , m_url(url)
   , m_accessPattern(IOManager::ReadOnly)
@@ -166,7 +166,7 @@ DMSDataset::DMSDataset(DMSManager& manager, const std::string url, Error &error)
     m_path = '/';
 }
 
-bool DMSDataset::open(IOManager::AccessPattern accessPattern, Error &error)
+bool DmsDataset::open(IOManager::AccessPattern accessPattern, Error &error)
 {
   if (m_opened)
   {
@@ -253,7 +253,7 @@ static WriteJson(Json::Value root)
 
   return result;
 }
-bool DMSDataset::close(uint64_t serializedSize, uint64_t chunkCount, Error& error)
+bool DmsDataset::close(uint64_t serializedSize, uint64_t chunkCount, Error& error)
 {
   if (!m_opened)
   {
@@ -301,26 +301,26 @@ bool DMSDataset::close(uint64_t serializedSize, uint64_t chunkCount, Error& erro
   return true;
 }
 
-DMSIOManagerFactory* DMSIOManagerFactory::createDMSIOManagerFactory(const std::string& serviceProvider, DMSDataset &dataset, Logger &logger, Error &error)
+DmsIoManagerFactory* DmsIoManagerFactory::createDmsIoManagerFactory(const std::string& serviceProvider, DmsDataset &dataset, Logger &logger, Error &error)
 {
   if (serviceProvider == "azure")
-    return new AzureDMSIOManagerFactory(dataset);
+    return new AzureDmsIoManagerFactory(dataset);
   if (serviceProvider == "aws")
-    return new AwsDMSIOManagerFactory(dataset, logger);
+    return new AwsDmsIoManagerFactory(dataset, logger);
   if (serviceProvider == "anthos")
-    return new AnthosDMSIOManagerFactory(dataset, logger);
+    return new AnthosDmsIoManagerFactory(dataset, logger);
   if (serviceProvider == "ibm")
-    return new IbmDMSIOManagerFactory(dataset, logger);
+    return new IbmDmsIoManagerFactory(dataset, logger);
 
-  return new GcpDMSIOManagerFactory(dataset, logger);
+  return new GcpDmsIoManagerFactory(dataset, logger);
 }
 
-DMSIOManagerFactory::DMSIOManagerFactory(DMSDataset& dataset)
+DmsIoManagerFactory::DmsIoManagerFactory(DmsDataset& dataset)
   : m_dataset(dataset)
 {}
-DMSIOManagerFactory::~DMSIOManagerFactory()
+DmsIoManagerFactory::~DmsIoManagerFactory()
 {}
-DMSIOManagerFactory::GcsAccessToken DMSIOManagerFactory::gcsAccessToken(Error &error)
+DmsIoManagerFactory::GcsAccessToken DmsIoManagerFactory::gcsAccessToken(Error &error)
 {
     GcsAccessToken ret;
     std::string readonly = m_dataset.m_accessPattern == IOManager::ReadOnly ? "true" : "false";

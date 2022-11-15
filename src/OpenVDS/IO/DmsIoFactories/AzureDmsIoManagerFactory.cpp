@@ -1,4 +1,4 @@
-#include "AzureDMSIOManagerFactory.h"
+#include "AzureDmsIoManagerFactory.h"
 
 #include <IO/IOManagerAzurePresigned.h>
 
@@ -82,11 +82,11 @@ static bool getPresignedUrl(const std::string& url, const std::string& blob_pref
   return true;
 }
 
-AzureDMSIOManagerFactory::AzureDMSIOManagerFactory(DMSDataset& dataset)
-  : DMSIOManagerFactory(dataset)
+AzureDmsIoManagerFactory::AzureDmsIoManagerFactory(DmsDataset& dataset)
+  : DmsIoManagerFactory(dataset)
 {}
 
-bool AzureDMSIOManagerFactory::ensureIOManager(std::unique_ptr<IOManager>& ioManager, Error& error)
+bool AzureDmsIoManagerFactory::ensureIOManager(std::unique_ptr<IOManager>& ioManager, Error& error)
 {
   if (ioManager && m_expire > std::chrono::steady_clock::now() + std::chrono::minutes(1))
     return true;
@@ -144,7 +144,7 @@ bool AzureDMSIOManagerFactory::ensureIOManager(std::unique_ptr<IOManager>& ioMan
   return true;
 }
 
-void AzureDMSIOManagerFactory::invalidate()
+void AzureDmsIoManagerFactory::invalidate()
 {
   m_expire = {};
 }

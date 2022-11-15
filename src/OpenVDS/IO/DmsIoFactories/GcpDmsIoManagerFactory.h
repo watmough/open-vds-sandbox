@@ -1,14 +1,14 @@
-#ifndef OPENVDS_GCPDMSIOMANAGER_FACTORY_H
-#define OPENVDS_GCPDMSIOMANAGER_FACTORY_H
+#ifndef OPENVDS_GCPDmsIoMANAGER_FACTORY_H
+#define OPENVDS_GCPDmsIoMANAGER_FACTORY_H
 
-#include "DMSIOManagerFactory.h"
+#include "DmsIoManagerFactory.h"
 
 namespace OpenVDS
 {
 
-struct GcpDMSIOManagerFactory : public DMSIOManagerFactory
+struct GcpDmsIoManagerFactory : public DmsIoManagerFactory
 {
-  GcpDMSIOManagerFactory(DMSDataset& dataset, Logger &logger);
+  GcpDmsIoManagerFactory(DmsDataset& dataset, Logger &logger);
 
   bool ensureIOManager(std::unique_ptr<IOManager>& iomanager, Error& error) override;
   void invalidate() override;
