@@ -14,6 +14,7 @@
 #include "AwsDMSIOManagerFactory.h"
 #include "AnthosDMSIOManagerFactory.h"
 #include "IbmDMSIOManagerFactory.h"
+#include "GcpDMSIOManagerFactory.h"
 
 namespace OpenVDS
 {
@@ -67,7 +68,7 @@ void DMSManager::setSdTokenDefaultExpiry()
 }
 bool DMSManager::ensureSdToken(Error &error)
 {
-  if (m_sdTokenExpiry < std::chrono::system_clock::now() + std::chrono::minutes(1))
+  if (m_authProviderCallback && m_sdTokenExpiry < std::chrono::system_clock::now() + std::chrono::minutes(1))
   {
     try
     {
@@ -310,9 +311,8 @@ DMSIOManagerFactory* DMSIOManagerFactory::createDMSIOManagerFactory(const std::s
     return new AnthosDMSIOManagerFactory(dataset, logger);
   if (serviceProvider == "ibm")
     return new IbmDMSIOManagerFactory(dataset, logger);
-  error.code = -1;
-  error.string = fmt::format("Not recognized service provider: {}.", serviceProvider);
-  return nullptr;
+
+  return new GcpDMSIOManagerFactory(dataset, logger);
 }
 
 DMSIOManagerFactory::DMSIOManagerFactory(DMSDataset& dataset)

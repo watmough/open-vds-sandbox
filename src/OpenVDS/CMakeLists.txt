@@ -61,6 +61,7 @@ else()
     IO/DMSIOFactories/DMSIOManagerFactory.cpp
     IO/DMSIOFactories/AnthosDMSIOManagerFactory.cpp
     IO/DMSIOFactories/IbmDMSIOManagerFactory.cpp
+    IO/DMSIOFactories/GcpDMSIOManagerFactory.cpp
     IO/SslVerifyPeerEnv.cpp
     VDS/VolumeDataPartition.cpp
     VDS/VolumeDataChannelMapping.cpp
@@ -115,6 +116,7 @@ else()
     IO/DMSIOFactories/DMSIOManagerFactory.h
     IO/DMSIOFactories/AnthosDMSIOManagerFactory.h
     IO/DMSIOFactories/IbmDMSIOManagerFactory.h
+    IO/DMSIOFactories/GcpDMSIOManagerFactory.h
     VDS/VDS.h
     VDS/VolumeDataPartition.h
     VDS/VolumeDataChannelMapping.h
