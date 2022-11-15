@@ -33,8 +33,8 @@ IOManagerDMSProxy::IOManagerDMSProxy(const DMSOpenOptions& openOptions, IOManage
   , m_accessPattern(accessPattern)
   , m_logger(logger)
   , m_curlHandler(error, m_logger)
-  , m_useFileNameForSingleFileDatasets(openOptions.useFileNameForSingleFileDatasets)
   , m_dmsManager(new DmsManager(openOptions.sdAuthorityUrl, openOptions.sdApiKey, m_curlHandler, m_logger))
+  , m_useFileNameForSingleFileDatasets(openOptions.useFileNameForSingleFileDatasets)
 {
   if (openOptions.datasetPath.size() && m_useFileNameForSingleFileDatasets)
   {
