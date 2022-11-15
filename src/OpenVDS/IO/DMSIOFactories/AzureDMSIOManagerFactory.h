@@ -1,7 +1,7 @@
 #ifndef OPENVDS_AZUREDMSIOMANAGER_FACTORY_H
 #define OPENVDS_AZUREDMSIOMANAGER_FACTORY_H
 
-#include <IO/IOManagerDmsProxy.h>
+#include "DMSIOManagerFactory.h"
 
 namespace OpenVDS
 {

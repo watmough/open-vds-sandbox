@@ -59,6 +59,8 @@ else()
     IO/DMSIOFactories/AzureDMSIOManagerFactory.cpp
     IO/DMSIOFactories/AwsDMSIOManagerFactory.cpp
     IO/DMSIOFactories/DMSIOManagerFactory.cpp
+    IO/DMSIOFactories/AnthosDMSIOManagerFactory.cpp
+    IO/DMSIOFactories/IbmDMSIOManagerFactory.cpp
     IO/SslVerifyPeerEnv.cpp
     VDS/VolumeDataPartition.cpp
     VDS/VolumeDataChannelMapping.cpp
@@ -111,6 +113,8 @@ else()
     IO/DMSIOFactories/AzureDMSIOManagerFactory.h
     IO/DMSIOFactories/AwsDMSIOManagerFactory.h
     IO/DMSIOFactories/DMSIOManagerFactory.h
+    IO/DMSIOFactories/AnthosDMSIOManagerFactory.h
+    IO/DMSIOFactories/IbmDMSIOManagerFactory.h
     VDS/VDS.h
     VDS/VolumeDataPartition.h
     VDS/VolumeDataChannelMapping.h
