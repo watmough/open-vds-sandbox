@@ -74,7 +74,7 @@ IOManagerDMSProxy::IOManagerDMSProxy(const DMSOpenOptions& openOptions, IOManage
   if (!m_dmsDataset->open(accessPattern, error))
     return;
 
-  m_ioManagerFactory.reset(DMSIOManagerFactory::createDMSIOManagerFactory(m_dmsDataset->m_service_provider, *m_dmsDataset, error));
+  m_ioManagerFactory.reset(DMSIOManagerFactory::createDMSIOManagerFactory(m_dmsDataset->m_service_provider, *m_dmsDataset, m_logger, error));
 }
 
 IOManagerDMSProxy::~IOManagerDMSProxy()

@@ -57,6 +57,7 @@ else()
     IO/IORefreshToken.cpp
     IO/IOManagerDmsProxy.cpp
     IO/DMSIOFactories/AzureDMSIOManagerFactory.cpp
+    IO/DMSIOFactories/AwsDMSIOManagerFactory.cpp
     IO/DMSIOFactories/DMSIOManagerFactory.cpp
     IO/SslVerifyPeerEnv.cpp
     VDS/VolumeDataPartition.cpp
@@ -108,6 +109,7 @@ else()
     IO/ErrorRequest.h
     IO/IOManagerDmsProxy.h
     IO/DMSIOFactories/AzureDMSIOManagerFactory.h
+    IO/DMSIOFactories/AwsDMSIOManagerFactory.h
     IO/DMSIOFactories/DMSIOManagerFactory.h
     VDS/VDS.h
     VDS/VolumeDataPartition.h

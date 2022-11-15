@@ -46,6 +46,14 @@ bool getBooleanEnvironmentVariable(const char *name)
   return true;
 }
 
+std::string getStringEnvironmentVariable(const char* name)
+{
+  const char *c_var = getenv(name);
+  if (c_var == nullptr)
+    return std::string();
+  return std::string(c_var);
+}
+
 bool isEnvironmentVariableSet(const char* name)
 {
   const char *c_var = getenv(name);

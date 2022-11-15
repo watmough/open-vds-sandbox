@@ -51,7 +51,7 @@ struct DMSDataset
 
 struct DMSIOManagerFactory
 {
-  static DMSIOManagerFactory* createDMSIOManagerFactory(const std::string& serviceProvider, DMSDataset &dataset, Error &error);
+  static DMSIOManagerFactory* createDMSIOManagerFactory(const std::string& serviceProvider, DMSDataset &dataset, Logger &logger, Error &error);
 
   virtual ~DMSIOManagerFactory();
   virtual bool ensureIOManager(std::unique_ptr<IOManager>& iomanager, Error& error) = 0;
