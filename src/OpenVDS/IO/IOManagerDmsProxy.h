@@ -5,7 +5,7 @@
 
 #include "IOManager.h"
 #include "IOManagerCurl.h"
-#include "DMSIOFactories/DMSIOManagerFactory.h"
+#include "DmsIoFactories/DmsIoManagerFactory.h"
 #include "json_cpp_include.h"
 
 #include <memory>
@@ -13,8 +13,8 @@
 namespace OpenVDS
 {
   class TokenRefresher;
-  struct DMSDataset;
-  struct DMSIOManagerFactory;
+  struct DmsDataset;
+  struct DmsIoManagerFactory;
 
 
   class IOManagerDMSProxy : public IOManager
@@ -35,9 +35,9 @@ namespace OpenVDS
       CurlHandler m_curlHandler;
     
       std::unique_ptr<TokenRefresher> m_tokenRefresher;
-      std::unique_ptr<DMSManager> m_dmsManager;
-      std::unique_ptr<DMSDataset> m_dmsDataset;
-      std::unique_ptr<DMSIOManagerFactory> m_ioManagerFactory;
+      std::unique_ptr<DmsManager> m_dmsManager;
+      std::unique_ptr<DmsDataset> m_dmsDataset;
+      std::unique_ptr<DmsIoManagerFactory> m_ioManagerFactory;
       std::unique_ptr<IOManager> m_proxy;
     
       bool m_useFileNameForSingleFileDatasets;

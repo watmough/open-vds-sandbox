@@ -1,4 +1,4 @@
-#include "AwsDMSIOManagerFactory.h"
+#include "AwsDmsIoManagerFactory.h"
 
 #include "IO/IOManagerAWSCurl.h"
 
@@ -10,7 +10,7 @@
 namespace OpenVDS
 {
 
-bool AwsDMSIOManagerFactory::getComponentsFromAccessToken(const std::string& accessToken, std::string& key, std::string& secret, std::string& session, Error& error) const
+bool AwsDmsIoManagerFactory::getComponentsFromAccessToken(const std::string& accessToken, std::string& key, std::string& secret, std::string& session, Error& error) const
 {
   if (accessToken.empty())
   {
@@ -42,7 +42,7 @@ bool AwsDMSIOManagerFactory::getComponentsFromAccessToken(const std::string& acc
   return true;
 }
 
-void AwsDMSIOManagerFactory::getComponentsFromGCSUrl(const std::string& gcsUrl, std::string& bucket, std::string& prefixPath) const
+void AwsDmsIoManagerFactory::getComponentsFromGCSUrl(const std::string& gcsUrl, std::string& bucket, std::string& prefixPath) const
 {
   auto pos = gcsUrl.find("$$");
   if (pos == std::string::npos)
@@ -60,8 +60,8 @@ void AwsDMSIOManagerFactory::getComponentsFromGCSUrl(const std::string& gcsUrl, 
   }
 }
 
-AwsDMSIOManagerFactory::AwsDMSIOManagerFactory(DMSDataset& dataset, Logger &logger)
-  : DMSIOManagerFactory(dataset)
+AwsDmsIoManagerFactory::AwsDmsIoManagerFactory(DmsDataset& dataset, Logger &logger)
+  : DmsIoManagerFactory(dataset)
   , m_logger(logger)
   , m_region(getStringEnvironmentVariable("AWS_REGION"))
 {
@@ -72,7 +72,7 @@ AwsDMSIOManagerFactory::AwsDMSIOManagerFactory(DMSDataset& dataset, Logger &logg
   }
 }
 
-bool AwsDMSIOManagerFactory::ensureIOManager(std::unique_ptr<IOManager>& ioManager, Error& error)
+bool AwsDmsIoManagerFactory::ensureIOManager(std::unique_ptr<IOManager>& ioManager, Error& error)
 {
   if (ioManager && m_expire > std::chrono::steady_clock::now() + std::chrono::minutes(1))
     return true;
@@ -126,7 +126,7 @@ bool AwsDMSIOManagerFactory::ensureIOManager(std::unique_ptr<IOManager>& ioManag
   return true;
 }
 
-void AwsDMSIOManagerFactory::invalidate()
+void AwsDmsIoManagerFactory::invalidate()
 {
   m_expire = {};
 }

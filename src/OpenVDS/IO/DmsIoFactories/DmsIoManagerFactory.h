@@ -1,5 +1,5 @@
-#ifndef OPENVDS_DMSIOMANAGER_FACTORY_H
-#define OPENVDS_DMSIOMANAGER_FACTORY_H
+#ifndef OPENVDS_DmsIoMANAGER_FACTORY_H
+#define OPENVDS_DmsIoMANAGER_FACTORY_H
 
 #include <OpenVDS/OpenVDS.h>
 #include <IO/IOManager.h>
@@ -11,9 +11,9 @@ namespace OpenVDS
 {
 bool ParseJSONFromBuffer(const std::vector<unsigned char>& json, Json::Value& root, Error& error);
 
-struct DMSManager
+struct DmsManager
 {
-  DMSManager(const std::string& authorityUrl, const std::string& appKey, CurlHandler& curlHandler, Logger& logger);
+  DmsManager(const std::string& authorityUrl, const std::string& appKey, CurlHandler& curlHandler, Logger& logger);
   void setSdTokenDefaultExpiry();
   bool ensureSdToken(Error& error);
   void addHeaders(std::vector<std::string>& headers);
@@ -28,14 +28,14 @@ struct DMSManager
   const void *m_authProviderCallbackData;
 };
 
-struct DMSDataset
+struct DmsDataset
 {
-  DMSDataset(DMSManager& manager, const std::string url, Error& error);
+  DmsDataset(DmsManager& manager, const std::string url, Error& error);
 
   bool open(IOManager::AccessPattern accessPattern, Error& error);
   bool close(uint64_t serializedSize, uint64_t chunkCount, Error& error);
 
-  DMSManager& m_manager;
+  DmsManager& m_manager;
   const std::string m_url;
   std::string m_tenant;
   std::string m_subproject;
@@ -49,11 +49,11 @@ struct DMSDataset
   std::chrono::time_point<std::chrono::steady_clock> m_azure_sas_token_expires;
 };
 
-struct DMSIOManagerFactory
+struct DmsIoManagerFactory
 {
-  static DMSIOManagerFactory* createDMSIOManagerFactory(const std::string& serviceProvider, DMSDataset &dataset, Logger &logger, Error &error);
+  static DmsIoManagerFactory* createDmsIoManagerFactory(const std::string& serviceProvider, DmsDataset &dataset, Logger &logger, Error &error);
 
-  virtual ~DMSIOManagerFactory();
+  virtual ~DmsIoManagerFactory();
   virtual bool ensureIOManager(std::unique_ptr<IOManager>& iomanager, Error& error) = 0;
   virtual void invalidate() = 0;
 
@@ -65,9 +65,9 @@ struct DMSIOManagerFactory
   GcsAccessToken gcsAccessToken(Error& error);
 
 protected:
-  DMSIOManagerFactory(DMSDataset& dataset);
+  DmsIoManagerFactory(DmsDataset& dataset);
 
-  DMSDataset& m_dataset;
+  DmsDataset& m_dataset;
 };
 }
 #endif

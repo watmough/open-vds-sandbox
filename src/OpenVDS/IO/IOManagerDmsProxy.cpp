@@ -34,7 +34,7 @@ IOManagerDMSProxy::IOManagerDMSProxy(const DMSOpenOptions& openOptions, IOManage
   , m_logger(logger)
   , m_curlHandler(error, m_logger)
   , m_useFileNameForSingleFileDatasets(openOptions.useFileNameForSingleFileDatasets)
-  , m_dmsManager(new DMSManager(openOptions.sdAuthorityUrl, openOptions.sdApiKey, m_curlHandler, m_logger))
+  , m_dmsManager(new DmsManager(openOptions.sdAuthorityUrl, openOptions.sdApiKey, m_curlHandler, m_logger))
 {
   if (openOptions.datasetPath.size() && m_useFileNameForSingleFileDatasets)
   {
@@ -69,13 +69,13 @@ IOManagerDMSProxy::IOManagerDMSProxy(const DMSOpenOptions& openOptions, IOManage
     m_dmsManager->m_sdTokenExpiry = std::chrono::system_clock::now() + std::chrono::hours(168 * 32);
   }
 
-  m_dmsDataset.reset(new DMSDataset(*m_dmsManager.get(), openOptions.datasetPath, error));
+  m_dmsDataset.reset(new DmsDataset(*m_dmsManager.get(), openOptions.datasetPath, error));
   if (error.code)
     return;
   if (!m_dmsDataset->open(accessPattern, error))
     return;
 
-  m_ioManagerFactory.reset(DMSIOManagerFactory::createDMSIOManagerFactory(m_dmsDataset->m_service_provider, *m_dmsDataset, m_logger, error));
+  m_ioManagerFactory.reset(DmsIoManagerFactory::createDmsIoManagerFactory(m_dmsDataset->m_service_provider, *m_dmsDataset, m_logger, error));
 }
 
 IOManagerDMSProxy::~IOManagerDMSProxy()
