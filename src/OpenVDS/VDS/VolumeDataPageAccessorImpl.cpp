@@ -58,7 +58,7 @@ VolumeDataPageAccessorImpl::VolumeDataPageAccessorImpl(VolumeDataAccessManagerIm
     Error error;
     if (!m_accessManager->GetVolumeDataStore()->EnableWriting(error))
     {
-      throw InvalidOperation(fmt::format("Failed to create PageAccessor in write mode: {}", error.string).c_str());
+      throw ReadErrorException(fmt::format("Failed to create PageAccessor in write mode: {}", error.string).c_str(), error.code);
     }
   }
 }
