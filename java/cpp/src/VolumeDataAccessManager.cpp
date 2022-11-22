@@ -3614,7 +3614,7 @@ JNIEXPORT jbyteArray JNICALL Java_org_opengroup_openvds_VolumeDataRequest1Bit_Da
   CPPJNI_TRY
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataRequest_t<uint8_t>>(native_handle);
-    auto result = pInstance->Data();
+    auto& result = pInstance->Data();
     return CPPJNIVectorAdapter<uint8_t>(env, result).toArray();
   }
   CPPJNI_CATCH
@@ -3646,7 +3646,7 @@ JNIEXPORT jbyteArray JNICALL Java_org_opengroup_openvds_VolumeDataRequestByte_Da
   CPPJNI_TRY
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataRequest_t<uint8_t>>(native_handle);
-    auto result = pInstance->Data();
+    auto& result = pInstance->Data();
     return CPPJNIVectorAdapter<uint8_t>(env, result).toArray();
   }
   CPPJNI_CATCH
@@ -3678,7 +3678,7 @@ JNIEXPORT jshortArray JNICALL Java_org_opengroup_openvds_VolumeDataRequestUShort
   CPPJNI_TRY
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataRequest_t<uint16_t>>(native_handle);
-    auto result = pInstance->Data();
+    auto& result = pInstance->Data();
     return CPPJNIVectorAdapter<uint16_t>(env, result).toArray();
   }
   CPPJNI_CATCH
@@ -3710,7 +3710,7 @@ JNIEXPORT jintArray JNICALL Java_org_opengroup_openvds_VolumeDataRequestUInt_Dat
   CPPJNI_TRY
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataRequest_t<uint32_t>>(native_handle);
-    auto result = pInstance->Data();
+    auto& result = pInstance->Data();
     return CPPJNIVectorAdapter<uint32_t>(env, result).toArray();
   }
   CPPJNI_CATCH
@@ -3742,7 +3742,7 @@ JNIEXPORT jlongArray JNICALL Java_org_opengroup_openvds_VolumeDataRequestULong_D
   CPPJNI_TRY
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataRequest_t<uint64_t>>(native_handle);
-    auto result = pInstance->Data();
+    auto& result = pInstance->Data();
     return CPPJNIVectorAdapter<uint64_t>(env, result).toArray();
   }
   CPPJNI_CATCH
@@ -3774,7 +3774,7 @@ JNIEXPORT jfloatArray JNICALL Java_org_opengroup_openvds_VolumeDataRequestFloat_
   CPPJNI_TRY
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataRequest_t<float>>(native_handle);
-    auto result = pInstance->Data();
+    auto& result = pInstance->Data();
     return CPPJNIVectorAdapter<float>(env, result).toArray();
   }
   CPPJNI_CATCH
@@ -3806,7 +3806,7 @@ JNIEXPORT jdoubleArray JNICALL Java_org_opengroup_openvds_VolumeDataRequestDoubl
   CPPJNI_TRY
   {
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataRequest_t<double>>(native_handle);
-    auto result = pInstance->Data();
+    auto& result = pInstance->Data();
     return CPPJNIVectorAdapter<double>(env, result).toArray();
   }
   CPPJNI_CATCH
