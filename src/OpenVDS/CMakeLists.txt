@@ -343,10 +343,6 @@ if (NOT EMSCRIPTEN)
   endif()
 endif()
 
-if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-  set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR}/Dist/OpenVDS CACHE STRING "" FORCE)
-endif(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-
 if (EMSCRIPTEN)
   add_executable(openvds $<TARGET_OBJECTS:openvds_objects>)
   add_executable(openvds::openvds ALIAS openvds)
