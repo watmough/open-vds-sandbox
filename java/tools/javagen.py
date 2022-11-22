@@ -860,8 +860,9 @@ def create_jni_methods(scope: Scope, template: str, override_name: str = '', tem
                         overloads_created.append(overload_signature)
                         print(proto, file=local_output)
                         declare_result = 'auto result = ' if child.is_data_member or not child.result.canonical_type == 'void' else ''
-                        if is_ref_type(real_return_type) and is_pass_by_handle(real_return_type):
-                            declare_result = 'auto& result = '
+                        if is_ref_type(real_return_type):
+                            if is_pass_by_handle(real_return_type) or is_vector_type(real_return_type):
+                                declare_result = 'auto& result = '
                         retval = ''
                         print("{", file=local_output)
                         print("  JNIEnvGuard\n    envGuard(env);\n", file=local_output)
