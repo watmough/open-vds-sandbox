@@ -49,6 +49,8 @@ GetPythonFormatString(VolumeDataFormat format, VolumeDataComponents components)
   {
   default:
     throw std::runtime_error("Unknown format");
+  case VolumeDataFormat::Format_1Bit:
+    // Fall through
   case VolumeDataFormat::Format_U8:
     return &"BBBB"[4 - components];
   case VolumeDataFormat::Format_U16:
@@ -215,8 +217,17 @@ PyVolumeDataAccess::initModule(py::module& m)
          std::vector<int> strides(dimensionality);
          for(int dimension = 0; dimension < dimensionality; dimension++)
          {
-           shape[dimensionality - 1 - dimension] = size[dimension];
-           strides[dimensionality - 1 - dimension] = pitch[dimension] * itemsize;
+           if(channelDescriptor.GetFormat() == VolumeDataFormat::Format_1Bit)
+           {
+             shape[dimensionality - 1 - dimension] = (dimension == 0) ? (size[dimension] + 7) / 8 :size[dimension];
+             assert((dimension == 0 && pitch[dimension] == 1) || (pitch[dimension] % 8 == 0));
+             strides[dimensionality - 1 - dimension] = (dimension == 0) ? 1 : pitch[dimension] / 8;
+           }
+           else
+           {
+             shape[dimensionality - 1 - dimension] = size[dimension];
+             strides[dimensionality - 1 - dimension] = pitch[dimension] * itemsize;
+           }
          }
 
          return py::memoryview::from_buffer(buffer, itemsize, format, shape, strides);
@@ -239,8 +250,17 @@ PyVolumeDataAccess::initModule(py::module& m)
          std::vector<int> strides(dimensionality);
          for(int dimension = 0; dimension < dimensionality; dimension++)
          {
-           shape[dimensionality - 1 - dimension] = size[dimension];
-           strides[dimensionality - 1 - dimension] = pitch[dimension] * itemsize;
+           if(channelDescriptor.GetFormat() == VolumeDataFormat::Format_1Bit)
+           {
+             shape[dimensionality - 1 - dimension] = (dimension == 0) ? (size[dimension] + 7) / 8 :size[dimension];
+             assert((dimension == 0 && pitch[dimension] == 1) || (pitch[dimension] % 8 == 0));
+             strides[dimensionality - 1 - dimension] = (dimension == 0) ? 1 : pitch[dimension] / 8;
+           }
+           else
+           {
+             shape[dimensionality - 1 - dimension] = size[dimension];
+             strides[dimensionality - 1 - dimension] = pitch[dimension] * itemsize;
+           }
          }
 
          return py::memoryview::from_buffer(buffer, itemsize, format, shape, strides);
