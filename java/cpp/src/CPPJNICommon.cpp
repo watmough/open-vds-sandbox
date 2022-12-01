@@ -30,12 +30,6 @@ static std::mutex
 JavaVM*
   JNIEnvGuard::s_JavaVM;
 
-thread_local std::stack<JNIEnv*>
-  JNIEnvGuard::ts_JNIEnvStack;
-
-thread_local std::vector<struct JNIEnvGuard::StringRecord>
-  JNIEnvGuard::ts_TempStringRecords;
-
 CPPJNIObjectContext::~CPPJNIObjectContext()
 {
   cleanupGlobalRefs(JNIEnvGuard::JNIEnvGuard::getJNIEnv());
@@ -47,29 +41,45 @@ CPPJNIObjectContext::~CPPJNIObjectContext()
   }
 }
 
+std::stack<JNIEnv*>&
+JNIEnvGuard::getJNIEnvStack()
+{
+  static thread_local std::stack<JNIEnv*> ts_JNIEnvStack;
+  return ts_JNIEnvStack;
+}
+
+std::vector<struct JNIEnvGuard::StringRecord>&
+JNIEnvGuard::getTempStringRecords()
+{
+  static thread_local std::vector<struct StringRecord> ts_TempStringRecords;
+  return ts_TempStringRecords;
+}
+
 void
 JNIEnvGuard::push(JNIEnv* env)
 {
   assert(env);
-  ts_JNIEnvStack.push(env);
+  getJNIEnvStack().push(env);
 }
 
 JNIEnv*
 JNIEnvGuard::top()
 {
-  assert(!ts_JNIEnvStack.empty());
-  return ts_JNIEnvStack.top();
+  std::stack<JNIEnv*>& jniEnvStack = getJNIEnvStack();
+  assert(!jniEnvStack.empty());
+  return jniEnvStack.top();
 }
 
 void
 JNIEnvGuard::pop()
 {
-  assert(!ts_JNIEnvStack.empty());
-  if (ts_JNIEnvStack.size() == 1) 
+  std::stack<JNIEnv*>& jniEnvStack = getJNIEnvStack();
+  assert(!jniEnvStack.empty());
+  if (jniEnvStack.size() == 1)
   {
     flushStrings();
   }
-  ts_JNIEnvStack.pop();
+  jniEnvStack.pop();
 }
 
 const char* 
@@ -78,7 +88,7 @@ JNIEnvGuard::getStringUTFChars(jstring value)
   assert(isJNIEnvValid());
   JNIEnv* env = JNIEnvGuard::getJNIEnv();
   const char* utf8 = env->GetStringUTFChars(value, nullptr);
-  ts_TempStringRecords.emplace_back(StringRecord(value, utf8));
+  getTempStringRecords().emplace_back(StringRecord(value, utf8));
   return utf8;
 }
 
@@ -87,11 +97,12 @@ JNIEnvGuard::flushStrings()
 {
   assert(isJNIEnvValid());
   JNIEnv* env = JNIEnvGuard::getJNIEnv();
-  for (auto r : ts_TempStringRecords)
+  std::vector<JNIEnvGuard::StringRecord>& tempStringRecords = getTempStringRecords();
+  for (auto r : tempStringRecords)
   {
     env->ReleaseStringUTFChars(r.m_String, r.m_Utf8);
   }
-  ts_TempStringRecords.clear();
+  tempStringRecords.clear();
 }
 
 JNIEnvGuard::JNIEnvGuard() : m_isThreadAttach(false)
@@ -136,7 +147,7 @@ JNIEnvGuard::~JNIEnvGuard()
 bool 
 JNIEnvGuard::isJNIEnvValid() 
 {
-  return !ts_JNIEnvStack.empty();
+  return !getJNIEnvStack().empty();
 }
 
 JNIEnv* 
