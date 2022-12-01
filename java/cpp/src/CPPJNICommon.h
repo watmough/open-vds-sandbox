@@ -695,22 +695,18 @@ class JNIEnvGuard
     const char* m_Utf8;
   };
 
-  static thread_local std::stack<JNIEnv*>
-    ts_JNIEnvStack;
-
-  static thread_local std::vector<struct StringRecord>
-    ts_TempStringRecords;
-
   static JavaVM* 
     s_JavaVM;
 
   bool 
     m_isThreadAttach;
 
-  static void         pop();
-  static void         push(JNIEnv* env);
-  static JNIEnv*      top();
-  static void         checkInit(JNIEnv* env);
+  static void                               pop();
+  static void                               push(JNIEnv* env);
+  static JNIEnv*                            top();
+  static void                               checkInit(JNIEnv* env);
+  static std::stack<JNIEnv*>&               getJNIEnvStack();
+  static std::vector<struct StringRecord>&  getTempStringRecords();
 public:
 
                       JNIEnvGuard();
