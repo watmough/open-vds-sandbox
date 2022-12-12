@@ -1,3 +1,7 @@
+#if defined(_MSC_VER) && _MSC_VER <= 1900
+#define _SCL_SECURE_NO_WARNINGS 1
+#endif
+
 #include "DmsIoManagerFactory.h"
 
 #include <json_cpp_include.h>
