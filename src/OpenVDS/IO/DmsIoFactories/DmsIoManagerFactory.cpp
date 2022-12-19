@@ -211,6 +211,7 @@ bool DmsDataset::open(IOManager::AccessPattern accessPattern, Error &error)
     try
     {
       m_gc_url = root["gcsurl"].asString();
+      m_accessPolicy = root["access_policy"].asString();
     }
     catch (const Json::Exception& ex)
     {
@@ -329,7 +330,7 @@ DmsIoManagerFactory::GcsAccessToken DmsIoManagerFactory::gcsAccessToken(Error &e
     GcsAccessToken ret;
     std::string readonly = m_dataset.m_accessPattern == IOManager::ReadOnly ? "true" : "false";
 
-    std::string sdPath = URLEncode(fmt::format("sd://{}/{}", m_dataset.m_tenant, m_dataset.m_subproject));
+    std::string sdPath = m_dataset.m_accessPolicy == "dataset" ? URLEncode(m_dataset.m_url) : URLEncode(fmt::format("sd://{}/{}", m_dataset.m_tenant, m_dataset.m_subproject));
     std::string url = fmt::format("{}/utility/gcs-access-token?readonly={}&sdpath={}", m_dataset.m_manager.m_authorityUrl, readonly, sdPath);
     std::shared_ptr<DownloadRequestCurl> request = std::make_shared<DownloadRequestCurl>("gcs-access-token", nullptr);
     std::vector<std::string> headers;
