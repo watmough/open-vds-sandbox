@@ -44,6 +44,7 @@ struct DmsDataset
   std::string m_lock_id;
   std::string m_service_provider;
   std::string m_gc_url;
+  std::string m_accessPolicy;
   IOManager::AccessPattern m_accessPattern;
   bool m_opened;
   std::chrono::time_point<std::chrono::steady_clock> m_azure_sas_token_expires;
