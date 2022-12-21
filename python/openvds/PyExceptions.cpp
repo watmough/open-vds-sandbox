@@ -88,7 +88,6 @@ py::register_exception<IndexOutOfRangeException>(m, "IndexOutOfRangeException");
 // IMPLEMENTED :  ReadErrorException_.def_property_readonly("errorMessage", &ReadErrorException::GetErrorMessage, OPENVDS_DOCSTRING(ReadErrorException_GetErrorMessage));
 // IMPLEMENTED :  ReadErrorException_.def("getErrorCode"                , static_cast<int(ReadErrorException::*)() const>(&ReadErrorException::GetErrorCode), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(ReadErrorException_GetErrorCode));
 // IMPLEMENTED :  ReadErrorException_.def_property_readonly("errorCode", &ReadErrorException::GetErrorCode, OPENVDS_DOCSTRING(ReadErrorException_GetErrorCode));
-
 py::register_exception<ReadErrorException>(m, "ReadErrorException");
 
 py::class_<ReadErrorException>
@@ -100,6 +99,7 @@ ReadErrorException_.def("getErrorMessage"             , static_cast<const char *
 ReadErrorException_.def_property_readonly("errorMessage", &ReadErrorException::GetErrorMessage, OPENVDS_DOCSTRING(ReadErrorException_GetErrorMessage));
 ReadErrorException_.def("getErrorCode"                , static_cast<int(ReadErrorException::*)() const>(&ReadErrorException::GetErrorCode), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(ReadErrorException_GetErrorCode));
 ReadErrorException_.def_property_readonly("errorCode", &ReadErrorException::GetErrorCode, OPENVDS_DOCSTRING(ReadErrorException_GetErrorCode));
+ReadErrorException_.def("throw", [](ReadErrorException &exception) { throw exception; }, py::call_guard<py::gil_scoped_release>());
 
 }
 

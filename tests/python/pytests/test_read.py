@@ -40,9 +40,11 @@ def test_read_traces(dataset_80_r32_64):
         assert r.data[80] == 80 * 20 + 80 * 80 * 20
 
 def test_read_page_accessor(dataset_80_r32_64):
-    with openvds.open(dataset_80_r32_64, "") as handle:
-        acc = openvds.VolumeDataAccessManager(handle)
-        pageAccessor = acc.createVolumeDataPageAccessor(openvds.core.DimensionsND.Dimensions_012,0,0,8, openvds.VolumeDataPageAccessor.AccessMode.AccessMode_ReadOnly)
-        page = pageAccessor.readPage(2)
-        buffer = page.getBuffer()
-        error = page.error
+    with pytest.raises(openvds.ReadErrorException):
+      with openvds.open(dataset_80_r32_64, "") as handle:
+          acc = openvds.VolumeDataAccessManager(handle)
+          pageAccessor = acc.createVolumeDataPageAccessor(openvds.core.DimensionsND.Dimensions_012,0,0,8, openvds.VolumeDataPageAccessor.AccessMode.AccessMode_ReadOnly)
+          page = pageAccessor.readPage(2)
+          buffer = page.getBuffer()
+          error = page.error
+          error.throw()
