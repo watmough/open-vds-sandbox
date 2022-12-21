@@ -88,7 +88,18 @@ py::register_exception<IndexOutOfRangeException>(m, "IndexOutOfRangeException");
 // IMPLEMENTED :  ReadErrorException_.def_property_readonly("errorMessage", &ReadErrorException::GetErrorMessage, OPENVDS_DOCSTRING(ReadErrorException_GetErrorMessage));
 // IMPLEMENTED :  ReadErrorException_.def("getErrorCode"                , static_cast<int(ReadErrorException::*)() const>(&ReadErrorException::GetErrorCode), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(ReadErrorException_GetErrorCode));
 // IMPLEMENTED :  ReadErrorException_.def_property_readonly("errorCode", &ReadErrorException::GetErrorCode, OPENVDS_DOCSTRING(ReadErrorException_GetErrorCode));
+
 py::register_exception<ReadErrorException>(m, "ReadErrorException");
+
+py::class_<ReadErrorException>
+  ReadErrorException_(m,"ReadErrorException_", OPENVDS_DOCSTRING(ReadErrorException));
+ReadErrorException_.def(py::init<const char *, int             >(), py::arg("errorMessage").none(false), py::arg("errorCode").none(false), OPENVDS_DOCSTRING(ReadErrorException_ReadErrorException));
+ReadErrorException_.def(py::init<const native::ReadErrorException &>(), py::arg("other").none(false), OPENVDS_DOCSTRING(ReadErrorException_ReadErrorException_2));
+ReadErrorException_.def("operator_assign"             , static_cast<native::ReadErrorException &(ReadErrorException::*)(const native::ReadErrorException &)>(&ReadErrorException::operator=), py::arg("other").none(false), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(ReadErrorException_operator_assign));
+ReadErrorException_.def("getErrorMessage"             , static_cast<const char *(ReadErrorException::*)() const>(&ReadErrorException::GetErrorMessage), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(ReadErrorException_GetErrorMessage));
+ReadErrorException_.def_property_readonly("errorMessage", &ReadErrorException::GetErrorMessage, OPENVDS_DOCSTRING(ReadErrorException_GetErrorMessage));
+ReadErrorException_.def("getErrorCode"                , static_cast<int(ReadErrorException::*)() const>(&ReadErrorException::GetErrorCode), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(ReadErrorException_GetErrorCode));
+ReadErrorException_.def_property_readonly("errorCode", &ReadErrorException::GetErrorCode, OPENVDS_DOCSTRING(ReadErrorException_GetErrorCode));
 
 }
 
