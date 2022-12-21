@@ -38,3 +38,11 @@ def test_read_traces(dataset_80_r32_64):
         r = acc.requestVolumeTraces([(0, 10.5, 10.5), (0, 20.5, 20.5)], 0)
         assert r.data[0] == 80 * 10 + 80 * 80 * 10
         assert r.data[80] == 80 * 20 + 80 * 80 * 20
+
+def test_read_page_accessor(dataset_80_r32_64):
+    with openvds.open(dataset_80_r32_64, "") as handle:
+        acc = openvds.VolumeDataAccessManager(handle)
+        pageAccessor = acc.createVolumeDataPageAccessor(openvds.core.DimensionsND.Dimensions_012,0,0,8, openvds.VolumeDataPageAccessor.AccessMode.AccessMode_ReadOnly)
+        page = pageAccessor.readPage(2)
+        buffer = page.getBuffer()
+        error = page.error
