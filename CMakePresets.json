@@ -150,6 +150,15 @@
       ]
     },
     {
+      "name": "DebugAzureSDKForCPP",
+      "cacheVariables": {
+        "DISABLE_AZURESDKFORCPP_IOMANAGER": "OFF"
+      },
+      "inherits": [
+        "Debug"
+      ]
+    },
+    {
       "name": "Release",
       "description": "Built using the default Visual Studio version.",
       "inherits": [
