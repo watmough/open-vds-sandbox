@@ -297,7 +297,6 @@ static void addUploadCB(uv_async_t *handle)
     }
     else if (uploadRequest->verb == CurlVerb::PUT)
     {
-      curl_easy_setopt(uploadRequest->curlEasy, CURLOPT_PUT, long(1));
       curl_easy_setopt(uploadRequest->curlEasy, CURLOPT_UPLOAD, 1L);
     }
     else if (uploadRequest->verb == CurlVerb::PATCH)
