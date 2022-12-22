@@ -14,5 +14,5 @@ RUN /opt/python/cp37-cp37m/bin/python -m pip install -r /tmp/requirements-dev.tx
 RUN /opt/python/cp38-cp38/bin/python -m pip install -r /tmp/requirements-dev.txt
 RUN /opt/python/cp39-cp39/bin/python -m pip install -r /tmp/requirements-dev.txt
 RUN /opt/python/cp310-cp310/bin/python -m pip install -r /tmp/requirements-dev.txt
+RUN /opt/python/cp311-cp311/bin/python -m pip install -r /tmp/requirements-dev.txt
 
-COPY docker/build_scripts/generic_linux_build.sh /build_and_install_openvds.sh
