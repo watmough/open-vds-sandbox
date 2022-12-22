@@ -47,4 +47,4 @@ def test_read_page_accessor(dataset_80_r32_64):
           page = pageAccessor.readPage(2)
           buffer = page.getBuffer()
           error = page.error
-          error.throw()
+          error.reRaise()
