@@ -45,6 +45,9 @@ Python API
 .. autoclass:: openvds.VolumeDataLayoutDescriptor
   :members:
 
+.. autoclass:: openvds.KnownMetadata
+  :members:
+
 .. autoclass:: openvds.MetadataContainer
   :members:
 
