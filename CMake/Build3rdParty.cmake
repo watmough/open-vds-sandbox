@@ -30,7 +30,6 @@ macro(build3rdparty)
     BuildFmt()
 
     if (Python3_FOUND)
-      include(CMake/FindPythonLibsNew.cmake)
       add_subdirectory(${pybind11_SOURCE_DIR} ${PROJECT_BINARY_DIR}/pybind11_${pybind11_VERSION} EXCLUDE_FROM_ALL)
     endif()
   
