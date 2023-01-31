@@ -2,7 +2,7 @@ set -e -u
 base_dir=$(realpath $(dirname $BASH_SOURCE))
 
 openvds_path=$(realpath "$base_dir/../..")
-cmake_args="-DBUILD_TESTS=OFF"
+cmake_args=""
 openvds_version=""
 name="openvds"
 
@@ -119,6 +119,7 @@ if [[ "$distribution" == "" ]]; then
 fi
 
 [[ -d $openvds_path/binpackage ]] && rm -rf $openvds_path/binpackage
+[[ -d $openvds_path/binpackage_test_results ]] && rm -rf $openvds_path/binpackage_test_results
 [[ -d $openvds_path/dist ]] && rm -rf $openvds_path/dist
 [[ -d $openvds_path/_skbuild ]] && rm -rf $openvds_path/_skbuild/linux*
 [[ -d $openvds_path/_skbuild ]] && rm -rf $openvds_path/_skbuild/win*
@@ -141,10 +142,12 @@ if [[ "$platform_name" == "win" ]]; then
   fi
   export PATH="$openvds_path/_skbuild/$cmake_name/bin:$openvds_path/_skbuild/ninja:$PATH"
   cmake_executable="$openvds_path/_skbuild/$cmake_name/bin/cmake.exe"
+  ctest_executable="$openvds_path/_skbuild/$cmake_name/bin/ctest.exe"
   ninja_executable="$openvds_path/_skbuild/ninja/ninja.exe"
   cd "$openvds_path"
 else
   cmake_executable=$(which cmake)
+  ctest_executable=$(which ctest)
   ninja_executable=$(which ninja)
 fi
 
@@ -177,6 +180,10 @@ for python_executable in "${python_executables[@]}"; do
 
   "$cmake_executable" -DPython3_ROOT_DIR="$python_root_dir" "$java_cmake_arg" -DENABLE_MSVC_TOOLSET_DIR=OFF -DCMAKE_INSTALL_PREFIX=$skbuild_dir/cmake-install $cmake_args --preset Release
   "$ninja_executable" -C out/build/Release install
+  "$ctest_executable" --test-dir out/build/Release
+  [[ -d "binpackage_test_results/$python_ver" ]] || mkdir -p "binpackage_test_results/$python_ver"
+  cp -r "out/build/Release/test_results" "binpackage_test_results/$python_ver"
+  cp -r "out/build/Release/test_results_java" "binpackage_test_results/$python_ver"
 
   [[ -d "$skbuild_dir/cmake-build" ]] || mkdir -p "$skbuild_dir/cmake-build"
   cp -r out/build/Release/* "$skbuild_dir/cmake-build"
