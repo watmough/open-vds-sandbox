@@ -4,17 +4,27 @@ function(BuildLibreSSL)
     if (${_isMultiConfig})
       set(TOOLSET_VERSION ${MSVC_TOOLSET_VERSION_LOCAL})
     endif()
-    list(APPEND LIBRESSL_LIBS_LIST "lib/crypto-50.lib")
-    list(APPEND LIBRESSL_LIBS_LIST "lib/tls-26.lib")
-    
-    list(APPEND LIBRESSL_DLLS_LIST "bin/crypto-50.dll")
-    list(APPEND LIBRESSL_DLLS_LIST "bin/tls-26.dll")
-    list(APPEND LIBRESSL_DLLS_LIST "bin/ssl-53.dll")
+    if (WIN32)
+      list(APPEND LIBRESSL_LIBS_LIST "lib/crypto-50.lib")
+      list(APPEND LIBRESSL_LIBS_LIST "lib/tls-26.lib")
+
+      list(APPEND LIBRESSL_DLLS_LIST "bin/crypto-50.dll")
+      list(APPEND LIBRESSL_DLLS_LIST "bin/tls-26.dll")
+      list(APPEND LIBRESSL_DLLS_LIST "bin/ssl-53.dll")
+    elseif (APPLE)
+    else()
+      list(APPEND LIBRESSL_DLLS_LIST "lib${LIBSUFFIX}/libcrypto.so.50.1.0")
+      list(APPEND LIBRESSL_DLLS_LIST "lib${LIBSUFFIX}/libtls.so.26.1.0")
+      list(APPEND LIBRESSL_DLLS_LIST "lib${LIBSUFFIX}/libssl.so.53.1.0")
+    endif()
+	
 
     list(APPEND CMAKE_ARGS "-DLIBRESSL_APPS=OFF")
     list(APPEND CMAKE_ARGS "-DLIBRESSL_TESTS=OFF")
     list(APPEND CMAKE_ARGS "-DBUILD_SHARED_LIBS=ON")
+
     BuildExternal(libressl ${libressl_VERSION} "" ${libressl_SOURCE_DIR} "${LIBRESSL_LIBS_LIST}" "${LIBRESSL_DLLS_LIST}" ON "${CMAKE_ARGS}")
+    set(OPENSSL_ROOT_DIR ${libressl_INSTALL_INT_CONFIG} PARENT_SCOPE)
   endif()
 
 endfunction()

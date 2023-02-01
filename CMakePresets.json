@@ -228,6 +228,17 @@
       ]
     },
     {
+      "name": "ReleaseAlpineCurl",
+      "description": "Merge reqeusts for Alpine Linux is built with this configuration.",
+      "inherits": [
+        "ReleaseNoLtoWithAssertGNU"
+      ],
+      "cacheVariables": {
+        "BUILD_CURL" : "ON",
+	"USE_LIBRESSL" : "ON"
+      }
+    },
+    {
       "name": "ReleaseClang",
       "description": "Built using the default Visual Studio version.",
       "inherits": [
