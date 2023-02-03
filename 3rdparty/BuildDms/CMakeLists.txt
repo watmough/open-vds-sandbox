@@ -99,6 +99,9 @@ endif()
 
 add_library (sdapi_objects OBJECT ${SOURCES} ${VersionFilesOutputVariable})
 target_link_libraries(sdapi_objects PRIVATE crc32c)
+if (NOT DISABLE_AZURESDKFORCPP_IOMANAGER)
+  target_link_libraries(sdapi_objects PRIVATE azure-core)
+endif()
 
 get_property(link_3rdparty GLOBAL PROPERTY OPENVDS_LINK_LIBRARIES)
 get_property(include_3rdparty      GLOBAL PROPERTY OPENVDS_INCLUDE_LIBRARIES)

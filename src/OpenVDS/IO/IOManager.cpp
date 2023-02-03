@@ -68,8 +68,10 @@ IOManager* IOManager::CreateIOManager(const OpenOptions& options, IOManager::Acc
   case OpenOptions::Azure:
   {
 #ifndef OPENVDS_NO_AZURE_SDK_FOR_CPP_IOMANAGER
+#ifndef OPENVDS_NO_AZURE_IOMANAGER
     bool useAzureSdkForCpp = getBooleanEnvironmentVariable("OPENVDS_AZURESDKFORCPP");
     if (useAzureSdkForCpp)
+#endif
       return new IOManagerAzureSdkForCpp(static_cast<const AzureOpenOptions&>(options), error);
 #endif
 #ifndef OPENVDS_NO_AZURE_IOMANAGER

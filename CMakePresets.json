@@ -105,7 +105,15 @@
       "inherits": [
         "openvds_single_config",
         "openvds_debug"
-      ]
+      ],
+      "cacheVariables": {
+	      "DISABLE_LTO": "ON",
+	      "BUILD_CURL": "ON",
+	      "USE_LIBRESSL": "OFF",
+	      "DISABLE_AZURE_IOMANAGER": "ON",
+	      "DISABLE_AZURESDKFORCPP_IOMANAGER" : "OFF",
+	      "OPENSSL_USE_STATIC_LIBS": "ON"
+      }
     },
     {
       "name": "DebugAsan",

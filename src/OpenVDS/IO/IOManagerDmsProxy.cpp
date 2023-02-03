@@ -3,9 +3,6 @@
 #include "ErrorRequest.h"
 #include "IO/IORefreshToken.h"
 
-#include "IOManagerAzure.h"
-#include "IOManagerAzurePresigned.h"
-
 namespace OpenVDS
 {
 

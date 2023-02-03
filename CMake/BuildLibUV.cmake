@@ -8,6 +8,8 @@ function(BuildLibUV)
     list(APPEND LIBUV_DLLS_LIST "bin/uv.dll")
   elseif (APPLE)
     list(APPEND LIBUV_DLLS_LIST "lib/libuv.dylib")
+  else()
+    list(APPEND LIBUV_DLLS_LIST "lib/libuv.so.1.0.0")
   endif()
 
   BuildExternal(libuv ${libuv_VERSION} "" ${libuv_SOURCE_DIR} "${LIBUV_LIBS_LIST}" "${LIBUV_DLLS_LIST}" ON "")

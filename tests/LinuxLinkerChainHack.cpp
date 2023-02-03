@@ -15,12 +15,12 @@ void addSomeSymbolsToTheExecutableSoTheLinkerChainWorkAws()
 }
 #endif
 
-#ifndef OPENVDS_NO_AZURE_SDK_FOR_CPP_IOMANAGER
-#include <azure/storage/blobs.hpp>
-#include <azure/storage/common/crypt.hpp>
-void addSomeSymbolsToTheExecutableSoTheLinkerChainWorkAzure()
-{
-  auto this_is_to_work_around_linking_inn_azure_storage_common = Azure::Storage::_internal::UrlEncodePath("hello world");
-  (void)this_is_to_work_around_linking_inn_azure_storage_common;
-}
-#endif
+//#ifndef OPENVDS_NO_AZURE_SDK_FOR_CPP_IOMANAGER
+//#include <azure/storage/blobs.hpp>
+//#include <azure/storage/common/crypt.hpp>
+//void addSomeSymbolsToTheExecutableSoTheLinkerChainWorkAzure()
+//{
+//  auto this_is_to_work_around_linking_inn_azure_storage_common = Azure::Storage::_internal::UrlEncodePath("hello world");
+//  (void)this_is_to_work_around_linking_inn_azure_storage_common;
+//}
+//#endif

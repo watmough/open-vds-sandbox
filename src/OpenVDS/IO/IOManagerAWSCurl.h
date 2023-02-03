@@ -6,7 +6,6 @@
 #include "IOManager.h"
 #include "IOManagerCurl.h"
 
-#define AWS_CRT_CPP_USE_IMPORT_EXPORT
 #include <aws/crt/auth/Credentials.h>
 #include <aws/crt/auth/Sigv4Signing.h>
 #include <aws/crt/Api.h>

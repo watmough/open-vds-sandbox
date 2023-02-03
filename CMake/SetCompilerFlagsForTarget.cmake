@@ -24,4 +24,9 @@ function(setCompilerFlagsForTarget target)
       target_link_options(${target} PUBLIC -fsanitize=address)
     endif()
   endif()
+
+  if (NOT MSVC)
+	  target_link_options(${target} PUBLIC -Wl,--exclude-libs ALL)
+  endif()
+
 endfunction()
