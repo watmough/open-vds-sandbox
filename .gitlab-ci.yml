@@ -282,7 +282,7 @@ sast:
 gc-containerize-gcr:
   environment:
     name: Google_Cloud
-  stage: containerize
+  stage: build
   tags: ["osdu-small"]
   image: docker:19.03
   cache: {}
