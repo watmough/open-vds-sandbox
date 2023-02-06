@@ -279,6 +279,7 @@ sast:
     SAST_FLAWFINDER_LEVEL: '4'
   stage: test
 
+# FIXME (GONRG-6461) Move containerize logic to common pipeline approach 
 gc-containerize-gcr:
   environment:
     name: Google_Cloud
