@@ -283,7 +283,7 @@ gc-containerize-gcr:
   environment:
     name: Google_Cloud
   stage: build
-  tags: ["osdu-medium"]
+  tags: ["osdu-small"]
   image: $INGESTION_DOCKER_WITH_PYTHON_IMAGE_TAG
   cache: {}
   before_script:
