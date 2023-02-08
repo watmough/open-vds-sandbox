@@ -54,6 +54,7 @@ devel-container-manylinux-2-24-merge-request:
   only:
   - merge_requests
 ingestion-container-docker_with_python:
+  tags: ["osdu-small"]
   stage: prepare
   image: docker:19.03
   tags:
