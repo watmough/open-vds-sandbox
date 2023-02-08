@@ -285,7 +285,7 @@ gc-containerize-gcr:
     name: Google_Cloud
   stage: build
   tags: ["osdu-small"]
-  image: docker:19.03
+  image: $INGESTION_DOCKER_WITH_PYTHON_IMAGE_TAG
   cache: {}
   before_script:
     - cat $GC_DEPLOY_FILE | docker login -u _json_key --password-stdin https://gcr.io
