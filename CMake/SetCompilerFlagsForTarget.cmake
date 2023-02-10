@@ -27,6 +27,9 @@ function(setCompilerFlagsForTarget target)
 
   if (NOT MSVC)
 	  target_link_options(${target} PUBLIC -Wl,--exclude-libs ALL)
+	  if (OPENVDS_STATIC_DEPENDENCIES OR TRUE)
+		  target_link_options(${target} PRIVATE -static-libgcc -static-libstdc++)
+	  endif()
   endif()
 
 endfunction()

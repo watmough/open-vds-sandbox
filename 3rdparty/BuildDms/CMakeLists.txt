@@ -115,7 +115,7 @@ if (UNIX)
   target_link_libraries(sdapi_objects PRIVATE Boost::system)
 endif()
 
-add_library(sdapi SHARED $<TARGET_OBJECTS:sdapi_objects>)
+add_library(sdapi STATIC $<TARGET_OBJECTS:sdapi_objects>)
 
 foreach(DEP ${dependency_targets_3rdparty})
   add_dependencies(sdapi_objects ${DEP})

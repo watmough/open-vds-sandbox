@@ -59,10 +59,18 @@ macro(build3rdparty)
       BuildAzureSdkForCpp()
     endif()
   
+    include(${cmakerc_SOURCE_DIR}/CMakeRC.cmake)
+
+    if (NOT DISABLE_CURL_IOMANAGER OR NOT DISABLE_GCP_IOMANAGER OR NOT DISABLE_DMS_IOMANAGER)
+      CurlAddStaticDependency()
+    endif()
+    if (BUILD_ZLIB)
+      ZlibAddStaticDependency()
+    endif()
+
     if (NOT DISABLE_DMS_IOMANAGER)
       BuildDms()
     endif()
 
-    include(${cmakerc_SOURCE_DIR}/CMakeRC.cmake)
   endif()
 endmacro()
