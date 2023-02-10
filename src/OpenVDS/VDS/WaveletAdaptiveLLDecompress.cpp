@@ -536,7 +536,9 @@ int32_t WaveletAdaptiveLLDecompress_DecompressLossless(uint8_t *in, float *pic, 
 
   const int threadCount = Wavelet_GetEffectiveOpenMPThreadCount(WAVELET_OPENMP_SSE_THREAD_COUNT);
   (void) threadCount;
+#if defined(_OPENMP)
 #pragma omp parallel for num_threads(threadCount) schedule(static)
+#endif
   for (int i = 0; i < 4; i++)
   {
     switch (readSize[i])
@@ -559,10 +561,14 @@ int32_t WaveletAdaptiveLLDecompress_DecompressLossless(uint8_t *in, float *pic, 
   
   int *intPic = (int *)pic;
 
+#if defined(_OPENMP)
 #pragma omp parallel for if(sizeZ > 1) num_threads(threadCount) schedule(static)
+#endif
   for (int iZ = 0; iZ < sizeZ; iZ++)
   {
+#if defined(_OPENMP)
 #pragma omp parallel for if(sizeZ == 1) num_threads(threadCount) schedule(static)
+#endif
     for (int iY = 0; iY < sizeY; iY++)
     {
       int
@@ -659,10 +665,14 @@ static void WaveletAdaptiveLL_ReplaceZeroFromZeroCount(T * pxPic, int nTransform
 {
   const int threadCount = Wavelet_GetEffectiveOpenMPThreadCount(WAVELET_OPENMP_SSE_THREAD_COUNT);
   (void) threadCount;
+#if defined(_OPENMP)
 #pragma omp parallel for if(nTransformSizeZ > 1) num_threads(threadCount) schedule(static)
+#endif
   for (int iZ=0; iZ<nTransformSizeZ;iZ++)
   {
+#if defined(_OPENMP)
 #pragma omp parallel for if(nTransformSizeZ == 1) num_threads(threadCount) schedule(static)
+#endif
     for (int iY=0; iY<nTransformSizeY;iY++)
     {
       T *ptRead = pxPic + iY * nAllocatedSizeX + iZ * nAllocatedSizeX * nAllocatedSizeY;

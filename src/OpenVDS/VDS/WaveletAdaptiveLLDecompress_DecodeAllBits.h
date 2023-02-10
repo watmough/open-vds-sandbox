@@ -45,7 +45,9 @@ void WaveletAdaptiveLLDecompress_DecodeAllBits(const WaveletAdaptiveLL_DecodeIte
     startValue = threshold * 0.5f;
   }
 
+#if defined(_OPENMP)
 #pragma omp parallel for schedule(dynamic, 256) num_threads(threads)
+#endif
   for (int32_t parentValue = 0; parentValue < values; parentValue++)
   {
     for (int32_t child = 0; child < multiple; child++)

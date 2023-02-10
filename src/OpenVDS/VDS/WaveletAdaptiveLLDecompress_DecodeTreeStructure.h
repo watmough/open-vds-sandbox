@@ -88,7 +88,9 @@ static void WaveletAdaptiveLLDecompress_EvalAndSplitAllNormal(const WaveletAdapt
   if (threads > TEST_THREADS) threads = TEST_THREADS;
   if (threads > maxThreads) threads = maxThreads;
 
+#if defined(_OPENMP)
 #pragma omp parallel num_threads(threads)
+#endif
   {
     int32_t thread = omp_get_thread_num();
 

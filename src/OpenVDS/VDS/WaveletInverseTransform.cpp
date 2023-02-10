@@ -268,14 +268,18 @@ void WaveletTransform_InverseTransform_SSE(int32_t threadCount, float* tempBuffe
 
     if (transformMaskCurr == 7)
     {
+#if defined(_OPENMP)
       // changed so it doez Z first, then Y, then X.
       #pragma omp parallel for num_threads(threadCount) schedule(guided)
+#endif
       for (int32_t iD1 = 0; iD1 < bandSizeCurr[1]; ++iD1)
       {
         Wavelet_InverseTransformSliceInterleave(tempBuffer + iD1 * bufferPitchX, bufferPitchXY, source + iD1 * allocatedSizeX, allocatedSizeXY, bandSizeX, bandSizeZ, integerInfo);
       }
 
+#if defined(_OPENMP)
       #pragma omp parallel for num_threads(threadCount) schedule(guided)
+#endif
       for (int32_t iD2 = 0; iD2 < bandSizeCurr[2]; ++iD2)
       {
         Wavelet_InverseTransformSlice(tempBuffer + iD2 * bufferPitchXY, bufferPitchX, tempBuffer + iD2 * bufferPitchXY, bufferPitchX, bandSizeX, bandSizeY, integerInfo);
@@ -296,7 +300,9 @@ void WaveletTransform_InverseTransform_SSE(int32_t threadCount, float* tempBuffe
     {
       if (transformMaskCurr & 4)
       {
+#if defined(_OPENMP)
         #pragma omp parallel for num_threads(threadCount) schedule(guided)
+#endif
         for (int32_t iD1 = 0; iD1 < bandSizeCurr[1]; ++iD1)
         {
           Wavelet_InverseTransformSliceInterleave(write + iD1 * writePitchX, writePitchXY, read + iD1 * readPitchX, readPitchXY, bandSizeX, bandSizeZ, integerInfo);
@@ -313,7 +319,9 @@ void WaveletTransform_InverseTransform_SSE(int32_t threadCount, float* tempBuffe
 
       if (transformMaskCurr & 2)
       {
+#if defined(_OPENMP)
         #pragma omp parallel for num_threads(threadCount) schedule(guided)
+#endif
         for (int32_t iD2 = 0; iD2 < bandSizeCurr[2]; ++iD2)
         {
           Wavelet_InverseTransformSliceInterleave(write + iD2 * writePitchXY, writePitchX, read + iD2 * readPitchXY, readPitchX, bandSizeX, bandSizeY, integerInfo);
@@ -330,7 +338,9 @@ void WaveletTransform_InverseTransform_SSE(int32_t threadCount, float* tempBuffe
 
       if (transformMaskCurr & 1)
       {
+#if defined(_OPENMP)
         #pragma omp parallel for num_threads(threadCount) schedule(guided)
+#endif
         for (int32_t iD2 = 0; iD2 < bandSizeCurr[2]; ++iD2)
         {
           for (int32_t iD1 = 0; iD1 < bandSizeCurr[1]; ++iD1)
@@ -350,7 +360,9 @@ void WaveletTransform_InverseTransform_SSE(int32_t threadCount, float* tempBuffe
 
       if (read != source)
       {
+#if defined(_OPENMP)
         #pragma omp parallel for num_threads(threadCount) schedule(static)
+#endif
         for (int32_t iD2 = 0; iD2 < bandSizeZ; ++iD2)
         {
           Wavelet_CopySlice(source + iD2 * allocatedSizeXY, allocatedSizeX, read + iD2 * readPitchXY, readPitchX, bandSizeX, bandSizeY);
