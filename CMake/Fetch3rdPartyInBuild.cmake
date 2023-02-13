@@ -107,6 +107,7 @@ function(Fetch3rdParty)
   Fetch3rdParty_Package(google-cloud-cpp  1.14.0     https://codeload.github.com/googleapis/google-cloud-cpp/tar.gz/v1.14.0               SHA256=839b2d4dcb36a671734dac6b30ea8c298bbeaafcf7a45ee4a7d7aa5986b16569)
   Fetch3rdParty_Package(libxml2           2.9.12a    https://codeload.github.com/GNOME/libxml2/tar.gz/v2.9.12                             SHA256=8a4ddd706419c210b30b8978a51388937fd9362c34fc9a3d69e4fcc6f8055ee0)
   Fetch3rdParty_Package(azure-sdk-for-cpp 1.8.0      https://github.com/Azure/azure-sdk-for-cpp/archive/refs/tags/azure-core_1.8.0.tar.gz SHA256=aa12e78a76be45e9b836517b95f2dab2e7db9788e2dd722896aa8b34a2265afe)
+  Fetch3rdParty_Git(azure-sdk-for-cpp     1.8.0.ovds https://github.com/jorgen/azure-sdk-for-cpp.git                                      1.8.0) #Waiting for pullrequest: https://github.com/Azure/azure-sdk-for-cpp/pull/4352
   Fetch3rdParty_Package(dms               b0f3244ef  https://community.opengroup.org/osdu/platform/domain-data-mgmt-services/seismic/seismic-dms-suite/seismic-store-cpp-lib/-/archive/b0f3244ef93f1706b89315a6940b69c5ca232ae8/seismic-store-cpp-lib-master.tar.gz SHA256=3e1d499c96932f7e14661679d89662c6ecec391821f1ac714db529c0896b6215)
   #Fetch3rdParty_Git(dms                   git        git@community.opengroup.org:osdu/platform/domain-data-mgmt-services/seismic/seismic-dms-suite/seismic-store-cpp-lib.git master)
   Fetch3rdParty_File(testng  java         6.14.3 jar https://repo1.maven.org/maven2/org/testng/testng/6.14.3/testng-6.14.3.jar            MD5=9f17a8f9e99165e148c42b21f4b63d7c)
