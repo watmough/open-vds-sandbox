@@ -61,14 +61,6 @@
       }
     },
     {
-      "name": "centos7",
-      "hidden": true,
-      "cacheVariables": {
-        "BOOST_INCLUDEDIR": "/usr/include/boost169",
-        "BOOST_LIBRARYDIR": "/usr/lib64/boost169"
-      }
-    },
-    {
       "name": "azuresdkforcpp",
       "hidden": true,
       "cacheVariables": {
@@ -107,11 +99,11 @@
         "openvds_debug"
       ],
       "cacheVariables": {
-	      "DISABLE_LTO": "ON",
-	      "BUILD_CURL": "ON",
-	      "DISABLE_AZURE_IOMANAGER": "ON",
-	      "DISABLE_AZURESDKFORCPP_IOMANAGER" : "OFF",
-	      "OPENSSL_USE_STATIC_LIBS": "ON"
+        "DISABLE_LTO": "ON",
+        "BUILD_CURL": "ON",
+        "DISABLE_AZURE_IOMANAGER": "ON",
+        "DISABLE_AZURESDKFORCPP_IOMANAGER" : "OFF",
+        "OPENSSL_USE_STATIC_LIBS": "ON"
       }
     },
     {
@@ -210,11 +202,12 @@
       "name": "MergeRequestManyLinux2014",
       "description": "Merge request for ManyLinux 2014 is built with this configuration.",
       "inherits": [
-        "ReleaseNoLtoWithAssertGNU",
-        "centos7"
+        "ReleaseNoLtoWithAssertGNU"
       ],
       "cacheVariables": {
-        "Python3_ROOT_DIR": "/opt/python/cp310-cp310"
+        "Python3_ROOT_DIR": "/opt/python/cp310-cp310",
+        "OPENSSL_ROOT_DIR": "/opt/openssl3.0",
+	"OPENSSL_USE_STATIC_LIBS": "ON"
       }
     },
     {

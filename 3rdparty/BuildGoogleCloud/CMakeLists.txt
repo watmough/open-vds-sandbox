@@ -108,8 +108,6 @@ if (BUILD_CURL)
   target_compile_definitions(google_cloud_ovds PRIVATE CURL_STATICLIB=1)
 endif()
 
-
-
 if (NOT WIN32)
   target_include_directories(google_cloud_ovds PRIVATE ${OPENSSL_INCLUDE_DIR})
 endif()

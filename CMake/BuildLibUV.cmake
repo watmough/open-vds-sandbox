@@ -8,7 +8,7 @@ function(BuildLibUV)
   elseif (APPLE)
     list(APPEND LIBUV_DLLS_LIST "lib/libuv.dylib")
   else()
-    list(APPEND LIBUV_DLLS_LIST "lib/libuv_a.a")
+    list(APPEND LIBUV_DLLS_LIST "lib${LIBSUFFIX}/libuv_a.a")
     #list(APPEND LIBUV_DLLS_LIST "lib/libuv.so.1.0.0")
   endif()
 

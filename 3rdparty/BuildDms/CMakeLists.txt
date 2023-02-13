@@ -103,13 +103,17 @@ if (NOT DISABLE_AZURESDKFORCPP_IOMANAGER)
   target_link_libraries(sdapi_objects PRIVATE azure-core)
 endif()
 
+if (NOT WIN32)
+  target_include_directories(sdapi_objects PRIVATE ${OPENSSL_INCLUDE_DIR})
+endif()
+
 get_property(link_3rdparty GLOBAL PROPERTY OPENVDS_LINK_LIBRARIES)
 get_property(include_3rdparty      GLOBAL PROPERTY OPENVDS_INCLUDE_LIBRARIES)
 get_property(dependency_targets_3rdparty      GLOBAL PROPERTY OPENVDS_DEPENDENCY_TARGETS)
 
 addSystemHeadersToTarget(sdapi_objects "${include_3rdparty}")
 
-if (UNIX)
+if (UNIX AND NOT DISABLE_AZURE_IOMANAGER)
   find_package(Boost REQUIRED COMPONENTS system date_time regex)
   target_include_directories(sdapi_objects PRIVATE ${OPENSSL_INCLUDE_DIR})
   target_link_libraries(sdapi_objects PRIVATE Boost::system)
