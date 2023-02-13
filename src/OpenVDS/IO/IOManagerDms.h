@@ -3,6 +3,8 @@
 
 #include "IOManager.h"
 
+#define NO_DLL_PUBLIC
+
 #ifdef _MSC_VER
 #pragma warning(push)
 #pragma warning(disable : 4251)

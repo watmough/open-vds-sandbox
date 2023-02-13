@@ -104,6 +104,12 @@ target_include_directories(google_cloud_ovds PUBLIC
 string(REPLACE " " ";" DISABLE_WARNING_FLAG ${DISABLE_WARNING_FLAG})
 target_compile_options(google_cloud_ovds PRIVATE ${DISABLE_WARNING_FLAG})
 
+if (BUILD_CURL)
+  target_compile_definitions(google_cloud_ovds PRIVATE CURL_STATICLIB=1)
+endif()
+
+
+
 if (NOT WIN32)
   target_include_directories(google_cloud_ovds PRIVATE ${OPENSSL_INCLUDE_DIR})
 endif()

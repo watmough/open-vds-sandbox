@@ -60,7 +60,7 @@ foreach(VARIABLE IN ITEMS WITH_AUTOMATA WITH_C14N WITH_CATALOG WITH_DEBUG WITH_D
 endforeach()
 
 if(MSVC)
-	configure_file(include/win32config.h config.h COPYONLY)
+	configure_file(${SRC_DIR}/include/win32config.h config.h COPYONLY)
 else()
 	check_c_source_compiles("
 		void __attribute__((destructor))

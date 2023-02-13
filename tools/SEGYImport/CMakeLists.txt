@@ -8,7 +8,7 @@ target_link_libraries(SEGYImport PRIVATE Threads::Threads openvds segyutils json
 
 setCompilerFlagsForTools(SEGYImport)
 
-if(MSVC_VERSION LESS_EQUAL 1900)
+if(MSVC_VERSION LESS_EQUAL 1916)
   set_source_files_properties(SEGYImport.cpp PROPERTIES COMPILE_FLAGS /bigobj)
 endif()
 

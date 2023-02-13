@@ -256,6 +256,10 @@ if (NOT EMSCRIPTEN)
     endif()
   endif()
 
+  if (BUILD_CURL)
+    target_compile_definitions(openvds_objects PRIVATE CURL_STATICLIB=1)
+  endif()
+
   if ((NOT BUILD_CURL) AND ((NOT DISABLE_AZURESDKFORCPP_IOMANAGER) OR (NOT DISABLE_CURL_IOMANAGER)))
     find_package(CURL REQUIRED)
     target_link_libraries(openvds_objects PRIVATE CURL::libcurl)
