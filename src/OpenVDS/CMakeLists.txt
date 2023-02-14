@@ -407,9 +407,6 @@ install(
     FILE openvds-config.cmake
 )
 
-set(RUNTIME_LIBS_DESTINATION $<IF:$<PLATFORM_ID:Windows>,${CMAKE_INSTALL_BINDIR},${CMAKE_INSTALL_LIBDIR}>${LIB_TOOLSET_DIR})
-install(FILES ${runtime_3rdparty} DESTINATION ${RUNTIME_LIBS_DESTINATION})
-
 export(
     TARGETS
         openvds

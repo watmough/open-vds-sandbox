@@ -86,20 +86,15 @@ install(FILES ${pythonsources} CONFIGURATIONS Debug DESTINATION python/Debug/ope
 
 if (NOT PYTHON_DISABLE_INSTALL_3RD_PARTY)
   set(PYINSTALL_TARGETS "openvds")
-  if (NOT DISABLE_DMS_IOMANAGER)
-    list(APPEND PYINSTALL_TARGETS "sdapi")
-  endif()
   get_property(runtime_3rdparty GLOBAL PROPERTY OPENVDS_RUNTIME_LIBS)
   install(FILES ${runtime_3rdparty} CONFIGURATIONS Release RelWithDebInfo MinSizeRel DESTINATION python/openvds)
   install(FILES ${runtime_3rdparty} CONFIGURATIONS Debug DESTINATION python/Debug/openvds)
   install(TARGETS ${PYINSTALL_TARGETS} CONFIGURATIONS Release RelWithDebInfo MinSizeRel
     RUNTIME DESTINATION python/openvds
-    LIBRARY DESTINATION python/openvds
-    PUBLIC_HEADER DESTINATION include)
+    LIBRARY DESTINATION python/openvds)
   install(TARGETS ${PYINSTALL_TARGETS} CONFIGURATIONS Debug
     RUNTIME DESTINATION python/Debug/openvds
-    LIBRARY DESTINATION python/Debug/openvds
-    PUBLIC_HEADER DESTINATION include)
+    LIBRARY DESTINATION python/Debug/openvds)
   set(CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION python/openvds)
   include (InstallRequiredSystemLibraries)
 endif()
