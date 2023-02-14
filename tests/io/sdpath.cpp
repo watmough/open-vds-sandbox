@@ -118,7 +118,7 @@ INSTANTIATE_TEST_SUITE_P(
   UrlEncoding,
   UrlEncodeDecode,
   ::testing::Values("sd://some_tenant/fo bar",
-    "hello £$ % ^^&*bar",
-    "somestring#';]!\"£$%^&*())"
+    "hello #$ % ^^&*bar",
+    "somestring#';]!\"#$%^&*())"
   )
 );

@@ -364,7 +364,7 @@ setCommonTargetProperties(openvds)
 setExportedHeadersForTarget(openvds ${EXPORTED_HEADER_FILES})
 
 foreach(item ${link_3rdparty})
-    target_link_libraries(openvds PRIVATE ${item})
+  target_link_libraries(openvds PRIVATE ${item})
 endforeach()
 
 if (ENABLE_RUNPATH_ORIGIN)

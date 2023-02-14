@@ -25,7 +25,7 @@ function(setCompilerFlagsForTarget target)
     endif()
   endif()
 
-  if (NOT MSVC)
+  if (NOT MSVC AND NOT APPLE)
 	  target_link_options(${target} PUBLIC -Wl,--exclude-libs=ALL)
   endif()
 

@@ -289,7 +289,7 @@ bool DmsDataset::close(uint64_t serializedSize, uint64_t chunkCount, Error& erro
     data.emplace_back(std::make_shared<std::vector<uint8_t>>());
     auto& shared_vector = data.back();
     auto& vector = *shared_vector;
-    vector = std::move(WriteJson(root));
+    vector = WriteJson(root);
     completeSize = vector.size();
   }
   m_manager.m_curlHandler.addUploadRequest(request, url, headers, CurlVerb::PATCH, std::move(data), completeSize);
