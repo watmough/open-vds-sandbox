@@ -217,7 +217,9 @@
         "ReleaseNoLtoWithAssertGNU"
       ],
       "cacheVariables": {
-        "Python3_ROOT_DIR": "/opt/python/cp310-cp310"
+        "Python3_ROOT_DIR": "/opt/python/cp310-cp310",
+        "OPENSSL_ROOT_DIR": "/opt/openssl3.0",
+	"OPENSSL_USE_STATIC_LIBS": "ON"
       }
     },
     {
