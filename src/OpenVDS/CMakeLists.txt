@@ -172,19 +172,23 @@ add_library(hue_bds_objects OBJECT
   BulkDataStore/ExtentAllocator.cpp
   BulkDataStore/VDSObjectParser.cpp )
 get_target_property(json_cpp_include_dir jsoncpp_lib_static INTERFACE_INCLUDE_DIRECTORIES)
-get_target_property(fmt_include_dir fmt::fmt INTERFACE_INCLUDE_DIRECTORIES)
-target_include_directories(hue_bds_objects PRIVATE ${json_cpp_include_dir} ${fmt_include_dir})
+target_include_directories(hue_bds_objects PRIVATE ${json_cpp_include_dir})
 target_compile_definitions(hue_bds_objects PUBLIC -DHUEBDS_EXPORTS= ) # We're not building HueBulkDataStore as a shared library
 target_compile_definitions(hue_bds_objects PRIVATE -D_CRT_SECURE_NO_WARNINGS=1) # We're not building HueBulkDataStore as a shared library
 setCommonTargetProperties(hue_bds_objects)
+get_target_property(fmt_include_dir fmt::fmt INTERFACE_INCLUDE_DIRECTORIES)
+target_include_directories(hue_bds_objects PRIVATE ${fmt_include_dir})
+
+target_link_libraries(hue_bds_objects PRIVATE fmt::fmt)
 
 add_library(openvds_objects OBJECT
   ${PRIVATE_HEADER_FILES}
   ${EXPORTED_HEADER_FILES}
   ${SOURCE_FILES} )
 
+target_include_directories(openvds_objects PRIVATE ${fmt_include_dir})
+
 if (NOT EMSCRIPTEN)
-  compileInTarget(openvds_objects fmt::fmt)
   compileInTarget(openvds_objects jsoncpp_lib_static)
   target_link_libraries(openvds_objects PUBLIC hue_bds_objects)
 endif()
