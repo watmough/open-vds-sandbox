@@ -15,7 +15,9 @@
 ** limitations under the License.
 ****************************************************************************/
 
+#ifndef _MSC_VER
 #define USE_IMPORT_EXPORT 1
+#endif
 #include "IOManagerAWS.h"
 
 #include <aws/core/Aws.h>

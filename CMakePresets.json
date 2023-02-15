@@ -251,6 +251,14 @@
       ]
     },
     {
+      "name": "Release-VS2017",
+      "description": "Built using the default Visual Studio version.",
+      "inherits": [
+        "Release",
+        "VS2017_x64"
+      ]
+    },
+    {
       "name": "MultiConfig",
       "description": "Built using the default Visual Studio version.",
       "inherits": [
