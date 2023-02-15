@@ -7,7 +7,7 @@ RUN yum install -y vim less gdb java-1.8.0-openjdk-devel ccache perl perl-IPC-Cm
 
 RUN curl -LO https://www.openssl.org/source/openssl-3.0.8.tar.gz
 RUN tar xzvf openssl-3.0.8.tar.gz
-RUN cd openssl-3.0.8 && ./config --prefix=/opt/openssl3.0 no-shared no-zlib && make -j && make install
+RUN cd openssl-3.0.8 && ./config --prefix=/opt/openssl3.0 no-module no-shared no-zlib && make -j && make install
 RUN rm -rf openssl-3.0.8*
 
 COPY python/requirements-dev-with-docs.txt /tmp/requirements-dev.txt
