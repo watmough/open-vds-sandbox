@@ -15,6 +15,7 @@
 ** limitations under the License.
 ****************************************************************************/
 
+#define USE_IMPORT_EXPORT 1
 #include "IOManagerAWS.h"
 
 #include <aws/core/Aws.h>

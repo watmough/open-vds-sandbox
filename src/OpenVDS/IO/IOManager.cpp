@@ -16,7 +16,7 @@
 ** See the License for the specific language governing permissions and
 ** limitations under the License.
 ****************************************************************************/
-
+#define USE_IMPORT_EXPORT 1
 #include "IOManager.h"
 
 #include "IOManagerInMemory.h"

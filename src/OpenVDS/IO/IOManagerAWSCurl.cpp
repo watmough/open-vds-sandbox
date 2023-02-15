@@ -1,3 +1,4 @@
+#define USE_IMPORT_EXPORT 1
 #include "IOManagerAWSCurl.h"
 
 #include "ErrorRequest.h"

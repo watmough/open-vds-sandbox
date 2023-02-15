@@ -1,3 +1,4 @@
+#define USE_IMPORT_EXPORT 1
 #include "AwsDmsIoManagerFactory.h"
 
 #include "IO/IOManagerAWSCurl.h"

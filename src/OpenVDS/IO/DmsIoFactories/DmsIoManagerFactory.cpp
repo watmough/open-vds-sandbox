@@ -2,6 +2,8 @@
 #define _SCL_SECURE_NO_WARNINGS 1
 #endif
 
+#define USE_IMPORT_EXPORT 1
+
 #include "DmsIoManagerFactory.h"
 
 #include <json_cpp_include.h>
