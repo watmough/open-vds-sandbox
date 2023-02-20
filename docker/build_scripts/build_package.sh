@@ -2,7 +2,7 @@ set -e -u
 base_dir=$(realpath $(dirname $BASH_SOURCE))
 
 openvds_path=$(realpath "$base_dir/../..")
-cmake_args=""
+cmake_args="-DENABLE_GEN_PYTEST_INI=OFF"
 openvds_version=""
 name="openvds"
 

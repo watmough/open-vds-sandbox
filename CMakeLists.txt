@@ -141,6 +141,7 @@ else()
   option(AUTO_ADJUST_UUID "When building on MacOS atumatically auto adjust finding UUID" ON)
   option(ENABLE_ASAN "Build this OpenVDS with AddressSanitizer" OFF)
   option(DISABLE_LTO "Disable LTO for release builds" OFF)
+  option(ENABLE_GEN_PYTEST_INI "Enable generating pytest.ini file in project root" ON)
 
 
   include(CMakeDependentOption)
