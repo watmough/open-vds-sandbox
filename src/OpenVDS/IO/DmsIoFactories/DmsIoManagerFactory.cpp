@@ -17,9 +17,11 @@
 #include <random>
 
 #include "AzureDmsIoManagerFactory.h"
+#ifndef OPENVDS_NO_AWS_IOMANAGER
 #include "AwsDmsIoManagerFactory.h"
 #include "AnthosDmsIoManagerFactory.h"
 #include "IbmDmsIoManagerFactory.h"
+#endif //OPENVDS_NO_AWS_IOMANAGER
 #include "GcpDmsIoManagerFactory.h"
 
 namespace OpenVDS
@@ -312,12 +314,14 @@ DmsIoManagerFactory* DmsIoManagerFactory::createDmsIoManagerFactory(const std::s
 {
   if (serviceProvider == "azure")
     return new AzureDmsIoManagerFactory(dataset);
+#ifndef OPENVDS_NO_AWS_IOMANAGER
   if (serviceProvider == "aws")
     return new AwsDmsIoManagerFactory(dataset, logger);
   if (serviceProvider == "anthos")
     return new AnthosDmsIoManagerFactory(dataset, logger);
   if (serviceProvider == "ibm")
     return new IbmDmsIoManagerFactory(dataset, logger);
+#endif
 
   return new GcpDmsIoManagerFactory(dataset, logger);
 }

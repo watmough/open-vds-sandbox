@@ -227,6 +227,7 @@ target_link_libraries(azure-core INTERFACE Threads::Threads)
 get_property(include_3rdparty      GLOBAL PROPERTY OPENVDS_INCLUDE_LIBRARIES)
 addSystemHeadersToTarget(azure-core "${include_3rdparty}")
 
+setCompilerFlagsForTarget(azure-core)
 
 if(BUILD_TRANSPORT_CURL)
   if (USE_LIBRESSL)

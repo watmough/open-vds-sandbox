@@ -180,7 +180,7 @@ for python_executable in "${python_executables[@]}"; do
 
   "$cmake_executable" -DPython3_ROOT_DIR="$python_root_dir" "$java_cmake_arg" -DENABLE_MSVC_TOOLSET_DIR=OFF -DCMAKE_INSTALL_PREFIX=$skbuild_dir/cmake-install $cmake_args --preset Release
   "$ninja_executable" -C out/build/Release install
-  "$ctest_executable" --test-dir out/build/Release
+  "$ctest_executable" -V --test-dir out/build/Release
   [[ -d "binpackage_test_results/$python_ver" ]] || mkdir -p "binpackage_test_results/$python_ver"
   cp -r "out/build/Release/test_results" "binpackage_test_results/$python_ver"
   cp -r "out/build/Release/test_results_java" "binpackage_test_results/$python_ver"

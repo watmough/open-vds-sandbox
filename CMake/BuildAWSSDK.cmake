@@ -76,6 +76,10 @@ macro(BuildAWSSDK)
   list(APPEND PLATFORM_CMAKE_ARGS "-DCMAKE_C_VISIBILITY_PRESET=hidden")
   list(APPEND PLATFORM_CMAKE_ARGS "-DCMAKE_CXX_VISIBILITY_PRESET=hidden")
 
+  if (ENABLE_ASAN)
+    list(APPEND PLATFORM_CMAKE_ARGS "-DENABLE_ADDRESS_SANITIZER=ON")
+  endif()
+
   if (NOT AWS_CMAKE_PREFIX_PATH)
     list(APPEND AWS_CMAKE_PREFIX_PATH "AWS_FOOBAR") #this is to work around a performance problem when building on the builders
   endif()
