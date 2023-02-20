@@ -1,5 +1,4 @@
 import openvds
-import openvds_test
 import pytest
 
 from CreateVds import *

@@ -1,3 +1,4 @@
+set(CMAKE_INTERPROCEDURAL_OPTIMIZATION OFF)
 set(CMAKE_DEBUG_POSTFIX "")
 pybind11_add_module(openvds_python_test MODULE
     openvds_test.cpp

@@ -62,7 +62,6 @@ struct IOManagerErrorDataStore
   }
 };
 
-static std::unique_ptr<IOManagerErrorDataStore> errorDataStore;
 
 class IOManagerPythonFacade : public OpenVDS::IOManager
 {
