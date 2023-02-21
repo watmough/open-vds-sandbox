@@ -30,7 +30,7 @@ struct DmsManager
 
 struct DmsDataset
 {
-  DmsDataset(DmsManager& manager, const std::string url, Error& error);
+  DmsDataset(DmsManager& manager, const std::string url, bool alreadyRegistered, Error& error);
 
   bool open(IOManager::AccessPattern accessPattern, Error& error);
   bool close(uint64_t serializedSize, uint64_t chunkCount, Error& error);
@@ -47,6 +47,7 @@ struct DmsDataset
   std::string m_accessPolicy;
   IOManager::AccessPattern m_accessPattern;
   bool m_opened;
+  bool m_alreadyRegistered;
   std::chrono::time_point<std::chrono::steady_clock> m_azure_sas_token_expires;
 };
 

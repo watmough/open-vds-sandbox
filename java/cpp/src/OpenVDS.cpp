@@ -1947,7 +1947,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_DMSOpenOptions_ctorImpl
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_DMSOpenOptions_ctor2Impl
-  (JNIEnv * env, jclass cls, jstring sdAuthorityUrl, jstring sdApiKey, jstring sdToken, jstring datasetPath, jstring authTokenUrl, jstring refreshToken, jstring clientId, jstring clientSecret, jstring scopes, jboolean useFileNameForSingleFileDatasets)
+  (JNIEnv * env, jclass cls, jstring sdAuthorityUrl, jstring sdApiKey, jstring sdToken, jstring datasetPath, jstring authTokenUrl, jstring refreshToken, jstring clientId, jstring clientSecret, jstring scopes, jboolean useFileNameForSingleFileDatasets, jboolean alreadyRegistered)
 {
   JNIEnvGuard
     envGuard(env);
@@ -1967,7 +1967,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_DMSOpenOptions_ctor2Impl
                                std::string(CPPJNIStringWrapper(env, clientId)), 
                                std::string(CPPJNIStringWrapper(env, clientSecret)), 
                                std::string(CPPJNIStringWrapper(env, scopes)), 
-                               useFileNameForSingleFileDatasets ? true : false));
+                               useFileNameForSingleFileDatasets ? true : false, 
+                               alreadyRegistered ? true : false));
 
     return native_handle;
   }
@@ -1975,7 +1976,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_DMSOpenOptions_ctor2Impl
   return 0;
 }
 
-///AUTOGEN-FAIL: CONSTRUCTOR DMSOpenOptions void (const std::string &, const std::string &, const std::string &, std::string (*)(const void *), const void *, bool) FUNCTIONPROTO
+///AUTOGEN-FAIL: CONSTRUCTOR DMSOpenOptions void (const std::string &, const std::string &, const std::string &, std::string (*)(const void *), const void *, bool, bool) FUNCTIONPROTO
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_DMSOpenOptions_getSdAuthorityUrlImpl
   (JNIEnv * env, jobject object, jlong native_handle)
@@ -2282,6 +2283,37 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_DMSOpenOptions_setUseFileNameF
   {
     auto pInstance = CPPJNI_cast<OpenVDS::DMSOpenOptions>(native_handle);
     pInstance->useFileNameForSingleFileDatasets = value ? true : false;
+  }
+  CPPJNI_CATCH
+}
+
+
+JNIEXPORT jboolean JNICALL Java_org_opengroup_openvds_DMSOpenOptions_getAlreadyRegisteredImpl
+  (JNIEnv * env, jobject object, jlong native_handle)
+{
+  JNIEnvGuard
+    envGuard(env);
+
+  CPPJNI_TRY
+  {
+    auto pInstance = CPPJNI_cast<OpenVDS::DMSOpenOptions>(native_handle);
+    auto result = pInstance->alreadyRegistered;
+    return result;
+  }
+  CPPJNI_CATCH
+  return 0;
+}
+
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_DMSOpenOptions_setAlreadyRegisteredImpl
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean value)
+{
+  JNIEnvGuard
+    envGuard(env);
+
+  CPPJNI_TRY
+  {
+    auto pInstance = CPPJNI_cast<OpenVDS::DMSOpenOptions>(native_handle);
+    pInstance->alreadyRegistered = value ? true : false;
   }
   CPPJNI_CATCH
 }

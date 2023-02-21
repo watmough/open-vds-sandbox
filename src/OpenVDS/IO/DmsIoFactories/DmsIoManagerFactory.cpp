@@ -161,11 +161,12 @@ static std::string gen_lock_id(IOManager::AccessPattern accessPattern)
     return ret;
 }
 
-DmsDataset::DmsDataset(DmsManager& manager, const std::string url, Error &error)
+DmsDataset::DmsDataset(DmsManager& manager, const std::string url, bool alreadyRegistered, Error &error)
   : m_manager(manager)
   , m_url(url)
   , m_accessPattern(IOManager::ReadOnly)
   , m_opened(false)
+  , m_alreadyRegistered(alreadyRegistered)
 {
   if (!getSdPath(url, m_tenant, m_subproject, m_path, m_dataset, error))
     return;
@@ -186,8 +187,9 @@ bool DmsDataset::open(IOManager::AccessPattern accessPattern, Error &error)
     return false;
 
   {
+    bool do_register = accessPattern == IOManager::Create && !m_alreadyRegistered;
     std::string url;
-    if (accessPattern == IOManager::Create)
+    if (do_register)
       url = fmt::format("{}/dataset/tenant/{}/subproject/{}/dataset/{}?path={}", m_manager.m_authorityUrl, URLEncode(m_tenant), URLEncode(m_subproject), URLEncode(m_dataset), URLEncode(m_path));
     else
       url = fmt::format("{}/dataset/tenant/{}/subproject/{}/dataset/{}/lock?openmode={}&path={}", m_manager.m_authorityUrl, URLEncode(m_tenant), URLEncode(m_subproject), URLEncode(m_dataset), accessPattern == IOManager::ReadOnly ? "read" : "write", URLEncode(m_path));
@@ -196,7 +198,7 @@ bool DmsDataset::open(IOManager::AccessPattern accessPattern, Error &error)
     m_lock_id = gen_lock_id(accessPattern);
     headers.emplace_back(fmt::format("x-seismic-dms-lockid: {}", m_lock_id));
     m_manager.addHeaders(headers);
-    m_manager.m_curlHandler.addUploadRequest(request, url, headers, accessPattern == IOManager::Create ? CurlVerb::POST : CurlVerb::PUT, {}, 0);
+    m_manager.m_curlHandler.addUploadRequest(request, url, headers, do_register ? CurlVerb::POST : CurlVerb::PUT, {}, 0);
     request->WaitForFinish(error);
     if (error.code || !request->m_uploadHandler)
     {

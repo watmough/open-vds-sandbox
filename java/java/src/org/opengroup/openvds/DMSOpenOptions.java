@@ -33,15 +33,15 @@ public class DMSOpenOptions extends OpenOptions {
     
     }
 
-    native private static long ctor2Impl(String sdAuthorityUrl, String sdApiKey, String sdToken, String datasetPath, String authTokenUrl, String refreshToken, String clientId, String clientSecret, String scopes, boolean useFileNameForSingleFileDatasets);
+    native private static long ctor2Impl(String sdAuthorityUrl, String sdApiKey, String sdToken, String datasetPath, String authTokenUrl, String refreshToken, String clientId, String clientSecret, String scopes, boolean useFileNameForSingleFileDatasets, boolean alreadyRegistered);
     
-    public DMSOpenOptions(String sdAuthorityUrl, String sdApiKey, String sdToken, String datasetPath, String authTokenUrl, String refreshToken, String clientId, String clientSecret, String scopes, boolean useFileNameForSingleFileDatasets) {
+    public DMSOpenOptions(String sdAuthorityUrl, String sdApiKey, String sdToken, String datasetPath, String authTokenUrl, String refreshToken, String clientId, String clientSecret, String scopes, boolean useFileNameForSingleFileDatasets, boolean alreadyRegistered) {
     
-        super(ctor2Impl(ManagedBase.requireNonNull(sdAuthorityUrl, "sdAuthorityUrl may not be null"), ManagedBase.requireNonNull(sdApiKey, "sdApiKey may not be null"), ManagedBase.requireNonNull(sdToken, "sdToken may not be null"), ManagedBase.requireNonNull(datasetPath, "datasetPath may not be null"), ManagedBase.requireNonNull(authTokenUrl, "authTokenUrl may not be null"), ManagedBase.requireNonNull(refreshToken, "refreshToken may not be null"), ManagedBase.requireNonNull(clientId, "clientId may not be null"), ManagedBase.requireNonNull(clientSecret, "clientSecret may not be null"), ManagedBase.requireNonNull(scopes, "scopes may not be null"), useFileNameForSingleFileDatasets));
+        super(ctor2Impl(ManagedBase.requireNonNull(sdAuthorityUrl, "sdAuthorityUrl may not be null"), ManagedBase.requireNonNull(sdApiKey, "sdApiKey may not be null"), ManagedBase.requireNonNull(sdToken, "sdToken may not be null"), ManagedBase.requireNonNull(datasetPath, "datasetPath may not be null"), ManagedBase.requireNonNull(authTokenUrl, "authTokenUrl may not be null"), ManagedBase.requireNonNull(refreshToken, "refreshToken may not be null"), ManagedBase.requireNonNull(clientId, "clientId may not be null"), ManagedBase.requireNonNull(clientSecret, "clientSecret may not be null"), ManagedBase.requireNonNull(scopes, "scopes may not be null"), useFileNameForSingleFileDatasets, alreadyRegistered));
     
     }
 
-    ///AUTOGEN-FAIL: CONSTRUCTOR DMSOpenOptions void (const std::string &, const std::string &, const std::string &, std::string (*)(const void *), const void *, bool) FUNCTIONPROTO
+    ///AUTOGEN-FAIL: CONSTRUCTOR DMSOpenOptions void (const std::string &, const std::string &, const std::string &, std::string (*)(const void *), const void *, bool, bool) FUNCTIONPROTO
 
     ///AUTOGEN-OK: FIELD_DECL sdAuthorityUrl std::string RECORD
     native private String getSdAuthorityUrlImpl(long native_object);
@@ -180,6 +180,20 @@ public class DMSOpenOptions extends OpenOptions {
     public void setUseFileNameForSingleFileDatasets(boolean value) {
     
         setUseFileNameForSingleFileDatasetsImpl(getNativeObject(), value);    
+    
+    }
+
+    ///AUTOGEN-OK: FIELD_DECL alreadyRegistered bool BOOL
+    native private boolean getAlreadyRegisteredImpl(long native_object);
+    public boolean getAlreadyRegistered() {
+        return getAlreadyRegisteredImpl(getNativeObject());
+    }
+
+    native private void setAlreadyRegisteredImpl(long native_object, boolean value);
+    
+    public void setAlreadyRegistered(boolean value) {
+    
+        setAlreadyRegisteredImpl(getNativeObject(), value);    
     
     }
 

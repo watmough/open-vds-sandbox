@@ -77,6 +77,11 @@ The Token is the OAuth2 token.
   - SdApiKey
   - SdToken
   - LogLevel
+  - AlreadyRegistered
+
+The AlreadyRegistered option is a way to force OpenVDS to overwrite an existing
+dataset. It only works with the new DmsIOManager and not the depreacted sdapi
+based backend.
 
 The token `SdToken` is typically a short lived token. The sd IO backend also
 supports using a `RefreshToken` flow. Then its not needed to specify the sdtoken
