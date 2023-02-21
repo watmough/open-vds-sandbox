@@ -7,9 +7,9 @@ namespace OpenVDS
 {
   IOManager* CreateDMSIOManager(const DMSOpenOptions& openOptions, IOManager::AccessPattern accessPattern, Logger &logger, Error& error)
   {
-    bool useCurl = getBooleanEnvironmentVariable("OPENVDS_DMS_CURL");
-    if (useCurl)
-      return new IOManagerDMSProxy(openOptions, accessPattern, logger, error);
-    return new IOManagerDms(openOptions, accessPattern, logger, error);
+    bool useSDAPI= getBooleanEnvironmentVariable("OPENVDS_DMS_SDAPI");
+    if (useSDAPI)
+      return new IOManagerDms(openOptions, accessPattern, logger, error);
+    return new IOManagerDMSProxy(openOptions, accessPattern, logger, error);
   }
 }
