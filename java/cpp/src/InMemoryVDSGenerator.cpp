@@ -34,8 +34,8 @@
 #include <OpenVDS/VolumeIndexer.h>
 #include <Noise/SimplexNoiseKernel.h>
 
+#include <functional>
 #include <random>
-
 
 static void getScaleOffsetForFormat(float min, float max, bool novalue, OpenVDS::VolumeDataChannelDescriptor::Format format, float &scale, float &offset)
 {
@@ -113,18 +113,11 @@ generateSimpleInMemory3DVDS(int32_t samplesX = 100, int32_t samplesY = 100, int3
   return std::shared_ptr<OpenVDS::VDS>();
 }
 
-static void fill3DVDSWithNoise(OpenVDS::VDS *vds, int32_t channel = 0, const OpenVDS::FloatVector3 &frequency = OpenVDS::FloatVector3(0.6f, 2.f, 4.f))
+static void fillVolumeDataPages(std::shared_ptr<OpenVDS::VolumeDataPageAccessor> pageAccessor, std::function<void(void*buffer, OpenVDS::VolumeDataFormat format, OpenVDS::VolumeIndexer3D const &outputIndexer)> fillPage)
 {
-  OpenVDS::VolumeDataLayout *layout = OpenVDS::GetLayout(vds);
-  //ASSERT_TRUE(layout);
-  OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(vds);
-
-  std::shared_ptr<OpenVDS::VolumeDataPageAccessor> pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, channel, 0, 100, OpenVDS::VolumeDataAccessManager::AccessMode_Create);
-  //ASSERT_TRUE(pageAccessor);
-
   int32_t chunkCount = int32_t(pageAccessor->GetChunkCount());
-
-  OpenVDS::VolumeDataChannelDescriptor::Format format = layout->GetChannelFormat(channel);
+  auto layout = pageAccessor->GetLayout();
+  OpenVDS::VolumeDataFormat format = layout->GetChannelFormat(pageAccessor->GetChannelIndex());
 
   for (int i = 0; i < chunkCount; i++)
   {
@@ -133,61 +126,48 @@ static void fill3DVDSWithNoise(OpenVDS::VDS *vds, int32_t channel = 0, const Ope
 
     int pitch[OpenVDS::Dimensionality_Max];
     void *buffer = page->GetWritableBuffer(pitch);
-    OpenVDS::CalculateNoise3D(buffer, format, &outputIndexer, frequency, 0.021f, 0.f, true, 345);
+    fillPage(buffer, format, outputIndexer);
     page->Release();
   }
   pageAccessor->Commit();
+}
+
+static void fill3DVDSWithNoise(OpenVDS::VDS *vds, int32_t channel = 0, const OpenVDS::FloatVector3 &frequency = OpenVDS::FloatVector3(0.6f, 2.f, 4.f), bool createLODs = true)
+{
+  OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(vds);
+
+  std::shared_ptr<OpenVDS::VolumeDataPageAccessor> pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, channel, 0, 100, createLODs ? OpenVDS::VolumeDataAccessManager::AccessMode_Create : OpenVDS::VolumeDataAccessManager::AccessMode_CreateWithoutLODGeneration);
+  //ASSERT_TRUE(pageAccessor);
+
+  fillVolumeDataPages(pageAccessor, [frequency](void*buffer, OpenVDS::VolumeDataFormat format, OpenVDS::VolumeIndexer3D const &outputIndexer)
+  {
+    OpenVDS::CalculateNoise3D(buffer, format, outputIndexer, frequency, 0.021f, 0.f, true, 345);
+  });
+
   OpenVDS::Error error;
   accessManager.Flush(error);
 }
 
 static void fill3DVDSWithBitNoise(OpenVDS::VDS *vds, int32_t channel = 0)
 {
-  OpenVDS::VolumeDataLayout *layout = OpenVDS::GetLayout(vds);
-  //ASSERT_TRUE(layout);
   OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(vds);
 
   std::shared_ptr<OpenVDS::VolumeDataPageAccessor> pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, channel, 0, 100, OpenVDS::VolumeDataAccessManager::AccessMode_Create);
   //ASSERT_TRUE(pageAccessor);
 
-  int32_t chunkCount = int32_t(pageAccessor->GetChunkCount());
-
   std::mt19937 gen(123);
   std::bernoulli_distribution dist(0.8);
 
-  for (int i = 0; i < chunkCount; i++)
+  fillVolumeDataPages(pageAccessor, [&gen, &dist](void*buffer, OpenVDS::VolumeDataFormat format, OpenVDS::VolumeIndexer3D const &outputIndexer)
   {
-    OpenVDS::VolumeDataPage *page =  pageAccessor->CreatePage(i);
-    OpenVDS::VolumeIndexer3D outputIndexer(page, 0, 0, OpenVDS::Dimensions_012, layout);
-
-    int pitch[OpenVDS::Dimensionality_Max];
-    uint8_t *buffer = static_cast<uint8_t *>(page->GetWritableBuffer(pitch));
-
-    int32_t min[OpenVDS::Dimensionality_Max];
-    int32_t max[OpenVDS::Dimensionality_Max];
-    page->GetMinMax(min, max);
-    int32_t size[OpenVDS::Dimensionality_Max];
-    for (int i = 0; i < OpenVDS::Dimensionality_Max; i++)
-      size[i] = max[i] - min[i];
-
-    for (int z = 0; z < size[2]; z++)
+    for (int i = 0; i < outputIndexer.dataBlockSamples[2]; i++)
+    for (int j = 0; j < outputIndexer.dataBlockSamples[1]; j++)
+    for (int k = 0; k < outputIndexer.dataBlockSamples[0]; k++)
     {
-      for (int y = 0; y < size[1]; y++)
-      {
-        for(int x = 0; x < size[0]; x++)
-        {
-          size_t bitIndex = z * pitch[2] + y * pitch[1] + x;
-          if (dist(gen))
-          {
-            buffer[bitIndex / 8] |= uint8_t(1 << (bitIndex % 8));
-          }
-        }
-      }
+      OpenVDS::WriteElement(static_cast<bool *>(buffer), outputIndexer.LocalIndexToBitDataIndex({k, j, i}), dist(gen));
     }
+  });
 
-    page->Release();
-  }
-  pageAccessor->Commit();
   OpenVDS::Error error;
   accessManager.Flush(error);
 }
