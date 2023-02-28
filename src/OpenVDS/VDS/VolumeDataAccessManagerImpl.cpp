@@ -391,6 +391,11 @@ VolumeDataAccessManagerImpl::CreateVolumeDataPageAccessor(DimensionsND dimension
 
   VolumeDataLayer *volumeDataLayer = const_cast<VolumeDataLayer *>(PrivateGetLayer(dimensionsND, channel, LOD));
 
+  if(chunkMetadataPageSize < 0)
+  {
+    throw InvalidArgument("Illegal chunkMetadataPageSize", "chunkMetadataPageSize");
+  }
+
   if((accessMode == VolumeDataPageAccessor::AccessMode_Create || accessMode == VolumeDataPageAccessor::AccessMode_ReadWrite) && LOD > 0)
   {
     throw InvalidOperation("LODs can only be automatically created/updated when accessing LOD 0, use AccessMode_CreateWithoutLODGeneration to write LODs directly");

@@ -501,8 +501,13 @@ bool VolumeDataStoreVDSFile::SerializeAndWriteLayerStatus(Error&)
 bool VolumeDataStoreVDSFile::AddLayer(VolumeDataLayer* volumeDataLayer, int chunkMetadataPageSize, bool overwriteExisting)
 {
   assert(volumeDataLayer);
-  assert(chunkMetadataPageSize > 0);
+  assert(chunkMetadataPageSize >= 0);
   std::unique_lock<std::mutex> lock(m_mutex);
+
+  if(chunkMetadataPageSize == 0)
+  {
+    return false;
+  }
 
   if(volumeDataLayer->GetTotalChunkCount() > INT_MAX)
   {

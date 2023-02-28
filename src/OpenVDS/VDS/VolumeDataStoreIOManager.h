@@ -120,6 +120,8 @@ class VolumeDataStoreIOManager : public VolumeDataStore, public LayerMetadataCon
 
   std::unordered_map<std::string, std::unique_ptr<MetadataManager>> m_metadataManagers;
 
+  bool                  m_layerStatusDirty;
+
   MetadataManager *GetMetadataMangerForLayer(const std::string &layerName) const;
 
   bool          SerializeAndUploadLayerStatus(VDS& vds, Error& error);

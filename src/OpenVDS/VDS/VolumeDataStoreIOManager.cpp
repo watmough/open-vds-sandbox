@@ -185,6 +185,7 @@ VolumeDataStoreIOManager:: VolumeDataStoreIOManager(VDS &vds, IOManager *ioManag
   , m_ioManager(ioManager)
   , m_warnedAboutMissingMetadataTag(getBooleanEnvironmentVariable("OPENVDS_DISABLE_WARNINGS"))
   , m_accessPattern(accessPattern)
+  , m_layerStatusDirty(false)
 {
   assert(accessPattern != IOManager::ReadWrite);
 }
@@ -292,37 +293,51 @@ bool VolumeDataStoreIOManager::SerializeAndUploadLayerStatus(VDS& vds, Error& er
 bool
 VolumeDataStoreIOManager::AddLayer(VolumeDataLayer* volumeDataLayer, int chunkMetadataPageSize, bool overwriteExisting)
 {
-  assert(chunkMetadataPageSize > 0);
+  assert(chunkMetadataPageSize >= 0);
   MetadataStatus metadataStatus = {};
-
-  int
-    chunkMetadataByteSize = int(sizeof(VDSChunkMetadata));
-
-  if(CompressionMethod_IsWavelet(volumeDataLayer->GetEffectiveCompressionMethod()))
-  {
-    chunkMetadataByteSize = int(sizeof(uint32_t) + sizeof(VDSWaveletAdaptiveLevelsChunkMetadata));
-  }
-
-  metadataStatus.m_chunkIndexCount = (int)volumeDataLayer->GetTotalChunkCount();
-  metadataStatus.m_hasValidChunkCount = true;
-  metadataStatus.m_chunkMetadataPageSize = chunkMetadataPageSize;
-  metadataStatus.m_chunkMetadataByteSize = chunkMetadataByteSize;
-  metadataStatus.m_compressionMethod = volumeDataLayer->GetEffectiveCompressionMethod();
-  metadataStatus.m_compressionTolerance = volumeDataLayer->GetEffectiveCompressionTolerance();
-  metadataStatus.m_hasSerializedSize = true;
-
-  int pageLimit = volumeDataLayer->GetLayout()->GetDimensionality() <= 3 ? 64 : 1024;
-
-  metadataStatus.m_pageDirectory.resize(((volumeDataLayer->GetTotalChunkCount() - 1) / chunkMetadataPageSize) + 1, -1);
 
   std::string channelName = volumeDataLayer->GetLayout()->GetChannelName(volumeDataLayer->GetChannelIndex());;
   std::string layerName = GetLayerName(*volumeDataLayer);
 
-  std::unique_lock<std::mutex> lock(m_mutex);
-  if (overwriteExisting || m_metadataManagers.find(layerName) == m_metadataManagers.end())
+  if(chunkMetadataPageSize > 0)
   {
-    m_metadataManagers[layerName] = std::unique_ptr<MetadataManager>(new MetadataManager(m_ioManager.get(), layerName, channelName, metadataStatus, pageLimit, true));
+    int
+      chunkMetadataByteSize = int(sizeof(VDSChunkMetadata));
+
+    if(CompressionMethod_IsWavelet(volumeDataLayer->GetEffectiveCompressionMethod()))
+    {
+      chunkMetadataByteSize = int(sizeof(uint32_t) + sizeof(VDSWaveletAdaptiveLevelsChunkMetadata));
+    }
+
+    metadataStatus.m_chunkIndexCount = (int)volumeDataLayer->GetTotalChunkCount();
+    metadataStatus.m_hasValidChunkCount = true;
+    metadataStatus.m_chunkMetadataPageSize = chunkMetadataPageSize;
+    metadataStatus.m_chunkMetadataByteSize = chunkMetadataByteSize;
+    metadataStatus.m_compressionMethod = volumeDataLayer->GetEffectiveCompressionMethod();
+    metadataStatus.m_compressionTolerance = volumeDataLayer->GetEffectiveCompressionTolerance();
+    metadataStatus.m_hasSerializedSize = true;
+
+    int pageLimit = volumeDataLayer->GetLayout()->GetDimensionality() <= 3 ? 64 : 1024;
+
+    metadataStatus.m_pageDirectory.resize(((volumeDataLayer->GetTotalChunkCount() - 1) / chunkMetadataPageSize) + 1, -1);
+
+    std::unique_lock<std::mutex> lock(m_mutex);
+    if (overwriteExisting || m_metadataManagers.find(layerName) == m_metadataManagers.end())
+    {
+      m_metadataManagers[layerName] = std::unique_ptr<MetadataManager>(new MetadataManager(m_ioManager.get(), layerName, channelName, metadataStatus, pageLimit, true));
+      m_layerStatusDirty = true;
+    }
   }
+  else
+  {
+    if(overwriteExisting && m_metadataManagers.find(layerName) != m_metadataManagers.end())
+    {
+      m_metadataManagers.erase(m_metadataManagers.find(layerName));
+    }
+
+    m_layerStatusDirty = (volumeDataLayer->GetProduceStatus() != VolumeDataLayer::ProduceStatus_Normal);
+  }
+
   return true;
 }
 
@@ -769,26 +784,33 @@ bool VolumeDataStoreIOManager::WriteChunkImpl(const VolumeDataChunk& chunk, std:
   std::string url = CreateUrlForChunk(layerName, chunk.index);
   std::string contentDispositionName = layerName + "_" + std::to_string(chunk.index);
 
+  MetadataPage* lockedMetadataPage = nullptr;
+  int pageIndex = -1;
+  int entryIndex = -1;
+
   auto metadataManager = GetMetadataMangerForLayer(layerName);
-  MetadataStatus metadataStatus = metadataManager->GetMetadataStatus();
 
-  int pageIndex  = (int)(chunk.index / metadataStatus.m_chunkMetadataPageSize);
-  int entryIndex = (int)(chunk.index % metadataStatus.m_chunkMetadataPageSize);
-
-  uint32_t serializedSize = (uint32_t)serializedData->size();
-
-  bool initiateTransfer;
-
-  MetadataPage* lockedMetadataPage = metadataManager->LockPage(pageIndex, &initiateTransfer);
-
-  if (initiateTransfer)
+  if(metadataManager)
   {
-    std::string url = fmt::format("{}/ChunkMetadata/{}", layerName, pageIndex);
+    MetadataStatus metadataStatus = metadataManager->GetMetadataStatus();
 
-    metadataManager->InitiateTransfer(this, lockedMetadataPage, url);
+    pageIndex  = (int)(chunk.index / metadataStatus.m_chunkMetadataPageSize);
+    entryIndex = (int)(chunk.index % metadataStatus.m_chunkMetadataPageSize);
+
+    bool initiateTransfer;
+
+    lockedMetadataPage = metadataManager->LockPage(pageIndex, &initiateTransfer);
+
+    if (initiateTransfer)
+    {
+      std::string url = fmt::format("{}/ChunkMetadata/{}", layerName, pageIndex);
+
+      metadataManager->InitiateTransfer(this, lockedMetadataPage, url);
+    }
   }
 
   int64_t jobId = CreateUploadJobId();
+  uint32_t serializedSize = (uint32_t)serializedData->size();
 
   auto completedCallback = [this, chunk, serializedSize, metadata, metadataManager, lockedMetadataPage, entryIndex, jobId, completed](const Request &request, const Error &error)
   {
@@ -812,77 +834,80 @@ bool VolumeDataStoreIOManager::WriteChunkImpl(const VolumeDataChunk& chunk, std:
     }
     else
     {
-      // Finish transfering the metadata page
-      metadataManager->CompleteTransfer(lockedMetadataPage);
-      assert(lockedMetadataPage->IsValid() && "Implement error handling");
-
-      //Update MetadataStatus
-      MetadataStatus metadataStatus = metadataManager->GetMetadataStatus();
-
-      int size[DataBlock::Dimensionality_Max];
-      chunk.layer->GetChunkVoxelSize(chunk.index, size);
-      int64_t uncompressedSize = GetByteSize(size, chunk.layer->GetFormat(), chunk.layer->GetComponents());
-
-      if(metadataStatus.m_chunkMetadataByteSize == sizeof(uint32_t) + sizeof(VDSWaveletAdaptiveLevelsChunkMetadata))
+      if(metadataManager)
       {
-        // If adaptive wavelet, we store the size of the serialized chunk in front of the chunk metadata
-        std::vector<uint8_t> indexEntry(metadataStatus.m_chunkMetadataByteSize);
+        // Finish transfering the metadata page
+        metadataManager->CompleteTransfer(lockedMetadataPage);
+        assert(lockedMetadataPage->IsValid() && "Implement error handling");
 
-        indexEntry[0] = (serializedSize >>  0) & 0xff;
-        indexEntry[1] = (serializedSize >>  8) & 0xff;
-        indexEntry[2] = (serializedSize >> 16) & 0xff;
-        indexEntry[3] = (serializedSize >> 24) & 0xff;
-        std::copy(metadata.begin(), metadata.end(), indexEntry.begin() + 4);
+        //Update MetadataStatus
+        MetadataStatus metadataStatus = metadataManager->GetMetadataStatus();
 
-        std::vector<uint8_t> oldIndexEntry(metadataStatus.m_chunkMetadataByteSize);
-        metadataManager->SetPageEntry(lockedMetadataPage, entryIndex, indexEntry.data(), (int)indexEntry.size(), oldIndexEntry.data());
+        int size[DataBlock::Dimensionality_Max];
+        chunk.layer->GetChunkVoxelSize(chunk.index, size);
+        int64_t uncompressedSize = GetByteSize(size, chunk.layer->GetFormat(), chunk.layer->GetComponents());
 
-        // If adaptive wavelet, we store the size of the serialized chunk in front of the chunk metadata
-        VDSWaveletAdaptiveLevelsChunkMetadata const &newMetadata = *reinterpret_cast<const VDSWaveletAdaptiveLevelsChunkMetadata *>(metadata.data());
-        uint32_t const &oldSize = *reinterpret_cast<const uint32_t *>(oldIndexEntry.data());
-        VDSWaveletAdaptiveLevelsChunkMetadata const &oldMetadata = *reinterpret_cast<const VDSWaveletAdaptiveLevelsChunkMetadata *>(oldIndexEntry.data() + sizeof(uint32_t));
-
-        if (newMetadata.m_hash != VolumeDataHash::UNKNOWN)
+        if(metadataStatus.m_chunkMetadataByteSize == sizeof(uint32_t) + sizeof(VDSWaveletAdaptiveLevelsChunkMetadata))
         {
-          if(!VolumeDataHash(newMetadata.m_hash).IsConstant())
+          // If adaptive wavelet, we store the size of the serialized chunk in front of the chunk metadata
+          std::vector<uint8_t> indexEntry(metadataStatus.m_chunkMetadataByteSize);
+
+          indexEntry[0] = (serializedSize >>  0) & 0xff;
+          indexEntry[1] = (serializedSize >>  8) & 0xff;
+          indexEntry[2] = (serializedSize >> 16) & 0xff;
+          indexEntry[3] = (serializedSize >> 24) & 0xff;
+          std::copy(metadata.begin(), metadata.end(), indexEntry.begin() + 4);
+
+          std::vector<uint8_t> oldIndexEntry(metadataStatus.m_chunkMetadataByteSize);
+          metadataManager->SetPageEntry(lockedMetadataPage, entryIndex, indexEntry.data(), (int)indexEntry.size(), oldIndexEntry.data());
+
+          // If adaptive wavelet, we store the size of the serialized chunk in front of the chunk metadata
+          VDSWaveletAdaptiveLevelsChunkMetadata const &newMetadata = *reinterpret_cast<const VDSWaveletAdaptiveLevelsChunkMetadata *>(metadata.data());
+          uint32_t const &oldSize = *reinterpret_cast<const uint32_t *>(oldIndexEntry.data());
+          VDSWaveletAdaptiveLevelsChunkMetadata const &oldMetadata = *reinterpret_cast<const VDSWaveletAdaptiveLevelsChunkMetadata *>(oldIndexEntry.data() + sizeof(uint32_t));
+
+          if (newMetadata.m_hash != VolumeDataHash::UNKNOWN)
           {
-            metadataManager->UpdateMetadataStatus(uncompressedSize, serializedSize, false, &newMetadata.m_levels);
+            if(!VolumeDataHash(newMetadata.m_hash).IsConstant())
+            {
+              metadataManager->UpdateMetadataStatus(uncompressedSize, serializedSize, false, &newMetadata.m_levels);
+            }
+            else
+            {
+              metadataManager->UpdateMetadataStatus(0, 0, false);
+            }
           }
-          else
+
+          if (oldMetadata.m_hash != VolumeDataHash::UNKNOWN)
           {
-            metadataManager->UpdateMetadataStatus(0, 0, false);
+            if(!VolumeDataHash(oldMetadata.m_hash).IsConstant())
+            {
+              metadataManager->UpdateMetadataStatus(uncompressedSize, oldSize, true, &oldMetadata.m_levels);
+            }
+            else
+            {
+              metadataManager->UpdateMetadataStatus(0, 0, true);
+            }
           }
         }
-
-        if (oldMetadata.m_hash != VolumeDataHash::UNKNOWN)
+        else if(metadataStatus.m_chunkMetadataByteSize == sizeof(VDSChunkMetadata))
         {
-          if(!VolumeDataHash(oldMetadata.m_hash).IsConstant())
-          {
-            metadataManager->UpdateMetadataStatus(uncompressedSize, oldSize, true, &oldMetadata.m_levels);
-          }
-          else
-          {
-            metadataManager->UpdateMetadataStatus(0, 0, true);
-          }
-        }
-      }
-      else if(metadataStatus.m_chunkMetadataByteSize == sizeof(VDSChunkMetadata))
-      {
-        VDSChunkMetadata oldMetadata;
-        metadataManager->SetPageEntry(lockedMetadataPage, entryIndex, metadata.data(), sizeof(VDSChunkMetadata), reinterpret_cast<uint8_t *>(&oldMetadata));
+          VDSChunkMetadata oldMetadata;
+          metadataManager->SetPageEntry(lockedMetadataPage, entryIndex, metadata.data(), sizeof(VDSChunkMetadata), reinterpret_cast<uint8_t *>(&oldMetadata));
 
-        VDSChunkMetadata const &newMetadata = *reinterpret_cast<const VDSChunkMetadata *>(metadata.data());
+          VDSChunkMetadata const &newMetadata = *reinterpret_cast<const VDSChunkMetadata *>(metadata.data());
 
-        // We only update the entry if it was not already known, since we don't store the size when not using wavelet compression there is no way to update the total
-        if (newMetadata.m_hash != VolumeDataHash::UNKNOWN && oldMetadata.m_hash == VolumeDataHash::UNKNOWN)
-        {
-          if(!VolumeDataHash(newMetadata.m_hash).IsConstant())
+          // We only update the entry if it was not already known, since we don't store the size when not using wavelet compression there is no way to update the total
+          if (newMetadata.m_hash != VolumeDataHash::UNKNOWN && oldMetadata.m_hash == VolumeDataHash::UNKNOWN)
           {
-            metadataManager->UpdateMetadataStatus(uncompressedSize, serializedSize, false);
-          }
-          else
-          {
-            metadataManager->UpdateMetadataStatus(0, 0, false);
+            if(!VolumeDataHash(newMetadata.m_hash).IsConstant())
+            {
+              metadataManager->UpdateMetadataStatus(uncompressedSize, serializedSize, false);
+            }
+            else
+            {
+              metadataManager->UpdateMetadataStatus(0, 0, false);
+            }
           }
         }
       }
@@ -893,7 +918,10 @@ bool VolumeDataStoreIOManager::WriteChunkImpl(const VolumeDataChunk& chunk, std:
 
     m_pendingUploadRequests.erase(jobId);
 
-    lockedMetadataPage->GetManager()->UnlockPage(lockedMetadataPage);
+    if(lockedMetadataPage)
+    {
+      lockedMetadataPage->GetManager()->UnlockPage(lockedMetadataPage);
+    }
 
     lock.unlock();
     if (completed)
@@ -925,17 +953,16 @@ void VolumeDataStoreIOManager::Flush(Error &error)
     }
   }
 
-  bool layerStatusDirty = false;
   for(auto it = m_metadataManagers.begin(); it != m_metadataManagers.end(); ++it)
   {
     auto metadataManager = it->second.get();
 
-    layerStatusDirty |= metadataManager->UploadDirtyPages(this, error);
+    m_layerStatusDirty |= metadataManager->UploadDirtyPages(this, error);
     if (error.code != 0)
       return;
   }
 
-  if (layerStatusDirty)
+  if (m_layerStatusDirty)
   {
     if (SerializeAndUploadLayerStatus(m_vds, error))
     {
@@ -943,6 +970,7 @@ void VolumeDataStoreIOManager::Flush(Error &error)
       {
         metadataManager.second->MakeDirty(false);
       }
+      m_layerStatusDirty = false;
     }
     else
     {
