@@ -9,4 +9,5 @@ cd $REPO
 mkdir build_release
 cd build_release
 cmake -DCMAKE_BUILD_TYPE=Release "$@" -GNinja -DCMAKE_INSTALL_PREFIX=../../$REPO-install ..
+ninja -j4
 ninja install
