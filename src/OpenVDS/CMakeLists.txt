@@ -43,7 +43,6 @@ else()
     IO/Linux_File.cpp
     IO/Win_File.cpp
     IO/IOManager.cpp
-    IO/IOManagerAWS.cpp
     IO/IOManagerAWSCurl.cpp
     IO/IOManagerAzure.cpp
     IO/IOManagerAzureSdkForCpp.cpp
@@ -94,7 +93,6 @@ else()
   set (PRIVATE_HEADER_FILES
     IO/File.h
     IO/IOManager.h
-    IO/IOManagerAWS.h
     IO/IOManagerAWSCurl.h
     IO/IOManagerAzure.h
     IO/IOManagerAzureSdkForCpp.h
@@ -159,13 +157,6 @@ file(GLOB EXPORTED_HEADER_FILES OpenVDS/*.h)
 
 set_source_files_properties(VDS/FSE/entropy_common.cpp PROPERTIES COMPILE_FLAGS ${DISABLE_WARNING_FLAG})
 set_source_files_properties(VDS/FSE/fse_decompress.cpp PROPERTIES COMPILE_FLAGS ${DISABLE_WARNING_FLAG})
-
-#to work around Aws::String problem
-#https://github.com/aws/aws-sdk-cpp/blob/266d7682c3d07d41618c41a3521811e1219c1bc7/aws-cpp-sdk-core/include/aws/core/utils/memory/stl/AWSString.h#L21
-if (NOT MSVC AND NOT EMSCRIPTEN AND NOT APPLE)
-  set_source_files_properties(IO/IOManagerAWS.cpp PROPERTIES COMPILE_FLAGS -fvisibility=default)
-  set_source_files_properties(IO/IOManagerAWSCurl.cpp PROPERTIES COMPILE_FLAGS -fvisibility=default)
-endif()
 
 add_library(hue_bds_objects OBJECT
   BulkDataStore/HueBulkDataStore.cpp
@@ -242,7 +233,6 @@ endif()
 if (NOT EMSCRIPTEN)
   if (DISABLE_AWS_IOMANAGER)
     target_compile_definitions(openvds_objects PRIVATE OPENVDS_NO_AWS_IOMANAGER)
-    set_source_files_properties(IO/IOManagerAWS.cpp PROPERTIES HEADER_FILE_ONLY TRUE)
     set_source_files_properties(IO/IOManagerAWSCurl.cpp PROPERTIES HEADER_FILE_ONLY TRUE)
     set_source_files_properties(IO/DmsIoFactories/AwsDmsIoManagerFactory.cpp PROPERTIES HEADER_FILE_ONLY TRUE)
     set_source_files_properties(IO/DmsIoFactories/IbmDmsIoManagerFactory.cpp PROPERTIES HEADER_FILE_ONLY TRUE)

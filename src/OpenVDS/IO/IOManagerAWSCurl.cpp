@@ -12,7 +12,6 @@
 #include <aws/crt/StringUtils.h>
 #include <aws/crt/crypto/Hash.h>
 #include <aws/common/encoding.h>
-#include <aws/core/http/URI.h>
 
 namespace OpenVDS
 {
@@ -265,8 +264,7 @@ static std::string getUrlInternal(bool useVirtualAdressing, const std::string &p
 
 static std::string getUrl(bool useVirtualAdressing, const std::string &protocol, const std::string& host, const std::string &bucket, const std::string& path, const std::string& objectName)
 {
-  Aws::Http::URI url(getUrlInternal(useVirtualAdressing, protocol, host, bucket, path, objectName).c_str());
-  return url.GetURIString().c_str();
+  return getUrlInternal(useVirtualAdressing, protocol, host, bucket, path, objectName);
 }
 
 static std::vector<std::string> signRequest(const std::string& host, const std::string& url,  std::shared_ptr<Aws::Crt::Auth::ICredentialsProvider> &credentialsProvider, const std::string &region, const std::string& verb, const std::string& payloadHash, const std::map<std::string, std::string> headerMap, Error &error)

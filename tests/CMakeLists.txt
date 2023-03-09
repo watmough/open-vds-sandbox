@@ -62,7 +62,6 @@ function(add_test_executable name)
   if (DISABLE_AZURESDKFORCPP_IOMANAGER)
     target_compile_definitions(${name} PRIVATE OPENVDS_NO_AZURE_SDK_FOR_CPP_IOMANAGER)
   endif()
-  target_sources(${name} PRIVATE "LinuxLinkerChainHack.cpp")
 endfunction()
 
 if (NOT ENABLE_ASAN)

@@ -22,7 +22,6 @@
 #include "IOManagerInMemory.h"
 
 #ifndef OPENVDS_NO_AWS_IOMANAGER
-#include "IOManagerAWS.h"
 #include "IOManagerAWSCurl.h"
 #endif
 #ifndef OPENVDS_NO_AZURE_IOMANAGER
@@ -58,9 +57,6 @@ IOManager* IOManager::CreateIOManager(const OpenOptions& options, IOManager::Acc
   case OpenOptions::AWS:
 #ifndef OPENVDS_NO_AWS_IOMANAGER
   {
-    bool useAwsSdk = getBooleanEnvironmentVariable("OPENVDS_AWSSDK");
-    if (useAwsSdk)
-      return new IOManagerAWS(static_cast<const AWSOpenOptions&>(options), logger, error);
     return new IOManagerAWSCurl(static_cast<const AWSOpenOptions&>(options), logger, error);
   }
 #endif
