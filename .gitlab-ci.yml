@@ -4,10 +4,10 @@ stages:
 - test
 - deploy
 variables:
-  MASTER_ALPINE_IMAGE_TAG: "$CI_REGISTRY_IMAGE/master:alpine-1"
-  MERGE_REQUEST_BRANCH_ALPINE_IMAGE_TAG: "$CI_REGISTRY_IMAGE/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME:alpine-1"
-  MERGE_REQUEST_BRANCH_MANYLINUX2014_IMAGE_TAG: "$CI_REGISTRY_IMAGE/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME:manylinux2014-2"
-  MERGE_REQUEST_BRANCH_MANYLINUX2_24_IMAGE_TAG: "$CI_REGISTRY_IMAGE/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME:manylinux2_24-2"
+  MASTER_ALPINE_IMAGE_TAG: "$CI_REGISTRY_IMAGE/master:alpine-3"
+  MERGE_REQUEST_BRANCH_ALPINE_IMAGE_TAG: "$CI_REGISTRY_IMAGE/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME:alpine-3"
+  MERGE_REQUEST_BRANCH_MANYLINUX2014_IMAGE_TAG: "$CI_REGISTRY_IMAGE/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME:manylinux2014-4"
+  MERGE_REQUEST_BRANCH_MANYLINUX2_24_IMAGE_TAG: "$CI_REGISTRY_IMAGE/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME:manylinux2_24-4"
   INGESTION_DOCKER_WITH_PYTHON_IMAGE_TAG: "$CI_REGISTRY_IMAGE/docker_with_python:19.03"
 devel-container-alpine-gitlab:
   stage: prepare
@@ -87,7 +87,7 @@ compile-alpine-master:
   - export CCACHE_DIR="$PWD/ccache_master"
   - cmake --preset GitLabAlpineMasterBranch
   - cd out/build/GitLabAlpineMasterBranch
-  - ninja
+  - ninja -j4
   after_script:
   - export CCACHE_DIR="$PWD/ccache_master"
   - ccache --show-stats
@@ -116,7 +116,7 @@ compile-merge-request-alpine:
   - export CCACHE_DIR="$PWD/ccache_alpine"
   - cmake --preset MergeRequestAlpine
   - cd out/build/MergeRequestAlpine
-  - ninja
+  - ninja -j4
   after_script:
   - export CCACHE_DIR="$PWD/ccache_alpine"
   - ccache --show-stats
@@ -145,7 +145,7 @@ compile-merge-request-manylinux2014:
   - export CCACHE_DIR="$PWD/ccache_manylinux2014"
   - cmake --preset MergeRequestManyLinux2014
   - cd out/build/MergeRequestManyLinux2014
-  - ninja
+  - ninja -j4
   after_script:
   - export CCACHE_DIR="$PWD/ccache_manylinux2014"
   - ccache --show-stats
@@ -174,7 +174,7 @@ compile-merge-request-manylinux2_24:
   - export CCACHE_DIR="$PWD/ccache_manylinux2_24"
   - cmake --preset MergeRequestManyLinux2_24
   - cd out/build/MergeRequestManyLinux2_24
-  - ninja
+  - ninja -j4
   after_script:
   - export CCACHE_DIR="$PWD/ccache_manylinux2_24"
   - ccache --show-stats
