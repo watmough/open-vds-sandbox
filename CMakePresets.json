@@ -75,14 +75,6 @@
       }
     },
     {
-      "name": "VS2015_x64",
-      "hidden": true,
-      "toolset": {
-        "value": "v140,host=x64,version=14.0",
-        "strategy": "external"
-      }
-    },
-    {
       "name": "VS2017_x64",
       "hidden": true,
       "toolset": {
@@ -99,12 +91,26 @@
       }
     },
     {
+      "name": "ManyLinux",
+      "hidden": true,
+      "cacheVariables": {
+        "Python3_ROOT_DIR": "/opt/python/cp310-cp310",
+        "OPENSSL_ROOT_DIR": "/opt/openssl3.0",
+	"OPENSSL_USE_STATIC_LIBS": "ON"
+      }
+    },
+    {
       "name": "Debug",
       "description": "Built using the default Visual Studio version.",
       "inherits": [
         "openvds_single_config",
         "openvds_debug"
-      ]
+      ],
+      "cacheVariables": {
+        "Python3_ROOT_DIR": "/opt/python/cp310-cp310",
+        "OPENSSL_ROOT_DIR": "/opt/openssl3.0",
+	"OPENSSL_USE_STATIC_LIBS": "ON"
+      }
     },
     {
       "name": "DebugAsan",
@@ -125,14 +131,6 @@
       ]
     },
     {
-      "name": "Debug-VS2015",
-      "description": "Built using the default Visual Studio version.",
-      "inherits": [
-        "Debug",
-        "VS2015_x64"
-      ]
-    },
-    {
       "name": "Debug-VS2017",
       "description": "Built using the default Visual Studio version.",
       "inherits": [
@@ -146,15 +144,6 @@
       "inherits": [
         "Debug",
         "VS2019_x64"
-      ]
-    },
-    {
-      "name": "DebugAzureSDKForCPP",
-      "cacheVariables": {
-        "DISABLE_AZURESDKFORCPP_IOMANAGER": "OFF"
-      },
-      "inherits": [
-        "Debug"
       ]
     },
     {
@@ -207,28 +196,12 @@
       }
     },
     {
-      "name": "MergeRequestManyLinux2014",
-      "description": "Merge request for ManyLinux 2014 is built with this configuration.",
+      "name": "MergeRequestManyLinux",
+      "description": "Merge request for ManyLinux is built with this configuration.",
       "inherits": [
-        "ReleaseNoLtoWithAssertGNU"
-      ],
-      "cacheVariables": {
-        "Python3_ROOT_DIR": "/opt/python/cp310-cp310",
-        "OPENSSL_ROOT_DIR": "/opt/openssl3.0",
-	"OPENSSL_USE_STATIC_LIBS": "ON"
-      }
-    },
-    {
-      "name": "MergeRequestManyLinux2_24",
-      "description": "Merge reqeusts for ManyLinux 2_24 is built with this configuration.",
-      "inherits": [
-        "ReleaseNoLtoWithAssertGNU"
-      ],
-      "cacheVariables": {
-        "Python3_ROOT_DIR": "/opt/python/cp310-cp310",
-        "OPENSSL_ROOT_DIR": "/opt/openssl3.0",
-	"OPENSSL_USE_STATIC_LIBS": "ON"
-      }
+        "ReleaseNoLtoWithAssertGNU",
+	"ManyLinux"
+      ]
     },
     {
       "name": "MergeRequestAlpine",
@@ -258,14 +231,6 @@
       ]
     },
     {
-      "name": "Release-VS2015",
-      "description": "Built using the default Visual Studio version.",
-      "inherits": [
-        "Release",
-        "VS2015_x64"
-      ]
-    },
-    {
       "name": "Release-VS2017",
       "description": "Built using the default Visual Studio version.",
       "inherits": [
@@ -286,14 +251,6 @@
       "description": "Built using the default Visual Studio version.",
       "inherits": [
         "openvds_multi_config"
-      ]
-    },
-    {
-      "name": "MultiConfig-VS2015",
-      "description": "Built using VS2015.",
-      "inherits": [
-        "openvds_multi_config",
-        "VS2015_x64"
       ]
     },
     {
