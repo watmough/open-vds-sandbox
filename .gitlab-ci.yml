@@ -54,10 +54,9 @@ devel-container-manylinux-2-24-merge-request:
   only:
   - merge_requests
 ingestion-container-docker_with_python:
+  tags: ["osdu-small"]
   stage: prepare
   image: docker:19.03
-  tags:
-  - docker-runner
   script:
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   - docker build -t $INGESTION_DOCKER_WITH_PYTHON_IMAGE_TAG -f docker/docker_with_python.Dockerfile .
@@ -278,3 +277,21 @@ sast:
       phpcs-security-audit, pmd-apex, security-code-scan, semgrep, sobelow, spotbugs
     SAST_FLAWFINDER_LEVEL: '4'
   stage: test
+
+# FIXME (GONRG-6461) Move containerize logic to common pipeline approach 
+gc-containerize-gcr:
+  environment:
+    name: Google_Cloud
+  stage: build
+  tags: ["osdu-medium"]
+  image: $INGESTION_DOCKER_WITH_PYTHON_IMAGE_TAG
+  cache: {}
+  before_script:
+    - cat $GC_DEPLOY_FILE | docker login -u _json_key --password-stdin https://gcr.io
+  script:
+    - python3 build_osdu_image.py -t $CI_COMMIT_TAG
+    - docker tag $CI_REGISTRY_IMAGE/openvds-ingestion:$CI_COMMIT_TAG gcr.io/osdu-anthos/openvds-ingestion/openvds-ingestion:$CI_COMMIT_TAG
+    - docker push gcr.io/osdu-anthos/openvds-ingestion/openvds-ingestion:$CI_COMMIT_TAG
+  rules:
+    - if: "$GC == '1' && $CI_COMMIT_TAG"
+      when: on_success
