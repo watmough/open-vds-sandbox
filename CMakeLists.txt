@@ -172,10 +172,8 @@ else()
   set(DISABLE_WARNING_FLAG "-w")
 endif()
 
-define_property(GLOBAL PROPERTY OPENVDS_RUNTIME_LIBS_RELEASE BRIEF_DOCS "Runtime libraries" FULL_DOCS "Files that will be copied to test folders")
-define_property(GLOBAL PROPERTY OPENVDS_RUNTIME_LIBS_DEBUG   BRIEF_DOCS "Runtime libraries" FULL_DOCS "Files that will be copied to test folders")
-define_property(GLOBAL PROPERTY OPENVDS_LINK_LIBRARIES_RELEASE BRIEF_DOCS "OpenVDS link libraries" FULL_DOCS "Files OpenVDS will link with")
-define_property(GLOBAL PROPERTY OPENVDS_LINK_LIBRARIES_DEBUG   BRIEF_DOCS "OpenVDS link libraries" FULL_DOCS "Files OpenVDS will link with")
+define_property(GLOBAL PROPERTY OPENVDS_RUNTIME_LIBS BRIEF_DOCS "Runtime libraries" FULL_DOCS "Files that will be copied to test folders")
+define_property(GLOBAL PROPERTY OPENVDS_LINK_LIBRARIES BRIEF_DOCS "OpenVDS link libraries" FULL_DOCS "Files OpenVDS will link with")
 define_property(GLOBAL PROPERTY OPENVDS_INCLUDE_LIBRARIES BRIEF_DOCS "OpenVDS include libraries" FULL_DOCS "Include paths for 3rdparty")
 define_property(GLOBAL PROPERTY OPENVDS_DEPENDENCY_TARGETS BRIEF_DOCS "Dependency targets for OpenVDS" FULL_DOCS "Targets that OpenVDS needs to build first")
 

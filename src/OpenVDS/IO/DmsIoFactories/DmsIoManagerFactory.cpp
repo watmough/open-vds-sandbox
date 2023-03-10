@@ -22,7 +22,9 @@
 #include "AnthosDmsIoManagerFactory.h"
 #include "IbmDmsIoManagerFactory.h"
 #endif //OPENVDS_NO_AWS_IOMANAGER
+#ifndef OPENVDS_NO_GCP_IOMANAGER
 #include "GcpDmsIoManagerFactory.h"
+#endif
 
 namespace OpenVDS
 {
@@ -324,8 +326,13 @@ DmsIoManagerFactory* DmsIoManagerFactory::createDmsIoManagerFactory(const std::s
   if (serviceProvider == "ibm")
     return new IbmDmsIoManagerFactory(dataset, logger);
 #endif
-
+#ifndef OPENVDS_NO_GCP_IOMANAGER
   return new GcpDmsIoManagerFactory(dataset, logger);
+#else
+  error.code = -1;
+  error.string = "Failed to find proxy IOManager";
+  return nullptr;
+#endif
 }
 
 DmsIoManagerFactory::DmsIoManagerFactory(DmsDataset& dataset)

@@ -107,7 +107,6 @@ if (NOT WIN32)
   target_include_directories(sdapi_objects PRIVATE ${OPENSSL_INCLUDE_DIR})
 endif()
 
-get_property(link_3rdparty GLOBAL PROPERTY OPENVDS_LINK_LIBRARIES)
 get_property(include_3rdparty      GLOBAL PROPERTY OPENVDS_INCLUDE_LIBRARIES)
 get_property(dependency_targets_3rdparty      GLOBAL PROPERTY OPENVDS_DEPENDENCY_TARGETS)
 
@@ -126,10 +125,6 @@ foreach(DEP ${dependency_targets_3rdparty})
 endforeach()
 
 target_link_libraries(sdapi PUBLIC sdapi_objects)
-foreach(item ${link_3rdparty})
-  target_link_libraries(sdapi PRIVATE ${item})
-endforeach()
-
 setLTOForTarget(sdapi_objects)
 setLTOForTarget(sdapi)
 

@@ -51,6 +51,9 @@ macro(build3rdparty)
 
     if (NOT DISABLE_GCP_IOMANAGER OR NOT DISABLE_DMS_IOMANAGER)
       BuildCrc32c()
+    endif()
+
+    if (NOT DISABLE_GCP_IOMANAGER)
       BuildGoogleCloud()
     endif()
 
@@ -61,16 +64,13 @@ macro(build3rdparty)
   
     include(${cmakerc_SOURCE_DIR}/CMakeRC.cmake)
 
-    if (NOT DISABLE_CURL_IOMANAGER OR NOT DISABLE_GCP_IOMANAGER OR NOT DISABLE_DMS_IOMANAGER)
-      CurlAddStaticDependency()
-    endif()
-    if (BUILD_ZLIB)
-      ZlibAddStaticDependency()
-    endif()
-
     if (NOT DISABLE_DMS_IOMANAGER)
       BuildDms()
     endif()
 
   endif()
+
+  get_property(link_3rdparty GLOBAL PROPERTY OPENVDS_LINK_LIBRARIES)
+  list(REVERSE link_3rdparty)
+  set_property(GLOBAL PROPERTY OPENVDS_LINK_LIBRARIES "${link_3rdparty}")
 endmacro()

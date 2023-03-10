@@ -240,6 +240,7 @@ if(BUILD_TRANSPORT_CURL)
   target_link_libraries(azure-core PRIVATE LibXml2)
 
   if (BUILD_CURL)
+    target_compile_definitions(azure-core PRIVATE CURL_STATICLIB=1)
     add_dependencies(azure-core curl)
     if (WIN32)
       target_link_libraries(azure-core PRIVATE Ws2_32)
