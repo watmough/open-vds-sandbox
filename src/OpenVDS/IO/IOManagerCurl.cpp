@@ -429,7 +429,7 @@ static void beforeBlockCB(uv_prepare_t *handle)
           case 503: // SERVICE_UNAVAILABLE
             if (socketContext->shouldRetry())
             {
-              eventLoopData->logger.LogWarning(fmt::format("CURL http respons error {}. Automatic rety {}", responseCode, url));
+              eventLoopData->logger.LogTrace(fmt::format("CURL http respons error {}. Automatic rety {}", responseCode, url));
               socketContext->retry();
               continue;
             }
@@ -450,7 +450,7 @@ static void beforeBlockCB(uv_prepare_t *handle)
         {
           if (socketContext->shouldRetry())
           {
-            eventLoopData->logger.LogWarning(fmt::format("CURL respons error {}. Automatic rety {}", responseCode, url));
+            eventLoopData->logger.LogTrace(fmt::format("CURL respons error {}. Automatic rety {}", responseCode, url));
             socketContext->retry();
             continue;
           }
@@ -468,7 +468,7 @@ static void beforeBlockCB(uv_prepare_t *handle)
         {
           char* url = NULL;
           curl_easy_getinfo(socketContext->curlEasy, CURLINFO_EFFECTIVE_URL, &url);
-          eventLoopData->logger.LogWarning(fmt::format("CURL error: {}. Automatic retries {}", CURLErrorMessage(socketContext->curlEasy, code), url));
+          eventLoopData->logger.LogTrace(fmt::format("CURL error: {}. Automatic retries {}", CURLErrorMessage(socketContext->curlEasy, code), url));
           socketContext->retry();
           continue;
         }
