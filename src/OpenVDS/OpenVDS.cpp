@@ -982,6 +982,12 @@ MetadataWriteAccess *OpenVDSInterfaceImpl::GetMetadataWriteAccessInterface(VDS *
 {
   if (!vds)
     return nullptr;
+  Error error;
+  if (!vds->volumeDataStore->EnableWriting(error))
+  {
+    vds->logger.LogError(fmt::format("Failed to enable writing on GetMetadataWriteAccessInterface: {}.", error.string));
+    return nullptr;
+  }
   return &vds->metadataContainer;
 }
 

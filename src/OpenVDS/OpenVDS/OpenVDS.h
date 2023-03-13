@@ -1004,7 +1004,16 @@ inline VolumeDataAccessManager GetAccessManager(VDSHandle handle)
 /// </returns>
 inline MetadataWriteAccess *GetMetadataWriteAccessInterface(VDSHandle handle)
 {
-  return GetOpenVDSInterface(OPENVDS_VERSION).GetMetadataWriteAccessInterface(handle);
+  if (!handle)
+  {
+    return nullptr;
+  }
+  auto ret = GetOpenVDSInterface(OPENVDS_VERSION).GetMetadataWriteAccessInterface(handle);
+  if (!ret)
+  {
+    throw InvalidOperation("Failed to get MetadataWriteAccess interface, due to failure to make VDS writeable.");
+  }
+  return ret;
 }
 
 /// <summary>

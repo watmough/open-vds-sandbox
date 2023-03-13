@@ -125,6 +125,7 @@ if (NOT ENABLE_ASAN)
     OpenVDS/ReadWritePage.cpp
     OpenVDS/VolumeDataPageAccessorGetChunkVolumeDataHash.cpp
     OpenVDS/ReadOnly.cpp
+    OpenVDS/MetadataEnableWriting.cpp
     )
 
   add_test_executable(multithreaded_requests
