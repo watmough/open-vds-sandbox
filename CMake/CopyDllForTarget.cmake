@@ -29,9 +29,6 @@ function(copyDllForTarget target)
 
 	list(APPEND runtime_libs "$<TARGET_FILE:openvds>")
 	list(APPEND runtime_libs "$<TARGET_FILE:segyutils>")
-        if (NOT DISABLE_DMS_IOMANAGER)
-	  list(APPEND runtime_libs "$<TARGET_FILE:sdapi>")
-        endif()
 
         add_custom_command(TARGET ${target}
           POST_BUILD

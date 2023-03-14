@@ -1,5 +1,0 @@
-macro(BuildDms)
-  set(dmsCMakeDir "${dms_SOURCE_DIR}/src")
-  #BuildExternal(dms "${dms_VERSION}" "" "CMake/BuildDms" "" "" "" "" "-DdmsCMakeDir=${dmsCMakeDir}")
-  add_subdirectory(3rdparty/BuildDms)
-endmacro()

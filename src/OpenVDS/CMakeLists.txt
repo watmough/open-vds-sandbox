@@ -51,7 +51,6 @@ else()
     IO/IOManagerAzurePresigned.cpp
     IO/IOManagerGoogle.cpp
     IO/IOManagerHttp.cpp
-    IO/IOManagerDms.cpp
     IO/IOManagerDmsFactory.cpp
     IO/IORefreshToken.cpp
     IO/IOManagerDmsProxy.cpp
@@ -101,7 +100,6 @@ else()
     IO/IOManagerAzurePresigned.h
     IO/IOManagerGoogle.h
     IO/IOManagerHttp.h
-    IO/IOManagerDms.h
     IO/IOManagerDmsFactory.h
     IO/IOManagerRequestImpl.h
     IO/IOManagerTransformer.h
@@ -297,11 +295,6 @@ if (NOT EMSCRIPTEN)
   if (DISABLE_DMS_IOMANAGER)
     target_compile_definitions(openvds_objects PRIVATE OPENVDS_NO_DMS_IOMANAGER)
     set_source_files_properties(IO/IOManagerDms.cpp IO/IOManagerDmsFactory.cpp PROPERTIES HEADER_FILE_ONLY TRUE)
-  else()
-    add_dependencies(openvds_objects sdapi)
-    target_include_directories(openvds_objects PRIVATE ${dms_SOURCE_DIR}/src/src/core)
-    target_link_libraries(openvds_objects PRIVATE $<TARGET_LINKER_FILE:sdapi> crc32c)
-
   endif()
 
   target_link_libraries(openvds_objects PRIVATE Threads::Threads)

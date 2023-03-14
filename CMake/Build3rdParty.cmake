@@ -13,7 +13,6 @@ if (NOT EMSCRIPTEN)
   include(CMake/BuildLibUV.cmake)
   include(CMake/BuildCrc32c.cmake)
   include(CMake/BuildGoogleCloud.cmake)
-  include(CMake/BuildDms.cmake)
   include(CMake/BuildLibXML2.cmake)
   include(CMake/BuildAzureSdkForCpp.cmake)
 endif()
@@ -31,14 +30,12 @@ macro(build3rdparty)
       add_subdirectory(${pybind11_SOURCE_DIR} ${PROJECT_BINARY_DIR}/pybind11_${pybind11_VERSION} EXCLUDE_FROM_ALL)
     endif()
   
-    if (NOT DISABLE_GCP_IOMANAGER OR NOT DISABLE_DMS_IOMANAGER OR USE_LIBRESSL)
+    if (NOT DISABLE_GCP_IOMANAGER OR USE_LIBRESSL)
       BuildLibreSSL()
     endif()
 
-    if (NOT DISABLE_CURL_IOMANAGER OR NOT DISABLE_GCP_IOMANAGER OR NOT DISABLE_DMS_IOMANAGER)
-      BuildCurl()
-      BuildLibUV()
-    endif()
+    BuildCurl()
+    BuildLibUV()
 
     if (NOT DISABLE_AWS_IOMANAGER)
       BuildAwsCrt()
@@ -49,7 +46,7 @@ macro(build3rdparty)
       BuildAzure()
     endif()
 
-    if (NOT DISABLE_GCP_IOMANAGER OR NOT DISABLE_DMS_IOMANAGER)
+    if (NOT DISABLE_GCP_IOMANAGER)
       BuildCrc32c()
     endif()
 
@@ -63,10 +60,6 @@ macro(build3rdparty)
     endif()
   
     include(${cmakerc_SOURCE_DIR}/CMakeRC.cmake)
-
-    if (NOT DISABLE_DMS_IOMANAGER)
-      BuildDms()
-    endif()
 
   endif()
 
