@@ -197,10 +197,23 @@
     },
     {
       "name": "MergeRequestManyLinux",
-      "description": "Merge request for ManyLinux is built with this configuration.",
       "inherits": [
         "ReleaseNoLtoWithAssertGNU",
 	"ManyLinux"
+      ]
+    },
+    {
+      "name": "MergeRequestManyLinux2014",
+      "description": "Merge request for ManyLinux 2014 is built with this configuration. We need a unique build directory",
+      "inherits": [
+        "MergeRequestManyLinux"
+      ]
+    },
+    {
+      "name": "MergeRequestManyLinux2_24",
+      "description": "Merge request for ManyLinux 2_24 is built with this configuration. We need a unique build directory",
+      "inherits": [
+	"MergeRequestManyLinux"
       ]
     },
     {
