@@ -44,7 +44,6 @@ else()
     IO/Win_File.cpp
     IO/IOManager.cpp
     IO/IOManagerAWSCurl.cpp
-    IO/IOManagerAzure.cpp
     IO/IOManagerAzureSdkForCpp.cpp
     IO/IOManagerInMemory.cpp
     IO/IOManagerCurl.cpp
@@ -241,18 +240,6 @@ if (NOT EMSCRIPTEN)
     endif()
   endif()
 
-  if (DISABLE_AZURE_IOMANAGER)
-    target_compile_definitions(openvds_objects PRIVATE OPENVDS_NO_AZURE_IOMANAGER)
-    set_source_files_properties(IO/IOManagerAzure.cpp PROPERTIES HEADER_FILE_ONLY TRUE)
-  else()
-    #Azure storage exposes boost_system on linux et al.
-    if (UNIX)
-      find_package(Boost REQUIRED COMPONENTS system date_time regex)
-      target_link_libraries(openvds_objects PRIVATE Boost::system)
-      target_include_directories(openvds_objects PRIVATE ${OPENSSL_INCLUDE_DIR})
-    endif()
-  endif()
-
   if (BUILD_CURL)
     target_compile_definitions(openvds_objects PRIVATE CURL_STATICLIB=1)
   endif()
@@ -268,6 +255,7 @@ if (NOT EMSCRIPTEN)
   else()
     target_link_libraries(openvds_objects PRIVATE azure-core)
   endif()
+
   if (DISABLE_CURL_IOMANAGER)
     set_source_files_properties(IO/IOManagerCurl.cpp PROPERTIES HEADER_FILE_ONLY TRUE)
     set_source_files_properties(IO/IOManagerHttp.cpp PROPERTIES HEADER_FILE_ONLY TRUE)

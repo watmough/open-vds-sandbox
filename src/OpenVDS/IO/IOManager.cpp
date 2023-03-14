@@ -24,9 +24,6 @@
 #ifndef OPENVDS_NO_AWS_IOMANAGER
 #include "IOManagerAWSCurl.h"
 #endif
-#ifndef OPENVDS_NO_AZURE_IOMANAGER
-#include "IOManagerAzure.h"
-#endif
 #ifndef OPENVDS_NO_AZURE_SDK_FOR_CPP_IOMANAGER
 #include "IOManagerAzureSdkForCpp.h"
 #endif
@@ -55,28 +52,25 @@ IOManager* IOManager::CreateIOManager(const OpenOptions& options, IOManager::Acc
   switch(options.connectionType)
   {
   case OpenOptions::AWS:
-#ifndef OPENVDS_NO_AWS_IOMANAGER
   {
+#ifndef OPENVDS_NO_AWS_IOMANAGER
     return new IOManagerAWSCurl(static_cast<const AWSOpenOptions&>(options), logger, error);
-  }
+#else
+    error.code = -1;
+    error.string = "Unknown type for OpenOptions";
+    return nullptr;
 #endif
+  }
   break;
   case OpenOptions::Azure:
   {
 #ifndef OPENVDS_NO_AZURE_SDK_FOR_CPP_IOMANAGER
-#ifndef OPENVDS_NO_AZURE_IOMANAGER
-    bool useAzureSdkForCpp = getBooleanEnvironmentVariable("OPENVDS_AZURESDKFORCPP");
-    if (useAzureSdkForCpp)
-#endif
-      return new IOManagerAzureSdkForCpp(static_cast<const AzureOpenOptions&>(options), error);
-#endif
-#ifndef OPENVDS_NO_AZURE_IOMANAGER
-    if (options.connectionType == OpenOptions::Azure)
-      return new IOManagerAzure(static_cast<const AzureOpenOptions&>(options), error);
-#endif
+    return new IOManagerAzureSdkForCpp(static_cast<const AzureOpenOptions&>(options), error);
+#else
     error.code = -1;
     error.string = "Unknown type for OpenOptions";
     return nullptr;
+#endif
   }
 #ifndef OPENVDS_NO_AZURE_PRESIGNED_IOMANAGER
   case OpenOptions::AzurePresigned:
