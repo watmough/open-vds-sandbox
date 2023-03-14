@@ -113,9 +113,9 @@ target_sources(crc32c_arm64
 if(HAVE_ARM64_CRC32C)
   if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     # TODO(pwnall): Insert correct flag when VS gets ARM64 CRC32C support.
-    target_compile_options(crc32c_arm64 PRIVATE "/arch:NOTYET")
+    openvds_target_compile_options(crc32c_arm64 PRIVATE "/arch:NOTYET")
   else(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    target_compile_options(crc32c_arm64 PRIVATE "-march=armv8-a+crc+crypto")
+    openvds_target_compile_options(crc32c_arm64 PRIVATE "-march=armv8-a+crc+crypto")
   endif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 endif(HAVE_ARM64_CRC32C)
 
@@ -130,9 +130,9 @@ target_sources(crc32c_sse42
 )
 if(HAVE_SSE42)
   if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    target_compile_options(crc32c_sse42 PRIVATE "/arch:AVX")
+    openvds_target_compile_options(crc32c_sse42 PRIVATE "/arch:AVX")
   else(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    target_compile_options(crc32c_sse42 PRIVATE "-msse4.2")
+    openvds_target_compile_options(crc32c_sse42 PRIVATE "-msse4.2")
   endif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 endif(HAVE_SSE42)
 

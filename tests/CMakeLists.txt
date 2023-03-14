@@ -10,8 +10,8 @@ set_target_properties(gtest_main PROPERTIES
   FOLDER ExternalProjectTargets/GoogleTest)
 
 string(REPLACE " " ";" DISABLE_WARNING_FLAG ${DISABLE_WARNING_FLAG})
-target_compile_options(gtest PRIVATE ${DISABLE_WARNING_FLAG})
-target_compile_options(gtest_main PRIVATE ${DISABLE_WARNING_FLAG})
+openvds_target_compile_options(gtest PRIVATE ${DISABLE_WARNING_FLAG})
+openvds_target_compile_options(gtest_main PRIVATE ${DISABLE_WARNING_FLAG})
 setCompilerFlagsForTarget(gtest)
 setCompilerFlagsForTarget(gtest_main)
 
