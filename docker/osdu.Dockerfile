@@ -10,18 +10,18 @@ ARG name="OpenVDS Import/Export Tool"
 ARG tag=master
 
 # Build stage
-FROM ubuntu:20.04 as openvds-build-stage
+FROM ubuntu:22.04 as openvds-build-stage
 ARG repo
 ARG name
 ARG tag
 
 ENV DEBIAN_FRONTEND="noninteractive" TZ="Europe/London"
 RUN apt-get update
-RUN apt-get install -y curl vim build-essential python3 python3-pip libboost-dev git doxygen openjdk-8-jdk libxml2-dev zlib1g-dev libcurl4-openssl-dev libuv1-dev uuid-dev gdb bash libssl-dev libboost-all-dev
+RUN apt-get install -y curl vim build-essential python3 python3-pip git doxygen openjdk-8-jdk gdb bash libssl-dev
 
-RUN curl -OL https://github.com/Kitware/CMake/releases/download/v3.22.0/cmake-3.22.0-linux-x86_64.tar.gz
-RUN tar xzvf cmake-3.22.0-linux-x86_64.tar.gz -C /opt
-RUN ln -s /opt/cmake-3.22.0-linux-x86_64/bin/* /usr/bin/
+RUN curl -OL https://github.com/Kitware/CMake/releases/download/v3.26.0/cmake-3.26.0-linux-x86_64.tar.gz
+RUN tar xzvf cmake-3.26.0-linux-x86_64.tar.gz -C /opt
+RUN ln -s /opt/cmake-3.26.0-linux-x86_64/bin/* /usr/bin/
 
 RUN pip3 install ninja
 
@@ -34,7 +34,7 @@ RUN cd root && bash /root/build_and_install_openvds.sh open-vds -DBUILD_PYTHON=O
 
 
 # Deploy stage
-FROM ubuntu:20.04 as openvds-deploy-stage
+FROM ubuntu:22.04 as openvds-deploy-stage
 ARG repo
 ARG name
 ARG tag
@@ -56,7 +56,7 @@ ENV DEBIAN_FRONTEND="noninteractive" TZ="Europe/London" \
 
 RUN apt update && \
     apt upgrade -y --no-install-recommends && \
-    apt install -y --no-install-recommends ca-certificates libstdc++6 libgomp1 libcurl4 libcpprest libuv1 libboost-log1.71.0 libxml2 && \
+    apt install -y --no-install-recommends ca-certificates libstdc++6 libgomp1 && \
     rm -rf /var/lib/apt/lists/* && \
     apt clean
 
