@@ -2,6 +2,8 @@
 !3rdparty/BuildDms
 !3rdparty/BuildGoogleCloud
 !3rdparty/BuildCrc32c
+!3rdparty/BuildAzureSdkForCpp
+!3rdparty/BuildLibXml2
 out
 build_*
 _skbuild
