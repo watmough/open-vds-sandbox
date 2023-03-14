@@ -320,6 +320,10 @@ if (NOT EMSCRIPTEN)
   endif()
 endif()
 
+foreach(item ${link_3rdparty})
+  target_link_libraries(openvds_objects PRIVATE ${item})
+endforeach()
+
 if (EMSCRIPTEN)
   add_executable(openvds $<TARGET_OBJECTS:openvds_objects>)
   add_executable(openvds::openvds ALIAS openvds)
@@ -341,10 +345,6 @@ target_link_libraries(openvds PRIVATE openvds_objects)
 setCommonTargetProperties(openvds_objects)
 setCommonTargetProperties(openvds)
 setExportedHeadersForTarget(openvds ${EXPORTED_HEADER_FILES})
-
-foreach(item ${link_3rdparty})
-  target_link_libraries(openvds PRIVATE ${item})
-endforeach()
 
 if (ENABLE_RUNPATH_ORIGIN)
 set_target_properties(openvds

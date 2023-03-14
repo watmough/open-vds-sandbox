@@ -49,10 +49,6 @@ function(add_test_executable name)
 
   get_property(link_3rdparty GLOBAL PROPERTY OPENVDS_LINK_LIBRARIES)
 
-  foreach(item ${link_3rdparty})
-      target_link_libraries(${name} PRIVATE ${item})
-  endforeach()
-
   if (OpenMP_CXX_FOUND)
       target_link_libraries(${name} PRIVATE OpenMP::OpenMP_CXX)
   endif()

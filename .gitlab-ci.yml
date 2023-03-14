@@ -143,7 +143,7 @@ compile-merge-request-manylinux2014:
   script:
   - export CCACHE_DIR="$PWD/ccache_manylinux2014"
   - cmake --preset MergeRequestManyLinux
-  - cd out/build/MergeRequestManyLinux2014
+  - cd out/build/MergeRequestManyLinux
   - ninja -j4
   after_script:
   - export CCACHE_DIR="$PWD/ccache_manylinux2014"
@@ -172,7 +172,7 @@ compile-merge-request-manylinux2_24:
   script:
   - export CCACHE_DIR="$PWD/ccache_manylinux2_24"
   - cmake --preset MergeRequestManyLinux
-  - cd out/build/MergeRequestManyLinux2_24
+  - cd out/build/MergeRequestManyLinux
   - ninja -j4
   after_script:
   - export CCACHE_DIR="$PWD/ccache_manylinux2_24"
