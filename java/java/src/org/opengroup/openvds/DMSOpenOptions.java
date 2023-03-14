@@ -33,11 +33,11 @@ public class DMSOpenOptions extends OpenOptions {
     
     }
 
-    native private static long ctor2Impl(String sdAuthorityUrl, String sdApiKey, String sdToken, String datasetPath, String authTokenUrl, String refreshToken, String clientId, String clientSecret, String scopes, boolean useFileNameForSingleFileDatasets, boolean alreadyRegistered);
+    native private static long ctor2Impl(String sdAuthorityUrl, String sdApiKey, String sdToken, String datasetPath, String authTokenUrl, String refreshToken, String clientId, String clientSecret, String scopes, boolean useFileNameForSingleFileDatasets);
     
-    public DMSOpenOptions(String sdAuthorityUrl, String sdApiKey, String sdToken, String datasetPath, String authTokenUrl, String refreshToken, String clientId, String clientSecret, String scopes, boolean useFileNameForSingleFileDatasets, boolean alreadyRegistered) {
+    public DMSOpenOptions(String sdAuthorityUrl, String sdApiKey, String sdToken, String datasetPath, String authTokenUrl, String refreshToken, String clientId, String clientSecret, String scopes, boolean useFileNameForSingleFileDatasets) {
     
-        super(ctor2Impl(ManagedBase.requireNonNull(sdAuthorityUrl, "sdAuthorityUrl may not be null"), ManagedBase.requireNonNull(sdApiKey, "sdApiKey may not be null"), ManagedBase.requireNonNull(sdToken, "sdToken may not be null"), ManagedBase.requireNonNull(datasetPath, "datasetPath may not be null"), ManagedBase.requireNonNull(authTokenUrl, "authTokenUrl may not be null"), ManagedBase.requireNonNull(refreshToken, "refreshToken may not be null"), ManagedBase.requireNonNull(clientId, "clientId may not be null"), ManagedBase.requireNonNull(clientSecret, "clientSecret may not be null"), ManagedBase.requireNonNull(scopes, "scopes may not be null"), useFileNameForSingleFileDatasets, alreadyRegistered));
+        super(ctor2Impl(ManagedBase.requireNonNull(sdAuthorityUrl, "sdAuthorityUrl may not be null"), ManagedBase.requireNonNull(sdApiKey, "sdApiKey may not be null"), ManagedBase.requireNonNull(sdToken, "sdToken may not be null"), ManagedBase.requireNonNull(datasetPath, "datasetPath may not be null"), ManagedBase.requireNonNull(authTokenUrl, "authTokenUrl may not be null"), ManagedBase.requireNonNull(refreshToken, "refreshToken may not be null"), ManagedBase.requireNonNull(clientId, "clientId may not be null"), ManagedBase.requireNonNull(clientSecret, "clientSecret may not be null"), ManagedBase.requireNonNull(scopes, "scopes may not be null"), useFileNameForSingleFileDatasets));
     
     }
 

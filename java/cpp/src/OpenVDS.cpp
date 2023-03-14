@@ -1947,7 +1947,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_DMSOpenOptions_ctorImpl
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_DMSOpenOptions_ctor2Impl
-  (JNIEnv * env, jclass cls, jstring sdAuthorityUrl, jstring sdApiKey, jstring sdToken, jstring datasetPath, jstring authTokenUrl, jstring refreshToken, jstring clientId, jstring clientSecret, jstring scopes, jboolean useFileNameForSingleFileDatasets, jboolean alreadyRegistered)
+  (JNIEnv * env, jclass cls, jstring sdAuthorityUrl, jstring sdApiKey, jstring sdToken, jstring datasetPath, jstring authTokenUrl, jstring refreshToken, jstring clientId, jstring clientSecret, jstring scopes, jboolean useFileNameForSingleFileDatasets)
 {
   JNIEnvGuard
     envGuard(env);
@@ -1967,8 +1967,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_DMSOpenOptions_ctor2Impl
                                std::string(CPPJNIStringWrapper(env, clientId)), 
                                std::string(CPPJNIStringWrapper(env, clientSecret)), 
                                std::string(CPPJNIStringWrapper(env, scopes)), 
-                               useFileNameForSingleFileDatasets ? true : false, 
-                               alreadyRegistered ? true : false));
+                               useFileNameForSingleFileDatasets ? true : false));
 
     return native_handle;
   }
