@@ -49,14 +49,15 @@ enum class CurlVerb
     GET,
     PUT,
     POST,
-    PATCH
+    PATCH,
+    DEL //Windows NT has a DELETE define :(
 };
 struct CurlEasyHandler
 {
-  CurlEasyHandler(UVEventLoopData *eventLoopData)
+  CurlEasyHandler(UVEventLoopData *eventLoopData, int retryCount)
     : eventLoopData(eventLoopData)
     , curlEasy(nullptr)
-    , retry_count(0)
+    , retry_count(retryCount)
   {}
   virtual ~CurlEasyHandler() {}
 
@@ -98,8 +99,8 @@ public:
 
 struct CurlDownloadHandler : public CurlEasyHandler
 {
-  CurlDownloadHandler(UVEventLoopData *eventLoopData, const std::shared_ptr<DownloadRequestCurl> &request, std::string url, std::vector<std::string> headers, std::function<std::string(const std::string&)> toISO8601DateTransformer, CurlVerb verb)
-    : CurlEasyHandler(eventLoopData)
+  CurlDownloadHandler(UVEventLoopData *eventLoopData, const std::shared_ptr<DownloadRequestCurl> &request, std::string url, std::vector<std::string> headers, std::function<std::string(const std::string&)> toISO8601DateTransformer, CurlVerb verb, int retryCount)
+    : CurlEasyHandler(eventLoopData, retryCount)
     , request(request)
     , url(std::move(url))
     , headers(std::move(headers))
@@ -135,8 +136,8 @@ public:
 
 struct CurlUploadHandler : public CurlEasyHandler
 {
-  CurlUploadHandler(UVEventLoopData *eventLoopData, std::weak_ptr<UploadRequestCurl> request, const std::string &url, std::vector<std::string> headers,  CurlVerb verb, std::vector<std::shared_ptr<std::vector<uint8_t>>> &&data, int64_t completeSize)
-    : CurlEasyHandler(eventLoopData)
+  CurlUploadHandler(UVEventLoopData *eventLoopData, std::weak_ptr<UploadRequestCurl> request, const std::string &url, std::vector<std::string> headers,  CurlVerb verb, std::vector<std::shared_ptr<std::vector<uint8_t>>> &&data, int64_t completeSize, int retryCount)
+    : CurlEasyHandler(eventLoopData, retryCount)
     , request(request)
     , url(url)
     , headers(std::move(headers))
@@ -204,14 +205,14 @@ public:
   CurlHandler(Error& error, const Logger& logger);
   ~CurlHandler();
 
-  void addDownloadRequest(const std::shared_ptr<DownloadRequestCurl>& request, const std::string& url, const std::vector<std::string>& headers, std::function<std::string(const std::string &date)> toISO8601DateTransformer, CurlVerb verb);
-  void addUploadRequest(const std::shared_ptr<UploadRequestCurl>& request, const std::string& url, const std::vector<std::string>& headers, const std::shared_ptr<std::vector<uint8_t>> &data)
+  void addDownloadRequest(const std::shared_ptr<DownloadRequestCurl>& request, const std::string& url, const std::vector<std::string>& headers, std::function<std::string(const std::string &date)> toISO8601DateTransformer, CurlVerb verb, int retryCount = 4);
+  void addUploadRequest(const std::shared_ptr<UploadRequestCurl>& request, const std::string& url, const std::vector<std::string>& headers, const std::shared_ptr<std::vector<uint8_t>> &data, int retryCount = 4)
   {
     std::vector<std::shared_ptr<std::vector<uint8_t>>> uploadbuffers;
     uploadbuffers.emplace_back(data);
-    addUploadRequest(request, url, headers, CurlVerb::PUT, std::move(uploadbuffers), data->size());
+    addUploadRequest(request, url, headers, CurlVerb::PUT, std::move(uploadbuffers), data->size(), retryCount);
   }
-  void addUploadRequest(const std::shared_ptr<UploadRequestCurl> &request, const std::string &url, const std::vector<std::string> &headers, CurlVerb verb, std::vector<std::shared_ptr<std::vector<uint8_t>>> &&data, int64_t completeSize);
+  void addUploadRequest(const std::shared_ptr<UploadRequestCurl> &request, const std::string &url, const std::vector<std::string> &headers, CurlVerb verb, std::vector<std::shared_ptr<std::vector<uint8_t>>> &&data, int64_t completeSize, int retryCount = 4);
 
 private:
   UVEventLoopData m_eventLoopData;

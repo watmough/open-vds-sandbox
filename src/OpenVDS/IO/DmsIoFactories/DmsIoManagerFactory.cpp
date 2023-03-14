@@ -163,18 +163,83 @@ static std::string gen_lock_id(IOManager::AccessPattern accessPattern)
     return ret;
 }
 
-DmsDataset::DmsDataset(DmsManager& manager, const std::string url, bool alreadyRegistered, Error &error)
+DmsDataset::DmsDataset(DmsManager& manager, const std::string url, Error &error)
   : m_manager(manager)
   , m_url(url)
   , m_accessPattern(IOManager::ReadOnly)
   , m_opened(false)
-  , m_alreadyRegistered(alreadyRegistered)
 {
   if (!getSdPath(url, m_tenant, m_subproject, m_path, m_dataset, error))
     return;
 
   if (m_path.empty())
     m_path = '/';
+}
+
+bool DmsDataset::registerDataset(std::vector<std::pair<std::string, std::string>> &responsHeaders, std::vector<uint8_t> &responsData, Error& error)
+{
+  auto url = fmt::format("{}/dataset/tenant/{}/subproject/{}/dataset/{}?path={}", m_manager.m_authorityUrl, URLEncode(m_tenant), URLEncode(m_subproject), URLEncode(m_dataset), URLEncode(m_path));
+  std::shared_ptr<UploadRequestCurl> request = std::make_shared<UploadRequestCurl>("create_dataset", std::function<void(const Request & request, const Error & error)>());
+  std::vector<std::string> headers;
+  m_lock_id = gen_lock_id(IOManager::Create);
+  headers.emplace_back(fmt::format("x-seismic-dms-lockid: {}", m_lock_id));
+  m_manager.addHeaders(headers);
+  m_manager.m_curlHandler.addUploadRequest(request, url, headers, CurlVerb::POST, {}, 0, 0);
+  request->WaitForFinish(error);
+  responsHeaders = std::move(request->m_uploadHandler->responsHeaders);
+  responsData = std::move(request->m_uploadHandler->responsData);
+  if (error.code)
+  {
+    std::string respons_str;
+    respons_str.insert(respons_str.end(), request->m_uploadHandler->responsData.begin(), request->m_uploadHandler->responsData.end());
+    error.string = fmt::format("Seismic dms create dataset failed: {} - {}", error.string, respons_str);
+    return false;
+  }
+
+  return true;
+}
+  
+bool DmsDataset::lockDataset(IOManager::AccessPattern accessPattern, std::vector<std::pair<std::string, std::string>> &responsHeaders, std::vector<uint8_t> &responsData, Error& error)
+{
+  auto url = fmt::format("{}/dataset/tenant/{}/subproject/{}/dataset/{}/lock?openmode={}&path={}", m_manager.m_authorityUrl, URLEncode(m_tenant), URLEncode(m_subproject), URLEncode(m_dataset), accessPattern == IOManager::ReadOnly ? "read" : "write", URLEncode(m_path));
+  std::shared_ptr<UploadRequestCurl> request = std::make_shared<UploadRequestCurl>("lock_dataset", std::function<void(const Request & request, const Error & error)>());
+  std::vector<std::string> headers;
+  m_lock_id = gen_lock_id(accessPattern);
+  headers.emplace_back(fmt::format("x-seismic-dms-lockid: {}", m_lock_id));
+  m_manager.addHeaders(headers);
+  m_manager.m_curlHandler.addUploadRequest(request, url, headers, CurlVerb::PUT, {}, 0, 0);
+  request->WaitForFinish(error);
+  responsHeaders = std::move(request->m_uploadHandler->responsHeaders);
+  responsData = std::move(request->m_uploadHandler->responsData);
+  if (error.code)
+  {
+    std::string respons_str;
+    respons_str.insert(respons_str.end(), request->m_uploadHandler->responsData.begin(), request->m_uploadHandler->responsData.end());
+    error.string = fmt::format("Seismic dms lock dataset failed: {} - {}", error.string, respons_str);
+    return false;
+  }
+  return true;
+}
+  
+bool DmsDataset::deleteDataset(Error& error)
+{
+  auto url = fmt::format("{}/dataset/tenant/{}/subproject/{}/dataset/{}?path={}", m_manager.m_authorityUrl, URLEncode(m_tenant), URLEncode(m_subproject), URLEncode(m_dataset), URLEncode(m_path));
+  std::shared_ptr<UploadRequestCurl> request = std::make_shared<UploadRequestCurl>("delete_dataset", std::function<void(const Request & request, const Error & error)>());
+  std::vector<std::string> headers;
+  m_lock_id = gen_lock_id(IOManager::Create);
+  headers.emplace_back(fmt::format("x-seismic-dms-lockid: {}", m_lock_id));
+  m_manager.addHeaders(headers);
+  m_manager.m_curlHandler.addUploadRequest(request, url, headers, CurlVerb::DEL, {}, 0, 0);
+  request->WaitForFinish(error);
+  if (error.code)
+  {
+    std::string respons_str;
+    respons_str.insert(respons_str.end(), request->m_uploadHandler->responsData.begin(), request->m_uploadHandler->responsData.end());
+    error.string = fmt::format("Seismic dms delete dataset failed: {} - {}", error.string, respons_str);
+    return false;
+  }
+
+  return true;
 }
 
 bool DmsDataset::open(IOManager::AccessPattern accessPattern, Error &error)
@@ -185,34 +250,49 @@ bool DmsDataset::open(IOManager::AccessPattern accessPattern, Error &error)
     error.string = "Seismic DMS: Opening an allready opened DatasetInstance.";
     return false;
   }
+
   if (!m_manager.ensureSdToken(error))
     return false;
 
   {
-    bool do_register = accessPattern == IOManager::Create && !m_alreadyRegistered;
-    std::string url;
-    if (do_register)
-      url = fmt::format("{}/dataset/tenant/{}/subproject/{}/dataset/{}?path={}", m_manager.m_authorityUrl, URLEncode(m_tenant), URLEncode(m_subproject), URLEncode(m_dataset), URLEncode(m_path));
-    else
-      url = fmt::format("{}/dataset/tenant/{}/subproject/{}/dataset/{}/lock?openmode={}&path={}", m_manager.m_authorityUrl, URLEncode(m_tenant), URLEncode(m_subproject), URLEncode(m_dataset), accessPattern == IOManager::ReadOnly ? "read" : "write", URLEncode(m_path));
-    std::shared_ptr<UploadRequestCurl> request = std::make_shared<UploadRequestCurl>("lock_dataset", std::function<void(const Request& request, const Error& error)>());
-    std::vector<std::string> headers;
-    m_lock_id = gen_lock_id(accessPattern);
-    headers.emplace_back(fmt::format("x-seismic-dms-lockid: {}", m_lock_id));
-    m_manager.addHeaders(headers);
-    m_manager.m_curlHandler.addUploadRequest(request, url, headers, do_register ? CurlVerb::POST : CurlVerb::PUT, {}, 0);
-    request->WaitForFinish(error);
-    if (error.code || !request->m_uploadHandler)
+    std::vector<std::pair<std::string, std::string>> responsHeaders;
+    std::vector<uint8_t> responsData;
+    if (accessPattern == IOManager::Create)
     {
-      std::string respons_str;
-      respons_str.insert(respons_str.end(), request->m_uploadHandler->responsData.begin(), request->m_uploadHandler->responsData.end());
-      error.string = fmt::format("Seismic dms lock failed: {} - {}", error.string, respons_str);
-      return false;
+      if (!registerDataset(responsHeaders, responsData, error))
+      {
+        //OpenVDS by default overwrites data. This is the same as the SDAPI would do when opening a dataset in overwrite mode
+        if (error.code == 409)
+        {
+          error = Error();
+          if (!deleteDataset(error))
+          {
+            return false;
+          }
+          responsHeaders.clear();
+          responsData.clear();
+          if (!registerDataset(responsHeaders, responsData, error))
+          {
+            return false;
+          }
+        }
+        else
+        {
+          return false;
+        }
+      }
+    }
+    else
+    {
+      if (!lockDataset(accessPattern, responsHeaders, responsData, error))
+      {
+        return false;
+      }
     }
     m_accessPattern = accessPattern;
     m_opened = true;
     Json::Value root;
-    if (!ParseJSONFromBuffer(request->m_uploadHandler->responsData, root, error))
+    if (!ParseJSONFromBuffer(responsData, root, error))
     {
       return false;
     }
@@ -228,7 +308,7 @@ bool DmsDataset::open(IOManager::AccessPattern accessPattern, Error &error)
       return false;
     }
 
-    for (auto& header : request->m_uploadHandler->responsHeaders)
+    for (auto& header : responsHeaders)
     {
       if (header.first == "service-provider")
         m_service_provider = header.second;
@@ -300,7 +380,7 @@ bool DmsDataset::close(uint64_t serializedSize, uint64_t chunkCount, Error& erro
     vector = WriteJson(root);
     completeSize = vector.size();
   }
-  m_manager.m_curlHandler.addUploadRequest(request, url, headers, CurlVerb::PATCH, std::move(data), completeSize);
+  m_manager.m_curlHandler.addUploadRequest(request, url, headers, CurlVerb::PATCH, std::move(data), completeSize, 0);
   request->WaitForFinish(error);
   if (error.code || !request->m_uploadHandler)
   {

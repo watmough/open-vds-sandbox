@@ -41,7 +41,7 @@ public class DMSOpenOptions extends OpenOptions {
     
     }
 
-    ///AUTOGEN-FAIL: CONSTRUCTOR DMSOpenOptions void (const std::string &, const std::string &, const std::string &, std::string (*)(const void *), const void *, bool, bool) FUNCTIONPROTO
+    ///AUTOGEN-FAIL: CONSTRUCTOR DMSOpenOptions void (const std::string &, const std::string &, const std::string &, std::string (*)(const void *), const void *, bool) FUNCTIONPROTO
 
     ///AUTOGEN-OK: FIELD_DECL sdAuthorityUrl std::string RECORD
     native private String getSdAuthorityUrlImpl(long native_object);
@@ -180,20 +180,6 @@ public class DMSOpenOptions extends OpenOptions {
     public void setUseFileNameForSingleFileDatasets(boolean value) {
     
         setUseFileNameForSingleFileDatasetsImpl(getNativeObject(), value);    
-    
-    }
-
-    ///AUTOGEN-OK: FIELD_DECL alreadyRegistered bool BOOL
-    native private boolean getAlreadyRegisteredImpl(long native_object);
-    public boolean getAlreadyRegistered() {
-        return getAlreadyRegisteredImpl(getNativeObject());
-    }
-
-    native private void setAlreadyRegisteredImpl(long native_object, boolean value);
-    
-    public void setAlreadyRegistered(boolean value) {
-    
-        setAlreadyRegisteredImpl(getNativeObject(), value);    
     
     }
 

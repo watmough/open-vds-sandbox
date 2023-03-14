@@ -779,8 +779,6 @@ static const char *__doc_OpenVDS_DMSOpenOptions_DMSOpenOptions_2 = R"doc()doc";
 
 static const char *__doc_OpenVDS_DMSOpenOptions_DMSOpenOptions_3 = R"doc()doc";
 
-static const char *__doc_OpenVDS_DMSOpenOptions_alreadyRegistered = R"doc()doc";
-
 static const char *__doc_OpenVDS_DMSOpenOptions_authProviderCallback = R"doc()doc";
 
 static const char *__doc_OpenVDS_DMSOpenOptions_authProviderCallbackData = R"doc()doc";

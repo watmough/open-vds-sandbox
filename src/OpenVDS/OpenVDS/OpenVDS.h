@@ -472,7 +472,7 @@ struct GoogleOpenOptions : OpenOptions
 
 struct DMSOpenOptions : OpenOptions
 {
-  DMSOpenOptions() : OpenOptions(DMS), useFileNameForSingleFileDatasets(false), alreadyRegistered(false), authProviderCallback(nullptr) , authProviderCallbackData(nullptr) {}
+  DMSOpenOptions() : OpenOptions(DMS), useFileNameForSingleFileDatasets(false), authProviderCallback(nullptr) , authProviderCallbackData(nullptr) {}
 
   DMSOpenOptions(std::string const& sdAuthorityUrl, std::string const& sdApiKey, std::string const &sdToken, std::string const &datasetPath, std::string const &authTokenUrl = std::string(), std::string const &refreshToken = std::string(), std::string const &clientId = std::string(), std::string const &clientSecret = std::string(), std::string const &scopes = std::string(), bool useFileNameForSingleFileDatasets = false, bool alreadyRegistered = false)
     : OpenOptions(DMS)
@@ -486,18 +486,16 @@ struct DMSOpenOptions : OpenOptions
     , clientSecret(clientSecret)
     , scopes(scopes)
     , useFileNameForSingleFileDatasets(useFileNameForSingleFileDatasets)
-    , alreadyRegistered(alreadyRegistered)
     , authProviderCallback(nullptr)
     , authProviderCallbackData(nullptr)
   {}
 
-  DMSOpenOptions(std::string const& sdAuthorityUrl, std::string const& sdApiKey, std::string const &datasetPath, std::string (*authProviderCallback)(const void*), const void *authProviderCallbackData, bool useFileNameForSingleFileDatasets = false, bool alreadyRegistered = false)
+  DMSOpenOptions(std::string const& sdAuthorityUrl, std::string const& sdApiKey, std::string const &datasetPath, std::string (*authProviderCallback)(const void*), const void *authProviderCallbackData, bool useFileNameForSingleFileDatasets = false)
     : OpenOptions(DMS)
     , sdAuthorityUrl(sdAuthorityUrl)
     , sdApiKey(sdApiKey)
     , datasetPath(datasetPath)
     , useFileNameForSingleFileDatasets(useFileNameForSingleFileDatasets)
-    , alreadyRegistered(alreadyRegistered)
     , authProviderCallback(authProviderCallback)
     , authProviderCallbackData(authProviderCallbackData)
   {}
@@ -512,7 +510,6 @@ struct DMSOpenOptions : OpenOptions
   std::string clientSecret;
   std::string scopes;
   bool useFileNameForSingleFileDatasets;
-  bool alreadyRegistered;
   std::string (*authProviderCallback)(const void*);
   const void *authProviderCallbackData;
 };

@@ -207,9 +207,6 @@ namespace OpenVDS
     , m_accessPattern(accessPattern)
     , m_threadPool(16)
   {
-    if (openOptions.alreadyRegistered)
-      logger.LogWarning("OpenVDS using the DMS SDAPI IO backend does not support the alreadyRegistered OpenOption. Please remove the flag or unset the OPENVDS_DMS_SDAPI environment variable.");
-    
     if (openOptions.datasetPath.size() && m_useFileNameForSingleFileDatasets)
     {
       auto it = openOptions.datasetPath.rfind('/');

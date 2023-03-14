@@ -304,6 +304,11 @@ static void addUploadCB(uv_async_t *handle)
       curl_easy_setopt(uploadRequest->curlEasy, CURLOPT_CUSTOMREQUEST, "PATCH");
       curl_easy_setopt(uploadRequest->curlEasy, CURLOPT_UPLOAD, 1L);
     }
+    else if (uploadRequest->verb == CurlVerb::DEL)
+    {
+      curl_easy_setopt(uploadRequest->curlEasy, CURLOPT_CUSTOMREQUEST, "DELETE");
+      curl_easy_setopt(uploadRequest->curlEasy, CURLOPT_UPLOAD, 1L);
+    }
     curl_easy_setopt(uploadRequest->curlEasy, CURLOPT_INFILESIZE_LARGE, filesize);
     curl_easy_setopt(uploadRequest->curlEasy, CURLOPT_DEBUGFUNCTION, curl_easy_debug_callback);
     curl_easy_setopt(uploadRequest->curlEasy, CURLOPT_DEBUGDATA, &context->eventLoopData->logger);
@@ -609,17 +614,18 @@ static int curlTimerCallback(CURLM* multi, long timeout_ms, void* userp)
 
 bool CurlEasyHandler::shouldRetry()
 {
-  return retry_count < 4;
+  return retry_count > 0;
 }
 
 void CurlEasyHandler::retry()
 {
-  retry_count++;
+  retry_count--;
   curl_multi_remove_handle(eventLoopData->curlMulti, curlEasy);
   CURL* dup = curl_easy_duphandle(curlEasy);
   curl_easy_cleanup(curlEasy);
   curlEasy = dup;
   curl_multi_add_handle(eventLoopData->curlMulti, dup);
+ 
 }
 
 void CurlDownloadHandler::handleDone(int responseCode, const Error &error)
@@ -896,18 +902,18 @@ CurlHandler::~CurlHandler()
   m_thread->join();
 }
 
-void CurlHandler::addDownloadRequest(const std::shared_ptr<DownloadRequestCurl>& request, const std::string& url, const std::vector<std::string>& headers, std::function<std::string(const std::string&)> toISO8601DateTransformer, CurlVerb verb)
+void CurlHandler::addDownloadRequest(const std::shared_ptr<DownloadRequestCurl>& request, const std::string& url, const std::vector<std::string>& headers, std::function<std::string(const std::string&)> toISO8601DateTransformer, CurlVerb verb, int retryCount)
 {
- auto curlData =  std::make_shared<CurlDownloadHandler>(&m_eventLoopData, request, url, headers, toISO8601DateTransformer, verb);
+ auto curlData =  std::make_shared<CurlDownloadHandler>(&m_eventLoopData, request, url, headers, toISO8601DateTransformer, verb, retryCount);
  request->m_downloadHandler = curlData;
  std::unique_lock<std::mutex> lock(m_eventLoopData.mutex);
  m_eventLoopData.incommingDownloadRequests.push_back(curlData);
  uv_async_send(&m_eventLoopData.asyncAddDownload);
 }
 
-void CurlHandler::addUploadRequest(const std::shared_ptr<UploadRequestCurl>& request, const std::string& url, const std::vector<std::string>& headers, CurlVerb verb, std::vector<std::shared_ptr<std::vector<uint8_t>>> && data, int64_t completeSize)
+void CurlHandler::addUploadRequest(const std::shared_ptr<UploadRequestCurl>& request, const std::string& url, const std::vector<std::string>& headers, CurlVerb verb, std::vector<std::shared_ptr<std::vector<uint8_t>>> && data, int64_t completeSize, int retryCount)
 {
-  auto curlData = std::make_shared<CurlUploadHandler>(&m_eventLoopData, request, url, headers, verb, std::move(data), completeSize);
+  auto curlData = std::make_shared<CurlUploadHandler>(&m_eventLoopData, request, url, headers, verb, std::move(data), completeSize, retryCount);
   request->m_uploadHandler = curlData;
   std::unique_lock<std::mutex> lock(m_eventLoopData.mutex);
   m_eventLoopData.incommingUploadRequests.push_back(curlData);
