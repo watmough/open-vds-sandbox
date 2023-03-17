@@ -112,14 +112,14 @@ else()
 endif()
 
 if (EMSCRIPTEN)
-  option(ENABLE_OPENMP "Enable the OpenMP codepath" ON) # In case OpenMP is supported in the future.
+  option(ENABLE_OPENMP "Enable the OpenMP codepath" OFF) # In case OpenMP is supported in the future.
   option(DISABLE_STRICT_WARNINGS "Disable strict warnings settings. This includes making warnings to errors." OFF)
   option(BUILD_ZLIB   "Build zlib" OFF)
   set(CMAKE_CXX_STANDARD 11)
 else()
   option(BUILD_PYTHON "Build python bindings" ${BUILD_PYTHON_DEFAULT})
   option(BUILD_JAVA "Build java bindings" ${BUILD_JAVA_DEFAULT})
-  option(ENABLE_OPENMP "Enable the OpenMP codepath" ON)
+  option(ENABLE_OPENMP "Enable the OpenMP codepath" OFF)
   option(ENABLE_MSVC_TOOLSET_DIR "Enable adding a subdir for the MSVC toolset" ON)
   option(BUILD_SHARED_LIBS "Build OpenVDS as a shared library" ON)
   option(BUILD_EXAMPLES "Build OpenVDS example projects" ON)
