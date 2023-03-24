@@ -1,12 +1,13 @@
 import openvds
 import openvds_test
 import pytest
-
+import math
 from CreateVds import *
 
 def test_read_accessor(dataset_80_r32_64):
     with openvds.open(dataset_80_r32_64, "") as handle:
         acc = openvds.VolumeDataAccessManager(handle)
+        assert acc.getVDSChunkCount(openvds.DimensionsND.Dimensions_012) == math.ceil(80/64)**3
         accessor = acc.createVolumeData3DReadAccessorR32(openvds.DimensionsND.Dimensions_012)
         v0 = accessor.getValue((0,0,0))
         assert v0 == 0.0

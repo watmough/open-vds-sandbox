@@ -223,6 +223,27 @@ class VolumeDataAccessManager(object):
     """
     return self._manager.getVDSProduceStatus(dimensionsND, lod, channel)
 
+  def getVDSChunkCount(self, dimensionsND, lod=0, channel=0):
+    """Get the chunk count for the specific DimensionsND/LOD/Channel combination.
+
+    Parameters:
+    -----------
+
+    dimensionsND :
+        The dimensions group we're getting the chunk count for.
+
+    LOD :
+        The LOD level we're getting the chunk count status for.
+
+    channel :
+        The channel index we're getting the chunk count status for.
+    Returns:
+    --------
+        The chunk count for the specific DimensionsND/LOD/Channel
+        combination.
+    """
+    return self._manager.getVDSChunkCount(dimensionsND, lod, channel)
+
   def createVolumeDataPageAccessor(self, dimensionsND, lod, channel, maxPages, accessMode, chunkMetadataPageSize=1024):
     """Create a VolumeDataPageAccessor object for the VDS.
 
