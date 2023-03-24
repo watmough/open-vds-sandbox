@@ -9,30 +9,31 @@ namespace OpenVDS
     : m_authTokenUrl(authTokenUrl)
     , m_clientId(clientId)
     , m_clientSecret(clientSecret)
-    , m_scopes(scopes.size() > 0 ? scopes : ("openid email"))
+    , m_scopes(scopes)
     , m_refreshToken(refreshToken)
     , m_curlHandler(curlHandler)
     , m_newTokenCallback(newTokenCallback)
   {
   }
 
-TokenRefresher::TokenRefresher(const std::string& authTokenUrl, const std::string &clientId, const std::string &clientSecret, const std::string& refreshToken, CurlHandler& curlHandler, const std::function<void(std::string&& new_token)> &newTokenCallback)
-    : m_authTokenUrl(authTokenUrl)
-    , m_clientId(clientId)
-    , m_clientSecret(clientSecret)
-    , m_scopes("openid email")
-    , m_refreshToken(refreshToken)
-    , m_curlHandler(curlHandler)
-    , m_newTokenCallback(newTokenCallback)
-  {
-  }
+static std::string extractTokensFromJson(const std::vector<uint8_t>& respons_data, Error& error, std::string& refreshToken);
 
   std::string TokenRefresher::newToken(Error &error)
   {
     std::vector<std::shared_ptr<std::vector<uint8_t>>> data;
     data.emplace_back(std::make_shared<std::vector<uint8_t>>());
-    
-    std::string form = m_clientSecret.size() > 0 ? fmt::format("grant_type={}&client_id={}&client_secret={}&refresh_token={}&scope={}", "refresh_token", m_clientId, m_clientSecret, m_refreshToken, m_scopes) : fmt::format("grant_type={}&client_id={}&refresh_token={}&scope={}", "refresh_token", m_clientId,  m_refreshToken, m_scopes);
+  
+    std::string form;
+    if (m_refreshToken.empty())
+    {
+      form = fmt::format("grant_type={}&client_id={}&client_secret={}&scope={}", "client_credentials", m_clientId, m_clientSecret, m_scopes);
+    }
+    else
+    {
+      std::string scopes = m_scopes.empty() ? "openid email" : m_scopes;
+      form = m_clientSecret.size() > 0 ? fmt::format("grant_type={}&client_id={}&client_secret={}&refresh_token={}&scope={}", "refresh_token", m_clientId, m_clientSecret, m_refreshToken, scopes) : fmt::format("grant_type={}&client_id={}&refresh_token={}&scope={}", "refresh_token", m_clientId, m_refreshToken, m_scopes);
+    }
+
     data.back()->insert(data.back()->end(), form.begin(), form.end());
 
     std::shared_ptr<UploadRequestCurl> request = std::make_shared<UploadRequestCurl>("refresh_token", std::function<void(const Request& request, const Error& error)>());
@@ -45,10 +46,12 @@ TokenRefresher::TokenRefresher(const std::string& authTokenUrl, const std::strin
       error.string = fmt::format("TokenRefresher: {}", error.string);
       return "";
     }
-    std::string respons_data;
-    respons_data.insert(respons_data.end(), request->m_uploadHandler->responsData.begin(), request->m_uploadHandler->responsData.end());
-    Json::Value value;
+    return extractTokensFromJson(request->m_uploadHandler->responsData, error, m_refreshToken);
+  }
 
+  static std::string extractTokensFromJson(const std::vector<uint8_t>& respons_data, Error& error, std::string& refreshToken)
+  {
+    Json::Value value;
     Json::CharReaderBuilder rbuilder;
     rbuilder["collectComments"] = false;
 
@@ -67,8 +70,16 @@ TokenRefresher::TokenRefresher(const std::string& authTokenUrl, const std::strin
 
     if (value.isMember("refresh_token"))
     {
-      m_refreshToken = value["refresh_token"].asString();
+      refreshToken = value["refresh_token"].asString();
     }
+
+    if (!value.isMember("access_token"))
+    {
+      error.code = -1;
+      error.string = "TokenRefresher: access_token not found in JSON response";
+      return "";
+    }
+
     return value["access_token"].asString();
   }
 }

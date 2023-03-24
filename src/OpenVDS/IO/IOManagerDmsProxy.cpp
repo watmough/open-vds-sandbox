@@ -54,7 +54,7 @@ IOManagerDMSProxy::IOManagerDMSProxy(const DMSOpenOptions& openOptions, IOManage
     m_dmsManager->m_authProviderCallback = openOptions.authProviderCallback;
     m_dmsManager->m_authProviderCallbackData = openOptions.authProviderCallbackData;
   }
-  else if (openOptions.authTokenUrl.size() && openOptions.clientId.size() && openOptions.refreshToken.size())
+  else if (openOptions.authTokenUrl.size() && openOptions.clientId.size() && (openOptions.refreshToken.size() || openOptions.clientSecret.size()))
   {
     m_tokenRefresher.reset(new TokenRefresher(openOptions.authTokenUrl, openOptions.clientId, openOptions.clientSecret, openOptions.scopes, openOptions.refreshToken, m_curlHandler, std::function<void(std::string&& new_token)>()));
     m_dmsManager->m_authProviderCallback = AuthProviderCallback;
