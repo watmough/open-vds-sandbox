@@ -719,6 +719,7 @@ public:
   int
   GetErrorCode()
   {
+    WaitForCompletion() || IsCanceled();
     return m_Error.GetErrorCode();
   }
 
@@ -732,6 +733,7 @@ public:
   std::string
   GetErrorMessage()
   {
+    WaitForCompletion() || IsCanceled();
     return std::string(m_Error.GetErrorMessage());
   }
 
