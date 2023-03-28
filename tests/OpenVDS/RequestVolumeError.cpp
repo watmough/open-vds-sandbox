@@ -144,9 +144,7 @@ GTEST_TEST(OpenVDS_integration, SimpleRequestVolumeError)
   }
   for (int i = 0; i < int(boundingBoxes.size()); i++)
   {
-    bool returned = requests[i]->WaitForCompletion();
-    (void)returned;
+    EXPECT_NE(requests[i]->GetErrorCode(), 0);
   }
-  //we don't need to assert anything as we are just loking for that the system does not segfault or deadlock.
 }
 
