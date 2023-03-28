@@ -517,7 +517,10 @@ bool VolumeDataStoreIOManager::ReadChunkImpl(const VolumeDataChunk &chunk, int a
   {
     if(!transferHandler->m_metadataFromPage.empty() && transferHandler->m_metadataFromPage != transferHandler->m_metadataFromHeader)
     {
-      m_logger.LogInfo(fmt::format("Inconsistent metadata for chunk: {}, will use metadata from downloaded chunk.", CreateUrlForChunk(GetLayerName(*chunk.layer), chunk.index)));
+      error.string = fmt::format("Inconsistent metadata for chunk {}", CreateUrlForChunk(GetLayerName(*chunk.layer), chunk.index));
+      error.code = -1;
+      compressionInfo = CompressionInfo();
+      return false;
     }
 
     metadata = std::move(transferHandler->m_metadataFromHeader);

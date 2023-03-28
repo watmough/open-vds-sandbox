@@ -226,6 +226,10 @@ TEST_F(IOErrorHandlingFixture, ErrorHandlingMissingMetadataTag)
      })
     , object.metaHeader.end());
 
+  std::string log;
+  auto logCallback = [&log](OpenVDS::LogLevel level, std::string message) { log.append(message); };
+  OpenVDS::GetGlobalState()->SetLogCallback([](OpenVDS::LogLevel level, const char* message, size_t messageSize, void* userHandle) { (*static_cast<decltype(&logCallback)>(userHandle))(level, std::string(message, message + messageSize)); }, &logCallback);
+
   OpenVDS::ScopedVDSHandle handle(OpenVDS::Open(facadeIoManager, error));
   ASSERT_TRUE(handle);
   auto accessManager = OpenVDS::GetAccessManager(handle);
@@ -234,6 +238,8 @@ TEST_F(IOErrorHandlingFixture, ErrorHandlingMissingMetadataTag)
   int32_t maxPos[OpenVDS::Dimensionality_Max] = { 55, 55, 55 };
   auto request = accessManager.RequestVolumeSubset<float>(OpenVDS::Dimensions_012, 0, 0, minPos, maxPos);
   bool finished = request->WaitForCompletion();
+
+  ASSERT_TRUE(strContains(log, "missing metadata"));
   ASSERT_TRUE(finished);
 }
 
@@ -261,11 +267,9 @@ TEST_F(IOErrorHandlingFixture, ErrorHandlingChangedMetadataTag)
   }
 
   std::string log;
-  OpenVDS::GetGlobalState()->SetLogCallback([](OpenVDS::LogLevel level, const char* message, size_t messageSize, void* userHandle)
-    {
-      auto& str = *static_cast<std::string*>(userHandle);
-      str.insert(str.size(), message, messageSize);
-    }, &log);
+  auto logCallback = [&log](OpenVDS::LogLevel level, std::string message) { log.append(message); };
+  OpenVDS::GetGlobalState()->SetLogCallback([](OpenVDS::LogLevel level, const char* message, size_t messageSize, void* userHandle) { (*static_cast<decltype(&logCallback)>(userHandle))(level, std::string(message, message + messageSize)); }, &logCallback);
+
   OpenVDS::ScopedVDSHandle handle(OpenVDS::Open(facadeIoManager, OpenVDS::LogLevel::Info, error));
   ASSERT_TRUE(handle);
   auto accessManager = OpenVDS::GetAccessManager(handle);
@@ -274,9 +278,9 @@ TEST_F(IOErrorHandlingFixture, ErrorHandlingChangedMetadataTag)
   int32_t maxPos[OpenVDS::Dimensionality_Max] = { 55, 55, 55 };
   auto request = accessManager.RequestVolumeSubset<float>(OpenVDS::Dimensions_012, 0, 0, minPos, maxPos);
   bool finished = request->WaitForCompletion();
-  ASSERT_TRUE(finished);
+  ASSERT_FALSE(finished);
   ASSERT_TRUE(strContains(log, "Inconsistent metadata"));
-  ASSERT_FALSE(request->IsCanceled());
+  ASSERT_TRUE(request->IsCanceled());
 
   OpenVDS::GetGlobalState()->SetDefaultLogCallback();
 }
