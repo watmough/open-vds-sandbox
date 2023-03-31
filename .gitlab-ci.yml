@@ -280,8 +280,8 @@ variables:
 
 # FIXME (GONRG-6461) Move containerize logic to common pipeline approach 
 gc-containerize-gcr:
-  environment:
-    name: Google_Cloud
+  # environment:
+  #   name: Google_Cloud
   stage: trigger
   trigger:
     project: 'osdu/platform/deployment-and-operations/infra-gcp-provisioning'
