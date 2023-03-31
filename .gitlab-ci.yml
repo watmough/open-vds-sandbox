@@ -6,6 +6,14 @@ stages:
 - containerize
 - .common-gitlab-containerize
 - .common-gcr-containerize
+- gc-containerize-bootstrap-elastic-on-prem-gitlab
+- gc-containerize-bootstrap-postgres-on-prem-gitlab
+- gc-containerize-bootstrap-minio-on-prem-gitlab
+- gc-containerize-bootstrap-keycloak-on-prem-gitlab
+- gc-containerize-bootstrap-elastic-on-prem-gcr
+- gc-containerize-bootstrap-postgres-on-prem-gcr
+- gc-containerize-bootstrap-minio-on-prem-gcr
+- gc-containerize-bootstrap-keycloak-on-prem-gcr
 
 variables:
   MASTER_ALPINE_IMAGE_TAG: "$CI_REGISTRY_IMAGE/master:alpine-3"
@@ -300,16 +308,7 @@ gc-containerize-gcr:
     - if: "$GC == '1' && $CI_COMMIT_TAG"
       when: on_success
 
-  # trigger:
-  #   project: 'osdu/platform/deployment-and-operations/infra-gcp-provisioning'
-  #   branch: master
-  #   strategy: depend
-  #   include:
-  #     - remote: 'pipelines/containerize.yml'
-  #   variables:
-  #     MY_VARIABLE: 'my-value'
   # image: $INGESTION_DOCKER_WITH_PYTHON_IMAGE_TAG
-
   # cache: {}
   # before_script:
   #   - cat $GC_DEPLOY_FILE | gcloud auth activate-service-account --key-file=<path-to-service-account-key-file> docker login -u _json_key --password-stdin https://gcr.io
