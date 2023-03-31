@@ -284,9 +284,10 @@ gc-containerize-gcr:
   #   name: Google_Cloud
   stage: trigger
   trigger:
-    project: 'osdu/platform/deployment-and-operations/infra-gcp-provisioning'
-    ref: 'master'
-    include: 'pipelines/containerize.yaml'
+    include:
+      - project: 'osdu/platform/deployment-and-operations/infra-gcp-provisioning'
+        ref: 'master'
+        file: 'pipelines/containerize.yaml'
   # variables:
   #   PROJECT_ID: your-project-id
   #   IMAGE_TAG: latest
