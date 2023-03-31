@@ -9,274 +9,274 @@ variables:
   MERGE_REQUEST_BRANCH_MANYLINUX2014_IMAGE_TAG: "$CI_REGISTRY_IMAGE/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME:manylinux2014-4"
   MERGE_REQUEST_BRANCH_MANYLINUX2_24_IMAGE_TAG: "$CI_REGISTRY_IMAGE/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME:manylinux2_24-4"
   INGESTION_DOCKER_WITH_PYTHON_IMAGE_TAG: "$CI_REGISTRY_IMAGE/docker_with_python:19.03"
-devel-container-alpine-gitlab:
-  stage: prepare
-  image: docker:19.03
-  tags:
-  - docker-runner
-  script:
-  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-  - docker build -t $MASTER_ALPINE_IMAGE_TAG -f docker/alpine-gitlab-ci.Dockerfile .
-  - docker push $MASTER_ALPINE_IMAGE_TAG
-  only:
-  - master
-devel-container-alpine-merge-request:
-  stage: prepare
-  image: docker:19.03
-  tags:
-  - docker-runner
-  script:
-  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-  - docker build -t $MERGE_REQUEST_BRANCH_ALPINE_IMAGE_TAG -f docker/alpine-gitlab-ci.Dockerfile .
-  - docker push $MERGE_REQUEST_BRANCH_ALPINE_IMAGE_TAG
-  only:
-  - merge_requests
-devel-container-manylinux-2014-merge-request:
-  stage: prepare
-  image: docker:19.03
-  tags:
-  - docker-runner
-  script:
-  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-  - docker build -t $MERGE_REQUEST_BRANCH_MANYLINUX2014_IMAGE_TAG -f docker/manylinux-2014.Dockerfile .
-  - docker push $MERGE_REQUEST_BRANCH_MANYLINUX2014_IMAGE_TAG
-  only:
-  - merge_requests
-devel-container-manylinux-2-24-merge-request:
-  stage: prepare
-  image: docker:19.03
-  tags:
-  - docker-runner
-  script:
-  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-  - docker build -t $MERGE_REQUEST_BRANCH_MANYLINUX2_24_IMAGE_TAG -f docker/manylinux-2_24.Dockerfile .
-  - docker push $MERGE_REQUEST_BRANCH_MANYLINUX2_24_IMAGE_TAG
-  only:
-  - merge_requests
-ingestion-container-docker_with_python:
-  tags: ["osdu-small"]
-  stage: prepare
-  image: docker:19.03
-  script:
-  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-  - docker build -t $INGESTION_DOCKER_WITH_PYTHON_IMAGE_TAG -f docker/docker_with_python.Dockerfile .
-  - docker push $INGESTION_DOCKER_WITH_PYTHON_IMAGE_TAG
-  only:
-  - tags
-compile-alpine-master:
-  stage: build
-  image: $MASTER_ALPINE_IMAGE_TAG
-  tags:
-  - docker-runner
-  cache:
-    paths:
-    - ccache_master
-    - 3rdparty
-  artifacts:
-    expire_in: 1 hr
-    paths:
-    - out/build/GitLabAlpineMasterBranch
-  before_script:
-  - export CCACHE_BASEDIR="$PWD"
-  - export CCACHE_DIR="$PWD/ccache_master"
-  - export CCACHE_COMPILERCHECK=content
-  - ccache --zero-stats || true
-  - ccache --show-stats || true
-  script:
-  - export CCACHE_DIR="$PWD/ccache_master"
-  - cmake --preset GitLabAlpineMasterBranch
-  - cd out/build/GitLabAlpineMasterBranch
-  - ninja -j4
-  after_script:
-  - export CCACHE_DIR="$PWD/ccache_master"
-  - ccache --show-stats
-  only:
-  - master
-compile-merge-request-alpine:
-  stage: build
-  image: $MERGE_REQUEST_BRANCH_ALPINE_IMAGE_TAG
-  tags:
-  - docker-runner
-  cache:
-    paths:
-    - ccache_alpine
-    - 3rdparty
-  artifacts:
-    expire_in: 1 hr
-    paths:
-    - out/build/MergeRequestAlpine
-  before_script:
-  - export CCACHE_BASEDIR="$PWD"
-  - export CCACHE_DIR="$PWD/ccache_alpine"
-  - export CCACHE_COMPILERCHECK=content
-  - ccache --zero-stats || true
-  - ccache --show-stats || true
-  script:
-  - export CCACHE_DIR="$PWD/ccache_alpine"
-  - cmake --preset MergeRequestAlpine
-  - cd out/build/MergeRequestAlpine
-  - ninja -j4
-  after_script:
-  - export CCACHE_DIR="$PWD/ccache_alpine"
-  - ccache --show-stats
-  only:
-  - merge_requests
-compile-merge-request-manylinux2014:
-  stage: build
-  image: $MERGE_REQUEST_BRANCH_MANYLINUX2014_IMAGE_TAG
-  tags:
-  - docker-runner
-  cache:
-    paths:
-    - ccache_manylinux2014
-    - 3rdparty
-  artifacts:
-    expire_in: 1 hr
-    paths:
-    - out/build/MergeRequestManyLinux2014
-  before_script:
-  - export CCACHE_BASEDIR="$PWD"
-  - export CCACHE_DIR="$PWD/ccache_manylinux2014"
-  - export CCACHE_COMPILERCHECK=content
-  - ccache --zero-stats || true
-  - ccache --show-stats || true
-  script:
-  - export CCACHE_DIR="$PWD/ccache_manylinux2014"
-  - cmake --preset MergeRequestManyLinux2014
-  - cd out/build/MergeRequestManyLinux2014
-  - ninja -j4
-  after_script:
-  - export CCACHE_DIR="$PWD/ccache_manylinux2014"
-  - ccache --show-stats
-  only:
-  - merge_requests
-compile-merge-request-manylinux2_24:
-  stage: build
-  image: $MERGE_REQUEST_BRANCH_MANYLINUX2_24_IMAGE_TAG
-  tags:
-  - docker-runner
-  cache:
-    paths:
-    - ccache_manylinux2_24
-    - 3rdparty
-  artifacts:
-    expire_in: 1 hr
-    paths:
-    - out/build/MergeRequestManyLinux2_24
-  before_script:
-  - export CCACHE_BASEDIR="$PWD"
-  - export CCACHE_DIR="$PWD/ccache_manylinux2_24"
-  - export CCACHE_COMPILERCHECK=content
-  - ccache --zero-stats || true
-  - ccache --show-stats || true
-  script:
-  - export CCACHE_DIR="$PWD/ccache_manylinux2_24"
-  - cmake --preset MergeRequestManyLinux2_24
-  - cd out/build/MergeRequestManyLinux2_24
-  - ninja -j4
-  after_script:
-  - export CCACHE_DIR="$PWD/ccache_manylinux2_24"
-  - ccache --show-stats
-  only:
-  - merge_requests
-ingestion-image-docker:
-  stage: build
-  image: $INGESTION_DOCKER_WITH_PYTHON_IMAGE_TAG
-  tags:
-  - docker-runner
-  script:
-  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-  - python3 build_osdu_image.py -t $CI_COMMIT_TAG
-  - docker push $CI_REGISTRY_IMAGE/openvds-ingestion:$CI_COMMIT_TAG
-  only:
-  - tags
-unit-tests-alpine:
-  stage: test
-  image: $MERGE_REQUEST_BRANCH_ALPINE_IMAGE_TAG
-  tags:
-  - docker-runner
-  cache:
-    paths:
-    - 3rdparty
-  script:
-  - cd out/build/MergeRequestAlpine
-  - ctest -V
-  only:
-  - merge_requests
-  dependencies:
-  - compile-merge-request-alpine
-  artifacts:
-    when: always
-    reports:
-      junit:
-        - build/test_results/*.xml
-        - build/test_results_java/junitreports/*.xml
-unit-tests-manylinux2014:
-  stage: test
-  image: $MERGE_REQUEST_BRANCH_MANYLINUX2014_IMAGE_TAG
-  tags:
-  - docker-runner
-  cache:
-    paths:
-    - 3rdparty
-  script:
-  - cd out/build/MergeRequestManyLinux2014
-  - ctest -V
-  only:
-  - merge_requests
-  dependencies:
-  - compile-merge-request-manylinux2014
-  artifacts:
-    when: always
-    reports:
-      junit:
-        - out/build/MergeRequestManyLinux2014/test_results/*.xml
-        - out/build/MergeRequestManyLinux2014/test_results_java/junitreports/*.xml
-unit-tests-manylinux2_24:
-  stage: test
-  image: $MERGE_REQUEST_BRANCH_MANYLINUX2_24_IMAGE_TAG
-  tags:
-  - docker-runner
-  cache:
-    paths:
-    - 3rdparty
-  script:
-  - cd out/build/MergeRequestManyLinux2_24
-  - ctest -V
-  only:
-  - merge_requests
-  dependencies:
-  - compile-merge-request-manylinux2_24
-  artifacts:
-    when: always
-    reports:
-      junit:
-        - out/build/MergeRequestManyLinux2_24/test_results/*.xml
-        - out/build/MergeRequestManyLinux2_24/test_results_java/junitreports/*.xml
-pages:
-  stage: deploy
-  image: $MASTER_ALPINE_IMAGE_TAG
-  tags:
-  - docker-runner
-  dependencies:
-  - compile-alpine-master
-  script:
-  - mv out/build/GitLabAlpineMasterBranch/docs/html public
-  artifacts:
-    paths:
-    - public
-  only:
-  - master
-include:
-- template: Security/SAST.gitlab-ci.yml
-sast:
-  variables:
-    SAST_EXCLUDED_PATHS: _skbuild, 3rdparty, binpackage, CMake, common, docker, docs,
-      examples, java, out, python, tests
-    SAST_EXCLUDED_ANALYZERS: bandit, brakeman, eslint, gosec, kubesec, nodejs-scan,
-      phpcs-security-audit, pmd-apex, security-code-scan, semgrep, sobelow, spotbugs
-    SAST_FLAWFINDER_LEVEL: '4'
-  stage: test
+# devel-container-alpine-gitlab:
+#   stage: prepare
+#   image: docker:19.03
+#   tags:
+#   - docker-runner
+#   script:
+#   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+#   - docker build -t $MASTER_ALPINE_IMAGE_TAG -f docker/alpine-gitlab-ci.Dockerfile .
+#   - docker push $MASTER_ALPINE_IMAGE_TAG
+#   only:
+#   - master
+# devel-container-alpine-merge-request:
+#   stage: prepare
+#   image: docker:19.03
+#   tags:
+#   - docker-runner
+#   script:
+#   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+#   - docker build -t $MERGE_REQUEST_BRANCH_ALPINE_IMAGE_TAG -f docker/alpine-gitlab-ci.Dockerfile .
+#   - docker push $MERGE_REQUEST_BRANCH_ALPINE_IMAGE_TAG
+#   only:
+#   - merge_requests
+# devel-container-manylinux-2014-merge-request:
+#   stage: prepare
+#   image: docker:19.03
+#   tags:
+#   - docker-runner
+#   script:
+#   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+#   - docker build -t $MERGE_REQUEST_BRANCH_MANYLINUX2014_IMAGE_TAG -f docker/manylinux-2014.Dockerfile .
+#   - docker push $MERGE_REQUEST_BRANCH_MANYLINUX2014_IMAGE_TAG
+#   only:
+#   - merge_requests
+# devel-container-manylinux-2-24-merge-request:
+#   stage: prepare
+#   image: docker:19.03
+#   tags:
+#   - docker-runner
+#   script:
+#   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+#   - docker build -t $MERGE_REQUEST_BRANCH_MANYLINUX2_24_IMAGE_TAG -f docker/manylinux-2_24.Dockerfile .
+#   - docker push $MERGE_REQUEST_BRANCH_MANYLINUX2_24_IMAGE_TAG
+#   only:
+#   - merge_requests
+# ingestion-container-docker_with_python:
+#   tags: ["osdu-small"]
+#   stage: prepare
+#   image: docker:19.03
+#   script:
+#   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+#   - docker build -t $INGESTION_DOCKER_WITH_PYTHON_IMAGE_TAG -f docker/docker_with_python.Dockerfile .
+#   - docker push $INGESTION_DOCKER_WITH_PYTHON_IMAGE_TAG
+#   only:
+#   - tags
+# compile-alpine-master:
+#   stage: build
+#   image: $MASTER_ALPINE_IMAGE_TAG
+#   tags:
+#   - docker-runner
+#   cache:
+#     paths:
+#     - ccache_master
+#     - 3rdparty
+#   artifacts:
+#     expire_in: 1 hr
+#     paths:
+#     - out/build/GitLabAlpineMasterBranch
+#   before_script:
+#   - export CCACHE_BASEDIR="$PWD"
+#   - export CCACHE_DIR="$PWD/ccache_master"
+#   - export CCACHE_COMPILERCHECK=content
+#   - ccache --zero-stats || true
+#   - ccache --show-stats || true
+#   script:
+#   - export CCACHE_DIR="$PWD/ccache_master"
+#   - cmake --preset GitLabAlpineMasterBranch
+#   - cd out/build/GitLabAlpineMasterBranch
+#   - ninja -j4
+#   after_script:
+#   - export CCACHE_DIR="$PWD/ccache_master"
+#   - ccache --show-stats
+#   only:
+#   - master
+# compile-merge-request-alpine:
+#   stage: build
+#   image: $MERGE_REQUEST_BRANCH_ALPINE_IMAGE_TAG
+#   tags:
+#   - docker-runner
+#   cache:
+#     paths:
+#     - ccache_alpine
+#     - 3rdparty
+#   artifacts:
+#     expire_in: 1 hr
+#     paths:
+#     - out/build/MergeRequestAlpine
+#   before_script:
+#   - export CCACHE_BASEDIR="$PWD"
+#   - export CCACHE_DIR="$PWD/ccache_alpine"
+#   - export CCACHE_COMPILERCHECK=content
+#   - ccache --zero-stats || true
+#   - ccache --show-stats || true
+#   script:
+#   - export CCACHE_DIR="$PWD/ccache_alpine"
+#   - cmake --preset MergeRequestAlpine
+#   - cd out/build/MergeRequestAlpine
+#   - ninja -j4
+#   after_script:
+#   - export CCACHE_DIR="$PWD/ccache_alpine"
+#   - ccache --show-stats
+#   only:
+#   - merge_requests
+# compile-merge-request-manylinux2014:
+#   stage: build
+#   image: $MERGE_REQUEST_BRANCH_MANYLINUX2014_IMAGE_TAG
+#   tags:
+#   - docker-runner
+#   cache:
+#     paths:
+#     - ccache_manylinux2014
+#     - 3rdparty
+#   artifacts:
+#     expire_in: 1 hr
+#     paths:
+#     - out/build/MergeRequestManyLinux2014
+#   before_script:
+#   - export CCACHE_BASEDIR="$PWD"
+#   - export CCACHE_DIR="$PWD/ccache_manylinux2014"
+#   - export CCACHE_COMPILERCHECK=content
+#   - ccache --zero-stats || true
+#   - ccache --show-stats || true
+#   script:
+#   - export CCACHE_DIR="$PWD/ccache_manylinux2014"
+#   - cmake --preset MergeRequestManyLinux2014
+#   - cd out/build/MergeRequestManyLinux2014
+#   - ninja -j4
+#   after_script:
+#   - export CCACHE_DIR="$PWD/ccache_manylinux2014"
+#   - ccache --show-stats
+#   only:
+#   - merge_requests
+# compile-merge-request-manylinux2_24:
+#   stage: build
+#   image: $MERGE_REQUEST_BRANCH_MANYLINUX2_24_IMAGE_TAG
+#   tags:
+#   - docker-runner
+#   cache:
+#     paths:
+#     - ccache_manylinux2_24
+#     - 3rdparty
+#   artifacts:
+#     expire_in: 1 hr
+#     paths:
+#     - out/build/MergeRequestManyLinux2_24
+#   before_script:
+#   - export CCACHE_BASEDIR="$PWD"
+#   - export CCACHE_DIR="$PWD/ccache_manylinux2_24"
+#   - export CCACHE_COMPILERCHECK=content
+#   - ccache --zero-stats || true
+#   - ccache --show-stats || true
+#   script:
+#   - export CCACHE_DIR="$PWD/ccache_manylinux2_24"
+#   - cmake --preset MergeRequestManyLinux2_24
+#   - cd out/build/MergeRequestManyLinux2_24
+#   - ninja -j4
+#   after_script:
+#   - export CCACHE_DIR="$PWD/ccache_manylinux2_24"
+#   - ccache --show-stats
+#   only:
+#   - merge_requests
+# ingestion-image-docker:
+#   stage: build
+#   image: $INGESTION_DOCKER_WITH_PYTHON_IMAGE_TAG
+#   tags:
+#   - docker-runner
+#   script:
+#   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+#   - python3 build_osdu_image.py -t $CI_COMMIT_TAG
+#   - docker push $CI_REGISTRY_IMAGE/openvds-ingestion:$CI_COMMIT_TAG
+#   only:
+#   - tags
+# unit-tests-alpine:
+#   stage: test
+#   image: $MERGE_REQUEST_BRANCH_ALPINE_IMAGE_TAG
+#   tags:
+#   - docker-runner
+#   cache:
+#     paths:
+#     - 3rdparty
+#   script:
+#   - cd out/build/MergeRequestAlpine
+#   - ctest -V
+#   only:
+#   - merge_requests
+#   dependencies:
+#   - compile-merge-request-alpine
+#   artifacts:
+#     when: always
+#     reports:
+#       junit:
+#         - build/test_results/*.xml
+#         - build/test_results_java/junitreports/*.xml
+# unit-tests-manylinux2014:
+#   stage: test
+#   image: $MERGE_REQUEST_BRANCH_MANYLINUX2014_IMAGE_TAG
+#   tags:
+#   - docker-runner
+#   cache:
+#     paths:
+#     - 3rdparty
+#   script:
+#   - cd out/build/MergeRequestManyLinux2014
+#   - ctest -V
+#   only:
+#   - merge_requests
+#   dependencies:
+#   - compile-merge-request-manylinux2014
+#   artifacts:
+#     when: always
+#     reports:
+#       junit:
+#         - out/build/MergeRequestManyLinux2014/test_results/*.xml
+#         - out/build/MergeRequestManyLinux2014/test_results_java/junitreports/*.xml
+# unit-tests-manylinux2_24:
+#   stage: test
+#   image: $MERGE_REQUEST_BRANCH_MANYLINUX2_24_IMAGE_TAG
+#   tags:
+#   - docker-runner
+#   cache:
+#     paths:
+#     - 3rdparty
+#   script:
+#   - cd out/build/MergeRequestManyLinux2_24
+#   - ctest -V
+#   only:
+#   - merge_requests
+#   dependencies:
+#   - compile-merge-request-manylinux2_24
+#   artifacts:
+#     when: always
+#     reports:
+#       junit:
+#         - out/build/MergeRequestManyLinux2_24/test_results/*.xml
+#         - out/build/MergeRequestManyLinux2_24/test_results_java/junitreports/*.xml
+# pages:
+#   stage: deploy
+#   image: $MASTER_ALPINE_IMAGE_TAG
+#   tags:
+#   - docker-runner
+#   dependencies:
+#   - compile-alpine-master
+#   script:
+#   - mv out/build/GitLabAlpineMasterBranch/docs/html public
+#   artifacts:
+#     paths:
+#     - public
+#   only:
+#   - master
+# include:
+# - template: Security/SAST.gitlab-ci.yml
+# sast:
+#   variables:
+#     SAST_EXCLUDED_PATHS: _skbuild, 3rdparty, binpackage, CMake, common, docker, docs,
+#       examples, java, out, python, tests
+#     SAST_EXCLUDED_ANALYZERS: bandit, brakeman, eslint, gosec, kubesec, nodejs-scan,
+#       phpcs-security-audit, pmd-apex, security-code-scan, semgrep, sobelow, spotbugs
+#     SAST_FLAWFINDER_LEVEL: '4'
+#   stage: test
 
 # FIXME (GONRG-6461) Move containerize logic to common pipeline approach 
 gc-containerize-gcr:
