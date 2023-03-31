@@ -282,7 +282,7 @@ variables:
 gc-containerize-gcr:
   # environment:
   #   name: Google_Cloud
-  stage: trigger
+  stage: build
   trigger:
     include:
       - project: 'osdu/platform/deployment-and-operations/infra-gcp-provisioning'
