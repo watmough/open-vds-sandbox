@@ -280,12 +280,13 @@ variables:
 
 # FIXME (GONRG-6461) Move containerize logic to common pipeline approach 
 gc-containerize-gcr:
-  environment:
-    name: Google_Cloud
+  # environment:
+  #   name: Google_Cloud
   stage: trigger
   trigger:
-    project: 'your-group/infra-gcp-provisioning'
-    ref: 'master'
+    project: 'osdu/platform/deployment-and-operations/infra-gcp-provisioning'
+    strategy: depend
+    branch: master
     include:
       - local: 'pipelines/containerize.yaml'
   # variables:
@@ -295,6 +296,7 @@ gc-containerize-gcr:
   rules:
     - if: "$GC == '1' && $CI_COMMIT_TAG"
       when: on_success
+
   # trigger:
   #   project: 'osdu/platform/deployment-and-operations/infra-gcp-provisioning'
   #   branch: master
