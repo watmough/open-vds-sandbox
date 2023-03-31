@@ -285,10 +285,8 @@ gc-containerize-gcr:
   stage: trigger
   trigger:
     project: 'osdu/platform/deployment-and-operations/infra-gcp-provisioning'
-    strategy: depend
-    branch: master
-    include:
-      - local: 'pipelines/containerize.yaml'
+    ref: 'master'
+    include: 'pipelines/containerize.yaml'
   # variables:
   #   PROJECT_ID: your-project-id
   #   IMAGE_TAG: latest
