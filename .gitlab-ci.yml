@@ -297,13 +297,10 @@ gc-containerize-gcr:
   stage: containerize
   trigger:
     include:
-      - project: "osdu/platform/deployment-and-operations/infra-gcp-provisioning"
+      # - project: "osdu/platform/deployment-and-operations/infra-gcp-provisioning"
+      - project: "osdu/platform/ci-cd-pipelines"
         ref: "master"
-        file: "pipelines/containerize.yml"
-  # variables:
-  #   PROJECT_ID: your-project-id
-  #   IMAGE_TAG: latest
-  #   IMAGE_NAME: your-image-name
+        file: "cloud-providers/gc-containerize.yml"
   rules:
     - if: "$GC == '1' && $CI_COMMIT_TAG"
       when: on_success
