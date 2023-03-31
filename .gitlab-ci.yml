@@ -285,9 +285,9 @@ gc-containerize-gcr:
   stage: build
   trigger:
     include:
-      - project: 'osdu/platform/deployment-and-operations/infra-gcp-provisioning'
-        ref: 'master'
-        file: 'pipelines/containerize.yaml'
+      - project: "osdu/platform/deployment-and-operations/infra-gcp-provisioning"
+        ref: "master"
+        file: "pipelines/containerize.yaml"
   # variables:
   #   PROJECT_ID: your-project-id
   #   IMAGE_TAG: latest
