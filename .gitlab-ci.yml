@@ -1,8 +1,8 @@
-stages:
-- prepare
-- build
-- test
-- deploy
+# stages:
+# - prepare
+# - build
+# - test
+# - deploy
 variables:
   MASTER_ALPINE_IMAGE_TAG: "$CI_REGISTRY_IMAGE/master:alpine-3"
   MERGE_REQUEST_BRANCH_ALPINE_IMAGE_TAG: "$CI_REGISTRY_IMAGE/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME:alpine-3"
