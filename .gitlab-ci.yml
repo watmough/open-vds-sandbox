@@ -303,7 +303,7 @@ gc-containerize-gcr:
         file: "cloud-providers/gc-containerize.yml"
   rules:
     - if: "$GC == '1' && $CI_COMMIT_TAG"
-      when: on_success
+      when: always
 
   # image: $INGESTION_DOCKER_WITH_PYTHON_IMAGE_TAG
   # cache: {}
