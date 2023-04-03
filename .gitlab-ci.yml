@@ -308,8 +308,8 @@ gc-containerize-gcr:
   before_script:
     # - gcloud components install gke-gcloud-auth-plugin -q
     # - echo "export USE_GKE_GCLOUD_AUTH_PLUGIN=True" >> ~/.profile && source ~/.profile
-    # - export GOOGLE_APPLICATION_CREDENTIALS=${GC_DF_TF_CI_GOOGLE_APPLICATION_CREDENTIALS}
-    - gcloud auth activate-service-account --key-file=${GC_CI_GOOGLE_APPLICATION_CREDENTIALS} 
+    - export GOOGLE_APPLICATION_CREDENTIALS=${GC_DF_CI_GOOGLE_APPLICATION_CREDENTIALS}
+    - gcloud auth activate-service-account --key-file=${GC_DF_CI_GOOGLE_APPLICATION_CREDENTIALS} 
     - gcloud auth configure-docker gcr.io
   script:
     - python3 build_osdu_image.py -t $CI_COMMIT_TAG
