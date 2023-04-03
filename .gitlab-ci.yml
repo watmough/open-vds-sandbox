@@ -9,7 +9,7 @@ variables:
   MERGE_REQUEST_BRANCH_ALPINE_IMAGE_TAG: "$CI_REGISTRY_IMAGE/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME:alpine-3"
   MERGE_REQUEST_BRANCH_MANYLINUX2014_IMAGE_TAG: "$CI_REGISTRY_IMAGE/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME:manylinux2014-4"
   MERGE_REQUEST_BRANCH_MANYLINUX2_24_IMAGE_TAG: "$CI_REGISTRY_IMAGE/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME:manylinux2_24-4"
-  INGESTION_DOCKER_WITH_PYTHON_IMAGE_TAG: "$CI_REGISTRY_IMAGE/cloud-sdk:alpine"
+  # INGESTION_DOCKER_WITH_PYTHON_IMAGE_TAG: "$CI_REGISTRY_IMAGE/cloud-sdk:alpine"
 # devel-container-alpine-gitlab:
 #   stage: prepare
 #   image: docker:19.03
@@ -300,7 +300,7 @@ gc-containerize-gcr:
   environment:
     name: Google_Cloud
   stage: build
-  image: $INGESTION_DOCKER_WITH_PYTHON_IMAGE_TAG
+  image: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
   services:
     - docker:dind
   tags: ["osdu-medium"]
