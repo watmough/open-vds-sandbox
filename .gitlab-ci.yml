@@ -3,17 +3,6 @@ stages:
 - build
 - test
 - deploy
-- containerize
-- .common-gitlab-containerize
-- .common-gcr-containerize
-- gc-containerize-bootstrap-elastic-on-prem-gitlab
-- gc-containerize-bootstrap-postgres-on-prem-gitlab
-- gc-containerize-bootstrap-minio-on-prem-gitlab
-- gc-containerize-bootstrap-keycloak-on-prem-gitlab
-- gc-containerize-bootstrap-elastic-on-prem-gcr
-- gc-containerize-bootstrap-postgres-on-prem-gcr
-- gc-containerize-bootstrap-minio-on-prem-gcr
-- gc-containerize-bootstrap-keycloak-on-prem-gcr
 
 variables:
   MASTER_ALPINE_IMAGE_TAG: "$CI_REGISTRY_IMAGE/master:alpine-3"
@@ -298,9 +287,12 @@ gc-containerize-gcr:
   trigger:
     include:
       # - project: "osdu/platform/deployment-and-operations/infra-gcp-provisioning"
-      - project: "osdu/platform/ci-cd-pipelines"
+      - project: "osdu/platform/deployment-and-operations/infra-gcp-provisioning"
         ref: "master"
-        file: "cloud-providers/gc-containerize.yml"
+        file: "pipelines/stages.yml"
+      - project: "osdu/platform/deployment-and-operations/infra-gcp-provisioning"
+        ref: "master"
+        file: "pipelines/gc-containerize.yml"  
   rules:
     - if: "$GC == '1' && $CI_COMMIT_TAG"
       when: always
