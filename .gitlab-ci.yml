@@ -308,7 +308,7 @@ gc-containerize-gcr:
     - export GOOGLE_APPLICATION_CREDENTIALS=${GC_DF_TF_CI_GOOGLE_APPLICATION_CREDENTIALS}
     - gcloud auth activate-service-account --key-file=${GC_DF_TF_CI_GOOGLE_APPLICATION_CREDENTIALS} 
     - gcloud auth configure-docker
-    - cat $GC_DEPLOY_FILE | gcloud auth activate-service-account --key-file=<path-to-service-account-key-file> docker login -u _json_key --password-stdin https://gcr.io
+    # - cat $GC_DEPLOY_FILE | gcloud auth activate-service-account --key-file=<path-to-service-account-key-file> docker login -u _json_key --password-stdin https://gcr.io
   script:
     - python3 build_osdu_image.py -t $CI_COMMIT_TAG
     - docker tag $CI_REGISTRY_IMAGE/openvds-ingestion:$CI_COMMIT_TAG gcr.io/osdu-anthos/openvds-ingestion/openvds-ingestion:$CI_COMMIT_TAG
