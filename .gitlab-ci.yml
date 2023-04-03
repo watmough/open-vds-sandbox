@@ -3,6 +3,7 @@ stages:
 - build
 - test
 - deploy
+- containerize
 
 variables:
   MASTER_ALPINE_IMAGE_TAG: "$CI_REGISTRY_IMAGE/master:alpine-3"
