@@ -293,7 +293,7 @@ gc-containerize-gcr:
         file: "pipelines/stages.yml"
       - project: "osdu/platform/deployment-and-operations/infra-gcp-provisioning"
         ref: "master"
-        file: "pipelines/gc-containerize.yml"  
+        file: "pipelines/containerize.yml"  
   rules:
     - if: "$GC == '1' && $CI_COMMIT_TAG"
       when: always
