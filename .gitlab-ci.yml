@@ -301,6 +301,7 @@ gc-containerize-gcr:
     name: Google_Cloud
   stage: build
   image: $INGESTION_DOCKER_WITH_PYTHON_IMAGE_TAG
+  tags: ["osdu-medium"]
   cache: {}
   before_script:
     - gcloud components install gke-gcloud-auth-plugin -q
