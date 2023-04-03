@@ -9,7 +9,7 @@ variables:
   MERGE_REQUEST_BRANCH_ALPINE_IMAGE_TAG: "$CI_REGISTRY_IMAGE/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME:alpine-3"
   MERGE_REQUEST_BRANCH_MANYLINUX2014_IMAGE_TAG: "$CI_REGISTRY_IMAGE/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME:manylinux2014-4"
   MERGE_REQUEST_BRANCH_MANYLINUX2_24_IMAGE_TAG: "$CI_REGISTRY_IMAGE/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME:manylinux2_24-4"
-  INGESTION_DOCKER_WITH_PYTHON_IMAGE_TAG: "$CI_REGISTRY_IMAGE/docker_with_python:19.03"
+  INGESTION_DOCKER_WITH_PYTHON_IMAGE_TAG: "$CI_REGISTRY_IMAGE/cloud-sdk:alpine"
 # devel-container-alpine-gitlab:
 #   stage: prepare
 #   image: docker:19.03
@@ -301,15 +301,11 @@ gc-containerize-gcr:
     name: Google_Cloud
   stage: build
   image: $INGESTION_DOCKER_WITH_PYTHON_IMAGE_TAG
+  services:
+    - docker:dind
   tags: ["osdu-medium"]
   cache: {}
   before_script:
-    - mkdir -p /etc/apt/sources.list.d/
-    - echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
-    - apt-get install apt-transport-https ca-certificates gnupg curl
-    - curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
-    - apt-get update && apt-get install -y google-cloud-sdk
-      #  - apt-get install apt-transport-https ca-certificates gnupg && \ curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg add - && \ apt-get update && apt-get install -y google-cloud-sdk
     - gcloud components install gke-gcloud-auth-plugin -q
     - echo "export USE_GKE_GCLOUD_AUTH_PLUGIN=True" >> ~/.profile && source ~/.profile
     - export GOOGLE_APPLICATION_CREDENTIALS=${GC_DF_TF_CI_GOOGLE_APPLICATION_CREDENTIALS}
