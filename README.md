@@ -198,15 +198,5 @@ AWS S3:
 - See https://docs.aws.amazon.com/credref/latest/refdocs/environment-variables.html for more
 
 OSDU/DELFI Seismic DMS:
-- `SD_IMP_AUTH_TOKEN`
-- `SD_SVC_API_KEY`
-- `SD_SVC_ENV`
 - `SD_SVC_URL`
-- `SD_CURL_VERBOSE_RANDOM`
-- `SD_SEISTORE_TELEMETRY`
-- `SD_TIMER_REPORT_IF_SIZE`
-- `SD_TIMER_REPORT_INTERVAL`
-- `SD_TIMER_REPORT_RANDOM`
-- `ENABLE_CURL_SIGNAL_HANDLERS`
-- `DISABLE_SSL_CERTIFICATE_VERIFICATION`
-- See https://community.opengroup.org/osdu/platform/domain-data-mgmt-services/seismic/seismic-dms-suite/seismic-store-cpp-lib/-/tree/master#environemnt-control-variables for more
+- `SD_SVC_API_KEY`
