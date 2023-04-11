@@ -70,6 +70,7 @@ compile-alpine-master:
   tags:
   - docker-runner
   cache:
+    key: ccache_master
     paths:
     - ccache_master
     - 3rdparty
@@ -78,7 +79,6 @@ compile-alpine-master:
     paths:
     - out/build/GitLabAlpineMasterBranch
   before_script:
-  - export CCACHE_BASEDIR="$PWD"
   - export CCACHE_DIR="$PWD/ccache_master"
   - export CCACHE_COMPILERCHECK=content
   - ccache --zero-stats || true
@@ -99,6 +99,7 @@ compile-merge-request-alpine:
   tags:
   - docker-runner
   cache:
+    key: cache_alpine
     paths:
     - ccache_alpine
     - 3rdparty
@@ -107,7 +108,6 @@ compile-merge-request-alpine:
     paths:
     - out/build/MergeRequestAlpine
   before_script:
-  - export CCACHE_BASEDIR="$PWD"
   - export CCACHE_DIR="$PWD/ccache_alpine"
   - export CCACHE_COMPILERCHECK=content
   - ccache --zero-stats || true
@@ -128,6 +128,7 @@ compile-merge-request-manylinux2014:
   tags:
   - docker-runner
   cache:
+    key: cache_manylinux_2014
     paths:
     - ccache_manylinux2014
     - 3rdparty
@@ -136,7 +137,6 @@ compile-merge-request-manylinux2014:
     paths:
     - out/build/MergeRequestManyLinux2014
   before_script:
-  - export CCACHE_BASEDIR="$PWD"
   - export CCACHE_DIR="$PWD/ccache_manylinux2014"
   - export CCACHE_COMPILERCHECK=content
   - ccache --zero-stats || true
@@ -157,6 +157,7 @@ compile-merge-request-manylinux2_24:
   tags:
   - docker-runner
   cache:
+    key: cache_manylinux2_24
     paths:
     - ccache_manylinux2_24
     - 3rdparty
@@ -165,7 +166,6 @@ compile-merge-request-manylinux2_24:
     paths:
     - out/build/MergeRequestManyLinux2_24
   before_script:
-  - export CCACHE_BASEDIR="$PWD"
   - export CCACHE_DIR="$PWD/ccache_manylinux2_24"
   - export CCACHE_COMPILERCHECK=content
   - ccache --zero-stats || true
@@ -197,6 +197,7 @@ unit-tests-alpine:
   tags:
   - docker-runner
   cache:
+    key: cache_alpine
     paths:
     - 3rdparty
   script:
@@ -218,6 +219,7 @@ unit-tests-manylinux2014:
   tags:
   - docker-runner
   cache:
+    key: cache_manylinux_2014
     paths:
     - 3rdparty
   script:
@@ -239,6 +241,7 @@ unit-tests-manylinux2_24:
   tags:
   - docker-runner
   cache:
+    key: cache_manylinux2_24
     paths:
     - 3rdparty
   script:
