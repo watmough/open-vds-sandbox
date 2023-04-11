@@ -33,6 +33,12 @@ IOManagerDMSProxy::IOManagerDMSProxy(const DMSOpenOptions& openOptions, IOManage
   , m_dmsManager(new DmsManager(openOptions.sdAuthorityUrl, openOptions.sdApiKey, m_curlHandler, m_logger))
   , m_useFileNameForSingleFileDatasets(openOptions.useFileNameForSingleFileDatasets)
 {
+  if (m_dmsManager->m_authorityUrl.empty())
+  {
+    error.code = -1;
+    error.string = "DMS OpenOptions sdAuthorityUrl is empty.";
+    return;
+  }
   if (openOptions.datasetPath.size() && m_useFileNameForSingleFileDatasets)
   {
     auto it = openOptions.datasetPath.rfind('/');
