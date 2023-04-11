@@ -440,7 +440,7 @@ static void beforeBlockCB(uv_prepare_t *handle)
             }
             else
             {
-              eventLoopData->logger.LogError(fmt::format("CURL http respons error {}. No more retries {}", responseCode, url));
+              eventLoopData->logger.LogTrace(fmt::format("CURL http respons error {}. No more retries {}", responseCode, url));
               error.code = responseCode;
               error.string = CurlHttpErrorMessage(responseCode, url);
             }
@@ -463,7 +463,7 @@ static void beforeBlockCB(uv_prepare_t *handle)
           {
             error.code = curlCode;
             error.string = CURLErrorMessage(socketContext->curlEasy, curlCode);
-            eventLoopData->logger.LogError(fmt::format("Unexpected CURL response {}. {}", int(curlCode), error.string));
+            eventLoopData->logger.LogTrace(fmt::format("Unexpected CURL response {}. {}", int(curlCode), error.string));
           }
         }
       }
@@ -482,7 +482,7 @@ static void beforeBlockCB(uv_prepare_t *handle)
       {
         error.code = code;
         error.string = CURLErrorMessage(socketContext->curlEasy, code);
-        eventLoopData->logger.LogError(fmt::format("CURL Unexpected curl code: {} - {}", int(code), error.string));
+        eventLoopData->logger.LogTrace(fmt::format("CURL Unexpected curl code: {} - {}", int(code), error.string));
       }
 
       socketContext->handleDone(responseCode, error);
@@ -494,7 +494,7 @@ static void beforeBlockCB(uv_prepare_t *handle)
       break;
     }
     default:
-      eventLoopData->logger.LogWarning(fmt::format("Unhandeled CURL message {}", int(message->msg)));
+      eventLoopData->logger.LogError(fmt::format("Unhandeled CURL message {}", int(message->msg)));
       break;
     }
   }
