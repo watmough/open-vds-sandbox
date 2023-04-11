@@ -26,6 +26,8 @@
 #include "GcpDmsIoManagerFactory.h"
 #endif
 
+#include "VDS/Env.h"
+
 namespace OpenVDS
 {
 static std::vector<std::string> split(const std::string& text, char sep) 
@@ -63,8 +65,8 @@ bool ParseJSONFromBuffer(const std::vector<unsigned char> &json, Json::Value &ro
 }
 
 DmsManager::DmsManager(const std::string& authorityUrl, const std::string& appKey, CurlHandler &curlHandler, Logger& logger)
-  : m_authorityUrl(authorityUrl)
-  , m_appKey(appKey)
+  : m_authorityUrl(authorityUrl.empty() ? getStringEnvironmentVariable("SD_SVC_URL") : authorityUrl)
+  , m_appKey(appKey.empty() ? getStringEnvironmentVariable("SD_SVC_API_KEY") : appKey)
   , m_curlHandler(curlHandler)
   , m_logger(logger)
   , m_authProviderCallback(nullptr)
