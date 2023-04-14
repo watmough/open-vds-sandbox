@@ -44,19 +44,6 @@
 namespace OpenVDS
 {
 
-static ConversionParameters makeConversionParameters(VolumeDataLayer const *layer, bool hasReplacementNoValue, float replacementNoValue)
-{
-  ConversionParameters ret;
-  ret.valueRangeMin = layer->GetValueRange().Min;
-  ret.valueRangeMax = layer->GetValueRange().Max;
-  ret.integerScale = layer->GetIntegerScale();
-  ret.integerOffset = layer->GetIntegerOffset();
-  ret.noValue = layer->GetNoValue();
-  ret.replacementNoValue = replacementNoValue;
-  ret.hasReplacementNoValue = hasReplacementNoValue;
-  return ret;
-}
-
 static bool RequestSubsetProcessPage(VolumeDataPageImpl* page, const VolumeDataChunk &chunk, const int32_t (&destMin)[Dimensionality_Max], const int32_t (&destMax)[Dimensionality_Max], VolumeDataChannelDescriptor::Format destinationFormat, const ConversionParameters &conversionParameters, void *destBuffer, Error &error)
 {
   int32_t sourceMin[Dimensionality_Max];
@@ -92,7 +79,7 @@ static bool RequestSubsetProcessPage(VolumeDataPageImpl* page, const VolumeDataC
 
   DimensionGroup sourceDimensionGroup = chunk.layer->GetChunkDimensionGroup();
 
-  VolumeDataChannelDescriptor::Format sourceFormat = chunk.layer->GetFormat();
+  VolumeDataChannelDescriptor::Format sourceFormat = page->GetConversionParameters().format;
   bool sourceIs1Bit = (sourceFormat == VolumeDataChannelDescriptor::Format_1Bit);
 
   int32_t globalSourceSize[Dimensionality_Max];
@@ -192,9 +179,9 @@ int64_t VolumeDataRequestProcessor::RequestVolumeSubset(void *buffer, VolumeData
     throw std::runtime_error("Requested volume subset does not contain any data");
   }
 
-  ConversionParameters conversionParameters = makeConversionParameters(volumeDataLayer, isReplaceNoValue, replacementNoValue);
+  ConversionParameters conversionParameters = makeConversionParameters(volumeDataLayer, format, isReplaceNoValue, replacementNoValue);
 
-  return AddJob(chunksInRegion, [boxRequested, buffer, format, conversionParameters](VolumeDataPageImpl* page, VolumeDataChunk dataChunk, Error &error) {return RequestSubsetProcessPage(page, dataChunk, boxRequested.min, boxRequested.max, format, conversionParameters, buffer, error);}, format == VolumeDataChannelDescriptor::Format_1Bit);
+  return AddJob(chunksInRegion, conversionParameters, [boxRequested, buffer, format, conversionParameters](VolumeDataPageImpl* page, VolumeDataChunk dataChunk, Error &error) {return RequestSubsetProcessPage(page, dataChunk, boxRequested.min, boxRequested.max, format, conversionParameters, buffer, error);}, format == VolumeDataChannelDescriptor::Format_1Bit);
 }
 
 int64_t VolumeDataRequestProcessor::RequestRemap(VolumeDataPageImpl& targetPage, std::vector<VolumeDataChunk> const &sourceChunks)
@@ -228,7 +215,7 @@ int64_t VolumeDataRequestProcessor::RequestRemap(VolumeDataPageImpl& targetPage,
   auto sharedData = std::make_shared<SharedData>(int(sourceChunks.size()));
   sharedData->m_buffer.resize(allocatedSize);
 
-  return AddJob(sourceChunks, [&targetPage, targetDataChunk, targetDataBlock, sharedData](VolumeDataPageImpl* sourcePage, VolumeDataChunk sourceDataChunk, Error &error) -> bool
+  return AddJob(sourceChunks, targetPage.GetConversionParameters(), [&targetPage, targetDataChunk, targetDataBlock, sharedData](VolumeDataPageImpl* sourcePage, VolumeDataChunk sourceDataChunk, Error& error) -> bool
   {
     VolumeDataLayer const *sourceLayer = sourceDataChunk.layer;
     VolumeDataLayer const *targetLayer = targetDataChunk.layer;
@@ -236,7 +223,7 @@ int64_t VolumeDataRequestProcessor::RequestRemap(VolumeDataPageImpl& targetPage,
     assert(sourceLayer->GetComponents() == targetLayer->GetComponents() && "Cannot remap between layers with different number of components");
     assert(sourceLayer->GetVolumeDataChannelMapping() == targetLayer->GetVolumeDataChannelMapping() && "Cannot remap between layers with different mappings");
 
-    ConversionParameters conversionParameters = makeConversionParameters(sourceLayer, false, 0.0f);
+    ConversionParameters conversionParameters = targetPage.GetConversionParameters();
 
     int LOD = targetLayer->GetLOD();
     int sourceLOD = sourceLayer->GetLOD();
@@ -1113,7 +1100,8 @@ VolumeDataRequestProcessor::RequestProjectedVolumeSubset(void *buffer, VolumeDat
   {
     throw std::runtime_error("Requested volume subset does not contain any data");
   }
-  return AddJob(chunksInRegion, [boxRequested, buffer, projectedDimensions, voxelPlaneSwapped, format, interpolationMethod, isReplaceNoValue, replacementNoValue](VolumeDataPageImpl* page, VolumeDataChunk dataChunk, Error &error) { return RequestProjectedVolumeSubsetProcessPage(page, dataChunk, boxRequested.min, boxRequested.max, projectedDimensions, voxelPlaneSwapped, format, interpolationMethod, isReplaceNoValue, replacementNoValue, buffer, error);}, format == VolumeDataChannelDescriptor::Format_1Bit);
+  auto conversionParameters = makeConversionParameters(volumeDataLayer, VolumeDataFormat::Format_R32, isReplaceNoValue, replacementNoValue);
+  return AddJob(chunksInRegion, conversionParameters, [boxRequested, buffer, projectedDimensions, voxelPlaneSwapped, format, interpolationMethod, isReplaceNoValue, replacementNoValue](VolumeDataPageImpl* page, VolumeDataChunk dataChunk, Error &error) { return RequestProjectedVolumeSubsetProcessPage(page, dataChunk, boxRequested.min, boxRequested.max, projectedDimensions, voxelPlaneSwapped, format, interpolationMethod, isReplaceNoValue, replacementNoValue, buffer, error);}, format == VolumeDataChannelDescriptor::Format_1Bit);
 }
 
 struct VolumeDataSamplePos
@@ -1326,7 +1314,8 @@ int64_t VolumeDataRequestProcessor::RequestVolumeSamples(void *buffer, VolumeDat
     }
   }
 
-  return AddJob(volumeDataChunks, [buffer, volumeDataSamplePositions, interpolationMethod, isReplaceNoValue, replacementNoValue](VolumeDataPageImpl* page, VolumeDataChunk dataChunk, Error& error)
+  auto conversionParameters = makeConversionParameters(volumeDataLayer, VolumeDataFormat::Format_R32, isReplaceNoValue, replacementNoValue);
+  return AddJob(volumeDataChunks, conversionParameters, [buffer, volumeDataSamplePositions, interpolationMethod, isReplaceNoValue, replacementNoValue](VolumeDataPageImpl* page, VolumeDataChunk dataChunk, Error& error)
     {
       return RequestVolumeSamplesProcessPage(page, dataChunk,  *volumeDataSamplePositions, interpolationMethod, dataChunk.layer->IsUseNoValue(), isReplaceNoValue, isReplaceNoValue ? replacementNoValue : dataChunk.layer->GetNoValue(), buffer, error);
     });
@@ -1571,7 +1560,8 @@ int64_t VolumeDataRequestProcessor::RequestVolumeTraces(void *buffer, VolumeData
     }
   }
 
-  return AddJob(volumeDataChunks, [buffer, volumeDataSamplePositions, interpolationMethod, traceDimension, replacementNoValue](VolumeDataPageImpl* page, VolumeDataChunk dataChunk, Error& error)
+  auto conversionParameters = makeConversionParameters(volumeDataLayer, VolumeDataFormat::Format_R32, isReplaceNoValue, replacementNoValue);
+  return AddJob(volumeDataChunks, conversionParameters, [buffer, volumeDataSamplePositions, interpolationMethod, traceDimension, replacementNoValue](VolumeDataPageImpl* page, VolumeDataChunk dataChunk, Error& error)
     {
       return RequestVolumeTracesProcessPage(page, dataChunk,  *volumeDataSamplePositions, interpolationMethod, traceDimension, replacementNoValue, buffer, error);
     });
@@ -1581,7 +1571,8 @@ int64_t VolumeDataRequestProcessor::PrefetchVolumeChunk(VolumeDataLayer const *v
 {
   std::vector<VolumeDataChunk> chunks;
   chunks.push_back(volumeDataLayer->GetChunkFromIndex(chunkIndex));
-  return AddJob(chunks, [](VolumeDataPageImpl *page, VolumeDataChunk dataChunk, Error &error) {return true;});
+  auto conversionParameters = makeConversionParameters(volumeDataLayer, volumeDataLayer->GetFormat(), false, 0.0);
+  return AddJob(chunks, conversionParameters, [](VolumeDataPageImpl* page, VolumeDataChunk dataChunk, Error& error) {return true; });
 }
 
 int64_t VolumeDataRequestProcessor::StaticGetVolumeSubsetBufferSize(VolumeDataLayout const *volumeDataLayout, const int (&minVoxelCoordinates)[Dimensionality_Max], const int (&maxVoxelCoordinates)[Dimensionality_Max], VolumeDataChannelDescriptor::Format format, int LOD, int channel)
@@ -1813,7 +1804,7 @@ static void SetErrorForJob(Job* job)
   }
 }
 
-int64_t VolumeDataRequestProcessor::AddJob(const std::vector<VolumeDataChunk>& chunks, std::function<bool(VolumeDataPageImpl * page, const VolumeDataChunk &volumeDataChunk, Error & error)> processor, bool singleThread)
+int64_t VolumeDataRequestProcessor::AddJob(const std::vector<VolumeDataChunk>& chunks, const ConversionParameters &conversionParameters, std::function<bool(VolumeDataPageImpl * page, const VolumeDataChunk &volumeDataChunk, Error & error)> processor, bool singleThread)
 {
   auto layer = chunks.front().layer;
   DimensionsND dimensions = DimensionGroupUtil::GetDimensionsNDFromDimensionGroup(layer->GetPrimaryChannelLayer().GetChunkDimensionGroup());
@@ -1823,7 +1814,7 @@ int64_t VolumeDataRequestProcessor::AddJob(const std::vector<VolumeDataChunk>& c
   const int maxPages = std::max(8, (int)chunks.size());
 
   std::unique_lock<std::mutex> lock(m_mutex);
-  PageAccessorKey key = { dimensions, lod, channel };
+  PageAccessorKey key = { dimensions, lod, channel, conversionParameters };
   auto page_accessor_it = m_pageAccessors.find(key);
   if (page_accessor_it == m_pageAccessors.end())
   {

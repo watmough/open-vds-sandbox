@@ -38,10 +38,11 @@
 namespace OpenVDS
 {
 
-VolumeDataPageAccessorImpl::VolumeDataPageAccessorImpl(VolumeDataAccessManagerImpl* accessManager, VolumeDataPageAccessorImpl *parentVolumeDataPageAccessor, VolumeDataLayer const* layer, int maxPages, AccessMode accessMode, Logger &logger)
+VolumeDataPageAccessorImpl::VolumeDataPageAccessorImpl(VolumeDataAccessManagerImpl* accessManager, VolumeDataPageAccessorImpl *parentVolumeDataPageAccessor, VolumeDataLayer const* layer, const ConversionParameters &conversionParameters, int maxPages, AccessMode accessMode, Logger &logger)
   : m_accessManager(accessManager)
   , m_parentVolumeDataPageAccessor(parentVolumeDataPageAccessor)
   , m_layer(layer)
+  , m_conversionParameters(conversionParameters)
   , m_pagesFound(0)
   , m_pagesRead(0)
   , m_pagesWritten(0)
@@ -513,7 +514,7 @@ bool VolumeDataPageAccessorImpl::ReadPreparedPage(VolumeDataPageImpl* pageImpl)
 
       if (!sparse)
       {
-        bool success = m_accessManager->GetVolumeDataStore()->DeserializeVolumeData(volumeDataChunk, serialized_data, metadata, compressionInfo.GetCompressionMethod(), compressionInfo.GetAdaptiveLevel(), m_layer->GetFormat(), dataBlock, page_data, page_hash, error);
+        bool success = m_accessManager->GetVolumeDataStore()->DeserializeVolumeData(volumeDataChunk, serialized_data, metadata, compressionInfo.GetCompressionMethod(), compressionInfo.GetAdaptiveLevel(), pageImpl->GetConversionParameters(), dataBlock, page_data, page_hash, error);
         if(!success)
         {
           pageListMutexLock.lock();

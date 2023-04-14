@@ -720,7 +720,7 @@ bool VolumeDataStore::CreateConstantValueDataBlock(VolumeDataChunk const &volume
   return FillConstantValueBuffer(buffer.data(), allocatedElements, format, convertedConstantValue, error);
 }
 
-bool VolumeDataStore::DeserializeVolumeData(const VolumeDataChunk& volumeDataChunk, const std::vector<uint8_t>& serializedData, const std::vector<uint8_t>& metadata, CompressionMethod compressionMethod, int32_t adaptiveLevel, VolumeDataChannelDescriptor::Format loadFormat, DataBlock& dataBlock, std::vector<uint8_t>& target, uint64_t& targetHash, Error& error)
+bool VolumeDataStore::DeserializeVolumeData(const VolumeDataChunk& volumeDataChunk, const std::vector<uint8_t>& serializedData, const std::vector<uint8_t>& metadata, CompressionMethod compressionMethod, int32_t adaptiveLevel, const ConversionParameters &conversionParameters, DataBlock& dataBlock, std::vector<uint8_t>& target, uint64_t& targetHash, Error& error)
 {
   targetHash = VolumeDataHash::UNKNOWN;
 
@@ -740,7 +740,7 @@ bool VolumeDataStore::DeserializeVolumeData(const VolumeDataChunk& volumeDataChu
 
   if (volumeDataHash.IsConstant())
   {
-    return CreateConstantValueDataBlock(volumeDataChunk, volumeDataLayer->GetFormat(), volumeDataLayer->GetNoValue(), volumeDataLayer->GetComponents(), volumeDataHash, dataBlock, target, error);
+    return CreateConstantValueDataBlock(volumeDataChunk, conversionParameters.format, conversionParameters.noValue, volumeDataLayer->GetComponents(), volumeDataHash, dataBlock, target, error);
   }
   else if(serializedData.empty())
   {
@@ -763,19 +763,19 @@ bool VolumeDataStore::DeserializeVolumeData(const VolumeDataChunk& volumeDataChu
 
   if (volumeDataLayer->GetFormat() == VolumeDataChannelDescriptor::Format_U16 || volumeDataLayer->GetFormat() == VolumeDataChannelDescriptor::Format_U8)
   {
-    if (loadFormat == VolumeDataChannelDescriptor::Format_U16)
+    if (conversionParameters.format == VolumeDataChannelDescriptor::Format_U16)
     {
       deserializeValueRange.Min = volumeDataLayer->GetIntegerOffset();
       deserializeValueRange.Max = volumeDataLayer->GetIntegerScale() * (volumeDataLayer->IsUseNoValue() ? 65534.0f : 65535.0f) + volumeDataLayer->GetIntegerOffset();
     }
-    else if (loadFormat == VolumeDataChannelDescriptor::Format_U8 && volumeDataLayer->GetFormat() != VolumeDataChannelDescriptor::Format_U16)
+    else if (conversionParameters.format == VolumeDataChannelDescriptor::Format_U8 && volumeDataLayer->GetFormat() != VolumeDataChannelDescriptor::Format_U16)
     {
       deserializeValueRange.Min = volumeDataLayer->GetIntegerOffset();
       deserializeValueRange.Max = volumeDataLayer->GetIntegerScale() * (volumeDataLayer->IsUseNoValue() ? 254.0f : 255.0f) + volumeDataLayer->GetIntegerOffset();
     }
   }
 
-  bool ret = OpenVDS::DeserializeVolumeData(serializedData, loadFormat, compressionMethod, deserializeValueRange, volumeDataLayer->GetIntegerScale(), volumeDataLayer->GetIntegerOffset(), volumeDataLayer->IsUseNoValue(), volumeDataLayer->GetNoValue(), adaptiveLevel, dataBlock, target, error);
+  bool ret = OpenVDS::DeserializeVolumeData(serializedData, volumeDataLayer->GetFormat(), compressionMethod, deserializeValueRange, volumeDataLayer->GetIntegerScale(), volumeDataLayer->GetIntegerOffset(), volumeDataLayer->IsUseNoValue(), volumeDataLayer->GetNoValue(), adaptiveLevel, dataBlock, target, error);
   m_globalStateVds.addDecompressed(target.size());
   return ret;
 }

@@ -35,6 +35,20 @@
 namespace OpenVDS
 {
 
+ConversionParameters makeConversionParameters(VolumeDataLayer const* layer, VolumeDataFormat format, bool hasReplacementNoValue, float replacementNoValue)
+{
+  ConversionParameters ret;
+  ret.format = format;
+  ret.valueRangeMin = layer->GetValueRange().Min;
+  ret.valueRangeMax = layer->GetValueRange().Max;
+  ret.integerScale = layer->GetIntegerScale();
+  ret.integerOffset = layer->GetIntegerOffset();
+  ret.noValue = layer->GetNoValue();
+  ret.replacementNoValue = replacementNoValue;
+  ret.hasReplacementNoValue = hasReplacementNoValue;
+  return ret;
+}
+
 VolumeDataLayer::VolumeDataLayer(VolumeDataPartition const &volumeDataPartition, VolumeDataLayoutImpl *volumeDataLayout, int32_t channel, VolumeDataLayer *primaryChannelLayer, VolumeDataLayer *lowerLOD, VolumeDataLayer::LayerType layerType, const VolumeDataChannelMapping *volumeDataChannelMapping)
   : VolumeDataPartition(volumeDataPartition)
   , m_volumeDataLayout(volumeDataLayout)

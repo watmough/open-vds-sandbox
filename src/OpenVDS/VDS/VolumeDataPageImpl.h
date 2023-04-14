@@ -39,6 +39,7 @@ private:
   VolumeDataPageAccessorImpl * m_volumeDataPageAccessor;
 
   int64_t m_chunk;
+  ConversionParameters m_conversionParameters;
 
   VolumeDataPageImpl *m_parentPage;
 
@@ -81,6 +82,7 @@ public:
   int64_t GetChunkIndex() const { return m_chunk; }
   const DataBlock &GetDataBlock() const { return m_dataBlock;}
   uint64_t GetVolumeDataHash() const { return m_hash; }
+  const ConversionParameters &GetConversionParameters() const { return m_conversionParameters; }
 
   // All these methods require the caller to hold a lock
   bool          IsPinned();

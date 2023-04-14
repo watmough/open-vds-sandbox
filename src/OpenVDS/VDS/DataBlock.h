@@ -20,9 +20,10 @@
 
 #include <OpenVDS/OpenVDS.h>
 #include <OpenVDS/VolumeData.h>
-#include "VolumeDataPartition.h"
+#include "VolumeDataLayer.h"
 
 #include <stdexcept>
+#include <tuple>
 
 namespace OpenVDS
 {
@@ -178,17 +179,6 @@ int32_t CombineAndReduceDimensions (int32_t (&sourceSize  )[DataBlock::Dimension
                                     const int32_t (&origTargetSize  )[Dimensionality_Max],
                                     const int32_t (&origTargetOffset)[Dimensionality_Max],
                                     const int32_t (&origOverlapSize )[Dimensionality_Max]);
-
-struct ConversionParameters
-{
-    float valueRangeMin;
-    float valueRangeMax;
-    float integerScale;
-    float integerOffset;
-    float noValue;
-    float replacementNoValue;
-    bool hasReplacementNoValue;
-};
 
 void DispatchBlockCopy(VolumeDataFormat destinationFormat,
                        void       *target, const int32_t (&targetOffset)[DataBlock::Dimensionality_Max], const int32_t (&targetSize)[DataBlock::Dimensionality_Max],

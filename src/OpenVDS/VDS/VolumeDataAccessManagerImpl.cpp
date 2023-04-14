@@ -28,6 +28,7 @@
 #include "VolumeDataLayoutImpl.h"
 #include "VolumeDataPageAccessorImpl.h"
 #include "Logging.h"
+#include "DataBlock.h"
 
 #include <algorithm>
 #include <inttypes.h>
@@ -380,7 +381,8 @@ VolumeDataAccessManagerImpl::CreateVolumeDataPageAccessor(VolumeDataLayer const 
     }
   }
 
-  VolumeDataPageAccessorImpl *pageAccessor = new VolumeDataPageAccessorImpl(this, parentVolumeDataPageAccessor, volumeDataLayer, maxPages, accessMode, m_vds.logger);
+  auto conversionParameters = makeConversionParameters(volumeDataLayer, volumeDataLayer->GetFormat(), false, 0.0f);
+  VolumeDataPageAccessorImpl *pageAccessor = new VolumeDataPageAccessorImpl(this, parentVolumeDataPageAccessor, volumeDataLayer, conversionParameters, maxPages, accessMode, m_vds.logger);
   return pageAccessor;
 }
 

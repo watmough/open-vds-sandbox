@@ -36,16 +36,33 @@ namespace OpenVDS
 
 class VolumeDataPage;
 
+struct PageAccessorKey;
+static PageAccessorKey makeMemcmpComparable(const PageAccessorKey& key);
+
 struct PageAccessorKey
 {
   DimensionsND dimensionsND;
   int32_t lod;
   int32_t channel;
+  ConversionParameters conversionParameters;
+
   bool operator<(const PageAccessorKey &other) const
   {
-    return (int(dimensionsND) == int(other.dimensionsND)) ? lod == other.lod ? channel < other.channel : lod < other.lod : int(dimensionsND) < int(other.dimensionsND);
+    const auto &a = makeMemcmpComparable(*this);
+    const auto &b = makeMemcmpComparable(other);
+
+    return memcmp(&a, &b, sizeof(*this)) < 0;
   }
 };
+
+static PageAccessorKey makeMemcmpComparable(const PageAccessorKey& key)
+{
+  PageAccessorKey ret;
+  memset(&ret, 0, sizeof(ret));
+  ret = key;
+  if (!ret.conversionParameters.hasReplacementNoValue) ret.conversionParameters.replacementNoValue = 0.f;
+  return ret;
+}
 
 struct JobPage
 {
@@ -120,7 +137,7 @@ public:
   VolumeDataRequestProcessor(VolumeDataAccessManagerImpl &manager, Logger &logger);
   ~VolumeDataRequestProcessor();
 
-  int64_t AddJob(const std::vector<VolumeDataChunk> &chunks, std::function<bool(VolumeDataPageImpl *page, const VolumeDataChunk &volumeDataChunk, Error &error)> processor, bool singleThread = false);
+  int64_t AddJob(const std::vector<VolumeDataChunk> &chunks, const ConversionParameters &conversionParameters, std::function<bool(VolumeDataPageImpl *page, const VolumeDataChunk &volumeDataChunk, Error &error)> processor, bool singleThread = false);
   bool  IsActive(int64_t requestID);
   bool  IsCompleted(int64_t requestID);
   bool  IsCanceled(int64_t requestID, Error &error);
