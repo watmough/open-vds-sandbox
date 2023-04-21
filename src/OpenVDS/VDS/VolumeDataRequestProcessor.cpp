@@ -386,7 +386,12 @@ int64_t VolumeDataRequestProcessor::RequestRemap(VolumeDataPageImpl& targetPage,
     {
       if(dimension == DimensionGroupUtil::GetDimension(sourceLayer->GetChunkDimensionGroup(), chunkDimension))
       {
-        globalSourceSize[dimension] = sourcePage->GetDataBlock().AllocatedSize[chunkDimension++];
+        globalSourceSize[dimension] = sourcePage->GetDataBlock().AllocatedSize[chunkDimension];
+        if (chunkDimension == 0 && sourceLayer->GetFormat() == VolumeDataChannelDescriptor::Format_1Bit)
+        {
+          globalSourceSize[dimension] *= 8;
+        }
+        chunkDimension++;
       }
       else
       {
@@ -400,7 +405,12 @@ int64_t VolumeDataRequestProcessor::RequestRemap(VolumeDataPageImpl& targetPage,
     {
       if(dimension == DimensionGroupUtil::GetDimension(targetLayer->GetChunkDimensionGroup(), chunkDimension))
       {
-        globalTargetSize[dimension] = targetDataBlock.AllocatedSize[chunkDimension++];
+        globalTargetSize[dimension] = targetDataBlock.AllocatedSize[chunkDimension];
+        if (chunkDimension == 0 && targetLayer->GetFormat() == VolumeDataChannelDescriptor::Format_1Bit)
+        {
+          globalTargetSize[dimension] *= 8;
+        }
+        chunkDimension++;
       }
       else
       {
@@ -448,13 +458,6 @@ int64_t VolumeDataRequestProcessor::RequestRemap(VolumeDataPageImpl& targetPage,
     }
     else
     {
-      // Convert byte size to bitsize for 1-bit data
-      if(sourceLayer->GetFormat() == VolumeDataChannelDescriptor::Format_1Bit)
-      {
-        globalSourceSize[0] *= 8;
-        globalTargetSize[0] *= 8;
-      }
-
       int32_t sourceSize[DataBlock::Dimensionality_Max];
       int32_t sourceOffset[DataBlock::Dimensionality_Max];
       int32_t targetSize[DataBlock::Dimensionality_Max];
