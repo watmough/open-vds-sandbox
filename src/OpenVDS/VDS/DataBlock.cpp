@@ -130,21 +130,22 @@ int32_t CombineAndReduceDimensions (int32_t (&sourceSize  )[DataBlock::Dimension
     }
   }
 
-  if((tmpOverlapSize[0] + tmpSourceOffset[0] > tmpSourceSize[0]) ||
-     (tmpOverlapSize[1] + tmpSourceOffset[1] > tmpSourceSize[1]) ||
-     (tmpOverlapSize[2] + tmpSourceOffset[2] > tmpSourceSize[2]) ||
-     (tmpOverlapSize[3] + tmpSourceOffset[3] > tmpSourceSize[3]) ||
-     (tmpOverlapSize[4] + tmpSourceOffset[4] > tmpSourceSize[4]) ||
-     (tmpOverlapSize[5] + tmpSourceOffset[5] > tmpSourceSize[5]) ||
-     (tmpOverlapSize[0] + tmpTargetOffset[0] > tmpTargetSize[0]) ||
-     (tmpOverlapSize[1] + tmpTargetOffset[1] > tmpTargetSize[1]) ||
-     (tmpOverlapSize[2] + tmpTargetOffset[2] > tmpTargetSize[2]) ||
-     (tmpOverlapSize[3] + tmpTargetOffset[3] > tmpTargetSize[3]) ||
-     (tmpOverlapSize[4] + tmpTargetOffset[4] > tmpTargetSize[4]) ||
-     (tmpOverlapSize[5] + tmpTargetOffset[5] > tmpTargetSize[5]))
-  {
-    assert(0 && "Invalid Copy Parameters #1");
-  }
+  assert(tmpOverlapSize[0] + tmpSourceOffset[0] <= tmpSourceSize[0] &&
+    tmpOverlapSize[1] + tmpSourceOffset[1] <= tmpSourceSize[1] &&
+    tmpOverlapSize[2] + tmpSourceOffset[2] <= tmpSourceSize[2] &&
+    tmpOverlapSize[3] + tmpSourceOffset[3] <= tmpSourceSize[3] &&
+    tmpOverlapSize[4] + tmpSourceOffset[4] <= tmpSourceSize[4] &&
+    tmpOverlapSize[5] + tmpSourceOffset[5] <= tmpSourceSize[5] &&
+    "Invalid Copy Parameters #1");
+
+
+  assert(tmpOverlapSize[0] + tmpTargetOffset[0] <= tmpTargetSize[0] &&
+    tmpOverlapSize[1] + tmpTargetOffset[1] <= tmpTargetSize[1] &&
+    tmpOverlapSize[2] + tmpTargetOffset[2] <= tmpTargetSize[2] &&
+    tmpOverlapSize[3] + tmpTargetOffset[3] <= tmpTargetSize[3] &&
+    tmpOverlapSize[4] + tmpTargetOffset[4] <= tmpTargetSize[4] &&
+    tmpOverlapSize[5] + tmpTargetOffset[5] <= tmpTargetSize[5] &&
+    "Invalid Copy Parameters #1");
 
   int32_t nCopyDimensions = 0;
 
