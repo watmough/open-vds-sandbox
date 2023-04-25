@@ -1856,9 +1856,9 @@ createImportInformationMetadata(const std::vector<DataProvider> &dataProviders, 
 }
 
 bool
-create2DTraceInformationMetadata(const bool is2D, TraceInfo2DManager * pTraceInfo2DManager, OpenVDS::MetadataContainer& metadataContainer, OpenVDS::Error& error)
+create2DTraceInformationMetadata(const bool isCreateTracePositionInfo, TraceInfo2DManager * pTraceInfo2DManager, OpenVDS::MetadataContainer& metadataContainer, OpenVDS::Error& error)
 {
-  if (!is2D || pTraceInfo2DManager == nullptr || pTraceInfo2DManager->Count() == 0)
+  if (!isCreateTracePositionInfo || pTraceInfo2DManager == nullptr || pTraceInfo2DManager->Count() == 0)
   {
     metadataContainer.ClearMetadata(KNOWNMETADATA_TRACECOORDINATES, KNOWNMETADATA_TRACEPOSITIONS);
     metadataContainer.ClearMetadata(KNOWNMETADATA_TRACECOORDINATES, KNOWNMETADATA_TRACEVERTICALOFFSETS);
@@ -2954,6 +2954,10 @@ main(int argc, char* argv[])
       segyType = SEGY::SEGYType::Poststack;
     }
   }
+  else if (primaryKey == "ensemblenumber")
+  {
+    segyType = SEGY::SEGYType::CDPGathers;
+  }
   else if (primaryKey == "receiver")
   {
     segyType = SEGY::SEGYType::ReceiverGathers;
@@ -3369,8 +3373,22 @@ main(int argc, char* argv[])
     // analyzing. If (b) is no longer true because we've changed the analysis strategy then something
     // will need to take the place of this piggybacking.
     //
-  auto traceInfo2DManager = fileInfo.Is2D()
-    ? std::unique_ptr<TraceInfo2DManager>(new TraceInfo2DManagerImpl(fileInfo.m_headerEndianness, scale, g_traceHeaderFields["coordinatescale"], g_traceHeaderFields["sourcexcoordinate"], g_traceHeaderFields["sourceycoordinate"], g_traceHeaderFields["starttime"], g_traceHeaderFields["energysourcepointnumber"], secondaryKeyHeaderField))
+  // default header fields to get X/Y coordinates for trace positions
+  const char
+    * xCoordFieldName2D = "ensemblexcoordinate",
+    * yCoordFieldName2D = "ensembleycoordinate";
+  if (segyType == SEGY::SEGYType::ReceiverGathers)
+  {
+    xCoordFieldName2D = "groupxcoordinate";
+    yCoordFieldName2D = "groupycoordinate";
+  }
+  else if (segyType == SEGY::SEGYType::ShotGathers)
+  {
+    xCoordFieldName2D = "sourcexcoordinate";
+    yCoordFieldName2D = "sourceycoordinate";
+  }
+  auto traceInfo2DManager = fileInfo.Is2D() || fileInfo.IsUnbinned()
+    ? std::unique_ptr<TraceInfo2DManager>(new TraceInfo2DManagerImpl(fileInfo.m_headerEndianness, scale, g_traceHeaderFields["coordinatescale"], g_traceHeaderFields[xCoordFieldName2D], g_traceHeaderFields[yCoordFieldName2D], g_traceHeaderFields["starttime"], g_traceHeaderFields["energysourcepointnumber"], secondaryKeyHeaderField))
     : std::unique_ptr<TraceInfo2DManager>(new TraceInfo2DManager());
 
   bool
@@ -3614,7 +3632,7 @@ main(int argc, char* argv[])
     createSurveyCoordinateSystemMetadata(fileInfo, surveyCoordinateSystemTransformer, metadataContainer, primaryKeyValue);
   }
 
-  create2DTraceInformationMetadata(is2D, traceInfo2DManager.get(), metadataContainer, error);
+  create2DTraceInformationMetadata(fileInfo.Is2D() || fileInfo.IsUnbinned(), traceInfo2DManager.get(), metadataContainer, error);
 
   if (error.code != 0)
   {

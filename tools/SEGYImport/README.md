@@ -142,10 +142,21 @@ The default trace header fields (that can be overridden with a header format JSO
 | MuteStartTime           |                                          | 111    | 2     |
 | MuteEndTime             |                                          | 113    | 2     |
 
-A valid ``--url`` an optional ``--connection`` argument and an
-input SEG-Y file must be specified.
+For 2D data and unbinned data additional trace position metadata is stored in the VDS.
+For 2D prestack, 2D poststack, and CDP gathers the X/Y coordinates are taken from the
+trace header fields EnsembleXCoordinate and EnsembleYCoordinate. For receiver
+gathers the X/Y coordinates are taken from GroupXCoordinate and GroupYCoordinate.
+For shot gathers the X/Y coordinates are taken from SourceXCoordinate and
+SourceYCoordinate.
+
+A valid ``--url`` with an optional ``--connection`` argument, or a ``--vdsfile`` argument,
+must be given to specify where the output will be written. An input SEG-Y file must also
+be specified.
 
 Example usage:
 ```
-SEGYImport --url s3://openvds-test --header-format D:\\Datasets\\Australia\\HeaderFormat.json D:\\Datasets\\Australia\\shakespeare3d_pstm_Time.segy
+SEGYImport --url s3://openvds-test --header-format D:\Datasets\Australia\HeaderFormat.json D:\Datasets\Australia\shakespeare3d_pstm_Time.segy
+```
+```
+SEGYImport --vdsfile C:\VDSdata\shakespeare3d_pstm_Time.vds --header-format D:\Datasets\Australia\HeaderFormat.json D:\Datasets\Australia\shakespeare3d_pstm_Time.segy
 ```
