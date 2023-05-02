@@ -4,6 +4,11 @@ RUN curl -sSL  -o ninja.zip "https://github.com/ninja-build/ninja/releases/downl
 RUN unzip ninja.zip && mv ninja /usr/local/bin/ && rm -vf ninja* && ln -s /usr/local/bin/ninja /usr/local/bin/ninja-build
 
 ENV DEBIAN_FRONTEND="noninteractive" TZ="Europe/London"
+
+RUN sed -i 's@deb.debian.org@archive.kernel.org/debian-archive@g' /etc/apt/sources.list
+RUN sed -i 's@security.debian.org@archive.kernel.org/debian-archive@g' /etc/apt/sources.list
+RUN sed -i '/stretch-updates/d' /etc/apt/sources.list
+
 RUN apt-get update
 RUN apt-get install -y vim git doxygen openjdk-8-jdk gdb bash ccache perl libipc-run-perl
 
