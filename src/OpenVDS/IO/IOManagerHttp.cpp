@@ -16,7 +16,7 @@
 ****************************************************************************/
 
 #include "IOManagerHttp.h"
-
+#include "ErrorRequest.h"
 #include <fmt/format.h>
 
 namespace OpenVDS
@@ -86,21 +86,8 @@ namespace OpenVDS
     return request;
   }
 
-  class ErrorRequest : public Request
-  {
-    public:
-    ErrorRequest(const std::string &objectName) : Request(objectName) {}
-    bool WaitForFinish(Error &error) override
-    {
-      error.code = -1;
-      error.string = "The http IO backend does not support writing data, use one of the cloud vendor specific backends such as S3 Azure or Google.";
-      return false;
-    }
-    void Cancel() override {}
-  };
-
   std::shared_ptr<Request> IOManagerHttp::WriteObject(const std::string& objectName, const std::string& contentDispostionFilename, const std::string& contentType, const std::vector<std::pair<std::string, std::string>>& metadataHeader, std::shared_ptr<std::vector<uint8_t>> data, std::function<void(const Request& request, const Error& error)> completedCallback)
   {
-    return std::make_shared<ErrorRequest>(objectName);
+    return std::make_shared<ErrorRequest>(objectName, "The http IO backend does not support writing data, use one of the cloud vendor specific backends such as S3 Azure or Google.");
   }
 }
