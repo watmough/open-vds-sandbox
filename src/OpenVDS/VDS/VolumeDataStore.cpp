@@ -809,8 +809,7 @@ struct ShrinkToSizeOnExit
   std::vector<uint8_t> to_shrink;
 };
 
-uint64_t
-VolumeDataStore::SerializeVolumeData(const VolumeDataChunk& chunk, const DataBlock& dataBlock, const std::vector<uint8_t>& chunkData, CompressionMethod compressionMethod, float, std::vector<uint8_t>& destinationBuffer)
+uint64_t SerializeVolumeData(const DataBlock& dataBlock, const std::vector<uint8_t>& chunkData, CompressionMethod compressionMethod, float compressionTolerance, const FloatRange &valueRange, float integerScale, float integerOffset, bool isUseNoValue, float noValue, std::vector<uint8_t>& destinationBuffer, uint8_t (&waveletAdaptiveLevelsMetadata)[WAVELET_ADAPTIVE_LEVELS])
 {
   DataBlockDescriptor dataBlockHeader;
   dataBlockHeader.Components = dataBlock.Components;
@@ -844,8 +843,7 @@ VolumeDataStore::SerializeVolumeData(const VolumeDataChunk& chunk, const DataBlo
     if(isConstant)
     {
       destinationBuffer.resize(0);
-      auto& layer = *chunk.layer;
-      return GetConstantValueVolumeDataHash(dataBlock, (const uint8_t *) targetBuffer, layer.GetValueRange(), layer.GetIntegerScale(), layer.GetIntegerOffset(), layer.IsUseNoValue(), layer.GetNoValue());
+      return GetConstantValueVolumeDataHash(dataBlock, (const uint8_t*)targetBuffer, valueRange, integerScale, integerOffset, isUseNoValue, noValue);
     }
     break;
   }
@@ -859,8 +857,7 @@ VolumeDataStore::SerializeVolumeData(const VolumeDataChunk& chunk, const DataBlo
     if (isConstant)
     {
       destinationBuffer.resize(0);
-      auto& layer = *chunk.layer;
-      return GetConstantValueVolumeDataHash(dataBlock, (const uint8_t *) tmpdata.get(), layer.GetValueRange(), layer.GetIntegerScale(), layer.GetIntegerOffset(), layer.IsUseNoValue(), layer.GetNoValue());
+      return GetConstantValueVolumeDataHash(dataBlock, tmpdata.get(), valueRange, integerScale, integerOffset, isUseNoValue, noValue);
     }
     void *targetBuffer = destinationBuffer.data();
     memcpy(targetBuffer, &dataBlockHeader, sizeof(dataBlockHeader));
@@ -896,6 +893,16 @@ bool
 VolumeDataStore::IsCompressionMethodSupported(CompressionMethod compressionMethod)
 {
   return !CompressionMethod_IsWavelet(compressionMethod);
+}
+
+uint64_t VolumeDataStore::SerializeVolumeData(const VolumeDataChunk& chunk, const DataBlock& dataBlock, const std::vector<uint8_t>& chunkData, CompressionMethod compressionMethod, float compressionTolerance, std::vector<uint8_t>& destinationBuffer, uint8_t(&adaptiveLevels)[WAVELET_ADAPTIVE_LEVELS])
+{
+  auto valueRange = chunk.layer->GetValueRange();
+  auto integerScale = chunk.layer->GetIntegerScale();
+  auto integerOffset = chunk.layer->GetIntegerOffset();
+  auto isUseNoValue = chunk.layer->IsUseNoValue();
+  auto noValue = chunk.layer->GetNoValue();
+  return OpenVDS::SerializeVolumeData(dataBlock, chunkData, compressionMethod, compressionTolerance, valueRange, integerScale, integerOffset, isUseNoValue, noValue, destinationBuffer, adaptiveLevels);
 }
 #endif
 

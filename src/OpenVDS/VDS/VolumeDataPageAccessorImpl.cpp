@@ -744,10 +744,30 @@ void VolumeDataPageAccessorImpl::LimitPageListSize(int maxPages, std::unique_loc
   }
 }
 
+static int SerializeChunkMetadata(uint64_t hash, uint8_t (&adaptiveLevels)[WAVELET_ADAPTIVE_LEVELS], bool isWaveletAdaptive, void *buffer)
+{
+  assert(hash != VolumeDataHash::UNKNOWN);
+
+  int chunkMetadataLength = (int)sizeof(uint64_t);
+
+  memcpy(buffer, &hash, sizeof(hash));
+
+  if (isWaveletAdaptive)
+  {
+    memcpy((char *)buffer + sizeof(uint64_t), adaptiveLevels, sizeof(uint8_t[WAVELET_ADAPTIVE_LEVELS]));
+    chunkMetadataLength += (int)sizeof(uint8_t[WAVELET_ADAPTIVE_LEVELS]);
+  }
+
+  return chunkMetadataLength;
+}
+
 int64_t VolumeDataPageAccessorImpl::RequestWritePage(int64_t chunk, const DataBlock& dataBlock, const std::vector<uint8_t>& data, uint64_t hash)
 {
   std::vector<uint8_t> serializedData;
-  uint64_t serializedHash = VolumeDataStore::SerializeVolumeData({ m_layer, chunk }, dataBlock, data, m_layer->GetEffectiveCompressionMethod(), m_layer->GetEffectiveCompressionTolerance(), serializedData);
+  std::vector<uint8_t> metadata(64);
+  uint8_t adaptiveLevels[WAVELET_ADAPTIVE_LEVELS];
+
+  uint64_t serializedHash = VolumeDataStore::SerializeVolumeData({ m_layer, chunk }, dataBlock, data, m_layer->GetEffectiveCompressionMethod(), m_layer->GetEffectiveCompressionTolerance(), serializedData, adaptiveLevels);
 
   if(serializedHash != VolumeDataHash::UNKNOWN)
   {
@@ -756,8 +776,8 @@ int64_t VolumeDataPageAccessorImpl::RequestWritePage(int64_t chunk, const DataBl
 
   assert(hash != VolumeDataHash::UNKNOWN);
 
-  std::vector<uint8_t> metadata(sizeof(hash));
-  memcpy(metadata.data(), &hash, sizeof(hash));
+  auto metadata_size = SerializeChunkMetadata(hash, adaptiveLevels, CompressionMethod_IsWavelet(m_layer->GetEffectiveCompressionMethod()), metadata.data());
+  metadata.resize(metadata_size);
 
   return m_accessManager->GetVolumeDataStore()->WriteChunk({ m_layer, chunk }, serializedData, metadata);
 }
