@@ -43,7 +43,10 @@ struct ConversionParameters
     bool hasReplacementNoValue;
 };
 
-ConversionParameters makeConversionParameters(VolumeDataLayer const* layer, VolumeDataFormat format, bool hasReplacementNoValue, float replacementNoValue);
+ConversionParameters makeDefaultConversionParameters(VolumeDataLayer const* layer);
+ConversionParameters makeConversionParameters(VolumeDataLayer const* layer, VolumeDataFormat format, bool isReplaceNoValue, float replacementNoValue);
+
+bool isConversionParametersEqual(const ConversionParameters &cp, VolumeDataFormat format, const FloatRange& valueRange, float integerScale, float integerOffset, bool isUseNoValue, float noValue);
 
 class VolumeDataLayer : public VolumeDataPartition
 {

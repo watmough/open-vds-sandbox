@@ -206,7 +206,7 @@ int64_t VolumeDataRequestProcessor::RequestRemap(VolumeDataPageImpl& targetPage,
   DataBlock targetDataBlock;
   Error error;
 
-  if (!InitializeDataBlock(targetDataChunk.layer->GetFormat(), targetDataChunk.layer->GetComponents(), (enum DataBlock::Dimensionality)(targetDataChunk.layer->GetChunkDimensionality()), size, targetDataBlock, error))
+  if (!InitializeDataBlock(targetPage.GetConversionParameters().format, targetDataChunk.layer->GetComponents(), (enum DataBlock::Dimensionality)(targetDataChunk.layer->GetChunkDimensionality()), size, targetDataBlock, error))
   {
     throw std::runtime_error(error.string);
   }
@@ -219,6 +219,7 @@ int64_t VolumeDataRequestProcessor::RequestRemap(VolumeDataPageImpl& targetPage,
   {
     VolumeDataLayer const *sourceLayer = sourceDataChunk.layer;
     VolumeDataLayer const *targetLayer = targetDataChunk.layer;
+    assert(sourcePage->GetConversionParameters().format == targetPage.GetConversionParameters().format && "Cannot remap between pages with different format");
     assert(sourceLayer->GetFormat() == targetLayer->GetFormat() && "Cannot remap between layers with different format");
     assert(sourceLayer->GetComponents() == targetLayer->GetComponents() && "Cannot remap between layers with different number of components");
     assert(sourceLayer->GetVolumeDataChannelMapping() == targetLayer->GetVolumeDataChannelMapping() && "Cannot remap between layers with different mappings");
@@ -374,7 +375,7 @@ int64_t VolumeDataRequestProcessor::RequestRemap(VolumeDataPageImpl& targetPage,
       if(dimension == DimensionGroupUtil::GetDimension(sourceLayer->GetChunkDimensionGroup(), chunkDimension))
       {
         globalSourceSize[dimension] = sourcePage->GetDataBlock().AllocatedSize[chunkDimension];
-        if (chunkDimension == 0 && sourceLayer->GetFormat() == VolumeDataChannelDescriptor::Format_1Bit)
+        if (chunkDimension == 0 && sourcePage->GetConversionParameters().format == VolumeDataChannelDescriptor::Format_1Bit)
         {
           globalSourceSize[dimension] *= 8;
         }
@@ -393,7 +394,7 @@ int64_t VolumeDataRequestProcessor::RequestRemap(VolumeDataPageImpl& targetPage,
       if(dimension == DimensionGroupUtil::GetDimension(targetLayer->GetChunkDimensionGroup(), chunkDimension))
       {
         globalTargetSize[dimension] = targetDataBlock.AllocatedSize[chunkDimension];
-        if (chunkDimension == 0 && targetLayer->GetFormat() == VolumeDataChannelDescriptor::Format_1Bit)
+        if (chunkDimension == 0 && targetPage.GetConversionParameters().format == VolumeDataChannelDescriptor::Format_1Bit)
         {
           globalTargetSize[dimension] *= 8;
         }
@@ -464,8 +465,8 @@ int64_t VolumeDataRequestProcessor::RequestRemap(VolumeDataPageImpl& targetPage,
         overlapSize [0] *= int(targetLayer->GetComponents());
       }
 
-      DispatchBlockCopy(targetLayer->GetFormat(), sharedData->m_buffer.data(), targetOffset, targetSize,
-                        sourceLayer->GetFormat(), sourcePage->GetRawBufferInternal(), sourceOffset, sourceSize,
+      DispatchBlockCopy(targetPage.GetConversionParameters().format, sharedData->m_buffer.data(), targetOffset, targetSize,
+                        sourcePage->GetConversionParameters().format, sourcePage->GetRawBufferInternal(), sourceOffset, sourceSize,
                         overlapSize, conversionParameters);
     }
 
@@ -545,7 +546,7 @@ int64_t VolumeDataRequestProcessor::RequestRemap(VolumeDataPageImpl& targetPage,
           layoutDimension[i] = targetLayer->GetChunkDimension(i);
         }
 
-        FixupBorder(targetDataBlock, sharedData->m_buffer.data(), targetLayer->GetFormat(), targetLayer->GetComponents(), targetLayer->GetBorderMode(), borderNegativeRadius, borderPositiveRadius, layoutMin, layoutSize, layoutDimension);
+        FixupBorder(targetDataBlock, sharedData->m_buffer.data(), targetPage.GetConversionParameters().format, targetLayer->GetComponents(), targetLayer->GetBorderMode(), borderNegativeRadius, borderPositiveRadius, layoutMin, layoutSize, layoutDimension);
       }
 
       targetPage.SetBufferData(targetDataBlock, targetLayer->GetChunkDimensionGroup(), std::move(sharedData->m_buffer), VolumeDataHash(sharedData->m_constantValueHash).IsConstant() ? sharedData->m_constantValueHash : sharedData->m_volumeDataHash);
@@ -1818,7 +1819,7 @@ int64_t VolumeDataRequestProcessor::AddJob(const std::vector<VolumeDataChunk>& c
   auto page_accessor_it = m_pageAccessors.find(key);
   if (page_accessor_it == m_pageAccessors.end())
   {
-    auto pa = static_cast<VolumeDataPageAccessorImpl *>(m_manager.CreateVolumeDataPageAccessor(dimensions, lod, channel, maxPages, VolumeDataAccessManager::AccessMode_ReadOnly));
+    auto pa = m_manager.CreateVolumeDataPageAccessorConversionParam(dimensions, lod, channel, conversionParameters, maxPages, VolumeDataAccessManager::AccessMode_ReadOnly, 1024);
     pa->RemoveReference();
     auto insert_result = m_pageAccessors.emplace(key, pa);
     assert(insert_result.second);

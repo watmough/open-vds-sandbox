@@ -29,6 +29,7 @@
 #include <fmt/format.h>
 #endif
 
+#include "ConvertValues.h"
 #include "WaveletDecompress.h"
 #include "WaveletTypes.h"
 #include "Rle.h"
@@ -93,7 +94,7 @@ inline static DataBlock ToDataBlock(const Wavelet::WaveletDataBlock &waveletData
   return dataBlock;
 }
 
-bool DeserializeVolumeData(const std::vector<uint8_t> &serializedData, VolumeDataChannelDescriptor::Format format, CompressionMethod compressionMethod, const FloatRange &valueRange, float integerScale, float integerOffset, bool isUseNoValue, float noValue, int32_t adaptiveLevel, DataBlock &dataBlock, std::vector<uint8_t> &destination, Error &error)
+bool DeserializeVolumeData(const std::vector<uint8_t> &serializedData, VolumeDataChannelDescriptor::Format format, CompressionMethod compressionMethod, const FloatRange &valueRange, float integerScale, float integerOffset, bool isUseNoValue, float noValue, int32_t adaptiveLevel, const ConversionParameters &conversionParameters, DataBlock &dataBlock, std::vector<uint8_t> &destination, Error &error)
 {
   if(CompressionMethod_IsWavelet(compressionMethod))
   {
@@ -230,11 +231,23 @@ bool DeserializeVolumeData(const std::vector<uint8_t> &serializedData, VolumeDat
     CopyLinearBufferIntoDataBlock(source, dataBlock, destination);
   }
 
-  if(dataBlock.Format != format)
+  if(!isConversionParametersEqual(conversionParameters, format, valueRange, integerScale, integerOffset, isUseNoValue, noValue))
   {
-    error.string = "Formats doesn't match in deserialization\n";
-    error.code = -1;
-    return false;
+    DataBlock newDataBlock;
+    if (!InitializeDataBlock(conversionParameters.format, dataBlock.Components, dataBlock.Dimensionality, dataBlock.Size, newDataBlock, error))
+    {
+      return false;
+    }
+    int32_t newByteSize = GetAllocatedByteSize(newDataBlock);
+    std::vector<uint8_t> newDestination(newByteSize);
+    int32_t numVoxels = 1;
+    for (auto allocatedAxis : newDataBlock.AllocatedSize)
+      numVoxels *= allocatedAxis;
+    numVoxels *= newDataBlock.Components;
+    FloatVector2 newValueRange(conversionParameters.valueRangeMin, conversionParameters.valueRangeMax);
+    ConvertValues(newDestination.data(), destination.data(), conversionParameters.format, format, newValueRange, conversionParameters.integerScale, conversionParameters.integerOffset, conversionParameters.hasReplacementNoValue, conversionParameters.replacementNoValue, noValue, numVoxels, newByteSize);
+    destination = std::move(newDestination);
+    dataBlock = std::move(newDataBlock);
   }
   return true;
 }
@@ -775,7 +788,7 @@ bool VolumeDataStore::DeserializeVolumeData(const VolumeDataChunk& volumeDataChu
     }
   }
 
-  bool ret = OpenVDS::DeserializeVolumeData(serializedData, volumeDataLayer->GetFormat(), compressionMethod, deserializeValueRange, volumeDataLayer->GetIntegerScale(), volumeDataLayer->GetIntegerOffset(), volumeDataLayer->IsUseNoValue(), volumeDataLayer->GetNoValue(), adaptiveLevel, dataBlock, target, error);
+  bool ret = OpenVDS::DeserializeVolumeData(serializedData, volumeDataLayer->GetFormat(), compressionMethod, deserializeValueRange, volumeDataLayer->GetIntegerScale(), volumeDataLayer->GetIntegerOffset(), volumeDataLayer->IsUseNoValue(), volumeDataLayer->GetNoValue(), adaptiveLevel, conversionParameters, dataBlock, target, error);
   m_globalStateVds.addDecompressed(target.size());
   return ret;
 }
