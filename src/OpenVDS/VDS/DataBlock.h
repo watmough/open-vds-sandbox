@@ -180,11 +180,10 @@ int32_t CombineAndReduceDimensions (int32_t (&sourceSize  )[DataBlock::Dimension
                                     const int32_t (&origTargetOffset)[Dimensionality_Max],
                                     const int32_t (&origOverlapSize )[Dimensionality_Max]);
 
-void DispatchBlockCopy(VolumeDataFormat destinationFormat,
+void DispatchBlockCopy(VolumeDataFormat format,
                        void       *target, const int32_t (&targetOffset)[DataBlock::Dimensionality_Max], const int32_t (&targetSize)[DataBlock::Dimensionality_Max],
-                       VolumeDataFormat sourceFormat,
                        void const *source, const int32_t (&sourceOffset)[DataBlock::Dimensionality_Max], const int32_t (&sourceSize)[DataBlock::Dimensionality_Max],
-                       const int32_t (&overlapSize) [DataBlock::Dimensionality_Max], const ConversionParameters &conversionParamters);
+                       const int32_t (&overlapSize) [DataBlock::Dimensionality_Max]);
 
 void FixupBorder(DataBlock const &dataBlock, void *buffer, VolumeDataFormat format, VolumeDataComponents components, BorderMode borderMode, const int (&borderNegativeRadius)[6], const int (&borderPositiveRadius)[6], const int (&layoutMin)[6], const int (&layoutSize)[6], const int (&layoutDimension)[DataBlock::Dimensionality_Max]);
 

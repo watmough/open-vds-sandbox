@@ -145,8 +145,8 @@ static bool RequestSubsetProcessPage(VolumeDataPageImpl* page, const VolumeDataC
   void *source = page->GetRawBufferInternal();
 
   DispatchBlockCopy(destinationFormat, destBuffer, targetOffset, targetSize,
-    sourceFormat, source, sourceOffset, sourceSize,
-    overlapSize, conversionParameters);
+    source, sourceOffset, sourceSize,
+    overlapSize);
 
   return true;
 }
@@ -223,8 +223,6 @@ int64_t VolumeDataRequestProcessor::RequestRemap(VolumeDataPageImpl& targetPage,
     assert(sourceLayer->GetFormat() == targetLayer->GetFormat() && "Cannot remap between layers with different format");
     assert(sourceLayer->GetComponents() == targetLayer->GetComponents() && "Cannot remap between layers with different number of components");
     assert(sourceLayer->GetVolumeDataChannelMapping() == targetLayer->GetVolumeDataChannelMapping() && "Cannot remap between layers with different mappings");
-
-    ConversionParameters conversionParameters = targetPage.GetConversionParameters();
 
     int LOD = targetLayer->GetLOD();
     int sourceLOD = sourceLayer->GetLOD();
@@ -465,9 +463,11 @@ int64_t VolumeDataRequestProcessor::RequestRemap(VolumeDataPageImpl& targetPage,
         overlapSize [0] *= int(targetLayer->GetComponents());
       }
 
+      assert(targetPage.GetConversionParameters().format == sourcePage->GetConversionParameters().format);
+
       DispatchBlockCopy(targetPage.GetConversionParameters().format, sharedData->m_buffer.data(), targetOffset, targetSize,
-                        sourcePage->GetConversionParameters().format, sourcePage->GetRawBufferInternal(), sourceOffset, sourceSize,
-                        overlapSize, conversionParameters);
+                        sourcePage->GetRawBufferInternal(), sourceOffset, sourceSize,
+                        overlapSize);
     }
 
     sharedDataLock.lock();
