@@ -23,7 +23,6 @@
 #include "VolumeDataLayer.h"
 
 #include <stdexcept>
-#include <tuple>
 
 namespace OpenVDS
 {
