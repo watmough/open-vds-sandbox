@@ -13,6 +13,7 @@ SEGYImport [OPTION...] <input file>
 |     --header-field header_name=offset:width | A single definition of a header field. The expected format is a "fieldname=offset:width" where the ":width" is optional. Its also possible to specify range: "fieldname=begin-end".  Multiple header-fields is specified by providing multiple --header-field arguments. |
 | -p, --primary-key \<field>        | The name of the trace header field to use as the primary key. (default: Inline) |
 | -s, --secondary-key \<field>      | The name of the trace header field to use as the secondary key. (default: Crossline) |
+|     --keep-original-order         | Do not reorder the data in the VDS if the primary key is sorted in descending order. (default: false) |
 |     --prestack                    | Import binned prestack data (PSTM/PSDM gathers). |
 |     --scale \<value>              | If a scale override (floating point) is given, it is used to scale the coordinates in the header instead of determining the scale factor from the coordinate scale trace header field. |
 |     --sample-unit \<string>       | A sample unit of 'ms' is used for datasets in the time domain (default), while a sample unit of 'm' or 'ft' is used for datasets in the depth domain. |

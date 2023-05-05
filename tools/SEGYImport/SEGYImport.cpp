@@ -2041,7 +2041,7 @@ parseSEGYFileInfoFile(const DataProvider& dataProvider, SEGYFileInfo& fileInfo, 
 }
 
 std::vector<OpenVDS::VolumeDataAxisDescriptor>
-createAxisDescriptors(SEGYFileInfo const& fileInfo, SEGY::SampleUnits sampleUnits, int fold, int inlineStep, int crosslineStep)
+createAxisDescriptors(SEGYFileInfo const& fileInfo, SEGY::SampleUnits sampleUnits, int fold, int inlineStep, int crosslineStep, bool keepOriginalOrder)
 {
   std::vector<OpenVDS::VolumeDataAxisDescriptor>
     axisDescriptors;
@@ -2182,9 +2182,33 @@ createAxisDescriptors(SEGYFileInfo const& fileInfo, SEGY::SampleUnits sampleUnit
       }
     }
 
+    if(inlineStep < 0)
+    {
+      if(keepOriginalOrder)
+      {
+        std::swap(minInline, maxInline);
+      }
+      else
+      {
+        inlineStep = std::abs(inlineStep);
+      }
+    }
+
+    if(crosslineStep < 0)
+    {
+      if(keepOriginalOrder)
+      {
+        std::swap(minCrossline, maxCrossline);
+      }
+      else
+      {
+        crosslineStep = std::abs(crosslineStep);
+      }
+    }
+
     // Ensure the max inline/crossline is a multiple of the step size from the min
     maxCrossline += (maxCrossline - minCrossline) % crosslineStep;
-    maxInline += (maxInline - minInline) % inlineStep;
+    maxInline += (maxInline - minInline) % std::abs(inlineStep);
 
     const int
       inlineCount = 1 + (maxInline - minInline) / inlineStep,
@@ -2655,6 +2679,7 @@ main(int argc, char* argv[])
   std::vector<std::string> headerFields;
   std::string primaryKey;
   std::string secondaryKey;
+  bool keepOriginalOrder = false;
   std::string sampleUnit;
   std::string crsWkt;
   double scale = 0;
@@ -2739,6 +2764,7 @@ main(int argc, char* argv[])
   options.add_option("", "", "header-field", "A single definition of a header field. The expected format is a \"fieldname=offset:width\" where the \":width\" is optional. Its also possible to specify range: \"fieldname=begin-end\". Multiple header-fields is specified by providing multiple --header-field arguments.", cxxopts::value<std::vector<std::string>>(headerFields), "header_name=offset:width");
   options.add_option("", "p", "primary-key", "The name of the trace header field to use as the primary key.", cxxopts::value<std::string>(primaryKey), "<field>");
   options.add_option("", "s", "secondary-key", "The name of the trace header field to use as the secondary key.", cxxopts::value<std::string>(secondaryKey), "<field>");
+  options.add_option("", "", "keep-original-order", "Do not reorder the data in the VDS if the primary key is sorted in descending order.", cxxopts::value<bool>(keepOriginalOrder), "");
   options.add_option("", "", "prestack", "Import binned prestack data (PSTM/PSDM gathers).", cxxopts::value<bool>(prestack), "");
   options.add_option("", "", "scale", "If a scale override (floating point) is given, it is used to scale the coordinates in the header instead of determining the scale factor from the coordinate scale trace header field.", cxxopts::value<double>(scale), "<value>");
   options.add_option("", "", "sample-unit", "A sample unit of 'ms' is used for datasets in the time domain (default), while a sample unit of 'm' or 'ft' is used for datasets in the depth domain", cxxopts::value<std::string>(sampleUnit), "<string>");
@@ -3547,7 +3573,7 @@ main(int argc, char* argv[])
   }
 
   // Create axis descriptors
-  std::vector<OpenVDS::VolumeDataAxisDescriptor> axisDescriptors = createAxisDescriptors(fileInfo, sampleUnits, fold, primaryStep, secondaryStep);
+  std::vector<OpenVDS::VolumeDataAxisDescriptor> axisDescriptors = createAxisDescriptors(fileInfo, sampleUnits, fold, primaryStep, secondaryStep, keepOriginalOrder);
 
   // Check for excess of empty traces
 
@@ -3866,6 +3892,10 @@ main(int argc, char* argv[])
 
     chunkInfo.primaryKeyStart = fileInfo.Is2D() ? 0 : (int)floorf(layout->GetAxisDescriptor(primaryKeyDimension).SampleIndexToCoordinate(chunkInfo.min[primaryKeyDimension]) + 0.5f);
     chunkInfo.primaryKeyStop = fileInfo.Is2D() ? 0 : (int)floorf(layout->GetAxisDescriptor(primaryKeyDimension).SampleIndexToCoordinate(chunkInfo.max[primaryKeyDimension] - 1) + 0.5f);
+    if(chunkInfo.primaryKeyStart > chunkInfo.primaryKeyStop)
+    {
+      std::swap(chunkInfo.primaryKeyStart, chunkInfo.primaryKeyStop);
+    }
 
     // For each input file, find the lower/upper segments and then add data requests to that file's traceDataManager
 
@@ -3904,7 +3934,14 @@ main(int argc, char* argv[])
       }
       else
       {
-        hasSegments = segmentInfoList.front().m_primaryKey <= chunkInfo.primaryKeyStop && segmentInfoList.back().m_primaryKey >= chunkInfo.primaryKeyStart;
+        if(segmentInfoList.front().m_primaryKey <= segmentInfoList.back().m_primaryKey)
+        {
+          hasSegments = segmentInfoList.front().m_primaryKey <= chunkInfo.primaryKeyStop && segmentInfoList.back().m_primaryKey >= chunkInfo.primaryKeyStart;
+        }
+        else
+        {
+          hasSegments = segmentInfoList.back().m_primaryKey <= chunkInfo.primaryKeyStop && segmentInfoList.front().m_primaryKey >= chunkInfo.primaryKeyStart;
+        }
       }
       if (hasSegments)
       {
@@ -3930,12 +3967,21 @@ main(int argc, char* argv[])
         }
         else
         {
-          lower = std::lower_bound(segmentInfoList.begin(), segmentInfoList.end(), chunkInfo.primaryKeyStart, [](SEGYSegmentInfo const& segmentInfo, int primaryKey)->bool { return segmentInfo.m_primaryKey < primaryKey; });
-          upper = std::upper_bound(segmentInfoList.begin(), segmentInfoList.end(), chunkInfo.primaryKeyStop, [](int primaryKey, SEGYSegmentInfo const& segmentInfo)->bool { return primaryKey < segmentInfo.m_primaryKey; });
+          if(segmentInfoList.front().m_primaryKey <= segmentInfoList.back().m_primaryKey)
+          {
+            lower = std::lower_bound(segmentInfoList.begin(), segmentInfoList.end(), chunkInfo.primaryKeyStart, [](SEGYSegmentInfo const& segmentInfo, int primaryKey)->bool { return segmentInfo.m_primaryKey < primaryKey; });
+            upper = std::upper_bound(segmentInfoList.begin(), segmentInfoList.end(), chunkInfo.primaryKeyStop,  [](int primaryKey, SEGYSegmentInfo const& segmentInfo)->bool { return primaryKey < segmentInfo.m_primaryKey; });
+          }
+          else
+          {
+            lower = std::lower_bound(segmentInfoList.begin(), segmentInfoList.end(), chunkInfo.primaryKeyStop,  [](SEGYSegmentInfo const& segmentInfo, int primaryKey)->bool { return segmentInfo.m_primaryKey > primaryKey; });
+            upper = std::upper_bound(segmentInfoList.begin(), segmentInfoList.end(), chunkInfo.primaryKeyStart, [](int primaryKey, SEGYSegmentInfo const& segmentInfo)->bool { return primaryKey > segmentInfo.m_primaryKey; });
+          }
         }
 
         const size_t lowerSegmentIndex = std::distance(segmentInfoList.begin(), lower);
         const size_t upperSegmentIndex = std::distance(segmentInfoList.begin(), upper);
+
         chunkInfo.lowerUpperSegmentIndices[fileIndex] = std::make_pair(lowerSegmentIndex, upperSegmentIndex);
 
         if (!chunkInfo.skip)
