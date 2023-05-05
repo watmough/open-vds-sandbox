@@ -748,6 +748,49 @@ static bool Init(VDS *vds, VolumeDataStore* volumeDataStore, VolumeDataLayoutDes
   vds->produceStatuses.resize(int(Dimensions_45) + 1, VolumeDataLayer::ProduceStatus_Unavailable);
 
   vds->volumeDataStore.reset(volumeDataStore);
+
+  if (layoutDescriptor.GetBrickSize() < VolumeDataLayoutDescriptor::BrickSize_32 || layoutDescriptor.GetBrickSize() > VolumeDataLayoutDescriptor::BrickSize_4096)
+  {
+    error.code = -1;
+    error.string = "Invalid brick size";
+    return false;
+  }
+
+  if (layoutDescriptor.GetNegativeMargin() < 0 || layoutDescriptor.GetNegativeMargin() >= (1 << layoutDescriptor.GetBrickSize()) / 2)
+  {
+    error.code = -1;
+    error.string = "Invalid negative margin";
+    return false;
+  }
+
+  if (layoutDescriptor.GetPositiveMargin() < 0 || layoutDescriptor.GetPositiveMargin() >= (1 << layoutDescriptor.GetBrickSize()) / 2)
+  {
+    error.code = -1;
+    error.string = "Invalid positive margin";
+    return false;
+  }
+
+  if (layoutDescriptor.GetBrickSizeMultiplier2D() <= 0 || layoutDescriptor.GetBrickSizeMultiplier2D() * (1 << layoutDescriptor.GetBrickSize()) > 4096)
+  {
+    error.code = -1;
+    error.string = "Invalid brick size 2D multiplier";
+    return false;
+  }
+
+  if (layoutDescriptor.GetLODLevels() < VolumeDataLayoutDescriptor::LODLevels_None || layoutDescriptor.GetLODLevels() > VolumeDataLayoutDescriptor::LODLevels_12)
+  {
+    error.code = -1;
+    error.string = "Invalid LOD count";
+    return false;
+  }
+
+  if (layoutDescriptor.GetFullResolutionDimension() < -1 || layoutDescriptor.GetFullResolutionDimension() >= int(axisDescriptors.size))
+  {
+    error.code = -1;
+    error.string = "Full resolution dimension must be a valid dimension or -1";
+    return false;
+  }
+
   vds->layoutDescriptor = layoutDescriptor;
 
   DescriptorStringContainer &
@@ -756,12 +799,73 @@ static bool Init(VDS *vds, VolumeDataStore* volumeDataStore, VolumeDataLayoutDes
   for(size_t i = 0; i < axisDescriptors.size; i++)
   {
     auto &axisDescriptor = axisDescriptors.data[i];
+
+    if (!axisDescriptor.GetName())
+    {
+      error.code = -1;
+      error.string = "Axis descriptor has not been initialized";
+      return false;
+    }
+
+    if (axisDescriptor.GetNumSamples() < 1)
+    {
+      error.code = -1;
+      error.string = "Axis descriptor has invalid number of samples";
+      return false;
+    }
+
     vds->axisDescriptors.push_back(VolumeDataAxisDescriptor(axisDescriptor.GetNumSamples(), descriptorStrings.Add(axisDescriptor.GetName()), descriptorStrings.Add(axisDescriptor.GetUnit()), axisDescriptor.GetCoordinateMin(), axisDescriptor.GetCoordinateMax()));
   }
 
   for(size_t i = 0; i < channelDescriptors.size; i++)
   {
     auto &channelDescriptor = channelDescriptors.data[i];
+
+    if (!channelDescriptor.GetName())
+    {
+      error.code = -1;
+      error.string = "Channel descriptor has not been been initialized";
+      return false;
+    }
+
+    if(i == 0)
+    {
+      if(!channelDescriptor.IsRenderable())
+      {
+        error.code = -1;
+        error.string = "The primary channel must be renderable";
+        return false;
+      }
+      if(channelDescriptor.GetMapping() != VolumeDataMapping::Direct)
+      {
+        error.code = -1;
+        error.string = "The primary channel must be direct mapped";
+        return false;
+      }
+    }
+
+    if (channelDescriptor.GetFormat() == VolumeDataFormat::Format_1Bit && channelDescriptor.IsUseNoValue())
+    {
+      error.code = -1;
+      error.string = "1-bit channels cannot use no value";
+      return false;
+    }
+
+    if(channelDescriptor.GetMapping() == VolumeDataMapping::Direct && channelDescriptor.GetMappedValueCount() != 1)
+    {
+      error.code = -1;
+      error.string = "Direct mapped channels must have 1 mapped value";
+      return false;
+    }
+
+    if(channelDescriptor.GetMapping() != VolumeDataMapping::Direct &&
+       channelDescriptor.GetMapping() != VolumeDataMapping::PerTrace)
+    {
+      error.code = -1;
+      error.string = "Unknown channel mapping";
+      return false;
+    }
+
     VolumeDataChannelDescriptor::Flags flags = VolumeDataChannelDescriptor::Default;
 
     if(channelDescriptor.IsDiscrete())                     flags = flags | VolumeDataChannelDescriptor::DiscreteData;

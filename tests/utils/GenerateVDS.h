@@ -55,16 +55,25 @@ inline OpenVDS::VDS *generateSimpleInMemory3DVDS(int32_t samplesX = 100, int32_t
   float intScale = 1.0f;
   float intOffset = 0.0f;
   getScaleOffsetForFormat(rangeMin, rangeMax, true, format, intScale, intOffset);
-  channelDescriptors.push_back(OpenVDS::VolumeDataChannelDescriptor(format, OpenVDS::VolumeDataChannelDescriptor::Components_1, AMPLITUDE_ATTRIBUTE_NAME, "", rangeMin, rangeMax, OpenVDS::VolumeDataMapping::Direct, 1, OpenVDS::VolumeDataChannelDescriptor::Default, 0.f, intScale, intOffset));
-
-  OpenVDS::MetadataContainer metadataContainer;
+  if(format != OpenVDS::VolumeDataChannelDescriptor::Format_1Bit)
+  {
+    channelDescriptors.push_back(OpenVDS::VolumeDataChannelDescriptor(format, OpenVDS::VolumeDataChannelDescriptor::Components_1, AMPLITUDE_ATTRIBUTE_NAME, "", rangeMin, rangeMax, OpenVDS::VolumeDataMapping::Direct, 1, OpenVDS::VolumeDataChannelDescriptor::Default, 0.f, intScale, intOffset));
+  }
+  else // Do not use NoValue
+  {
+    channelDescriptors.push_back(OpenVDS::VolumeDataChannelDescriptor(format, OpenVDS::VolumeDataChannelDescriptor::Components_1, AMPLITUDE_ATTRIBUTE_NAME, "", rangeMin, rangeMax, OpenVDS::VolumeDataMapping::Direct, 1, OpenVDS::VolumeDataChannelDescriptor::Default, intScale, intOffset));
+  }
+  OpenVDS::VDSHandle handle;
   OpenVDS::Error error;
   if (ioManager)
   {
-    return OpenVDS::Create(ioManager, layoutDescriptor, axisDescriptors, channelDescriptors, metadataContainer, error);
+    handle = OpenVDS::Create(ioManager, layoutDescriptor, axisDescriptors, channelDescriptors, OpenVDS::MetadataContainer(), error);
   }
-  OpenVDS::InMemoryOpenOptions options;
-  return OpenVDS::Create(options, layoutDescriptor, axisDescriptors, channelDescriptors, metadataContainer, error);
+  else
+  {
+    handle = OpenVDS::Create(OpenVDS::InMemoryOpenOptions(), layoutDescriptor, axisDescriptors, channelDescriptors, OpenVDS::MetadataContainer(), error);
+  }
+  return handle;
 }
 
 inline void fillVolumeDataPages(std::shared_ptr<OpenVDS::VolumeDataPageAccessor> pageAccessor, std::function<void(void*buffer, OpenVDS::VolumeDataFormat format, OpenVDS::VolumeIndexer3D const &outputIndexer)> fillPage)
