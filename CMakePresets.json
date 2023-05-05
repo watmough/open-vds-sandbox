@@ -94,9 +94,7 @@
       "name": "ManyLinux",
       "hidden": true,
       "cacheVariables": {
-        "Python3_ROOT_DIR": "/opt/python/cp310-cp310",
-        "OPENSSL_ROOT_DIR": "/opt/openssl3.0",
-	"OPENSSL_USE_STATIC_LIBS": "ON"
+        "Python3_ROOT_DIR": "/opt/python/cp310-cp310"
       }
     },
     {
@@ -107,9 +105,7 @@
         "openvds_debug"
       ],
       "cacheVariables": {
-        "Python3_ROOT_DIR": "/opt/python/cp310-cp310",
-        "OPENSSL_ROOT_DIR": "/opt/openssl3.0",
-	"OPENSSL_USE_STATIC_LIBS": "ON"
+        "Python3_ROOT_DIR": "/opt/python/cp310-cp310"
       }
     },
     {
@@ -228,11 +224,7 @@
       "description": "Merge reqeusts for Alpine Linux is built with this configuration.",
       "inherits": [
         "ReleaseNoLtoWithAssertGNU"
-      ],
-      "cacheVariables": {
-        "BUILD_CURL" : "ON",
-	"USE_LIBRESSL" : "ON"
-      }
+      ]
     },
     {
       "name": "ReleaseClang",

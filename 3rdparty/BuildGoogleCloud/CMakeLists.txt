@@ -108,12 +108,12 @@ if (BUILD_CURL)
   target_compile_definitions(google_cloud_ovds PRIVATE CURL_STATICLIB=1)
 endif()
 
-if (NOT WIN32)
-  target_include_directories(google_cloud_ovds PRIVATE ${OPENSSL_INCLUDE_DIR})
-endif()
-
 if (WIN32)
   add_dependencies(google_cloud_ovds libressl)
+elseif (BUILD_OPENSSL)
+  add_dependencies(google_cloud_ovds openssl)
+else()
+  target_include_directories(google_cloud_ovds PRIVATE ${OPENSSL_INCLUDE_DIR})
 endif()
 
 get_property(include_3rdparty      GLOBAL PROPERTY OPENVDS_INCLUDE_LIBRARIES)

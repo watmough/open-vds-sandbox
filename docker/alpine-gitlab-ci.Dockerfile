@@ -1,9 +1,7 @@
 FROM alpine:latest
 
 # Install the various required packages
-RUN apk add python3 python3-dev py3-pip gcc g++ cmake make ninja git ccache doxygen openjdk8 \
-            libxml2-dev boost-dev zlib-dev openssl-dev curl-dev libuv-dev \
-            util-linux-dev # This package contains the uuid development headers
+RUN apk add python3 python3-dev py3-pip gcc g++ cmake make ninja git ccache doxygen openjdk8 perl linux-headers
 
 ENV JAVA_HOME=/usr/lib/jvm/java-1.8-openjdk
 ENV PATH="$JAVA_HOME/bin:${PATH}"

@@ -73,15 +73,10 @@ Do:
 to configure with default build settings. Now its possible to do `$ make -j8`
 to build and `$ make install` to install the package. To specify a custom
 install location specify the -DCMAKE_INSTALL_PREFIX=PATH cmake argument.
-OpenVDS requires some dependencies on linux. These dependencies are transient
-from the different network storage integrations. Currently these packages are required:
-- curl
-- openssl
-- boost
-- xml2
-- zlib
-- libuv
-- uuid
+OpenVDS requires some dependencies on linux.
+Python (to build the Python bindings)
+Java   (to build the Java bindings)
+perl and perl-IPC-Cmd (Ubuntu names this package libipc-run-perl) (to build OpenSSL which is the default).
 
 #### Windows Visual Studio
 When building on Windows the Desktop C++ component for Visual Studio must be
@@ -106,8 +101,7 @@ folder:
 Then start like other cmake projects in Visual Studio
 
 #### MacOS
-When building on MacOS we use homebrew for some of the dependencies.
-brew install openssl libuv boost ossp-uuid
+When building on MacOS we need the perl and perl-IPC-Cmd to build OpenSSL.
 
 Then it should be work out of the box with the IDE of your choice.
 

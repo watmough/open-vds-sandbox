@@ -46,12 +46,15 @@ macro(BuildAwsCrt)
     list(APPEND AWS_DLLS_LIST "lib${LIBSUFFIX}/libaws-crt-cpp.a")
   endif()
 
+  if (BUILD_OPENSSL)
+    list(APPEND PLATFORM_DEPNDS "openssl")
+  endif()
   if (OPENSSL_ROOT_DIR)
     list(APPEND PLATFORM_CMAKE_ARGS "-DOPENSSL_ROOT_DIR=${OPENSSL_ROOT_DIR}")
     list(APPEND AWS_CMAKE_PREFIX_PATH "${OPENSSL_ROOT_DIR}")
   endif()
 
-if (NOT WIN32)
+if (NOT WIN32 OR BUILD_OPENSSL)
     list(APPEND PLATFORM_CMAKE_ARGS "-DUSE_OPENSSL=ON")
 endif()
 

@@ -12,11 +12,6 @@ RUN sed -i '/stretch-updates/d' /etc/apt/sources.list
 RUN apt-get update
 RUN apt-get install -y vim git doxygen openjdk-8-jdk gdb bash ccache perl libipc-run-perl
 
-RUN curl -LO https://www.openssl.org/source/openssl-3.0.8.tar.gz
-RUN tar xzvf openssl-3.0.8.tar.gz
-RUN cd openssl-3.0.8 && ./config --prefix=/opt/openssl3.0 no-module no-shared no-zlib && make -j && make install
-RUN rm -rf openssl-3.0.8*
-
 COPY python/requirements-dev-with-docs.txt /tmp/requirements-dev.txt
 
 RUN /opt/python/cp36-cp36m/bin/python -m pip install -r /tmp/requirements-dev.txt

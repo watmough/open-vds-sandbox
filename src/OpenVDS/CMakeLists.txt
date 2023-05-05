@@ -202,6 +202,12 @@ foreach(DEP ${dependency_targets_3rdparty})
   add_dependencies(openvds_objects ${DEP})
 endforeach()
 
+if (BUILD_OPENSSL)
+  target_link_libraries(openvds_objects PRIVATE dl)
+  if (NOT WIN32)
+    target_link_libraries(openvds_objects PRIVATE -pthread)
+  endif()
+endif()
 target_compile_definitions(openvds_objects PRIVATE openvds_EXPORTS)
 
 if (AUTODETECT_CA_CERTIFICATES)
@@ -345,7 +351,7 @@ else()
 
   if (WIN32)
     target_link_libraries(openvds_objects PRIVATE crypt32 wsock32 ws2_32)
-  else()
+  elseif (NOT BUILD_OPENSSL)
     target_link_libraries(openvds_objects PRIVATE OpenSSL::SSL OpenSSL::Crypto)
   endif()
 
