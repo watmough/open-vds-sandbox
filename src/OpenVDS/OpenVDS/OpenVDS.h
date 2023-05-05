@@ -986,7 +986,7 @@ inline IVolumeDataAccessManager *GetAccessManagerInterface(VDSHandle handle) { r
 inline VolumeDataAccessManager GetAccessManager(VDSHandle handle)
 {
   auto volumeDataAccessManagerInterface = OpenVDS::GetAccessManagerInterface(handle);
-  volumeDataAccessManagerInterface->AddRef();
+  if(volumeDataAccessManagerInterface) volumeDataAccessManagerInterface->AddRef();
   return VolumeDataAccessManager(volumeDataAccessManagerInterface);
 }
 
