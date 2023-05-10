@@ -384,6 +384,7 @@ struct CPPJNIObjectContext
 
   uint64_t  m_MagicNumber;
   void*     m_OpaqueObject;
+  jobject   m_BufferGlobalRef;
 
   std::vector<char*> m_AllocatedStrings;
   std::vector<jobject> m_GlobalRefs;
@@ -391,11 +392,11 @@ struct CPPJNIObjectContext
 
   int m_SharedLibraryGeneration;
 
-  CPPJNIObjectContext() : m_MagicNumber(MAGIC_NUMBER), m_OpaqueObject(nullptr), m_SharedLibraryGeneration(getSharedLibraryGeneration())
+  CPPJNIObjectContext() : m_MagicNumber(MAGIC_NUMBER), m_OpaqueObject(nullptr), m_BufferGlobalRef(0), m_SharedLibraryGeneration(getSharedLibraryGeneration())
   {
   }
 
-  CPPJNIObjectContext(void* object) : m_MagicNumber(MAGIC_NUMBER), m_OpaqueObject(object), m_SharedLibraryGeneration(getSharedLibraryGeneration())
+  CPPJNIObjectContext(void* object) : m_MagicNumber(MAGIC_NUMBER), m_OpaqueObject(object), m_BufferGlobalRef(0), m_SharedLibraryGeneration(getSharedLibraryGeneration())
   {
     if (object == nullptr) 
     {
@@ -437,10 +438,25 @@ struct CPPJNIObjectContext
     throw std::runtime_error("Object has no creator");
   }
 
-  void
+  jobject
+  registerBuffer(JNIEnv* env, jobject bufferobj)
+  {
+    m_BufferGlobalRef = registerGlobalRef(env, bufferobj);
+    return m_BufferGlobalRef;
+  }
+
+  jobject
+  getBuffer()
+  {
+    return m_BufferGlobalRef;
+  }
+
+  jobject
   registerGlobalRef(JNIEnv* env, jobject obj)
   {
-    m_GlobalRefs.push_back(env->NewGlobalRef(obj));
+    auto globalRef = env->NewGlobalRef(obj);
+    m_GlobalRefs.push_back(globalRef);
+    return globalRef;
   }
 
   void
@@ -502,7 +518,7 @@ CPPJNI_makeShared(Args&&... args)
 
 #define CPPJNI_SPECIALIZE_SHAREDPTR_NODELETE(TYPENAME)          \
 template<>                                                      \
-inline std::shared_ptr<TYPENAME>                                       \
+inline std::shared_ptr<TYPENAME>                                \
 CPPJNI_createSharedPtr<TYPENAME>(TYPENAME* instance)            \
 {                                                               \
   return CPPJNI_createSharedPtrNoDelete<TYPENAME>(instance);    \
@@ -609,6 +625,15 @@ CPPJNI_createObjectContext(std::shared_ptr<T> pNativeObject)
 
 template<typename T>
 CPPJNIObjectContext_t<T>*
+CPPJNI_createObjectContextWithBuffer(std::shared_ptr<T> pNativeObject, jobject buffer)
+{
+  auto context = new CPPJNIObjectContext_t<T>(pNativeObject);
+  context->registerBuffer(JNIEnvGuard::getJNIEnv(), buffer);
+  return context;
+}
+
+template<typename T>
+CPPJNIObjectContext_t<T>*
 CPPJNI_createNonOwningObjectContext(T const* pNativeObject)
 {
   return new CPPJNIObjectContext_t<T>(CPPJNI_createSharedPtrNoDelete<T>((T*)pNativeObject));
@@ -630,6 +655,20 @@ CPPJNI_cast(jlong handle)
 {
   auto pContext = CPPJNIObjectContext_t<T>::ensureValid(handle); // May throw
   return pContext->getObject();
+}
+
+CPPJNIObjectContext*
+CPPJNI_getObjectContext(jlong handle)
+{
+  auto pContext = CPPJNIObjectContext::ensureValid(handle); // May throw
+  return pContext;
+}
+
+jlong
+CPPJNI_getObjectBuffer(jlong handle)
+{
+  auto pContext = CPPJNIObjectContext::ensureValid(handle); // May throw
+  return pContext->getBuffer();
 }
 
 struct CPPJNIFinalizerMutexGuard : std::lock_guard<std::mutex>
@@ -768,6 +807,9 @@ struct JNIDirectBuffer
                   ~JNIDirectBuffer();
                   // Create a new DirectByteBuffer with native endianness.
   static jobject  CreateDirectBuffer(void* mem, jlong capacity);
+  static jobject  CreateDirectBuffer(jlong capacity);
+private:
+  static jobject  EnsureNativeOrder(jobject buffer);
 };
 
 jobject       CPPJNI_createJavaObject(const char* type);
