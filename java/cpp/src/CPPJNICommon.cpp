@@ -350,6 +350,7 @@ CPPJNI_HandleStdRuntimeError(struct JNIEnv_ *env, class std::runtime_error &e)
   CPPJNI_Throw(env, e.what(), CPPJNIExceptionType::RuntimeException);
 }
 
+// THIS SHOULD BE DEPRECATED
 JNIDirectBuffer::JNIDirectBuffer(jlong capacity) : m_Buffer(0), m_Memory(nullptr)
 {
   m_Memory = malloc(capacity);
@@ -365,13 +366,34 @@ JNIDirectBuffer::~JNIDirectBuffer()
   free(m_Memory);
 }
 
-// Create a new DirectByteBuffer with native byte order.
+// Create a new DirectByteBuffer from client memory with native byte order.
 jobject
 JNIDirectBuffer::CreateDirectBuffer(void* mem, jlong capacity) 
 {
   auto env = JNIEnvGuard::getJNIEnv();
   jobject tmp = env->NewDirectByteBuffer(mem, capacity);
   CPPJNI_ensureNotNull(tmp, "Failed to create DirectByteBuffer");
+  return EnsureNativeOrder(tmp);
+}
+
+// Create a new DirectByteBuffer with memory owned by the JVM.
+jobject
+JNIDirectBuffer::CreateDirectBuffer(jlong capacity) 
+{
+  auto env = JNIEnvGuard::getJNIEnv();
+  jclass byteBufferClass = env->FindClass("java/nio/ByteBuffer");
+  CPPJNI_ensureNotNull(byteBufferClass);
+  jmethodID allocateDirectMethod = env->GetStaticMethodID(byteBufferClass, "allocateDirect", "(I)Ljava/nio/ByteBuffer;");
+  CPPJNI_ensureNotNull(allocateDirectMethod);
+  auto tmp = env->CallStaticObjectMethod(byteBufferClass, allocateDirectMethod, capacity);
+  CPPJNI_ensureNotNull(tmp, "Failed to create DirectByteBuffer");
+  return EnsureNativeOrder(tmp);
+}
+
+jobject
+JNIDirectBuffer::EnsureNativeOrder(jobject buffer)
+{
+  auto env = JNIEnvGuard::getJNIEnv();
 
   // Call "ByteOrder.nativeOrder()"
   jclass byteOrderClass = env->FindClass("java/nio/ByteOrder");
@@ -382,11 +404,11 @@ JNIDirectBuffer::CreateDirectBuffer(void* mem, jlong capacity)
   CPPJNI_ensureNotNull(nativeOrder);
 
   // Call order() with the ByteOrder obtained in the previous step to ensure native byte order.
-  jclass directByteBufferClass = env->GetObjectClass(tmp);
+  jclass directByteBufferClass = env->GetObjectClass(buffer);
   CPPJNI_ensureNotNull(directByteBufferClass);
   jmethodID orderMethodID = env->GetMethodID(directByteBufferClass, "order", "(Ljava/nio/ByteOrder;)Ljava/nio/ByteBuffer;");
   CPPJNI_ensureNotNull(orderMethodID);
-  jobject byteBuffer = env->CallObjectMethod(tmp, orderMethodID, nativeOrder);
+  jobject byteBuffer = env->CallObjectMethod(buffer, orderMethodID, nativeOrder);
   CPPJNI_ensureNotNull(byteBuffer);
   return byteBuffer;
 }
