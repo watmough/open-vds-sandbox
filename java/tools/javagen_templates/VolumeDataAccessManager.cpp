@@ -1,4 +1,8 @@
 
+///AUTOGEN-IGNORE: CXX_METHOD RequestVolumeSubset1Bit std::shared_ptr<OpenVDS::VolumeDataRequest_t<unsigned char>> (unsigned char *, int64_t, OpenVDS::DimensionsND, int, int, const int (&)[6], const int (&)[6]) FUNCTIONPROTO
+///AUTOGEN-IGNORE: CXX_METHOD RequestVolumeSubset1Bit std::shared_ptr<OpenVDS::VolumeDataRequest_t<unsigned char>> (OpenVDS::DimensionsND, int, int, const int (&)[6], const int (&)[6]) FUNCTIONPROTO
+
+///AUTOGEN-INCLUDE: VolumeDataAccessManager.RequestVolumeSubset1Bit.cpp,  <DataType> -> 1Bit, <data_type> -> unsigned char
 ///AUTOGEN-INCLUDE: VolumeDataAccessManager.RequestVolumeSubsetTyped.cpp, <DataType> -> Byte  , <data_type> -> uint8_t
 ///AUTOGEN-INCLUDE: VolumeDataAccessManager.RequestVolumeSubsetTyped.cpp, <DataType> -> UShort, <data_type> -> uint16_t
 ///AUTOGEN-INCLUDE: VolumeDataAccessManager.RequestVolumeSubsetTyped.cpp, <DataType> -> UInt  , <data_type> -> uint32_t

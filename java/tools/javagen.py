@@ -4,6 +4,7 @@ import io
 import os
 import traceback
 import re
+import fnmatch
 from typing import Tuple, List, Dict, Set, Union, TextIO
 
 from clang.cindex import Cursor, Type
@@ -11,6 +12,8 @@ from clang.cindex import Cursor, Type
 from more_itertools import peekable
 
 from parse_cpp_header import parse_header, Param, Scope, ScopeDoc
+
+DEBUG_PRINT_SIGNATURES = False # Print the signature of the wrapped functions
 
 _print_exception_call_stacks = False # For debugging
 _functioncall_readability_threshold = 2 # Method formatting: if function argument count is greater than this, arguments will be spread across multiple lines
@@ -844,10 +847,14 @@ def create_jni_methods(scope: Scope, template: str, override_name: str = '', tem
                     if method_name.startswith("operator"):
                         if method_name == "operator==":
                             method = create_jni_equals(class_name, class_canonical_name)
+                            if DEBUG_PRINT_SIGNATURES:
+                                print(f'\n///AUTOGEN-OK: {child}', file=local_output, end='')
                             print(method, file=local_output)
                             has_instance_methods = True
                     elif child.is_constructor:
                         if is_ctor_valid(child):
+                            if DEBUG_PRINT_SIGNATURES:
+                                print(f'\n///AUTOGEN-OK: {child}', file=local_output, end='')
                             print(create_jni_ctor(scope, child, class_name, class_canonical_name, overload_name, overloads_created, args), file=local_output)
                             has_instance_methods = True
                             has_ctor = True
@@ -858,6 +865,8 @@ def create_jni_methods(scope: Scope, template: str, override_name: str = '', tem
                         if overload_signature in overloads_created:
                             continue
                         overloads_created.append(overload_signature)
+                        if DEBUG_PRINT_SIGNATURES:
+                            print(f'\n///AUTOGEN-OK: {child}', file=local_output, end='')
                         print(proto, file=local_output)
                         declare_result = 'auto result = ' if child.is_data_member or not child.result.canonical_type == 'void' else ''
                         if is_ref_type(real_return_type):
@@ -2158,10 +2167,11 @@ header_dir = '../../src/OpenVDS/OpenVDS'
 # Look for code generator templates here:
 template_dir = './javagen_templates'
 
-def main():
+def main(args):
     global copyright_txt
     global imports_txt
     global includes_txt
+    global header_list
     try:
         with open(os.path.join(template_dir, 'Copyright.txt')) as file:
             copyright_txt = file.read()
@@ -2171,8 +2181,11 @@ def main():
             includes_txt = file.read()
     except:
         pass
+    if args:
+        candidate_headers = [name for name in os.listdir(header_dir) if name in header_list]
+        header_list = [header for header in candidate_headers if any([fnmatch.fnmatch(header, pattern) for pattern in args]) ]
     for header in header_list:    
         parse_and_generate(os.path.join(header_dir, header), jni_output_dir, java_output_dir)
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv[1:])
