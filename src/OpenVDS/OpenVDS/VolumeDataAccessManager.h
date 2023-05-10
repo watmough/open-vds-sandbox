@@ -2110,6 +2110,55 @@ public:
   }
 
   /// <summary>
+  /// Request a subset projected from an arbitrary 3D plane through the subset onto one of the sides of the subset, using an automatically allocated typed buffer.
+  /// </summary>
+  /// <param name="buffer">
+  /// Pointer to a preallocated buffer holding at least as many elements of format as indicated by minVoxelCoordinates and maxVoxelCoordinates for the projected dimensions.
+  /// </param>
+  /// <param name="bufferByteSize">
+  /// The size of the provided buffer, in bytes.
+  /// </param>
+  /// <param name="dimensionsND">
+  /// The dimensiongroup the requested data is read from.
+  /// </param>
+  /// <param name="LOD">
+  /// The LOD level the requested data is read from.
+  /// </param>
+  /// <param name="channel">
+  /// The channel index the requested data is read from.
+  /// </param>
+  /// <param name="minVoxelCoordinates">
+  /// The minimum voxel coordinates to request in each dimension (inclusive).
+  /// </param>
+  /// <param name="maxVoxelCoordinates">
+  /// The maximum voxel coordinates to request in each dimension (exclusive).
+  /// </param>
+  /// <param name="voxelPlane">
+  /// The plane equation for the projection from the dimension source to the projected dimensions (which must be a 2D subset of the source dimensions).
+  /// </param>
+  /// <param name="projectedDimensions">
+  /// The 2D dimension group that the plane in the source dimensiongroup is projected into. It must be a 2D subset of the source dimensions.
+  /// </param>
+  /// <param name="interpolationMethod">
+  /// Interpolation method to use when sampling the buffer.
+  /// </param>
+  /// <param name="replacementNoValue">
+  /// If specified, this value is used to replace regions of the input VDS that has no data.
+  /// </param>
+  /// <returns>
+  /// A VolumeDataRequest instance encapsulating the request status and buffer.
+  /// </returns>
+  template<typename VALUETYPE>
+  std::shared_ptr<VolumeDataRequest_t<VALUETYPE>>
+  RequestProjectedVolumeSubset(void *buffer, int64_t bufferByteSize, DimensionsND dimensionsND, int LOD, int channel, const int (&minVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], const int (&maxVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], FloatVector4 const &voxelPlane, DimensionsND projectedDimensions, InterpolationMethod interpolationMethod, optional<float> replacementNoValue = optional<float>())
+  {
+    EnsureValid();
+    auto format = VolumeDataRequest::RequestFormat<VALUETYPE>::format;
+    auto request = new VolumeDataRequest_t<VALUETYPE>(m_IVolumeDataAccessManager, buffer, bufferByteSize);
+    return DoRequestProjectedVolumeSubset(request, buffer, bufferByteSize, dimensionsND, LOD, channel, minVoxelCoordinates, maxVoxelCoordinates, voxelPlane, projectedDimensions, format, interpolationMethod, replacementNoValue);
+  }
+
+  /// <summary>
   /// Compute the buffer size (in bytes) for a volume samples request.
   /// </summary>
   /// <param name="sampleCount">
