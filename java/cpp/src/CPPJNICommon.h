@@ -451,6 +451,13 @@ struct CPPJNIObjectContext
     return m_BufferGlobalRef;
   }
 
+  static jobject
+  getObjectBuffer(jlong handle)
+  {
+     auto context = ensureValid(handle);
+     return context->getBuffer();
+  }
+
   jobject
   registerGlobalRef(JNIEnv* env, jobject obj)
   {
@@ -655,20 +662,6 @@ CPPJNI_cast(jlong handle)
 {
   auto pContext = CPPJNIObjectContext_t<T>::ensureValid(handle); // May throw
   return pContext->getObject();
-}
-
-CPPJNIObjectContext*
-CPPJNI_getObjectContext(jlong handle)
-{
-  auto pContext = CPPJNIObjectContext::ensureValid(handle); // May throw
-  return pContext;
-}
-
-jlong
-CPPJNI_getObjectBuffer(jlong handle)
-{
-  auto pContext = CPPJNIObjectContext::ensureValid(handle); // May throw
-  return pContext->getBuffer();
 }
 
 struct CPPJNIFinalizerMutexGuard : std::lock_guard<std::mutex>
