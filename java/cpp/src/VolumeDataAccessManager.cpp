@@ -3116,7 +3116,6 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
 }
 
 
-/* FIXME THIS OVERLOAD DOES NOT EXIST IN OPENVDS
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestProjectedVolumeSubsetByteImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject buffer, jlong dimensionsND, jint LOD, jint channel, jintArray minVoxelCoordinates, jintArray maxVoxelCoordinates, jobject voxelPlanebytebuffer, jlong voxelPlanebyteoffset, jlong projectedDimensions, jlong interpolationMethod, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
@@ -3125,10 +3124,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
 
   CPPJNI_TRY
   {
-    auto tmpbuffer = CPPJNIAsyncBuffer<void>(env, buffer);
     auto tmpminVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
     auto tmpmaxVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto tmpbuffer = CPPJNIAsyncBuffer<void>(env, buffer);
     auto result = pInstance->RequestProjectedVolumeSubset<uint8_t>(
                                (uint8_t*)tmpbuffer.buffer(), tmpbuffer.byteSize(),
                                (OpenVDS::DimensionsND)dimensionsND, 
@@ -3140,14 +3139,14 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                (OpenVDS::DimensionsND)projectedDimensions, 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(result);
-    context->registerGlobalRef(env, buffer);
+    // Create a context with a reference to the buffer. A GlobalRef is created to ensure the buffer is not garbage collected 
+    // before the request object is destroyed.
+    auto context = CPPJNI_createObjectContextWithBuffer(result, buffer);
     return context->handle();
   }
   CPPJNI_CATCH
   return 0;
 }
-*/
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestProjectedVolumeSubsetByte2Impl
   (JNIEnv * env, jobject object, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jintArray minVoxelCoordinates, jintArray maxVoxelCoordinates, jobject voxelPlanebytebuffer, jlong voxelPlanebyteoffset, jlong projectedDimensions, jlong interpolationMethod, jfloat replacementNoValue, jboolean use_replacementNoValue)
@@ -3160,7 +3159,11 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
     auto tmpminVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
     auto tmpmaxVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto bufferByteSize = pInstance->GetProjectedVolumeSubsetBufferSize<uint8_t>(tmpminVoxelCoordinates.getArray(), tmpmaxVoxelCoordinates.getArray(), (OpenVDS::DimensionsND)projectedDimensions, LOD, channel);
+    auto buffer = JNIDirectBuffer::CreateDirectBuffer(bufferByteSize);
+    auto tmpbuffer = CPPJNIAsyncBuffer<void>(env, buffer);
     auto result = pInstance->RequestProjectedVolumeSubset<uint8_t>(
+                               (uint8_t*)tmpbuffer.buffer(), tmpbuffer.byteSize(), 
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
@@ -3170,14 +3173,15 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                (OpenVDS::DimensionsND)projectedDimensions, 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(result);
+    // Create a context with a reference to the buffer. A GlobalRef is created to ensure the buffer is not garbage collected 
+    // before the request object is destroyed.
+    auto context = CPPJNI_createObjectContextWithBuffer(result, buffer);
     return context->handle();
   }
   CPPJNI_CATCH
   return 0;
 }
 
-/* FIXME THIS OVERLOAD DOES NOT EXIST IN OPENVDS
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestProjectedVolumeSubsetUShortImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject buffer, jlong dimensionsND, jint LOD, jint channel, jintArray minVoxelCoordinates, jintArray maxVoxelCoordinates, jobject voxelPlanebytebuffer, jlong voxelPlanebyteoffset, jlong projectedDimensions, jlong interpolationMethod, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
@@ -3186,10 +3190,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
 
   CPPJNI_TRY
   {
-    auto tmpbuffer = CPPJNIAsyncBuffer<void>(env, buffer);
     auto tmpminVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
     auto tmpmaxVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto tmpbuffer = CPPJNIAsyncBuffer<void>(env, buffer);
     auto result = pInstance->RequestProjectedVolumeSubset<uint16_t>(
                                (uint16_t*)tmpbuffer.buffer(), tmpbuffer.byteSize(),
                                (OpenVDS::DimensionsND)dimensionsND, 
@@ -3201,14 +3205,14 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                (OpenVDS::DimensionsND)projectedDimensions, 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(result);
-    context->registerGlobalRef(env, buffer);
+    // Create a context with a reference to the buffer. A GlobalRef is created to ensure the buffer is not garbage collected 
+    // before the request object is destroyed.
+    auto context = CPPJNI_createObjectContextWithBuffer(result, buffer);
     return context->handle();
   }
   CPPJNI_CATCH
   return 0;
 }
-*/
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestProjectedVolumeSubsetUShort2Impl
   (JNIEnv * env, jobject object, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jintArray minVoxelCoordinates, jintArray maxVoxelCoordinates, jobject voxelPlanebytebuffer, jlong voxelPlanebyteoffset, jlong projectedDimensions, jlong interpolationMethod, jfloat replacementNoValue, jboolean use_replacementNoValue)
@@ -3221,7 +3225,11 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
     auto tmpminVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
     auto tmpmaxVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto bufferByteSize = pInstance->GetProjectedVolumeSubsetBufferSize<uint16_t>(tmpminVoxelCoordinates.getArray(), tmpmaxVoxelCoordinates.getArray(), (OpenVDS::DimensionsND)projectedDimensions, LOD, channel);
+    auto buffer = JNIDirectBuffer::CreateDirectBuffer(bufferByteSize);
+    auto tmpbuffer = CPPJNIAsyncBuffer<void>(env, buffer);
     auto result = pInstance->RequestProjectedVolumeSubset<uint16_t>(
+                               (uint16_t*)tmpbuffer.buffer(), tmpbuffer.byteSize(), 
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
@@ -3231,14 +3239,15 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                (OpenVDS::DimensionsND)projectedDimensions, 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(result);
+    // Create a context with a reference to the buffer. A GlobalRef is created to ensure the buffer is not garbage collected 
+    // before the request object is destroyed.
+    auto context = CPPJNI_createObjectContextWithBuffer(result, buffer);
     return context->handle();
   }
   CPPJNI_CATCH
   return 0;
 }
 
-/* FIXME THIS OVERLOAD DOES NOT EXIST IN OPENVDS
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestProjectedVolumeSubsetUIntImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject buffer, jlong dimensionsND, jint LOD, jint channel, jintArray minVoxelCoordinates, jintArray maxVoxelCoordinates, jobject voxelPlanebytebuffer, jlong voxelPlanebyteoffset, jlong projectedDimensions, jlong interpolationMethod, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
@@ -3247,10 +3256,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
 
   CPPJNI_TRY
   {
-    auto tmpbuffer = CPPJNIAsyncBuffer<void>(env, buffer);
     auto tmpminVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
     auto tmpmaxVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto tmpbuffer = CPPJNIAsyncBuffer<void>(env, buffer);
     auto result = pInstance->RequestProjectedVolumeSubset<uint32_t>(
                                (uint32_t*)tmpbuffer.buffer(), tmpbuffer.byteSize(),
                                (OpenVDS::DimensionsND)dimensionsND, 
@@ -3262,14 +3271,14 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                (OpenVDS::DimensionsND)projectedDimensions, 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(result);
-    context->registerGlobalRef(env, buffer);
+    // Create a context with a reference to the buffer. A GlobalRef is created to ensure the buffer is not garbage collected 
+    // before the request object is destroyed.
+    auto context = CPPJNI_createObjectContextWithBuffer(result, buffer);
     return context->handle();
   }
   CPPJNI_CATCH
   return 0;
 }
-*/
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestProjectedVolumeSubsetUInt2Impl
   (JNIEnv * env, jobject object, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jintArray minVoxelCoordinates, jintArray maxVoxelCoordinates, jobject voxelPlanebytebuffer, jlong voxelPlanebyteoffset, jlong projectedDimensions, jlong interpolationMethod, jfloat replacementNoValue, jboolean use_replacementNoValue)
@@ -3282,7 +3291,11 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
     auto tmpminVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
     auto tmpmaxVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto bufferByteSize = pInstance->GetProjectedVolumeSubsetBufferSize<uint32_t>(tmpminVoxelCoordinates.getArray(), tmpmaxVoxelCoordinates.getArray(), (OpenVDS::DimensionsND)projectedDimensions, LOD, channel);
+    auto buffer = JNIDirectBuffer::CreateDirectBuffer(bufferByteSize);
+    auto tmpbuffer = CPPJNIAsyncBuffer<void>(env, buffer);
     auto result = pInstance->RequestProjectedVolumeSubset<uint32_t>(
+                               (uint32_t*)tmpbuffer.buffer(), tmpbuffer.byteSize(), 
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
@@ -3292,14 +3305,15 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                (OpenVDS::DimensionsND)projectedDimensions, 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(result);
+    // Create a context with a reference to the buffer. A GlobalRef is created to ensure the buffer is not garbage collected 
+    // before the request object is destroyed.
+    auto context = CPPJNI_createObjectContextWithBuffer(result, buffer);
     return context->handle();
   }
   CPPJNI_CATCH
   return 0;
 }
 
-/* FIXME THIS OVERLOAD DOES NOT EXIST IN OPENVDS
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestProjectedVolumeSubsetULongImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject buffer, jlong dimensionsND, jint LOD, jint channel, jintArray minVoxelCoordinates, jintArray maxVoxelCoordinates, jobject voxelPlanebytebuffer, jlong voxelPlanebyteoffset, jlong projectedDimensions, jlong interpolationMethod, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
@@ -3308,10 +3322,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
 
   CPPJNI_TRY
   {
-    auto tmpbuffer = CPPJNIAsyncBuffer<void>(env, buffer);
     auto tmpminVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
     auto tmpmaxVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto tmpbuffer = CPPJNIAsyncBuffer<void>(env, buffer);
     auto result = pInstance->RequestProjectedVolumeSubset<uint64_t>(
                                (uint64_t*)tmpbuffer.buffer(), tmpbuffer.byteSize(),
                                (OpenVDS::DimensionsND)dimensionsND, 
@@ -3323,14 +3337,14 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                (OpenVDS::DimensionsND)projectedDimensions, 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(result);
-    context->registerGlobalRef(env, buffer);
+    // Create a context with a reference to the buffer. A GlobalRef is created to ensure the buffer is not garbage collected 
+    // before the request object is destroyed.
+    auto context = CPPJNI_createObjectContextWithBuffer(result, buffer);
     return context->handle();
   }
   CPPJNI_CATCH
   return 0;
 }
-*/
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestProjectedVolumeSubsetULong2Impl
   (JNIEnv * env, jobject object, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jintArray minVoxelCoordinates, jintArray maxVoxelCoordinates, jobject voxelPlanebytebuffer, jlong voxelPlanebyteoffset, jlong projectedDimensions, jlong interpolationMethod, jfloat replacementNoValue, jboolean use_replacementNoValue)
@@ -3343,7 +3357,11 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
     auto tmpminVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
     auto tmpmaxVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto bufferByteSize = pInstance->GetProjectedVolumeSubsetBufferSize<uint64_t>(tmpminVoxelCoordinates.getArray(), tmpmaxVoxelCoordinates.getArray(), (OpenVDS::DimensionsND)projectedDimensions, LOD, channel);
+    auto buffer = JNIDirectBuffer::CreateDirectBuffer(bufferByteSize);
+    auto tmpbuffer = CPPJNIAsyncBuffer<void>(env, buffer);
     auto result = pInstance->RequestProjectedVolumeSubset<uint64_t>(
+                               (uint64_t*)tmpbuffer.buffer(), tmpbuffer.byteSize(), 
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
@@ -3353,14 +3371,15 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                (OpenVDS::DimensionsND)projectedDimensions, 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(result);
+    // Create a context with a reference to the buffer. A GlobalRef is created to ensure the buffer is not garbage collected 
+    // before the request object is destroyed.
+    auto context = CPPJNI_createObjectContextWithBuffer(result, buffer);
     return context->handle();
   }
   CPPJNI_CATCH
   return 0;
 }
 
-/* FIXME THIS OVERLOAD DOES NOT EXIST IN OPENVDS
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestProjectedVolumeSubsetFloatImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject buffer, jlong dimensionsND, jint LOD, jint channel, jintArray minVoxelCoordinates, jintArray maxVoxelCoordinates, jobject voxelPlanebytebuffer, jlong voxelPlanebyteoffset, jlong projectedDimensions, jlong interpolationMethod, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
@@ -3369,10 +3388,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
 
   CPPJNI_TRY
   {
-    auto tmpbuffer = CPPJNIAsyncBuffer<void>(env, buffer);
     auto tmpminVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
     auto tmpmaxVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto tmpbuffer = CPPJNIAsyncBuffer<void>(env, buffer);
     auto result = pInstance->RequestProjectedVolumeSubset<float>(
                                (float*)tmpbuffer.buffer(), tmpbuffer.byteSize(),
                                (OpenVDS::DimensionsND)dimensionsND, 
@@ -3384,14 +3403,14 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                (OpenVDS::DimensionsND)projectedDimensions, 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(result);
-    context->registerGlobalRef(env, buffer);
+    // Create a context with a reference to the buffer. A GlobalRef is created to ensure the buffer is not garbage collected 
+    // before the request object is destroyed.
+    auto context = CPPJNI_createObjectContextWithBuffer(result, buffer);
     return context->handle();
   }
   CPPJNI_CATCH
   return 0;
 }
-*/
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestProjectedVolumeSubsetFloat2Impl
   (JNIEnv * env, jobject object, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jintArray minVoxelCoordinates, jintArray maxVoxelCoordinates, jobject voxelPlanebytebuffer, jlong voxelPlanebyteoffset, jlong projectedDimensions, jlong interpolationMethod, jfloat replacementNoValue, jboolean use_replacementNoValue)
@@ -3404,7 +3423,11 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
     auto tmpminVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
     auto tmpmaxVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto bufferByteSize = pInstance->GetProjectedVolumeSubsetBufferSize<float>(tmpminVoxelCoordinates.getArray(), tmpmaxVoxelCoordinates.getArray(), (OpenVDS::DimensionsND)projectedDimensions, LOD, channel);
+    auto buffer = JNIDirectBuffer::CreateDirectBuffer(bufferByteSize);
+    auto tmpbuffer = CPPJNIAsyncBuffer<void>(env, buffer);
     auto result = pInstance->RequestProjectedVolumeSubset<float>(
+                               (float*)tmpbuffer.buffer(), tmpbuffer.byteSize(), 
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
@@ -3414,14 +3437,15 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                (OpenVDS::DimensionsND)projectedDimensions, 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(result);
+    // Create a context with a reference to the buffer. A GlobalRef is created to ensure the buffer is not garbage collected 
+    // before the request object is destroyed.
+    auto context = CPPJNI_createObjectContextWithBuffer(result, buffer);
     return context->handle();
   }
   CPPJNI_CATCH
   return 0;
 }
 
-/* FIXME THIS OVERLOAD DOES NOT EXIST IN OPENVDS
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestProjectedVolumeSubsetDoubleImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject buffer, jlong dimensionsND, jint LOD, jint channel, jintArray minVoxelCoordinates, jintArray maxVoxelCoordinates, jobject voxelPlanebytebuffer, jlong voxelPlanebyteoffset, jlong projectedDimensions, jlong interpolationMethod, jfloat replacementNoValue, jboolean use_replacementNoValue)
 {
@@ -3430,10 +3454,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
 
   CPPJNI_TRY
   {
-    auto tmpbuffer = CPPJNIAsyncBuffer<void>(env, buffer);
     auto tmpminVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
     auto tmpmaxVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto tmpbuffer = CPPJNIAsyncBuffer<void>(env, buffer);
     auto result = pInstance->RequestProjectedVolumeSubset<double>(
                                (double*)tmpbuffer.buffer(), tmpbuffer.byteSize(),
                                (OpenVDS::DimensionsND)dimensionsND, 
@@ -3445,14 +3469,14 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                (OpenVDS::DimensionsND)projectedDimensions, 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(result);
-    context->registerGlobalRef(env, buffer);
+    // Create a context with a reference to the buffer. A GlobalRef is created to ensure the buffer is not garbage collected 
+    // before the request object is destroyed.
+    auto context = CPPJNI_createObjectContextWithBuffer(result, buffer);
     return context->handle();
   }
   CPPJNI_CATCH
   return 0;
 }
-*/
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestProjectedVolumeSubsetDouble2Impl
   (JNIEnv * env, jobject object, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jintArray minVoxelCoordinates, jintArray maxVoxelCoordinates, jobject voxelPlanebytebuffer, jlong voxelPlanebyteoffset, jlong projectedDimensions, jlong interpolationMethod, jfloat replacementNoValue, jboolean use_replacementNoValue)
@@ -3465,7 +3489,11 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
     auto tmpminVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
     auto tmpmaxVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
     auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto bufferByteSize = pInstance->GetProjectedVolumeSubsetBufferSize<double>(tmpminVoxelCoordinates.getArray(), tmpmaxVoxelCoordinates.getArray(), (OpenVDS::DimensionsND)projectedDimensions, LOD, channel);
+    auto buffer = JNIDirectBuffer::CreateDirectBuffer(bufferByteSize);
+    auto tmpbuffer = CPPJNIAsyncBuffer<void>(env, buffer);
     auto result = pInstance->RequestProjectedVolumeSubset<double>(
+                               (double*)tmpbuffer.buffer(), tmpbuffer.byteSize(), 
                                (OpenVDS::DimensionsND)dimensionsND, 
                                LOD, 
                                channel, 
@@ -3475,7 +3503,9 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                (OpenVDS::DimensionsND)projectedDimensions, 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
-    auto context = CPPJNI_createObjectContext(result);
+    // Create a context with a reference to the buffer. A GlobalRef is created to ensure the buffer is not garbage collected 
+    // before the request object is destroyed.
+    auto context = CPPJNI_createObjectContextWithBuffer(result, buffer);
     return context->handle();
   }
   CPPJNI_CATCH
