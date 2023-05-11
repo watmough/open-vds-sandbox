@@ -32,13 +32,41 @@ JavaVM*
 
 CPPJNIObjectContext::~CPPJNIObjectContext()
 {
-  cleanupGlobalRefs(JNIEnvGuard::JNIEnvGuard::getJNIEnv());
+  cleanupGlobalRefs();
   assert(m_GlobalRefs.empty());
   assert(m_OpaqueObject == nullptr);
   for (char* str : m_AllocatedStrings)
   {
     free(str);
   }
+}
+
+void
+CPPJNIObjectContext::cleanupGlobalRefs()
+{
+  auto env = JNIEnvGuard::getJNIEnv();
+  for (auto gref : m_GlobalRefs)
+  {
+    env->DeleteGlobalRef(gref);
+  }
+  m_GlobalRefs.clear();
+}
+
+
+jobject
+CPPJNIObjectContext::registerGlobalRef(jobject obj)
+{
+  auto env = JNIEnvGuard::getJNIEnv();
+  auto globalRef = env->NewGlobalRef(obj);
+  m_GlobalRefs.push_back(globalRef);
+  return globalRef;
+}
+
+jobject
+CPPJNIObjectContext::registerBuffer(jobject bufferobj)
+{
+  m_BufferGlobalRef = registerGlobalRef(bufferobj);
+  return m_BufferGlobalRef;
 }
 
 std::stack<JNIEnv*>&

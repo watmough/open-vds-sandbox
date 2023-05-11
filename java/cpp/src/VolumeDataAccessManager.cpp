@@ -2496,7 +2496,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                (OpenVDS::VolumeDataFormat)format, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
     auto context = CPPJNI_createObjectContext(result);
-    context->registerGlobalRef(env, buffer);
+    context->registerBuffer(buffer);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -2578,7 +2578,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
     auto context = CPPJNI_createObjectContext(result);
-    context->registerGlobalRef(env, buffer);
+    context->registerBuffer(buffer);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -2724,8 +2724,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                tmpmaxVoxelCoordinates.getArray()); 
     // Create a context with a reference to the buffer. A GlobalRef is created to ensure the buffer is not garbage collected 
     // before the request object is destroyed.
-    auto context = CPPJNI_createObjectContextWithBuffer(result, buffer);
-    return context->handle();
+    auto context = CPPJNI_createObjectContext(result);
+    context->registerBuffer(buffer);
   }
   CPPJNI_CATCH
   return 0;
@@ -2754,7 +2754,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                tmpmaxVoxelCoordinates.getArray()); 
     // Create a context with a reference to the buffer. A GlobalRef is created to ensure the buffer is not garbage collected 
     // before the request object is destroyed.
-    auto context = CPPJNI_createObjectContextWithBuffer(result, buffer);
+    auto context = CPPJNI_createObjectContext(result);
+    context->registerBuffer(buffer);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -2783,7 +2784,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
     // Create a context with a reference to the buffer. A GlobalRef is created to ensure the buffer is not garbage collected 
     // before the request object is destroyed.
-    auto context = CPPJNI_createObjectContextWithBuffer(result, buffer);
+    auto context = CPPJNI_createObjectContext(result);
+    context->registerBuffer(buffer);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -2814,7 +2816,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
     // Create a context with a reference to the buffer. A GlobalRef is created to ensure the buffer is not garbage collected 
     // before the request object is destroyed.
-    auto context = CPPJNI_createObjectContextWithBuffer(result, buffer);
+    auto context = CPPJNI_createObjectContext(result);
+    context->registerBuffer(buffer);
   }
   CPPJNI_CATCH
   return 0;
@@ -2842,7 +2845,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
     // Create a context with a reference to the buffer. A GlobalRef is created to ensure the buffer is not garbage collected 
     // before the request object is destroyed.
-    auto context = CPPJNI_createObjectContextWithBuffer(result, buffer);
+    auto context = CPPJNI_createObjectContext(result);
+    context->registerBuffer(buffer);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -2873,7 +2877,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
     // Create a context with a reference to the buffer. A GlobalRef is created to ensure the buffer is not garbage collected 
     // before the request object is destroyed.
-    auto context = CPPJNI_createObjectContextWithBuffer(result, buffer);
+    auto context = CPPJNI_createObjectContext(result);
+    context->registerBuffer(buffer);
   }
   CPPJNI_CATCH
   return 0;
@@ -2901,7 +2906,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
     // Create a context with a reference to the buffer. A GlobalRef is created to ensure the buffer is not garbage collected 
     // before the request object is destroyed.
-    auto context = CPPJNI_createObjectContextWithBuffer(result, buffer);
+    auto context = CPPJNI_createObjectContext(result);
+    context->registerBuffer(buffer);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -2932,7 +2938,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
     // Create a context with a reference to the buffer. A GlobalRef is created to ensure the buffer is not garbage collected 
     // before the request object is destroyed.
-    auto context = CPPJNI_createObjectContextWithBuffer(result, buffer);
+    auto context = CPPJNI_createObjectContext(result);
+    context->registerBuffer(buffer);
   }
   CPPJNI_CATCH
   return 0;
@@ -2960,7 +2967,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
     // Create a context with a reference to the buffer. A GlobalRef is created to ensure the buffer is not garbage collected 
     // before the request object is destroyed.
-    auto context = CPPJNI_createObjectContextWithBuffer(result, buffer);
+    auto context = CPPJNI_createObjectContext(result);
+    context->registerBuffer(buffer);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -2991,7 +2999,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
     // Create a context with a reference to the buffer. A GlobalRef is created to ensure the buffer is not garbage collected 
     // before the request object is destroyed.
-    auto context = CPPJNI_createObjectContextWithBuffer(result, buffer);
+    auto context = CPPJNI_createObjectContext(result);
+    context->registerBuffer(buffer);
   }
   CPPJNI_CATCH
   return 0;
@@ -3019,7 +3028,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
     // Create a context with a reference to the buffer. A GlobalRef is created to ensure the buffer is not garbage collected 
     // before the request object is destroyed.
-    auto context = CPPJNI_createObjectContextWithBuffer(result, buffer);
+    auto context = CPPJNI_createObjectContext(result);
+    context->registerBuffer(buffer);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -3050,7 +3060,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
     // Create a context with a reference to the buffer. A GlobalRef is created to ensure the buffer is not garbage collected 
     // before the request object is destroyed.
-    auto context = CPPJNI_createObjectContextWithBuffer(result, buffer);
+    auto context = CPPJNI_createObjectContext(result);
+    context->registerBuffer(buffer);
   }
   CPPJNI_CATCH
   return 0;
@@ -3078,7 +3089,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
     // Create a context with a reference to the buffer. A GlobalRef is created to ensure the buffer is not garbage collected 
     // before the request object is destroyed.
-    auto context = CPPJNI_createObjectContextWithBuffer(result, buffer);
+    auto context = CPPJNI_createObjectContext(result);
+    context->registerBuffer(buffer);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -3109,7 +3121,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
     // Create a context with a reference to the buffer. A GlobalRef is created to ensure the buffer is not garbage collected 
     // before the request object is destroyed.
-    auto context = CPPJNI_createObjectContextWithBuffer(result, buffer);
+    auto context = CPPJNI_createObjectContext(result);
+    context->registerBuffer(buffer);
   }
   CPPJNI_CATCH
   return 0;
@@ -3141,7 +3154,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
     // Create a context with a reference to the buffer. A GlobalRef is created to ensure the buffer is not garbage collected 
     // before the request object is destroyed.
-    auto context = CPPJNI_createObjectContextWithBuffer(result, buffer);
+    auto context = CPPJNI_createObjectContext(result);
+    context->registerBuffer(buffer);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -3175,7 +3189,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
     // Create a context with a reference to the buffer. A GlobalRef is created to ensure the buffer is not garbage collected 
     // before the request object is destroyed.
-    auto context = CPPJNI_createObjectContextWithBuffer(result, buffer);
+    auto context = CPPJNI_createObjectContext(result);
+    context->registerBuffer(buffer);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -3207,7 +3222,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
     // Create a context with a reference to the buffer. A GlobalRef is created to ensure the buffer is not garbage collected 
     // before the request object is destroyed.
-    auto context = CPPJNI_createObjectContextWithBuffer(result, buffer);
+    auto context = CPPJNI_createObjectContext(result);
+    context->registerBuffer(buffer);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -3241,7 +3257,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
     // Create a context with a reference to the buffer. A GlobalRef is created to ensure the buffer is not garbage collected 
     // before the request object is destroyed.
-    auto context = CPPJNI_createObjectContextWithBuffer(result, buffer);
+    auto context = CPPJNI_createObjectContext(result);
+    context->registerBuffer(buffer);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -3273,7 +3290,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
     // Create a context with a reference to the buffer. A GlobalRef is created to ensure the buffer is not garbage collected 
     // before the request object is destroyed.
-    auto context = CPPJNI_createObjectContextWithBuffer(result, buffer);
+    auto context = CPPJNI_createObjectContext(result);
+    context->registerBuffer(buffer);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -3307,7 +3325,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
     // Create a context with a reference to the buffer. A GlobalRef is created to ensure the buffer is not garbage collected 
     // before the request object is destroyed.
-    auto context = CPPJNI_createObjectContextWithBuffer(result, buffer);
+    auto context = CPPJNI_createObjectContext(result);
+    context->registerBuffer(buffer);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -3339,7 +3358,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
     // Create a context with a reference to the buffer. A GlobalRef is created to ensure the buffer is not garbage collected 
     // before the request object is destroyed.
-    auto context = CPPJNI_createObjectContextWithBuffer(result, buffer);
+    auto context = CPPJNI_createObjectContext(result);
+    context->registerBuffer(buffer);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -3373,7 +3393,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
     // Create a context with a reference to the buffer. A GlobalRef is created to ensure the buffer is not garbage collected 
     // before the request object is destroyed.
-    auto context = CPPJNI_createObjectContextWithBuffer(result, buffer);
+    auto context = CPPJNI_createObjectContext(result);
+    context->registerBuffer(buffer);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -3405,7 +3426,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
     // Create a context with a reference to the buffer. A GlobalRef is created to ensure the buffer is not garbage collected 
     // before the request object is destroyed.
-    auto context = CPPJNI_createObjectContextWithBuffer(result, buffer);
+    auto context = CPPJNI_createObjectContext(result);
+    context->registerBuffer(buffer);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -3439,7 +3461,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
     // Create a context with a reference to the buffer. A GlobalRef is created to ensure the buffer is not garbage collected 
     // before the request object is destroyed.
-    auto context = CPPJNI_createObjectContextWithBuffer(result, buffer);
+    auto context = CPPJNI_createObjectContext(result);
+    context->registerBuffer(buffer);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -3471,7 +3494,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
     // Create a context with a reference to the buffer. A GlobalRef is created to ensure the buffer is not garbage collected 
     // before the request object is destroyed.
-    auto context = CPPJNI_createObjectContextWithBuffer(result, buffer);
+    auto context = CPPJNI_createObjectContext(result);
+    context->registerBuffer(buffer);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -3505,7 +3529,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
     // Create a context with a reference to the buffer. A GlobalRef is created to ensure the buffer is not garbage collected 
     // before the request object is destroyed.
-    auto context = CPPJNI_createObjectContextWithBuffer(result, buffer);
+    auto context = CPPJNI_createObjectContext(result);
+    context->registerBuffer(buffer);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -3532,8 +3557,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                (int)env->GetDirectBufferCapacity(samplePositionsbytebuffer) / sizeof(float[6]), 
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
+    // Create a context with a reference to the buffer. A GlobalRef is created to ensure the buffer is not garbage collected 
+    // before the request object is destroyed.
     auto context = CPPJNI_createObjectContext(result);
-    context->registerGlobalRef(env, buffer);
+    context->registerBuffer(buffer);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -3612,8 +3639,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                (OpenVDS::InterpolationMethod)interpolationMethod, 
                                traceDimension, 
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
+    // Create a context with a reference to the buffer. A GlobalRef is created to ensure the buffer is not garbage collected 
+    // before the request object is destroyed.
     auto context = CPPJNI_createObjectContext(result);
-    context->registerGlobalRef(env, buffer);
+    context->registerBuffer(buffer);
     return context->handle();
   }
   CPPJNI_CATCH
@@ -3673,8 +3702,10 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                traceMin,
                                traceMax,
                                use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
+    // Create a context with a reference to the buffer. A GlobalRef is created to ensure the buffer is not garbage collected
+    // before the request object is destroyed.
     auto context = CPPJNI_createObjectContext(result);
-    context->registerGlobalRef(env, buffer);
+    context->registerBuffer(buffer);
     return context->handle();
   }
   CPPJNI_CATCH

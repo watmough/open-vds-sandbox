@@ -20,8 +20,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                tmpmaxVoxelCoordinates.getArray()); 
     // Create a context with a reference to the buffer. A GlobalRef is created to ensure the buffer is not garbage collected 
     // before the request object is destroyed.
-    auto context = CPPJNI_createObjectContextWithBuffer(result, buffer);
-    return context->handle();
+    auto context = CPPJNI_createObjectContext(result);
+    context->registerBuffer(buffer);
   }
   CPPJNI_CATCH
   return 0;
@@ -50,7 +50,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
                                tmpmaxVoxelCoordinates.getArray()); 
     // Create a context with a reference to the buffer. A GlobalRef is created to ensure the buffer is not garbage collected 
     // before the request object is destroyed.
-    auto context = CPPJNI_createObjectContextWithBuffer(result, buffer);
+    auto context = CPPJNI_createObjectContext(result);
+    context->registerBuffer(buffer);
     return context->handle();
   }
   CPPJNI_CATCH
