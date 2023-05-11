@@ -260,7 +260,11 @@ JNIEXPORT jobject JNICALL Java_org_opengroup_openvds_VolumeDataRequest_GetBuffer
   CPPJNI_TRY
   {
     auto buffer = CPPJNIObjectContext::getObjectBuffer(native_handle);
-    if (buffer == nullptr)
+    if (buffer)
+    {
+      return buffer;
+    }
+    else
     { // We don't own the buffer, so we have to create it using memory allocated by the request
       auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataRequest>(native_handle);
 
@@ -2726,6 +2730,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
     // before the request object is destroyed.
     auto context = CPPJNI_createObjectContext(result);
     context->registerBuffer(buffer);
+    return context->handle();
   }
   CPPJNI_CATCH
   return 0;
@@ -2818,6 +2823,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
     // before the request object is destroyed.
     auto context = CPPJNI_createObjectContext(result);
     context->registerBuffer(buffer);
+    return context->handle();
   }
   CPPJNI_CATCH
   return 0;
@@ -2879,6 +2885,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
     // before the request object is destroyed.
     auto context = CPPJNI_createObjectContext(result);
     context->registerBuffer(buffer);
+    return context->handle();
   }
   CPPJNI_CATCH
   return 0;
@@ -2940,6 +2947,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
     // before the request object is destroyed.
     auto context = CPPJNI_createObjectContext(result);
     context->registerBuffer(buffer);
+    return context->handle();
   }
   CPPJNI_CATCH
   return 0;
@@ -3001,6 +3009,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
     // before the request object is destroyed.
     auto context = CPPJNI_createObjectContext(result);
     context->registerBuffer(buffer);
+    return context->handle();
   }
   CPPJNI_CATCH
   return 0;
@@ -3062,6 +3071,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
     // before the request object is destroyed.
     auto context = CPPJNI_createObjectContext(result);
     context->registerBuffer(buffer);
+    return context->handle();
   }
   CPPJNI_CATCH
   return 0;
@@ -3123,6 +3133,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_Reque
     // before the request object is destroyed.
     auto context = CPPJNI_createObjectContext(result);
     context->registerBuffer(buffer);
+    return context->handle();
   }
   CPPJNI_CATCH
   return 0;
