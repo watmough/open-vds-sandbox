@@ -439,13 +439,6 @@ struct CPPJNIObjectContext
   }
 
   jobject
-  registerBuffer(JNIEnv* env, jobject bufferobj)
-  {
-    m_BufferGlobalRef = registerGlobalRef(env, bufferobj);
-    return m_BufferGlobalRef;
-  }
-
-  jobject
   getBuffer()
   {
     return m_BufferGlobalRef;
@@ -458,23 +451,9 @@ struct CPPJNIObjectContext
      return context->getBuffer();
   }
 
-  jobject
-  registerGlobalRef(JNIEnv* env, jobject obj)
-  {
-    auto globalRef = env->NewGlobalRef(obj);
-    m_GlobalRefs.push_back(globalRef);
-    return globalRef;
-  }
-
-  void
-  cleanupGlobalRefs(JNIEnv* env)
-  {
-    for (auto gref : m_GlobalRefs)
-    {
-      env->DeleteGlobalRef(gref);
-    }
-    m_GlobalRefs.clear();
-  }
+  jobject registerBuffer(jobject bufferobj);
+  jobject registerGlobalRef(jobject obj);
+  void    cleanupGlobalRefs();
 
   const char*
   addString(const char* contents)
@@ -628,15 +607,6 @@ CPPJNIObjectContext_t<T>*
 CPPJNI_createObjectContext(std::shared_ptr<T> pNativeObject)
 {
   return new CPPJNIObjectContext_t<T>(pNativeObject);
-}
-
-template<typename T>
-CPPJNIObjectContext_t<T>*
-CPPJNI_createObjectContextWithBuffer(std::shared_ptr<T> pNativeObject, jobject buffer)
-{
-  auto context = new CPPJNIObjectContext_t<T>(pNativeObject);
-  context->registerBuffer(JNIEnvGuard::getJNIEnv(), buffer);
-  return context;
 }
 
 template<typename T>

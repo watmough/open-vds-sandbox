@@ -619,7 +619,7 @@ def transform_jni_functioncall_args(args: List[Param], is_static_method: bool=Fa
                 pass
             else:
                 # Keep it alive!
-                epilogue.append(f"context->registerGlobalRef(env, {name});")
+                epilogue.append(f"context->registerBuffer({name});")
             next(p) # consume buffer size parameter
         elif  is_vector_type(type_) and is_pass_by_handle(clean_typename(get_template_arg0(type_))):
             elem_type = get_template_arg0(type_)
