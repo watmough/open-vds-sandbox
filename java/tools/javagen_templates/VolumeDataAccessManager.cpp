@@ -17,6 +17,40 @@
 ///AUTOGEN-INCLUDE: VolumeDataAccessManager.RequestProjectedVolumeSubsetTyped.cpp, <DataType> -> Float , <data_type> -> float 
 ///AUTOGEN-INCLUDE: VolumeDataAccessManager.RequestProjectedVolumeSubsetTyped.cpp, <DataType> -> Double, <data_type> -> double
 
+///AUTOGEN-IGNORE: CXX_METHOD RequestVolumeSubset std::shared_ptr<OpenVDS::VolumeDataRequest> (OpenVDS::DimensionsND, int, int, const int (&)[6], const int (&)[6], OpenVDS::VolumeDataFormat, OpenVDS::optional<float>) FUNCTIONPROTO
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestVolumeSubset3Impl
+  (JNIEnv * env, jobject object, jlong native_handle, jlong dimensionsND, jint LOD, jint channel, jintArray minVoxelCoordinates, jintArray maxVoxelCoordinates, jlong format, jfloat replacementNoValue, jboolean use_replacementNoValue)
+{
+  JNIEnvGuard
+    envGuard(env);
+
+  CPPJNI_TRY
+  {
+    auto tmpminVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, minVoxelCoordinates);
+    auto tmpmaxVoxelCoordinates = CPPJNIArrayAdapter<int,6,false>(env, maxVoxelCoordinates);
+    auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataAccessManager>(native_handle);
+    auto bufferSize = pInstance->GetVolumeSubsetBufferSize(tmpminVoxelCoordinates.getArray(), tmpmaxVoxelCoordinates.getArray(), (OpenVDS::VolumeDataFormat)format, LOD, channel);
+    auto buffer = JNIDirectBuffer::CreateDirectBuffer(bufferSize);
+    auto tmpbuffer = CPPJNIAsyncBuffer<void>(env, buffer);
+    auto result = pInstance->RequestVolumeSubset(
+                               tmpbuffer.buffer(), tmpbuffer.byteSize(), 
+                               (OpenVDS::DimensionsND)dimensionsND, 
+                               LOD, 
+                               channel, 
+                               tmpminVoxelCoordinates.getArray(), 
+                               tmpmaxVoxelCoordinates.getArray(), 
+                               (OpenVDS::VolumeDataFormat)format, 
+                               use_replacementNoValue ? OpenVDS::optional<float>(replacementNoValue) : OpenVDS::optional<float>());
+    // Create a context with a reference to the buffer. A GlobalRef is created to ensure the buffer is not garbage collected 
+    // before the request object is destroyed.
+    auto context = CPPJNI_createObjectContext(result);
+    context->registerBuffer(buffer);
+    return context->handle();
+  }
+  CPPJNI_CATCH
+  return 0;
+}
+
 ///AUTOGEN-IGNORE: CXX_METHOD RequestVolumeSamples std::shared_ptr<OpenVDS::VolumeDataRequest_t<float>> (float *, int64_t, OpenVDS::DimensionsND, int, int, const float (*)[6], int, OpenVDS::InterpolationMethod, OpenVDS::optional<float>) FUNCTIONPROTO
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_VolumeDataAccessManager_RequestVolumeSamplesImpl
   (JNIEnv * env, jobject object, jlong native_handle, jobject buffer, jlong dimensionsND, jint LOD, jint channel, jobject samplePositionsbytebuffer, jlong interpolationMethod, jfloat replacementNoValue, jboolean use_replacementNoValue)
