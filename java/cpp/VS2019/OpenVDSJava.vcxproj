@@ -23,6 +23,7 @@
     <ClCompile Include="..\src\CoordinateTransformer.cpp" />
     <ClCompile Include="..\src\CPPJNI.cpp" />
     <ClCompile Include="..\src\CPPJNICommon.cpp" />
+    <ClCompile Include="..\src\Error.cpp" />
     <ClCompile Include="..\src\Exceptions.cpp" />
     <ClCompile Include="..\src\GlobalMetadataCommon.cpp" />
     <ClCompile Include="..\src\GlobalState.cpp" />
@@ -156,17 +157,17 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\src\OpenVDS\OpenVDS;$(ProjectDir)..\..\..\src\OpenVDS;$(ProjectDir)..\..\..\Common;$(ProjectDir)..\..\..\out\install\x64-Debug\include;$(ProjectDir)..\..\..\out\install\x64-Release\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\src\OpenVDS\OpenVDS;$(ProjectDir)..\..\..\src\OpenVDS;$(ProjectDir)..\..\..\Common;$(ProjectDir)..\..\..\out\install\x64-Debug\include;$(ProjectDir)..\..\..\out\install\x64-Release\include;$(ProjectDir)..\..\..\out\install\Debug\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>"$(ProjectDir)..\..\..\out\install\$(Platform)-$(ConfigurationName)\lib\msvc_$(PlatformToolsetVersion)\Debug\openvdsd.lib";%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>"$(ProjectDir)..\..\..\out\install\$(ConfigurationName)\lib\msvc_$(PlatformToolsetVersion)\Debug\openvdsd.lib";%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>if not exist $(ProjectDir)test_bin mkdir test_bin
-set _DEBUG_DIR=$(ProjectDir)..\..\..\out\install\$(Platform)-$(ConfigurationName)\bin\msvc_$(PlatformToolsetVersion)\Debug\
-set _RELEASE_DIR=$(ProjectDir)..\..\..\out\install\$(Platform)-$(ConfigurationName)\bin\msvc_$(PlatformToolsetVersion)\RelWithDebInfo\
+set _DEBUG_DIR=$(ProjectDir)..\..\..\out\install\$(ConfigurationName)\bin\msvc_$(PlatformToolsetVersion)\Debug\
+set _RELEASE_DIR=$(ProjectDir)..\..\..\out\install\$(ConfigurationName)\bin\msvc_$(PlatformToolsetVersion)\RelWithDebInfo\
 if exist "%_DEBUG_DIR%openvdsd.dll" copy "%_DEBUG_DIR%*.dll" test_bin\
 if exist "%_RELEASE_DIR%openvds.dll" copy "%_RELEASE_DIR%*.dll" test_bin\
 copy $(TargetPath) test_bin\
@@ -193,8 +194,8 @@ copy $(TargetPath) test_bin\
     </Link>
     <PostBuildEvent>
       <Command>if not exist $(ProjectDir)test_bin mkdir test_bin
-set _DEBUG_DIR=$(ProjectDir)..\..\..\out\install\$(Platform)-$(ConfigurationName)\bin\msvc_$(PlatformToolsetVersion)\Debug\
-set _RELEASE_DIR=$(ProjectDir)..\..\..\out\install\$(Platform)-$(ConfigurationName)\bin\msvc_$(PlatformToolsetVersion)\RelWithDebInfo\
+set _DEBUG_DIR=$(ProjectDir)..\..\..\out\install\$(ConfigurationName)\bin\msvc_$(PlatformToolsetVersion)\Debug\
+set _RELEASE_DIR=$(ProjectDir)..\..\..\out\install\$(ConfigurationName)\bin\msvc_$(PlatformToolsetVersion)\RelWithDebInfo\
 if exist "%_DEBUG_DIR%openvdsd.dll" copy "%_DEBUG_DIR%*.dll" test_bin\
 if exist "%_RELEASE_DIR%openvds.dll" copy "%_RELEASE_DIR%*.dll" test_bin\
 copy $(TargetPath) test_bin\
