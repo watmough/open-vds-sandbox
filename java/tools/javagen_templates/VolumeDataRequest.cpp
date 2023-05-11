@@ -11,7 +11,11 @@ JNIEXPORT jobject JNICALL Java_org_opengroup_openvds_VolumeDataRequest_GetBuffer
   CPPJNI_TRY
   {
     auto buffer = CPPJNIObjectContext::getObjectBuffer(native_handle);
-    if (buffer == nullptr)
+    if (buffer)
+    {
+      return buffer;
+    }
+    else
     { // We don't own the buffer, so we have to create it using memory allocated by the request
       auto pInstance = CPPJNI_cast<OpenVDS::VolumeDataRequest>(native_handle);
 
