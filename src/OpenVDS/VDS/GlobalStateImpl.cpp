@@ -24,7 +24,7 @@ namespace OpenVDS
     : callback(nullptr)
     , userHandle(nullptr)
   {}
-  void GlobalLogInterface::SetLoggCallback(LogCallback callback, void* userHandle)
+  void GlobalLogInterface::SetLogCallback(LogCallback callback, void* userHandle)
   {
     std::unique_lock<std::mutex> lock(mutex);
     this->callback = callback;

@@ -29,7 +29,7 @@ namespace OpenVDS
   {
   public:
     GlobalLogInterface();
-    void SetLoggCallback(LogCallback callback, void* userHandle);
+    void SetLogCallback(LogCallback callback, void* userHandle);
     void SetDefaultLogCallback();
 
     void Log(LogLevel logLevel, const char* message, size_t messageSize)
@@ -84,7 +84,7 @@ namespace OpenVDS
 
     void SetLogCallback(LogCallback callback, void* userHandle) override final
     {
-      logInterface.SetLoggCallback(callback, userHandle);
+      logInterface.SetLogCallback(callback, userHandle);
     }
 
     void SetDefaultLogCallback() override final
