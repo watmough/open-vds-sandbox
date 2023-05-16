@@ -230,7 +230,7 @@ TEST_F(IOErrorHandlingFixture, ErrorHandlingMissingMetadataTag)
   auto logCallback = [&log](OpenVDS::LogLevel level, std::string message) { log.append(message); };
   OpenVDS::GetGlobalState()->SetLogCallback([](OpenVDS::LogLevel level, const char* message, size_t messageSize, void* userHandle) { (*static_cast<decltype(&logCallback)>(userHandle))(level, std::string(message, message + messageSize)); }, &logCallback);
 
-  OpenVDS::ScopedVDSHandle handle(OpenVDS::Open(facadeIoManager, error));
+  OpenVDS::ScopedVDSHandle handle(OpenVDS::Open(facadeIoManager, OpenVDS::LogLevel::Info, error));
   ASSERT_TRUE(handle);
   auto accessManager = OpenVDS::GetAccessManager(handle);
 
