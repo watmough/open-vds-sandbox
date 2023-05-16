@@ -83,7 +83,7 @@ struct OpenOptions
   ConnectionType connectionType;
 
 protected:
-  OpenOptions(ConnectionType connectionType) : connectionType(connectionType), waveletAdaptiveMode(WaveletAdaptiveMode::BestQuality), waveletAdaptiveTolerance(0.01f), waveletAdaptiveRatio(1.0f), logLevel(LogLevel::Warning) {}
+  OpenOptions(ConnectionType connectionType) : connectionType(connectionType), waveletAdaptiveMode(WaveletAdaptiveMode::BestQuality), waveletAdaptiveTolerance(0.01f), waveletAdaptiveRatio(1.0f), logLevel(LogLevel::None) {}
   OpenOptions(ConnectionType connectionType, WaveletAdaptiveMode waveletAdaptiveMode, float waveletAdaptiveTolerance, float waveletAdaptiveRatio, LogLevel logLevel) : connectionType(connectionType), waveletAdaptiveMode(waveletAdaptiveMode), waveletAdaptiveTolerance(waveletAdaptiveTolerance), waveletAdaptiveRatio(waveletAdaptiveRatio), logLevel(logLevel) {}
 
 public:
@@ -707,7 +707,7 @@ inline VDSHandle Open(const OpenOptions& options, Error& error) { return GetOpen
 /// <returns>
 /// The VDS handle that can be used to get the VolumeDataLayout and the VolumeDataAccessManager
 /// </returns>
-inline VDSHandle Open(IOManager*ioManager, Error &error) { return GetOpenVDSInterface(OPENVDS_VERSION).Open(ioManager, LogLevel::Warning, [](Error *error, int errorCode, const char *errorMessage) { error->code = errorCode; error->string = errorMessage; }, &error); }
+inline VDSHandle Open(IOManager*ioManager, Error &error) { return GetOpenVDSInterface(OPENVDS_VERSION).Open(ioManager, LogLevel::None, [](Error *error, int errorCode, const char *errorMessage) { error->code = errorCode; error->string = errorMessage; }, &error); }
 
 /// <summary>
 /// Open an existing VDS
@@ -892,7 +892,7 @@ inline VDSHandle Create(const OpenOptions& options, VolumeDataLayoutDescriptor c
 /// </returns>
 inline VDSHandle Create(IOManager* ioManager, VolumeDataLayoutDescriptor const &layoutDescriptor, std::vector<VolumeDataAxisDescriptor> axisDescriptors, std::vector<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const &metadata, CompressionMethod compressionMethod, float compressionTolerance, Error &error)
 {
-  return GetOpenVDSInterface(OPENVDS_VERSION).Create(ioManager, layoutDescriptor, axisDescriptors, channelDescriptors, metadata, compressionMethod, compressionTolerance, LogLevel::Warning, [](Error *error, int errorCode, const char *errorMessage) { error->code = errorCode; error->string = errorMessage; }, &error);
+  return GetOpenVDSInterface(OPENVDS_VERSION).Create(ioManager, layoutDescriptor, axisDescriptors, channelDescriptors, metadata, compressionMethod, compressionTolerance, LogLevel::None, [](Error *error, int errorCode, const char *errorMessage) { error->code = errorCode; error->string = errorMessage; }, &error);
 }
 
 /// <summary>
@@ -932,7 +932,7 @@ inline VDSHandle Create(IOManager* ioManager, VolumeDataLayoutDescriptor const &
 /// </returns>
 inline VDSHandle Create(IOManager* ioManager, VolumeDataLayoutDescriptor const &layoutDescriptor, std::vector<VolumeDataAxisDescriptor> axisDescriptors, std::vector<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const &metadata, Error &error)
 {
-  return GetOpenVDSInterface(OPENVDS_VERSION).Create(ioManager, layoutDescriptor, axisDescriptors, channelDescriptors, metadata, CompressionMethod::None, 0, LogLevel::Warning, [](Error *error, int errorCode, const char *errorMessage) { error->code = errorCode; error->string = errorMessage; }, &error);
+  return GetOpenVDSInterface(OPENVDS_VERSION).Create(ioManager, layoutDescriptor, axisDescriptors, channelDescriptors, metadata, CompressionMethod::None, 0, LogLevel::None, [](Error *error, int errorCode, const char *errorMessage) { error->code = errorCode; error->string = errorMessage; }, &error);
 }
 
 /// <summary>

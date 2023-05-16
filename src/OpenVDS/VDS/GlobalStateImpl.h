@@ -57,6 +57,7 @@ namespace OpenVDS
         i = 0;
       for (auto& i : decompressedChunks)
         i = 0;
+      SetDefaultLogCallback();
     }
     std::atomic<uint64_t> downloaded[OpenOptions::ConnectionTypeCount];
     std::atomic<uint64_t> downloadedChunks[OpenOptions::ConnectionTypeCount];
