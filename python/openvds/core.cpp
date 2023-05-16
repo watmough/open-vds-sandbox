@@ -37,6 +37,7 @@
 #include "PyCoordinateTransformer.h"
 #include "PyIJKCoordinateTransformer.h"
 #include "PyError.h"
+#include "PyLog.h"
 
 
 PYBIND11_MODULE(core, m) {
@@ -58,4 +59,5 @@ PYBIND11_MODULE(core, m) {
   PyCoordinateTransformer::initModule(m);
   PyIJKCoordinateTransformer::initModule(m);
   PyError::initModule(m);
+  PyLog::initModule(m);
 }
