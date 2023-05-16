@@ -446,9 +446,9 @@ static void beforeBlockCB(uv_prepare_t *handle)
             }
             break;
           default:
+            eventLoopData->logger.LogTrace(fmt::format("Unexpected CURL http response {}. {}", responseCode, error.string));
             error.code = responseCode;
             error.string = CurlHttpErrorMessage(responseCode, url);
-            eventLoopData->logger.LogError(fmt::format("Unexpected CURL http response {}. {}", responseCode, error.string));
           }
         }
         else
@@ -461,9 +461,9 @@ static void beforeBlockCB(uv_prepare_t *handle)
           }
           else
           {
+            eventLoopData->logger.LogTrace(fmt::format("Unexpected CURL response {}. {}", int(curlCode), error.string));
             error.code = curlCode;
             error.string = CURLErrorMessage(socketContext->curlEasy, curlCode);
-            eventLoopData->logger.LogTrace(fmt::format("Unexpected CURL response {}. {}", int(curlCode), error.string));
           }
         }
       }
