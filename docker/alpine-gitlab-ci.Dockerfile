@@ -1,4 +1,4 @@
-FROM alpine:latest
+FROM alpine:3.17.3
 
 # Install the various required packages
 RUN apk add python3 python3-dev py3-pip gcc g++ cmake make ninja git ccache doxygen openjdk8 \
