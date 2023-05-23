@@ -807,7 +807,7 @@ static bool Init(VDS *vds, VolumeDataStore* volumeDataStore, VolumeDataLayoutDes
       return false;
     }
 
-    if (axisDescriptor.GetNumSamples() < 1)
+    if (axisDescriptor.GetNumSamples() < 1 || axisDescriptor.GetNumSamples() > 1000000)
     {
       error.code = -1;
       error.string = "Axis descriptor has invalid number of samples";
@@ -843,26 +843,38 @@ static bool Init(VDS *vds, VolumeDataStore* volumeDataStore, VolumeDataLayoutDes
         return false;
       }
     }
+    else
+    {
+      if(channelDescriptor.GetMapping() == VolumeDataMapping::Direct)
+      {
+        if(channelDescriptor.GetMappedValueCount() != 1)
+        {
+          error.code = -1;
+          error.string = "Direct mapped channels must have 1 mapped value";
+          return false;
+        }
+      }
+      else if(channelDescriptor.GetMapping() == VolumeDataMapping::PerTrace)
+      {
+        if(channelDescriptor.GetMappedValueCount() < 1)
+        {
+          error.code = -1;
+          error.string = "Per-Trace mapped channels must have at least 1 mapped value";
+          return false;
+        }
+      }
+      else
+      {
+        error.code = -1;
+        error.string = "Unknown channel mapping";
+        return false;
+      }
+    }
 
     if (channelDescriptor.GetFormat() == VolumeDataFormat::Format_1Bit && channelDescriptor.IsUseNoValue())
     {
       error.code = -1;
       error.string = "1-bit channels cannot use no value";
-      return false;
-    }
-
-    if(channelDescriptor.GetMapping() == VolumeDataMapping::Direct && channelDescriptor.GetMappedValueCount() != 1)
-    {
-      error.code = -1;
-      error.string = "Direct mapped channels must have 1 mapped value";
-      return false;
-    }
-
-    if(channelDescriptor.GetMapping() != VolumeDataMapping::Direct &&
-       channelDescriptor.GetMapping() != VolumeDataMapping::PerTrace)
-    {
-      error.code = -1;
-      error.string = "Unknown channel mapping";
       return false;
     }
 
