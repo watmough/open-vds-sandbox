@@ -2791,7 +2791,7 @@ main(int argc, char* argv[])
   options.add_option("", "", "uniqueID", "Generate a new globally unique ID when scanning the input SEG-Y file.", cxxopts::value<bool>(uniqueID), "");
   options.add_option("", "", "disable-persistentID", "Disable the persistentID usage, placing the VDS directly into the url location.", cxxopts::value<bool>(disablePersistentID), "");
   options.add_option("", "", "json-output", "Enable json output.", cxxopts::value<bool>(useJsonOutput), "");
-  options.add_option("", "", "disable-print-text-header", "Print the text header of the input segy file.", cxxopts::value<bool>(disablePrintSegyTextHeader), "");
+  options.add_option("", "", "disable-print-text-header", "Disable printing the text header of the input segy file.", cxxopts::value<bool>(disablePrintSegyTextHeader), "");
   options.add_option("", "", "attribute-name", "The name of the primary VDS channel. The name may be Amplitude (default), Attribute, Depth, Probability, Time, Vavg, Vint, or Vrms", cxxopts::value<std::string>(attributeName)->default_value(AMPLITUDE_ATTRIBUTE_NAME), "<string>");
   options.add_option("", "", "attribute-unit", "The units of the primary VDS channel. The unit name may be blank (default), ft, ft/s, Hz, m, m/s, ms, or s", cxxopts::value<std::string>(attributeUnit), "<string>");
   options.add_option("", "", "2d", "Import 2D data.", cxxopts::value<bool>(is2D), "");
