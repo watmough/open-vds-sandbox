@@ -35,7 +35,7 @@ inline void getScaleOffsetForFormat(float min, float max, bool novalue, OpenVDS:
   }
 }
 
-inline OpenVDS::VDS *generateSimpleInMemory3DVDS(int32_t samplesX = 100, int32_t samplesY = 100, int32_t samplesZ = 100, OpenVDS::VolumeDataChannelDescriptor::Format format = OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataLayoutDescriptor::BrickSize brickSize = OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, OpenVDS::IOManager *ioManager = nullptr)
+inline OpenVDS::VDS *generateSimpleInMemory3DVDS(int32_t samplesX = 100, int32_t samplesY = 100, int32_t samplesZ = 100, OpenVDS::VolumeDataChannelDescriptor::Format format = OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataLayoutDescriptor::BrickSize brickSize = OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, float noValue = 0.0f, OpenVDS::IOManager *ioManager = nullptr)
 {
   int negativeMargin = 4;
   int positiveMargin = 4;
@@ -57,7 +57,7 @@ inline OpenVDS::VDS *generateSimpleInMemory3DVDS(int32_t samplesX = 100, int32_t
   getScaleOffsetForFormat(rangeMin, rangeMax, true, format, intScale, intOffset);
   if(format != OpenVDS::VolumeDataChannelDescriptor::Format_1Bit)
   {
-    channelDescriptors.push_back(OpenVDS::VolumeDataChannelDescriptor(format, OpenVDS::VolumeDataChannelDescriptor::Components_1, AMPLITUDE_ATTRIBUTE_NAME, "", rangeMin, rangeMax, OpenVDS::VolumeDataMapping::Direct, 1, OpenVDS::VolumeDataChannelDescriptor::Default, 0.f, intScale, intOffset));
+    channelDescriptors.push_back(OpenVDS::VolumeDataChannelDescriptor(format, OpenVDS::VolumeDataChannelDescriptor::Components_1, AMPLITUDE_ATTRIBUTE_NAME, "", rangeMin, rangeMax, OpenVDS::VolumeDataMapping::Direct, 1, OpenVDS::VolumeDataChannelDescriptor::Default, noValue, intScale, intOffset));
   }
   else // Do not use NoValue
   {
@@ -102,9 +102,11 @@ inline void fill3DVDSWithNoise(OpenVDS::VDS *vds, int32_t channel = 0, const Ope
   std::shared_ptr<OpenVDS::VolumeDataPageAccessor> pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, channel, 0, 100, createLODs ? OpenVDS::VolumeDataAccessManager::AccessMode_Create : OpenVDS::VolumeDataAccessManager::AccessMode_CreateWithoutLODGeneration);
   //ASSERT_TRUE(pageAccessor);
 
-  fillVolumeDataPages(pageAccessor, [frequency](void*buffer, OpenVDS::VolumeDataFormat format, OpenVDS::VolumeIndexer3D const &outputIndexer)
+  auto layout = OpenVDS::GetLayout(vds);
+  float noValue = layout->GetChannelNoValue(0);
+  fillVolumeDataPages(pageAccessor, [frequency, noValue](void*buffer, OpenVDS::VolumeDataFormat format, OpenVDS::VolumeIndexer3D const &outputIndexer)
   {
-    OpenVDS::CalculateNoise3D(buffer, format, outputIndexer, frequency, 0.021f, 0.f, true, 345);
+    OpenVDS::CalculateNoise3D(buffer, format, outputIndexer, frequency, 0.021f, noValue, true, 345);
   });
 
   OpenVDS::Error error;

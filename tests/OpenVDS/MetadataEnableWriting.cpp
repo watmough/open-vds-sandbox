@@ -45,7 +45,7 @@ TEST(OpenVDS_integration, TestFailToEnableWritingWhenGettingMetadataWriteAccessI
   std::unique_ptr<OpenVDS::IOManager> inMemory(OpenVDS::IOManagerInMemory::CreateIOManager(options, OpenVDS::IOManager::AccessPattern::ReadWrite, error));
   auto ioCreate = new IOManagerFacadeLight(inMemory.get());
   {
-    OpenVDS::ScopedVDSHandle handle(generateSimpleInMemory3DVDS(60, 60, 60, OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, ioCreate));
+    OpenVDS::ScopedVDSHandle handle(generateSimpleInMemory3DVDS(60, 60, 60, OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, 0.0f, ioCreate));
     fill3DVDSWithBitNoise(handle);
   }
   IOManagerFailToEnableWriting *readonlyIOManager = new IOManagerFailToEnableWriting(inMemory.get());

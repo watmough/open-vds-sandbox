@@ -44,7 +44,7 @@ TEST(Multithreading, requests)
 
   {
     IOManagerFacadeLight *iomanager = new IOManagerFacadeLight(inMemory.get());
-    OpenVDS::ScopedVDSHandle handle(generateSimpleInMemory3DVDS(datasetSize, datasetSize, datasetSize, OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, iomanager));
+    OpenVDS::ScopedVDSHandle handle(generateSimpleInMemory3DVDS(datasetSize, datasetSize, datasetSize, OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, 0.0f, iomanager));
 
     fill3DVDSWithBitNoise(handle);
   }

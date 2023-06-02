@@ -44,7 +44,7 @@ struct IOErrorHandlingFixture : public ::testing::Test
 
     IOManagerFacade* facadeIoManager = new IOManagerFacade(inMemoryIOManager);
 
-    OpenVDS::ScopedVDSHandle handle(generateSimpleInMemory3DVDS(60, 60, 60, OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, facadeIoManager));
+    OpenVDS::ScopedVDSHandle handle(generateSimpleInMemory3DVDS(60, 60, 60, OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, 0.0f, facadeIoManager));
     ASSERT_TRUE(handle);
     fill3DVDSWithNoise(handle);
   }

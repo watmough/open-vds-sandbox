@@ -64,7 +64,7 @@ GTEST_TEST(OpenVDS_integration, SimpleRequestVolumeError)
   SlowIOManager* slowIOManager = new SlowIOManager(5, facadeIOManager.get());
 
   int dim[3] = { 100, 100, 100 };
-  OpenVDS::ScopedVDSHandle handle(generateSimpleInMemory3DVDS(dim[0], dim[1], dim[2], OpenVDS::VolumeDataChannelDescriptor::Format_1Bit, OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, slowIOManager));
+  OpenVDS::ScopedVDSHandle handle(generateSimpleInMemory3DVDS(dim[0], dim[1], dim[2], OpenVDS::VolumeDataChannelDescriptor::Format_1Bit, OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, 0.0f, slowIOManager));
   ASSERT_TRUE(handle);
   fill3DVDSWithBitNoise(handle);
 

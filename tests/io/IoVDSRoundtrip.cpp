@@ -47,7 +47,7 @@ TEST(IOTests, CreateSyntheticVDSAndVerifyUpload)
   int createDim[] = {400,400,400};
 #endif
 
-  OpenVDS::ScopedVDSHandle inMemoryVDS(generateSimpleInMemory3DVDS(createDim[0], createDim[1], createDim[2], OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataLayoutDescriptor::BrickSize_64, inMemory));
+  OpenVDS::ScopedVDSHandle inMemoryVDS(generateSimpleInMemory3DVDS(createDim[0], createDim[1], createDim[2], OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataLayoutDescriptor::BrickSize_64, 0.0f, inMemory));
   fill3DVDSWithNoise(inMemoryVDS);
   OpenVDS::VolumeDataLayout *inMemoryLayout = OpenVDS::GetLayout(inMemoryVDS);
 
@@ -231,7 +231,7 @@ TEST(IOTests, CreateSyntheticVDSAndVerifyCreateVDSFile)
   OpenVDS::IOManager *inMemory = OpenVDS::IOManagerInMemory::CreateIOManagerInMemory("", error);
   int createDim[] = {200,200,200};
 
-  OpenVDS::ScopedVDSHandle inMemoryVDS(generateSimpleInMemory3DVDS(createDim[0], createDim[1], createDim[2], OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataLayoutDescriptor::BrickSize_64, inMemory));
+  OpenVDS::ScopedVDSHandle inMemoryVDS(generateSimpleInMemory3DVDS(createDim[0], createDim[1], createDim[2], OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataLayoutDescriptor::BrickSize_64, 0.0f, inMemory));
   fill3DVDSWithNoise(inMemoryVDS);
   OpenVDS::VolumeDataLayout *inMemoryLayout = OpenVDS::GetLayout(inMemoryVDS);
 
@@ -412,7 +412,7 @@ TEST(IOTests, CreateSyntheticVDSWithoutMetadataPagesAndVerifyUpload)
   int createDim[] = {400,400,400};
 #endif
 
-  OpenVDS::ScopedVDSHandle inMemoryVDS(generateSimpleInMemory3DVDS(createDim[0], createDim[1], createDim[2], OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataLayoutDescriptor::BrickSize_64, inMemory));
+  OpenVDS::ScopedVDSHandle inMemoryVDS(generateSimpleInMemory3DVDS(createDim[0], createDim[1], createDim[2], OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataLayoutDescriptor::BrickSize_64, 0.0f, inMemory));
 
   std::shared_ptr<OpenVDS::VolumeDataPageAccessor> pageAccessor = OpenVDS::GetAccessManager(inMemoryVDS).CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, 0, 0, 100, OpenVDS::VolumeDataAccessManager::AccessMode_Create, 0);
   ASSERT_TRUE(pageAccessor);

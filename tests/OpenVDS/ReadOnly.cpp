@@ -84,7 +84,7 @@ GTEST_TEST(OpenVDS_integration, VerifyReadOnly)
 
   {
     IOManagerFacadeLight* createIoManager = new IOManagerFacadeLight(inMemory);
-    OpenVDS::ScopedVDSHandle handle(generateSimpleInMemory3DVDS(100, 100, 100, OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, createIoManager));
+    OpenVDS::ScopedVDSHandle handle(generateSimpleInMemory3DVDS(100, 100, 100, OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, 0.0f, createIoManager));
     ASSERT_TRUE(handle);
     fill3DVDSWithNoise(handle);
     auto metadataWriteAccess = OpenVDS::GetMetadataWriteAccessInterface(handle);

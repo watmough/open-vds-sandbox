@@ -345,7 +345,7 @@ GTEST_TEST(OpenVDS_integration, RequestVolumeSubsetWithDifferentFormatsAndDimens
   EXPECT_EQ(error.code, 0);
   EXPECT_EQ(error.string, "");
 
-  OpenVDS::ScopedVDSHandle handle(generateSimpleInMemory3DVDS(dim[0], dim[1], dim[2], OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, inMemory));
+  OpenVDS::ScopedVDSHandle handle(generateSimpleInMemory3DVDS(dim[0], dim[1], dim[2], OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, 0.0f, inMemory));
   ASSERT_TRUE(handle);
   fill3DVDSWithNoise(handle);
 
@@ -406,7 +406,7 @@ GTEST_TEST(OpenVDS_integration, RequestVolumeSubsetWithDifferentFormatsAndDimens
   EXPECT_EQ(error.code, 0);
   EXPECT_EQ(error.string, "");
 
-  OpenVDS::ScopedVDSHandle handle(generateSimpleInMemory3DVDS(dim[0], dim[1], dim[2], OpenVDS::VolumeDataChannelDescriptor::Format_1Bit, OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, inMemory));
+  OpenVDS::ScopedVDSHandle handle(generateSimpleInMemory3DVDS(dim[0], dim[1], dim[2], OpenVDS::VolumeDataChannelDescriptor::Format_1Bit, OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, 0.0f, inMemory));
   ASSERT_TRUE(handle);
   fill3DVDSWithBitNoise(handle);
 
