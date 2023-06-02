@@ -106,7 +106,7 @@ inline void fill3DVDSWithNoise(OpenVDS::VDS *vds, int32_t channel = 0, const Ope
   float noValue = layout->GetChannelNoValue(0);
   fillVolumeDataPages(pageAccessor, [frequency, noValue](void*buffer, OpenVDS::VolumeDataFormat format, OpenVDS::VolumeIndexer3D const &outputIndexer)
   {
-    OpenVDS::CalculateNoise3D(buffer, format, outputIndexer, frequency, 0.021f, noValue, true, 345);
+    OpenVDS::CalculateNoise3D(buffer, format, outputIndexer, frequency, 0.21f, noValue, true, 345);
   });
 
   OpenVDS::Error error;

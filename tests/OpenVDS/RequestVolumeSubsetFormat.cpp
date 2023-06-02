@@ -32,7 +32,7 @@
 void setupNoiseTestHandle(OpenVDS::ScopedVDSHandle &handle)
 {
   OpenVDS::Error error;
-  handle = generateSimpleInMemory3DVDS(60,60,60);
+  handle = generateSimpleInMemory3DVDS(60,60,60, OpenVDS::VolumeDataFormat::Format_R32, OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, 42.64f);
 
   fill3DVDSWithNoise(handle);
 }
@@ -157,4 +157,26 @@ TEST_F(RequestVolumeSubsetFormat, source1Bit)
     bool boolBool = bool(byteBool);
     ASSERT_EQ(floatBool, boolBool);
   }
+}
+
+TEST_F(RequestVolumeSubsetFormat, requestReplaceNoValue)
+{
+  auto *shared_data = RequestVolumeSubsetFormat::shared_data.get();
+   
+  float noValue = shared_data->layout->GetChannelNoValue(0);
+  float replacementNoValue = 22.70f;
+  ASSERT_NE(noValue, replacementNoValue);
+  auto requestFloat = shared_data->accessManager.RequestVolumeSubset<float>(OpenVDS::Dimensions_012, 0, 0, shared_data->minPos, shared_data->maxPos, replacementNoValue);
+  ASSERT_TRUE(requestFloat->WaitForCompletion());
+  auto replacementBuffer = std::move(requestFloat->Data());
+  int noValueCount = 0;
+  for (int i = 0; i < shared_data->voxelCount; i++)
+  {
+    if (shared_data->bufferFloat[i] == noValue)
+    {
+      noValueCount++;
+      ASSERT_EQ(replacementBuffer[i], replacementNoValue);
+    }
+  }
+  ASSERT_GT(noValueCount, 0);
 }
