@@ -46,7 +46,9 @@ private:
   VolumeDataAccessManagerImpl *m_accessManager;
   VolumeDataPageAccessorImpl *m_parentVolumeDataPageAccessor;
   VolumeDataLayer const *m_layer;
-  ConversionParameters m_conversionParameters;
+  VolumeDataFormat m_format;
+  float m_noValue;
+  bool m_useNoValue;
   std::unique_ptr<VolumeDataPartition>
       m_superPartition;
   int m_pagesFound;
@@ -75,7 +77,7 @@ private:
   void EnsureSuperPartitionCreated() const { if(!m_superPartition) { static std::mutex mutex; std::unique_lock<std::mutex> mutexLock(mutex); if(!m_superPartition) { const_cast<VolumeDataPageAccessorImpl *>(this)->CreateSuperPartition(); } } }
 
 public:
-  VolumeDataPageAccessorImpl(VolumeDataAccessManagerImpl *acccessManager, VolumeDataPageAccessorImpl *parentVolumeDataPageAccessor, VolumeDataLayer const* layer, const ConversionParameters &conversionParameters, int maxPages, AccessMode accessMode, Logger &logHandler);
+  VolumeDataPageAccessorImpl(VolumeDataAccessManagerImpl *accessManager, VolumeDataPageAccessorImpl *parentVolumeDataPageAccessor, VolumeDataLayer const* layer, VolumeDataFormat format, bool useNoValue, float noValue, int maxPages, AccessMode accessMode, Logger &logHandler);
   ~VolumeDataPageAccessorImpl();
 
   void Invalidate();
@@ -84,7 +86,9 @@ public:
 
   VolumeDataLayout const* GetLayout() const override;
   VolumeDataLayer const * GetLayer() const { return m_layer; }
-  ConversionParameters const & GetConversionParameters() const { return m_conversionParameters; }
+  VolumeDataFormat GetFormat() const { return m_format; }
+  bool UseNoValue() const { return m_useNoValue; }
+  float GetNoValue() const { return m_noValue; }
 
   int   GetLOD() const override;
   int   GetChannelIndex() const override;

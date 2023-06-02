@@ -35,51 +35,6 @@
 namespace OpenVDS
 {
 
-ConversionParameters makeDefaultConversionParameters(VolumeDataLayer const* layer)
-{
-  ConversionParameters ret;
-  ret.format = layer->GetFormat();
-  ret.valueRangeMin = layer->GetValueRange().Min;
-  ret.valueRangeMax = layer->GetValueRange().Max;
-  ret.integerScale = layer->GetIntegerScale();
-  ret.integerOffset = layer->GetIntegerOffset();
-  ret.noValue = layer->GetNoValue();
-  ret.hasReplacementNoValue = false;
-  ret.replacementNoValue = layer->GetNoValue();
-  return ret;
-}
-ConversionParameters makeConversionParameters(VolumeDataLayer const* layer, VolumeDataFormat format, bool isReplaceNoValue, float replacementNoValue)
-{
-  ConversionParameters ret;
-  ret.format = format;
-  ret.valueRangeMin = layer->GetValueRange().Min;
-  ret.valueRangeMax = layer->GetValueRange().Max;
-  ret.integerScale = layer->GetIntegerScale();
-  ret.integerOffset = layer->GetIntegerOffset();
-  ret.noValue = layer->GetNoValue();
-  ret.hasReplacementNoValue = isReplaceNoValue;
-  ret.replacementNoValue = replacementNoValue;
-  return ret;
-
-}
-
-bool isConversionParametersEqual(const ConversionParameters &cp, VolumeDataFormat format, const FloatRange& valueRange, float integerScale, float integerOffset, bool isUseNoValue, float noValue)
-{
-  if (format != cp.format)
-    return false;
-  if (valueRange.Min != cp.valueRangeMin)
-    return false;
-  if (valueRange.Max != cp.valueRangeMax)
-    return false;
-  if (integerScale != cp.integerScale)
-    return false;
-  if (integerOffset != cp.integerOffset)
-    return false;
-  if (isUseNoValue && cp.hasReplacementNoValue && (noValue != cp.replacementNoValue))
-    return false;
-
-  return true;
-}
 VolumeDataLayer::VolumeDataLayer(VolumeDataPartition const &volumeDataPartition, VolumeDataLayoutImpl *volumeDataLayout, int32_t channel, VolumeDataLayer *primaryChannelLayer, VolumeDataLayer *lowerLOD, VolumeDataLayer::LayerType layerType, const VolumeDataChannelMapping *volumeDataChannelMapping)
   : VolumeDataPartition(volumeDataPartition)
   , m_volumeDataLayout(volumeDataLayout)

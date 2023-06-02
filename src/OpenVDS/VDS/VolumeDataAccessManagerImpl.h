@@ -58,7 +58,7 @@ class VolumeDataAccessManagerImpl : public IVolumeDataAccessManager, public IVol
   VolumeDataLayer const *               ValidateVolumeDataStore(VolumeDataLayer const *volumeDataLayer);
   VolumeDataLayer const *               ValidateTraceDimension(VolumeDataLayer const *volumeDataLayer, int traceDimension);
 
-  VolumeDataPageAccessorImpl *          CreateVolumeDataPageAccessor(VolumeDataLayer const *volumeDataLayer, const ConversionParameters &conversionParameters, int maxPages, VolumeDataAccessManager::AccessMode accessMode);
+  VolumeDataPageAccessorImpl *          CreateVolumeDataPageAccessor(VolumeDataLayer const *volumeDataLayer, VolumeDataFormat format, bool useNoValue, float noValue, int maxPages, VolumeDataAccessManager::AccessMode accessMode);
 
   VolumeDataAccessManagerImpl(VDS &vds);
   ~VolumeDataAccessManagerImpl() override;
@@ -85,7 +85,7 @@ public:
   VolumeDataLayoutImpl const *GetVolumeDataLayout() override;
   VDSProduceStatus GetVDSProduceStatus(DimensionsND dimensionsND, int LOD, int channel) override;
   int64_t GetVDSChunkCount(DimensionsND dimensionsND, int LOD, int channel) override;
-  VolumeDataPageAccessorImpl* CreateVolumeDataPageAccessorConversionParam(DimensionsND dimensionsND, int LOD, int channel, const ConversionParameters& conversionParameters, int maxPages, VolumeDataAccessManager::AccessMode accessMode, int chunkMetadataPageSize);
+  VolumeDataPageAccessorImpl* CreateVolumeDataPageAccessorConversionParam(DimensionsND dimensionsND, int LOD, int channel, VolumeDataFormat format, bool useNoValue, float noValue, int maxPages, VolumeDataAccessManager::AccessMode accessMode, int chunkMetadataPageSize);
   VolumeDataPageAccessor *    CreateVolumeDataPageAccessor(DimensionsND dimensionsND, int LOD, int channel, int maxPages, VolumeDataAccessManager::AccessMode accessMode, int chunkMetadataPageSize = 1024) override;
 
   void  DestroyVolumeDataPageAccessor(VolumeDataPageAccessor *volumeDataPageAccessor) override;

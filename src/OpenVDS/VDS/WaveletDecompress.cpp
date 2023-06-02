@@ -24,10 +24,51 @@
 #include "FSE/fse.h"
 #include <assert.h>
 
-namespace Wavelet {
+#include <OpenVDS/ValueConversion.h>
 
-template<typename T>
-void WaveletDecompress_ConvertFloatToIntegerType(const WaveletDataBlock &sourceDataBlock, const std::vector<uint8_t> &sourceData, const WaveletDataBlock &targetDataBlock, std::vector<uint8_t> &targetData)
+namespace Wavelet
+{
+
+static FloatRange 
+Wavelet_GetQuantizationValueRange(FloatRange const &originalValueRange, float integerOffset, float integerScale, WaveletDataFormat targetFormat, bool isUseNoValue, uint32_t integerInfo)
+{
+  FloatRange valueRange;
+
+  if (integerInfo & WAVELET_INTEGERINFO_ISINTEGER)
+  {
+    if (integerInfo & WAVELET_INTEGERINFO_16BIT)
+    {
+      // going from 16 bit originally to 8 bit, make sure we scale right
+      // No values are first "set", then taken care of properly before value range is used/applied
+      if (targetFormat == WaveletDataFormat::Format_U8)
+      {
+        valueRange.Min = ((originalValueRange.Min - integerOffset) / integerScale);
+        valueRange.Max = (valueRange.Min + originalValueRange.Size() / integerScale);
+      }
+      else
+      {
+        valueRange.Min = 0.0f;
+        valueRange.Max = isUseNoValue ? 65534.0f : 65535.0f;
+      }
+    }
+    else
+    {
+      // 8 bit originally
+      valueRange.Min = 0.0f;
+      valueRange.Max = isUseNoValue ? 254.0f : 255.0f;
+    }
+  }
+  else
+  {
+    valueRange = originalValueRange;
+  }
+
+  return valueRange;
+}
+
+
+template<typename T, bool isUseNoValue>
+void WaveletDecompress_ConvertFloatToIntegerType(const WaveletDataBlock &sourceDataBlock, const std::vector<uint8_t> &sourceData, FloatRange const &valueRange, float integerOffset, float integerScale, float noValue, const WaveletDataBlock &targetDataBlock, std::vector<uint8_t> &targetData)
 {
   assert(sourceDataBlock.Format == WaveletDataFormat::Format_R32);
 
@@ -42,6 +83,7 @@ void WaveletDecompress_ConvertFloatToIntegerType(const WaveletDataBlock &sourceD
   int32_t targetAllocatedSizeY = targetDataBlock.AllocatedSize[1];
   uint32_t targetElementSize = GetElementSize(targetDataBlock);
 
+  OpenVDS::QuantizingValueConverterWithNoValue<T, float, isUseNoValue> converter(valueRange.Min, valueRange.Max, integerScale, integerOffset, noValue, noValue);
   for (int32_t iZ = 0; iZ < sourceSizeZ; iZ++)
   {
     for (int32_t iY = 0; iY < sourceSizeY; iY++)
@@ -50,7 +92,7 @@ void WaveletDecompress_ConvertFloatToIntegerType(const WaveletDataBlock &sourceD
       const float * source = reinterpret_cast<const float *>(sourceData.data() + (iZ * sourceAllocatedSizeY * sourceAllocatedSizeX + iY * sourceAllocatedSizeX) * sourceElementSize);
       for (int32_t iX = 0; iX < sourceSizeX; iX++, target++, source++)
       {
-        *target = T(*source);
+        *target = converter.ConvertValue(*source);
       }
     }
   }
@@ -131,20 +173,37 @@ bool Wavelet_Decompress(void *compressedData, int nCompressedAdaptiveDataSize, W
     WaveletDataBlock finalDataBlock;
     if (!finalDataBlock.Initialize(dataBlockFormat, (enum WaveletDataBlock::Dimensionality)(dimensions), createSize, errorCode, errorString))
       return false;
+    
+    FloatRange quantizationValueRange = Wavelet_GetQuantizationValueRange(valueRange, integerOffset, integerScale, dataBlockFormat, isUseNoValue, integerInfo);
+
     std::vector<uint8_t> finalDataTarget;
     finalDataTarget.resize(GetAllocatedByteSize(finalDataBlock));
 
-    if (finalDataBlock.Format == WaveletDataFormat::Format_U8)
+    if (isUseNoValue)
     {
-      WaveletDecompress_ConvertFloatToIntegerType<uint8_t>(dataBlock, target, finalDataBlock, finalDataTarget);
+      if (finalDataBlock.Format == WaveletDataFormat::Format_U8)
+      {
+        WaveletDecompress_ConvertFloatToIntegerType<uint8_t, true>(dataBlock, target, valueRange, integerOffset, integerScale, noValue, finalDataBlock, finalDataTarget);
+      }
+      else
+      {
+        WaveletDecompress_ConvertFloatToIntegerType<uint16_t, true>(dataBlock, target, valueRange, integerOffset, integerScale, noValue, finalDataBlock, finalDataTarget);
+      }
     }
     else
     {
-      WaveletDecompress_ConvertFloatToIntegerType<uint16_t>(dataBlock, target, finalDataBlock, finalDataTarget);
+      if (finalDataBlock.Format == WaveletDataFormat::Format_U8)
+      {
+        WaveletDecompress_ConvertFloatToIntegerType<uint8_t, false>(dataBlock, target, valueRange, integerOffset, integerScale, noValue, finalDataBlock, finalDataTarget);
+      }
+      else
+      {
+        WaveletDecompress_ConvertFloatToIntegerType<uint16_t, false>(dataBlock, target, valueRange, integerOffset, integerScale, noValue, finalDataBlock, finalDataTarget);
+      }
     }
     target = std::move(finalDataTarget);
     dataBlock = finalDataBlock;
-  }
+    }
 
   return true;
 }

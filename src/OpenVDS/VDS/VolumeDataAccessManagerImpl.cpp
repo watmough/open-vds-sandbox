@@ -360,7 +360,7 @@ VolumeDataAccessManagerImpl::GetVDSChunkCount(DimensionsND dimensionsND, int LOD
 }
 
 VolumeDataPageAccessorImpl *
-VolumeDataAccessManagerImpl::CreateVolumeDataPageAccessor(VolumeDataLayer const *volumeDataLayer, const ConversionParameters &conversionParameters, int maxPages, VolumeDataPageAccessor::AccessMode accessMode)
+VolumeDataAccessManagerImpl::CreateVolumeDataPageAccessor(VolumeDataLayer const *volumeDataLayer, VolumeDataFormat format, bool useNoValue, float noValue, int maxPages, VolumeDataPageAccessor::AccessMode accessMode)
 {
   VolumeDataPageAccessorImpl *parentVolumeDataPageAccessor = nullptr;
 
@@ -377,16 +377,16 @@ VolumeDataAccessManagerImpl::CreateVolumeDataPageAccessor(VolumeDataLayer const 
       int parentMaxPages = parentLayer->GetNumChunksInDimension(dim0);
       if(dim1 != -1) parentMaxPages *= parentLayer->GetNumChunksInDimension(dim1);
 
-      parentVolumeDataPageAccessor = CreateVolumeDataPageAccessor(volumeDataLayer->GetParentLayer(), conversionParameters, parentMaxPages, accessMode);
+      parentVolumeDataPageAccessor = CreateVolumeDataPageAccessor(volumeDataLayer->GetParentLayer(), format, useNoValue, noValue, parentMaxPages, accessMode);
     }
   }
 
-  VolumeDataPageAccessorImpl *pageAccessor = new VolumeDataPageAccessorImpl(this, parentVolumeDataPageAccessor, volumeDataLayer, conversionParameters, maxPages, accessMode, m_vds.logger);
+  VolumeDataPageAccessorImpl *pageAccessor = new VolumeDataPageAccessorImpl(this, parentVolumeDataPageAccessor, volumeDataLayer, format, useNoValue, noValue, maxPages, accessMode, m_vds.logger);
   return pageAccessor;
 }
 
 VolumeDataPageAccessorImpl*
-VolumeDataAccessManagerImpl::CreateVolumeDataPageAccessorConversionParam(DimensionsND dimensionsND, int LOD, int channel, const ConversionParameters& conversionParameters, int maxPages, VolumeDataAccessManager::AccessMode accessMode, int chunkMetadataPageSize)
+VolumeDataAccessManagerImpl::CreateVolumeDataPageAccessorConversionParam(DimensionsND dimensionsND, int LOD, int channel, VolumeDataFormat format, bool useNoValue, float noValue, int maxPages, VolumeDataAccessManager::AccessMode accessMode, int chunkMetadataPageSize)
 {
   std::unique_lock<std::mutex> lock(m_mutex);
 
@@ -433,7 +433,7 @@ VolumeDataAccessManagerImpl::CreateVolumeDataPageAccessorConversionParam(Dimensi
     }
   }
 
-  VolumeDataPageAccessorImpl *pageAccessor = CreateVolumeDataPageAccessor(ValidateProduceStatus(volumeDataLayer), conversionParameters, maxPages, accessMode);
+  VolumeDataPageAccessorImpl *pageAccessor = CreateVolumeDataPageAccessor(ValidateProduceStatus(volumeDataLayer), format, useNoValue, noValue, maxPages, accessMode);
   m_volumeDataPageAccessorList.InsertLast(pageAccessor);
   return pageAccessor;
 }
@@ -446,8 +446,7 @@ VolumeDataAccessManagerImpl::CreateVolumeDataPageAccessor(DimensionsND dimension
     std::unique_lock<std::mutex> lock(m_mutex);
     volumeDataLayer = const_cast<VolumeDataLayer*>(PrivateGetLayer(dimensionsND, channel, LOD));
   }
-  auto conversionParameters = makeDefaultConversionParameters(volumeDataLayer);
-  return CreateVolumeDataPageAccessorConversionParam(dimensionsND, LOD, channel, conversionParameters, maxPages, accessMode, chunkMetadataPageSize);
+  return CreateVolumeDataPageAccessorConversionParam(dimensionsND, LOD, channel, volumeDataLayer->GetFormat(), volumeDataLayer->IsUseNoValue(), volumeDataLayer->GetNoValue(), maxPages, accessMode, chunkMetadataPageSize);
 }
 
 void

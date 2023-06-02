@@ -38,11 +38,13 @@
 namespace OpenVDS
 {
 
-VolumeDataPageAccessorImpl::VolumeDataPageAccessorImpl(VolumeDataAccessManagerImpl* accessManager, VolumeDataPageAccessorImpl *parentVolumeDataPageAccessor, VolumeDataLayer const* layer, const ConversionParameters &conversionParameters, int maxPages, AccessMode accessMode, Logger &logger)
+VolumeDataPageAccessorImpl::VolumeDataPageAccessorImpl(VolumeDataAccessManagerImpl *accessManager, VolumeDataPageAccessorImpl *parentVolumeDataPageAccessor, VolumeDataLayer const* layer, VolumeDataFormat format, bool useNoValue, float noValue, int maxPages, AccessMode accessMode, Logger &logHandler)
   : m_accessManager(accessManager)
   , m_parentVolumeDataPageAccessor(parentVolumeDataPageAccessor)
   , m_layer(layer)
-  , m_conversionParameters(conversionParameters)
+  , m_format(format)
+  , m_noValue(noValue)
+  , m_useNoValue(useNoValue)
   , m_pagesFound(0)
   , m_pagesRead(0)
   , m_pagesWritten(0)
@@ -52,7 +54,7 @@ VolumeDataPageAccessorImpl::VolumeDataPageAccessorImpl(VolumeDataAccessManagerIm
   , m_isCommitInProgress(false)
   , m_isLayerWriteLocked(false)
   , m_lastUsed(std::chrono::steady_clock::now())
-  , m_logger(logger)
+  , m_logger(logHandler)
 {
   if (accessMode != AccessMode::AccessMode_ReadOnly)
   {
@@ -514,7 +516,7 @@ bool VolumeDataPageAccessorImpl::ReadPreparedPage(VolumeDataPageImpl* pageImpl)
 
       if (!sparse)
       {
-        bool success = m_accessManager->GetVolumeDataStore()->DeserializeVolumeData(volumeDataChunk, serialized_data, metadata, compressionInfo.GetCompressionMethod(), compressionInfo.GetAdaptiveLevel(), pageImpl->GetConversionParameters(), dataBlock, page_data, page_hash, error);
+        bool success = m_accessManager->GetVolumeDataStore()->DeserializeVolumeData(volumeDataChunk, serialized_data, metadata, compressionInfo.GetCompressionMethod(), compressionInfo.GetAdaptiveLevel(), pageImpl->GetFormat(), pageImpl->UseNoValue(), pageImpl->GetNoValue(), dataBlock, page_data, page_hash, error);
         if(!success)
         {
           pageListMutexLock.lock();

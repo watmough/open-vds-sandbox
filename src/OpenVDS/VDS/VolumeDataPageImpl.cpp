@@ -91,10 +91,12 @@ static void dataBlock_BlockCopyWithExplicitContiguity(T * __restrict ptTarget, c
   }
 }
 
-VolumeDataPageImpl::VolumeDataPageImpl(VolumeDataPageAccessorImpl* volumeDataPageAccessor, int64_t chunk, VolumeDataPageImpl *parentPage)
+VolumeDataPageImpl::VolumeDataPageImpl(VolumeDataPageAccessorImpl* volumeDataPageAccessor, int64_t chunk, VolumeDataPageImpl* parentPage)
   : m_volumeDataPageAccessor(volumeDataPageAccessor)
   , m_chunk(chunk)
-  , m_conversionParameters(volumeDataPageAccessor->GetConversionParameters())
+  , m_format(volumeDataPageAccessor->GetFormat())
+  , m_noValue(volumeDataPageAccessor->GetNoValue())
+  , m_useNoValue(volumeDataPageAccessor->UseNoValue())
   , m_parentPage(parentPage)
   , m_blob()
   , m_hash(VolumeDataHash::UNKNOWN)

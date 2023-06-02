@@ -31,23 +31,6 @@ namespace OpenVDS
 {
 class VolumeDataLayoutImpl;
 
-struct ConversionParameters
-{
-    VolumeDataFormat format;
-    float valueRangeMin;
-    float valueRangeMax;
-    float integerScale;
-    float integerOffset;
-    float noValue;
-    float replacementNoValue;
-    bool hasReplacementNoValue;
-};
-
-ConversionParameters makeDefaultConversionParameters(VolumeDataLayer const* layer);
-ConversionParameters makeConversionParameters(VolumeDataLayer const* layer, VolumeDataFormat format, bool isReplaceNoValue, float replacementNoValue);
-
-bool isConversionParametersEqual(const ConversionParameters &cp, VolumeDataFormat format, const FloatRange& valueRange, float integerScale, float integerOffset, bool isUseNoValue, float noValue);
-
 class VolumeDataLayer : public VolumeDataPartition
 {
 public:

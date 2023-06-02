@@ -44,25 +44,36 @@ struct PageAccessorKey
   DimensionsND dimensionsND;
   int32_t lod;
   int32_t channel;
-  ConversionParameters conversionParameters;
+  VolumeDataFormat format;
+  float noValue;
+  bool useNoValue;
+
 
   bool operator<(const PageAccessorKey &other) const
   {
-    const auto &a = makeMemcmpComparable(*this);
-    const auto &b = makeMemcmpComparable(other);
-
-    return memcmp(&a, &b, sizeof(*this)) < 0;
+    if (dimensionsND == other.dimensionsND)
+    {
+      if (lod == other.lod)
+      {
+        if (channel == other.channel)
+        {
+          if (format == other.format)
+          {
+            if (useNoValue && other.useNoValue)
+            {
+              return noValue < other.noValue;
+            }
+            return useNoValue < other.useNoValue;
+          }
+          return format < other.format;
+        }
+        return channel < other.channel;
+      }
+      return lod < other.lod;
+    }
+    return dimensionsND < other.dimensionsND;
   }
 };
-
-static PageAccessorKey makeMemcmpComparable(const PageAccessorKey& key)
-{
-  PageAccessorKey ret;
-  memset(&ret, 0, sizeof(ret));
-  ret = key;
-  if (!ret.conversionParameters.hasReplacementNoValue) ret.conversionParameters.replacementNoValue = 0.f;
-  return ret;
-}
 
 struct JobPage
 {
@@ -137,7 +148,7 @@ public:
   VolumeDataRequestProcessor(VolumeDataAccessManagerImpl &manager, Logger &logger);
   ~VolumeDataRequestProcessor();
 
-  int64_t AddJob(const std::vector<VolumeDataChunk> &chunks, const ConversionParameters &conversionParameters, std::function<bool(VolumeDataPageImpl *page, const VolumeDataChunk &volumeDataChunk, Error &error)> processor, bool singleThread = false);
+  int64_t AddJob(const std::vector<VolumeDataChunk> &chunks, VolumeDataFormat format, std::pair<bool, float> noValue, std::function<bool(VolumeDataPageImpl *page, const VolumeDataChunk &volumeDataChunk, Error &error)> processor, bool singleThread = false);
   bool  IsActive(int64_t requestID);
   bool  IsCompleted(int64_t requestID);
   bool  IsCanceled(int64_t requestID, Error &error);
