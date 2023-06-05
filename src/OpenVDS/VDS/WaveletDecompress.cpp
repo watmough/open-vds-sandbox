@@ -182,22 +182,22 @@ bool Wavelet_Decompress(void *compressedData, int nCompressedAdaptiveDataSize, W
     {
       if (finalDataBlock.Format == WaveletDataFormat::Format_U8)
       {
-        WaveletDecompress_ConvertFloatToIntegerType<uint8_t, true>(dataBlock, target, valueRange, integerOffset, integerScale, noValue, finalDataBlock, finalDataTarget);
+        WaveletDecompress_ConvertFloatToIntegerType<uint8_t, true>(dataBlock, target, quantizationValueRange, integerOffset, integerScale, noValue, finalDataBlock, finalDataTarget);
       }
       else
       {
-        WaveletDecompress_ConvertFloatToIntegerType<uint16_t, true>(dataBlock, target, valueRange, integerOffset, integerScale, noValue, finalDataBlock, finalDataTarget);
+        WaveletDecompress_ConvertFloatToIntegerType<uint16_t, true>(dataBlock, target, quantizationValueRange, integerOffset, integerScale, noValue, finalDataBlock, finalDataTarget);
       }
     }
     else
     {
       if (finalDataBlock.Format == WaveletDataFormat::Format_U8)
       {
-        WaveletDecompress_ConvertFloatToIntegerType<uint8_t, false>(dataBlock, target, valueRange, integerOffset, integerScale, noValue, finalDataBlock, finalDataTarget);
+        WaveletDecompress_ConvertFloatToIntegerType<uint8_t, false>(dataBlock, target, quantizationValueRange, integerOffset, integerScale, noValue, finalDataBlock, finalDataTarget);
       }
       else
       {
-        WaveletDecompress_ConvertFloatToIntegerType<uint16_t, false>(dataBlock, target, valueRange, integerOffset, integerScale, noValue, finalDataBlock, finalDataTarget);
+        WaveletDecompress_ConvertFloatToIntegerType<uint16_t, false>(dataBlock, target, quantizationValueRange, integerOffset, integerScale, noValue, finalDataBlock, finalDataTarget);
       }
     }
     target = std::move(finalDataTarget);
