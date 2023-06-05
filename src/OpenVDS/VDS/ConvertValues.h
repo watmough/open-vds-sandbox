@@ -68,7 +68,7 @@ static void CopyFrom1Bit(void * __restrict voiddst, const void* __restrict voids
 }
 
 template<class TDST, bool dst1Bit, class TSRC, bool src1Bit,  bool isUseNoValue> void
-Convert(void* voiddst, const void * voidsrc, const OpenVDS::FloatVector2& valueRange, float integerScale, float integerOffset, float newNoValue, float oldNoValue, int numValues)
+Convert(void* voiddst, const void * voidsrc, const OpenVDS::FloatVector2& valueRange, float integerScale, float integerOffset, float noValue, float replacementNoValue, int numValues)
 {
   TDST* dst = (TDST*)voiddst;
   TSRC* src = (TSRC*)voidsrc;
@@ -82,7 +82,7 @@ Convert(void* voiddst, const void * voidsrc, const OpenVDS::FloatVector2& valueR
     }
     else
     {
-      CopyTo1Bit<TSRC, isUseNoValue>(voiddst, voidsrc, oldNoValue, numValues);
+      CopyTo1Bit<TSRC, isUseNoValue>(voiddst, voidsrc, noValue, numValues);
     }
   }
   else if (src1Bit)
@@ -91,7 +91,7 @@ Convert(void* voiddst, const void * voidsrc, const OpenVDS::FloatVector2& valueR
   }
   else
   {
-    QuantizingValueConverterWithNoValue<TDST, TSRC, isUseNoValue> converter(valueRange.X, valueRange.Y, integerScale, integerOffset, oldNoValue, newNoValue);
+    QuantizingValueConverterWithNoValue<TDST, TSRC, isUseNoValue> converter(valueRange.X, valueRange.Y, integerScale, integerOffset, noValue, replacementNoValue);
     for (int iValue = 0; iValue < numValues; iValue++)
     {
       dst[iValue] = converter.ConvertValue(src[iValue]);
@@ -100,44 +100,44 @@ Convert(void* voiddst, const void * voidsrc, const OpenVDS::FloatVector2& valueR
 }
 
 template<class TDST, bool dst1Bit, class TSRC, bool src1Bit> void
-ConvertSrc(void* dst, const void* src, const OpenVDS::FloatVector2& valueRange, float integerScale, float integerOffset, bool isUseNoValue, float newNoValue, float oldNoValue, int numValues)
+ConvertSrc(void* dst, const void* src, const OpenVDS::FloatVector2& valueRange, float integerScale, float integerOffset, bool isUseNoValue, float noValue, float replacementNoValue, int numValues)
 {
   if (isUseNoValue)
   {
-    Convert<TDST, dst1Bit, TSRC, src1Bit, true>(dst, src, valueRange, integerScale, integerOffset, newNoValue, oldNoValue, numValues);
+    Convert<TDST, dst1Bit, TSRC, src1Bit, true>(dst, src, valueRange, integerScale, integerOffset, noValue, replacementNoValue, numValues);
   }
   else
   {
-    Convert<TDST, dst1Bit, TSRC, src1Bit, false>(dst, src, valueRange, integerScale, integerOffset, newNoValue, oldNoValue, numValues);
+    Convert<TDST, dst1Bit, TSRC, src1Bit, false>(dst, src, valueRange, integerScale, integerOffset, noValue, replacementNoValue, numValues);
   }
 }
 
 template<class TDST, bool dst1Bit> void
-ConvertDst(void* dst, const void* src, VolumeDataFormat srcFormat, const OpenVDS::FloatVector2& valueRange, float integerScale, float integerOffset, bool isUseNoValue, float newNoValue, float oldNoValue, int numValues)
+ConvertDst(void* dst, const void* src, VolumeDataFormat srcFormat, const OpenVDS::FloatVector2& valueRange, float integerScale, float integerOffset, bool isUseNoValue, float noValue, float replacementNoValue, int numValues)
 {
 
   switch (srcFormat)
   {
   case VolumeDataFormat::Format_1Bit:
-    ConvertSrc<TDST, dst1Bit, uint8_t, true>(dst, src, valueRange, integerScale, integerOffset, isUseNoValue, newNoValue, oldNoValue, numValues);
+    ConvertSrc<TDST, dst1Bit, uint8_t, true>(dst, src, valueRange, integerScale, integerOffset, isUseNoValue, noValue, replacementNoValue, numValues);
     break;
   case VolumeDataFormat::Format_U8:
-    ConvertSrc<TDST, dst1Bit, uint8_t, false>(dst, src, valueRange, integerScale, integerOffset, isUseNoValue, newNoValue, oldNoValue, numValues);
+    ConvertSrc<TDST, dst1Bit, uint8_t, false>(dst, src, valueRange, integerScale, integerOffset, isUseNoValue, noValue, replacementNoValue, numValues);
     break;
   case VolumeDataFormat::Format_U16:
-    ConvertSrc<TDST, dst1Bit, uint16_t, false>(dst, src, valueRange, integerScale, integerOffset, isUseNoValue, newNoValue, oldNoValue, numValues);
+    ConvertSrc<TDST, dst1Bit, uint16_t, false>(dst, src, valueRange, integerScale, integerOffset, isUseNoValue, noValue, replacementNoValue, numValues);
     break;
   case VolumeDataFormat::Format_R32:
-    ConvertSrc<TDST, dst1Bit, float, false>(dst, src, valueRange, integerScale, integerOffset, isUseNoValue, newNoValue, oldNoValue, numValues);
+    ConvertSrc<TDST, dst1Bit, float, false>(dst, src, valueRange, integerScale, integerOffset, isUseNoValue, noValue, replacementNoValue, numValues);
     break;
   case VolumeDataFormat::Format_U32:
-    ConvertSrc<TDST, dst1Bit, uint32_t, false>(dst, src, valueRange, integerScale, integerOffset, isUseNoValue, newNoValue, oldNoValue, numValues);
+    ConvertSrc<TDST, dst1Bit, uint32_t, false>(dst, src, valueRange, integerScale, integerOffset, isUseNoValue, noValue, replacementNoValue, numValues);
     break;
   case VolumeDataFormat::Format_R64:
-    ConvertSrc<TDST, dst1Bit, double, false>(dst, src, valueRange, integerScale, integerOffset, isUseNoValue, newNoValue, oldNoValue, numValues);
+    ConvertSrc<TDST, dst1Bit, double, false>(dst, src, valueRange, integerScale, integerOffset, isUseNoValue, noValue, replacementNoValue, numValues);
     break;
   case VolumeDataFormat::Format_U64:
-    ConvertSrc<TDST, dst1Bit, uint64_t, false>(dst, src, valueRange, integerScale, integerOffset, isUseNoValue, newNoValue, oldNoValue, numValues);
+    ConvertSrc<TDST, dst1Bit, uint64_t, false>(dst, src, valueRange, integerScale, integerOffset, isUseNoValue, noValue, replacementNoValue, numValues);
     break;
   default:
     assert(!"Illegal format!");
@@ -146,7 +146,7 @@ ConvertDst(void* dst, const void* src, VolumeDataFormat srcFormat, const OpenVDS
 }
 
 static void
-ConvertValues(void* dst, const void* src, VolumeDataFormat dstFormat, VolumeDataFormat srcFormat, const OpenVDS::FloatVector2 & valueRange, float integerScale, float integerOffset, bool isUseNoValue, float newNoValue, float oldNoValue, int numValues, int destination_size)
+ConvertValues(void* dst, const void* src, VolumeDataFormat dstFormat, VolumeDataFormat srcFormat, const OpenVDS::FloatVector2 & valueRange, float integerScale, float integerOffset, bool isUseNoValue, float noValue, float replacementNoValue, int numValues, int destination_size)
 {
   assert(dstFormat == VolumeDataFormat::Format_1Bit ||
     dstFormat == VolumeDataFormat::Format_U8  ||
@@ -163,8 +163,8 @@ ConvertValues(void* dst, const void* src, VolumeDataFormat dstFormat, VolumeData
     srcFormat == VolumeDataFormat::Format_R64 ||
     srcFormat == VolumeDataFormat::Format_U64);
 
-  // For U8 and U16, NoValue is 255 and 65535 respectively, no matter what oldNoValue and newNoValue are.
-  if (srcFormat == dstFormat && (!isUseNoValue || newNoValue == oldNoValue || dstFormat == VolumeDataFormat::Format_1Bit || dstFormat == VolumeDataFormat::Format_U8 || dstFormat == VolumeDataFormat::Format_U16))
+  // For U8 and U16, NoValue is 255 and 65535 respectively, no matter what replacementNoValue and noValue are.
+  if (srcFormat == dstFormat && (!isUseNoValue || noValue == replacementNoValue || dstFormat == VolumeDataFormat::Format_1Bit || dstFormat == VolumeDataFormat::Format_U8 || dstFormat == VolumeDataFormat::Format_U16))
   {
     memcpy(dst, src, destination_size);
     return;
@@ -173,25 +173,25 @@ ConvertValues(void* dst, const void* src, VolumeDataFormat dstFormat, VolumeData
   switch (dstFormat)
   {
   case VolumeDataFormat::Format_1Bit:
-    ConvertDst<uint8_t, true>(dst, src, srcFormat, valueRange, integerScale, integerOffset, isUseNoValue, newNoValue, oldNoValue, numValues);
+    ConvertDst<uint8_t, true>(dst, src, srcFormat, valueRange, integerScale, integerOffset, isUseNoValue, noValue, replacementNoValue, numValues);
     break;
   case VolumeDataFormat::Format_U8:
-    ConvertDst<uint8_t, false>(dst, src, srcFormat, valueRange, integerScale, integerOffset, isUseNoValue, newNoValue, oldNoValue, numValues);
+    ConvertDst<uint8_t, false>(dst, src, srcFormat, valueRange, integerScale, integerOffset, isUseNoValue, noValue, replacementNoValue, numValues);
     break;
   case VolumeDataFormat::Format_U16:
-    ConvertDst<uint16_t, false>(dst, src, srcFormat, valueRange, integerScale, integerOffset, isUseNoValue, newNoValue, oldNoValue, numValues);
+    ConvertDst<uint16_t, false>(dst, src, srcFormat, valueRange, integerScale, integerOffset, isUseNoValue, noValue, replacementNoValue, numValues);
     break;
   case VolumeDataFormat::Format_R32:
-    ConvertDst<float, false>(dst, src, srcFormat, valueRange, integerScale, integerOffset, isUseNoValue, newNoValue, oldNoValue, numValues);
+    ConvertDst<float, false>(dst, src, srcFormat, valueRange, integerScale, integerOffset, isUseNoValue, noValue, replacementNoValue, numValues);
     break;
   case VolumeDataFormat::Format_U32:
-    ConvertDst<uint32_t, false>(dst, src, srcFormat, valueRange, integerScale, integerOffset, isUseNoValue, newNoValue, oldNoValue, numValues);
+    ConvertDst<uint32_t, false>(dst, src, srcFormat, valueRange, integerScale, integerOffset, isUseNoValue, noValue, replacementNoValue, numValues);
     break;
   case VolumeDataFormat::Format_R64:
-    ConvertDst<double, false>(dst, src, srcFormat, valueRange, integerScale, integerOffset, isUseNoValue, newNoValue, oldNoValue, numValues);
+    ConvertDst<double, false>(dst, src, srcFormat, valueRange, integerScale, integerOffset, isUseNoValue, noValue, replacementNoValue, numValues);
     break;
   case VolumeDataFormat::Format_U64:
-    ConvertDst<uint64_t, false>(dst, src, srcFormat, valueRange, integerScale, integerOffset, isUseNoValue, newNoValue, oldNoValue, numValues);
+    ConvertDst<uint64_t, false>(dst, src, srcFormat, valueRange, integerScale, integerOffset, isUseNoValue, noValue, replacementNoValue, numValues);
     break;
   default:
     assert(!"Illegal format!");

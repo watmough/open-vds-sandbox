@@ -94,7 +94,7 @@ inline static DataBlock ToDataBlock(const Wavelet::WaveletDataBlock &waveletData
   return dataBlock;
 }
 
-bool DeserializeVolumeData(const std::vector<uint8_t> &serializedData, VolumeDataChannelDescriptor::Format format, CompressionMethod compressionMethod, const FloatRange &valueRange, float integerScale, float integerOffset, bool isUseNoValue, float noValue, int32_t adaptiveLevel, DataBlock &dataBlock, std::vector<uint8_t> &destination, Error &error)
+bool DeserializeVolumeData(const std::vector<uint8_t> &serializedData, VolumeDataChannelDescriptor::Format format, CompressionMethod compressionMethod, const FloatRange &valueRange, float integerScale, float integerOffset, bool isUseNoValue, float noValue, float replacementNoValue, int32_t adaptiveLevel, DataBlock &dataBlock, std::vector<uint8_t> &destination, Error &error)
 {
   if(CompressionMethod_IsWavelet(compressionMethod))
   {
@@ -135,11 +135,12 @@ bool DeserializeVolumeData(const std::vector<uint8_t> &serializedData, VolumeDat
     Wavelet::FloatRange waveletValueRange(valueRange.Min, valueRange.Max);
     Wavelet::WaveletDataBlock waveletDataBlock;
     
-    if (!Wavelet_Decompress(const_cast<void*>(data), int32_t(serializedData.size()), waveletDataFormat, waveletValueRange, integerScale, integerOffset, isUseNoValue, noValue, isNormalize, adaptiveLevel, isLossless, waveletDataBlock, destination, error.code, error.string))
+    if (!Wavelet_Decompress(const_cast<void*>(data), int32_t(serializedData.size()), waveletDataFormat, waveletValueRange, integerScale, integerOffset, isUseNoValue, replacementNoValue, isNormalize, adaptiveLevel, isLossless, waveletDataBlock, destination, error.code, error.string))
       return false;
 
     // Copy updated WaveletDataBlock to in/out DataBlock parameter
     dataBlock = ToDataBlock(waveletDataBlock);
+    noValue = replacementNoValue;
   }
   else if(compressionMethod == CompressionMethod::RLE)
   {
@@ -231,7 +232,8 @@ bool DeserializeVolumeData(const std::vector<uint8_t> &serializedData, VolumeDat
     CopyLinearBufferIntoDataBlock(source, dataBlock, destination);
   }
 
-  if(format != dataBlock.Format)
+  if(format != dataBlock.Format
+    || (isUseNoValue && noValue != replacementNoValue))
   {
     DataBlock newDataBlock;
     if (!InitializeDataBlock(format, dataBlock.Components, dataBlock.Dimensionality, dataBlock.Size, newDataBlock, error))
@@ -248,7 +250,7 @@ bool DeserializeVolumeData(const std::vector<uint8_t> &serializedData, VolumeDat
       numVoxels *= 8;
 
     FloatVector2 newValueRange(valueRange.Min, valueRange.Max);
-    ConvertValues(newDestination.data(), destination.data(), format, format, newValueRange, integerScale, integerOffset, isUseNoValue, noValue, noValue, numVoxels, newByteSize);
+    ConvertValues(newDestination.data(), destination.data(), format, format, newValueRange, integerScale, integerOffset, isUseNoValue, noValue, replacementNoValue, numVoxels, newByteSize);
     destination = std::move(newDestination);
     dataBlock = std::move(newDataBlock);
   }
@@ -736,7 +738,7 @@ bool VolumeDataStore::CreateConstantValueDataBlock(VolumeDataChunk const &volume
   return FillConstantValueBuffer(buffer.data(), allocatedElements, format, convertedConstantValue, error);
 }
 
-bool VolumeDataStore::DeserializeVolumeData(const VolumeDataChunk &volumeDataChunk, const std::vector<uint8_t>& serializedData, const std::vector<uint8_t>& metadata, CompressionMethod compressionMethod, int32_t adaptiveLevel, VolumeDataFormat destinationFormat, bool useNoValue, float noValue, DataBlock &dataBlock, std::vector<uint8_t>& target, uint64_t& targetHash, Error& error)
+bool VolumeDataStore::DeserializeVolumeData(const VolumeDataChunk &volumeDataChunk, const std::vector<uint8_t>& serializedData, const std::vector<uint8_t>& metadata, CompressionMethod compressionMethod, int32_t adaptiveLevel, VolumeDataFormat destinationFormat, bool useNoValue, float noValue, float replacementNoValue, DataBlock &dataBlock, std::vector<uint8_t>& target, uint64_t& targetHash, Error& error)
 {
   targetHash = VolumeDataHash::UNKNOWN;
 
@@ -756,7 +758,7 @@ bool VolumeDataStore::DeserializeVolumeData(const VolumeDataChunk &volumeDataChu
 
   if (volumeDataHash.IsConstant())
   {
-    return CreateConstantValueDataBlock(volumeDataChunk, destinationFormat, noValue, volumeDataLayer->GetComponents(), volumeDataHash, dataBlock, target, error);
+    return CreateConstantValueDataBlock(volumeDataChunk, destinationFormat, replacementNoValue, volumeDataLayer->GetComponents(), volumeDataHash, dataBlock, target, error);
   }
   else if(serializedData.empty())
   {
@@ -791,7 +793,7 @@ bool VolumeDataStore::DeserializeVolumeData(const VolumeDataChunk &volumeDataChu
     }
   }
 
-  bool ret = OpenVDS::DeserializeVolumeData(serializedData, destinationFormat, compressionMethod, deserializeValueRange, volumeDataLayer->GetIntegerScale(), volumeDataLayer->GetIntegerOffset(), useNoValue, noValue, adaptiveLevel, dataBlock, target, error);
+  bool ret = OpenVDS::DeserializeVolumeData(serializedData, destinationFormat, compressionMethod, deserializeValueRange, volumeDataLayer->GetIntegerScale(), volumeDataLayer->GetIntegerOffset(), useNoValue, noValue, replacementNoValue, adaptiveLevel, dataBlock, target, error);
   m_globalStateVds.addDecompressed(target.size());
   return ret;
 }

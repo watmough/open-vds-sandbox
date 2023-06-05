@@ -158,7 +158,6 @@ bool Wavelet_Decompress(void *compressedData, int nCompressedAdaptiveDataSize, W
     }
   }
   
-
   float threshold;
   float startThreshold;
   float waveletNoValue;
@@ -179,7 +178,7 @@ bool Wavelet_Decompress(void *compressedData, int nCompressedAdaptiveDataSize, W
     std::vector<uint8_t> finalDataTarget;
     finalDataTarget.resize(GetAllocatedByteSize(finalDataBlock));
 
-    if (isUseNoValue)
+    if (isUseNoValue && isAnyNoValue)
     {
       if (finalDataBlock.Format == WaveletDataFormat::Format_U8)
       {
@@ -618,7 +617,7 @@ bool WaveletDecompressor::Decompress(bool isTransform, int32_t decompressInfo, f
 
   if (noValueBitBuffer.size())
   {
-    ApplyNoValues(floatReadWriteData, noValueBitBuffer.data(), localWaveletNoValue);
+    ApplyNoValues(floatReadWriteData, noValueBitBuffer.data(), noValue);
   }
 
   if (isAnyNoValue) *isAnyNoValue = noValueBitBuffer.size() != 0;

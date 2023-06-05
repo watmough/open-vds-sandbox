@@ -509,14 +509,14 @@ bool VolumeDataPageAccessorImpl::ReadPreparedPage(VolumeDataPageImpl* pageImpl)
         if(hash == VolumeDataHash::UNKNOWN)
         {
           VolumeDataHash constantValueVolumeDataHash = m_layer->IsUseNoValue() ? VolumeDataHash(VolumeDataHash::NOVALUE) : VolumeDataHash(0.0f);
-          m_accessManager->GetVolumeDataStore()->CreateConstantValueDataBlock(volumeDataChunk, m_layer->GetFormat(), m_layer->GetNoValue(), m_layer->GetComponents(), constantValueVolumeDataHash, dataBlock, page_data, error);
+          m_accessManager->GetVolumeDataStore()->CreateConstantValueDataBlock(volumeDataChunk, m_layer->GetFormat(), pageImpl->GetNoValue(), m_layer->GetComponents(), constantValueVolumeDataHash, dataBlock, page_data, error);
           sparse = true;
         }
       }
 
       if (!sparse)
       {
-        bool success = m_accessManager->GetVolumeDataStore()->DeserializeVolumeData(volumeDataChunk, serialized_data, metadata, compressionInfo.GetCompressionMethod(), compressionInfo.GetAdaptiveLevel(), pageImpl->GetFormat(), pageImpl->UseNoValue(), pageImpl->GetNoValue(), dataBlock, page_data, page_hash, error);
+        bool success = m_accessManager->GetVolumeDataStore()->DeserializeVolumeData(volumeDataChunk, serialized_data, metadata, compressionInfo.GetCompressionMethod(), compressionInfo.GetAdaptiveLevel(), pageImpl->GetFormat(), pageImpl->UseNoValue(), m_layer->GetNoValue(), pageImpl->GetNoValue(), dataBlock, page_data, page_hash, error);
         if(!success)
         {
           pageListMutexLock.lock();

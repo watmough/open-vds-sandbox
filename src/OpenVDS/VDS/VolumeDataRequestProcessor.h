@@ -36,9 +36,6 @@ namespace OpenVDS
 
 class VolumeDataPage;
 
-struct PageAccessorKey;
-static PageAccessorKey makeMemcmpComparable(const PageAccessorKey& key);
-
 struct PageAccessorKey
 {
   DimensionsND dimensionsND;
