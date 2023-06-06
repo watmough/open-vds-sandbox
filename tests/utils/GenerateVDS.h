@@ -35,7 +35,7 @@ inline void getScaleOffsetForFormat(float min, float max, bool novalue, OpenVDS:
   }
 }
 
-inline OpenVDS::VDS *generateSimpleInMemory3DVDS(int32_t samplesX = 100, int32_t samplesY = 100, int32_t samplesZ = 100, OpenVDS::VolumeDataChannelDescriptor::Format format = OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataLayoutDescriptor::BrickSize brickSize = OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, float noValue = 0.0f, OpenVDS::IOManager *ioManager = nullptr)
+inline OpenVDS::VDS *generateSimpleInMemory3DVDS(int32_t samplesX, int32_t samplesY, int32_t samplesZ, OpenVDS::VolumeDataChannelDescriptor::Format format, OpenVDS::VolumeDataLayoutDescriptor::BrickSize brickSize, float noValue, OpenVDS::CompressionMethod compressionMethod, float tolerance, OpenVDS::IOManager *ioManager = nullptr)
 {
   int negativeMargin = 4;
   int positiveMargin = 4;
@@ -67,13 +67,18 @@ inline OpenVDS::VDS *generateSimpleInMemory3DVDS(int32_t samplesX = 100, int32_t
   OpenVDS::Error error;
   if (ioManager)
   {
-    handle = OpenVDS::Create(ioManager, layoutDescriptor, axisDescriptors, channelDescriptors, OpenVDS::MetadataContainer(), error);
+    handle = OpenVDS::Create(ioManager, layoutDescriptor, axisDescriptors, channelDescriptors, OpenVDS::MetadataContainer(), compressionMethod, tolerance, error);
   }
   else
   {
-    handle = OpenVDS::Create(OpenVDS::InMemoryOpenOptions(), layoutDescriptor, axisDescriptors, channelDescriptors, OpenVDS::MetadataContainer(), error);
+    handle = OpenVDS::Create(OpenVDS::InMemoryOpenOptions(), layoutDescriptor, axisDescriptors, channelDescriptors, OpenVDS::MetadataContainer(), compressionMethod, tolerance, error);
   }
   return handle;
+}
+
+inline OpenVDS::VDS* generateSimpleInMemory3DVDS(int32_t samplesX = 100, int32_t samplesY = 100, int32_t samplesZ = 100, OpenVDS::VolumeDataChannelDescriptor::Format format = OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataLayoutDescriptor::BrickSize brickSize = OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, float noValue = 0.0f, OpenVDS::IOManager* ioManager = nullptr)
+{
+  return generateSimpleInMemory3DVDS(samplesX, samplesY, samplesZ, format, brickSize, noValue, OpenVDS::CompressionMethod::None, 1.0f, ioManager);
 }
 
 inline void fillVolumeDataPages(std::shared_ptr<OpenVDS::VolumeDataPageAccessor> pageAccessor, std::function<void(void*buffer, OpenVDS::VolumeDataFormat format, OpenVDS::VolumeIndexer3D const &outputIndexer)> fillPage)
@@ -95,18 +100,24 @@ inline void fillVolumeDataPages(std::shared_ptr<OpenVDS::VolumeDataPageAccessor>
   pageAccessor->Commit();
 }
 
-inline void fill3DVDSWithNoise(OpenVDS::VDS *vds, int32_t channel = 0, const OpenVDS::FloatVector3 &frequency = OpenVDS::FloatVector3(0.6f, 2.f, 4.f), bool createLODs = true)
+enum class FillNoiseCreateLOD
+{
+  CreateLODs,
+  DontCreateLODs
+};
+
+inline void fill3DVDSWithNoise(OpenVDS::VDS *vds, int32_t channel = 0, const OpenVDS::FloatVector3 &frequency = OpenVDS::FloatVector3(0.6f, 2.f, 4.f), float threshold = 0.2f, FillNoiseCreateLOD createLODs = FillNoiseCreateLOD::CreateLODs)
 {
   OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(vds);
 
-  std::shared_ptr<OpenVDS::VolumeDataPageAccessor> pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, channel, 0, 100, createLODs ? OpenVDS::VolumeDataAccessManager::AccessMode_Create : OpenVDS::VolumeDataAccessManager::AccessMode_CreateWithoutLODGeneration);
+  std::shared_ptr<OpenVDS::VolumeDataPageAccessor> pageAccessor = accessManager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012, channel, 0, 100, createLODs == FillNoiseCreateLOD::CreateLODs ? OpenVDS::VolumeDataAccessManager::AccessMode_Create : OpenVDS::VolumeDataAccessManager::AccessMode_CreateWithoutLODGeneration);
   //ASSERT_TRUE(pageAccessor);
 
   auto layout = OpenVDS::GetLayout(vds);
   float noValue = layout->GetChannelNoValue(0);
-  fillVolumeDataPages(pageAccessor, [frequency, noValue](void*buffer, OpenVDS::VolumeDataFormat format, OpenVDS::VolumeIndexer3D const &outputIndexer)
+  fillVolumeDataPages(pageAccessor, [frequency, threshold, noValue](void*buffer, OpenVDS::VolumeDataFormat format, OpenVDS::VolumeIndexer3D const &outputIndexer)
   {
-    OpenVDS::CalculateNoise3D(buffer, format, outputIndexer, frequency, 0.21f, noValue, true, 345);
+    OpenVDS::CalculateNoise3D(buffer, format, outputIndexer, frequency, threshold, noValue, true, 345);
   });
 
   OpenVDS::Error error;

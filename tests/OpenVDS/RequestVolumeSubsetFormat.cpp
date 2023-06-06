@@ -29,10 +29,10 @@
 #pragma warning(disable:4800)
 #endif
 
-void setupNoiseTestHandle(OpenVDS::ScopedVDSHandle &handle)
+void setupNoiseTestHandle(OpenVDS::ScopedVDSHandle &handle, float noValue)
 {
   OpenVDS::Error error;
-  handle = generateSimpleInMemory3DVDS(60,60,60, OpenVDS::VolumeDataFormat::Format_R32, OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, 42.64f);
+  handle = generateSimpleInMemory3DVDS(60,60,60, OpenVDS::VolumeDataFormat::Format_R32, OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, noValue);
 
   fill3DVDSWithNoise(handle);
 }
@@ -40,8 +40,9 @@ void setupNoiseTestHandle(OpenVDS::ScopedVDSHandle &handle)
 struct RequestSharedData
 {
   RequestSharedData()
+    : noValue(42.64f)
   {
-    setupNoiseTestHandle(handle);
+    setupNoiseTestHandle(handle, noValue);
     layout = OpenVDS::GetLayout(handle);
     accessManager = OpenVDS::GetAccessManager(handle);
 
@@ -61,6 +62,7 @@ struct RequestSharedData
   int32_t minPos[OpenVDS::Dimensionality_Max];
   int32_t maxPos[OpenVDS::Dimensionality_Max];
   int32_t voxelCount;
+  float noValue;
   std::vector<float> bufferFloat;
 };
 
@@ -104,7 +106,8 @@ TEST_F(RequestVolumeSubsetFormat, test1Byte)
   float intScale = shared_data->layout->GetChannelIntegerScale(0);
   float intOffset = shared_data->layout->GetChannelIntegerOffset(0);
 
-  OpenVDS::QuantizingValueConverterWithNoValue<uint8_t, float, false> valueConverter(minValue, maxValue, intScale, intOffset, 0.f, 0.f);
+  float noValue = shared_data->noValue;
+  OpenVDS::QuantizingValueConverterWithNoValue<uint8_t, float, true> valueConverter(minValue, maxValue, intScale, intOffset, noValue, noValue);
 
   for (size_t i = 0; i < buffer.size(); i++)
   {

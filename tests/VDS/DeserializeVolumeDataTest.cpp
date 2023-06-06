@@ -319,13 +319,13 @@ GTEST_TEST(VDS_integration, DeSerializeVolumeDataNoValue)
   OpenVDS::Error error;
 
   OpenVDS::FloatRange valueRange(-0.1234f, 0.1234f);
-  std::vector<uint8_t> serializedNone = LoadTestFile("/chunk.Dimensions_012LOD0_0_CompressionMethod_None_no_value");
+  std::vector<uint8_t> serializedNone = LoadTestFile("/chunk.Dimensions_012LOD0_19_CompressionMethod_None_no_value");
   std::vector<uint8_t> dataNone;
   OpenVDS::DataBlock dataBlockNone;
   OpenVDS::DeserializeVolumeData(serializedNone, OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::CompressionMethod::None, valueRange, 1.0f, 0.0f, true, 44.50f, 44.50f, 0,dataBlockNone, dataNone, error);
   EXPECT_EQ(error.code, 0);
   
-  std::vector<uint8_t> serializedLossless = LoadTestFile("/chunk.Dimensions_012LOD0_0_CompressionMethod_WaveletLossless_no_value");
+  std::vector<uint8_t> serializedLossless = LoadTestFile("/chunk.Dimensions_012LOD0_19_CompressionMethod_WaveletLossless_no_value");
   std::vector<uint8_t> deserializedData;
   OpenVDS::DataBlock deserializedDataBlock;
   OpenVDS::DeserializeVolumeData(serializedLossless, OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::CompressionMethod::WaveletLossless, valueRange, 1.0f, 0.0f, true, 44.50f, 44.50f, -1, deserializedDataBlock, deserializedData, error);

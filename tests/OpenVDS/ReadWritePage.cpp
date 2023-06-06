@@ -676,7 +676,7 @@ TEST(OpenVDS_integration, GenerateLOD)
 
   std::string in_memory_name = fmt::format("inmemory://{}", "GenerateLOD");
   OpenVDS::ScopedVDSHandle handle(OpenVDS::Create(in_memory_name, std::string(""), layoutDescriptor, axisDescriptors, channelDescriptors, metadataContainer, error));
-  fill3DVDSWithNoise(handle, 0, OpenVDS::FloatVector3(0.6f, 2.f, 4.f), true);
+  fill3DVDSWithNoise(handle, 0, OpenVDS::FloatVector3(0.6f, 2.f, 4.f), 0.f);
 
   OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle);
 
@@ -740,13 +740,13 @@ TEST(OpenVDS_integration, RemapLOD)
   float rangeMax = 1.0f;
   float integerScale = 0;
   float integerOffset = 0;
-  channelDescriptors.push_back(OpenVDS::VolumeDataChannelDescriptor(OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataChannelDescriptor::Components_1, AMPLITUDE_ATTRIBUTE_NAME, "", rangeMin, rangeMax, OpenVDS::VolumeDataMapping::Direct, 1, OpenVDS::VolumeDataChannelDescriptor::Default, 0.f, integerScale, integerOffset));
+  channelDescriptors.push_back(OpenVDS::VolumeDataChannelDescriptor(OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataChannelDescriptor::Components_1, AMPLITUDE_ATTRIBUTE_NAME, "", rangeMin, rangeMax, OpenVDS::VolumeDataMapping::Direct, 1, OpenVDS::VolumeDataChannelDescriptor::Default, 0.0f, integerScale, integerOffset));
 
   OpenVDS::MetadataContainer metadataContainer;
 
   std::string in_memory_name = fmt::format("inmemory://{}", "RemapLOD");
   OpenVDS::ScopedVDSHandle handle(OpenVDS::Create(in_memory_name, std::string(""), layoutDescriptor, axisDescriptors, channelDescriptors, metadataContainer, error));
-  fill3DVDSWithNoise(handle, 0, OpenVDS::FloatVector3(0.6f, 2.f, 4.f), false);
+  fill3DVDSWithNoise(handle, 0, OpenVDS::FloatVector3(0.6f, 2.f, 4.f), 0.f, FillNoiseCreateLOD::DontCreateLODs);
 
   OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle);
 
@@ -1126,7 +1126,7 @@ TEST_P(LODRoundingParameterTest, TestLODRounding)
 
   std::string in_memory_name = fmt::format("inmemory://{}", std::string(::testing::UnitTest::GetInstance()->current_test_info()->name()));
   OpenVDS::ScopedVDSHandle handle(OpenVDS::Create(in_memory_name, std::string(""), layoutDescriptor, axisDescriptors, channelDescriptors, metadataContainer, error));
-  fill3DVDSWithNoise(handle, 0, OpenVDS::FloatVector3(0.6f, 2.f, 4.f), true);
+  fill3DVDSWithNoise(handle, 0, OpenVDS::FloatVector3(0.6f, 2.f, 4.f));
 
   OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle);
 
@@ -1194,7 +1194,7 @@ TEST_P(LODRoundingParameterTest, TestProjectedSubsetLODRounding)
 
   std::string in_memory_name = fmt::format("inmemory://{}", std::string(::testing::UnitTest::GetInstance()->current_test_info()->name()));
   OpenVDS::ScopedVDSHandle handle(OpenVDS::Create(in_memory_name, std::string(""), layoutDescriptor, axisDescriptors, channelDescriptors, metadataContainer, error));
-  fill3DVDSWithNoise(handle, 0, OpenVDS::FloatVector3(0.6f, 2.f, 4.f), true);
+  fill3DVDSWithNoise(handle, 0, OpenVDS::FloatVector3(0.6f, 2.f, 4.f));
 
   OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle);
 

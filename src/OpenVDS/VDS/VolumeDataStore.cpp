@@ -250,7 +250,7 @@ bool DeserializeVolumeData(const std::vector<uint8_t> &serializedData, VolumeDat
       numVoxels *= 8;
 
     FloatVector2 newValueRange(valueRange.Min, valueRange.Max);
-    ConvertValues(newDestination.data(), destination.data(), format, format, newValueRange, integerScale, integerOffset, isUseNoValue, noValue, replacementNoValue, numVoxels, newByteSize);
+    ConvertValues(newDestination.data(), destination.data(), format, dataBlock.Format, newValueRange, integerScale, integerOffset, isUseNoValue, noValue, replacementNoValue, numVoxels, newByteSize);
     destination = std::move(newDestination);
     dataBlock = std::move(newDataBlock);
   }
