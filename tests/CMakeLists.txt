@@ -165,9 +165,16 @@ endif()
 if (BUILD_JAVA)
   add_custom_command(TARGET TestRootTarget
     POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:openvds-javacpp> $<TARGET_FILE_DIR:TestRootTarget>
-    DEPENDS openvds-javacpp 
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different "$<TARGET_FILE:openvds-javacpp>;${testng_SOURCE_FILE};${jcommander_SOURCE_FILE}" $<TARGET_FILE_DIR:TestRootTarget>
+    COMMAND_EXPAND_LISTS
+    DEPENDS openvds-javacpp
     )
+
+  get_filename_component(testng_file_name ${testng_SOURCE_FILE} NAME)
+  get_filename_component(jcommander_file_name ${jcommander_SOURCE_FILE} NAME)
+
+  set(copied_testng "$<TARGET_FILE_DIR:TestRootTarget>/${testng_file_name}")
+  set(copied_jcommander "$<TARGET_FILE_DIR:TestRootTarget>/${jcommander_file_name}")
   add_subdirectory(java)
 endif()
 
