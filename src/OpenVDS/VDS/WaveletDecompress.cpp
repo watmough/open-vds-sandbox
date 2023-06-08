@@ -178,7 +178,7 @@ bool Wavelet_Decompress(void *compressedData, int nCompressedAdaptiveDataSize, W
     std::vector<uint8_t> finalDataTarget;
     finalDataTarget.resize(GetAllocatedByteSize(finalDataBlock));
 
-    if (isUseNoValue && isAnyNoValue)
+    if (isUseNoValue)
     {
       if (finalDataBlock.Format == WaveletDataFormat::Format_U8)
       {
