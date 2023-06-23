@@ -1109,7 +1109,7 @@ VolumeDataRequestProcessor::RequestProjectedVolumeSubset(void *buffer, VolumeDat
   
 
   auto targetNoValue = getTargetNoValue(*volumeDataLayer, isReplaceNoValue, replacementNoValue);
-  return AddJob(chunksInRegion, format, targetNoValue, [boxRequested, buffer, projectedDimensions, voxelPlaneSwapped, format, interpolationMethod, isReplaceNoValue, replacementNoValue](VolumeDataPageImpl* page, VolumeDataChunk dataChunk, Error &error) { return RequestProjectedVolumeSubsetProcessPage(page, dataChunk, boxRequested.min, boxRequested.max, projectedDimensions, voxelPlaneSwapped, format, interpolationMethod, isReplaceNoValue, replacementNoValue, buffer, error);}, format == VolumeDataChannelDescriptor::Format_1Bit);
+  return AddJob(chunksInRegion, volumeDataLayer->GetFormat(), targetNoValue, [boxRequested, buffer, projectedDimensions, voxelPlaneSwapped, format, interpolationMethod, isReplaceNoValue, replacementNoValue](VolumeDataPageImpl* page, VolumeDataChunk dataChunk, Error& error) { return RequestProjectedVolumeSubsetProcessPage(page, dataChunk, boxRequested.min, boxRequested.max, projectedDimensions, voxelPlaneSwapped, format, interpolationMethod, isReplaceNoValue, replacementNoValue, buffer, error); }, format == VolumeDataChannelDescriptor::Format_1Bit);
 }
 
 struct VolumeDataSamplePos
@@ -1323,7 +1323,7 @@ int64_t VolumeDataRequestProcessor::RequestVolumeSamples(void *buffer, VolumeDat
   }
 
   auto targetNoValue = getTargetNoValue(*volumeDataLayer, isReplaceNoValue, replacementNoValue);
-  return AddJob(volumeDataChunks, VolumeDataFormat::Format_R32, targetNoValue, [buffer, volumeDataSamplePositions, interpolationMethod, isReplaceNoValue, replacementNoValue](VolumeDataPageImpl* page, VolumeDataChunk dataChunk, Error& error)
+  return AddJob(volumeDataChunks, volumeDataLayer->GetFormat(), targetNoValue, [buffer, volumeDataSamplePositions, interpolationMethod, isReplaceNoValue, replacementNoValue](VolumeDataPageImpl* page, VolumeDataChunk dataChunk, Error& error)
     {
       return RequestVolumeSamplesProcessPage(page, dataChunk,  *volumeDataSamplePositions, interpolationMethod, dataChunk.layer->IsUseNoValue(), isReplaceNoValue, isReplaceNoValue ? replacementNoValue : dataChunk.layer->GetNoValue(), buffer, error);
     });
@@ -1569,9 +1569,9 @@ int64_t VolumeDataRequestProcessor::RequestVolumeTraces(void *buffer, VolumeData
   }
 
   auto targetNoValue = getTargetNoValue(*volumeDataLayer, isReplaceNoValue, replacementNoValue);
-  return AddJob(volumeDataChunks, VolumeDataFormat::Format_R32, targetNoValue, [buffer, volumeDataSamplePositions, interpolationMethod, traceDimension, replacementNoValue](VolumeDataPageImpl* page, VolumeDataChunk dataChunk, Error& error)
+  return AddJob(volumeDataChunks, volumeDataLayer->GetFormat(), targetNoValue, [buffer, volumeDataSamplePositions, interpolationMethod, traceDimension, targetNoValue](VolumeDataPageImpl* page, VolumeDataChunk dataChunk, Error& error)
     {
-      return RequestVolumeTracesProcessPage(page, dataChunk,  *volumeDataSamplePositions, interpolationMethod, traceDimension, replacementNoValue, buffer, error);
+      return RequestVolumeTracesProcessPage(page, dataChunk,  *volumeDataSamplePositions, interpolationMethod, traceDimension, targetNoValue.second, buffer, error);
     });
 }
 
