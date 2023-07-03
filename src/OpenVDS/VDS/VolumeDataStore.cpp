@@ -775,6 +775,12 @@ bool VolumeDataStore::DeserializeVolumeData(const VolumeDataChunk& volumeDataChu
     }
   }
 
+  // do we have 32 bit data? no need to go to lossless if deserializing to 8/16 bit data...
+  if(waveletAdaptive && volumeDataLayer->GetFormat() == VolumeDataChannelDescriptor::Format_R32 && (loadFormat == VolumeDataChannelDescriptor::Format_U8 || loadFormat == VolumeDataChannelDescriptor::Format_U16))
+  {
+    adaptiveLevel = std::max(0, adaptiveLevel);
+  }
+
   bool ret = OpenVDS::DeserializeVolumeData(serializedData, loadFormat, compressionMethod, deserializeValueRange, volumeDataLayer->GetIntegerScale(), volumeDataLayer->GetIntegerOffset(), volumeDataLayer->IsUseNoValue(), volumeDataLayer->GetNoValue(), adaptiveLevel, dataBlock, target, error);
   m_globalStateVds.addDecompressed(target.size());
   return ret;
