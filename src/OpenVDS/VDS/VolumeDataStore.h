@@ -83,6 +83,7 @@ public:
                         IsChannelZipped() const = 0;
 
   bool DeserializeVolumeData(const VolumeDataChunk &volumeDataChunk, const std::vector<uint8_t>& serializedData, const std::vector<uint8_t>& metadata, CompressionMethod compressionMethod, int32_t adaptiveLevel, VolumeDataFormat destinationFormat, bool useNoValue, float noValue, float replacementNoValue, DataBlock &dataBlock, std::vector<uint8_t>& target, uint64_t& targetHash, Error& error);
+  static bool DeserializeVolumeData(const std::vector<uint8_t>& serializedData, VolumeDataFormat sourceFormat, VolumeDataFormat loadFormat, CompressionMethod compressionMethod, const FloatRange& valueRange, float integerScale, float integerOffset, bool isUseNoValue, float noValue, float replacementNoValue, int32_t adaptiveLevel, DataBlock& dataBlock, std::vector<uint8_t>& destination, Error& error);
 
   static bool Verify(const VolumeDataChunk& volumeDataChunk, const std::vector<uint8_t>& serializedData, CompressionMethod compressionMethod, bool isFullyRead);
   static bool CreateConstantValueDataBlock(VolumeDataChunk const &volumeDataChunk, VolumeDataChannelDescriptor::Format format, float noValue, VolumeDataChannelDescriptor::Components components, VolumeDataHash const &constantValueVolumeDataHash, DataBlock &dataBlock, std::vector<uint8_t> &buffer, Error &error);
