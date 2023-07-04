@@ -129,7 +129,7 @@ public class VolumeDataAxisDescriptor extends ManagedBase {
         return GetCoordinateStepImpl(getNativeObject());
     }
 
-    ///AUTOGEN-OK: CXX_METHOD SampleIndexToCoordinate float (int) FUNCTIONPROTO
+    ///AUTOGEN-OK: CXX_METHOD SampleIndexToCoordinate float (int) const FUNCTIONPROTO
     native private float SampleIndexToCoordinateImpl(long native_object, int sampleIndex);
 
     /**
@@ -142,7 +142,7 @@ public class VolumeDataAxisDescriptor extends ManagedBase {
         return SampleIndexToCoordinateImpl(getNativeObject(), sampleIndex);
     }
 
-    ///AUTOGEN-OK: CXX_METHOD CoordinateToSampleIndex int (float) FUNCTIONPROTO
+    ///AUTOGEN-OK: CXX_METHOD CoordinateToSampleIndex int (float) const FUNCTIONPROTO
     native private int CoordinateToSampleIndexImpl(long native_object, float coordinate);
 
     /**
@@ -155,7 +155,7 @@ public class VolumeDataAxisDescriptor extends ManagedBase {
         return CoordinateToSampleIndexImpl(getNativeObject(), coordinate);
     }
 
-    ///AUTOGEN-OK: CXX_METHOD CoordinateToSamplePosition float (float) FUNCTIONPROTO
+    ///AUTOGEN-OK: CXX_METHOD CoordinateToSamplePosition float (float) const FUNCTIONPROTO
     native private float CoordinateToSamplePositionImpl(long native_object, float coordinate);
 
     /**
