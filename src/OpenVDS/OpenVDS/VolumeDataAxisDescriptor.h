@@ -120,7 +120,7 @@ public:
   /// <returns>
   /// The coordinate of the sample index
   /// </returns>
-  float SampleIndexToCoordinate(int sampleIndex)  { return m_coordinateMin + sampleIndex * GetCoordinateStep(); }
+  float SampleIndexToCoordinate(int sampleIndex) const { return m_coordinateMin + sampleIndex * GetCoordinateStep(); }
 
   /// <summary>
   /// Convert a coordinate to a sample index (rounding to the closest index)
@@ -131,7 +131,7 @@ public:
   /// <returns>
   /// The sample index of the coordinate
   /// </returns>
-  int CoordinateToSampleIndex(float coordinate) { return (coordinate == m_coordinateMin) ? 0 : (int)floorf(((coordinate - m_coordinateMin) / (m_coordinateMax - m_coordinateMin)) * (m_numSamples - 1) + 0.5f); }
+  int CoordinateToSampleIndex(float coordinate) const { return (coordinate == m_coordinateMin) ? 0 : (int)floorf(((coordinate - m_coordinateMin) / (m_coordinateMax - m_coordinateMin)) * (m_numSamples - 1) + 0.5f); }
 
   /// <summary>
   /// Convert a coordinate to a sample position (to use with RequestVolumeSamples or an InterpolatingVolumeDataAccessor)
@@ -142,7 +142,7 @@ public:
   /// <returns>
   /// The sample position of the coordinate
   /// </returns>
-  float CoordinateToSamplePosition(float coordinate) { return (coordinate == m_coordinateMin) ? 0.5f : ((coordinate - m_coordinateMin) / (m_coordinateMax - m_coordinateMin)) * (m_numSamples - 1) + 0.5f; }
+  float CoordinateToSamplePosition(float coordinate) const { return (coordinate == m_coordinateMin) ? 0.5f : ((coordinate - m_coordinateMin) / (m_coordinateMax - m_coordinateMin)) * (m_numSamples - 1) + 0.5f; }
 };
 
 } // end namespace OpenVDS
