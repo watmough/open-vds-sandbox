@@ -43,7 +43,7 @@ VolumeDataAccessManagerImpl::VolumeDataAccessManagerImpl(VDS &vds)
   : m_refCount(0)
   , m_invalidated(false)
   , m_vds(vds)
-  , m_requestProcessor(new VolumeDataRequestProcessor(*this, vds.logger))
+  , m_requestProcessor(new VolumeDataRequestProcessor(*this, vds.requestThreadCount, vds.logger))
 {
 }
 

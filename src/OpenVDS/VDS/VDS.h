@@ -187,8 +187,9 @@ public:
 
 struct VDS
 {
-  VDS(LogLevel level)
-    : logger(static_cast<GlobalStateImpl*>(OpenVDS::GetGlobalState())->logInterface, level)
+  VDS(int requestThreadCount, LogLevel level)
+    : requestThreadCount(requestThreadCount)
+    , logger(static_cast<GlobalStateImpl*>(OpenVDS::GetGlobalState())->logInterface, level)
   {}
 
   VolumeDataLayoutDescriptor
@@ -215,6 +216,7 @@ struct VDS
                     accessManager;
   std::unique_ptr<VolumeDataStore>
                     volumeDataStore;
+  int               requestThreadCount;
   Logger            logger;
 };
 

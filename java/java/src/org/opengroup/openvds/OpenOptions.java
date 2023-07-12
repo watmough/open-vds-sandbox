@@ -149,6 +149,29 @@ public class OpenOptions extends ManagedBase {
     
     }
 
+    ///AUTOGEN-OK: FIELD_DECL requestThreadCount int INT
+    native private int getRequestThreadCountImpl(long native_object);
+
+    /**
+     * Number of threads used to process requests
+     * 
+     */
+    public int getRequestThreadCount() {
+        return getRequestThreadCountImpl(getNativeObject());
+    }
+
+    native private void setRequestThreadCountImpl(long native_object, int value);
+    
+    /**
+     * Number of threads used to process requests
+     * 
+     */
+    public void setRequestThreadCount(int value) {
+    
+        setRequestThreadCountImpl(getNativeObject(), value);    
+    
+    }
+
     ///AUTOGEN-OK: FIELD_DECL logLevel OpenVDS::LogLevel ENUM
     native private long getLogLevelImpl(long native_object);
 

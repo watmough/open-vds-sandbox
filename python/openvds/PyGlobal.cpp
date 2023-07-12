@@ -49,6 +49,7 @@ PyGlobal::initModule(py::module& m)
   OpenOptions_.def_readwrite("waveletAdaptiveMode"         , &OpenOptions::waveletAdaptiveMode, OPENVDS_DOCSTRING(OpenOptions_waveletAdaptiveMode));
   OpenOptions_.def_readwrite("waveletAdaptiveTolerance"    , &OpenOptions::waveletAdaptiveTolerance, OPENVDS_DOCSTRING(OpenOptions_waveletAdaptiveTolerance));
   OpenOptions_.def_readwrite("waveletAdaptiveRatio"        , &OpenOptions::waveletAdaptiveRatio, OPENVDS_DOCSTRING(OpenOptions_waveletAdaptiveRatio));
+  OpenOptions_.def_readwrite("requestThreadCount"          , &OpenOptions::requestThreadCount, OPENVDS_DOCSTRING(OpenOptions_requestThreadCount));
   OpenOptions_.def_readwrite("logLevel"                    , &OpenOptions::logLevel         , OPENVDS_DOCSTRING(OpenOptions_logLevel));
 
   py::enum_<OpenOptions::ConnectionType> 

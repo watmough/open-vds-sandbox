@@ -476,6 +476,34 @@ static bool GetWaveletAdaptiveInfo(std::string& connectionString, WaveletAdaptiv
   return true;
 }
 
+static bool GetRequestThreadCount(std::string& connectionString, int &threadCount, Error& error)
+{
+  std::vector<std::string> keys;
+  keys.emplace_back("RequestThreadCount");
+  keys.emplace_back("request_thread_count");
+  auto threadCountPair = RemoveKeyValue(keys, connectionString, error);
+  if (error.code || threadCountPair.first < 0)
+    return false;
+  assert(threadCountPair.first < 2);
+  try
+  {
+    threadCount = std::stoi(threadCountPair.second);
+  }
+  catch (std::invalid_argument const& ex)
+  {
+    error.code = -1;
+    error.string = fmt::format("Failed to parse integer value of connection parameter {}: {}.", keys[threadCountPair.first], ex.what());
+    return false;
+  }
+  catch (std::out_of_range const& ex)
+  {
+    error.code = -1;
+    error.string = fmt::format("Failed to integer value to a valid range for connection parameter {}: {}.", keys[threadCountPair.first], ex.what());
+    return false;
+  }
+  return true;
+}
+
 static bool GetLogLevel(std::string& connectionString, LogLevel &level, Error &error)
 {
   std::vector<std::string> keys;
@@ -538,6 +566,11 @@ OpenOptions* CreateOpenOptions(StringWrapper urlWrapper, StringWrapper connectio
   if (error.code)
     return nullptr;
 
+  int requestThreadCount;
+  bool requestThreadCountSet = GetRequestThreadCount(connectionString, requestThreadCount, error);
+  if (error.code)
+    return nullptr;
+
   for (auto& urlToOpenOption : urlToOpenOptions)
   {
     if (!isProtocol(url, urlToOpenOption.protocol))
@@ -569,6 +602,11 @@ OpenOptions* CreateOpenOptions(StringWrapper urlWrapper, StringWrapper connectio
   if (openOptions && logLevelSet)
   {
     openOptions->logLevel = logLevel;
+  }
+
+  if (openOptions && requestThreadCountSet)
+  {
+    openOptions->requestThreadCount = requestThreadCount;
   }
 
   return openOptions.release();
@@ -1024,7 +1062,7 @@ VDSHandle OpenVDSInterfaceImpl::OpenWithAdaptiveCompressionRatio(StringWrapper u
 VDSHandle OpenVDSInterfaceImpl::Open(IOManager *ioManager, LogLevel loglevel, ErrorHandler errorHandler, Error *errorPtr)
 {
   ErrorGuard error(errorHandler, errorPtr);
-  std::unique_ptr<VDS> ret(new VDS(loglevel));
+  std::unique_ptr<VDS> ret(new VDS(-1, loglevel));
 
   if(Init(ret.get(), new VolumeDataStoreIOManager(*ret, ioManager, IOManager::ReadOnly), error))
   {
@@ -1038,7 +1076,7 @@ VDSHandle OpenVDSInterfaceImpl::Open(IOManager *ioManager, LogLevel loglevel, Er
 
 VDS *OpenVDSInterfaceImpl::Open(const OpenOptions &options, Error &error)
 {
-  std::unique_ptr<VDS> ret(new VDS(options.logLevel));
+  std::unique_ptr<VDS> ret(new VDS(options.requestThreadCount, options.logLevel));
   std::unique_ptr<VolumeDataStore> volumeDataStore;
 
   if(options.connectionType != OpenOptions::VDSFile)
@@ -1113,7 +1151,7 @@ bool OpenVDSInterfaceImpl::IsCompressionMethodSupported(CompressionMethod compre
 VDSHandle OpenVDSInterfaceImpl::Create(IOManager *ioManager, VolumeDataLayoutDescriptor const& layoutDescriptor, VectorWrapper<VolumeDataAxisDescriptor> axisDescriptors, VectorWrapper<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const& metadata, CompressionMethod compressionMethod, float compressionTolerance, LogLevel logLevel, ErrorHandler errorHandler, Error *errorPtr)
 {
   ErrorGuard error(errorHandler, errorPtr);
-  std::unique_ptr<VDS> ret(new VDS(logLevel));
+  std::unique_ptr<VDS> ret(new VDS(-1, logLevel));
 
   if(Init(ret.get(), new VolumeDataStoreIOManager(*ret, ioManager, IOManager::Create), layoutDescriptor, axisDescriptors, channelDescriptors, metadata, compressionMethod, compressionTolerance, error))
   {
@@ -1137,7 +1175,7 @@ VDSHandle OpenVDSInterfaceImpl::Create(StringWrapper url, StringWrapper connecti
 
 VDSHandle OpenVDSInterfaceImpl::Create(const OpenOptions& options, VolumeDataLayoutDescriptor const& layoutDescriptor, VectorWrapper<VolumeDataAxisDescriptor> axisDescriptors, VectorWrapper<VolumeDataChannelDescriptor> channelDescriptors, MetadataReadAccess const& metadata, CompressionMethod compressionMethod, float compressionTolerance, Error &error)
 {
-  std::unique_ptr<VDS> ret(new VDS(options.logLevel));
+  std::unique_ptr<VDS> ret(new VDS(options.requestThreadCount, options.logLevel));
   std::unique_ptr<VolumeDataStore> volumeDataStore;
 
   if(options.connectionType != OpenOptions::VDSFile)

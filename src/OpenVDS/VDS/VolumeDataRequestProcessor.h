@@ -142,7 +142,7 @@ struct Job
 class VolumeDataRequestProcessor
 {
 public:
-  VolumeDataRequestProcessor(VolumeDataAccessManagerImpl &manager, Logger &logger);
+  VolumeDataRequestProcessor(VolumeDataAccessManagerImpl &manager, int requestThreadCount, Logger &logger);
   ~VolumeDataRequestProcessor();
 
   int64_t AddJob(const std::vector<VolumeDataChunk> &chunks, VolumeDataFormat format, std::pair<bool, float> noValue, std::function<bool(VolumeDataPageImpl *page, const VolumeDataChunk &volumeDataChunk, Error &error)> processor, bool singleThread = false);

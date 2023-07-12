@@ -3057,6 +3057,8 @@ static const char *__doc_OpenVDS_OpenOptions_connectionType = R"doc()doc";
 
 static const char *__doc_OpenVDS_OpenOptions_logLevel = R"doc(< Property to adjust the OpenVDSLogging handlers level.)doc";
 
+static const char *__doc_OpenVDS_OpenOptions_requestThreadCount = R"doc(< Number of threads used to process requests)doc";
+
 static const char *__doc_OpenVDS_OpenOptions_waveletAdaptiveMode =
 R"doc(< This property (only relevant when using Wavelet compression) is used
 to control how the wavelet adaptive compression determines which level
@@ -4007,6 +4009,61 @@ allocated typed buffer.
 
 Parameters:
 -----------
+
+dimensionsND :
+    The dimensiongroup the requested data is read from.
+
+LOD :
+    The LOD level the requested data is read from.
+
+channel :
+    The channel index the requested data is read from.
+
+minVoxelCoordinates :
+    The minimum voxel coordinates to request in each dimension
+    (inclusive).
+
+maxVoxelCoordinates :
+    The maximum voxel coordinates to request in each dimension
+    (exclusive).
+
+voxelPlane :
+    The plane equation for the projection from the dimension source to
+    the projected dimensions (which must be a 2D subset of the source
+    dimensions).
+
+projectedDimensions :
+    The 2D dimension group that the plane in the source dimensiongroup
+    is projected into. It must be a 2D subset of the source
+    dimensions.
+
+interpolationMethod :
+    Interpolation method to use when sampling the buffer.
+
+replacementNoValue :
+    If specified, this value is used to replace regions of the input
+    VDS that has no data.
+
+Returns:
+--------
+    A VolumeDataRequest instance encapsulating the request status and
+    buffer.)doc";
+
+static const char *__doc_OpenVDS_VolumeDataAccessManager_RequestProjectedVolumeSubset_4 =
+R"doc(Request a subset projected from an arbitrary 3D plane through the
+subset onto one of the sides of the subset, using an automatically
+allocated typed buffer.
+
+Parameters:
+-----------
+
+buffer :
+    Pointer to a preallocated buffer holding at least as many elements
+    of format as indicated by minVoxelCoordinates and
+    maxVoxelCoordinates for the projected dimensions.
+
+bufferByteSize :
+    The size of the provided buffer, in bytes.
 
 dimensionsND :
     The dimensiongroup the requested data is read from.

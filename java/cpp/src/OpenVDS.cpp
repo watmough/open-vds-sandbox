@@ -224,6 +224,37 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_OpenOptions_setWaveletAdaptive
 }
 
 
+JNIEXPORT jint JNICALL Java_org_opengroup_openvds_OpenOptions_getRequestThreadCountImpl
+  (JNIEnv * env, jobject object, jlong native_handle)
+{
+  JNIEnvGuard
+    envGuard(env);
+
+  CPPJNI_TRY
+  {
+    auto pInstance = CPPJNI_cast<OpenVDS::OpenOptions>(native_handle);
+    auto result = pInstance->requestThreadCount;
+    return result;
+  }
+  CPPJNI_CATCH
+  return 0;
+}
+
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_OpenOptions_setRequestThreadCountImpl
+  (JNIEnv * env, jobject object, jlong native_handle, jint value)
+{
+  JNIEnvGuard
+    envGuard(env);
+
+  CPPJNI_TRY
+  {
+    auto pInstance = CPPJNI_cast<OpenVDS::OpenOptions>(native_handle);
+    pInstance->requestThreadCount = value;
+  }
+  CPPJNI_CATCH
+}
+
+
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenOptions_getLogLevelImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
