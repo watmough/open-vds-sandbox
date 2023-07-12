@@ -210,7 +210,7 @@ if (BUILD_OPENSSL)
 endif()
 target_compile_definitions(openvds_objects PRIVATE openvds_EXPORTS)
 
-if (AUTODETECT_CA_CERTIFICATES)
+if (NOT WIN32 AND AUTODETECT_CA_CERTIFICATES)
   target_compile_definitions(openvds_objects PRIVATE AUTODETECT_CA_CERTIFICATES)
 endif()
 
