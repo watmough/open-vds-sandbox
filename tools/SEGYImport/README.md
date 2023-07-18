@@ -19,6 +19,7 @@ SEGYImport [OPTION...] <input file>
 |      --sample-unit \<string>    | A sample unit of 'ms' is used for datasets in the time domain (default), while a sample unit of 'm' or 'ft' is used for datasets in the depth domain |
 |      --sample-start \<value>    | The start time/depth/frequency (depending on the domain) of the sampling |
 |      --sample-format \<string>  | Override the data format used when reading sample data from SEGY file. Possible values are: IBMFloat, IEEEFloat, UInt32, Int32, UInt16, Int16, UInt8, Int8. |
+|      --vds-format \<string>     | Override the data format used when writing sample data to VDS. Possible values are: UInt16, UInt8. Note that this option is only allowed when the SEGY sample data format is IBMFloat or IEEEFloat. |
 |      --crs-wkt \<string>        | A coordinate reference system in well-known text format can optionally be provided |
 |  -l, --little-endian            | Force little-endian trace headers. |
 |      --scan                     | Generate a JSON file containing information about the input SEG-Y file. |
@@ -43,6 +44,8 @@ SEGYImport [OPTION...] <input file>
 |      --disable-print-text-header | Disable printing the text header of the input segy file. |
 |      --attribute-name \<string> | The name of the primary VDS channel. The name may be Amplitude (default), Attribute, Depth, Probability, Time, Vavg, Vint, or Vrms (default: Amplitude) |
 |      --attribute-unit \<string> | The units of the primary VDS channel. The unit name may be blank (default), ft, ft/s, Hz, m, m/s, ms, or s |
+|      --value-range              | Set the sample data value range by giving minimum and maximum values as a colon-separated pair of values. By default the value range will be calculated from SEGY data. Using this option will not change sample data; it will only affect the value range stored in the VDS header. |
+|      --integer-scale            | Set the scale and offset values used to convert 8/16-bit data to floating point by giving a colon-separated pair of values. By default this will be calculated from the sample value range. This option is only applicable for a VDS using UInt16 or UInt8 sample data format. |
 |      --2d                       | Import 2D data. |
 |      --offset-sorted            | Import prestack data sorted by trace header Offset value. |
 |      --mute                     | Enable Mutes channel in output VDS. |
