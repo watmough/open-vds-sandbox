@@ -166,10 +166,91 @@ enum class PrimaryKeyValue
   CrosslineNumber = 2
 };
 
+enum class VDSFormatOverride
+{
+  None, Override16Bit, Override8Bit
+};
+
 inline char asciitolower(char in) {
   if (in <= 'Z' && in >= 'A')
     return in - ('Z' - 'z');
   return in;
+}
+
+// Splits a string into two parts separated by a colon and discards the colon.
+// If no colon is found then the return value is two empty strings.
+//
+static std::pair<std::string, std::string> SplitColonPair(const std::string& pairString)
+{
+  const auto colonIndex = pairString.find(':');
+  if (colonIndex == std::string::npos)
+  {
+    return {};
+  }
+
+  std::string
+    left = pairString.substr(0, colonIndex),
+    right = pairString.substr(colonIndex + 1);
+  return { left, right };
+}
+
+// Converts a string to float. Sets the Error object if problems are encountered.
+//
+static float ToFloat(const std::string& string, OpenVDS::Error& error)
+{
+  error = {};
+  float value = 0.0f;
+  try
+  {
+    size_t endPos;
+    value = std::stof(string, &endPos);
+    endPos += 1;
+    if (endPos < string.size() && !isspace(string[endPos]))
+    {
+      throw std::invalid_argument("Non-numeric characters in string");
+    }
+  }
+  catch (const std::invalid_argument& )
+  {
+    error.code = 1;
+    error.string = fmt::format("Could not convert to a numeric value: {}", string);
+  }
+  catch (const std::out_of_range& )
+  {
+    error.code = 2;
+    error.string = fmt::format("Value is too large to store in a float: {}", string);
+  }
+
+  return value;
+}
+
+// Converts a string like "45.45:88.88" to a FloatRange. Various validation checks are performed.
+// Any conversion errors will be noted in the Error object.
+//
+static OpenVDS::FloatRange ColonPairToFloatRange(const std::string& pairString, OpenVDS::Error& error)
+{
+   error = {};
+  const auto strings = SplitColonPair(pairString);
+  if (strings.first.empty() || strings.second.empty())
+  {
+    error.code = 1;
+    error.string = "Could not find a pair of values. The parameter must be in this form:  value1:value2 (no spaces)";
+    return {};
+  }
+
+  OpenVDS::FloatRange result;
+  result.Min = ToFloat(strings.first, error);
+  if (error.code != 0)
+  {
+    return {};
+  }
+  result.Max = ToFloat(strings.second, error);
+  if (error.code != 0)
+  {
+    return {};
+  }
+
+  return result;
 }
 
 struct SurveyCoordinateSystemTransformer
@@ -2232,7 +2313,8 @@ struct OffsetChannelInfo
 };
 
 static std::vector<OpenVDS::VolumeDataChannelDescriptor>
-createChannelDescriptors(SEGYFileInfo const& fileInfo, OpenVDS::FloatRange const& valueRange, const OffsetChannelInfo& offsetInfo, const std::string& attributeName, const std::string& attributeUnit, bool isAzimuthEnabled, bool isMuteEnabled, OpenVDS::Error &error)
+createChannelDescriptors(SEGYFileInfo const& fileInfo, OpenVDS::FloatRange const& valueRange, const OffsetChannelInfo& offsetInfo, const std::string& attributeName, const std::string& attributeUnit,
+  bool isAzimuthEnabled, bool isMuteEnabled, VDSFormatOverride formatOverride, double overrideScale, bool isOverrideIntegerScale, const OpenVDS::FloatRange overrideScaleAndOffset, OpenVDS::Error &error)
 {
   std::vector<OpenVDS::VolumeDataChannelDescriptor>
     channelDescriptors;
@@ -2242,7 +2324,7 @@ createChannelDescriptors(SEGYFileInfo const& fileInfo, OpenVDS::FloatRange const
   if (error.code)
     return channelDescriptors;
 
-  const float
+  float
     integerOffset = -(float)SEGY::GetVDSIntegerOffsetForDataSampleFormat(fileInfo.m_dataSampleFormatCode), // Observe this is a negative value.
     integerScale = 1.0f; // SEGY does not support integer scaling, so always 1
 
@@ -2250,6 +2332,25 @@ createChannelDescriptors(SEGYFileInfo const& fileInfo, OpenVDS::FloatRange const
   // For float formats, integerOffset will be zero and this will not modify the valueRange.
   OpenVDS::FloatRange
     effectiveValueRange(valueRange.Min + integerOffset, valueRange.Max + integerOffset);
+
+  if (formatOverride == VDSFormatOverride::Override16Bit)
+  {
+    format = OpenVDS::VolumeDataFormat::Format_U16;
+    integerOffset = valueRange.Min;
+    integerScale = static_cast<float>(overrideScale);
+  }
+  else if (formatOverride == VDSFormatOverride::Override8Bit)
+  {
+    format = OpenVDS::VolumeDataFormat::Format_U8;
+    integerOffset = valueRange.Min;
+    integerScale = static_cast<float>(overrideScale);
+  }
+
+  if (isOverrideIntegerScale)
+  {
+    integerScale = overrideScaleAndOffset.Min;
+    integerOffset = overrideScaleAndOffset.Max;
+  }
 
   channelDescriptors.emplace_back(format, OpenVDS::VolumeDataComponents::Components_1, attributeName.c_str(), attributeUnit.c_str(), effectiveValueRange.Min, effectiveValueRange.Max, OpenVDS::VolumeDataMapping::Direct, 1, OpenVDS::VolumeDataChannelDescriptor::Default, integerScale, integerOffset);
 
@@ -2665,6 +2766,23 @@ CalculateGatherSpacing(const SEGYFileInfo& fileInfo, const int fold, const std::
   return std::unique_ptr<GatherSpacing>(new GatherSpacing(firstTrace));
 }
 
+// Converts a trace of floating point samples to quantized 8/16-bit values.
+//
+template<typename T>
+void
+ConvertOverrideTrace(std::vector<T>& intTrace, const std::vector<float>& floatTrace, const OpenVDS::FloatRange& valueRange, double integerScale)
+{
+  for (size_t i = 0; i < floatTrace.size(); ++i)
+  {
+    // ensure current value is within the value range
+    auto sampleValue = floatTrace[i];
+    sampleValue = std::max(sampleValue, valueRange.Min);
+    sampleValue = std::min(sampleValue, valueRange.Max);
+
+    intTrace[i] = static_cast<T>(round((sampleValue - valueRange.Min) / integerScale));
+  }
+}
+
 int
 main(int argc, char* argv[])
 {
@@ -2684,6 +2802,7 @@ main(int argc, char* argv[])
   std::string crsWkt;
   double scale = 0;
   std::string overrideSampleFormatString;
+  std::string overrideVDSFormatString;
   SEGY::BinaryHeader::DataSampleFormatCode overrideSampleFormat;
   bool overrideSampleStart = false;
   bool overrideBrickSize = false;
@@ -2760,6 +2879,14 @@ main(int argc, char* argv[])
 
   std::vector<std::string> fileNames;
 
+  VDSFormatOverride vdsFormatOverride = VDSFormatOverride::None;
+
+  std::string valueRangeString;
+  OpenVDS::FloatRange userValueRange;
+
+  std::string integerScaleString;
+  OpenVDS::FloatRange userIntegerScaleOffset{};
+
   options.add_option("", "", "header-format", "A JSON file defining the header format for the input SEG-Y file. The expected format is a dictonary of strings (field names) to pairs (byte position, field width) where field width can be \"TwoByte\" or \"FourByte\". Additionally, an \"Endianness\" key can be specified as \"BigEndian\" or \"LittleEndian\".", cxxopts::value<std::string>(headerFormatFileName), "<file>");
   options.add_option("", "", "header-field", "A single definition of a header field. The expected format is a \"fieldname=offset:width\" where the \":width\" is optional. Its also possible to specify range: \"fieldname=begin-end\". Multiple header-fields is specified by providing multiple --header-field arguments.", cxxopts::value<std::vector<std::string>>(headerFields), "header_name=offset:width");
   options.add_option("", "p", "primary-key", "The name of the trace header field to use as the primary key.", cxxopts::value<std::string>(primaryKey), "<field>");
@@ -2770,6 +2897,7 @@ main(int argc, char* argv[])
   options.add_option("", "", "sample-unit", "A sample unit of 'ms' is used for datasets in the time domain (default), while a sample unit of 'm' or 'ft' is used for datasets in the depth domain", cxxopts::value<std::string>(sampleUnit), "<string>");
   options.add_option("", "", "sample-start", "The start time/depth/frequency (depending on the domain) of the sampling", cxxopts::value<double>(sampleStart), "<value>");
   options.add_option("", "", "sample-format", "Override the data format used when reading sample data from SEGY file. Possible values are: IBMFloat, IEEEFloat, UInt32, Int32, UInt16, Int16, UInt8, Int8.", cxxopts::value<std::string>(overrideSampleFormatString), "<string>");
+  options.add_option("", "", "vds-format", "Override the data format used when writing sample data to the VDS. Possible values are: UInt16, UInt8. This option is only allowed when the SEGY sample format is IBMFloat or IEEEFloat.", cxxopts::value<std::string>(overrideVDSFormatString), "<string>");
   options.add_option("", "", "crs-wkt", "A coordinate reference system in well-known text format can optionally be provided", cxxopts::value<std::string>(crsWkt), "<string>");
   options.add_option("", "l", "little-endian", "Force little-endian trace headers.", cxxopts::value<bool>(littleEndian), "");
   options.add_option("", "", "scan", "Generate a JSON file containing information about the input SEG-Y file.", cxxopts::value<bool>(scan), "");
@@ -2794,6 +2922,8 @@ main(int argc, char* argv[])
   options.add_option("", "", "disable-print-text-header", "Disable printing the text header of the input segy file.", cxxopts::value<bool>(disablePrintSegyTextHeader), "");
   options.add_option("", "", "attribute-name", "The name of the primary VDS channel. The name may be Amplitude (default), Attribute, Depth, Probability, Time, Vavg, Vint, or Vrms", cxxopts::value<std::string>(attributeName)->default_value(AMPLITUDE_ATTRIBUTE_NAME), "<string>");
   options.add_option("", "", "attribute-unit", "The units of the primary VDS channel. The unit name may be blank (default), ft, ft/s, Hz, m, m/s, ms, or s", cxxopts::value<std::string>(attributeUnit), "<string>");
+  options.add_option("", "", "value-range", "Set the sample value range by giving minimum and maximum values as a colon-separated pair. By default the value range will be calculated from SEGY data. Using this option will not change sample data; it will only affect the value range stored in the VDS header.", cxxopts::value<std::string>(valueRangeString), "<string>");
+  options.add_option("", "", "integer-scale", "Set the scale and offset values used to convert 8/16-bit data to floating point by giving a colon-separated pair. By default this will be calculated from the sample value range. This option is only applicable for a VDS using UInt16 or UInt8 data formats.", cxxopts::value<std::string>(integerScaleString), "<string>");
   options.add_option("", "", "2d", "Import 2D data.", cxxopts::value<bool>(is2D), "");
   options.add_option("", "", "offset-sorted", "Import prestack data sorted by trace header Offset value.", cxxopts::value<bool>(isOffsetSorted), "");
   options.add_option("", "", "mute", "Enable Mutes channel in output VDS.", cxxopts::value<bool>(isMutes), "");
@@ -2906,6 +3036,57 @@ main(int argc, char* argv[])
   {
     outputPrinter.printError("Override sample format", fmt::format("Unable to recognize input data sample format override: {}", overrideSampleFormatString));
     return EXIT_FAILURE;
+  }
+
+  if (!overrideVDSFormatString.empty())
+  {
+    SEGY::BinaryHeader::DataSampleFormatCode formatCode;
+    if (!SEGY::DataSampleFormatCodeFromString(overrideVDSFormatString.c_str(), formatCode))
+    {
+      outputPrinter.printError("Override VDS format", fmt::format("Unable to recognize VDS data sample format override: {}", overrideVDSFormatString));
+      return EXIT_FAILURE;
+    }
+    if (formatCode == SEGY::BinaryHeader::DataSampleFormatCode::UInt8)
+    {
+      vdsFormatOverride = VDSFormatOverride::Override8Bit;
+    }
+    else if (formatCode == SEGY::BinaryHeader::DataSampleFormatCode::UInt16)
+    {
+      vdsFormatOverride = VDSFormatOverride::Override16Bit;
+    }
+    else
+    {
+      outputPrinter.printError("Override VDS format", fmt::format("VDS data sample format override may be only UInt16 or UInt8. {} is not allowed.", overrideVDSFormatString));
+      return EXIT_FAILURE;
+    }
+  }
+
+  if (!valueRangeString.empty())
+  {
+    OpenVDS::Error error;
+    userValueRange = ColonPairToFloatRange(valueRangeString, error);
+    if (error.code != 0)
+    {
+      outputPrinter.printError("Set sample value range", fmt::format("Sample value range error: {}", error.string));
+      return EXIT_FAILURE;
+    }
+
+    if (userValueRange.Min > userValueRange.Max)
+    {
+      outputPrinter.printError("Set sample value range", fmt::format("Sample value range minimum must be less than maximum. Minimum: {}  Maximum: {}", userValueRange.Min, userValueRange.Max));
+      return EXIT_FAILURE;
+    }
+  }
+
+  if (!integerScaleString.empty())
+  {
+    OpenVDS::Error error;
+    userIntegerScaleOffset = ColonPairToFloatRange(integerScaleString, error);
+    if (error.code != 0)
+    {
+      outputPrinter.printError("Set integer scale", fmt::format("Integer scale error: {}", error.string));
+      return EXIT_FAILURE;
+    }
   }
 
   if (compressionMethod == OpenVDS::CompressionMethod::Wavelet || compressionMethod == OpenVDS::CompressionMethod::WaveletNormalizeBlock || compressionMethod == OpenVDS::CompressionMethod::WaveletLossless || compressionMethod == OpenVDS::CompressionMethod::WaveletNormalizeBlockLossless)
@@ -3367,6 +3548,29 @@ main(int argc, char* argv[])
     return EXIT_FAILURE;
   }
 
+  if (vdsFormatOverride != VDSFormatOverride::None)
+  {
+    if (fileInfo.m_dataSampleFormatCode != SEGY::BinaryHeader::DataSampleFormatCode::IBMFloat && fileInfo.m_dataSampleFormatCode != SEGY::BinaryHeader::DataSampleFormatCode::IEEEFloat)
+    {
+      outputPrinter.printError("Override VDS format", fmt::format("VDS data sample format override may be used only when the SEGY data sample format is IBMFloat or IEEEFloat. SEGY format is {}.",
+        SEGY::DataSampleFormatCodeToString(fileInfo.m_dataSampleFormatCode)));
+      return EXIT_FAILURE;
+    }
+  }
+
+  if (!integerScaleString.empty())
+  {
+    // Only allow integer scale option when the VDS will be U8/U16
+    if (vdsFormatOverride == VDSFormatOverride::None &&
+      fileInfo.m_dataSampleFormatCode != SEGY::BinaryHeader::DataSampleFormatCode::Int8 && fileInfo.m_dataSampleFormatCode != SEGY::BinaryHeader::DataSampleFormatCode::UInt8 &&
+      fileInfo.m_dataSampleFormatCode != SEGY::BinaryHeader::DataSampleFormatCode::Int16 && fileInfo.m_dataSampleFormatCode != SEGY::BinaryHeader::DataSampleFormatCode::UInt16)
+    {
+      outputPrinter.printError("Set integer scale", fmt::format("The integer scale option is only allowed when the SEGY data sample format is 8-bit or 16-bit, or when the VDS sample data format option is used. SEGY format is {}.",
+        SEGY::DataSampleFormatCodeToString(fileInfo.m_dataSampleFormatCode)));
+      return EXIT_FAILURE;
+    }
+  }
+
   if (persistentID.empty() && !disablePersistentID)
   {
     persistentID = fmt::format("{:X}", fileInfo.m_persistentID);
@@ -3475,6 +3679,22 @@ main(int argc, char* argv[])
   {
     outputPrinter.printError("SEGY", error.string);
     return EXIT_FAILURE;
+  }
+
+  if (!valueRangeString.empty())
+  {
+    // Override the computed value range with the value range given by the user
+    valueRange = userValueRange;
+  }
+
+  double overrideScale = 1.0;
+  if (vdsFormatOverride == VDSFormatOverride::Override16Bit)
+  {
+    overrideScale = (valueRange.Max - valueRange.Min) / 65535.0;
+  }
+  else if (vdsFormatOverride == VDSFormatOverride::Override8Bit)
+  {
+    overrideScale = (valueRange.Max - valueRange.Min) / 255.0;
   }
 
   if (IsSEGYTypeUnbinned(segyType))
@@ -3641,7 +3861,8 @@ main(int argc, char* argv[])
       , surveyCoordinateSystemTransformer.convertToVdsDistance(1.0f));
 
   // Create channel descriptors
-  std::vector<OpenVDS::VolumeDataChannelDescriptor> channelDescriptors = createChannelDescriptors(fileInfo, valueRange, offsetInfo, attributeName, attributeUnit, isAzimuth, isMutes, error);
+  std::vector<OpenVDS::VolumeDataChannelDescriptor> channelDescriptors = createChannelDescriptors(fileInfo, valueRange, offsetInfo, attributeName, attributeUnit,
+    isAzimuth, isMutes, vdsFormatOverride, overrideScale, !integerScaleString.empty(), userIntegerScaleOffset, error);
 
   if (error.code)
   {
@@ -3995,6 +4216,22 @@ main(int argc, char* argv[])
     dimChunkPitches[i] = dimChunkPitches[i - 1] * dimChunkCounts[i - 1];
   }
 
+  // data and temp buffers used when overriding the VDS sample data format
+  std::vector<float> overrideFloatTrace;
+  std::vector<uint16_t> overrideU16Trace;
+  std::vector<uint8_t> overrideU8Trace;
+
+  if (vdsFormatOverride == VDSFormatOverride::Override16Bit)
+  {
+    overrideFloatTrace.resize(fileInfo.m_sampleCount);
+    overrideU16Trace.resize(fileInfo.m_sampleCount);
+  }
+  else if (vdsFormatOverride == VDSFormatOverride::Override8Bit)
+  {
+    overrideFloatTrace.resize(fileInfo.m_sampleCount);
+    overrideU8Trace.resize(fileInfo.m_sampleCount);
+  }
+
   if (flushFrequency == 0)
   {
     flushFrequency = std::numeric_limits<decltype(flushFrequency)>::max();
@@ -4214,6 +4451,19 @@ main(int argc, char* argv[])
 
           const void* data = header + SEGY::TraceHeaderSize;
 
+          if (vdsFormatOverride != VDSFormatOverride::None)
+          {
+            copySamples<float>(fileInfo.m_headerEndianness, fileInfo.m_dataSampleFormatCode, overrideFloatTrace.data(), (const unsigned char*)data, 0, static_cast<int>(overrideFloatTrace.size()));
+            if (vdsFormatOverride == VDSFormatOverride::Override16Bit)
+            {
+              ConvertOverrideTrace(overrideU16Trace, overrideFloatTrace, valueRange, overrideScale);
+            }
+            else
+            {
+              ConvertOverrideTrace(overrideU8Trace, overrideFloatTrace, valueRange, overrideScale);
+            }
+          }
+
           int primaryTest = fileInfo.Is2D() ? 0 : SEGY::ReadFieldFromHeader(header, fileInfo.m_primaryKey, fileInfo.m_headerEndianness),
             secondaryTest;
           if (fileInfo.IsUnbinned() || fileInfo.m_segyType == SEGY::SEGYType::Poststack2D)
@@ -4325,6 +4575,19 @@ main(int argc, char* argv[])
             {
             case SEGY::BinaryHeader::DataSampleFormatCode::IBMFloat:
             case SEGY::BinaryHeader::DataSampleFormatCode::IEEEFloat:
+              if (vdsFormatOverride == VDSFormatOverride::Override16Bit)
+              {
+                copySamples<uint16_t>(SEGY::Endianness::LittleEndian, SEGY::BinaryHeader::DataSampleFormatCode::UInt16, &reinterpret_cast<uint16_t*>(amplitudeBuffer)[targetOffset], (const unsigned char*)overrideU16Trace.data(), chunkInfo.sampleStart, chunkInfo.sampleStart + chunkInfo.sampleCount);
+              }
+              else if (vdsFormatOverride == VDSFormatOverride::Override8Bit)
+              {
+                copySamples<uint8_t>(SEGY::Endianness::LittleEndian, SEGY::BinaryHeader::DataSampleFormatCode::UInt8, &reinterpret_cast<uint8_t*>(amplitudeBuffer)[targetOffset], (const unsigned char*)overrideU8Trace.data(), chunkInfo.sampleStart, chunkInfo.sampleStart + chunkInfo.sampleCount);
+              }
+              else
+              {
+                copySamples<float>(fileInfo.m_headerEndianness, fileInfo.m_dataSampleFormatCode, &reinterpret_cast<float*>(amplitudeBuffer)[targetOffset], (const unsigned char*)data, chunkInfo.sampleStart, chunkInfo.sampleStart + chunkInfo.sampleCount);
+              }
+              break;
             case SEGY::BinaryHeader::DataSampleFormatCode::UInt32:
             case SEGY::BinaryHeader::DataSampleFormatCode::Int32:
               copySamples<float>(fileInfo.m_headerEndianness, fileInfo.m_dataSampleFormatCode, &reinterpret_cast<float*>(amplitudeBuffer)[targetOffset], (const unsigned char*)data, chunkInfo.sampleStart, chunkInfo.sampleStart + chunkInfo.sampleCount);
