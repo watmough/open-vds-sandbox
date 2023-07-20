@@ -94,7 +94,7 @@ inline static DataBlock ToDataBlock(const Wavelet::WaveletDataBlock &waveletData
   return dataBlock;
 }
 
-bool VolumeDataStore::DeserializeVolumeData(const std::vector<uint8_t> &serializedData, VolumeDataFormat sourceFormat, VolumeDataFormat loadFormat, CompressionMethod compressionMethod, const FloatRange &valueRange, float integerScale, float integerOffset, bool isUseNoValue, float noValue, float replacementNoValue, int32_t adaptiveLevel, DataBlock &dataBlock, std::vector<uint8_t> &destination, Error &error)
+bool DeserializeVolumeData(const std::vector<uint8_t> &serializedData, VolumeDataChannelDescriptor::Format format, CompressionMethod compressionMethod, const FloatRange &valueRange, float integerScale, float integerOffset, bool isUseNoValue, float noValue, float replacementNoValue, int32_t adaptiveLevel, DataBlock &dataBlock, std::vector<uint8_t> &destination, Error &error)
 {
   if(CompressionMethod_IsWavelet(compressionMethod))
   {
@@ -131,15 +131,7 @@ bool VolumeDataStore::DeserializeVolumeData(const std::vector<uint8_t> &serializ
       adaptiveLevel = 0;
     }
 
-    //if source is float and we convert to 8 or 16 bit then discard the losslesspass.
-    if (sourceFormat == VolumeDataFormat::Format_R32
-      && (loadFormat == VolumeDataFormat::Format_U8 || loadFormat == VolumeDataFormat::Format_U16))
-    {
-      isLossless = false;
-    }
-
-
-    Wavelet::WaveletDataFormat waveletDataFormat = (Wavelet::WaveletDataFormat)loadFormat;
+    Wavelet::WaveletDataFormat waveletDataFormat = (Wavelet::WaveletDataFormat)format;
     Wavelet::FloatRange waveletValueRange(valueRange.Min, valueRange.Max);
     Wavelet::WaveletDataBlock waveletDataBlock;
     
@@ -240,11 +232,11 @@ bool VolumeDataStore::DeserializeVolumeData(const std::vector<uint8_t> &serializ
     CopyLinearBufferIntoDataBlock(source, dataBlock, destination);
   }
 
-  if(loadFormat != dataBlock.Format
+  if(format != dataBlock.Format
     || (isUseNoValue && noValue != replacementNoValue))
   {
     DataBlock newDataBlock;
-    if (!InitializeDataBlock(loadFormat, dataBlock.Components, dataBlock.Dimensionality, dataBlock.Size, newDataBlock, error))
+    if (!InitializeDataBlock(format, dataBlock.Components, dataBlock.Dimensionality, dataBlock.Size, newDataBlock, error))
     {
       return false;
     }
@@ -258,7 +250,7 @@ bool VolumeDataStore::DeserializeVolumeData(const std::vector<uint8_t> &serializ
       numVoxels *= 8;
 
     FloatVector2 newValueRange(valueRange.Min, valueRange.Max);
-    ConvertValues(newDestination.data(), destination.data(), loadFormat, dataBlock.Format, newValueRange, integerScale, integerOffset, isUseNoValue, noValue, replacementNoValue, numVoxels, newByteSize);
+    ConvertValues(newDestination.data(), destination.data(), format, dataBlock.Format, newValueRange, integerScale, integerOffset, isUseNoValue, noValue, replacementNoValue, numVoxels, newByteSize);
     destination = std::move(newDestination);
     dataBlock = std::move(newDataBlock);
   }
@@ -801,7 +793,13 @@ bool VolumeDataStore::DeserializeVolumeData(const VolumeDataChunk &volumeDataChu
     }
   }
 
-  bool ret = VolumeDataStore::DeserializeVolumeData(serializedData, volumeDataLayer->GetFormat(), destinationFormat, compressionMethod, deserializeValueRange, volumeDataLayer->GetIntegerScale(), volumeDataLayer->GetIntegerOffset(), useNoValue, noValue, replacementNoValue, adaptiveLevel, dataBlock, target, error);
+  // do we have 32 bit data? no need to go to lossless if deserializing to 8/16 bit data...
+  if(waveletAdaptive && volumeDataLayer->GetFormat() == VolumeDataChannelDescriptor::Format_R32 && (destinationFormat == VolumeDataChannelDescriptor::Format_U8 || destinationFormat == VolumeDataChannelDescriptor::Format_U16))
+  {
+    adaptiveLevel = std::max(0, adaptiveLevel);
+  }
+
+  bool ret = OpenVDS::DeserializeVolumeData(serializedData, destinationFormat, compressionMethod, deserializeValueRange, volumeDataLayer->GetIntegerScale(), volumeDataLayer->GetIntegerOffset(), useNoValue, noValue, replacementNoValue, adaptiveLevel, dataBlock, target, error);
   m_globalStateVds.addDecompressed(target.size());
   return ret;
 }

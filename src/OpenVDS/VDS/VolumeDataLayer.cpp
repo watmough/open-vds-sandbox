@@ -244,8 +244,13 @@ float VolumeDataLayer::GetNoValue() const
 CompressionMethod VolumeDataLayer::GetEffectiveCompressionMethod() const
 {
   auto &channelDescriptor = m_volumeDataLayout->GetVolumeDataChannelDescriptor(m_channel);
+  const bool isEffectiveDiscrete =  channelDescriptor.IsDiscrete() ||
+                                    channelDescriptor.GetFormat() == VolumeDataFormat::Format_1Bit || // Format_1Bit is always discrete because 8 values are packed into one texel and adding custom interpolation code is pretty pointless
+                                    channelDescriptor.GetFormat() == VolumeDataFormat::Format_U32 ||
+                                    channelDescriptor.GetFormat() == VolumeDataFormat::Format_U64;
+  const bool isEffectiveAllowLossyCompression = channelDescriptor.IsAllowLossyCompression() && channelDescriptor.IsRenderable() && !isEffectiveDiscrete && channelDescriptor.GetFormat() != VolumeDataFormat::Format_R64;
 
-  if(!channelDescriptor.IsAllowLossyCompression() && CompressionMethod_IsWavelet(m_volumeDataLayout->GetCompressionMethod()))
+  if(!isEffectiveAllowLossyCompression && CompressionMethod_IsWavelet(m_volumeDataLayout->GetCompressionMethod()))
   {
     if(m_volumeDataLayout->IsZipLosslessChannels() || channelDescriptor.IsUseZipForLosslessCompression())
     {
@@ -273,10 +278,15 @@ CompressionMethod VolumeDataLayer::GetEffectiveCompressionMethod() const
 }
 
 float VolumeDataLayer::GetEffectiveCompressionTolerance() const
-{ 
+{
   auto &channelDescriptor = m_volumeDataLayout->GetVolumeDataChannelDescriptor(m_channel);
-  //return m_volumeDataLayout->getVolumeDataChannelDescriptor(m_channel).getEffectiveCompressionTolerance(m_volumeDataLayout->m_compressionTolerance, getLOD());
-  if(!channelDescriptor.IsAllowLossyCompression())
+  const bool isEffectiveDiscrete =  channelDescriptor.IsDiscrete() ||
+                                    channelDescriptor.GetFormat() == VolumeDataFormat::Format_1Bit || // Format_1Bit is always discrete because 8 values are packed into one texel and adding custom interpolation code is pretty pointless
+                                    channelDescriptor.GetFormat() == VolumeDataFormat::Format_U32 ||
+                                    channelDescriptor.GetFormat() == VolumeDataFormat::Format_U64;
+  const bool isEffectiveAllowLossyCompression = channelDescriptor.IsAllowLossyCompression() && channelDescriptor.IsRenderable() && !isEffectiveDiscrete && channelDescriptor.GetFormat() != VolumeDataFormat::Format_R64;
+
+  if(!isEffectiveAllowLossyCompression)
   {
     return 0.0f;
   }
