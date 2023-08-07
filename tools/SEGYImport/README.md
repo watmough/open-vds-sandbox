@@ -47,6 +47,7 @@ SEGYImport [OPTION...] <input file>
 |      --value-range              | Set the sample data value range by giving minimum and maximum values as a colon-separated pair of values. By default the value range will be calculated from SEGY data. Using this option will not change sample data; it will only affect the value range stored in the VDS header. |
 |      --integer-scale            | Set the scale and offset values used to convert 8/16-bit data to floating point by giving a colon-separated pair of values. By default this will be calculated from the sample value range. This option is only applicable for a VDS using UInt16 or UInt8 sample data format. |
 |      --2d                       | Import 2D data. |
+|      --2d-index-axis            | Label the primary axis using values 1..N, where N is the number of ensembles (for prestack) or traces (for poststack) in the 2D line. By default the primary axis is labelled by CDP numbers. |
 |      --offset-sorted            | Import prestack data sorted by trace header Offset value. |
 |      --mute                     | Enable Mutes channel in output VDS. |
 |      --azimuth                  | Enable Azimuth channel in output VDS. |

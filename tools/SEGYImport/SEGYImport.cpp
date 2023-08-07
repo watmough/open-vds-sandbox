@@ -1936,22 +1936,57 @@ createImportInformationMetadata(const std::vector<DataProvider> &dataProviders, 
   return true;
 }
 
-bool
-create2DTraceInformationMetadata(const bool isCreateTracePositionInfo, TraceInfo2DManager * pTraceInfo2DManager, OpenVDS::MetadataContainer& metadataContainer, OpenVDS::Error& error)
+void
+buildUnbinned2DTraceInfo(TraceInfo2DManager* pTraceInfo2DManager, const SEGYFileInfo& fileInfo)
 {
-  if (!isCreateTracePositionInfo || pTraceInfo2DManager == nullptr || pTraceInfo2DManager->Count() == 0)
+  for (const auto& segmentInfoList : fileInfo.m_segmentInfoLists)
   {
-    metadataContainer.ClearMetadata(KNOWNMETADATA_TRACECOORDINATES, KNOWNMETADATA_TRACEPOSITIONS);
-    metadataContainer.ClearMetadata(KNOWNMETADATA_TRACECOORDINATES, KNOWNMETADATA_TRACEVERTICALOFFSETS);
-    metadataContainer.ClearMetadata(KNOWNMETADATA_TRACECOORDINATES, KNOWNMETADATA_ENERGYSOURCEPOINTNUMBERS);
-    metadataContainer.ClearMetadata(KNOWNMETADATA_TRACECOORDINATES, KNOWNMETADATA_ENSEMBLENUMBERS);
-    return true;
+    for (const auto& segmentInfo : segmentInfoList)
+    {
+      TraceInfo2D info{};
+
+      // Primary key is either ensemble number or energy source point number or receiver number. We'll
+      // populate both ensembleNumber and energySourcePointNumber with the primary key value and sort
+      // out which one (or neither) to write to metadata later on.
+      info.ensembleNumber = segmentInfo.m_primaryKey;
+      info.energySourcePointNumber = segmentInfo.m_primaryKey;
+
+      info.traceNumber = segmentInfo.m_traceStart;
+      info.x = segmentInfo.m_binInfoStart.m_ensembleXCoordinate;
+      info.y = segmentInfo.m_binInfoStart.m_ensembleYCoordinate;
+      pTraceInfo2DManager->AddTraceInfo(info);
+    }
+  }
+}
+
+struct TraceInfo2DOptions
+{
+  bool
+    hasTracePositions,
+    hasVerticalOffsets,
+    hasESPs,
+    hasEnsembleNumbers;
+};
+
+void
+create2DTraceInformationMetadata(const TraceInfo2DOptions& options, TraceInfo2DManager * pTraceInfo2DManager, OpenVDS::MetadataContainer& metadataContainer, const SurveyCoordinateSystemTransformer& surveyCoordinateSystemTransformer, const std::vector<int>& keys, OpenVDS::Error& error)
+{
+  error = {};
+
+  metadataContainer.ClearMetadata(KNOWNMETADATA_TRACECOORDINATES, KNOWNMETADATA_TRACEPOSITIONS);
+  metadataContainer.ClearMetadata(KNOWNMETADATA_TRACECOORDINATES, KNOWNMETADATA_TRACEVERTICALOFFSETS);
+  metadataContainer.ClearMetadata(KNOWNMETADATA_TRACECOORDINATES, KNOWNMETADATA_ENERGYSOURCEPOINTNUMBERS);
+  metadataContainer.ClearMetadata(KNOWNMETADATA_TRACECOORDINATES, KNOWNMETADATA_ENSEMBLENUMBERS);
+
+  if (pTraceInfo2DManager == nullptr || pTraceInfo2DManager->Count() == 0)
+  {
+    return;
   }
 
   // create KNOWNMETADATA_TRACECOORDINATES metadata items:  KNOWNMETADATA_TRACEPOSITIONS, KNOWNMETADATA_TRACEVERTICALOFFSETS, KNOWNMETADATA_ENERGYSOURCEPOINTNUMBERS, KNOWNMETADATA_ENSEMBLENUMBERS
 
   const auto
-    nItems = pTraceInfo2DManager->Count();
+    nItems = keys.size();
 
   std::vector<double>
     tracePositions,
@@ -1965,23 +2000,52 @@ create2DTraceInformationMetadata(const bool isCreateTracePositionInfo, TraceInfo
   espNumbers.reserve(nItems);
   ensembleNumbers.reserve(nItems);
 
-  for (int i = 0; i < nItems; ++i)
+  for (size_t i = 0; i < nItems; ++i)
   {
     const auto
-      & item = pTraceInfo2DManager->Get(i);
-    tracePositions.push_back(item.x);
-    tracePositions.push_back(item.y);
-    verticalOffsets.push_back(item.startTime);
-    espNumbers.push_back(item.energySourcePointNumber);
-    ensembleNumbers.push_back(item.ensembleNumber);
+      ensembleNumber = keys[i];
+    const auto
+      traceInfoIndex = pTraceInfo2DManager->GetIndexOfEnsembleNumber(ensembleNumber);
+
+    if (traceInfoIndex < 0)
+    {
+      // No trace at this ensemble number
+      tracePositions.push_back(0.0);
+      tracePositions.push_back(0.0);
+      verticalOffsets.push_back(0);
+      espNumbers.push_back(0);
+      ensembleNumbers.push_back(ensembleNumber);
+    }
+    else
+    {
+      const auto
+       & item = pTraceInfo2DManager->Get(traceInfoIndex);
+      assert(ensembleNumber == item.ensembleNumber);
+      tracePositions.push_back(surveyCoordinateSystemTransformer.convertToVdsDistance(item.x));
+      tracePositions.push_back(surveyCoordinateSystemTransformer.convertToVdsDistance(item.y));
+      verticalOffsets.push_back(item.startTime);
+      espNumbers.push_back(item.energySourcePointNumber);
+      ensembleNumbers.push_back(item.ensembleNumber);
+    }
   }
 
-  metadataContainer.SetMetadataBLOB(KNOWNMETADATA_TRACECOORDINATES, KNOWNMETADATA_TRACEPOSITIONS, tracePositions);
-  metadataContainer.SetMetadataBLOB(KNOWNMETADATA_TRACECOORDINATES, KNOWNMETADATA_TRACEVERTICALOFFSETS, verticalOffsets);
-  metadataContainer.SetMetadataBLOB(KNOWNMETADATA_TRACECOORDINATES, KNOWNMETADATA_ENERGYSOURCEPOINTNUMBERS, espNumbers);
-  metadataContainer.SetMetadataBLOB(KNOWNMETADATA_TRACECOORDINATES, KNOWNMETADATA_ENSEMBLENUMBERS, ensembleNumbers);
+  if (options.hasTracePositions)
+  {
+    metadataContainer.SetMetadataBLOB(KNOWNMETADATA_TRACECOORDINATES, KNOWNMETADATA_TRACEPOSITIONS, tracePositions);
+  }
+  if (options.hasVerticalOffsets)
+  {
+    metadataContainer.SetMetadataBLOB(KNOWNMETADATA_TRACECOORDINATES, KNOWNMETADATA_TRACEVERTICALOFFSETS, verticalOffsets);
+  }
+  if (options.hasESPs)
+  {
+    metadataContainer.SetMetadataBLOB(KNOWNMETADATA_TRACECOORDINATES, KNOWNMETADATA_ENERGYSOURCEPOINTNUMBERS, espNumbers);
+  }
+  if (options.hasEnsembleNumbers)
+  {
+    metadataContainer.SetMetadataBLOB(KNOWNMETADATA_TRACECOORDINATES, KNOWNMETADATA_ENSEMBLENUMBERS, ensembleNumbers);
+  }
 
-  return true;
 }
 
 bool
@@ -2122,7 +2186,7 @@ parseSEGYFileInfoFile(const DataProvider& dataProvider, SEGYFileInfo& fileInfo, 
 }
 
 std::vector<OpenVDS::VolumeDataAxisDescriptor>
-createAxisDescriptors(SEGYFileInfo const& fileInfo, SEGY::SampleUnits sampleUnits, int fold, int inlineStep, int crosslineStep, bool keepOriginalOrder)
+createAxisDescriptors(SEGYFileInfo const& fileInfo, SEGY::SampleUnits sampleUnits, int fold, int inlineStep, int crosslineStep, bool keepOriginalOrder, bool is2DCDPAxis, const int ensembleCount)
 {
   std::vector<OpenVDS::VolumeDataAxisDescriptor>
     axisDescriptors;
@@ -2152,10 +2216,33 @@ createAxisDescriptors(SEGYFileInfo const& fileInfo, SEGY::SampleUnits sampleUnit
     const auto
       & segmentInfo = fileInfo.m_segmentInfoLists[0][0];
 
-    // the secondary key axis will be 1..N
-    const auto
-      secondaryKeyCount = (segmentInfo.m_binInfoStop.m_crosslineNumber - segmentInfo.m_binInfoStart.m_crosslineNumber) / crosslineStep + 1;
-    axisDescriptors.emplace_back(secondaryKeyCount, VDS_DIMENSION_CDP_NAME, KNOWNMETADATA_UNIT_UNITLESS, 1.0f, static_cast<float>(secondaryKeyCount));
+    int
+      axisSampleCount;
+    float
+      coordinateStart,
+      coordinateEnd;
+    const char
+      * axisName;
+    if (is2DCDPAxis)
+    {
+      axisSampleCount = (segmentInfo.m_binInfoStop.m_crosslineNumber - segmentInfo.m_binInfoStart.m_crosslineNumber) / crosslineStep + 1;
+      axisName = VDS_DIMENSION_CDP_NAME;
+
+      // the secondary key axis value range is CDP number range
+      coordinateStart = static_cast<float>(segmentInfo.m_binInfoStart.m_crosslineNumber);
+      coordinateEnd = static_cast<float>(segmentInfo.m_binInfoStop.m_crosslineNumber);
+    }
+    else
+    {
+      axisSampleCount = ensembleCount;
+      axisName = VDS_DIMENSION_BARE_TRACE_NAME;
+
+      // the secondary key axis will be 1..N
+      coordinateStart = 1.0f;
+      coordinateEnd = static_cast<float>(axisSampleCount);
+
+    }
+    axisDescriptors.emplace_back(axisSampleCount, axisName, KNOWNMETADATA_UNIT_UNITLESS, coordinateStart, coordinateEnd);
   }
   else if (fileInfo.IsUnbinned())
   {
@@ -2783,6 +2870,27 @@ ConvertOverrideTrace(std::vector<T>& intTrace, const std::vector<float>& floatTr
   }
 }
 
+// Searches for an ensemble within the given key range. Returns true if found.
+//
+bool
+Find2DEnsembleInChunkRange(TraceInfo2DManager* pTraceInfo2DManager, int keyStart, int keyStop, int& ensembleIndex)
+{
+  // This ensemble number isn't present in the SEGY; try to find an ensemble number that's within the chunk's secondary key range
+  const int step = keyStart <= keyStop ? 1 : -1;
+  bool result = false;
+  for (int searchKey = keyStart; searchKey != keyStop + step; searchKey += step)
+  {
+    ensembleIndex = pTraceInfo2DManager->GetIndexOfEnsembleNumber(searchKey);
+    if (ensembleIndex >= 0)
+    {
+      result = true;
+      break;
+    }
+  }
+
+  return result;
+}
+
 int
 main(int argc, char* argv[])
 {
@@ -2830,6 +2938,7 @@ main(int argc, char* argv[])
   bool disablePersistentID = false;
   bool prestack = false;
   bool is2D = false;
+  bool is2DIndexAxis = false;
   bool isOffsetSorted = false;
   bool isOffsetSortedDupeKeyWarned = false;
   bool useJsonOutput = false;
@@ -2925,6 +3034,7 @@ main(int argc, char* argv[])
   options.add_option("", "", "value-range", "Set the sample value range by giving minimum and maximum values as a colon-separated pair. By default the value range will be calculated from SEGY data. Using this option will not change sample data; it will only affect the value range stored in the VDS header.", cxxopts::value<std::string>(valueRangeString), "<string>");
   options.add_option("", "", "integer-scale", "Set the scale and offset values used to convert 8/16-bit data to floating point by giving a colon-separated pair. By default this will be calculated from the sample value range. This option is only applicable for a VDS using UInt16 or UInt8 data formats.", cxxopts::value<std::string>(integerScaleString), "<string>");
   options.add_option("", "", "2d", "Import 2D data.", cxxopts::value<bool>(is2D), "");
+  options.add_option("", "", "2d-index-axis", "When importing 2D SEGY label the primary axis using 1..N instead of CDP numbers .", cxxopts::value<bool>(is2DIndexAxis), "");
   options.add_option("", "", "offset-sorted", "Import prestack data sorted by trace header Offset value.", cxxopts::value<bool>(isOffsetSorted), "");
   options.add_option("", "", "mute", "Enable Mutes channel in output VDS.", cxxopts::value<bool>(isMutes), "");
   options.add_option("", "", "azimuth", "Enable Azimuth channel in output VDS.", cxxopts::value<bool>(isAzimuth), "");
@@ -3382,9 +3492,20 @@ main(int argc, char* argv[])
   fileInfo.m_segyType = segyType;
 
   const auto
-    binInfoCrosslineFieldIndex = fileInfo.Is2D() ? secondaryKey.c_str() : "crosslinenumber",  // for 2D need to borrow the BinInfo crossline field for ensemble number
-    xcoordHeaderFieldIndex = fileInfo.Is2D() ? "sourcexcoordinate" : "ensemblexcoordinate",
-    ycoordHeaderFieldIndex = fileInfo.Is2D() ? "sourceycoordinate" : "ensembleycoordinate";
+    binInfoCrosslineFieldIndex = fileInfo.Is2D() ? secondaryKey.c_str() : "crosslinenumber";  // for 2D need to borrow the BinInfo crossline field for ensemble number
+  auto
+    xcoordHeaderFieldIndex = "ensemblexcoordinate",
+    ycoordHeaderFieldIndex = "ensembleycoordinate";
+  if (segyType == SEGY::SEGYType::ShotGathers)
+  {
+    xcoordHeaderFieldIndex = "sourcexcoordinate",
+    ycoordHeaderFieldIndex = "sourceycoordinate";
+  }
+  else if (segyType == SEGY::SEGYType::ReceiverGathers)
+  {
+    xcoordHeaderFieldIndex = "groupxcoordinate";
+    ycoordHeaderFieldIndex = "groupycoordinate";
+  }
 
   SEGYBinInfoHeaderFields
     binInfoHeaderFields(g_traceHeaderFields["inlinenumber"], g_traceHeaderFields[binInfoCrosslineFieldIndex], g_traceHeaderFields["coordinatescale"], g_traceHeaderFields[xcoordHeaderFieldIndex], g_traceHeaderFields[ycoordHeaderFieldIndex], scale);
@@ -3617,7 +3738,7 @@ main(int argc, char* argv[])
     xCoordFieldName2D = "sourcexcoordinate";
     yCoordFieldName2D = "sourceycoordinate";
   }
-  auto traceInfo2DManager = fileInfo.Is2D() || fileInfo.IsUnbinned()
+  auto traceInfo2DManager = fileInfo.Is2D()
     ? std::unique_ptr<TraceInfo2DManager>(new TraceInfo2DManagerImpl(fileInfo.m_headerEndianness, scale, g_traceHeaderFields["coordinatescale"], g_traceHeaderFields[xCoordFieldName2D], g_traceHeaderFields[yCoordFieldName2D], g_traceHeaderFields["starttime"], g_traceHeaderFields["energysourcepointnumber"], secondaryKeyHeaderField))
     : std::unique_ptr<TraceInfo2DManager>(new TraceInfo2DManager());
 
@@ -3679,6 +3800,13 @@ main(int argc, char* argv[])
   {
     outputPrinter.printError("SEGY", error.string);
     return EXIT_FAILURE;
+  }
+
+  if (fileInfo.IsUnbinned())
+  {
+    // For unbinned data we need to build the trace info based on segment info.
+    traceInfo2DManager = std::unique_ptr<TraceInfo2DManager>(new TraceInfo2DManagerImpl(fileInfo.m_headerEndianness, scale, g_traceHeaderFields["coordinatescale"], g_traceHeaderFields[xCoordFieldName2D], g_traceHeaderFields[yCoordFieldName2D], g_traceHeaderFields["starttime"], g_traceHeaderFields["energysourcepointnumber"], secondaryKeyHeaderField));
+    buildUnbinned2DTraceInfo(traceInfo2DManager.get(), fileInfo);
   }
 
   if (!valueRangeString.empty())
@@ -3792,8 +3920,10 @@ main(int argc, char* argv[])
     return EXIT_FAILURE;
   }
 
+  const bool is2DCDPAxis = !is2DIndexAxis;
+
   // Create axis descriptors
-  std::vector<OpenVDS::VolumeDataAxisDescriptor> axisDescriptors = createAxisDescriptors(fileInfo, sampleUnits, fold, primaryStep, secondaryStep, keepOriginalOrder);
+  std::vector<OpenVDS::VolumeDataAxisDescriptor> axisDescriptors = createAxisDescriptors(fileInfo, sampleUnits, fold, primaryStep, secondaryStep, keepOriginalOrder, is2DCDPAxis, traceInfo2DManager->Count());
 
   // Check for excess of empty traces
 
@@ -3879,7 +4009,87 @@ main(int argc, char* argv[])
     createSurveyCoordinateSystemMetadata(fileInfo, surveyCoordinateSystemTransformer, metadataContainer, primaryKeyValue);
   }
 
-  create2DTraceInformationMetadata(fileInfo.Is2D() || fileInfo.IsUnbinned(), traceInfo2DManager.get(), metadataContainer, error);
+  TraceInfo2DOptions
+    traceInfoOptions{};
+  std::vector<int>
+    traceInfoKeys;
+
+  if (fileInfo.Is2D())
+  {
+    // output all four items for 2D SEGY
+    traceInfoOptions = { true, true, true, true };
+
+    if (is2DCDPAxis)
+    {
+      // the primary axis has ensemble numbers so we can leave out the ensemble numbers metadata BLOB
+      traceInfoOptions.hasEnsembleNumbers = false;
+    }
+
+    // calculate all ensemble numbers for trace info keys (can't use found ensemble numbers because there may be gaps)
+    const int
+      ensembleAxisIndex = segyType == SEGY::SEGYType::Prestack2D ? 2 : 1;
+
+    const auto
+      foundEnsembleNumbers = traceInfo2DManager->EnsembleNumbers();
+    const auto
+      minMax = std::minmax_element(foundEnsembleNumbers.begin(), foundEnsembleNumbers.end());
+    const auto
+      ensembleNumberBegin = *(minMax.first),
+      ensembleNumberEnd = *(minMax.second);
+    const auto
+      ensembleCount = axisDescriptors[ensembleAxisIndex].GetNumSamples();
+    int ensembleNumberStep = 1;
+    bool risingNumbers = true;
+    if (ensembleCount > 1)
+    {
+      ensembleNumberStep = (ensembleNumberEnd - ensembleNumberBegin) / (ensembleCount - 1);
+      risingNumbers = foundEnsembleNumbers[0] < foundEnsembleNumbers[1];
+    }
+
+    traceInfoKeys.reserve(ensembleCount);
+    if (risingNumbers)
+    {
+      for (int ensembleNumber = ensembleNumberBegin; ensembleNumber <= ensembleNumberEnd; ensembleNumber += ensembleNumberStep)
+      {
+        traceInfoKeys.push_back(ensembleNumber);
+      }
+    }
+    else
+    {
+      for (int ensembleNumber = ensembleNumberEnd; ensembleNumber >= ensembleNumberBegin; ensembleNumber += ensembleNumberStep)
+      {
+        traceInfoKeys.push_back(ensembleNumber);
+      }
+    }
+  }
+  else if (fileInfo.IsUnbinned())
+  {
+    // key values are the segment primary keys
+    for (const auto& segmentInfoList : fileInfo.m_segmentInfoLists)
+    {
+      for (const auto& segmentInfo : segmentInfoList)
+      {
+        traceInfoKeys.push_back(segmentInfo.m_primaryKey);
+      }
+    }
+
+    // output positions for all unbinned data
+    traceInfoOptions.hasTracePositions = true;
+
+    if (segyType == SEGY::SEGYType::CDPGathers)
+    {
+      // also output ensemble numbers for CDP gathers
+      traceInfoOptions.hasEnsembleNumbers = true;
+    }
+    else if (segyType == SEGY::SEGYType::ShotGathers)
+    {
+      // also output ESPs for shot gathers
+      traceInfoOptions.hasESPs = true;
+    }
+    // no additional output for receiver gathers
+  }
+
+  create2DTraceInformationMetadata(traceInfoOptions, traceInfo2DManager.get(), metadataContainer, surveyCoordinateSystemTransformer, traceInfoKeys, error);
 
   if (error.code != 0)
   {
@@ -4400,17 +4610,49 @@ main(int argc, char* argv[])
       for (auto segment = lower; segment != upper && error.code == 0; ++segment)
       {
         int64_t firstTrace;
-        if (fileInfo.IsUnbinned() || fileInfo.m_segyType == SEGY::SEGYType::Poststack2D)
+        if (fileInfo.IsUnbinned())
         {
           // For unbinned gathers the secondary key is the 1-based index of the trace, so to get the
           // first trace we convert the index to 0-based and add that to the segment's start trace.
           // Similarly, for Poststack2D the secondary key is also the 1-based trace index.
           firstTrace = segment->m_traceStart + (static_cast<int64_t>(chunkInfo.secondaryKeyStart) - 1L);
         }
+        else if (fileInfo.m_segyType == SEGY::SEGYType::Poststack2D)
+        {
+          if (is2DCDPAxis)
+          {
+            int ensembleIndex;
+            if (!Find2DEnsembleInChunkRange(traceInfo2DManager.get(), chunkInfo.secondaryKeyStart, chunkInfo.secondaryKeyStop, ensembleIndex))
+            {
+              // didn't find an ensemble within the chunk's key range, bail out
+              break;
+            }
+            firstTrace = segment->m_traceStart + ensembleIndex;
+          }
+          else
+          {
+            // Same as for unbinned data when using 1..N axis annotation
+            firstTrace = segment->m_traceStart + (static_cast<int64_t>(chunkInfo.secondaryKeyStart) - 1L);
+          }
+        }
         else if (fileInfo.m_segyType == SEGY::SEGYType::Prestack2D)
         {
-          // For 2D prestack convert 1-based secondary key to 0-based index, then use that to lookup the ensemble's first trace number
-          firstTrace = EnsembleIndex2DToTraceNumber(traceInfo2DManager.get(), chunkInfo.secondaryKeyStart - 1, error);
+          int ensembleIndex;
+          if (is2DCDPAxis)
+          {
+            if (!Find2DEnsembleInChunkRange(traceInfo2DManager.get(), chunkInfo.secondaryKeyStart, chunkInfo.secondaryKeyStop, ensembleIndex))
+            {
+              // didn't find an ensemble within the chunk's key range, bail out
+              break;
+            }
+          }
+          else
+          {
+            // For 2D prestack convert 1-based secondary key to 0-based index
+            ensembleIndex = chunkInfo.secondaryKeyStart - 1;
+          }
+          // use ensemble index to lookup the ensemble's first trace number
+          firstTrace = EnsembleIndex2DToTraceNumber(traceInfo2DManager.get(), ensembleIndex, error);
           if (error.code)
           {
             outputPrinter.printWarning("IO", "Could not map EnsembleNumber to trace number", fmt::format("{}", error.code), error.string);
@@ -4466,14 +4708,25 @@ main(int argc, char* argv[])
 
           int primaryTest = fileInfo.Is2D() ? 0 : SEGY::ReadFieldFromHeader(header, fileInfo.m_primaryKey, fileInfo.m_headerEndianness),
             secondaryTest;
-          if (fileInfo.IsUnbinned() || fileInfo.m_segyType == SEGY::SEGYType::Poststack2D)
+          if (fileInfo.IsUnbinned())
           {
             secondaryTest = static_cast<int>(trace - segment->m_traceStart + 1);
+          }
+          else if (fileInfo.m_segyType == SEGY::SEGYType::Poststack2D)
+          {
+            if (is2DCDPAxis)
+            {
+              secondaryTest = SEGY::ReadFieldFromHeader(header, fileInfo.m_secondaryKey, fileInfo.m_headerEndianness);
+            }
+            else
+            {
+              secondaryTest = static_cast<int>(trace - segment->m_traceStart + 1);
+            }
           }
           else
           {
             secondaryTest = SEGY::ReadFieldFromHeader(header, fileInfo.m_secondaryKey, fileInfo.m_headerEndianness);
-            if (fileInfo.m_segyType == SEGY::SEGYType::Prestack2D)
+            if (fileInfo.m_segyType == SEGY::SEGYType::Prestack2D && !is2DCDPAxis)
             {
               // For 2D prestack convert the EnsembleNumber to the 1..N value used on secondary key axis
               secondaryTest = traceInfo2DManager->GetIndexOfEnsembleNumber(secondaryTest) + 1;
@@ -4514,7 +4767,14 @@ main(int argc, char* argv[])
           if (fileInfo.Is2D())
           {
             primaryIndex = 0;
-            secondaryIndex = secondaryTest - 1;
+            if (is2DCDPAxis)
+            {
+              secondaryIndex = layout->GetAxisDescriptor(secondaryKeyDimension).CoordinateToSampleIndex((float)secondaryTest);
+            }
+            else
+            {
+              secondaryIndex = secondaryTest - 1;
+            }
           }
           else if (fileInfo.IsUnbinned())
           {

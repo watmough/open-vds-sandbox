@@ -44,20 +44,39 @@ const TraceInfo2D& TraceInfo2DManagerStore::Front()
 
 int TraceInfo2DManagerStore::GetIndexOfEnsembleNumber(int ensembleNumber)
 {
+  EnsureEnsembleNumberMap();
+
+  const auto
+    iter = m_ensembleToIndex.find(ensembleNumber);
+  if (iter == m_ensembleToIndex.end())
+  {
+    return -1;
+  }
+
+  return iter->second;
+}
+
+std::vector<int> TraceInfo2DManagerStore::EnsembleNumbers()
+{
+  EnsureEnsembleNumberMap();
+
+  std::vector<int>
+    ensembleNumbers;
+  ensembleNumbers.reserve(m_traceInfo.size());
+  for (const auto& item : m_traceInfo)
+  {
+    ensembleNumbers.push_back(item.ensembleNumber);
+  }
+
+  return ensembleNumbers;
+}
+
+void TraceInfo2DManagerStore::EnsureEnsembleNumberMap()
+{
   if (m_ensembleToIndex.size() != m_traceInfo.size())
   {
     BuildEnsembleNumberMap();
   }
-
-  const auto
-    iter = m_ensembleToIndex.find(ensembleNumber);
-  assert(iter != m_ensembleToIndex.end());
-  if (iter == m_ensembleToIndex.end())
-  {
-    return 0;
-  }
-
-  return iter->second;
 }
 
 void TraceInfo2DManagerStore::BuildEnsembleNumberMap()
@@ -115,6 +134,11 @@ void TraceInfo2DManagerImpl::AddTraceInfo(const char* traceHeader, int64_t trace
   traceInfo.startTime = SEGY::ReadFieldFromHeader(traceHeader, m_startTimeHeaderField, m_endianness);
   traceInfo.traceNumber = traceNumber;
 
+  AddTraceInfo(traceInfo);
+}
+
+void TraceInfo2DManagerImpl::AddTraceInfo(const TraceInfo2D& traceInfo)
+{
   if (m_previousEnsembleNumber != traceInfo.ensembleNumber)
   {
     m_traceInfo.push_back(traceInfo);
@@ -124,3 +148,4 @@ void TraceInfo2DManagerImpl::AddTraceInfo(const char* traceHeader, int64_t trace
     ClearEnsembleNumberMap();
   }
 }
+
