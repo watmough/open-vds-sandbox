@@ -39,6 +39,8 @@ public:
 
   virtual void AddTraceInfo(const char* traceHeader, int64_t traceNumber) {}
 
+  virtual void AddTraceInfo(const TraceInfo2D& traceInfo) {}
+
   virtual int Count() { return 0; }
 
   virtual const TraceInfo2D& Get(int traceNumber) { return m_placeHolder; }
@@ -46,6 +48,8 @@ public:
   virtual const TraceInfo2D& Front() { return m_placeHolder; }
 
   virtual int GetIndexOfEnsembleNumber(int ensembleNumber) { return 0; }
+
+  virtual std::vector<int> EnsembleNumbers() { return {}; }
 
 private:
   TraceInfo2D m_placeHolder{};
@@ -68,10 +72,14 @@ public:
 
   int GetIndexOfEnsembleNumber(int ensembleNumber) override;
 
+  std::vector<int> EnsembleNumbers() override;
+
 protected:
   std::vector<TraceInfo2D>  m_traceInfo;
   std::unordered_map<int, int>
                             m_ensembleToIndex;
+
+  void EnsureEnsembleNumberMap();
 
   void BuildEnsembleNumberMap();
 
@@ -86,6 +94,8 @@ public:
   void Clear() override;
 
   void AddTraceInfo(const char* traceHeader, int64_t traceNumber) override;
+
+  void AddTraceInfo(const TraceInfo2D& traceInfo) override;
 
 private:
   SEGY::Endianness          m_endianness;
