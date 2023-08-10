@@ -189,6 +189,7 @@ VDSInfo --metadata-name TextHeader -b -e -w 80 s3://bluware-jorgen-dev/volve
   bool axisDescriptors = false;
   bool channelDescriptors = false;
   bool volumeDataLayout = false;
+  bool dimensionGroups = false;
   bool compressionInfo = false;
   bool metaKeys = false;
   bool metadataFirstBlob = false;
@@ -208,6 +209,7 @@ VDSInfo --metadata-name TextHeader -b -e -w 80 s3://bluware-jorgen-dev/volve
   options.add_option("", "", "axis", "Print axis descriptors.", cxxopts::value<bool>(axisDescriptors), "");
   options.add_option("", "", "channels", "Print channel descriptors.", cxxopts::value<bool>(channelDescriptors), "");
   options.add_option("", "", "layout", "Print layout.", cxxopts::value<bool>(volumeDataLayout), "");
+  options.add_option("", "g", "dimension-groups", "List dimension groups.", cxxopts::value<bool>(dimensionGroups), "");
   options.add_option("", "", "compression-info", "Print compression-info.", cxxopts::value<bool>(compressionInfo), "");
 
   options.add_option("", "", "metadata-all", "Print all of the metadata", cxxopts::value<bool>(metadataAll), "");
@@ -270,7 +272,7 @@ VDSInfo --metadata-name TextHeader -b -e -w 80 s3://bluware-jorgen-dev/volve
   std::string url;
   if(!urlarg.empty()) url = urlarg[0];
 
-  if (!axisDescriptors && !channelDescriptors && !volumeDataLayout && !compressionInfo && !metaKeys && metadataPrintName.empty() && metadataPrintCategory.empty() && !metadataAll)
+  if (!axisDescriptors && !channelDescriptors && !volumeDataLayout && !dimensionGroups && !compressionInfo && !metaKeys && metadataPrintName.empty() && metadataPrintCategory.empty() && !metadataAll)
   {
     axisDescriptors = true;
     channelDescriptors = true;
@@ -313,6 +315,60 @@ VDSInfo --metadata-name TextHeader -b -e -w 80 s3://bluware-jorgen-dev/volve
     layoutJson["layoutDescriptor"] = OpenVDS::SerializeVolumeDataLayoutDescriptor(*layout);
     layoutJson["layoutHash"] = layout->GetLayoutHash();
   }
+
+  if(dimensionGroups)
+  {
+    auto manager = OpenVDS::GetAccessManager(handle);
+    struct { OpenVDS::DimensionsND dimensions; std::string name; } dimensionGroups[] = 
+      {
+        { OpenVDS::Dimensions_012, "Dimensions_012" },
+        { OpenVDS::Dimensions_013, "Dimensions_013" },
+        { OpenVDS::Dimensions_014, "Dimensions_014" },
+        { OpenVDS::Dimensions_015, "Dimensions_015" },
+        { OpenVDS::Dimensions_023, "Dimensions_023" },
+        { OpenVDS::Dimensions_024, "Dimensions_024" },
+        { OpenVDS::Dimensions_025, "Dimensions_025" },
+        { OpenVDS::Dimensions_034, "Dimensions_034" },
+        { OpenVDS::Dimensions_035, "Dimensions_035" },
+        { OpenVDS::Dimensions_045, "Dimensions_045" },
+        { OpenVDS::Dimensions_123, "Dimensions_123" },
+        { OpenVDS::Dimensions_124, "Dimensions_124" },
+        { OpenVDS::Dimensions_125, "Dimensions_125" },
+        { OpenVDS::Dimensions_134, "Dimensions_134" },
+        { OpenVDS::Dimensions_135, "Dimensions_135" },
+        { OpenVDS::Dimensions_145, "Dimensions_145" },
+        { OpenVDS::Dimensions_234, "Dimensions_234" },
+        { OpenVDS::Dimensions_235, "Dimensions_235" },
+        { OpenVDS::Dimensions_245, "Dimensions_245" },
+        { OpenVDS::Dimensions_345, "Dimensions_345" },
+        { OpenVDS::Dimensions_01,  "Dimensions_01" },
+        { OpenVDS::Dimensions_02,  "Dimensions_02" },
+        { OpenVDS::Dimensions_03,  "Dimensions_03" },
+        { OpenVDS::Dimensions_04,  "Dimensions_04" },
+        { OpenVDS::Dimensions_05,  "Dimensions_05" },
+        { OpenVDS::Dimensions_12,  "Dimensions_12" },
+        { OpenVDS::Dimensions_13,  "Dimensions_13" },
+        { OpenVDS::Dimensions_14,  "Dimensions_14" },
+        { OpenVDS::Dimensions_15,  "Dimensions_15" },
+        { OpenVDS::Dimensions_23,  "Dimensions_23" },
+        { OpenVDS::Dimensions_24,  "Dimensions_24" },
+        { OpenVDS::Dimensions_25,  "Dimensions_25" },
+        { OpenVDS::Dimensions_34,  "Dimensions_34" },
+        { OpenVDS::Dimensions_35,  "Dimensions_35" },
+        { OpenVDS::Dimensions_45,  "Dimensions_45" }
+      };
+
+    root["dimensionGroups"] = Json::Value(Json::arrayValue);
+    for(auto dimensionGroup : dimensionGroups)
+    {
+      auto status = manager.GetVDSProduceStatus(dimensionGroup.dimensions, 0, 0);
+      if(status == OpenVDS::VDSProduceStatus::Normal)
+      {
+        root["dimensionGroups"].append(dimensionGroup.name);
+      }
+    }
+  }
+
   if (compressionInfo)
   {
     auto& compressionInfo = layoutJson["compressionInfo"];
@@ -409,7 +465,7 @@ VDSInfo --metadata-name TextHeader -b -e -w 80 s3://bluware-jorgen-dev/volve
   }
 
 
-  while (root.size() == 1)
+  while (root.isObject() && root.size() == 1)
     root = *root.begin();
 
   if (root.size())
@@ -417,6 +473,7 @@ VDSInfo --metadata-name TextHeader -b -e -w 80 s3://bluware-jorgen-dev/volve
     std::string outstring = convertToString(root);
     fwrite(outstring.c_str(), 1, outstring.size(), stdout);
   }
+
 
   return EXIT_SUCCESS;
 }
