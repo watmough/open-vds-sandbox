@@ -921,7 +921,7 @@ VolumeDataLayoutImpl::FindLayerToRemapFrom(VolumeDataLayer const *volumeDataLaye
 
   // If the base layer of the source for remapping is cached, we want to remap through the base layer
   VolumeDataLayer *
-    baseLayer = candidateLayer->GetLayout()->GetBaseLayer(candidateLayer->GetOriginalDimensionGroup(), candidateLayer->GetChannelIndex());
+    baseLayer = candidateLayer->GetLayout()->GetBaseLayer(candidateLayer->GetPrimaryChannelLayer().GetOriginalDimensionGroup(), candidateLayer->GetChannelIndex());
 
   while(baseLayer && baseLayer->GetLOD() < candidateLayer->GetLOD())
   {
