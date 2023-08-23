@@ -514,6 +514,52 @@ public:
   OpenVDS::Error error;
 };
 
+TEST(OpenVDS_integration, Create4DVDS)
+{
+  OpenVDS::Error error;
+  int negativeMargin = 4;
+  int positiveMargin = 4;
+  int brickSize2DMultiplier = 4;
+  auto LODLevels = OpenVDS::VolumeDataLayoutDescriptor::LODLevels_None;
+  auto layoutOptions = OpenVDS::VolumeDataLayoutDescriptor::Options_None;
+  OpenVDS::VolumeDataLayoutDescriptor layoutDescriptor(OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, negativeMargin, positiveMargin, brickSize2DMultiplier, LODLevels, layoutOptions);
+
+  std::vector<OpenVDS::VolumeDataAxisDescriptor> axisDescriptors;
+  axisDescriptors.emplace_back(63, KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_AXISNAME_SAMPLE, "ms", 0.0f, 4.f);
+  axisDescriptors.emplace_back(32, "Trace" " (" "offset" ")", "", 9985.f, 10369.f);
+  axisDescriptors.emplace_back(32, KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_AXISNAME_CROSSLINE, "", 1932.f, 2536.f);
+  axisDescriptors.emplace_back(32, KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_AXISNAME_INLINE,    "", 9985.f, 10369.f);
+
+  std::vector<OpenVDS::VolumeDataChannelDescriptor> channelDescriptors;
+  float rangeMin = -0.1234f;
+  float rangeMax = 0.1234f;
+  float intScale;
+  float intOffset;
+  getScaleOffsetForFormat(rangeMin, rangeMax, true, OpenVDS::VolumeDataChannelDescriptor::Format_U32, intScale, intOffset);
+  channelDescriptors.push_back(OpenVDS::VolumeDataChannelDescriptor(OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataChannelDescriptor::Components_1, AMPLITUDE_ATTRIBUTE_NAME, "", rangeMin, rangeMax, OpenVDS::VolumeDataMapping::Direct, 1, OpenVDS::VolumeDataChannelDescriptor::Default, 0.f, intScale, intOffset));
+  channelDescriptors.push_back(OpenVDS::VolumeDataChannelDescriptor(OpenVDS::VolumeDataChannelDescriptor::Format_U8, OpenVDS::VolumeDataChannelDescriptor::Components_1, "Trace", "", 0, 1, OpenVDS::VolumeDataMapping::PerTrace, 1, OpenVDS::VolumeDataChannelDescriptor::DiscreteData, 0.f, 1.f, 0.f));
+  channelDescriptors.push_back(OpenVDS::VolumeDataChannelDescriptor(OpenVDS::VolumeDataChannelDescriptor::Format_U8, OpenVDS::VolumeDataChannelDescriptor::Components_1, "TraceHeader", "", 0, 255, OpenVDS::VolumeDataMapping::PerTrace, 100, OpenVDS::VolumeDataChannelDescriptor::NotRenderable | OpenVDS::VolumeDataChannelDescriptor::DiscreteData, 0.f, 1.f, 0.f));
+  channelDescriptors.push_back(OpenVDS::VolumeDataChannelDescriptor(OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataChannelDescriptor::Components_1, "Offset", "m", 100.0, 3900.0, OpenVDS::VolumeDataMapping::PerTrace, 1, OpenVDS::VolumeDataChannelDescriptor::NoLossyCompression, 0.f, 1.f, 0.f));
+
+  OpenVDS::MetadataContainer metadataContainer;
+
+  std::string in_memory_name = fmt::format("inmemory://{}", "Create4DVDS");
+  auto handle = OpenVDS::Create(in_memory_name, std::string(""), layoutDescriptor, axisDescriptors, channelDescriptors, metadataContainer, error);
+  OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle);
+  
+  {
+    std::shared_ptr<OpenVDS::VolumeDataPageAccessor> pageAccessor0 = accessManager.CreateVolumeDataPageAccessor(
+      OpenVDS::Dimensions_012, 0, 0, 100, OpenVDS::VolumeDataAccessManager::AccessMode_Create);
+  }
+
+  {
+    std::shared_ptr<OpenVDS::VolumeDataPageAccessor> pageAccessor1 = accessManager.CreateVolumeDataPageAccessor(
+      OpenVDS::Dimensions_012, 0, 0, 100, OpenVDS::VolumeDataAccessManager::AccessMode_Create);
+  }
+
+  OpenVDS::Close(handle);
+}
+
 std::vector<uint8_t> getBlob(OpenVDS::IOManager* iomanager, const std::string& name)
 {
   std::vector<uint8_t> ret;
