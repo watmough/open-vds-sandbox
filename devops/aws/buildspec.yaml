@@ -43,9 +43,9 @@ phases:
       - export REPO_NAME=${PWD##*/}
       - export OUTPUT_DIR="dist"
       - export BRANCH_NAME=`echo ${CODEBUILD_SOURCE_VERSION} | awk '{gsub("refs/heads/","");gsub("\\.","-");gsub("[[:space:]]","-")}1' | sed 's/\//-/g' | awk '{print tolower($0)}'`
-      - export ECR_TAG=`echo build.${BRANCH_NAME}.${CODEBUILD_BUILD_NUMBER}.${CODEBUILD_RESOLVED_SOURCE_VERSION} | cut -c 1-120`
+      - export ECR_TAG=3.2.3
+      - echo "Skipping docker image build. Using preset image tag $ECR_TAG..."
       - export ECR_IMAGE=${ECR_REGISTRY}:${ECR_TAG}
-      - export ECR_IMAGE_BRANCH_LATEST=${ECR_REGISTRY}:${BRANCH_NAME}
       - printenv
 
       - mkdir -p ${OUTPUT_DIR}
@@ -53,16 +53,6 @@ phases:
 
       - GIT_SECRETS_SCAN_RESULT=$(git secrets --scan 2> ${OUTPUT_DIR}/git_secrets.out.txt && echo OK || echo FAILED)
       - if [ "$GIT_SECRETS_SCAN_RESULT" = "FAILED" ]; then echo "Secrets detected!" && exit 1; fi
-
-      - echo "Logging into Docker Hub..."
-      - docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
-
-      - echo "Building docker image..."
-      - docker build -f docker/osdu.Dockerfile -t ${ECR_IMAGE} .
-      - docker tag  ${ECR_IMAGE} ${ECR_IMAGE_BRANCH_LATEST}
-      - echo "Pushing docker image..."
-      - docker push ${ECR_IMAGE}
-      - docker push ${ECR_IMAGE_BRANCH_LATEST}
 
       - echo "Generate build-info.json"
       - |
