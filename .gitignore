@@ -2,6 +2,7 @@
 .vscode
 Builds
 Dist
+TestResults
 CMakeSettings.json
 CMakeLists.txt.user
 python/openvds/test/aws_defs.py
