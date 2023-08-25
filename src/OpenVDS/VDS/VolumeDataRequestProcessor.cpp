@@ -2032,10 +2032,6 @@ bool VolumeDataRequestProcessor::WaitForCompletion(int64_t jobID, int millisecon
     m_jobs.erase(job_it);
     return true;
   }
-  if (job->cancelled)
-  {
-    SetErrorForJob(job);
-  }
   return false;
 }
 
