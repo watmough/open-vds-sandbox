@@ -72,7 +72,7 @@ IOManagerDMSProxy::IOManagerDMSProxy(const DMSOpenOptions& openOptions, IOManage
     m_dmsManager->m_sdTokenExpiry = std::chrono::system_clock::now() + std::chrono::hours(168 * 32);
   }
 
-  m_dmsDataset.reset(new DmsDataset(*m_dmsManager.get(), openOptions.datasetPath, error));
+  m_dmsDataset.reset(new DmsDataset(*m_dmsManager.get(), openOptions.datasetPath, error, openOptions.legalTag));
   if (error.code)
     return;
   if (!m_dmsDataset->open(accessPattern, error))
@@ -151,5 +151,9 @@ std::shared_ptr<Request> IOManagerDMSProxy::WriteObject(const std::string& objec
     return std::make_shared<ErrorRequest>(objectName, "Seismic DMS initialization not successful. No request created\n");
   }
   return m_proxy->WriteObject(objectName, contentDispostionFilename, contentType, metadataHeader, data, completedCallback);
+}
+
+std::string IOManagerDMSProxy::GetLegalTag() const {
+  return m_dmsDataset->m_legalTag;
 }
 }

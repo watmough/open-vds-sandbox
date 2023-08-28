@@ -791,6 +791,8 @@ static const char *__doc_OpenVDS_DMSOpenOptions_clientSecret = R"doc()doc";
 
 static const char *__doc_OpenVDS_DMSOpenOptions_datasetPath = R"doc()doc";
 
+static const char *__doc_OpenVDS_DMSOpenOptions_legalTag = R"doc()doc";
+
 static const char *__doc_OpenVDS_DMSOpenOptions_refreshToken = R"doc()doc";
 
 static const char *__doc_OpenVDS_DMSOpenOptions_scopes = R"doc()doc";

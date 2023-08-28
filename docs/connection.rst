@@ -78,6 +78,7 @@ The Token is the OAuth2 token.
   - SdToken
   - LogLevel
   - AlreadyRegistered
+  - LegalTag
 
 The AlreadyRegistered option is a way to force OpenVDS to overwrite an existing
 dataset. It only works with the new DmsIOManager and not the depreacted sdapi

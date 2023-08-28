@@ -95,6 +95,8 @@ namespace OpenVDS
     OPENVDS_EXPORT
       static IOManager* CreateIOManager(const StringWrapper& url, const StringWrapper& connectionString, IOManager::AccessPattern accessPattern, Error& error);
 
+    //default empty implementation, overridden inside DMSIoManagerFactory
+    virtual std::string GetLegalTag() const{ return std::string(); }
   protected:
     OpenOptions::ConnectionType m_connectionType;
   };

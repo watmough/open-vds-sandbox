@@ -2891,6 +2891,15 @@ Find2DEnsembleInChunkRange(TraceInfo2DManager* pTraceInfo2DManager, int keyStart
   return result;
 }
 
+std::string GetLegalTag(const std::vector<DataProvider>& dataProviders) {
+  for (const auto& dataProvider : dataProviders) {
+    if (dataProvider.m_ioManager && !dataProvider.m_ioManager->GetLegalTag().empty()) {
+      return dataProvider.m_ioManager->GetLegalTag();
+    }
+  }
+  return "";
+}
+
 int
 main(int argc, char* argv[])
 {
@@ -4144,7 +4153,23 @@ main(int argc, char* argv[])
   else
   {
     OpenVDS::Error createError;
-    handle = OpenVDS::Create(url, urlConnection, layoutDescriptor, axisDescriptors, channelDescriptors, metadataContainer, compressionMethod, compressionTolerance, createError);
+    auto openOptions = OpenVDS::CreateOpenOptions(url, urlConnection, createError);
+    if (createError.code == 0)
+    {
+      //Update the legal tag in case its a DMS connection
+      if (openOptions->connectionType == OpenVDS::OpenOptions::DMS)
+      {
+        auto& legalTag = static_cast<OpenVDS::DMSOpenOptions&>(*openOptions).legalTag;
+        if (legalTag.empty())
+        {
+          legalTag = GetLegalTag(dataProviders);
+          outputPrinter.printInfo("VDS", fmt::format("legal tag :{} added to the open options", legalTag));
+        }
+      }
+
+      handle = OpenVDS::Create(*openOptions, layoutDescriptor, axisDescriptors, channelDescriptors, metadataContainer, compressionMethod, compressionTolerance, createError);
+    }
+    
     if (createError.code != 0)
     {
       outputPrinter.printError("VDS", "Could not create VDS", createError.string);

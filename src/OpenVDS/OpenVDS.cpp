@@ -403,6 +403,8 @@ static std::unique_ptr<OpenOptions> createDMSOpenOptions(const std::string & url
     if (connectionPair.first == "usefilenameforsinglefiledatasets" || connectionPair.first == "use_file_name_for_single_file_datasets"
       || connectionPair.first == "use_filename_for_single_file_datasets")
       openOptions->useFileNameForSingleFileDatasets = isTrue(connectionPair.second);
+    if (connectionPair.first == "legaltag" || connectionPair.first == "legal_tag")
+      openOptions->legalTag = connectionPair.second;
   }
 
   return openOptions;

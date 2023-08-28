@@ -15,7 +15,7 @@
 
 #include <chrono>
 #include <random>
-
+#include <iostream>
 #include "AzureDmsIoManagerFactory.h"
 #ifndef OPENVDS_NO_AWS_IOMANAGER
 #include "AwsDmsIoManagerFactory.h"
@@ -165,7 +165,7 @@ static std::string gen_lock_id(IOManager::AccessPattern accessPattern)
     return ret;
 }
 
-DmsDataset::DmsDataset(DmsManager& manager, const std::string url, Error &error)
+DmsDataset::DmsDataset(DmsManager& manager, const std::string url, Error &error, const std::string& legalTag)
   : m_manager(manager)
   , m_url(url)
   , m_accessPattern(IOManager::ReadOnly)
@@ -176,6 +176,9 @@ DmsDataset::DmsDataset(DmsManager& manager, const std::string url, Error &error)
 
   if (m_path.empty())
     m_path = '/';
+
+  if (!legalTag.empty() && m_legalTag.empty())
+    m_legalTag = legalTag;
 }
 
 bool DmsDataset::registerDataset(std::vector<std::pair<std::string, std::string>> &responsHeaders, std::vector<uint8_t> &responsData, Error& error)
@@ -185,6 +188,11 @@ bool DmsDataset::registerDataset(std::vector<std::pair<std::string, std::string>
   std::vector<std::string> headers;
   m_lock_id = gen_lock_id(IOManager::Create);
   headers.emplace_back(fmt::format("x-seismic-dms-lockid: {}", m_lock_id));
+  
+  if (!m_legalTag.empty()) {
+    headers.emplace_back(fmt::format("ltag: {}", m_legalTag));
+  }
+
   m_manager.addHeaders(headers);
   m_manager.m_curlHandler.addUploadRequest(request, url, headers, CurlVerb::POST, {}, 0, 0);
   request->WaitForFinish(error);
@@ -301,6 +309,7 @@ bool DmsDataset::open(IOManager::AccessPattern accessPattern, Error &error)
     try
     {
       m_gc_url = root["gcsurl"].asString();
+      m_legalTag = root["ltag"].asString();
       m_accessPolicy = root["access_policy"].asString();
     }
     catch (const Json::Exception& ex)
