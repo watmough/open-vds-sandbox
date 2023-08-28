@@ -181,7 +181,7 @@ DmsDataset::DmsDataset(DmsManager& manager, const std::string url, Error &error,
     m_legalTag = legalTag;
 }
 
-bool DmsDataset::registerDataset(std::vector<std::pair<std::string, std::string>> &responsHeaders, std::vector<uint8_t> &responsData, Error& error)
+bool DmsDataset::registerDataset(std::vector<std::pair<std::string, std::string>> &responseHeaders, std::vector<uint8_t> &responseData, Error& error)
 {
   auto url = fmt::format("{}/dataset/tenant/{}/subproject/{}/dataset/{}?path={}", m_manager.m_authorityUrl, URLEncode(m_tenant), URLEncode(m_subproject), URLEncode(m_dataset), URLEncode(m_path));
   std::shared_ptr<UploadRequestCurl> request = std::make_shared<UploadRequestCurl>("create_dataset", std::function<void(const Request & request, const Error & error)>());
@@ -196,12 +196,12 @@ bool DmsDataset::registerDataset(std::vector<std::pair<std::string, std::string>
   m_manager.addHeaders(headers);
   m_manager.m_curlHandler.addUploadRequest(request, url, headers, CurlVerb::POST, {}, 0, 0);
   request->WaitForFinish(error);
-  responsHeaders = std::move(request->m_uploadHandler->responsHeaders);
-  responsData = std::move(request->m_uploadHandler->responsData);
+  responseHeaders = std::move(request->m_uploadHandler->responseHeaders);
+  responseData = std::move(request->m_uploadHandler->responseData);
   if (error.code)
   {
     std::string respons_str;
-    respons_str.insert(respons_str.end(), request->m_uploadHandler->responsData.begin(), request->m_uploadHandler->responsData.end());
+    respons_str.insert(respons_str.end(), request->m_uploadHandler->responseData.begin(), request->m_uploadHandler->responseData.end());
     error.string = fmt::format("Seismic dms create dataset failed: {} - {}", error.string, respons_str);
     return false;
   }
@@ -209,7 +209,7 @@ bool DmsDataset::registerDataset(std::vector<std::pair<std::string, std::string>
   return true;
 }
   
-bool DmsDataset::lockDataset(IOManager::AccessPattern accessPattern, std::vector<std::pair<std::string, std::string>> &responsHeaders, std::vector<uint8_t> &responsData, Error& error)
+bool DmsDataset::lockDataset(IOManager::AccessPattern accessPattern, std::vector<std::pair<std::string, std::string>> &responseHeaders, std::vector<uint8_t> &responseData, Error& error)
 {
   auto url = fmt::format("{}/dataset/tenant/{}/subproject/{}/dataset/{}/lock?openmode={}&path={}", m_manager.m_authorityUrl, URLEncode(m_tenant), URLEncode(m_subproject), URLEncode(m_dataset), accessPattern == IOManager::ReadOnly ? "read" : "write", URLEncode(m_path));
   std::shared_ptr<UploadRequestCurl> request = std::make_shared<UploadRequestCurl>("lock_dataset", std::function<void(const Request & request, const Error & error)>());
@@ -219,12 +219,12 @@ bool DmsDataset::lockDataset(IOManager::AccessPattern accessPattern, std::vector
   m_manager.addHeaders(headers);
   m_manager.m_curlHandler.addUploadRequest(request, url, headers, CurlVerb::PUT, {}, 0, 0);
   request->WaitForFinish(error);
-  responsHeaders = std::move(request->m_uploadHandler->responsHeaders);
-  responsData = std::move(request->m_uploadHandler->responsData);
+  responseHeaders = std::move(request->m_uploadHandler->responseHeaders);
+  responseData = std::move(request->m_uploadHandler->responseData);
   if (error.code)
   {
     std::string respons_str;
-    respons_str.insert(respons_str.end(), request->m_uploadHandler->responsData.begin(), request->m_uploadHandler->responsData.end());
+    respons_str.insert(respons_str.end(), request->m_uploadHandler->responseData.begin(), request->m_uploadHandler->responseData.end());
     error.string = fmt::format("Seismic dms lock dataset failed: {} - {}", error.string, respons_str);
     return false;
   }
@@ -244,7 +244,7 @@ bool DmsDataset::deleteDataset(Error& error)
   if (error.code)
   {
     std::string respons_str;
-    respons_str.insert(respons_str.end(), request->m_uploadHandler->responsData.begin(), request->m_uploadHandler->responsData.end());
+    respons_str.insert(respons_str.end(), request->m_uploadHandler->responseData.begin(), request->m_uploadHandler->responseData.end());
     error.string = fmt::format("Seismic dms delete dataset failed: {} - {}", error.string, respons_str);
     return false;
   }
@@ -265,11 +265,11 @@ bool DmsDataset::open(IOManager::AccessPattern accessPattern, Error &error)
     return false;
 
   {
-    std::vector<std::pair<std::string, std::string>> responsHeaders;
-    std::vector<uint8_t> responsData;
+    std::vector<std::pair<std::string, std::string>> responseHeaders;
+    std::vector<uint8_t> responseData;
     if (accessPattern == IOManager::Create)
     {
-      if (!registerDataset(responsHeaders, responsData, error))
+      if (!registerDataset(responseHeaders, responseData, error))
       {
         //OpenVDS by default overwrites data. This is the same as the SDAPI would do when opening a dataset in overwrite mode
         if (error.code == 409)
@@ -279,9 +279,9 @@ bool DmsDataset::open(IOManager::AccessPattern accessPattern, Error &error)
           {
             return false;
           }
-          responsHeaders.clear();
-          responsData.clear();
-          if (!registerDataset(responsHeaders, responsData, error))
+          responseHeaders.clear();
+          responseData.clear();
+          if (!registerDataset(responseHeaders, responseData, error))
           {
             return false;
           }
@@ -294,7 +294,7 @@ bool DmsDataset::open(IOManager::AccessPattern accessPattern, Error &error)
     }
     else
     {
-      if (!lockDataset(accessPattern, responsHeaders, responsData, error))
+      if (!lockDataset(accessPattern, responseHeaders, responseData, error))
       {
         return false;
       }
@@ -302,7 +302,7 @@ bool DmsDataset::open(IOManager::AccessPattern accessPattern, Error &error)
     m_accessPattern = accessPattern;
     m_opened = true;
     Json::Value root;
-    if (!ParseJSONFromBuffer(responsData, root, error))
+    if (!ParseJSONFromBuffer(responseData, root, error))
     {
       return false;
     }
@@ -319,7 +319,7 @@ bool DmsDataset::open(IOManager::AccessPattern accessPattern, Error &error)
       return false;
     }
 
-    for (auto& header : responsHeaders)
+    for (auto& header : responseHeaders)
     {
       if (header.first == "service-provider")
         m_service_provider = header.second;
@@ -396,7 +396,7 @@ bool DmsDataset::close(uint64_t serializedSize, uint64_t chunkCount, Error& erro
   if (error.code || !request->m_uploadHandler)
   {
     std::string respons_str;
-    respons_str.insert(respons_str.end(), request->m_uploadHandler->responsData.begin(), request->m_uploadHandler->responsData.end());
+    respons_str.insert(respons_str.end(), request->m_uploadHandler->responseData.begin(), request->m_uploadHandler->responseData.end());
     error.string = fmt::format("Seismic dms close failed: {} - {}", error.string, respons_str);
     return false;
   }

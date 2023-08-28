@@ -69,7 +69,7 @@ struct CurlEasyHandler
 
   void retry();
 
-  virtual void handleDone(int responsCode, const Error &error) = 0;
+  virtual void handleDone(int responseCode, const Error &error) = 0;
   virtual void handleHeaderData(char* buffer, size_t size) = 0;
   virtual void handleWriteData(char* ptr, size_t size) = 0;
   virtual size_t handleReadRequest(char* buffer, size_t size) = 0;
@@ -110,7 +110,7 @@ struct CurlDownloadHandler : public CurlEasyHandler
     responseHeaders.reserve(16);
   }
 
-  void handleDone(int responsCode, const Error &error) override;
+  void handleDone(int responseCode, const Error &error) override;
   void handleHeaderData(char* buffer, size_t size) override;
   void handleWriteData(char* ptr, size_t size) override;
   size_t handleReadRequest(char* buffer, size_t size) override;
@@ -148,10 +148,10 @@ struct CurlUploadHandler : public CurlEasyHandler
     , dataOffset(0)
     , totalTransferred(0)
   {
-    responsHeaders.reserve(16);
+    responseHeaders.reserve(16);
   }
 
-  void handleDone(int responsCode, const Error &error) override;
+  void handleDone(int responseCode, const Error &error) override;
   void handleHeaderData(char* buffer, size_t size) override;
   void handleWriteData(char* ptr, size_t size) override;
   size_t handleReadRequest(char* buffer, size_t size) override;
@@ -165,8 +165,8 @@ struct CurlUploadHandler : public CurlEasyHandler
   int bufferIndex;
   size_t dataOffset;
   size_t totalTransferred;
-  std::vector<uint8_t> responsData;
-  std::vector<std::pair<std::string, std::string>> responsHeaders;
+  std::vector<uint8_t> responseData;
+  std::vector<std::pair<std::string, std::string>> responseHeaders;
 };
 
 struct UVEventLoopData

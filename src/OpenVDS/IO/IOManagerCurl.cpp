@@ -83,7 +83,74 @@ static std::string CURLErrorMessage(CURL *curlEasy, CURLcode curlCode)
 
 static std::string CurlHttpErrorMessage(int responseCode, char *url)
 {
-  return fmt::format("Http error respons: {} -> {}\n", responseCode, url);
+  return fmt::format("Http error response: {} -> {}", responseCode, url);
+}
+
+static std::string ParseErrorResponse(std::vector<uint8_t> const &responseData, std::vector<std::pair<std::string, std::string>> const &responseHeaders)
+{
+  auto contentTypeHeader = std::find_if(responseHeaders.begin(), responseHeaders.end(), [](std::pair<std::string, std::string> const &header) { return header.first == "content-type"; });
+  if(contentTypeHeader != responseHeaders.end())
+  {
+    if(contentTypeHeader->second.rfind("application/json", 0) == 0)
+    {
+      // No elaborate JSON parsing needed here, since the schema is short and consistent.
+      /*
+        {"error":"invalid_scope"}
+      */
+
+      auto responseString = std::string(responseData.begin(), responseData.end());
+
+      auto errorBegin = responseString.find("\"error\":");
+      if(errorBegin != std::string::npos)
+      {
+        auto messageBegin = errorBegin + strlen("\"error\":");
+        while(isspace(responseString[messageBegin]))
+        {
+          messageBegin++;
+        }
+        if(responseString[messageBegin] == '"')
+        {
+          auto messageEnd = responseString.find('"', ++messageBegin);
+          if(messageEnd != std::string::npos)
+          {
+            return responseString.substr(messageBegin, messageEnd - messageBegin);
+          }
+        }
+      }
+    }
+    else if(contentTypeHeader->second.rfind("application/xml", 0) == 0)
+    {
+      // No elaborate XML parsing needed here, since the schema is short and consistent.
+
+      // Refer : https://docs.aws.amazon.com/AmazonS3/latest/API/ErrorResponses.html
+      /*
+        <?xml version="1.0" encoding="UTF-8"?>
+        <Error>
+          <Code>NoSuchKey</Code>
+          <Message>The resource you requested does not exist</Message>
+          <Resource>/mybucket/myfoto.jpg</Resource>
+          <RequestId>4442587FB7D0A2F9</RequestId>
+        </Error>
+      */
+
+      auto responseString = std::string(responseData.begin(), responseData.end());
+
+      auto errorBegin = responseString.find("<Error>");
+      auto errorEnd = responseString.rfind("</Error>");
+      if(errorBegin != std::string::npos && errorEnd != std::string::npos && errorBegin < errorEnd)
+      {
+        auto messageBegin = responseString.find("<Message>", errorBegin);
+        auto messageEnd = responseString.rfind("</Message>", errorEnd);
+        if(messageBegin != std::string::npos && messageEnd != std::string::npos && messageBegin < messageEnd)
+        {
+          messageBegin += strlen("<Message>");
+          return responseString.substr(messageBegin, messageEnd - messageBegin);
+        }
+      }
+    }
+  }
+
+  return "";
 }
 
 static size_t curlHeaderCallbackCB(char *buffer, size_t size, size_t nitems, void *userdata)
@@ -434,13 +501,13 @@ static void beforeBlockCB(uv_prepare_t *handle)
           case 503: // SERVICE_UNAVAILABLE
             if (socketContext->shouldRetry())
             {
-              eventLoopData->logger.LogTrace(fmt::format("CURL http respons error {}. Automatic rety {}", responseCode, url));
+              eventLoopData->logger.LogTrace(fmt::format("CURL http response error {}. Automatic retry {}", responseCode, url));
               socketContext->retry();
               continue;
             }
             else
             {
-              eventLoopData->logger.LogTrace(fmt::format("CURL http respons error {}. No more retries {}", responseCode, url));
+              eventLoopData->logger.LogTrace(fmt::format("CURL http response error {}. No more retries {}", responseCode, url));
               error.code = responseCode;
               error.string = CurlHttpErrorMessage(responseCode, url);
             }
@@ -455,7 +522,7 @@ static void beforeBlockCB(uv_prepare_t *handle)
         {
           if (socketContext->shouldRetry())
           {
-            eventLoopData->logger.LogTrace(fmt::format("CURL respons error {}. Automatic rety {}", responseCode, url));
+            eventLoopData->logger.LogTrace(fmt::format("CURL response error {}. Automatic retry {}", responseCode, url));
             socketContext->retry();
             continue;
           }
@@ -651,7 +718,17 @@ void CurlDownloadHandler::handleDone(int responseCode, const Error &error)
   if (downloadRequest->m_handler)
   {
     if (responseCode < 300 && responseData.size())
+    {
       downloadRequest->m_handler->HandleData(std::move(responseData));
+    }
+    else if(error.code)
+    {
+      auto errorMessage = ParseErrorResponse(responseData, responseHeaders);
+      if(!errorMessage.empty())
+      {
+        downloadRequest->m_error.string = fmt::format("{}: {}", downloadRequest->m_error.string, errorMessage);
+      }
+    }
     downloadRequest->m_handler->Completed(*downloadRequest, downloadRequest->m_error);
   }
   downloadRequest->m_waitForFinish.notify_all();
@@ -772,6 +849,14 @@ void CurlUploadHandler::handleDone(int responseCode, const Error& error)
   std::unique_lock<std::mutex> lock(uploadRequest->m_mutex);
   uploadRequest->m_done = true;
   uploadRequest->m_error = error;
+  if(error.code)
+  {
+    auto errorMessage = ParseErrorResponse(responseData, responseHeaders);
+    if(!errorMessage.empty())
+    {
+      uploadRequest->m_error.string = fmt::format("{}: {}", uploadRequest->m_error.string, errorMessage);
+    }
+  }
   if (uploadRequest->m_completedCallback)
   {
     uploadRequest->m_completedCallback(*uploadRequest, error);
@@ -790,15 +875,15 @@ void CurlUploadHandler::handleHeaderData(char* buffer, size_t size)
     long long length = strtoll(value.data(), &end, 10);
     if (end > value.data() && length)
     {
-      responsData.reserve(length);
+      responseData.reserve(length);
     }
   }
-  responsHeaders.emplace_back(std::move(name), std::move(value));
+  responseHeaders.emplace_back(std::move(name), std::move(value));
 }
 
 void CurlUploadHandler::handleWriteData(char* ptr, size_t size)
 {
-  responsData.insert(responsData.end(), ptr, ptr + size);
+  responseData.insert(responseData.end(), ptr, ptr + size);
 }
 size_t CurlUploadHandler::handleReadRequest(char* buffer, size_t size)
 {

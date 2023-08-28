@@ -26,7 +26,14 @@ static std::string extractTokensFromJson(const std::vector<uint8_t>& respons_dat
     std::string form;
     if (m_refreshToken.empty())
     {
-      form = fmt::format("grant_type={}&client_id={}&client_secret={}&scope={}", "client_credentials", m_clientId, m_clientSecret, m_scopes);
+      if(m_scopes.empty())
+      {
+        form = fmt::format("grant_type={}&client_id={}&client_secret={}", "client_credentials", m_clientId, m_clientSecret);
+      }
+      else
+      {
+        form = fmt::format("grant_type={}&client_id={}&client_secret={}&scope={}", "client_credentials", m_clientId, m_clientSecret, m_scopes);
+      }
     }
     else
     {
@@ -46,7 +53,7 @@ static std::string extractTokensFromJson(const std::vector<uint8_t>& respons_dat
       error.string = fmt::format("TokenRefresher: {}", error.string);
       return "";
     }
-    return extractTokensFromJson(request->m_uploadHandler->responsData, error, m_refreshToken);
+    return extractTokensFromJson(request->m_uploadHandler->responseData, error, m_refreshToken);
   }
 
   static std::string extractTokensFromJson(const std::vector<uint8_t>& respons_data, Error& error, std::string& refreshToken)
