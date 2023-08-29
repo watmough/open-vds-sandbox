@@ -475,7 +475,7 @@ struct DMSOpenOptions : OpenOptions
 {
   DMSOpenOptions() : OpenOptions(DMS), useFileNameForSingleFileDatasets(false), authProviderCallback(nullptr), authProviderCallbackData(nullptr) {}
 
-  DMSOpenOptions(std::string const& sdAuthorityUrl, std::string const& sdApiKey, std::string const &sdToken, std::string const &datasetPath, std::string const &authTokenUrl = std::string(), std::string const &refreshToken = std::string(), std::string const &clientId = std::string(), std::string const &clientSecret = std::string(), std::string const &scopes = std::string(), bool useFileNameForSingleFileDatasets = false, std::string legalTag=std::string())
+  DMSOpenOptions(std::string const& sdAuthorityUrl, std::string const& sdApiKey, std::string const &sdToken, std::string const &datasetPath, std::string const &authTokenUrl = std::string(), std::string const &refreshToken = std::string(), std::string const &clientId = std::string(), std::string const &clientSecret = std::string(), std::string const &scopes = std::string(), bool useFileNameForSingleFileDatasets = false, std::string const &legalTag=std::string())
     : OpenOptions(DMS)
     , sdAuthorityUrl(sdAuthorityUrl)
     , sdApiKey(sdApiKey)
@@ -492,7 +492,7 @@ struct DMSOpenOptions : OpenOptions
     , legalTag(legalTag)
   {}
 
-  DMSOpenOptions(std::string const& sdAuthorityUrl, std::string const& sdApiKey, std::string const &datasetPath, std::string (*authProviderCallback)(const void*), const void *authProviderCallbackData, bool useFileNameForSingleFileDatasets = false, std::string legalTag = std::string())
+  DMSOpenOptions(std::string const& sdAuthorityUrl, std::string const& sdApiKey, std::string const &datasetPath, std::string (*authProviderCallback)(const void*), const void *authProviderCallbackData, bool useFileNameForSingleFileDatasets = false, std::string const &legalTag = std::string())
     : OpenOptions(DMS)
     , sdAuthorityUrl(sdAuthorityUrl)
     , sdApiKey(sdApiKey)

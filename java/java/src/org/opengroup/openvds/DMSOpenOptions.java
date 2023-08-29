@@ -41,7 +41,7 @@ public class DMSOpenOptions extends OpenOptions {
     
     }
 
-    ///AUTOGEN-FAIL: CONSTRUCTOR DMSOpenOptions void (const std::string &, const std::string &, const std::string &, std::string (*)(const void *), const void *, bool, std::string) FUNCTIONPROTO
+    ///AUTOGEN-FAIL: CONSTRUCTOR DMSOpenOptions void (const std::string &, const std::string &, const std::string &, std::string (*)(const void *), const void *, bool, const std::string &) FUNCTIONPROTO
 
     ///AUTOGEN-OK: FIELD_DECL sdAuthorityUrl std::string RECORD
     native private String getSdAuthorityUrlImpl(long native_object);
