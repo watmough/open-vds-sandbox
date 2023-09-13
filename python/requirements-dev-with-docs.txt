@@ -4,8 +4,9 @@ pybind11
 numpy
 sphinx!=7.2.5
 breathe
-recommonmark
-sphinx-markdown-tables
+myst-parser
+linkify-it-py
 sphinx-rtd-theme
+sphinx-design
 pytest
 pytest-benchmark
