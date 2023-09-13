@@ -2,7 +2,7 @@ markdown
 scikit-build
 pybind11
 numpy
-sphinx
+sphinx!=7.2.5
 breathe
 recommonmark
 sphinx-markdown-tables
