@@ -12,8 +12,6 @@
 
 import os
 import sys
-import recommonmark
-from recommonmark.transform import AutoStructify
 
 # -- Project information -----------------------------------------------------
 
@@ -30,17 +28,13 @@ release = '${CMAKE_PROJECT_VERSION}'
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['sphinx.ext.autodoc', 'breathe', 'recommonmark', 'sphinx_markdown_tables']
+extensions = ['sphinx.ext.autodoc', 'breathe', 'myst_parser', "sphinx_design"]
+myst_enable_extensions = ["colon_fence"]
 
 # Breathe Configuration
 breathe_default_project = 'OpenVDS'
 breathe_projects = { "OpenVDS": "@CMAKE_CURRENT_BINARY_DIR@/doxygen/xml/" }
 breathe_default_members = ('members', 'undoc-members')
-
-# Recommonmark Configuration
-source_parsers = {
-    '.md': 'CommonMarkParser',
-}
 
 source_suffix = ['.rst', '.md']
 
@@ -78,12 +72,3 @@ html_show_copyright = True  # If true, “(C) Copyright …” is shown in the HTML fo
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
-
-# AutoStructify Configuration
-github_doc_root = 'https://osdu.pages.opengroup.org/platform/domain-data-mgmt-services/seismic/open-vds/'
-def setup(app):
-    app.add_config_value('recommonmark_config', {
-            'url_resolver': lambda url: github_doc_root + url,
-            'auto_toc_tree_section': 'Contents',
-            }, True)
-    app.add_transform(AutoStructify)
