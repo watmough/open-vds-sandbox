@@ -2,7 +2,7 @@ markdown
 scikit-build
 pybind11
 numpy
-sphinx!=7.2.5
+sphinx<7
 breathe
 myst-parser
 linkify-it-py
