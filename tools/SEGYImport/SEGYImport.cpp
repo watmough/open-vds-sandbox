@@ -3169,6 +3169,12 @@ main(int argc, char* argv[])
     return EXIT_FAILURE;
   }
 
+  if ((compressionMethod == OpenVDS::CompressionMethod::WaveletNormalizeBlock || compressionMethod == OpenVDS::CompressionMethod::WaveletNormalizeBlockLossless) && !ignoreWarnings)
+  {
+    outputPrinter.printError("CompressionMethod", fmt::format("The {} compression method will lead to more blocking artifacts and lower performance and is not recommmended to use.\nUse --ignore-warnings to force the import to go ahead.", (compressionMethod == OpenVDS::CompressionMethod::WaveletNormalizeBlock)? "WaveletNormalizeBlock" : "WaveletNormalizeBlockLossless"));
+    return EXIT_FAILURE;
+  }
+
   if (overrideSampleFormatString.size() && !SEGY::DataSampleFormatCodeFromString(overrideSampleFormatString.c_str(), overrideSampleFormat))
   {
     outputPrinter.printError("Override sample format", fmt::format("Unable to recognize input data sample format override: {}", overrideSampleFormatString));
