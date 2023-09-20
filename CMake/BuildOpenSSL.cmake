@@ -26,6 +26,7 @@ function(BuildOpenSSL)
     list(APPEND BUILDBYPRODUCTS "${ABS_PATH_INSTALL_INT_CONFIG}/${LIB}")
   endforeach()
 
+ include(ExternalProject)
  ExternalProject_Add(
   openssl
   PREFIX ${PROJECT_BINARY_DIR}/openssl_${openssl_VERSION}
