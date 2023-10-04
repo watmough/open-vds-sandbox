@@ -2340,6 +2340,10 @@ coordinate in the XYZ coordinate system)doc";
 
 static const char *__doc_OpenVDS_KnownMetadata = R"doc()doc";
 
+static const char *__doc_OpenVDS_KnownMetadata_ActualValueRange =
+R"doc(The actual value range of the data written to the primary channel
+(excluding NoValues))doc";
+
 static const char *__doc_OpenVDS_KnownMetadata_CategoryImportInformation =
 R"doc(The metadata in the ImportInformation category contains information
 about the initial import to VDS. That is, information about the
@@ -2352,6 +2356,10 @@ static const char *__doc_OpenVDS_KnownMetadata_CategorySEGY =
 R"doc(The metadata in the SEGY category is intended to capture information
 required to re-create the original SEG-Y file. It is only present if
 the VDS was imported from a SEG-Y file.)doc";
+
+static const char *__doc_OpenVDS_KnownMetadata_CategoryStatistics =
+R"doc(This metadata category has statistics generated from the values
+written to the VDS.)doc";
 
 static const char *__doc_OpenVDS_KnownMetadata_CategorySurveyCoordinateSystem =
 R"doc(The metadata in the survey coordinate system category contains either
@@ -2396,6 +2404,11 @@ number for each trace.)doc";
 static const char *__doc_OpenVDS_KnownMetadata_EnsembleNumbers =
 R"doc(An array of scalar int32 values defining the ensemble number for each
 trace.)doc";
+
+static const char *__doc_OpenVDS_KnownMetadata_Histogram =
+R"doc(An array of histogram counts (int64) for each bucket of the histogram
+using the channel's value range of the data written to the primary
+channel (excluding NoValues))doc";
 
 static const char *__doc_OpenVDS_KnownMetadata_ImportInformationDisplayName =
 R"doc(An informative name that can be displayed to a user but is not

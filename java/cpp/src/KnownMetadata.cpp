@@ -793,6 +793,53 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_WrittenRegionIm
   return 0;
 }
 
+JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownMetadata_CategoryStatisticsImpl
+  (JNIEnv * env, jclass cls)
+{
+  JNIEnvGuard
+    envGuard(env);
+
+  CPPJNI_TRY
+  {
+    auto result = OpenVDS::KnownMetadata::CategoryStatistics();
+    return CPPJNI_newString(env, result);
+  }
+  CPPJNI_CATCH
+  return 0;
+}
+
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_ActualValueRangeImpl
+  (JNIEnv * env, jclass cls)
+{
+  JNIEnvGuard
+    envGuard(env);
+
+  CPPJNI_TRY
+  {
+    auto result = OpenVDS::KnownMetadata::ActualValueRange();
+    auto context = CPPJNI_createObjectContext(CPPJNI_makeShared<OpenVDS::MetadataKey>(result));
+    return context->handle();
+  }
+  CPPJNI_CATCH
+  return 0;
+}
+
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_KnownMetadata_HistogramImpl
+  (JNIEnv * env, jclass cls)
+{
+  JNIEnvGuard
+    envGuard(env);
+
+  CPPJNI_TRY
+  {
+    auto result = OpenVDS::KnownMetadata::Histogram();
+    auto context = CPPJNI_createObjectContext(CPPJNI_makeShared<OpenVDS::MetadataKey>(result));
+    return context->handle();
+  }
+  CPPJNI_CATCH
+  return 0;
+}
+
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_KnownMetadata_CategoryImportInformationImpl
   (JNIEnv * env, jclass cls)
 {
