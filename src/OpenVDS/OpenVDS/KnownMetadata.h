@@ -416,6 +416,28 @@
 /// </ul>
 #define KNOWNMETADATA_WRITTENREGION "WrittenRegion"
 
+// Statistics metadata //////////////////////////////////////////////////////
+/*! \def KNOWNMETADATA_CATEGORY_STATISTICS
+This metadata category has statistics generated from the values written to the VDS.
+*/
+#define KNOWNMETADATA_CATEGORY_STATISTICS "Statistics"
+
+/// \def KNOWNMETADATA_ACTUALVALUERANGE
+/// <ul>
+/// <li>Data type   : FloatVector2
+/// <li>Name        : "ActualValueRange"
+/// <li>Description : The actual value range of the data written to the primary channel (excluding NoValues)
+/// </ul>
+#define KNOWNMETADATA_ACTUALVALUERANGE "ActualValueRange"
+
+/// \def KNOWNMETADATA_HISTOGRAM
+/// <ul>
+/// <li>Data type   : BLOB
+/// <li>Name        : "Histogram"
+/// <li>Description : An array of histogram counts (int64) for each bucket of the histogram using the channel's value range of the data written to the primary channel (excluding NoValues)
+/// </ul>
+#define KNOWNMETADATA_HISTOGRAM "Histogram"
+
 // Import information metadata //////////////////////////////////////////////
 /*!
 \def KNOWNMETADATA_CATEGORY_IMPORTINFORMATION
@@ -776,6 +798,19 @@ public:
   /// An array of scalar int32 values defining the 6D min and max (NDBox) of the written region
   /// </summary>
   static MetadataKey WrittenRegion() { return MetadataKey(MetadataType::BLOB, KNOWNMETADATA_CATEGORY_WRITTENREGION, KNOWNMETADATA_WRITTENREGION); }
+
+  /// <summary>
+  /// This metadata category has statistics generated from the values written to the VDS.
+  /// </summary>
+  static const char *CategoryStatistics() { return KNOWNMETADATA_CATEGORY_STATISTICS; }
+  /// <summary>
+  /// The actual value range of the data written to the primary channel (excluding NoValues)
+  /// </summary>
+  static MetadataKey ActualValueRange() { return MetadataKey(MetadataType::FloatVector2, KNOWNMETADATA_CATEGORY_STATISTICS, KNOWNMETADATA_ACTUALVALUERANGE); }
+  /// <summary>
+  /// An array of histogram counts (int64) for each bucket of the histogram using the channel's value range of the data written to the primary channel (excluding NoValues)
+  /// </summary>
+  static MetadataKey Histogram() { return MetadataKey(MetadataType::BLOB, KNOWNMETADATA_CATEGORY_STATISTICS, KNOWNMETADATA_HISTOGRAM); }
 
   /// <summary>
   /// The metadata in the ImportInformation category contains information about the initial import to VDS. That is,

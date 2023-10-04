@@ -347,6 +347,39 @@ public class KnownMetadata extends ManagedBase {
         return MetadataKey.fromNativeObject(WrittenRegionImpl());
     }
 
+    ///AUTOGEN-OK: CXX_METHOD CategoryStatistics static const char *() FUNCTIONPROTO
+    native private static String CategoryStatisticsImpl();
+
+    /**
+     * This metadata category has statistics generated from the values written to the VDS.
+     * 
+     */
+    public static String categoryStatistics() {
+        return CategoryStatisticsImpl();
+    }
+
+    ///AUTOGEN-OK: CXX_METHOD ActualValueRange static OpenVDS::MetadataKey () FUNCTIONPROTO
+    native private static long ActualValueRangeImpl();
+
+    /**
+     * The actual value range of the data written to the primary channel (excluding NoValues)
+     * 
+     */
+    public static MetadataKey actualValueRange() {
+        return MetadataKey.fromNativeObject(ActualValueRangeImpl());
+    }
+
+    ///AUTOGEN-OK: CXX_METHOD Histogram static OpenVDS::MetadataKey () FUNCTIONPROTO
+    native private static long HistogramImpl();
+
+    /**
+     * An array of histogram counts (int64) for each bucket of the histogram using the channel's value range of the data written to the primary channel (excluding NoValues)
+     * 
+     */
+    public static MetadataKey histogram() {
+        return MetadataKey.fromNativeObject(HistogramImpl());
+    }
+
     ///AUTOGEN-OK: CXX_METHOD CategoryImportInformation static const char *() FUNCTIONPROTO
     native private static String CategoryImportInformationImpl();
 
