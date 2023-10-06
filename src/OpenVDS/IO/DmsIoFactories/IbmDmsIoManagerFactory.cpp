@@ -26,7 +26,7 @@ void IbmDmsIoManagerFactory::getComponentsFromGCSUrl(const std::string& gcsUrl, 
   else
   {
     bucket = std::string(gcsUrl.begin(), gcsUrl.begin() + pos);
-    auto prefixBegin = gcsUrl.begin() + pos + 2;
+    auto prefixBegin = gcsUrl.begin() + pos + 1;
     if (prefixBegin != gcsUrl.end())
     {
       prefixPath = std::string(prefixBegin, gcsUrl.end());
