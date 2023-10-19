@@ -60,8 +60,8 @@ struct DmsIoManagerFactory
   static DmsIoManagerFactory* createDmsIoManagerFactory(const std::string& serviceProvider, DmsDataset &dataset, Logger &logger, Error &error);
 
   virtual ~DmsIoManagerFactory();
-  virtual bool ensureIOManager(std::unique_ptr<IOManager>& iomanager, Error& error) = 0;
-  virtual void invalidate() = 0;
+
+  virtual std::unique_ptr<IOManager> createIOManager(std::chrono::time_point<std::chrono::steady_clock> &expirationTime, Error& error) = 0;
 
   struct GcsAccessToken
   {

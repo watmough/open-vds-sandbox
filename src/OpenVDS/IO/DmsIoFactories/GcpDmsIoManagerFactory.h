@@ -10,11 +10,9 @@ struct GcpDmsIoManagerFactory : public DmsIoManagerFactory
 {
   GcpDmsIoManagerFactory(DmsDataset& dataset, Logger &logger);
 
-  bool ensureIOManager(std::unique_ptr<IOManager>& iomanager, Error& error) override;
-  void invalidate() override;
+  std::unique_ptr<IOManager> createIOManager(std::chrono::time_point<std::chrono::steady_clock> &expirationTime, Error& error) override;
 
   Logger& m_logger;
-  std::chrono::time_point<std::chrono::steady_clock> m_expire;
 };
 
 }

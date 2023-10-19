@@ -9,6 +9,7 @@
 #include "json_cpp_include.h"
 
 #include <memory>
+#include <mutex>
 
 namespace OpenVDS
 {
@@ -30,17 +31,21 @@ namespace OpenVDS
       bool EnableWriting(Error& error) override;
       std::string GetLegalTag() const override;
     private:
+      std::shared_ptr<IOManager> ensureIOManager(Error& error);
+      void invalidate();
       static std::string AuthProviderCallback(const void* data);
       IOManager::AccessPattern m_accessPattern;
       Logger m_logger;
       CurlHandler m_curlHandler;
     
+      std::mutex m_mutex;
       std::unique_ptr<TokenRefresher> m_tokenRefresher;
       std::unique_ptr<DmsManager> m_dmsManager;
       std::unique_ptr<DmsDataset> m_dmsDataset;
       std::unique_ptr<DmsIoManagerFactory> m_ioManagerFactory;
-      std::unique_ptr<IOManager> m_proxy;
-    
+      std::shared_ptr<IOManager> m_proxy;
+      std::chrono::time_point<std::chrono::steady_clock> m_expirationTime;
+
       bool m_useFileNameForSingleFileDatasets;
       std::string m_filename;
   };

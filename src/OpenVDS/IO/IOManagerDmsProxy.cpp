@@ -85,18 +85,35 @@ IOManagerDMSProxy::~IOManagerDMSProxy()
 {
 }
 
+std::shared_ptr<IOManager> IOManagerDMSProxy::ensureIOManager(Error& error)
+{
+  std::unique_lock<std::mutex> lock(m_mutex);
+
+  if (m_proxy && m_expirationTime > std::chrono::steady_clock::now() + std::chrono::minutes(1))
+    return m_proxy;
+  if (!m_dmsManager->ensureSdToken(error))
+    return nullptr;
+  m_proxy = m_ioManagerFactory->createIOManager(m_expirationTime, error);
+  return m_proxy;
+}
+
+void IOManagerDMSProxy::invalidate()
+{
+  m_expirationTime = {};
+}
+
 bool IOManagerDMSProxy::Close(uint64_t serializedSize, uint64_t chunkCount, Error& error)
 {
   if (m_dmsDataset)
   {
     bool ret = m_dmsDataset->close(serializedSize, chunkCount, error);
     if (ret)
-      m_ioManagerFactory->invalidate();
+      invalidate();
     return ret;
   }
   return true;
 }
-      
+
 bool IOManagerDMSProxy::EnableWriting(Error& error)
 {
   if (m_accessPattern == IOManager::ReadOnly)
@@ -105,7 +122,7 @@ bool IOManagerDMSProxy::EnableWriting(Error& error)
       return false;
     if (!m_dmsDataset->open(IOManager::ReadWrite, error))
       return false;
-    m_ioManagerFactory->invalidate();
+    invalidate();
     m_accessPattern = IOManager::ReadWrite;
   }
   return true;
@@ -114,43 +131,36 @@ bool IOManagerDMSProxy::EnableWriting(Error& error)
 std::shared_ptr<Request> IOManagerDMSProxy::ReadObjectInfo(const std::string& objectName, std::shared_ptr<TransferDownloadHandler> handler)
 {
   Error error;
-  if (!m_ioManagerFactory->ensureIOManager(m_proxy, error))
+  auto ioManager = ensureIOManager(error);
+  if (!ioManager)
   {
     return std::make_shared<ErrorRequest>(objectName, std::move(error.string));
   }
-  if (!m_proxy)
-  {
-    return std::make_shared<ErrorRequest>(objectName, "Seismic DMS initialization not successful. No request created\n");
-  }
   std::string toRead = objectName.empty() ? m_filename : objectName;
-  return m_proxy->ReadObjectInfo(toRead, handler);
+  return ioManager->ReadObjectInfo(toRead, handler);
 }
+
 std::shared_ptr<Request> IOManagerDMSProxy::ReadObject(const std::string& objectName, std::shared_ptr<TransferDownloadHandler> handler, const IORange& range)
 {
   Error error;
-  if (!m_ioManagerFactory->ensureIOManager(m_proxy, error))
+  auto ioManager = ensureIOManager(error);
+  if (!ioManager)
   {
     return std::make_shared<ErrorRequest>(objectName, std::move(error.string));
   }
-  if (!m_proxy)
-  {
-    return std::make_shared<ErrorRequest>(objectName, "Seismic DMS initialization not successful. No request created\n");
-  }
   std::string toRead = objectName.empty() ? m_filename : objectName;
-  return m_proxy->ReadObject(toRead, handler, range);
+  return ioManager->ReadObject(toRead, handler, range);
 }
+
 std::shared_ptr<Request> IOManagerDMSProxy::WriteObject(const std::string& objectName, const std::string& contentDispostionFilename, const std::string& contentType, const std::vector<std::pair<std::string, std::string>>& metadataHeader, std::shared_ptr<std::vector<uint8_t>> data, std::function<void(const Request& request, const Error& error)> completedCallback)
 {
   Error error;
-  if (!m_ioManagerFactory->ensureIOManager(m_proxy, error))
+  auto ioManager = ensureIOManager(error);
+  if (!ioManager)
   {
     return std::make_shared<ErrorRequest>(objectName, std::move(error.string));
   }
-  if (!m_proxy)
-  {
-    return std::make_shared<ErrorRequest>(objectName, "Seismic DMS initialization not successful. No request created\n");
-  }
-  return m_proxy->WriteObject(objectName, contentDispostionFilename, contentType, metadataHeader, data, completedCallback);
+  return ioManager->WriteObject(objectName, contentDispostionFilename, contentType, metadataHeader, data, completedCallback);
 }
 
 std::string IOManagerDMSProxy::GetLegalTag() const {
