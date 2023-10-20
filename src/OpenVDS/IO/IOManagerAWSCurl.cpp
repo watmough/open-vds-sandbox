@@ -162,9 +162,9 @@ std::shared_ptr<AwsCrtApiHandle> AwsCrtApiHandle::GetAwsCrtApiHandle(bool disabl
   return awsCrtAPIHandle;
 }
 
-IOManagerAWSCurl::IOManagerAWSCurl(const AWSOpenOptions& openOptions, const Logger &logger, Error& error)
+IOManagerAWSCurl::IOManagerAWSCurl(const AWSOpenOptions& openOptions, std::shared_ptr<CurlHandler> curlHandler, Error& error)
   : IOManager(OpenOptions::AWS)
-  , m_curlHandler(error, logger)
+  , m_curlHandler(curlHandler)
   , m_awsCrtApiHandle(AwsCrtApiHandle::GetAwsCrtApiHandle(openOptions.disableInitApi))
   , m_useVirtualAddressing(true)
   , m_secureSocket(true)
@@ -196,10 +196,9 @@ IOManagerAWSCurl::IOManagerAWSCurl(const AWSOpenOptions& openOptions, const Logg
     m_credentialsProvider = Aws::Crt::Auth::CredentialsProvider::CreateCredentialsProviderChainDefault(config);
   }
 
-  
   if (m_region.empty() && openOptions.endpointOverride.empty())
   {
-    m_region = GetBucketLocation(m_credentialsProvider, m_bucket, m_curlHandler);
+    m_region = GetBucketLocation(m_credentialsProvider, m_bucket, *m_curlHandler);
   }
 
   if (openOptions.endpointOverride.size())
@@ -233,9 +232,16 @@ IOManagerAWSCurl::IOManagerAWSCurl(const AWSOpenOptions& openOptions, const Logg
   }
 }
 
-IOManagerAWSCurl::~IOManagerAWSCurl()
+IOManager *IOManagerAWSCurl::CreateIOManagerAWSCurl(const AWSOpenOptions &openOptions, std::shared_ptr<CurlHandler> curlHandler, Error& error)
 {
+  std::unique_ptr<IOManager> ioManager(new IOManagerAWSCurl(openOptions, curlHandler, error));
+  return (error.code == 0) ? ioManager.release() : nullptr;
+}
 
+IOManager *IOManagerAWSCurl::CreateIOManagerAWSCurl(const AWSOpenOptions &openOptions, const Logger& logger, Error& error)
+{
+  auto curlHandler = std::make_shared<CurlHandler>(error, logger);
+  return (error.code == 0) ? CreateIOManagerAWSCurl(openOptions, curlHandler, error) : nullptr;
 }
 
 static std::string getUrlInternal(bool useVirtualAdressing, const std::string &protocol, const std::string& host, const std::string &bucket, const std::string &path, const std::string& objectName)
@@ -317,7 +323,7 @@ std::shared_ptr<Request> IOManagerAWSCurl::ReadObjectInfo(const std::string& obj
     return std::make_shared<ErrorRequest>(objectName, error.string);
   }
   std::shared_ptr<DownloadRequestCurl> request = std::make_shared<DownloadRequestCurl>(objectName, handler);
-  m_curlHandler.addDownloadRequest(request, url, headers, convertToISO8601, CurlVerb::HEADER);
+  m_curlHandler->addDownloadRequest(request, url, headers, convertToISO8601, CurlVerb::HEADER);
   return request;
 }
 
@@ -336,7 +342,7 @@ std::shared_ptr<Request> IOManagerAWSCurl::ReadObject(const std::string& objectN
       return std::make_shared<ErrorRequest>(objectName, error.string);
     }
     std::shared_ptr<DownloadRequestCurl> request = std::make_shared<DownloadRequestCurl>(objectName, handler);
-    m_curlHandler.addDownloadRequest(request, url, headers, convertToISO8601, CurlVerb::GET);
+    m_curlHandler->addDownloadRequest(request, url, headers, convertToISO8601, CurlVerb::GET);
     return request;
 }
 
@@ -385,7 +391,7 @@ std::shared_ptr<Request> IOManagerAWSCurl::WriteObject(const std::string& object
     headers.push_back(fmt::format("content-type: {}", contentType));
   if (data->size())
     headers.push_back(fmt::format("content-length: {}", data->size()));
-  m_curlHandler.addUploadRequest(request, url, headers, data);
+  m_curlHandler->addUploadRequest(request, url, headers, data);
   return request;
 }
 }

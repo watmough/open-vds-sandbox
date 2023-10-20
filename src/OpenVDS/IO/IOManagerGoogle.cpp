@@ -161,9 +161,9 @@ namespace OpenVDS
       return true;
   }
 
-  IOManagerGoogle::IOManagerGoogle(const GoogleOpenOptions& openOptions, const Logger &logger, Error &error)
+  IOManagerGoogle::IOManagerGoogle(const GoogleOpenOptions& openOptions, std::shared_ptr<CurlHandler> curlHandler, Error &error)
     : IOManager(OpenOptions::GoogleStorage)
-    , m_curlHandler(error, logger)
+    , m_curlHandler(curlHandler)
     , m_bucket(openOptions.bucket)
     , m_pathPrefix(openOptions.pathPrefix)
     , m_storageClass(openOptions.storageClass)
@@ -254,6 +254,18 @@ namespace OpenVDS
     }
   }
 
+  IOManager *IOManagerGoogle::CreateIOManagerGoogle(const GoogleOpenOptions& openOptions, std::shared_ptr<CurlHandler> curlHandler, Error& error)
+  {
+    std::unique_ptr<IOManager> ioManager(new IOManagerGoogle(openOptions, curlHandler, error));
+    return (error.code == 0) ? ioManager.release() : nullptr;
+  }
+
+  IOManager *IOManagerGoogle::CreateIOManagerGoogle(const GoogleOpenOptions& openOptions, const Logger& logger, Error& error)
+  {
+    auto curlHandler = std::make_shared<CurlHandler>(error, logger);
+    return (error.code == 0) ? CreateIOManagerGoogle(openOptions, curlHandler, error) : nullptr;
+  }
+
   static std::string downloadUrl(const std::string& googleapi, const std::string& bucket, const std::string& pathPrefix, const std::string& objectName)
   {
     //std::string url = fmt::format("{}/storage/v1/b/{}/o/{}?alt=media", GOOGLEAPIS, m_bucket, objectName); //I cant make this scheme work
@@ -280,7 +292,7 @@ namespace OpenVDS
       request->m_error.string = "Google Cloud Storage Config error. Unable to generate Authorization Header.";
       return request;
     }
-    m_curlHandler.addDownloadRequest(request, url, headers, convertToISO8601, CurlVerb::HEADER);
+    m_curlHandler->addDownloadRequest(request, url, headers, convertToISO8601, CurlVerb::HEADER);
     return request;
   }
 
@@ -307,7 +319,7 @@ namespace OpenVDS
         request->m_error.string = "Google Cloud Storage Config error. Unable to generate Authorization Header.";
         return request;
     }
-    m_curlHandler.addDownloadRequest(request, url, headers, convertToISO8601, CurlVerb::GET);
+    m_curlHandler->addDownloadRequest(request, url, headers, convertToISO8601, CurlVerb::GET);
     return request;
   }
 
@@ -363,7 +375,7 @@ namespace OpenVDS
         return request;
     }
 
-    m_curlHandler.addUploadRequest(request, url, headers, CurlVerb::POST, std::move(upload_buffers), uploadSize);
+    m_curlHandler->addUploadRequest(request, url, headers, CurlVerb::POST, std::move(upload_buffers), uploadSize);
     return request;
   }
 }

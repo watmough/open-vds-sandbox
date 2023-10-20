@@ -37,7 +37,8 @@ namespace OpenVDS
       IOManager::AccessPattern m_accessPattern;
       Logger m_logger;
       CurlHandler m_curlHandler;
-    
+      std::shared_ptr<CurlHandler> m_ioManagerCurlHandler;
+
       std::mutex m_mutex;
       std::unique_ptr<TokenRefresher> m_tokenRefresher;
       std::unique_ptr<DmsManager> m_dmsManager;

@@ -31,7 +31,7 @@ static void getComponentsFromGCSUrl(const std::string& gcsUrl, std::string& buck
   }
 }
 
-std::unique_ptr<IOManager> GcpDmsIoManagerFactory::createIOManager(std::chrono::time_point<std::chrono::steady_clock> &expirationTime, Error& error)
+std::unique_ptr<IOManager> GcpDmsIoManagerFactory::createIOManager(std::shared_ptr<CurlHandler> curlHandler, std::chrono::time_point<std::chrono::steady_clock> &expirationTime, Error& error)
 {
   auto gcs_access_token = gcsAccessToken(error);
   if (error.code)
@@ -59,14 +59,7 @@ std::unique_ptr<IOManager> GcpDmsIoManagerFactory::createIOManager(std::chrono::
   getComponentsFromGCSUrl(m_dataset.m_gc_url, bucket, pathPrefix);
   GoogleCredentialsToken token(access_token);
   GoogleOpenOptions openOptions(bucket, pathPrefix, token);
-  auto ioManager = std::unique_ptr<IOManager>(new IOManagerGoogle(openOptions, m_logger, error));
-
-  if (error.code)
-  {
-    return nullptr;
-  }
-
-  return ioManager;
+  return std::unique_ptr<IOManager>(IOManagerGoogle::CreateIOManagerGoogle(openOptions, curlHandler, error));
 }
 
 }

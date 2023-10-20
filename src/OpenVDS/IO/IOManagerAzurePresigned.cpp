@@ -21,9 +21,9 @@
 
 namespace OpenVDS
 {
-  IOManagerAzurePresigned::IOManagerAzurePresigned(const std::string& base, const std::string& suffix, const Logger &logger, Error &error)
+  IOManagerAzurePresigned::IOManagerAzurePresigned(const std::string& base, const std::string& suffix, std::shared_ptr<CurlHandler> curlHandler, Error &error)
     : IOManager(OpenOptions::AzurePresigned)
-    , m_curlHandler(error, logger)
+    , m_curlHandler(curlHandler)
     , m_base(base)
     , m_suffix(suffix)
   {
@@ -58,6 +58,18 @@ namespace OpenVDS
     }
   }
 
+  IOManager *IOManagerAzurePresigned::CreateIOManagerAzurePresigned(const std::string& base, const std::string& suffix, std::shared_ptr<CurlHandler> curlHandler, Error& error)
+  {
+    std::unique_ptr<IOManager> ioManager(new IOManagerAzurePresigned(base, suffix, curlHandler, error));
+    return (error.code == 0) ? ioManager.release() : nullptr;
+  }
+
+  IOManager *IOManagerAzurePresigned::CreateIOManagerAzurePresigned(const std::string& base, const std::string& suffix, const Logger& logger, Error& error)
+  {
+    auto curlHandler = std::make_shared<CurlHandler>(error, logger);
+    return (error.code == 0) ? CreateIOManagerAzurePresigned(base, suffix, curlHandler, error) : nullptr;
+  }
+
   static std::string getUrl(const std::string& base, const std::string& objectName, const std::string &suffix)
   {
     if (objectName.empty())
@@ -72,7 +84,7 @@ namespace OpenVDS
     std::string url = getUrl(m_base, objectName, m_suffix);
     std::shared_ptr<DownloadRequestCurl> request = std::make_shared<DownloadRequestCurl>(objectName, handler);
     std::vector<std::string> headers;
-    m_curlHandler.addDownloadRequest(request, url, headers, convertToISO8601, CurlVerb::HEADER);
+    m_curlHandler->addDownloadRequest(request, url, headers, convertToISO8601, CurlVerb::HEADER);
     return request;
     
   }
@@ -87,7 +99,7 @@ namespace OpenVDS
       auto& header = headers.back();
       header = fmt::format("x-ms-range: bytes={}-{}", range.start, range.end);
     }
-    m_curlHandler.addDownloadRequest(request, url, headers, convertToISO8601, CurlVerb::GET);
+    m_curlHandler->addDownloadRequest(request, url, headers, convertToISO8601, CurlVerb::GET);
     return request;
   }
   std::shared_ptr<Request> IOManagerAzurePresigned::WriteObject(const std::string& objectName, const std::string& contentDispostionFilename, const std::string& contentType, const std::vector<std::pair<std::string, std::string>>& metadataHeader, std::shared_ptr<std::vector<uint8_t>> data, std::function<void(const Request& request, const Error& error)> completedCallback)
@@ -100,7 +112,7 @@ namespace OpenVDS
     {
       headers.push_back(fmt::format("{}{}: {}", "x-ms-meta-", metaTag.first, metaTag.second));
     }
-    m_curlHandler.addUploadRequest(request, url, headers, data);
+    m_curlHandler->addUploadRequest(request, url, headers, data);
     return request;
   }
 }

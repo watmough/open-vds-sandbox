@@ -61,7 +61,7 @@ struct DmsIoManagerFactory
 
   virtual ~DmsIoManagerFactory();
 
-  virtual std::unique_ptr<IOManager> createIOManager(std::chrono::time_point<std::chrono::steady_clock> &expirationTime, Error& error) = 0;
+  virtual std::unique_ptr<IOManager> createIOManager(std::shared_ptr<CurlHandler> curlHandler, std::chrono::time_point<std::chrono::steady_clock> &expirationTime, Error& error) = 0;
 
   struct GcsAccessToken
   {

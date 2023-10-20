@@ -73,7 +73,7 @@ AwsDmsIoManagerFactory::AwsDmsIoManagerFactory(DmsDataset& dataset, Logger &logg
   }
 }
 
-std::unique_ptr<IOManager> AwsDmsIoManagerFactory::createIOManager(std::chrono::time_point<std::chrono::steady_clock> &expirationTime, Error& error)
+std::unique_ptr<IOManager> AwsDmsIoManagerFactory::createIOManager(std::shared_ptr<CurlHandler> curlHandler, std::chrono::time_point<std::chrono::steady_clock> &expirationTime, Error& error)
 {
   auto gcs_access_token = gcsAccessToken(error);
   if (error.code)
@@ -113,13 +113,7 @@ std::unique_ptr<IOManager> AwsDmsIoManagerFactory::createIOManager(std::chrono::
     openOptions.region = m_region;
   }
 
-  auto ioManager = std::unique_ptr<IOManager>(new IOManagerAWSCurl(openOptions, m_logger, error));
-  if (error.code)
-  {
-    return nullptr;
-  }
-
-  return ioManager;
+  return std::unique_ptr<IOManager>(IOManagerAWSCurl::CreateIOManagerAWSCurl(openOptions, curlHandler, error));
 }
 
 }

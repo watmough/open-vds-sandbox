@@ -30,6 +30,7 @@ IOManagerDMSProxy::IOManagerDMSProxy(const DMSOpenOptions& openOptions, IOManage
   , m_accessPattern(accessPattern)
   , m_logger(logger)
   , m_curlHandler(error, m_logger)
+  , m_ioManagerCurlHandler(std::make_shared<CurlHandler>(error, m_logger))
   , m_dmsManager(new DmsManager(openOptions.sdAuthorityUrl, openOptions.sdApiKey, m_curlHandler, m_logger))
   , m_useFileNameForSingleFileDatasets(openOptions.useFileNameForSingleFileDatasets)
 {
@@ -93,7 +94,7 @@ std::shared_ptr<IOManager> IOManagerDMSProxy::ensureIOManager(Error& error)
     return m_proxy;
   if (!m_dmsManager->ensureSdToken(error))
     return nullptr;
-  m_proxy = m_ioManagerFactory->createIOManager(m_expirationTime, error);
+  m_proxy = m_ioManagerFactory->createIOManager(m_ioManagerCurlHandler, m_expirationTime, error);
   return m_proxy;
 }
 
