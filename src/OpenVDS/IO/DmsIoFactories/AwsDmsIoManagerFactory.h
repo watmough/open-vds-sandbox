@@ -10,7 +10,7 @@ struct AwsDmsIoManagerFactory : public DmsIoManagerFactory
 {
   AwsDmsIoManagerFactory(DmsDataset& dataset, Logger &logger);
 
-  std::unique_ptr<IOManager> createIOManager(std::chrono::time_point<std::chrono::steady_clock> &expirationTime, Error& error) override;
+  std::unique_ptr<IOManager> createIOManager(std::shared_ptr<CurlHandler> curlHandler, std::chrono::time_point<std::chrono::steady_clock> &expirationTime, Error& error) override;
 
   virtual bool getComponentsFromAccessToken(const std::string& accessToken, std::string& key, std::string& secret, std::string& session, Error& error) const;
   virtual void getComponentsFromGCSUrl(const std::string& gcsUrl, std::string& bucket, std::string& prefixPath) const;

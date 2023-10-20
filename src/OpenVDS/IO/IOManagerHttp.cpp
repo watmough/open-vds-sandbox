@@ -21,9 +21,9 @@
 
 namespace OpenVDS
 {
-  IOManagerHttp::IOManagerHttp(const HttpOpenOptions &openOptions, const Logger &logger, Error &error)
+  IOManagerHttp::IOManagerHttp(const HttpOpenOptions &openOptions, std::shared_ptr<CurlHandler> curlHandler, Error &error)
     : IOManager(OpenOptions::Http)
-    , m_curlHandler(error, logger)
+    , m_curlHandler(curlHandler)
   {
     const std::string &url = openOptions.url;
     if (url.empty())
@@ -53,6 +53,18 @@ namespace OpenVDS
     }
   }
 
+  IOManager *IOManagerHttp::CreateIOManagerHttp(const HttpOpenOptions& openOptions, std::shared_ptr<CurlHandler> curlHandler, Error& error)
+  {
+    std::unique_ptr<IOManager> ioManager(new IOManagerHttp(openOptions, curlHandler, error));
+    return (error.code == 0) ? ioManager.release() : nullptr;
+  }
+
+  IOManager *IOManagerHttp::CreateIOManagerHttp(const HttpOpenOptions& openOptions, const Logger& logger, Error& error)
+  {
+    auto curlHandler = std::make_shared<CurlHandler>(error, logger);
+    return (error.code == 0) ? CreateIOManagerHttp(openOptions, curlHandler, error) : nullptr;
+  }
+
   static std::string getUrl(const std::string& base, const std::string& objectName, const std::string &suffix)
   {
     if (objectName.empty())
@@ -67,7 +79,7 @@ namespace OpenVDS
     std::string url = getUrl(m_base, objectName, m_suffix);
     std::shared_ptr<DownloadRequestCurl> request = std::make_shared<DownloadRequestCurl>(objectName, handler);
     std::vector<std::string> headers;
-    m_curlHandler.addDownloadRequest(request, url, headers, convertToISO8601, CurlVerb::HEADER);
+    m_curlHandler->addDownloadRequest(request, url, headers, convertToISO8601, CurlVerb::HEADER);
     return request;
   }
   
@@ -82,7 +94,7 @@ namespace OpenVDS
       auto& header = headers.back();
       header = fmt::format("range: bytes={}-{}", range.start, range.end);
     }
-    m_curlHandler.addDownloadRequest(request, url, headers, convertToISO8601, CurlVerb::GET);
+    m_curlHandler->addDownloadRequest(request, url, headers, convertToISO8601, CurlVerb::GET);
     return request;
   }
 

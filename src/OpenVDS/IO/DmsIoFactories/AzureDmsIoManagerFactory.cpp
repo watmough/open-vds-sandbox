@@ -86,7 +86,7 @@ AzureDmsIoManagerFactory::AzureDmsIoManagerFactory(DmsDataset& dataset)
   : DmsIoManagerFactory(dataset)
 {}
 
-std::unique_ptr<IOManager> AzureDmsIoManagerFactory::createIOManager(std::chrono::time_point<std::chrono::steady_clock> &expirationTime, Error& error)
+std::unique_ptr<IOManager> AzureDmsIoManagerFactory::createIOManager(std::shared_ptr<CurlHandler> curlHandler, std::chrono::time_point<std::chrono::steady_clock> &expirationTime, Error& error)
 {
   auto gcs_access_token = gcsAccessToken(error);
   if (error.code)
@@ -130,14 +130,7 @@ std::unique_ptr<IOManager> AzureDmsIoManagerFactory::createIOManager(std::chrono
   if (!getPresignedUrl(access_token, blob_prefix, presignedUrl, presignedSuffix, error))
     return nullptr;
 
-  auto ioManager = std::unique_ptr<IOManager>(new IOManagerAzurePresigned(presignedUrl, presignedSuffix, m_dataset.m_manager.m_logger, error));
-
-  if (error.code)
-  {
-    return nullptr;
-  }
-
-  return ioManager;
+  return std::unique_ptr<IOManager>(IOManagerAzurePresigned::CreateIOManagerAzurePresigned(presignedUrl, presignedSuffix, curlHandler, error));
 }
 
 }

@@ -54,7 +54,7 @@ IOManager* IOManager::CreateIOManager(const OpenOptions& options, IOManager::Acc
   case OpenOptions::AWS:
   {
 #ifndef OPENVDS_NO_AWS_IOMANAGER
-    return new IOManagerAWSCurl(static_cast<const AWSOpenOptions&>(options), logger, error);
+    return IOManagerAWSCurl::CreateIOManagerAWSCurl(static_cast<const AWSOpenOptions&>(options), logger, error);
 #else
     error.code = -1;
     error.string = "Unknown type for OpenOptions";
@@ -65,7 +65,7 @@ IOManager* IOManager::CreateIOManager(const OpenOptions& options, IOManager::Acc
   case OpenOptions::Azure:
   {
 #ifndef OPENVDS_NO_AZURE_SDK_FOR_CPP_IOMANAGER
-    return new IOManagerAzureSdkForCpp(static_cast<const AzureOpenOptions&>(options), error);
+    return IOManagerAzureSdkForCpp::CreateIOManagerAzureSdkForCpp(static_cast<const AzureOpenOptions&>(options), error);
 #else
     error.code = -1;
     error.string = "Unknown type for OpenOptions";
@@ -74,15 +74,15 @@ IOManager* IOManager::CreateIOManager(const OpenOptions& options, IOManager::Acc
   }
 #ifndef OPENVDS_NO_AZURE_PRESIGNED_IOMANAGER
   case OpenOptions::AzurePresigned:
-    return new IOManagerAzurePresigned(static_cast<const AzurePresignedOpenOptions&>(options).baseUrl, static_cast<const AzurePresignedOpenOptions&>(options).urlSuffix, logger, error);
+    return IOManagerAzurePresigned::CreateIOManagerAzurePresigned(static_cast<const AzurePresignedOpenOptions&>(options).baseUrl, static_cast<const AzurePresignedOpenOptions&>(options).urlSuffix, logger, error);
 #endif
 #ifndef OPENVDS_NO_GCP_IOMANAGER
   case OpenOptions::GoogleStorage:
-    return new IOManagerGoogle(static_cast<const GoogleOpenOptions &>(options), logger, error);
+    return IOManagerGoogle::CreateIOManagerGoogle(static_cast<const GoogleOpenOptions &>(options), logger, error);
 #endif
 #ifndef OPENVDS_NO_HTTP_IOMANAGER
   case OpenOptions::Http:
-    return new IOManagerHttp(static_cast<const HttpOpenOptions &>(options), logger, error);
+    return IOManagerHttp::CreateIOManagerHttp(static_cast<const HttpOpenOptions &>(options), logger, error);
 #endif
 #ifndef OPENVDS_NO_DMS_IOMANAGER
   case OpenOptions::DMS:

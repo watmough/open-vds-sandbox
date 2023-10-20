@@ -31,15 +31,19 @@ class CredentialManagerGoogle;
 
 class IOManagerGoogle : public IOManager
 {
+  IOManagerGoogle(const GoogleOpenOptions& openOptions, std::shared_ptr<CurlHandler> curlHandler, Error& error);
+
 public:
-  IOManagerGoogle(const GoogleOpenOptions& openOptions, const Logger &logger, Error& error);
   std::shared_ptr<Request> ReadObjectInfo(const std::string& objectName, std::shared_ptr<TransferDownloadHandler> handler) override;
   std::shared_ptr<Request> ReadObject(const std::string& objectName, std::shared_ptr<TransferDownloadHandler> handler, const IORange& range = IORange()) override;
   std::shared_ptr<Request> WriteObject(const std::string& objectName, const std::string& contentDispostionFilename, const std::string& contentType, const std::vector<std::pair<std::string, std::string>>& metadataHeader, std::shared_ptr<std::vector<uint8_t>> data, std::function<void(const Request& request, const Error& error)> completedCallback = nullptr) override;
   bool Close(uint64_t serializedSize, uint64_t chunkCount, Error &error) override { return true; }
 
+  static IOManager *CreateIOManagerGoogle(const GoogleOpenOptions& openOptions, std::shared_ptr<CurlHandler> curlHandler, Error& error);
+  static IOManager *CreateIOManagerGoogle(const GoogleOpenOptions& openOptions, const Logger& logger, Error& error);
+
 private:
-  CurlHandler m_curlHandler;
+  std::shared_ptr<CurlHandler> m_curlHandler;
   std::string m_bucket;
   std::string m_pathPrefix;
   std::string m_storageClass;

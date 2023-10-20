@@ -31,16 +31,19 @@ namespace OpenVDS
 
   class IOManagerAWSCurl : public IOManager
   {
-    public:
-      IOManagerAWSCurl(const AWSOpenOptions &openOptions, const Logger &logger, Error &error);
-      ~IOManagerAWSCurl() override;
+      IOManagerAWSCurl(const AWSOpenOptions &openOptions, std::shared_ptr<CurlHandler> curlHandler, Error &error);
 
+    public:
       std::shared_ptr<Request> ReadObjectInfo(const std::string &objectName, std::shared_ptr<TransferDownloadHandler> handler) override;
       std::shared_ptr<Request> ReadObject(const std::string &objectName, std::shared_ptr<TransferDownloadHandler> handler, const IORange& range = IORange()) override;
       std::shared_ptr<Request> WriteObject(const std::string &objectName, const std::string& contentDispostionFilename, const std::string& contentType, const std::vector<std::pair<std::string, std::string>>& metadataHeader, std::shared_ptr<std::vector<uint8_t>> data, std::function<void(const Request & request, const Error & error)> completedCallback = nullptr) override;
       bool Close(uint64_t serializedSize, uint64_t chunkCount, Error &error) override { return true; }
-    private:
-      CurlHandler m_curlHandler;
+
+  static IOManager *CreateIOManagerAWSCurl(const AWSOpenOptions &openOptions, std::shared_ptr<CurlHandler> curlHandler, Error& error);
+  static IOManager *CreateIOManagerAWSCurl(const AWSOpenOptions &openOptions, const Logger& logger, Error& error);
+
+  private:
+      std::shared_ptr<CurlHandler> m_curlHandler;
       std::shared_ptr<AwsCrtApiHandle> m_awsCrtApiHandle;
       std::shared_ptr<Aws::Crt::Auth::ICredentialsProvider> m_credentialsProvider;
       bool m_useVirtualAddressing;

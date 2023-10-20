@@ -10,7 +10,7 @@ struct AzureDmsIoManagerFactory : public DmsIoManagerFactory
 {
   AzureDmsIoManagerFactory(DmsDataset& dataset);
 
-  std::unique_ptr<IOManager> createIOManager(std::chrono::time_point<std::chrono::steady_clock> &expirationTime, Error& error) override;
+  std::unique_ptr<IOManager> createIOManager(std::shared_ptr<CurlHandler> curlHandler, std::chrono::time_point<std::chrono::steady_clock> &expirationTime, Error& error) override;
 };
 
 }

@@ -6,6 +6,7 @@ namespace OpenVDS
 {
   IOManager* CreateDMSIOManager(const DMSOpenOptions& openOptions, IOManager::AccessPattern accessPattern, Logger &logger, Error& error)
   {
-    return new IOManagerDMSProxy(openOptions, accessPattern, logger, error);
+    std::unique_ptr<IOManager> ioManager(new IOManagerDMSProxy(openOptions, accessPattern, logger, error));
+    return (error.code == 0) ? ioManager.release() : nullptr;
   }
 }

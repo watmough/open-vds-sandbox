@@ -292,8 +292,10 @@ namespace OpenVDS
     }
   }
 
-  IOManagerAzureSdkForCpp::~IOManagerAzureSdkForCpp()
+  IOManager *IOManagerAzureSdkForCpp::CreateIOManagerAzureSdkForCpp(const AzureOpenOptions& openOptions, Error& error)
   {
+    std::unique_ptr<IOManager> ioManager(new IOManagerAzureSdkForCpp(openOptions, error));
+    return (error.code == 0) ? ioManager.release() : nullptr;
   }
 
   static std::string create_id(const std::string& prefix, const std::string& objectName)
