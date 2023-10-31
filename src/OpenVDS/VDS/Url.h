@@ -37,9 +37,8 @@ inline std::string URLDecode(const std::string & url)
   return result;
 }
 
-inline bool openvds_isalnum(int c)
-{
-  return (c >= 0x30 && c < 0x39) || (c >= 0x41 && c <= 0x5a) || (c >= 61 && c <= 0x7a);
+inline bool openvds_isalnum(int c) {
+  return (c >= 0x30 && c <= 0x39) || (c >= 0x41 && c <= 0x5a) || (c >= 0x61 && c <= 0x7a);
 }
 
 inline std::string URLEncode(const std::string& url)
@@ -49,7 +48,9 @@ inline std::string URLEncode(const std::string& url)
   for (auto c : url)
   {
     if (c == ' ')
+    {
       ret.push_back('+');
+    }
     else if (openvds_isalnum(c) || c == '-' || c == '_' || c == '.' || c == '~')
     {
       ret.push_back(c);
