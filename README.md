@@ -28,6 +28,8 @@ Licensed under [**Apache 2.0**](https://gitlab.opengroup.org/osdu/open-vds/blob/
 
 Latest build of the [**OpenVDS-Documentation**](https://osdu.pages.opengroup.org/platform/domain-data-mgmt-services/seismic/open-vds/)
 
+Community submitted [**VDS use-cases**](https://community.opengroup.org/osdu/platform/domain-data-mgmt-services/seismic/open-vds/-/wikis/VDS-use-cases)
+
 ### Building
 OpenVDS uses the master branch as the main development branch. It should be in
 a working state, but might contain experimental features, or features targeting
