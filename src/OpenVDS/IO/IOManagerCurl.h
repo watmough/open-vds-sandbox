@@ -171,16 +171,18 @@ struct CurlUploadHandler : public CurlEasyHandler
 
 struct UVEventLoopData
 {
-  UVEventLoopData(const Logger& logger)
+  UVEventLoopData(const Logger& logger, const std::string& httpProxy)
     : logger(logger)
+    , httpProxy(httpProxy)
   {}
   Logger logger;
+  std::string httpProxy;
   uv_loop_t *loop;
   CURLM *curlMulti;
   
-  std::vector<std::shared_ptr<CurlDownloadHandler>> incommingDownloadRequests;
+  std::vector<std::shared_ptr<CurlDownloadHandler>> incomingDownloadRequests;
   std::vector<std::shared_ptr<CurlDownloadHandler>> cancelledDownloads;
-  std::vector<std::shared_ptr<CurlUploadHandler>> incommingUploadRequests;
+  std::vector<std::shared_ptr<CurlUploadHandler>> incomingUploadRequests;
   std::vector<std::shared_ptr<CurlUploadHandler>> cancelledUploads;
 
   std::vector<std::shared_ptr<CurlEasyHandler>> queuedRequests;
@@ -202,7 +204,7 @@ struct UVEventLoopData
 class CurlHandler
 {
 public:
-  CurlHandler(Error& error, const Logger& logger);
+  CurlHandler(Error& error, const Logger& logger, const std::string& httpProxy = std::string());
   ~CurlHandler();
 
   void addDownloadRequest(const std::shared_ptr<DownloadRequestCurl>& request, const std::string& url, const std::vector<std::string>& headers, std::function<std::string(const std::string &date)> toISO8601DateTransformer, CurlVerb verb, int retryCount = 4);

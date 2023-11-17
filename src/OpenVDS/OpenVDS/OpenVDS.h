@@ -475,7 +475,7 @@ struct DMSOpenOptions : OpenOptions
 {
   DMSOpenOptions() : OpenOptions(DMS), useFileNameForSingleFileDatasets(false), authProviderCallback(nullptr), authProviderCallbackData(nullptr) {}
 
-  DMSOpenOptions(std::string const& sdAuthorityUrl, std::string const& sdApiKey, std::string const &sdToken, std::string const &datasetPath, std::string const &authTokenUrl = std::string(), std::string const &refreshToken = std::string(), std::string const &clientId = std::string(), std::string const &clientSecret = std::string(), std::string const &scopes = std::string(), bool useFileNameForSingleFileDatasets = false, std::string const &legalTag=std::string())
+  DMSOpenOptions(std::string const& sdAuthorityUrl, std::string const& sdApiKey, std::string const &sdToken, std::string const &datasetPath, std::string const &authTokenUrl = std::string(), std::string const &refreshToken = std::string(), std::string const &clientId = std::string(), std::string const &clientSecret = std::string(), std::string const &scopes = std::string(), bool useFileNameForSingleFileDatasets = false, std::string const &legalTag = std::string(), std::string const &httpProxy = std::string())
     : OpenOptions(DMS)
     , sdAuthorityUrl(sdAuthorityUrl)
     , sdApiKey(sdApiKey)
@@ -490,9 +490,10 @@ struct DMSOpenOptions : OpenOptions
     , authProviderCallback(nullptr)
     , authProviderCallbackData(nullptr)
     , legalTag(legalTag)
+    , httpProxy(httpProxy)
   {}
 
-  DMSOpenOptions(std::string const& sdAuthorityUrl, std::string const& sdApiKey, std::string const &datasetPath, std::string (*authProviderCallback)(const void*), const void *authProviderCallbackData, bool useFileNameForSingleFileDatasets = false, std::string const &legalTag = std::string())
+  DMSOpenOptions(std::string const& sdAuthorityUrl, std::string const& sdApiKey, std::string const &datasetPath, std::string (*authProviderCallback)(const void*), const void *authProviderCallbackData, bool useFileNameForSingleFileDatasets = false, std::string const &legalTag = std::string(), std::string const &httpProxy = std::string())
     : OpenOptions(DMS)
     , sdAuthorityUrl(sdAuthorityUrl)
     , sdApiKey(sdApiKey)
@@ -501,6 +502,7 @@ struct DMSOpenOptions : OpenOptions
     , authProviderCallback(authProviderCallback)
     , authProviderCallbackData(authProviderCallbackData)
     , legalTag(legalTag)
+    , httpProxy(httpProxy)
   {}
 
   std::string sdAuthorityUrl;
@@ -516,10 +518,11 @@ struct DMSOpenOptions : OpenOptions
   std::string (*authProviderCallback)(const void*);
   const void *authProviderCallbackData;
   std::string legalTag;
+  std::string httpProxy;
 };
 
 /// <summary>
-/// Options for opening a VDS with a plain http url.
+/// Options for opening a VDS with a plain HTTP url.
 /// If there are query parameters in then they will be appended to the different sub urls.
 /// The resulting IO backend will not support uploading data.
 /// </summary>

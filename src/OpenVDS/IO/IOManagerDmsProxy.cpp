@@ -29,7 +29,7 @@ IOManagerDMSProxy::IOManagerDMSProxy(const DMSOpenOptions& openOptions, IOManage
   : IOManager(OpenOptions::DMS)
   , m_accessPattern(accessPattern)
   , m_logger(logger)
-  , m_curlHandler(error, m_logger)
+  , m_curlHandler(error, m_logger, openOptions.httpProxy)
   , m_ioManagerCurlHandler(std::make_shared<CurlHandler>(error, m_logger))
   , m_dmsManager(new DmsManager(openOptions.sdAuthorityUrl, openOptions.sdApiKey, m_curlHandler, m_logger))
   , m_useFileNameForSingleFileDatasets(openOptions.useFileNameForSingleFileDatasets)

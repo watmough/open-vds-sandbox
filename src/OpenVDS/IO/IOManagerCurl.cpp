@@ -232,7 +232,7 @@ static void addDownloadCB(uv_async_t *handle)
   downloadRequests.reserve(64);
   {
     std::unique_lock<std::mutex> lock(eventLoopData->mutex);
-    std::swap(downloadRequests, eventLoopData->incommingDownloadRequests);
+    std::swap(downloadRequests, eventLoopData->incomingDownloadRequests);
   }
   for (auto &downloadRequest : downloadRequests)
   {
@@ -255,6 +255,12 @@ static void addDownloadCB(uv_async_t *handle)
     curl_easy_setopt(downloadRequest->curlEasy, CURLOPT_HEADERDATA, downloadRequest.get());
     curl_easy_setopt(downloadRequest->curlEasy, CURLOPT_WRITEFUNCTION, &curlWriteCallback);
     curl_easy_setopt(downloadRequest->curlEasy, CURLOPT_WRITEDATA, downloadRequest.get());
+    curl_easy_setopt(downloadRequest->curlEasy, CURLOPT_PROXYAUTH, CURLAUTH_ANY);
+    
+    if(!eventLoopData->httpProxy.empty())
+    {
+      curl_easy_setopt(downloadRequest->curlEasy, CURLOPT_PROXY, eventLoopData->httpProxy.c_str());
+    }
 
     if (downloadRequest->verb == CurlVerb::HEADER)
     {
@@ -287,9 +293,9 @@ static void cancelledDownloadCB(uv_async_t *handle)
     std::swap(cancelledDownloads, eventLoopData->cancelledDownloads);
     for (auto &cancelled : cancelledDownloads)
     {
-      auto it = std::find(eventLoopData->incommingDownloadRequests.begin(), eventLoopData->incommingDownloadRequests.end(), cancelled);
-      if (it != eventLoopData->incommingDownloadRequests.end())
-        eventLoopData->incommingDownloadRequests.erase(it);
+      auto it = std::find(eventLoopData->incomingDownloadRequests.begin(), eventLoopData->incomingDownloadRequests.end(), cancelled);
+      if (it != eventLoopData->incomingDownloadRequests.end())
+        eventLoopData->incomingDownloadRequests.erase(it);
     }
   }
 
@@ -331,7 +337,7 @@ static void addUploadCB(uv_async_t *handle)
   uploadRequests.reserve(64);
   {
     std::unique_lock<std::mutex> lock(eventLoopData->mutex);
-    std::swap(uploadRequests, eventLoopData->incommingUploadRequests);
+    std::swap(uploadRequests, eventLoopData->incomingUploadRequests);
   }
   for (auto &uploadRequest : uploadRequests)
   {
@@ -356,6 +362,13 @@ static void addUploadCB(uv_async_t *handle)
     curl_easy_setopt(uploadRequest->curlEasy, CURLOPT_READDATA, uploadRequest.get());
     curl_easy_setopt(uploadRequest->curlEasy, CURLOPT_WRITEFUNCTION, &curlWriteCallback);
     curl_easy_setopt(uploadRequest->curlEasy, CURLOPT_WRITEDATA, uploadRequest.get());
+    curl_easy_setopt(uploadRequest->curlEasy, CURLOPT_PROXYAUTH, CURLAUTH_ANY);
+
+    if(!eventLoopData->httpProxy.empty())
+    {
+      curl_easy_setopt(uploadRequest->curlEasy, CURLOPT_PROXY, eventLoopData->httpProxy.c_str());
+    }
+
     curl_off_t filesize = curl_off_t(uploadRequest->completeSize);
     if (uploadRequest->verb == CurlVerb::POST)
     {
@@ -404,9 +417,9 @@ static void cancelledUploadCB(uv_async_t *handle)
     std::swap(cancelledUploads, eventLoopData->cancelledUploads);
     for (auto &cancelled : cancelledUploads)
     {
-      auto it = std::find(eventLoopData->incommingUploadRequests.begin(), eventLoopData->incommingUploadRequests.end(), cancelled);
-      if (it != eventLoopData->incommingUploadRequests.end())
-        eventLoopData->incommingUploadRequests.erase(it);
+      auto it = std::find(eventLoopData->incomingUploadRequests.begin(), eventLoopData->incomingUploadRequests.end(), cancelled);
+      if (it != eventLoopData->incomingUploadRequests.end())
+        eventLoopData->incomingUploadRequests.erase(it);
     }
   }
 
@@ -911,8 +924,8 @@ struct Barrier
   std::condition_variable wait;
 };
 
-CurlHandler::CurlHandler(Error& error, const Logger& logger)
-  : m_eventLoopData(logger)
+CurlHandler::CurlHandler(Error& error, const Logger& logger, const std::string& httpProxy)
+  : m_eventLoopData(logger, httpProxy)
 {
   error.code = curl_global_init(CURL_GLOBAL_ALL);
   if (error.code)
@@ -992,7 +1005,7 @@ void CurlHandler::addDownloadRequest(const std::shared_ptr<DownloadRequestCurl>&
  auto curlData =  std::make_shared<CurlDownloadHandler>(&m_eventLoopData, request, url, headers, toISO8601DateTransformer, verb, retryCount);
  request->m_downloadHandler = curlData;
  std::unique_lock<std::mutex> lock(m_eventLoopData.mutex);
- m_eventLoopData.incommingDownloadRequests.push_back(curlData);
+ m_eventLoopData.incomingDownloadRequests.push_back(curlData);
  uv_async_send(&m_eventLoopData.asyncAddDownload);
 }
 
@@ -1001,7 +1014,7 @@ void CurlHandler::addUploadRequest(const std::shared_ptr<UploadRequestCurl>& req
   auto curlData = std::make_shared<CurlUploadHandler>(&m_eventLoopData, request, url, headers, verb, std::move(data), completeSize, retryCount);
   request->m_uploadHandler = curlData;
   std::unique_lock<std::mutex> lock(m_eventLoopData.mutex);
-  m_eventLoopData.incommingUploadRequests.push_back(curlData);
+  m_eventLoopData.incomingUploadRequests.push_back(curlData);
   uv_async_send(&m_eventLoopData.asyncAddUpload);
 }
 

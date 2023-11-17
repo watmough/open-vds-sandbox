@@ -405,6 +405,8 @@ static std::unique_ptr<OpenOptions> createDMSOpenOptions(const std::string & url
       openOptions->useFileNameForSingleFileDatasets = isTrue(connectionPair.second);
     if (connectionPair.first == "legaltag" || connectionPair.first == "legal_tag")
       openOptions->legalTag = connectionPair.second;
+    if (connectionPair.first == "httpproxy" || connectionPair.first == "http_proxy")
+      openOptions->httpProxy = connectionPair.second;
   }
 
   return openOptions;
