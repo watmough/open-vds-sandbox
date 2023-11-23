@@ -192,7 +192,8 @@ PyGlobal::initModule(py::module& m)
     DMSOpenOptions_(m,"DMSOpenOptions", OPENVDS_DOCSTRING(DMSOpenOptions));
 
   DMSOpenOptions_.def(py::init<                              >(), OPENVDS_DOCSTRING(DMSOpenOptions_DMSOpenOptions));
-  DMSOpenOptions_.def(py::init<const std::string &, const std::string &, const std::string &, const std::string &, const std::string &, const std::string &, const std::string &, const std::string &, const std::string &, bool, const std::string &>(), py::arg("sdAuthorityUrl").none(false), py::arg("sdApiKey").none(false), py::arg("sdToken").none(false), py::arg("datasetPath").none(false), py::arg("authTokenUrl").none(false), py::arg("refreshToken").none(false), py::arg("clientId").none(false), py::arg("clientSecret").none(false), py::arg("scopes").none(false), py::arg("useFileNameForSingleFileDatasets") = false, py::arg("legalTag").none(false), OPENVDS_DOCSTRING(DMSOpenOptions_DMSOpenOptions_2));
+  DMSOpenOptions_.def(py::init<const std::string &, const std::string &, const std::string &, const std::string &, const std::string &, const std::string &, const std::string &, const std::string &, const std::string &, bool, const std::string &, const std::string &>(), py::arg("sdAuthorityUrl").none(false), py::arg("sdApiKey").none(false), py::arg("sdToken").none(false), py::arg("datasetPath").none(false), py::arg("authTokenUrl").none(false), py::arg("refreshToken").none(false), py::arg("clientId").none(false), py::arg("clientSecret").none(false), py::arg("scopes").none(false), py::arg("useFileNameForSingleFileDatasets") = false, py::arg("legalTag").none(false), py::arg("httpProxy").none(false), OPENVDS_DOCSTRING(DMSOpenOptions_DMSOpenOptions_2));
+  DMSOpenOptions_.def(py::init<const std::string &, const std::string &, const std::string &, std::string (*)(const void *), const void *, bool, const std::string &, const std::string &>(), py::arg("sdAuthorityUrl").none(false), py::arg("sdApiKey").none(false), py::arg("datasetPath").none(false), py::arg("authProviderCallback").none(false), py::arg("authProviderCallbackData").none(false), py::arg("useFileNameForSingleFileDatasets") = false, py::arg("legalTag").none(false), py::arg("httpProxy").none(false), OPENVDS_DOCSTRING(DMSOpenOptions_DMSOpenOptions_3));
   DMSOpenOptions_.def_readwrite("sdAuthorityUrl"              , &DMSOpenOptions::sdAuthorityUrl, OPENVDS_DOCSTRING(DMSOpenOptions_sdAuthorityUrl));
   DMSOpenOptions_.def_readwrite("sdApiKey"                    , &DMSOpenOptions::sdApiKey      , OPENVDS_DOCSTRING(DMSOpenOptions_sdApiKey));
   DMSOpenOptions_.def_readwrite("sdToken"                     , &DMSOpenOptions::sdToken       , OPENVDS_DOCSTRING(DMSOpenOptions_sdToken));
@@ -204,6 +205,7 @@ PyGlobal::initModule(py::module& m)
   DMSOpenOptions_.def_readwrite("scopes"                      , &DMSOpenOptions::scopes        , OPENVDS_DOCSTRING(DMSOpenOptions_scopes));
   DMSOpenOptions_.def_readwrite("useFileNameForSingleFileDatasets", &DMSOpenOptions::useFileNameForSingleFileDatasets, OPENVDS_DOCSTRING(DMSOpenOptions_useFileNameForSingleFileDatasets));
   DMSOpenOptions_.def_readwrite("legalTag"                    , &DMSOpenOptions::legalTag      , OPENVDS_DOCSTRING(DMSOpenOptions_legalTag));
+  DMSOpenOptions_.def_readwrite("httpProxy"                   , &DMSOpenOptions::httpProxy     , OPENVDS_DOCSTRING(DMSOpenOptions_httpProxy));
 
   // HttpOpenOptions
   py::class_<HttpOpenOptions, OpenOptions> 

@@ -33,15 +33,15 @@ public class DMSOpenOptions extends OpenOptions {
     
     }
 
-    native private static long ctor2Impl(String sdAuthorityUrl, String sdApiKey, String sdToken, String datasetPath, String authTokenUrl, String refreshToken, String clientId, String clientSecret, String scopes, boolean useFileNameForSingleFileDatasets, String legalTag);
+    native private static long ctor2Impl(String sdAuthorityUrl, String sdApiKey, String sdToken, String datasetPath, String authTokenUrl, String refreshToken, String clientId, String clientSecret, String scopes, boolean useFileNameForSingleFileDatasets, String legalTag, String httpProxy);
     
-    public DMSOpenOptions(String sdAuthorityUrl, String sdApiKey, String sdToken, String datasetPath, String authTokenUrl, String refreshToken, String clientId, String clientSecret, String scopes, boolean useFileNameForSingleFileDatasets, String legalTag) {
+    public DMSOpenOptions(String sdAuthorityUrl, String sdApiKey, String sdToken, String datasetPath, String authTokenUrl, String refreshToken, String clientId, String clientSecret, String scopes, boolean useFileNameForSingleFileDatasets, String legalTag, String httpProxy) {
     
-        super(ctor2Impl(ManagedBase.requireNonNull(sdAuthorityUrl, "sdAuthorityUrl may not be null"), ManagedBase.requireNonNull(sdApiKey, "sdApiKey may not be null"), ManagedBase.requireNonNull(sdToken, "sdToken may not be null"), ManagedBase.requireNonNull(datasetPath, "datasetPath may not be null"), ManagedBase.requireNonNull(authTokenUrl, "authTokenUrl may not be null"), ManagedBase.requireNonNull(refreshToken, "refreshToken may not be null"), ManagedBase.requireNonNull(clientId, "clientId may not be null"), ManagedBase.requireNonNull(clientSecret, "clientSecret may not be null"), ManagedBase.requireNonNull(scopes, "scopes may not be null"), useFileNameForSingleFileDatasets, ManagedBase.requireNonNull(legalTag, "legalTag may not be null")));
+        super(ctor2Impl(ManagedBase.requireNonNull(sdAuthorityUrl, "sdAuthorityUrl may not be null"), ManagedBase.requireNonNull(sdApiKey, "sdApiKey may not be null"), ManagedBase.requireNonNull(sdToken, "sdToken may not be null"), ManagedBase.requireNonNull(datasetPath, "datasetPath may not be null"), ManagedBase.requireNonNull(authTokenUrl, "authTokenUrl may not be null"), ManagedBase.requireNonNull(refreshToken, "refreshToken may not be null"), ManagedBase.requireNonNull(clientId, "clientId may not be null"), ManagedBase.requireNonNull(clientSecret, "clientSecret may not be null"), ManagedBase.requireNonNull(scopes, "scopes may not be null"), useFileNameForSingleFileDatasets, ManagedBase.requireNonNull(legalTag, "legalTag may not be null"), ManagedBase.requireNonNull(httpProxy, "httpProxy may not be null")));
     
     }
 
-    ///AUTOGEN-FAIL: CONSTRUCTOR DMSOpenOptions void (const std::string &, const std::string &, const std::string &, std::string (*)(const void *), const void *, bool, const std::string &) FUNCTIONPROTO
+    ///AUTOGEN-FAIL: CONSTRUCTOR DMSOpenOptions void (const std::string &, const std::string &, const std::string &, std::string (*)(const void *), const void *, bool, const std::string &, const std::string &) FUNCTIONPROTO
 
     ///AUTOGEN-OK: FIELD_DECL sdAuthorityUrl std::string RECORD
     native private String getSdAuthorityUrlImpl(long native_object);
@@ -194,6 +194,20 @@ public class DMSOpenOptions extends OpenOptions {
     public void setLegalTag(String value) {
     
         setLegalTagImpl(getNativeObject(), ManagedBase.requireNonNull(value, "value may not be null"));    
+    
+    }
+
+    ///AUTOGEN-OK: FIELD_DECL httpProxy std::string RECORD
+    native private String getHttpProxyImpl(long native_object);
+    public String getHttpProxy() {
+        return getHttpProxyImpl(getNativeObject());
+    }
+
+    native private void setHttpProxyImpl(long native_object, String value);
+    
+    public void setHttpProxy(String value) {
+    
+        setHttpProxyImpl(getNativeObject(), ManagedBase.requireNonNull(value, "value may not be null"));    
     
     }
 

@@ -791,6 +791,8 @@ static const char *__doc_OpenVDS_DMSOpenOptions_clientSecret = R"doc()doc";
 
 static const char *__doc_OpenVDS_DMSOpenOptions_datasetPath = R"doc()doc";
 
+static const char *__doc_OpenVDS_DMSOpenOptions_httpProxy = R"doc()doc";
+
 static const char *__doc_OpenVDS_DMSOpenOptions_legalTag = R"doc()doc";
 
 static const char *__doc_OpenVDS_DMSOpenOptions_refreshToken = R"doc()doc";
@@ -1319,7 +1321,7 @@ static const char *__doc_OpenVDS_HeapBasedValueRangeEstimator_m_minHeap = R"doc(
 static const char *__doc_OpenVDS_HeapBasedValueRangeEstimator_m_nanCount = R"doc()doc";
 
 static const char *__doc_OpenVDS_HttpOpenOptions =
-R"doc(Options for opening a VDS with a plain http url. If there are query
+R"doc(Options for opening a VDS with a plain HTTP url. If there are query
 parameters in then they will be appended to the different sub urls.
 The resulting IO backend will not support uploading data.)doc";
 

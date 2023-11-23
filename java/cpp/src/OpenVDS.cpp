@@ -1978,7 +1978,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_DMSOpenOptions_ctorImpl
 
 
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_DMSOpenOptions_ctor2Impl
-  (JNIEnv * env, jclass cls, jstring sdAuthorityUrl, jstring sdApiKey, jstring sdToken, jstring datasetPath, jstring authTokenUrl, jstring refreshToken, jstring clientId, jstring clientSecret, jstring scopes, jboolean useFileNameForSingleFileDatasets, jstring legalTag)
+  (JNIEnv * env, jclass cls, jstring sdAuthorityUrl, jstring sdApiKey, jstring sdToken, jstring datasetPath, jstring authTokenUrl, jstring refreshToken, jstring clientId, jstring clientSecret, jstring scopes, jboolean useFileNameForSingleFileDatasets, jstring legalTag, jstring httpProxy)
 {
   JNIEnvGuard
     envGuard(env);
@@ -1999,7 +1999,8 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_DMSOpenOptions_ctor2Impl
                                std::string(CPPJNIStringWrapper(env, clientSecret)), 
                                std::string(CPPJNIStringWrapper(env, scopes)), 
                                useFileNameForSingleFileDatasets ? true : false, 
-                               std::string(CPPJNIStringWrapper(env, legalTag))));
+                               std::string(CPPJNIStringWrapper(env, legalTag)), 
+                               std::string(CPPJNIStringWrapper(env, httpProxy))));
 
     return native_handle;
   }
@@ -2007,7 +2008,7 @@ JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_DMSOpenOptions_ctor2Impl
   return 0;
 }
 
-///AUTOGEN-FAIL: CONSTRUCTOR DMSOpenOptions void (const std::string &, const std::string &, const std::string &, std::string (*)(const void *), const void *, bool, const std::string &) FUNCTIONPROTO
+///AUTOGEN-FAIL: CONSTRUCTOR DMSOpenOptions void (const std::string &, const std::string &, const std::string &, std::string (*)(const void *), const void *, bool, const std::string &, const std::string &) FUNCTIONPROTO
 
 JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_DMSOpenOptions_getSdAuthorityUrlImpl
   (JNIEnv * env, jobject object, jlong native_handle)
@@ -2345,6 +2346,37 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_DMSOpenOptions_setLegalTagImpl
   {
     auto pInstance = CPPJNI_cast<OpenVDS::DMSOpenOptions>(native_handle);
     pInstance->legalTag = std::string(CPPJNIStringWrapper(env, native_handle, value));
+  }
+  CPPJNI_CATCH
+}
+
+
+JNIEXPORT jstring JNICALL Java_org_opengroup_openvds_DMSOpenOptions_getHttpProxyImpl
+  (JNIEnv * env, jobject object, jlong native_handle)
+{
+  JNIEnvGuard
+    envGuard(env);
+
+  CPPJNI_TRY
+  {
+    auto pInstance = CPPJNI_cast<OpenVDS::DMSOpenOptions>(native_handle);
+    auto result = pInstance->httpProxy;
+    return CPPJNI_newString(env, result);
+  }
+  CPPJNI_CATCH
+  return 0;
+}
+
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_DMSOpenOptions_setHttpProxyImpl
+  (JNIEnv * env, jobject object, jlong native_handle, jstring value)
+{
+  JNIEnvGuard
+    envGuard(env);
+
+  CPPJNI_TRY
+  {
+    auto pInstance = CPPJNI_cast<OpenVDS::DMSOpenOptions>(native_handle);
+    pInstance->httpProxy = std::string(CPPJNIStringWrapper(env, native_handle, value));
   }
   CPPJNI_CATCH
 }

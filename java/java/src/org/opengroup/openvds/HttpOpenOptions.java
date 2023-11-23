@@ -23,7 +23,7 @@ import java.util.*;
 import java.nio.ByteBuffer;
 
 /**
- * Options for opening a VDS with a plain http url.
+ * Options for opening a VDS with a plain HTTP url.
  * If there are query parameters in then they will be appended to the different sub urls.
  * The resulting IO backend will not support uploading data.
  * 
