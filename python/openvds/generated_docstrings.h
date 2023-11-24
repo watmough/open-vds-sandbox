@@ -1038,6 +1038,51 @@ Returns:
 --------
     A version string)doc";
 
+static const char *__doc_OpenVDS_GetWaveletAdaptiveLevels =
+R"doc(Get a list of the available wavelet adaptive levels for the VDS
+
+Parameters:
+-----------
+
+handle :
+    The handle of the VDS
+
+Returns:
+--------
+    The list of available wavelet adaptive levels)doc";
+
+static const char *__doc_OpenVDS_GetWaveletCompressedSize =
+R"doc(Get the total wavelet compressed size (including lossless data) of the
+primary layer (first dimension group, channel 0, LOD 0) of a wavelet
+compressed dataset
+
+Parameters:
+-----------
+
+handle :
+    The handle of the VDS
+
+Returns:
+--------
+    The total wavelet compressed size (including lossless data) of the
+    primary layer (first dimension group, channel 0, LOD 0))doc";
+
+static const char *__doc_OpenVDS_GetWaveletUncompressedSize =
+R"doc(Get the uncompressed size (not counting empty/constant value blocks)
+of the primary layer (first dimension group, channel 0, LOD 0) of a
+wavelet compressed dataset
+
+Parameters:
+-----------
+
+handle :
+    The handle of the VDS
+
+Returns:
+--------
+    The uncompressed size (not counting empty/constant value blocks)
+    of the primary layer (first dimension group, channel 0, LOD 0))doc";
+
 static const char *__doc_OpenVDS_GlobalState = R"doc(Object that contains global runtime data)doc";
 
 static const char *__doc_OpenVDS_GlobalState_2 = R"doc()doc";
@@ -3119,6 +3164,12 @@ static const char *__doc_OpenVDS_OpenVDSInterface_GetGlobalState = R"doc()doc";
 static const char *__doc_OpenVDS_OpenVDSInterface_GetLayout = R"doc()doc";
 
 static const char *__doc_OpenVDS_OpenVDSInterface_GetMetadataWriteAccessInterface = R"doc()doc";
+
+static const char *__doc_OpenVDS_OpenVDSInterface_GetWaveletAdaptiveLevels = R"doc()doc";
+
+static const char *__doc_OpenVDS_OpenVDSInterface_GetWaveletCompressedSize = R"doc()doc";
+
+static const char *__doc_OpenVDS_OpenVDSInterface_GetWaveletUncompressedSize = R"doc()doc";
 
 static const char *__doc_OpenVDS_OpenVDSInterface_IsCompressionMethodSupported = R"doc()doc";
 
@@ -6122,6 +6173,22 @@ static const char *__doc_OpenVDS_VolumeSampler_m_sizeX = R"doc()doc";
 static const char *__doc_OpenVDS_VolumeSampler_m_sizeY = R"doc()doc";
 
 static const char *__doc_OpenVDS_VolumeSampler_m_sizeZ = R"doc()doc";
+
+static const char *__doc_OpenVDS_WaveletAdaptiveLevel = R"doc(Description of an available level of wavelet compression)doc";
+
+static const char *__doc_OpenVDS_WaveletAdaptiveLevel_2 = R"doc()doc";
+
+static const char *__doc_OpenVDS_WaveletAdaptiveLevel_WaveletAdaptiveLevel = R"doc()doc";
+
+static const char *__doc_OpenVDS_WaveletAdaptiveLevel_WaveletAdaptiveLevel_2 = R"doc()doc";
+
+static const char *__doc_OpenVDS_WaveletAdaptiveLevel_compressedSize = R"doc(< Compressed size of the wavelet adaptive level)doc";
+
+static const char *__doc_OpenVDS_WaveletAdaptiveLevel_compressionRatio =
+R"doc(< Compression ratio (uncompressed size / compressed size) of the
+wavelet adaptive level)doc";
+
+static const char *__doc_OpenVDS_WaveletAdaptiveLevel_compressionTolerance = R"doc(< Compression tolerance of the wavelet adaptive level)doc";
 
 static const char *__doc_OpenVDS_WaveletAdaptiveMode = R"doc()doc";
 

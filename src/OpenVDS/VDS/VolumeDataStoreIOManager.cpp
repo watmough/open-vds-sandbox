@@ -780,6 +780,31 @@ CompressionInfo VolumeDataStoreIOManager::GetEffectiveAdaptiveLevel(VolumeDataLa
   return CompressionInfo(compressionMethod, compressionTolerance, adaptiveLevel);
 }
 
+bool VolumeDataStoreIOManager::GetWaveletAdaptiveLevelSizes(VolumeDataLayer* volumeDataLayer, float &baseCompressionTolerance, int64_t &uncompressedSize, int64_t (&adaptiveLevelSizes)[WAVELET_ADAPTIVE_LEVELS])
+{
+  std::string layerName = GetLayerName(*volumeDataLayer);
+  auto metadataManager = GetMetadataMangerForLayer(layerName);
+
+  if(metadataManager)
+  {
+    MetadataStatus const &metadataStatus = metadataManager->GetMetadataStatus();
+
+    if(!CompressionMethod_IsWavelet(metadataStatus.m_compressionMethod))
+    {
+      return false;
+    }
+
+    baseCompressionTolerance = metadataStatus.m_compressionTolerance;
+    uncompressedSize = metadataStatus.m_uncompressedSize;
+    static_assert(sizeof(adaptiveLevelSizes) == sizeof(metadataStatus.m_adaptiveLevelSizes), "sizeof(adaptiveLevelSizes) must match sizeof(metadataStatus.m_adaptiveLevelSizes)");
+    memcpy(adaptiveLevelSizes, metadataStatus.m_adaptiveLevelSizes, sizeof(adaptiveLevelSizes));
+    return true;
+  }
+
+  return false;
+}
+
+
 bool VolumeDataStoreIOManager::WriteChunkImpl(const VolumeDataChunk& chunk, std::shared_ptr<std::vector<uint8_t>>& serializedData, const std::vector<uint8_t>& metadata, std::function<void(const Error &error)> completed)
 {
   Error error;

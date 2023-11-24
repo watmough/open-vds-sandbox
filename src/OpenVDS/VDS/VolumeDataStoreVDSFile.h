@@ -67,6 +67,7 @@ public:
 
   CompressionInfo
                 GetEffectiveAdaptiveLevel(VolumeDataLayer* volumeDataLayer, WaveletAdaptiveMode waveletAdaptiveMode, float tolerance, float ratio) override;
+  bool          GetWaveletAdaptiveLevelSizes(VolumeDataLayer* volumeDataLayer, float &baseCompressionTolerance, int64_t &uncompressedSize, int64_t (&adaptiveLevelSizes)[WAVELET_ADAPTIVE_LEVELS]) override;
   bool          PrepareReadChunkImpl(const VolumeDataChunk &volumeDataChunk, int adaptiveLevel, Error &error) override;
   bool          ReadChunkImpl(const VolumeDataChunk& chunk, int adaptiveLevel, std::vector<uint8_t>& serializedData, std::vector<uint8_t>& metadata, CompressionInfo& compressionInfo, Error& error) override;
   bool          CancelReadChunkImpl(const VolumeDataChunk& chunk, Error& error) override;

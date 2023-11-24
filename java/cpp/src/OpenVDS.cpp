@@ -100,6 +100,158 @@ JNIEXPORT void JNICALL Java_org_opengroup_openvds_IOManager_dtorImpl
 
 
 
+JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_WaveletAdaptiveLevel_getCompressionToleranceImpl
+  (JNIEnv * env, jobject object, jlong native_handle)
+{
+  JNIEnvGuard
+    envGuard(env);
+
+  CPPJNI_TRY
+  {
+    auto pInstance = CPPJNI_cast<OpenVDS::WaveletAdaptiveLevel>(native_handle);
+    auto result = pInstance->compressionTolerance;
+    return result;
+  }
+  CPPJNI_CATCH
+  return 0;
+}
+
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_WaveletAdaptiveLevel_setCompressionToleranceImpl
+  (JNIEnv * env, jobject object, jlong native_handle, jfloat value)
+{
+  JNIEnvGuard
+    envGuard(env);
+
+  CPPJNI_TRY
+  {
+    auto pInstance = CPPJNI_cast<OpenVDS::WaveletAdaptiveLevel>(native_handle);
+    pInstance->compressionTolerance = value;
+  }
+  CPPJNI_CATCH
+}
+
+
+JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_WaveletAdaptiveLevel_getCompressionRatioImpl
+  (JNIEnv * env, jobject object, jlong native_handle)
+{
+  JNIEnvGuard
+    envGuard(env);
+
+  CPPJNI_TRY
+  {
+    auto pInstance = CPPJNI_cast<OpenVDS::WaveletAdaptiveLevel>(native_handle);
+    auto result = pInstance->compressionRatio;
+    return result;
+  }
+  CPPJNI_CATCH
+  return 0;
+}
+
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_WaveletAdaptiveLevel_setCompressionRatioImpl
+  (JNIEnv * env, jobject object, jlong native_handle, jfloat value)
+{
+  JNIEnvGuard
+    envGuard(env);
+
+  CPPJNI_TRY
+  {
+    auto pInstance = CPPJNI_cast<OpenVDS::WaveletAdaptiveLevel>(native_handle);
+    pInstance->compressionRatio = value;
+  }
+  CPPJNI_CATCH
+}
+
+
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_WaveletAdaptiveLevel_getCompressedSizeImpl
+  (JNIEnv * env, jobject object, jlong native_handle)
+{
+  JNIEnvGuard
+    envGuard(env);
+
+  CPPJNI_TRY
+  {
+    auto pInstance = CPPJNI_cast<OpenVDS::WaveletAdaptiveLevel>(native_handle);
+    auto result = pInstance->compressedSize;
+    return result;
+  }
+  CPPJNI_CATCH
+  return 0;
+}
+
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_WaveletAdaptiveLevel_setCompressedSizeImpl
+  (JNIEnv * env, jobject object, jlong native_handle, jlong value)
+{
+  JNIEnvGuard
+    envGuard(env);
+
+  CPPJNI_TRY
+  {
+    auto pInstance = CPPJNI_cast<OpenVDS::WaveletAdaptiveLevel>(native_handle);
+    pInstance->compressedSize = value;
+  }
+  CPPJNI_CATCH
+}
+
+
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_WaveletAdaptiveLevel_ctorImpl
+  (JNIEnv * env, jclass cls)
+{
+  JNIEnvGuard
+    envGuard(env);
+
+  CPPJNI_TRY
+  {
+    auto context = CPPJNI_createObjectContext<OpenVDS::WaveletAdaptiveLevel>();
+
+    auto native_handle = context->handle();
+    context->setObject(CPPJNI_makeShared<OpenVDS::WaveletAdaptiveLevel>());
+
+    return native_handle;
+  }
+  CPPJNI_CATCH
+  return 0;
+}
+
+
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_WaveletAdaptiveLevel_ctor2Impl
+  (JNIEnv * env, jclass cls, jfloat compressionTolerance, jfloat compressionRatio, jlong compressedSize)
+{
+  JNIEnvGuard
+    envGuard(env);
+
+  CPPJNI_TRY
+  {
+    auto context = CPPJNI_createObjectContext<OpenVDS::WaveletAdaptiveLevel>();
+
+    auto native_handle = context->handle();
+    context->setObject(CPPJNI_makeShared<OpenVDS::WaveletAdaptiveLevel>(
+                               compressionTolerance, 
+                               compressionRatio, 
+                               compressedSize));
+
+    return native_handle;
+  }
+  CPPJNI_CATCH
+  return 0;
+}
+
+
+JNIEXPORT void JNICALL Java_org_opengroup_openvds_WaveletAdaptiveLevel_dtorImpl
+  (JNIEnv * env, jobject object, jlong native_handle, jboolean is_disposing)
+{
+  JNIEnvGuard
+    envGuard(env);
+
+  CPPJNI_TRY
+  {
+    CPPJNI_destroyHandle<OpenVDS::WaveletAdaptiveLevel>(native_handle, is_disposing);
+  }
+  CPPJNI_CATCH
+}
+
+
+
+
 JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenOptions_getConnectionTypeImpl
   (JNIEnv * env, jobject object, jlong native_handle)
 {
@@ -3167,6 +3319,37 @@ JNIEXPORT jfloat JNICALL Java_org_opengroup_openvds_OpenVDS_GetCompressionTolera
   CPPJNI_CATCH
   return 0;
 }
+
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_GetWaveletCompressedSizeImpl
+  (JNIEnv * env, jclass cls, jlong handle)
+{
+  JNIEnvGuard
+    envGuard(env);
+
+  CPPJNI_TRY
+  {
+    auto result = OpenVDS::GetWaveletCompressedSize(CPPJNI_cast<OpenVDS::VDS>(handle));
+    return result;
+  }
+  CPPJNI_CATCH
+  return 0;
+}
+
+JNIEXPORT jlong JNICALL Java_org_opengroup_openvds_OpenVDS_GetWaveletUncompressedSizeImpl
+  (JNIEnv * env, jclass cls, jlong handle)
+{
+  JNIEnvGuard
+    envGuard(env);
+
+  CPPJNI_TRY
+  {
+    auto result = OpenVDS::GetWaveletUncompressedSize(CPPJNI_cast<OpenVDS::VDS>(handle));
+    return result;
+  }
+  CPPJNI_CATCH
+  return 0;
+}
+///AUTOGEN-FAIL: FUNCTION_DECL GetWaveletAdaptiveLevels std::vector<OpenVDS::WaveletAdaptiveLevel> (OpenVDS::VDS *) FUNCTIONPROTO
 
 JNIEXPORT void JNICALL Java_org_opengroup_openvds_OpenVDS_CloseImpl
   (JNIEnv * env, jclass cls, jlong handle, jlong error, jboolean flush)

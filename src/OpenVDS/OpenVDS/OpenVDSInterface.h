@@ -44,6 +44,7 @@ class VolumeDataChannelDescriptor;
 class GlobalState;
 class IOManager;
 class IVolumeDataAccessManager;
+struct WaveletAdaptiveLevel;
 
 struct OpenOptions;
 
@@ -118,6 +119,7 @@ protected:
   virtual ~OpenVDSInterface() {}
 public:
   typedef void (*ErrorHandler)(Error *error, int errorCode, const char *errorMessage);
+  typedef void (*WaveletAdaptiveLevelsHandler)(std::vector<WaveletAdaptiveLevel> *waveletAdaptiveLevelsVector, float compressionTolerance, float compressionRatio, int64_t compressedSize);
 
   virtual OpenOptions*              CreateOpenOptions(StringWrapper url, StringWrapper connectionString, ErrorHandler errorHandler, Error *error=nullptr) = 0;
   virtual bool                      IsSupportedProtocol(StringWrapper url) = 0;
@@ -140,6 +142,9 @@ public:
   virtual void                      RetryableClose(VDSHandle handle, bool flush) = 0;
   virtual void                      RetryableClose(VDSHandle handle, bool flush, ErrorHandler errorHandler, Error *error=nullptr) = 0;
   virtual GlobalState              *GetGlobalState() = 0;
+  virtual int64_t                   GetWaveletCompressedSize(VDSHandle handle) = 0;
+  virtual int64_t                   GetWaveletUncompressedSize(VDSHandle handle) = 0;
+  virtual void                      GetWaveletAdaptiveLevels(VDSHandle handle, WaveletAdaptiveLevelsHandler WaveletAdaptiveLevelsHandler, std::vector<WaveletAdaptiveLevel> *waveletAdaptiveLevelsVector) = 0;
 };
 
 #ifndef OPENVDS_REPLACE_INTERFACE

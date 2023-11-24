@@ -631,6 +631,34 @@ Available schemes are s3:// azure://
         return GetCompressionToleranceImpl(ManagedBase.requireNonNull(handle, "handle may not be null").getNativeObject());
     }
 
+    ///AUTOGEN-OK: FUNCTION_DECL GetWaveletCompressedSize int64_t (OpenVDS::VDS *) FUNCTIONPROTO
+    native private static long GetWaveletCompressedSizeImpl(long handle);
+
+    /**
+     * Get the total wavelet compressed size (including lossless data) of the primary layer (first dimension group, channel 0, LOD 0) of a wavelet compressed dataset
+     * 
+     * @param handle The handle of the VDS
+     * @return The total wavelet compressed size (including lossless data) of the primary layer (first dimension group, channel 0, LOD 0)
+     */
+    public static long getWaveletCompressedSize(VDS handle) {
+        return GetWaveletCompressedSizeImpl(ManagedBase.requireNonNull(handle, "handle may not be null").getNativeObject());
+    }
+
+    ///AUTOGEN-OK: FUNCTION_DECL GetWaveletUncompressedSize int64_t (OpenVDS::VDS *) FUNCTIONPROTO
+    native private static long GetWaveletUncompressedSizeImpl(long handle);
+
+    /**
+     * Get the uncompressed size (not counting empty/constant value blocks) of the primary layer (first dimension group, channel 0, LOD 0) of a wavelet compressed dataset
+     * 
+     * @param handle The handle of the VDS
+     * @return The uncompressed size (not counting empty/constant value blocks) of the primary layer (first dimension group, channel 0, LOD 0)
+     */
+    public static long getWaveletUncompressedSize(VDS handle) {
+        return GetWaveletUncompressedSizeImpl(ManagedBase.requireNonNull(handle, "handle may not be null").getNativeObject());
+    }
+
+    ///AUTOGEN-FAIL: FUNCTION_DECL GetWaveletAdaptiveLevels std::vector<OpenVDS::WaveletAdaptiveLevel> (OpenVDS::VDS *) FUNCTIONPROTO
+
     ///AUTOGEN-OK: FUNCTION_DECL Close void (OpenVDS::VDS *, OpenVDS::VDSError &, bool) FUNCTIONPROTO
     native private static void CloseImpl(long handle, long error, boolean flush);
 

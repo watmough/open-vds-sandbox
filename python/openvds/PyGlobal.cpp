@@ -41,6 +41,16 @@ PyGlobal::initModule(py::module& m)
   WaveletAdaptiveMode_.value("Tolerance"                   , WaveletAdaptiveMode::Tolerance          , OPENVDS_DOCSTRING(WaveletAdaptiveMode_Tolerance));
   WaveletAdaptiveMode_.value("Ratio"                       , WaveletAdaptiveMode::Ratio              , OPENVDS_DOCSTRING(WaveletAdaptiveMode_Ratio));
 
+  // WaveletAdaptiveLevel
+  py::class_<WaveletAdaptiveLevel> 
+    WaveletAdaptiveLevel_(m,"WaveletAdaptiveLevel", OPENVDS_DOCSTRING(WaveletAdaptiveLevel));
+
+  WaveletAdaptiveLevel_.def(py::init<                              >(), OPENVDS_DOCSTRING(WaveletAdaptiveLevel_WaveletAdaptiveLevel));
+  WaveletAdaptiveLevel_.def(py::init<float, float, int64_t         >(), py::arg("compressionTolerance").none(false), py::arg("compressionRatio").none(false), py::arg("compressedSize").none(false), OPENVDS_DOCSTRING(WaveletAdaptiveLevel_WaveletAdaptiveLevel_2));
+  WaveletAdaptiveLevel_.def_readwrite("compressionTolerance"        , &WaveletAdaptiveLevel::compressionTolerance, OPENVDS_DOCSTRING(WaveletAdaptiveLevel_compressionTolerance));
+  WaveletAdaptiveLevel_.def_readwrite("compressionRatio"            , &WaveletAdaptiveLevel::compressionRatio, OPENVDS_DOCSTRING(WaveletAdaptiveLevel_compressionRatio));
+  WaveletAdaptiveLevel_.def_readwrite("compressedSize"              , &WaveletAdaptiveLevel::compressedSize, OPENVDS_DOCSTRING(WaveletAdaptiveLevel_compressedSize));
+
   // OpenOptions
   py::class_<OpenOptions> 
     OpenOptions_(m,"OpenOptions", OPENVDS_DOCSTRING(OpenOptions));
@@ -276,6 +286,9 @@ PyGlobal::initModule(py::module& m)
   m.def("getMetadataWriteAccessInterface", static_cast<native::MetadataWriteAccess *(*)(native::VDSHandle)>(&GetMetadataWriteAccessInterface), py::arg("handle").none(false), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(GetMetadataWriteAccessInterface));
   m.def("getCompressionMethod"        , static_cast<native::CompressionMethod(*)(native::VDSHandle)>(&GetCompressionMethod), py::arg("handle").none(false), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(GetCompressionMethod));
   m.def("getCompressionTolerance"     , static_cast<float(*)(native::VDSHandle)>(&GetCompressionTolerance), py::arg("handle").none(false), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(GetCompressionTolerance));
+  m.def("getWaveletCompressedSize"    , static_cast<int64_t(*)(native::VDSHandle)>(&GetWaveletCompressedSize), py::arg("handle").none(false), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(GetWaveletCompressedSize));
+  m.def("getWaveletUncompressedSize"  , static_cast<int64_t(*)(native::VDSHandle)>(&GetWaveletUncompressedSize), py::arg("handle").none(false), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(GetWaveletUncompressedSize));
+  m.def("getWaveletAdaptiveLevels"    , static_cast<std::vector<WaveletAdaptiveLevel>(*)(native::VDSHandle)>(&GetWaveletAdaptiveLevels), py::arg("handle").none(false), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(GetWaveletAdaptiveLevels));
   m.def("close"                       , static_cast<void(*)(native::VDSHandle, bool)>(&Close), py::arg("handle").none(false), py::arg("flush") = true, py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(Close));
   m.def("close"                       , static_cast<void(*)(native::VDSHandle, native::Error &, bool)>(&Close), py::arg("handle").none(false), py::arg("error").none(false), py::arg("flush") = true, py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(Close_2));
   m.def("retryableClose"              , static_cast<void(*)(native::VDSHandle, bool)>(&RetryableClose), py::arg("handle").none(false), py::arg("flush") = true, py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(RetryableClose));

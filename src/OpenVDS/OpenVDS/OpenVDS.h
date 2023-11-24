@@ -63,6 +63,19 @@ enum class WaveletAdaptiveMode
   Ratio = 2        ///< An adaptive level closest to the global compression ratio is selected when loading wavelet compressed data.
 };
 
+/// <summary>
+/// Description of an available level of wavelet compression
+/// </summary>
+struct WaveletAdaptiveLevel
+{
+  float   compressionTolerance; ///< Compression tolerance of the wavelet adaptive level
+  float   compressionRatio;     ///< Compression ratio (uncompressed size / compressed size) of the wavelet adaptive level
+  int64_t compressedSize;       ///< Compressed size of the wavelet adaptive level
+
+  WaveletAdaptiveLevel() : compressionTolerance(), compressionRatio(), compressedSize() {}
+  WaveletAdaptiveLevel(float compressionTolerance, float compressionRatio, int64_t compressedSize) : compressionTolerance(compressionTolerance), compressionRatio(compressionRatio), compressedSize(compressedSize) {}
+};
+
 struct OpenOptions
 {
   enum ConnectionType
@@ -1041,6 +1054,39 @@ inline CompressionMethod GetCompressionMethod(VDSHandle handle) { return GetOpen
 /// The compression tolerance used for the VDS
 /// </returns>
 inline float GetCompressionTolerance(VDSHandle handle) { return GetOpenVDSInterface(OPENVDS_VERSION).GetCompressionTolerance(handle); }
+
+/// <summary>
+/// Get the total wavelet compressed size (including lossless data) of the primary layer (first dimension group, channel 0, LOD 0) of a wavelet compressed dataset
+/// </summary>
+/// <param name="handle">
+/// The handle of the VDS
+/// </param>
+/// <returns>
+/// The total wavelet compressed size (including lossless data) of the primary layer (first dimension group, channel 0, LOD 0)
+/// </returns>
+inline int64_t GetWaveletCompressedSize(VDSHandle handle) { return GetOpenVDSInterface(OPENVDS_VERSION).GetWaveletCompressedSize(handle); }
+
+/// <summary>
+/// Get the uncompressed size (not counting empty/constant value blocks) of the primary layer (first dimension group, channel 0, LOD 0) of a wavelet compressed dataset
+/// </summary>
+/// <param name="handle">
+/// The handle of the VDS
+/// </param>
+/// <returns>
+/// The uncompressed size (not counting empty/constant value blocks) of the primary layer (first dimension group, channel 0, LOD 0)
+/// </returns>
+inline int64_t GetWaveletUncompressedSize(VDSHandle handle) { return GetOpenVDSInterface(OPENVDS_VERSION).GetWaveletUncompressedSize(handle); }
+
+/// <summary>
+/// Get a list of the available wavelet adaptive levels for the VDS
+/// </summary>
+/// <param name="handle">
+/// The handle of the VDS
+/// </param>
+/// <returns>
+/// The list of available wavelet adaptive levels
+/// </returns>
+inline std::vector<WaveletAdaptiveLevel> GetWaveletAdaptiveLevels(VDSHandle handle) { std::vector<WaveletAdaptiveLevel> waveletAdaptiveLevels; GetOpenVDSInterface(OPENVDS_VERSION).GetWaveletAdaptiveLevels(handle, [](std::vector<WaveletAdaptiveLevel> *waveletAdaptiveLevels, float compressionTolerance, float compressionRatio, int64_t compressedSize) { waveletAdaptiveLevels->emplace_back(compressionTolerance, compressionRatio, compressedSize); }, &waveletAdaptiveLevels); return waveletAdaptiveLevels; }
 
 #if !defined(JAVA_WRAPPER_GENERATOR)
 /// <summary>

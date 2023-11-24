@@ -68,6 +68,25 @@ CompressionInfo VolumeDataStoreVDSFile::GetEffectiveAdaptiveLevel(VolumeDataLaye
   return CompressionInfo(compressionMethod, compressionTolerance, adaptiveLevel);
 }
 
+bool VolumeDataStoreVDSFile::GetWaveletAdaptiveLevelSizes(VolumeDataLayer* volumeDataLayer, float &baseCompressionTolerance, int64_t &uncompressedSize, int64_t (&adaptiveLevelSizes)[WAVELET_ADAPTIVE_LEVELS])
+{
+  LayerFile* layerFile = GetLayerFile(*volumeDataLayer);
+
+  CompressionMethod
+    compressionMethod = layerFile ? CompressionMethod(layerFile->layerMetadata.m_compressionMethod) : CompressionMethod::None;
+
+  if(layerFile && CompressionMethod_IsWavelet(compressionMethod))
+  {
+    baseCompressionTolerance = layerFile->layerMetadata.m_compressionTolerance;
+    uncompressedSize = layerFile->layerMetadata.m_uncompressedSize;
+    static_assert(sizeof(adaptiveLevelSizes) == sizeof(layerFile->layerMetadata.m_adaptiveLevelSizes), "sizeof(adaptiveLevelSizes) must match sizeof(layerFile->layerMetadata.m_adaptiveLevelSizes)");
+    memcpy(adaptiveLevelSizes, layerFile->layerMetadata.m_adaptiveLevelSizes, sizeof(adaptiveLevelSizes));
+    return true;
+  }
+
+  return false;
+}
+
 VolumeDataStoreVDSFile::LayerFile *VolumeDataStoreVDSFile::GetLayerFile(std::string const &layerName) const
 {
   std::unique_lock<std::mutex> lock(const_cast<std::mutex &>(m_mutex));

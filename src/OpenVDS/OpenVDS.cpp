@@ -639,7 +639,7 @@ static bool Init(VDS *vds, VolumeDataStore *volumeDataStore, Error& error)
   return true;
 }
 
-void InitWaveletAdaptiveLoadLevel(VDS &vds, OpenOptions const &options)
+VolumeDataLayer *FindCachedLayer(VDS &vds)
 {
   assert(vds.volumeDataLayout.get());
 
@@ -660,6 +660,13 @@ void InitWaveletAdaptiveLoadLevel(VDS &vds, OpenOptions const &options)
       }
     }
   }
+
+  return volumeDataLayer;
+}
+
+void InitWaveletAdaptiveLoadLevel(VDS &vds, OpenOptions const &options)
+{
+  VolumeDataLayer *volumeDataLayer = FindCachedLayer(vds);
 
   if(volumeDataLayer && volumeDataLayer->GetProduceStatus() == VolumeDataLayer::ProduceStatus_Normal)
   {
@@ -998,6 +1005,10 @@ public:
   void                      RetryableClose(VDSHandle handle, bool flush) final override;
   void                      RetryableClose(VDSHandle handle, bool flush, ErrorHandler errorHandler, Error *errorPtr=nullptr) final override;
   GlobalState              *GetGlobalState() final override;
+  int64_t                   GetWaveletCompressedSize(VDSHandle handle) final override;
+  int64_t                   GetWaveletUncompressedSize(VDSHandle handle) final override;
+  void                      GetWaveletAdaptiveLevels(VDSHandle handle, WaveletAdaptiveLevelsHandler WaveletAdaptiveLevelsHandler, std::vector<WaveletAdaptiveLevel> *waveletAdaptiveLevelsVector) final override;
+
   const char               *GetOpenVDSName() final override;
   const char               *GetOpenVDSVersion() final override;
   void                      GetOpenVDSVersion(int &major, int &minor, int &patch) final override;
@@ -1214,14 +1225,18 @@ VDSHandle OpenVDSInterfaceImpl::Create(const OpenOptions& options, VolumeDataLay
   return Create(options, layoutDescriptor, axisDescriptors, channelDescriptors, metadata, compressionMethod, compressionTolerance, error);
 }
 
-CompressionMethod OpenVDSInterfaceImpl::GetCompressionMethod(VDSHandle handle)
+CompressionMethod OpenVDSInterfaceImpl::GetCompressionMethod(VDS *vds)
 {
-  return handle->volumeDataLayout->GetCompressionMethod();
+  if (!vds)
+    return CompressionMethod::None;
+  return vds->volumeDataLayout->GetCompressionMethod();
 }
 
-float OpenVDSInterfaceImpl::GetCompressionTolerance(VDSHandle handle)
+float OpenVDSInterfaceImpl::GetCompressionTolerance(VDS *vds)
 {
-  return handle->volumeDataLayout->GetCompressionTolerance();
+  if (!vds)
+    return 0;
+  return vds->volumeDataLayout->GetCompressionTolerance();
 }
 
 void OpenVDSInterfaceImpl::Close(VDS *vds, bool flush)
@@ -1315,6 +1330,57 @@ GlobalState *OpenVDSInterfaceImpl::GetGlobalState()
 {
   static GlobalStateImpl globalState;
   return &globalState;
+}
+
+int64_t
+OpenVDSInterfaceImpl::GetWaveletCompressedSize(VDS *vds)
+{
+  float compressionTolerance = 0;
+  int64_t uncompressedSize = 0 ;
+  int64_t adaptiveLevelSizes[WAVELET_ADAPTIVE_LEVELS] = {};
+
+  if(vds)
+  {
+    vds->volumeDataStore->GetWaveletAdaptiveLevelSizes(FindCachedLayer(*vds), compressionTolerance, uncompressedSize, adaptiveLevelSizes);
+  }
+
+  return adaptiveLevelSizes[0];
+}
+
+int64_t
+OpenVDSInterfaceImpl::GetWaveletUncompressedSize(VDS *vds)
+{
+  float compressionTolerance = 0;
+  int64_t uncompressedSize = 0 ;
+  int64_t adaptiveLevelSizes[WAVELET_ADAPTIVE_LEVELS] = {};
+
+  if(vds)
+  {
+    vds->volumeDataStore->GetWaveletAdaptiveLevelSizes(FindCachedLayer(*vds), compressionTolerance, uncompressedSize, adaptiveLevelSizes);
+  }
+
+  return uncompressedSize;
+}
+
+void
+OpenVDSInterfaceImpl::GetWaveletAdaptiveLevels(VDS *vds, WaveletAdaptiveLevelsHandler waveletAdaptiveLevelsHandler, std::vector<WaveletAdaptiveLevel> *waveletAdaptiveLevelsVector)
+{
+  float compressionTolerance = 0;
+  int64_t uncompressedSize = 0 ;
+  int64_t adaptiveLevelSizes[WAVELET_ADAPTIVE_LEVELS] = {};
+
+  if(vds)
+  {
+    vds->volumeDataStore->GetWaveletAdaptiveLevelSizes(FindCachedLayer(*vds), compressionTolerance, uncompressedSize, adaptiveLevelSizes);
+
+    for(int level = 1; level < WAVELET_ADAPTIVE_LEVELS; level++)
+    {
+      if(!adaptiveLevelSizes[level]) break;
+
+      waveletAdaptiveLevelsHandler(waveletAdaptiveLevelsVector, compressionTolerance, (float)uncompressedSize / (float)adaptiveLevelSizes[level], adaptiveLevelSizes[level]);
+      compressionTolerance *= 2.0f;
+    }
+  }
 }
 
 const char *OpenVDSInterfaceImpl::GetOpenVDSName()
