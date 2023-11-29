@@ -42,7 +42,7 @@ CompressionInfo VolumeDataStoreVDSFile::GetEffectiveAdaptiveLevel(VolumeDataLaye
     compressionTolerance = 0.0f;
 
   int
-    adaptiveLevel = (waveletAdaptiveMode == WaveletAdaptiveMode::BestQuality) ? -1 : 0;
+    adaptiveLevel = -1;
 
   LayerFile* layerFile = GetLayerFile(*volumeDataLayer);
 
@@ -51,17 +51,20 @@ CompressionInfo VolumeDataStoreVDSFile::GetEffectiveAdaptiveLevel(VolumeDataLaye
     compressionMethod = CompressionMethod(layerFile->layerMetadata.m_compressionMethod);
     compressionTolerance = layerFile->layerMetadata.m_compressionTolerance;
 
-    if(waveletAdaptiveMode == WaveletAdaptiveMode::Tolerance && layerFile->layerChunksWaveletAdaptive)
+    if(layerFile->layerChunksWaveletAdaptive)
     {
-      adaptiveLevel = Wavelet::Wavelet_GetEffectiveWaveletAdaptiveLoadLevel(tolerance, layerFile->layerMetadata.m_compressionTolerance);
-    }
-    else if(waveletAdaptiveMode == WaveletAdaptiveMode::Ratio && layerFile->layerChunksWaveletAdaptive)
-    {
-      adaptiveLevel = Wavelet::Wavelet_GetEffectiveWaveletAdaptiveLoadLevel(ratio, layerFile->layerMetadata.m_adaptiveLevelSizes, layerFile->layerMetadata.m_uncompressedSize);
-    }
-    else
-    {
-      assert(waveletAdaptiveMode == WaveletAdaptiveMode::BestQuality && "Illegal WaveletAdaptiveMode");
+      if(waveletAdaptiveMode == WaveletAdaptiveMode::Tolerance)
+      {
+        adaptiveLevel = Wavelet::Wavelet_GetEffectiveWaveletAdaptiveLoadLevel(tolerance, layerFile->layerMetadata.m_compressionTolerance);
+      }
+      else if(waveletAdaptiveMode == WaveletAdaptiveMode::Ratio)
+      {
+        adaptiveLevel = Wavelet::Wavelet_GetEffectiveWaveletAdaptiveLoadLevel(ratio, layerFile->layerMetadata.m_adaptiveLevelSizes, layerFile->layerMetadata.m_uncompressedSize);
+      }
+      else
+      {
+        assert(waveletAdaptiveMode == WaveletAdaptiveMode::BestQuality && "Illegal WaveletAdaptiveMode");
+      }
     }
   }
 

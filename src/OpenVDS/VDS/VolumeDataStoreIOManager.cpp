@@ -751,7 +751,7 @@ CompressionInfo VolumeDataStoreIOManager::GetEffectiveAdaptiveLevel(VolumeDataLa
     compressionTolerance = 0.0f;
 
   int
-    adaptiveLevel = (waveletAdaptiveMode == WaveletAdaptiveMode::BestQuality) ? -1 : 0;
+    adaptiveLevel = -1;
 
   std::string layerName = GetLayerName(*volumeDataLayer);
   auto metadataManager = GetMetadataMangerForLayer(layerName);
@@ -763,17 +763,20 @@ CompressionInfo VolumeDataStoreIOManager::GetEffectiveAdaptiveLevel(VolumeDataLa
     compressionMethod = metadataStatus.m_compressionMethod;
     compressionTolerance = metadataStatus.m_compressionTolerance;
 
-    if(waveletAdaptiveMode == WaveletAdaptiveMode::Tolerance)
+    if(metadataStatus.m_chunkMetadataByteSize == sizeof(uint32_t) + sizeof(VDSWaveletAdaptiveLevelsChunkMetadata))
     {
-      adaptiveLevel = Wavelet::Wavelet_GetEffectiveWaveletAdaptiveLoadLevel(tolerance, metadataStatus.m_compressionTolerance);
-    }
-    else if(waveletAdaptiveMode == WaveletAdaptiveMode::Ratio)
-    {
-      adaptiveLevel = Wavelet::Wavelet_GetEffectiveWaveletAdaptiveLoadLevel(ratio, metadataStatus.m_adaptiveLevelSizes, metadataStatus.m_uncompressedSize);
-    }
-    else
-    {
-      assert(waveletAdaptiveMode == WaveletAdaptiveMode::BestQuality && "Illegal WaveletAdaptiveMode");
+      if(waveletAdaptiveMode == WaveletAdaptiveMode::Tolerance)
+      {
+        adaptiveLevel = Wavelet::Wavelet_GetEffectiveWaveletAdaptiveLoadLevel(tolerance, metadataStatus.m_compressionTolerance);
+      }
+      else if(waveletAdaptiveMode == WaveletAdaptiveMode::Ratio)
+      {
+        adaptiveLevel = Wavelet::Wavelet_GetEffectiveWaveletAdaptiveLoadLevel(ratio, metadataStatus.m_adaptiveLevelSizes, metadataStatus.m_uncompressedSize);
+      }
+      else
+      {
+        assert(waveletAdaptiveMode == WaveletAdaptiveMode::BestQuality && "Illegal WaveletAdaptiveMode");
+      }
     }
   }
 
