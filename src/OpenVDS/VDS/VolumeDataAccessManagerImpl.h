@@ -56,7 +56,6 @@ class VolumeDataAccessManagerImpl : public IVolumeDataAccessManager, public IVol
   VolumeDataLayoutImpl const *          ValidateChannelIndex(VolumeDataLayoutImpl const *volumeDataLayout, int channel);
   VolumeDataLayer const *               ValidateChunkIndex(VolumeDataLayer const *volumeDataLayer, int64_t chunkIndex);
   VolumeDataLayer const *               ValidateVolumeDataStore(VolumeDataLayer const *volumeDataLayer);
-  VolumeDataLayer const *               ValidateTraceDimension(VolumeDataLayer const *volumeDataLayer, int traceDimension);
 
   VolumeDataPageAccessorImpl *          CreateVolumeDataPageAccessor(VolumeDataLayer const *volumeDataLayer, VolumeDataFormat format, bool useNoValue, float noValue, int maxPages, VolumeDataAccessManager::AccessMode accessMode);
 

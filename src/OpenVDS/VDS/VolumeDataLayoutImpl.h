@@ -121,7 +121,6 @@ public:
   VolumeDataLayer *GetBaseLayer(DimensionGroup dimensionGroup, int32_t channel) { return const_cast<VolumeDataLayer *>(const_cast<const VolumeDataLayoutImpl *>(this)->GetBaseLayer(dimensionGroup, channel)); }
 
   int32_t GetBaseBrickSize() const { return m_baseBrickSize; }
-  int32_t GetLayoutDimensionNumSamples(int32_t dimension) const { VerifyDimensionMax(dimension); return m_dimensionNumSamples[dimension]; }
   int32_t GetLayerCount() const { return int32_t(m_volumeDataLayers.size()); }
 
   bool IsReadOnly() const { return m_isReadOnly; }
@@ -171,8 +170,8 @@ public:
 
   const char *GetDimensionUnit(int32_t dimension) const override;
 
-  float GetDimensionMin(int32_t dimension) const override { VerifyDimensionMax(dimension); return m_dimensionCoordinateMin[dimension]; }
-  float GetDimensionMax(int32_t dimension) const override { VerifyDimensionMax(dimension); return m_dimensionCoordinateMax[dimension]; }
+  float GetDimensionMin(int32_t dimension) const override { ValidateDimension(dimension); return m_dimensionCoordinateMin[dimension]; }
+  float GetDimensionMax(int32_t dimension) const override { ValidateDimension(dimension); return m_dimensionCoordinateMax[dimension]; }
 
   VDSIJKGridDefinition GetVDSIJKGridDefinitionFromMetadata() const override;
 
@@ -231,9 +230,9 @@ public:
 
   VolumeDataLayoutImpl const* ValidateVoxelCoordinates(const int(&minVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max], const int(&maxVoxelCoordinates)[VolumeDataLayout::Dimensionality_Max]) const;
   VolumeDataLayoutImpl const* ValidateChannelIndex(int channel) const;
-  VolumeDataLayoutImpl const* ValidateTraceDimension(int traceDimension) const;
-  VolumeDataLayoutImpl const* VerifyDimensionMax(int32_t dimension) const;
-  VolumeDataLayoutImpl const* VerifyDimensionGroup3DMax(DimensionGroup dimensionGroup) const;
+  VolumeDataLayoutImpl const* ValidateDimension(int32_t dimension, const char *parameterName = "dimension") const;
+  VolumeDataLayoutImpl const* ValidateDimensionMax(int32_t dimension) const;
+  VolumeDataLayoutImpl const* ValidateDimensionGroup3DMax(DimensionGroup dimensionGroup) const;
 
 };
 }

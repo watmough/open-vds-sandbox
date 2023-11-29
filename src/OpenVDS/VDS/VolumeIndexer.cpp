@@ -23,9 +23,9 @@ VolumeIndexerData::VolumeIndexerData(const VolumeDataPage *page,
     pitch[iDimension] = 0;
     bitPitch[iDimension] = 0;
 
-    axisNumSamples[iDimension] = layout->GetDimensionNumSamples(iDimension);
-    coordinateMin[iDimension] = (iDimension < layout->GetDimensionality()) ? layout->GetDimensionMin(iDimension) : 0;
-    coordinateMax[iDimension] = (iDimension < layout->GetDimensionality()) ? layout->GetDimensionMax(iDimension) : 0;
+    axisNumSamples[iDimension] = (iDimension < layout->GetDimensionality()) ? layout->GetDimensionNumSamples(iDimension) : 1;
+    coordinateMin[iDimension]  = (iDimension < layout->GetDimensionality()) ? layout->GetDimensionMin(iDimension) : 0;
+    coordinateMax[iDimension]  = (iDimension < layout->GetDimensionality()) ? layout->GetDimensionMax(iDimension) : 0;
 
     localChunkSamples[iDimension] = 1;
     isDimensionLODDecimated[iDimension] = false;

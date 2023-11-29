@@ -252,17 +252,6 @@ VolumeDataAccessManagerImpl::ValidateVolumeDataStore(VolumeDataLayer const *volu
   return volumeDataLayer;
 }
 
-VolumeDataLayer const *
-VolumeDataAccessManagerImpl::ValidateTraceDimension(VolumeDataLayer const * volumeDataLayer, int traceDimension)
-{
-  if(traceDimension < 0 || traceDimension >= volumeDataLayer->GetLayout()->GetDimensionality())
-  {
-    throw InvalidOperation("The trace dimension must be a valid dimension.");
-  }
-
-  return volumeDataLayer;
-}
-
 const VolumeDataLayoutImpl *
 VolumeDataAccessManagerImpl::GetVolumeDataLayout()
 {
@@ -547,7 +536,7 @@ VolumeDataAccessManagerImpl::GetVolumeTracesBufferSize(int traceCount, int trace
 {
   if (IsValid())
   {
-    return VolumeDataRequestProcessor::StaticGetVolumeTracesBufferSize(ValidateChannelIndex(PrivateGetLayout(), channel)->ValidateTraceDimension(traceDimension), traceCount, traceDimension, LOD, channel);
+    return VolumeDataRequestProcessor::StaticGetVolumeTracesBufferSize(ValidateChannelIndex(PrivateGetLayout(), channel)->ValidateDimension(traceDimension, "traceDimension"), traceCount, traceDimension, LOD, channel);
   }
   else
   {
@@ -562,7 +551,7 @@ VolumeDataAccessManagerImpl::RequestVolumeTraces(float *buffer, int64_t bufferBy
   {
     auto requiredBufferSize = GetVolumeTracesBufferSize(traceCount, traceDimension, LOD, channel);
     ValidateBuffer(buffer, bufferByteSize, requiredBufferSize);
-    return m_requestProcessor->RequestVolumeTraces(buffer, ValidateTraceDimension(ValidateProduceStatus(PrivateGetLayer(dimensionsND, channel, LOD)), traceDimension), tracePositions, traceCount, LOD, interpolationMethod, traceDimension, replacementNoValue.has_value(), replacementNoValue.value_or(0));
+    return m_requestProcessor->RequestVolumeTraces(buffer, ValidateProduceStatus(PrivateGetLayer(dimensionsND, channel, LOD)), tracePositions, traceCount, LOD, interpolationMethod, traceDimension, replacementNoValue.has_value(), replacementNoValue.value_or(0));
   }
   else
   {
