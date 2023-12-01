@@ -469,14 +469,14 @@ bool ParserState::getNextToken(const char ** buffer)
       pbuffer++;
       while (*pbuffer != '\"')
       {
-        if (*pbuffer == '\0' || (pbuffer[0] == '\\' && pbuffer[1] == '\0'))
+        if (*pbuffer == '\\')
+        {
+          pbuffer++;
+        }
+        if (*pbuffer == '\0')
         {
           foundQuotedString = false;
           return false;
-        }
-        else if (*pbuffer == '\\')
-        {
-          pbuffer++;
         }
         pbuffer++;
       }

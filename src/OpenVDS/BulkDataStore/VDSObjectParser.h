@@ -138,7 +138,16 @@ public:
       length = (_tokenEnd - _tokenStart) / sizeof(char) + 1 - 2;
       stringVal = static_cast<char *>(malloc(length));
       memset(stringVal, 0, length);
-      memcpy(stringVal, _tokenStart + 1, length - 1);
+      const char *token = _tokenStart + 1;
+      char *buffer = stringVal;
+      while(token < _tokenEnd - 1)
+      {
+        if (*token == '\\')
+        {
+          token++;
+        }
+        *buffer++ = *token++;
+      }
     }
   }
 
