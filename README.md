@@ -30,6 +30,38 @@ Latest build of the [**OpenVDS-Documentation**](https://osdu.pages.opengroup.org
 
 Community submitted [**VDS use-cases**](https://community.opengroup.org/osdu/platform/domain-data-mgmt-services/seismic/open-vds/-/wikis/VDS-use-cases)
 
+### Build Requirements (Ubuntu 22.04)
+Please ensure that the following build tools are available:
+- Build Essentials + Perl + Zlib + SSL + Git + Ninja
+ - sudo apt install build-essential
+ - sudo apt install libipc-run-perl
+ - sudo apt install zlib1g-dev
+ - sudo apt install libssl-dev libssh-dev
+ - sudo apt install git
+ - sudo apt install ninja-build
+ - sudo apt install mold
+
+OpenVDS uses the following dependencies when building the OpenVDS Python API:
+- Python 3 Development Dev + Venv + PyBind11
+ - sudo apt install python3-dev
+ - sudo apt install python3-venv
+ - sudo apt install python3-pybind11
+
+Building the OpenVDS Documentation requires:
+- Doxygen and graphviz
+ - sudo apt install doxygen
+ - sudo apt install graphviz
+
+It is not essential, but is suggested to Prepare a Python Virtual Environment:
+- Create and Activate python3 virtual env
+ - cd python && python3 -m venv ovdspy
+ - source ./ovdspy/bin/activate
+
+Install Python Requirements including Building Documentation
+- Pip may be upgraded, and Python requirements installed as follows:
+ - python -m pip install --upgrade pip
+ - python -m pip install requirements-dev-with-docs.txt
+
 ### Building
 OpenVDS uses the master branch as the main development branch. It should be in
 a working state, but might contain experimental features, or features targeting
@@ -37,6 +69,7 @@ the next "major version". The stable branches are the branches with names such
 as 1.x, 2.x. They are the branches from where the release tags (1.x.y, 2.x.y
 etc) are made. Release tags are basis for OpenVDS releases found
 [here](https://community.opengroup.org/osdu/platform/domain-data-mgmt-services/seismic/open-vds/-/releases).
+
 OpenVDS is also available as a Python PyPi package as
 [openvds](https://pypi.org/project/openvds).
 
@@ -79,6 +112,34 @@ OpenVDS requires some dependencies on linux.
 Python (to build the Python bindings)
 Java   (to build the Java bindings)
 perl and perl-IPC-Cmd (Ubuntu names this package libipc-run-perl) (to build OpenSSL which is the default).
+
+Note:
+For Linux builds, we suggest to install the `mold` linker, which both dramatically reduces time
+required for linking OpenVDS, and most importantly, reduces memory requirements
+sufficently to avoid OOM errors when using `ninja` build parallelism defaults.
+If no other changes are required, `mold` provides a simple wrapper that replaces the default linker:
+Prefix your build command with `mold -run` to transparently replace `ld` with `mold`.
+
+#### Linux (Ubuntu 22.04)
+The following is an example of building OpenVDS on Ubuntu 22.04, using a Python virtual
+environment, building documentation, and building the Python api, and installing OpenVDS
+to `/opt/ovds`.
+
+```bash
+export CMAKE_EXPORT_COMPILE_COMMANDS=1
+rm -rf build && \
+cmake -G Ninja -B build \
+-DCMAKE_MODULE_PATH=../python/ovdspy/lib/python3.10/site-packages/pybind11/share/cmake/pybind11 \
+  -DCMAKE_INSTALL_PREFIX=/opt/ovds \
+  -DPython_EXECUTABLE=/home/builds/Development/open-vds/python/ovdspy/bin/python \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DBUILD_ZLIB=OFF \
+  -DBUILD_DOCS=ON \
+  -DENABLE_OPENMP=OFF \
+  -DBUILD_PYTHON=ON
+mold -run ninja
+sudo mold -run ninja install
+```
 
 #### Windows Visual Studio
 When building on Windows the Desktop C++ component for Visual Studio must be
