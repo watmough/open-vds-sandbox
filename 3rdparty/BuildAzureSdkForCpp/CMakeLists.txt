@@ -47,41 +47,15 @@ set(
   AZURE_CORE_HEADER
     ${CURL_TRANSPORT_ADAPTER_INC}
     ${WIN_TRANSPORT_ADAPTER_INC}
-    ${AZ_CORE_DIR}/inc/azure/core.hpp 
+    ${AZ_CORE_DIR}/inc/azure/core.hpp
     ${AZ_CORE_DIR}/inc/azure/core/azure_assert.hpp
     ${AZ_CORE_DIR}/inc/azure/core/base64.hpp
     ${AZ_CORE_DIR}/inc/azure/core/case_insensitive_containers.hpp
     ${AZ_CORE_DIR}/inc/azure/core/context.hpp
-    ${AZ_CORE_DIR}/inc/azure/core/credentials/credentials.hpp
-    ${AZ_CORE_DIR}/inc/azure/core/credentials/token_credential_options.hpp
-    ${AZ_CORE_DIR}/inc/azure/core/cryptography/hash.hpp
     ${AZ_CORE_DIR}/inc/azure/core/datetime.hpp
-    ${AZ_CORE_DIR}/inc/azure/core/diagnostics/logger.hpp
     ${AZ_CORE_DIR}/inc/azure/core/dll_import_export.hpp
     ${AZ_CORE_DIR}/inc/azure/core/etag.hpp
     ${AZ_CORE_DIR}/inc/azure/core/exception.hpp
-    ${AZ_CORE_DIR}/inc/azure/core/http/http.hpp
-    ${AZ_CORE_DIR}/inc/azure/core/http/http_status_code.hpp
-    ${AZ_CORE_DIR}/inc/azure/core/http/policies/policy.hpp
-    ${AZ_CORE_DIR}/inc/azure/core/http/raw_response.hpp
-    ${AZ_CORE_DIR}/inc/azure/core/http/transport.hpp
-    ${AZ_CORE_DIR}/inc/azure/core/internal/client_options.hpp
-    ${AZ_CORE_DIR}/inc/azure/core/internal/contract.hpp
-    ${AZ_CORE_DIR}/inc/azure/core/internal/cryptography/sha_hash.hpp
-    ${AZ_CORE_DIR}/inc/azure/core/internal/diagnostics/log.hpp
-    ${AZ_CORE_DIR}/inc/azure/core/internal/environment.hpp
-    ${AZ_CORE_DIR}/inc/azure/core/internal/extendable_enumeration.hpp
-    ${AZ_CORE_DIR}/inc/azure/core/internal/http/http_sanitizer.hpp
-    ${AZ_CORE_DIR}/inc/azure/core/internal/http/pipeline.hpp
-    ${AZ_CORE_DIR}/inc/azure/core/internal/http/user_agent.hpp
-    ${AZ_CORE_DIR}/inc/azure/core/internal/io/null_body_stream.hpp
-    ${AZ_CORE_DIR}/inc/azure/core/internal/json/json.hpp
-    ${AZ_CORE_DIR}/inc/azure/core/internal/json/json_optional.hpp
-    ${AZ_CORE_DIR}/inc/azure/core/internal/json/json_serializable.hpp
-    ${AZ_CORE_DIR}/inc/azure/core/internal/strings.hpp
-    ${AZ_CORE_DIR}/inc/azure/core/internal/tracing/service_tracing.hpp
-    ${AZ_CORE_DIR}/inc/azure/core/internal/tracing/tracing_impl.hpp
-    ${AZ_CORE_DIR}/inc/azure/core/io/body_stream.hpp
     ${AZ_CORE_DIR}/inc/azure/core/match_conditions.hpp
     ${AZ_CORE_DIR}/inc/azure/core/modified_conditions.hpp
     ${AZ_CORE_DIR}/inc/azure/core/nullable.hpp
@@ -91,9 +65,38 @@ set(
     ${AZ_CORE_DIR}/inc/azure/core/platform.hpp
     ${AZ_CORE_DIR}/inc/azure/core/response.hpp
     ${AZ_CORE_DIR}/inc/azure/core/rtti.hpp
-    ${AZ_CORE_DIR}/inc/azure/core/tracing/tracing.hpp
     ${AZ_CORE_DIR}/inc/azure/core/url.hpp
     ${AZ_CORE_DIR}/inc/azure/core/uuid.hpp
+    ${AZ_CORE_DIR}/inc/azure/core/credentials/credentials.hpp
+    ${AZ_CORE_DIR}/inc/azure/core/credentials/token_credential_options.hpp
+    ${AZ_CORE_DIR}/inc/azure/core/cryptography/hash.hpp
+    ${AZ_CORE_DIR}/inc/azure/core/diagnostics/logger.hpp
+    ${AZ_CORE_DIR}/inc/azure/core/http/http.hpp
+    ${AZ_CORE_DIR}/inc/azure/core/http/http_status_code.hpp
+    ${AZ_CORE_DIR}/inc/azure/core/http/raw_response.hpp
+    ${AZ_CORE_DIR}/inc/azure/core/http/transport.hpp
+    ${AZ_CORE_DIR}/inc/azure/core/http/policies/policy.hpp
+    ${AZ_CORE_DIR}/inc/azure/core/internal/client_options.hpp
+    ${AZ_CORE_DIR}/inc/azure/core/internal/contract.hpp
+    ${AZ_CORE_DIR}/inc/azure/core/internal/environment.hpp
+    ${AZ_CORE_DIR}/inc/azure/core/internal/extendable_enumeration.hpp
+    ${AZ_CORE_DIR}/inc/azure/core/internal/strings.hpp
+    ${AZ_CORE_DIR}/inc/azure/core/internal/unique_handle.hpp
+    ${AZ_CORE_DIR}/inc/azure/core/internal/credentials/authorization_challenge_parser.hpp
+    ${AZ_CORE_DIR}/inc/azure/core/internal/cryptography/sha_hash.hpp
+    ${AZ_CORE_DIR}/inc/azure/core/internal/diagnostics/global_exception.hpp
+    ${AZ_CORE_DIR}/inc/azure/core/internal/diagnostics/log.hpp
+    ${AZ_CORE_DIR}/inc/azure/core/internal/http/http_sanitizer.hpp
+    ${AZ_CORE_DIR}/inc/azure/core/internal/http/pipeline.hpp
+    ${AZ_CORE_DIR}/inc/azure/core/internal/http/user_agent.hpp
+    ${AZ_CORE_DIR}/inc/azure/core/internal/io/null_body_stream.hpp
+    ${AZ_CORE_DIR}/inc/azure/core/internal/json/json.hpp
+    ${AZ_CORE_DIR}/inc/azure/core/internal/json/json_optional.hpp
+    ${AZ_CORE_DIR}/inc/azure/core/internal/json/json_serializable.hpp
+    ${AZ_CORE_DIR}/inc/azure/core/internal/tracing/service_tracing.hpp
+    ${AZ_CORE_DIR}/inc/azure/core/internal/tracing/tracing_impl.hpp
+    ${AZ_CORE_DIR}/inc/azure/core/io/body_stream.hpp
+    ${AZ_CORE_DIR}/inc/azure/core/tracing/tracing.hpp
     )
 
 set(
@@ -103,13 +106,17 @@ set(
     ${AZ_CORE_DIR}/src/azure_assert.cpp
     ${AZ_CORE_DIR}/src/base64.cpp
     ${AZ_CORE_DIR}/src/context.cpp
-    ${AZ_CORE_DIR}/src/cryptography/md5.cpp
-    ${AZ_CORE_DIR}/src/cryptography/sha_hash.cpp
     ${AZ_CORE_DIR}/src/datetime.cpp
     ${AZ_CORE_DIR}/src/environment.cpp
     ${AZ_CORE_DIR}/src/environment_log_level_listener.cpp
     ${AZ_CORE_DIR}/src/etag.cpp
     ${AZ_CORE_DIR}/src/exception.cpp
+    ${AZ_CORE_DIR}/src/logger.cpp
+    ${AZ_CORE_DIR}/src/operation_status.cpp
+    ${AZ_CORE_DIR}/src/uuid.cpp
+    ${AZ_CORE_DIR}/src/credentials/authorization_challenge_parser.cpp
+    ${AZ_CORE_DIR}/src/cryptography/md5.cpp
+    ${AZ_CORE_DIR}/src/cryptography/sha_hash.cpp
     ${AZ_CORE_DIR}/src/http/bearer_token_authentication_policy.cpp
     ${AZ_CORE_DIR}/src/http/http.cpp
     ${AZ_CORE_DIR}/src/http/http_sanitizer.cpp
@@ -125,44 +132,40 @@ set(
     ${AZ_CORE_DIR}/src/http/user_agent.cpp
     ${AZ_CORE_DIR}/src/io/body_stream.cpp
     ${AZ_CORE_DIR}/src/io/random_access_file_body_stream.cpp
-    ${AZ_CORE_DIR}/src/logger.cpp
-    ${AZ_CORE_DIR}/src/operation_status.cpp
-    ${AZ_CORE_DIR}/src/private/environment_log_level_listener.hpp
-    ${AZ_CORE_DIR}/src/private/package_version.hpp
-    #${AZ_CORE_DIR}/src/strings.cpp
     ${AZ_CORE_DIR}/src/tracing/tracing.cpp
-    ${AZ_CORE_DIR}/src/uuid.cpp
     )
+
 set(
   AZURE_STORAGE_COMMON_HEADER
     ${AZ_STORAGE_COMMON_DIR}/inc/azure/storage/common/access_conditions.hpp
     ${AZ_STORAGE_COMMON_DIR}/inc/azure/storage/common/account_sas_builder.hpp
     ${AZ_STORAGE_COMMON_DIR}/inc/azure/storage/common/crypt.hpp
     ${AZ_STORAGE_COMMON_DIR}/inc/azure/storage/common/dll_import_export.hpp
+    ${AZ_STORAGE_COMMON_DIR}/inc/azure/storage/common/rtti.hpp
+    ${AZ_STORAGE_COMMON_DIR}/inc/azure/storage/common/storage_common.hpp
+    ${AZ_STORAGE_COMMON_DIR}/inc/azure/storage/common/storage_credential.hpp
+    ${AZ_STORAGE_COMMON_DIR}/inc/azure/storage/common/storage_exception.hpp
     ${AZ_STORAGE_COMMON_DIR}/inc/azure/storage/common/internal/concurrent_transfer.hpp
     ${AZ_STORAGE_COMMON_DIR}/inc/azure/storage/common/internal/constants.hpp
     ${AZ_STORAGE_COMMON_DIR}/inc/azure/storage/common/internal/file_io.hpp
     ${AZ_STORAGE_COMMON_DIR}/inc/azure/storage/common/internal/reliable_stream.hpp
     ${AZ_STORAGE_COMMON_DIR}/inc/azure/storage/common/internal/shared_key_policy.hpp
+    ${AZ_STORAGE_COMMON_DIR}/inc/azure/storage/common/internal/storage_bearer_token_auth.hpp
+    ${AZ_STORAGE_COMMON_DIR}/inc/azure/storage/common/internal/storage_bearer_token_authentication_policy.hpp
     ${AZ_STORAGE_COMMON_DIR}/inc/azure/storage/common/internal/storage_per_retry_policy.hpp
     ${AZ_STORAGE_COMMON_DIR}/inc/azure/storage/common/internal/storage_service_version_policy.hpp
     ${AZ_STORAGE_COMMON_DIR}/inc/azure/storage/common/internal/storage_switch_to_secondary_policy.hpp
     ${AZ_STORAGE_COMMON_DIR}/inc/azure/storage/common/internal/xml_wrapper.hpp
-    ${AZ_STORAGE_COMMON_DIR}/inc/azure/storage/common/rtti.hpp
-    ${AZ_STORAGE_COMMON_DIR}/inc/azure/storage/common/storage_common.hpp
-    ${AZ_STORAGE_COMMON_DIR}/inc/azure/storage/common/storage_credential.hpp
-    ${AZ_STORAGE_COMMON_DIR}/inc/azure/storage/common/storage_exception.hpp
 )
 
 set(
   AZURE_STORAGE_COMMON_SOURCE
-    ${AZ_STORAGE_COMMON_DIR}/src/private/package_version.hpp
     ${AZ_STORAGE_COMMON_DIR}/src/account_sas_builder.cpp
     ${AZ_STORAGE_COMMON_DIR}/src/crypt.cpp
     ${AZ_STORAGE_COMMON_DIR}/src/file_io.cpp
     ${AZ_STORAGE_COMMON_DIR}/src/reliable_stream.cpp
     ${AZ_STORAGE_COMMON_DIR}/src/shared_key_policy.cpp
-    ${AZ_STORAGE_COMMON_DIR}/src/storage_common.cpp
+    ${AZ_STORAGE_COMMON_DIR}/src/storage_bearer_token_authentication_policy.cpp
     ${AZ_STORAGE_COMMON_DIR}/src/storage_credential.cpp
     ${AZ_STORAGE_COMMON_DIR}/src/storage_exception.cpp
     ${AZ_STORAGE_COMMON_DIR}/src/storage_per_retry_policy.cpp
@@ -172,6 +175,7 @@ set(
 
 set(
   AZURE_STORAGE_BLOBS_HEADER
+    ${AZ_STORAGE_BLOBS_DIR}/inc/azure/storage/blobs.hpp
     ${AZ_STORAGE_BLOBS_DIR}/inc/azure/storage/blobs/append_blob_client.hpp
     ${AZ_STORAGE_BLOBS_DIR}/inc/azure/storage/blobs/blob_batch.hpp
     ${AZ_STORAGE_BLOBS_DIR}/inc/azure/storage/blobs/blob_client.hpp
@@ -187,9 +191,6 @@ set(
     ${AZ_STORAGE_BLOBS_DIR}/inc/azure/storage/blobs/page_blob_client.hpp
     ${AZ_STORAGE_BLOBS_DIR}/inc/azure/storage/blobs/rest_client.hpp
     ${AZ_STORAGE_BLOBS_DIR}/inc/azure/storage/blobs/rtti.hpp
-    ${AZ_STORAGE_BLOBS_DIR}/inc/azure/storage/blobs.hpp
-    ${AZ_STORAGE_BLOBS_DIR}/src/private/avro_parser.hpp
-    ${AZ_STORAGE_BLOBS_DIR}/src/private/package_version.hpp
 )
 
 set(
@@ -205,8 +206,8 @@ set(
     ${AZ_STORAGE_BLOBS_DIR}/src/blob_service_client.cpp
     ${AZ_STORAGE_BLOBS_DIR}/src/block_blob_client.cpp
     ${AZ_STORAGE_BLOBS_DIR}/src/page_blob_client.cpp
-    ${AZ_STORAGE_BLOBS_DIR}/src/private/avro_parser.cpp
     ${AZ_STORAGE_BLOBS_DIR}/src/rest_client.cpp
+    ${AZ_STORAGE_BLOBS_DIR}/src/private/avro_parser.cpp
 )
 
 add_library(azure-core STATIC ${AZURE_CORE_HEADER} ${AZURE_CORE_SOURCE} ${AZURE_STORAGE_COMMON_HEADER} ${AZURE_STORAGE_COMMON_SOURCE}  ${AZURE_STORAGE_BLOBS_HEADER} ${AZURE_STORAGE_BLOBS_SOURCE})
