@@ -7,6 +7,7 @@ ENV JAVA_HOME=/usr/lib/jvm/java-1.8-openjdk
 ENV PATH="$JAVA_HOME/bin:${PATH}"
 
 # Copy the python requirement list into the container and download the packages
+ENV PIP_BREAK_SYSTEM_PACKAGES=1
 COPY python/requirements-dev-with-docs.txt /tmp/requirements-dev.txt
 RUN pip3 install -r tmp/requirements-dev.txt
 
