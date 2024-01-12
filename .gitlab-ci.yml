@@ -62,7 +62,7 @@ devel-container-manylinux-2-24-merge-request:
 ingestion-container-docker_with_python:
   tags: ["osdu-small"]
   stage: prepare
-  image: docker:19.03
+  image: danielscholl/azure-build-image
   script:
   - echo "client ID $AZURE_PRINCIPAL_ID"
   - echo "clinet secert $AZURE_PRINCIPAL_SECRET"
