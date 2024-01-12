@@ -15,11 +15,6 @@ variables:
   AZURE_PRINCIPAL_SECRET: $AZURE_PRINCIPAL_SECRET
   AZURE_TENANT_ID: $AZURE_TENANT_ID
 
-include:
-  - project: "osdu/platform/ci-cd-pipelines"
-    file: "cloud-providers/azure-base-containers.yml"
-
-
 devel-container-alpine-gitlab:
   stage: prepare
   image: docker:19.03
@@ -325,6 +320,9 @@ azure_publish:
     - current_date=$(date "+%Y%m%d-%H%M%S")
     - docker pull $CI_REGISTRY_IMAGE/openvds-ingestion:$CI_COMMIT_TAG
     - docker tag $CI_REGISTRY_IMAGE/openvds-ingestion:$CI_COMMIT_TAG msosdu.azurecr.io/openvds-ingestion:$CI_COMMIT_TAG
+    - echo "client ID $AZURE_PRINCIPAL_ID"
+    - echo "clinet secert $AZURE_PRINCIPAL_SECRET"
+    - echo "tenant ID $AZURE_TENANT_ID"
     - az login --service-principal -u $AZURE_PRINCIPAL_ID -p $AZURE_PRINCIPAL_SECRET --tenant $AZURE_TENANT_ID --query '[*].name'
     - az acr login --name msosdu
     - docker push msosdu.azurecr.io/openvds-ingestion:$CI_COMMIT_TAG
