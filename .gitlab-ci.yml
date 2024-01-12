@@ -15,6 +15,11 @@ variables:
   AZURE_PRINCIPAL_SECRET: $AZURE_PRINCIPAL_SECRET
   AZURE_TENANT_ID: $AZURE_TENANT_ID
 
+include:
+  - project: "osdu/platform/ci-cd-pipelines"
+    file: "cloud-providers/azure-base-containers.yml"
+
+
 devel-container-alpine-gitlab:
   stage: prepare
   image: docker:19.03
