@@ -3,6 +3,7 @@ stages:
 - build
 - test
 - deploy
+- publish
 
 variables:
   MASTER_ALPINE_IMAGE_TAG: "$CI_REGISTRY_IMAGE/master:alpine-3"
@@ -303,3 +304,20 @@ gc-containerize-gcr:
   rules:
     - if: "$GC == '1' && $CI_COMMIT_TAG"
       when: on_success
+
+azure_publish:
+  variables:
+    GIT_STRATEGY: none
+  image: danielscholl/azure-build-image
+  stage: publish
+  rules:
+    - if: $CI_COMMIT_TAG
+  tags: ['docker-runner']
+  script:
+    - current_date=$(date "+%Y%m%d-%H%M%S")
+    - docker pull $CI_REGISTRY_IMAGE/openvds-ingestion:$CI_COMMIT_TAG
+    - docker tag $CI_REGISTRY_IMAGE/openvds-ingestion:$CI_COMMIT_TAG msosdu.azurecr.io/openvds-ingestion:$CI_COMMIT_TAG
+    - az login --service-principal -u $AZURE_PRINCIPAL_ID -p $AZURE_PRINCIPAL_SECRET --tenant $AZURE_TENANT_ID --query '[*].name'
+    - az acr login --name msosdu
+    - docker push msosdu.azurecr.io/openvds-ingestion:$CI_COMMIT_TAG
+
