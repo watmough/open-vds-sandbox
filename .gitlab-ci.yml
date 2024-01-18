@@ -64,11 +64,6 @@ ingestion-container-docker_with_python:
   stage: prepare
   image: danielscholl/azure-build-image
   script:
-  - echo "client ID $AZURE_PRINCIPAL_ID"
-  - echo "clinet secert $AZURE_PRINCIPAL_SECRET"
-  - echo "tenant ID $AZURE_TENANT_ID"
-  - az login --service-principal -u $AZURE_PRINCIPAL_ID -p $AZURE_PRINCIPAL_SECRET --tenant $AZURE_TENANT_ID --query '[*].name'
-  - az acr login --name msosdu
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   - docker build -t $INGESTION_DOCKER_WITH_PYTHON_IMAGE_TAG -f docker/docker_with_python.Dockerfile .
   - docker push $INGESTION_DOCKER_WITH_PYTHON_IMAGE_TAG
