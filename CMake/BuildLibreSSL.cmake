@@ -1,4 +1,4 @@
-function(BuildLibreSSL)
+macro(BuildLibreSSL)
   if (USE_LIBRESSL)
     get_property(_isMultiConfig GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
     if (${_isMultiConfig})
@@ -23,4 +23,4 @@ function(BuildLibreSSL)
     set(OPENSSL_ROOT_DIR ${libressl_INSTALL_INT_CONFIG} PARENT_SCOPE)
   endif()
 
-endfunction()
+endmacro()

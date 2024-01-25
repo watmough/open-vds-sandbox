@@ -10,6 +10,7 @@ if (NOT EMSCRIPTEN)
   include(CMake/BuildJsonCpp.cmake)
   include(CMake/BuildFmt.cmake)
   include(CMake/BuildLibUV.cmake)
+  include(CMake/BuildAbsl.cmake)
   include(CMake/BuildCrc32c.cmake)
   include(CMake/BuildGoogleCloud.cmake)
   include(CMake/BuildLibXML2.cmake)
@@ -41,6 +42,10 @@ macro(build3rdparty)
 
     if (NOT DISABLE_AWS_IOMANAGER)
       BuildAwsCrt()
+    endif()
+
+    if (NOT DISABLE_GCP_IOMANAGER)
+      BuildAbsl()
     endif()
 
     if (NOT DISABLE_GCP_IOMANAGER)

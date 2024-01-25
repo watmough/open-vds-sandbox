@@ -4,6 +4,8 @@ endfunction()
 
 function(BuildExternal name version depends source_dir install_libs runtime_libs use_logging cmake_args)
 
+  message(STATUS "BuildExternal name:${name} version:${version} depends:${depends} source_dir:${source_dir} install_libs:${install_libs} runtime_libs:${runtime_libs} use_logging:${use_logging} cmake_args:${cmake_args}")
+
   GetRootInstallDir(INSTALL_INT ${name} ${version})
 
   if (UNIX)
