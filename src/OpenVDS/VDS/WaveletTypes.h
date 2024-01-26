@@ -23,6 +23,7 @@
 #include <algorithm>
 #include <stdexcept>
 #include <string>
+#include <stdint.h>
 
 #define WAVELET_MIN_COMPRESSION_TOLERANCE 0.01f
 

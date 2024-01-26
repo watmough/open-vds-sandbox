@@ -20,6 +20,7 @@
 
 #include <string>
 #include <cstring>
+#include <stdint.h>
 #include <OpenVDS/Range.h>
 
 namespace OpenVDS
