@@ -8,8 +8,8 @@ function(BuildOpenSSL)
     set(CRYPTO_LIB "lib/libcrypto.a")
     set(SSL_LIB    "lib/libssl.a")
   else()
-    set(CRYPTO_LIB "lib64/libcrypto.a")
-    set(SSL_LIB    "lib64/libssl.a")
+    set(CRYPTO_LIB "lib${LIBSUFFIX}/libcrypto.a")
+    set(SSL_LIB    "lib${LIBSUFFIX}/libssl.a")
   endif()
   list(APPEND OPENSSL_DLLS_LIST "${CRYPTO_LIB}")
   list(APPEND OPENSSL_DLLS_LIST "${SSL_LIB}")
@@ -34,6 +34,7 @@ function(BuildOpenSSL)
   CONFIGURE_COMMAND
     ${openssl_SOURCE_DIR}/config
     --prefix=${INSTALL_INT_CONFIG}
+    --libdir=${CMAKE_INSTALL_LIBDIR}
     no-module
     no-shared
     no-zlib
