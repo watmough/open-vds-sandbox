@@ -79,8 +79,11 @@ if (OpenMP_CXX_FOUND)
     target_link_libraries(core PRIVATE OpenMP::OpenMP_CXX)
 endif()
 
+if(APPLE)
+set_target_properties(core PROPERTIES INSTALL_RPATH "@loader_path")
+else()
 set_target_properties(core PROPERTIES INSTALL_RPATH "$ORIGIN")
-
+endif()
 install(TARGETS core LIBRARY CONFIGURATIONS Release RelWithDebInfo MinSizeRel DESTINATION python/openvds)
 install(TARGETS core LIBRARY CONFIGURATIONS Debug DESTINATION python/Debug/openvds)
 install(FILES ${pythonsources} CONFIGURATIONS Release RelWithDebInfo MinSizeRel DESTINATION python/openvds)
