@@ -201,7 +201,7 @@ bool DmsDataset::registerDataset(std::vector<std::pair<std::string, std::string>
   if (error.code)
   {
     std::string respons_str;
-    respons_str.insert(respons_str.end(), request->m_uploadHandler->responseData.begin(), request->m_uploadHandler->responseData.end());
+    respons_str.insert(respons_str.end(), responseData.begin(), responseData.end());
     error.string = fmt::format("Seismic dms create dataset failed: {} - {}", error.string, respons_str);
     return false;
   }
@@ -224,7 +224,7 @@ bool DmsDataset::lockDataset(IOManager::AccessPattern accessPattern, std::vector
   if (error.code)
   {
     std::string respons_str;
-    respons_str.insert(respons_str.end(), request->m_uploadHandler->responseData.begin(), request->m_uploadHandler->responseData.end());
+    respons_str.insert(respons_str.end(), responseData.begin(), responseData.end());
     error.string = fmt::format("Seismic dms lock dataset failed: {} - {}", error.string, respons_str);
     return false;
   }
