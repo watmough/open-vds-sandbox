@@ -2,16 +2,14 @@ function(GetRootInstallDir var name version)
   set(${var} "${PROJECT_BINARY_DIR}/${name}_${version}_install" PARENT_SCOPE)
 endfunction()
 
-function(BuildExternal name version depends source_dir install_libs runtime_libs use_logging cmake_args)
+function(BuildExternal name version depends source_dir link_libs runtime_libs use_logging cmake_args)
 
-  message(STATUS "BuildExternal name:${name} version:${version} depends:${depends} source_dir:${source_dir} install_libs:${install_libs} runtime_libs:${runtime_libs} use_logging:${use_logging} cmake_args:${cmake_args}")
+  message(STATUS "BuildExternal name:${name} version:${version} depends:${depends} source_dir:${source_dir} link_libs:${link_libs} runtime_libs:${runtime_libs} use_logging:${use_logging} cmake_args:${cmake_args}")
 
   GetRootInstallDir(INSTALL_INT ${name} ${version})
 
   if (UNIX)
-    if (NOT install_libs)
-      list(APPEND install_libs ${runtime_libs})
-    endif()
+    list(APPEND link_libs ${runtime_libs})
   endif()
 
   get_property(_isMultiConfig GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
@@ -22,7 +20,7 @@ function(BuildExternal name version depends source_dir install_libs runtime_libs
   set(INSTALL_INT_CONFIG "${INSTALL_INT}/$<CONFIG>")
   get_filename_component(ABS_PATH_INSTALL_INT_CONFIG "${INSTALL_INT_CONFIG}" ABSOLUTE)
   if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.20.0")
-    foreach (LIB IN LISTS install_libs)
+    foreach (LIB IN LISTS link_libs)
       list(APPEND BUILDBYPRODUCTS "${ABS_PATH_INSTALL_INT_CONFIG}/${LIB}")
     endforeach()
   else()
@@ -33,7 +31,7 @@ function(BuildExternal name version depends source_dir install_libs runtime_libs
 
   set(${name}_INSTALL_INT_CONFIG "${INSTALL_INT_CONFIG}" PARENT_SCOPE)
 
-  foreach (LIB IN LISTS install_libs)
+  foreach (LIB IN LISTS link_libs)
     set_property(GLOBAL APPEND PROPERTY OPENVDS_LINK_LIBRARIES "${ABS_PATH_INSTALL_INT_CONFIG}/${LIB}")
   endforeach()
 
