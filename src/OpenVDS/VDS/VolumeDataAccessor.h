@@ -406,8 +406,11 @@ class InterpolatingVolumeDataAccessor : public RawVolumeDataAccessor<T2, isLOD0>
   {
     VolumeDataAccessorBase::ReadPageAtPosition(index, enableWriting);
 
-   int32_t size[VolumeSampler<T2, (InterpolationMethod)interpolationMethod, useNoValue>::DataBlockDimensionality_Max] = { m_max[3] - m_min[3],  m_max[2] - m_min[2], m_max[1] - m_min[1],  m_max[0] - m_min[0] };
-   int32_t pitch[VolumeSampler<T2, (InterpolationMethod)interpolationMethod, useNoValue>::DataBlockDimensionality_Max] = { m_pitch[3], m_pitch[2], m_pitch[1], m_pitch[0] };
+    int32_t size[VolumeSampler<T2, (InterpolationMethod)interpolationMethod, useNoValue>::DataBlockDimensionality_Max] = { ((m_max[3] - m_min[3] - 1) >> m_LOD[3]) + 1,
+                                                                                                                           ((m_max[2] - m_min[2] - 1) >> m_LOD[2]) + 1,
+                                                                                                                           ((m_max[1] - m_min[1] - 1) >> m_LOD[1]) + 1,
+                                                                                                                           ((m_max[0] - m_min[0] - 1) >> m_LOD[0]) + 1 };
+    int32_t pitch[VolumeSampler<T2, (InterpolationMethod)interpolationMethod, useNoValue>::DataBlockDimensionality_Max] = { m_pitch[3], m_pitch[2], m_pitch[1], m_pitch[0] };
 
     m_volumeSampler = VolumeSampler<T2, (InterpolationMethod)interpolationMethod, useNoValue>(size, pitch, m_valueRangeMin, m_valueRangeMax, m_integerScale, m_integerOffset, m_noValue, m_replacementNoValue);
   }
