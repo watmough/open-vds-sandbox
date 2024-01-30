@@ -1332,7 +1332,8 @@ int64_t VolumeDataRequestProcessor::RequestVolumeSamples(void *buffer, VolumeDat
 template <typename T, InterpolationMethod INTERPMETHOD, bool isUseNoValue>
 void TraceVolume(VolumeDataPageImpl *page, const VolumeDataChunk &chunk, const std::vector<VolumeDataSamplePos> &volumeDataSamplePositions, int32_t traceDimension, float noValue, void *targetBuffer)
 {
-  int32_t traceSize = chunk.layer->GetDimensionNumSamples(traceDimension);
+  int32_t traceMin = 0;
+  int32_t traceMax = chunk.layer->GetDimensionNumSamples(traceDimension);
 
   float *traceBuffer = reinterpret_cast<float *>(targetBuffer);
 
@@ -1373,10 +1374,31 @@ void TraceVolume(VolumeDataPageImpl *page, const VolumeDataChunk &chunk, const s
 
   const T* pBuffer = (const T*) page->GetRawBufferInternal();
 
-  int32_t traceDimensionLOD = (traceDimension != fullResolutionDimension) ? LOD : 0;
-  int32_t overlapCount = GetLODSize(minExcludingMargin[traceDimension], maxExcludingMargin[traceDimension], traceDimensionLOD, maxExcludingMargin[traceDimension] == traceSize);
-  int32_t offsetSource = (minExcludingMargin[traceDimension] - min[traceDimension]) >> traceDimensionLOD;
-  int32_t offsetTarget = (minExcludingMargin[traceDimension]) >> traceDimensionLOD;
+  int32_t overlapMin = std::max(minExcludingMargin[traceDimension], traceMin);
+  int32_t overlapMax = std::min(maxExcludingMargin[traceDimension], traceMax);
+
+  int32_t offsetSource;
+  int32_t offsetTarget;
+  int32_t overlapCount;
+  int32_t traceSize;
+
+  if (fullResolutionDimension != traceDimension)
+  {
+    int32_t targetMin = GetLODSize(0, overlapMin - traceMin, LOD);
+    int32_t targetMax = GetLODSize(0, overlapMax - traceMin, LOD);
+
+    offsetSource = targetMin + ((traceMin - min[traceDimension]) >> LOD);
+    offsetTarget = targetMin;
+    overlapCount = targetMax - targetMin;
+    traceSize = GetLODSize(0, traceMax - traceMin, LOD);
+  }
+  else
+  {
+    offsetSource = overlapMin - min[traceDimension];
+    offsetTarget = overlapMin - traceMin;
+    overlapCount = overlapMax - overlapMin;
+    traceSize = traceMax - traceMin;
+  }
 
   int32_t traceCount = int32_t(volumeDataSamplePositions.size());
 
