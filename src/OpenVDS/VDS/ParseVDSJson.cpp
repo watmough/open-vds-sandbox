@@ -219,7 +219,7 @@ static enum VolumeDataLayoutDescriptor::BrickSize BrickSizeFromJson(Json::Value 
   throw Json::Exception("Illegal brick size");
 }
 
-static enum VolumeDataLayoutDescriptor::LODLevels LodLevelsFromJson(Json::Value const &jsonLODLevels)
+static enum VolumeDataLayoutDescriptor::LODLevels LODLevelsFromJson(Json::Value const &jsonLODLevels)
 {
   std::string lodLevelString = jsonLODLevels.asString();
 
@@ -945,7 +945,7 @@ bool ParseVolumeDataLayout(const std::vector<uint8_t> &json, VolumeDataLayoutDes
                                                   layoutDescriptorJson["negativeMargin"].asInt(),
                                                   layoutDescriptorJson["positiveMargin"].asInt(),
                                                   layoutDescriptorJson["brickSize2DMultiplier"].asInt(),
-                                                  LodLevelsFromJson(layoutDescriptorJson["lodLevels"]),
+                                                  LODLevelsFromJson(layoutDescriptorJson["lodLevels"]),
                                                   (layoutDescriptorJson["create2DLODs"].asBool() ? VolumeDataLayoutDescriptor::Options_Create2DLODs : VolumeDataLayoutDescriptor::Options_None) |
                                                   (layoutDescriptorJson["forceFullResolutionDimension"].asBool() ? VolumeDataLayoutDescriptor::Options_ForceFullResolutionDimension : VolumeDataLayoutDescriptor::Options_None),
                                                   layoutDescriptorJson["fullResolutionDimension"].asInt());
