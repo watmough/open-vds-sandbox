@@ -35,12 +35,11 @@ inline void getScaleOffsetForFormat(float min, float max, bool novalue, OpenVDS:
   }
 }
 
-inline OpenVDS::VDS *generateSimpleInMemory3DVDS(int32_t samplesX, int32_t samplesY, int32_t samplesZ, OpenVDS::VolumeDataChannelDescriptor::Format format, OpenVDS::VolumeDataLayoutDescriptor::BrickSize brickSize, float noValue, OpenVDS::CompressionMethod compressionMethod, float tolerance, OpenVDS::IOManager *ioManager = nullptr)
+inline OpenVDS::VDS *generateSimpleInMemory3DVDS(int32_t samplesX, int32_t samplesY, int32_t samplesZ, OpenVDS::VolumeDataChannelDescriptor::Format format, OpenVDS::VolumeDataLayoutDescriptor::BrickSize brickSize, OpenVDS::VolumeDataLayoutDescriptor::LODLevels lodLevels, float noValue, OpenVDS::CompressionMethod compressionMethod, float tolerance, OpenVDS::IOManager *ioManager = nullptr)
 {
   int negativeMargin = 4;
   int positiveMargin = 4;
   int brickSize2DMultiplier = 4;
-  auto lodLevels = OpenVDS::VolumeDataLayoutDescriptor::LODLevels_None;
   auto layoutOptions = OpenVDS::VolumeDataLayoutDescriptor::Options_None;
   OpenVDS::VolumeDataLayoutDescriptor layoutDescriptor(brickSize, negativeMargin, positiveMargin, brickSize2DMultiplier, lodLevels, layoutOptions);
 
@@ -76,9 +75,19 @@ inline OpenVDS::VDS *generateSimpleInMemory3DVDS(int32_t samplesX, int32_t sampl
   return handle;
 }
 
+inline OpenVDS::VDS *generateSimpleInMemory3DVDS(int32_t samplesX, int32_t samplesY, int32_t samplesZ, OpenVDS::VolumeDataChannelDescriptor::Format format, OpenVDS::VolumeDataLayoutDescriptor::BrickSize brickSize, float noValue, OpenVDS::CompressionMethod compressionMethod, float tolerance, OpenVDS::IOManager *ioManager = nullptr)
+{
+  return generateSimpleInMemory3DVDS(samplesX, samplesY, samplesZ, format, brickSize, OpenVDS::VolumeDataLayoutDescriptor::LODLevels_None, noValue, OpenVDS::CompressionMethod::None, 1.0f, ioManager);
+}
+
+inline OpenVDS::VDS* generateSimpleInMemory3DVDS(int32_t samplesX, int32_t samplesY, int32_t samplesZ, OpenVDS::VolumeDataChannelDescriptor::Format format, OpenVDS::VolumeDataLayoutDescriptor::BrickSize brickSize, OpenVDS::VolumeDataLayoutDescriptor::LODLevels lodLevels, float noValue = 0.0f, OpenVDS::IOManager* ioManager = nullptr)
+{
+  return generateSimpleInMemory3DVDS(samplesX, samplesY, samplesZ, format, brickSize, lodLevels, noValue, OpenVDS::CompressionMethod::None, 1.0f, ioManager);
+}
+
 inline OpenVDS::VDS* generateSimpleInMemory3DVDS(int32_t samplesX = 100, int32_t samplesY = 100, int32_t samplesZ = 100, OpenVDS::VolumeDataChannelDescriptor::Format format = OpenVDS::VolumeDataChannelDescriptor::Format_R32, OpenVDS::VolumeDataLayoutDescriptor::BrickSize brickSize = OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, float noValue = 0.0f, OpenVDS::IOManager* ioManager = nullptr)
 {
-  return generateSimpleInMemory3DVDS(samplesX, samplesY, samplesZ, format, brickSize, noValue, OpenVDS::CompressionMethod::None, 1.0f, ioManager);
+  return generateSimpleInMemory3DVDS(samplesX, samplesY, samplesZ, format, brickSize, OpenVDS::VolumeDataLayoutDescriptor::LODLevels_None, noValue, OpenVDS::CompressionMethod::None, 1.0f, ioManager);
 }
 
 inline void fillVolumeDataPages(std::shared_ptr<OpenVDS::VolumeDataPageAccessor> pageAccessor, std::function<void(void*buffer, OpenVDS::VolumeDataFormat format, OpenVDS::VolumeIndexer3D const &outputIndexer)> fillPage)
