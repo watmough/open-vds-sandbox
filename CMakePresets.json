@@ -206,8 +206,8 @@
       ]
     },
     {
-      "name": "MergeRequestManyLinux2_24",
-      "description": "Merge request for ManyLinux 2_24 is built with this configuration. We need a unique build directory",
+      "name": "MergeRequestManyLinux2_28",
+      "description": "Merge request for ManyLinux 2_28 is built with this configuration. We need a unique build directory",
       "inherits": [
 	"MergeRequestManyLinux"
       ]
