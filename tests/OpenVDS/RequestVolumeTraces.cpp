@@ -138,7 +138,7 @@ void checkAndWaitRequest(std::shared_ptr<OpenVDS::VolumeDataRequest> request, in
       throw OpenVDS::ReadErrorException(request->GetErrorMessage().c_str(), request->GetErrorCode());
     }
     // let display progress
-    float completionFactor = request->GetCompletionFactor();
+    // float completionFactor = request->GetCompletionFactor();
   }
 }
 
@@ -183,15 +183,15 @@ GTEST_TEST(OpenVDS_integration, TestLODTracesRequest)
     {
       for(int sample = 0; sample < sampleCount; sample += 4)
       {
-        const float tolerance = 10.f;
+        const float tolerance = 0.05f;
         float diff = std::abs(dataNoLOD[trace * sampleCount + sample] - dataLOD[trace * sampleCountLOD + (sample >> LOD)]);
         maxDiff = std::max(maxDiff, diff);
-        EXPECT_NEAR(dataNoLOD[trace * sampleCount + sample], dataLOD[trace * sampleCountLOD + (sample >> LOD)], 0.05f);
+        EXPECT_NEAR(dataNoLOD[trace * sampleCount + sample], dataLOD[trace * sampleCountLOD + (sample >> LOD)], tolerance);
       }
     }
     SUCCEED() << "Max difference: " << maxDiff;
   }
-  catch (OpenVDS::ReadErrorException e) {
+  catch (OpenVDS::ReadErrorException &e) {
     FAIL() << e.GetErrorMessage();
   }
 }
