@@ -902,7 +902,7 @@ struct VolumeIndexerBase : public VolumeIndexerData
   ///
   static VolumeIndexerBase<N> CreateTempBufferIndexer(const VolumeIndexerBase<N> &indexer)
   {
-    VolumeIndexerBase<N> newIndexer;
+    VolumeIndexerBase<N> newIndexer(indexer);
 
     //All of these static casts are to work around a bug in gcc
     // reset pitches
@@ -938,7 +938,7 @@ struct VolumeIndexerBase : public VolumeIndexerData
   ///
   static VolumeIndexerBase<N> CreateTempBufferIndexer(const VolumeIndexerBase<N> &indexer, int anNewVoxelMin[6], int anNewVoxelMax[6])
   {
-    VolumeIndexerBase<N> newIndexer;
+    VolumeIndexerBase<N> newIndexer(indexer);
 
     //All of these static casts are to work around a bug in gcc
     //initialize datablock info
