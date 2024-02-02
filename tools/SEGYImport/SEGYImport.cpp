@@ -2531,7 +2531,14 @@ findFirstTrace(TraceDataManager& traceDataManager, int primaryKey, int secondary
         secondaryStart = secondaryTest;
       }
 
-      traceDelta = (secondaryKey - secondaryTest) * (traceStop - traceStart) / (secondaryStop - secondaryStart);
+      if (secondaryStop == secondaryStart)
+      {
+        traceDelta = 0;
+      }
+      else
+      {
+        traceDelta = (secondaryKey - secondaryTest) * (traceStop - traceStart) / (secondaryStop - secondaryStart);
+      }
     }
     else
     {
@@ -2585,7 +2592,9 @@ findFirstTrace(TraceDataManager& traceDataManager, int primaryKey, int secondary
     }
   }
 
-  return traceStop;
+  if (isSecondaryIncreasing)
+    return traceStop;
+  return traceStart;
 }
 
 int64_t
@@ -4090,7 +4099,7 @@ main(int argc, char* argv[])
     }
     else
     {
-      for (int ensembleNumber = ensembleNumberEnd; ensembleNumber >= ensembleNumberBegin; ensembleNumber += ensembleNumberStep)
+      for (int ensembleNumber = ensembleNumberEnd; ensembleNumber >= ensembleNumberBegin; ensembleNumber -= ensembleNumberStep)
       {
         traceInfoKeys.push_back(ensembleNumber);
       }
@@ -4659,6 +4668,9 @@ main(int argc, char* argv[])
 
       for (auto segment = lower; segment != upper && error.code == 0; ++segment)
       {
+        const bool
+          isSecondaryFalling = BinInfoSecondaryKeyValue(primaryKeyValue, segment->m_binInfoStart) > BinInfoSecondaryKeyValue(primaryKeyValue, segment->m_binInfoStop);
+
         int64_t firstTrace;
         if (fileInfo.IsUnbinned())
         {
@@ -4725,7 +4737,22 @@ main(int argc, char* argv[])
 
         std::unique_ptr<GatherSpacing> gatherSpacing;
 
-        for (int64_t trace = firstTrace; trace <= segment->m_traceStop && error.code == 0; trace++, tertiaryIndex++)
+        int64_t
+          traceIncrement;
+        std::function<bool(int64_t)>
+          traceInRange;
+        if (isSecondaryFalling && !keepOriginalOrder && !fileInfo.Is2D())
+        {
+          traceIncrement = -1;
+          traceInRange = [segment](int64_t traceNumber) { return traceNumber >= segment->m_traceStart; };
+        }
+        else
+        {
+          traceIncrement = 1;
+          traceInRange = [segment](int64_t traceNumber) { return traceNumber <= segment->m_traceStop; };
+        }
+
+        for (int64_t trace = firstTrace; traceInRange(trace); trace += traceIncrement, tertiaryIndex++)
         {
           if (fileInfo.Is4D() && !static_cast<bool>(gatherSpacing))
           {
@@ -4783,8 +4810,12 @@ main(int argc, char* argv[])
             }
           }
 
+          // is secondaryTest beyond secondaryKeyStop?
+          const bool
+            isSecondaryBeyondStop = isSecondaryFalling && (keepOriginalOrder || fileInfo.Is2D()) ? secondaryTest < chunkInfo.secondaryKeyStop : secondaryTest > chunkInfo.secondaryKeyStop;
+
           // Check if the trace is outside the secondary range and go to the next segment if it is
-          if (primaryTest == segment->m_primaryKey && secondaryTest > chunkInfo.secondaryKeyStop)
+          if (primaryTest == segment->m_primaryKey && isSecondaryBeyondStop)
           {
             break;
           }
