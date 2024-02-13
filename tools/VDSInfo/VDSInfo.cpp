@@ -373,7 +373,20 @@ VDSInfo --metadata-name TextHeader -b -e -w 80 s3://bluware-jorgen-dev/volve
   {
     auto& compressionInfo = layoutJson["compressionInfo"];
     compressionInfo["compressionMethod"] = compressionStringForCompressionMethod(OpenVDS::GetCompressionMethod(handle));
-    compressionInfo["tolerance"] = OpenVDS::GetCompressionTolerance(handle);
+    if(OpenVDS::CompressionMethod_IsWavelet(OpenVDS::GetCompressionMethod(handle)))
+    {
+      compressionInfo["tolerance"] = OpenVDS::GetCompressionTolerance(handle);
+      compressionInfo["compressedSize"] = OpenVDS::GetWaveletCompressedSize(handle);
+      compressionInfo["uncompressedSize"] = OpenVDS::GetWaveletUncompressedSize(handle);
+      for(auto const& adaptiveLevel : OpenVDS::GetWaveletAdaptiveLevels(handle))
+      {
+        Json::Value adaptiveLevelJson;
+        adaptiveLevelJson["compressedSize"] = adaptiveLevel.compressedSize;
+        adaptiveLevelJson["compressionRatio"] = adaptiveLevel.compressionRatio;
+        adaptiveLevelJson["compressionTolerance"] = adaptiveLevel.compressionTolerance;
+        compressionInfo["adaptiveLevels"].append(adaptiveLevelJson);
+      }
+    }
   }
   if (axisDescriptors)
   {
@@ -465,7 +478,7 @@ VDSInfo --metadata-name TextHeader -b -e -w 80 s3://bluware-jorgen-dev/volve
   }
 
 
-  while (root.isObject() && root.size() == 1)
+  while (root.isObject() && root.size() == 1 && root.begin()->isObject())
     root = *root.begin();
 
   if (root.size())
