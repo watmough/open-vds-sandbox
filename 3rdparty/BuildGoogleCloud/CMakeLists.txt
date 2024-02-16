@@ -220,7 +220,6 @@ target_link_libraries(google_cloud_ovds PRIVATE
   absl::memory
   absl::strings
   absl::str_format
-  absl::string_view
   absl::variant
   absl::optional
   absl::time
