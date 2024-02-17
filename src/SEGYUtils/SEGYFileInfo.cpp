@@ -128,8 +128,8 @@ SEGYFileInfo::Scan(const std::vector<DataProvider>& dataProviders, OpenVDS::Erro
   m_secondaryKey = secondaryKeyHeaderField;
 
   // we assume that the text/binary headers are the same for all files; read them from the first file
-  dataProviders[0].Read(textualFileHeader,                          0, TextualFileHeaderSize, error) &&
-  dataProviders[0].Read(binaryFileHeader, TextualFileHeaderSize, BinaryFileHeaderSize,  error);
+  dataProviders[0].Read(textualFileHeader,                     0, TextualFileHeaderSize, error) &&
+  dataProviders[0].Read(binaryFileHeader,  TextualFileHeaderSize, BinaryFileHeaderSize,  error);
 
   if(error.code != 0)
   {

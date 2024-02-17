@@ -666,7 +666,7 @@ VolumeDataLayoutDescriptor VolumeDataLayoutImpl::GetLayoutDescriptor() const
   case 2048: brickSize = VolumeDataLayoutDescriptor::BrickSize_2048; break;
   case 4096: brickSize = VolumeDataLayoutDescriptor::BrickSize_4096; break;
 
-  default: throw OpenVDS::InvalidOperation("Illigal Bricksize.");
+  default: throw OpenVDS::InvalidOperation("Illegal Bricksize.");
   }
 
   VolumeDataLayoutDescriptor::LODLevels

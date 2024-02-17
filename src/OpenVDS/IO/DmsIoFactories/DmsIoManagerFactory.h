@@ -51,7 +51,7 @@ struct DmsDataset
   std::chrono::time_point<std::chrono::steady_clock> m_azure_sas_token_expires;
 
   std::string m_legalTag;
-  int m_chunkSize;
+  int m_nobjects;
 
 private:
   bool registerDataset(std::vector<std::pair<std::string, std::string>> &responseHeaders, std::vector<uint8_t>& responseData, Error& error);

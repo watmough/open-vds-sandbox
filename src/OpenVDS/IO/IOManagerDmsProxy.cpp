@@ -32,29 +32,12 @@ IOManagerDMSProxy::IOManagerDMSProxy(const DMSOpenOptions& openOptions, IOManage
   , m_curlHandler(error, m_logger, openOptions.httpProxy)
   , m_ioManagerCurlHandler(std::make_shared<CurlHandler>(error, m_logger))
   , m_dmsManager(new DmsManager(openOptions.sdAuthorityUrl, openOptions.sdApiKey, m_curlHandler, m_logger))
-  , m_useFileNameForSingleFileDatasets(openOptions.useFileNameForSingleFileDatasets)
 {
   if (m_dmsManager->m_authorityUrl.empty())
   {
     error.code = -1;
     error.string = "DMS OpenOptions sdAuthorityUrl is empty.";
     return;
-  }
-  if (openOptions.datasetPath.size() && m_useFileNameForSingleFileDatasets)
-  {
-    auto it = openOptions.datasetPath.rfind('/');
-    if (it == openOptions.datasetPath.size() - 1)
-    {
-      it = openOptions.datasetPath.rfind('/', 1);
-    }
-    if (it != std::string::npos)
-    {
-      m_filename = openOptions.datasetPath.substr(it + 1);
-    }
-  }
-  else
-  {
-    m_filename = "0";
   }
   if (openOptions.authProviderCallback)
   {
@@ -137,8 +120,7 @@ std::shared_ptr<Request> IOManagerDMSProxy::ReadObjectInfo(const std::string& ob
   {
     return std::make_shared<ErrorRequest>(objectName, std::move(error.string));
   }
-  std::string toRead = objectName.empty() ? m_filename : objectName;
-  return ioManager->ReadObjectInfo(toRead, handler);
+  return ioManager->ReadObjectInfo(objectName, handler);
 }
 
 std::shared_ptr<Request> IOManagerDMSProxy::ReadObject(const std::string& objectName, std::shared_ptr<TransferDownloadHandler> handler, const IORange& range)
@@ -149,8 +131,7 @@ std::shared_ptr<Request> IOManagerDMSProxy::ReadObject(const std::string& object
   {
     return std::make_shared<ErrorRequest>(objectName, std::move(error.string));
   }
-  std::string toRead = objectName.empty() ? m_filename : objectName;
-  return ioManager->ReadObject(toRead, handler, range);
+  return ioManager->ReadObject(objectName, handler, range);
 }
 
 std::shared_ptr<Request> IOManagerDMSProxy::WriteObject(const std::string& objectName, const std::string& contentDispostionFilename, const std::string& contentType, const std::vector<std::pair<std::string, std::string>>& metadataHeader, std::shared_ptr<std::vector<uint8_t>> data, std::function<void(const Request& request, const Error& error)> completedCallback)
@@ -168,7 +149,7 @@ std::string IOManagerDMSProxy::GetLegalTag() const {
   return m_dmsDataset->m_legalTag;
 }
 
-int IOManagerDMSProxy::GetObjectChunkSize() const {
-  return m_dmsDataset->m_chunkSize;
+int IOManagerDMSProxy::GetObjectCount() const {
+  return m_dmsDataset->m_nobjects;
 }
 }

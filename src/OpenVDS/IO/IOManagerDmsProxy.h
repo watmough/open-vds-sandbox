@@ -30,7 +30,7 @@ namespace OpenVDS
       bool Close(uint64_t serializedSize, uint64_t chunkCount, Error& error) override;
       bool EnableWriting(Error& error) override;
       std::string GetLegalTag() const override;
-      int GetObjectChunkSize() const override;
+      int GetObjectCount() const override;
     private:
       std::shared_ptr<IOManager> ensureIOManager(Error& error);
       void invalidate();
@@ -47,9 +47,6 @@ namespace OpenVDS
       std::unique_ptr<DmsIoManagerFactory> m_ioManagerFactory;
       std::shared_ptr<IOManager> m_proxy;
       std::chrono::time_point<std::chrono::steady_clock> m_expirationTime;
-
-      bool m_useFileNameForSingleFileDatasets;
-      std::string m_filename;
   };
 }
 

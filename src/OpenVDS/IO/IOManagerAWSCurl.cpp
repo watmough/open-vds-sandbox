@@ -333,7 +333,7 @@ std::shared_ptr<Request> IOManagerAWSCurl::ReadObject(const std::string& objectN
     std::map<std::string, std::string> headerMap;
     if (range.start != range.end)
     {
-      headerMap["Range"] = fmt::format("bytes={}-{}", range.start, range.end);
+      headerMap["Range"] = fmt::format("bytes={}-{}", range.start, range.end - 1);
     }
     Error error;
     auto headers = signRequest(m_host, url, m_credentialsProvider, m_region, "GET", empty_sha256(), headerMap, error);

@@ -90,9 +90,7 @@ namespace OpenVDS
     std::vector<std::string> headers;
     if (range.start != range.end)
     {
-      headers.emplace_back();
-      auto& header = headers.back();
-      header = fmt::format("range: bytes={}-{}", range.start, range.end);
+      headers.emplace_back(fmt::format("range: bytes={}-{}", range.start, range.end - 1));
     }
     m_curlHandler->addDownloadRequest(request, url, headers, convertToISO8601, CurlVerb::GET);
     return request;
