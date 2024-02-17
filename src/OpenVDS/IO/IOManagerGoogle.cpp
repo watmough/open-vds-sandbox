@@ -305,12 +305,7 @@ namespace OpenVDS
     std::string option_value;
     if (range.start != range.end)
     {
-      option_name = "range";
-      option_value = fmt::format("bytes={}-{}", range.start, range.end);
-
-      headers.emplace_back();
-      auto& header = headers.back();
-      header = fmt::format("{}: {}", option_name, option_value);
+      headers.emplace_back(fmt::format("range: bytes={}-{}", range.start, range.end - 1));
     }
     if (!m_credentialsManager->Authorize(url, headers, GET, m_bucket, m_pathPrefix, objectName, std::make_pair(option_name, option_value))) {
         request->m_done = true;

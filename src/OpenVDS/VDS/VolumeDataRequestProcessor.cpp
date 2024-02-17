@@ -1279,7 +1279,7 @@ static bool RequestVolumeSamplesProcessPage(VolumeDataPageImpl *page, VolumeData
     break;
   case VolumeDataChannelDescriptor::Format_Any:
     error.code = -1;
-    error.string = "Illigal format";
+    error.string = "Illegal format";
     return false;
   }
 
@@ -1523,7 +1523,7 @@ static bool RequestVolumeTracesProcessPage (VolumeDataPageImpl *page, VolumeData
     break;
   case VolumeDataChannelDescriptor::Format_Any:
     error.code = -1;
-    error.string = "Illigal format";
+    error.string = "Illegal format";
     return false;
   }
   return true;

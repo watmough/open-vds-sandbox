@@ -166,19 +166,6 @@ public:
   std::vector<uint8_t> m_metadataFromPage;
 };
 
-static bool IsConstantChunkHash(uint64_t chunkHash)
-{
-  const uint64_t unknownHash = 0;
-  const uint64_t noValueHash = ~0ULL;
-  const uint64_t constantHash = 0x01010101;
-
-  if (chunkHash == unknownHash || chunkHash == noValueHash || (chunkHash >> 32) == constantHash)
-  {
-    return true;
-  }
-  return false;
-}
-
 VolumeDataStoreIOManager:: VolumeDataStoreIOManager(VDS &vds, IOManager *ioManager, IOManager::AccessPattern accessPattern)
   : VolumeDataStore(ioManager->connectionType(), vds.logger)
   , m_vds(vds)
@@ -341,20 +328,6 @@ VolumeDataStoreIOManager::AddLayer(VolumeDataLayer* volumeDataLayer, int chunkMe
   return true;
 }
 
-static IORange CalculateRangeHeaderImpl(const ParsedMetadata& parsedMetadata, const MetadataStatus &metadataStatus, int adaptiveLevel)
-{
-  if (!IsConstantChunkHash(parsedMetadata.m_chunkHash) && !parsedMetadata.m_adaptiveLevels.empty())
-  {
-    int range = Wavelet::Wavelet_DecodeAdaptiveLevelsMetadata(parsedMetadata.m_chunkSize, adaptiveLevel, parsedMetadata.m_adaptiveLevels.data());
-    if (range && range != parsedMetadata.m_chunkSize)
-    {
-      return { int64_t(0) , int64_t(range - 1 ) };
-    }
-  }
-
-  return IORange();
-}
-
 static inline std::string CreateUrlForChunk(const std::string &layerName, uint64_t chunk)
 {
   return fmt::format("{}/{}", layerName, chunk);
@@ -423,8 +396,12 @@ bool VolumeDataStoreIOManager::PrepareReadChunkImpl(const VolumeDataChunk &chunk
     
     metadataManager->UnlockPage(metadataPage);
 
-    ioRange = CalculateRangeHeaderImpl(parsedMetadata, metadataStatus, adaptiveLevel);
-    isConstantValue = IsConstantChunkHash(parsedMetadata.m_chunkHash);
+    isConstantValue = !VolumeDataHash_IsDefined(parsedMetadata.m_chunkHash) || VolumeDataHash_IsConstant(parsedMetadata.m_chunkHash);
+
+    if (!isConstantValue && !parsedMetadata.m_adaptiveLevels.empty())
+    {
+      ioRange = { 0, Wavelet::Wavelet_DecodeAdaptiveLevelsMetadata(parsedMetadata.m_chunkSize, adaptiveLevel, parsedMetadata.m_adaptiveLevels.data()) };
+    }
 
     lock.lock();
   }
@@ -690,15 +667,17 @@ void VolumeDataStoreIOManager::PageTransferCompleted(MetadataPage* metadataPage,
         }
         else
         {
-          IORange ioRange = CalculateRangeHeaderImpl(parsedMetadata, metadataManager->GetMetadataStatus(), pendingRequest.m_adaptiveLevelToRequest);
+          IORange ioRange = IORange();
+          pendingRequest.m_isConstantValue = !VolumeDataHash_IsDefined(parsedMetadata.m_chunkHash) || VolumeDataHash_IsConstant(parsedMetadata.m_chunkHash);
+
+          if (!pendingRequest.m_isConstantValue && !parsedMetadata.m_adaptiveLevels.empty())
+          {
+            ioRange = { 0, Wavelet::Wavelet_DecodeAdaptiveLevelsMetadata(parsedMetadata.m_chunkSize, pendingRequest.m_adaptiveLevelToRequest, parsedMetadata.m_adaptiveLevels.data()) };
+          }
 
           std::string url = CreateUrlForChunk(metadataManager->LayerUrlStr(), volumeDataChunk.index);
           pendingRequest.m_transferHandle = std::make_shared<ReadChunkTransfer>(compressionInfo, parsedMetadata.CreateChunkMetadata());
-          if (IsConstantChunkHash(parsedMetadata.m_chunkHash))
-          {
-            pendingRequest.m_isConstantValue = true;
-          }
-          else
+          if (!pendingRequest.m_isConstantValue)
           {
             pendingRequest.m_activeTransfer = m_ioManager->ReadObject(url, pendingRequest.m_transferHandle, ioRange);
           }

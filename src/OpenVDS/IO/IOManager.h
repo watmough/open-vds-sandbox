@@ -99,7 +99,7 @@ namespace OpenVDS
     virtual std::string GetLegalTag() const{ return std::string(); }
 
     //default empty implementation, overridden inside IOManagerDMSProxy
-    virtual int GetObjectChunkSize() const { return 0; }
+    virtual int GetObjectCount() const { return 0; }
   protected:
     OpenOptions::ConnectionType m_connectionType;
   };

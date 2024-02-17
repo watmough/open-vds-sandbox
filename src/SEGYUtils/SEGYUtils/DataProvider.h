@@ -79,42 +79,103 @@ struct DataProvider
   {
     if (m_ioManager)
     {
-      auto syncTransfer = std::make_shared<DataTransfer>();
-      for (int i = 0; i < m_ioManager->GetObjectChunkSize(); i++) {
-        auto syncRequest = m_ioManager->ReadObjectInfo(std::to_string(i), syncTransfer);
-        if (syncRequest->WaitForFinish(error))
-        {
-          m_size += syncTransfer->size;
-          m_chunkSizeInfos.emplace_back(syncTransfer->size);
-          m_lastWriteTime = syncTransfer->lastWriteTime;
-        }
+      for (int i = 0; i < m_ioManager->GetObjectCount(); i++)
+      {
+        m_objectNames.push_back(std::to_string(i));
+      }
+      if(m_objectNames.empty())
+      {
+        m_objectNames.push_back("");
+      }
+
+      std::vector<std::shared_ptr<DataTransfer>> transfers;
+      std::vector<std::shared_ptr<OpenVDS::Request>> requests;
+
+      for (auto &objectName : m_objectNames)
+      {
+        transfers.emplace_back(std::make_shared<DataTransfer>());
+        requests.emplace_back(m_ioManager->ReadObjectInfo(objectName, transfers.back()));
+      }
+
+      for (int i = 0; i < int(requests.size()) && requests[i]->WaitForFinish(error); i++)
+      {
+        m_objectSizes.emplace_back(transfers[i]->size);
+        m_objectOffsets.emplace_back(m_size);
+        m_size += transfers[i]->size;
+        m_lastWriteTime = transfers[i]->lastWriteTime;
       }
     }
-
   }
 
-  std::vector<std::pair<std::string, OpenVDS::IORange>> getItemsToRead(int64_t offset, int64_t length) const {
-    //assume that the chunk size is the size of the 0th element, the last one will have the leftover bytes
-    assert(m_chunkSizeInfos.size() > 0);
+  std::vector<std::pair<std::string, OpenVDS::IORange>> getItemsToRead(int64_t offset, int64_t length) const
+  {
+    assert(m_objectNames.size() == m_objectOffsets.size());
+    assert(m_objectOffsets.size() == m_objectSizes.size());
+    assert(m_objectNames.size() > 0);
 
-    auto chunkSize = m_chunkSizeInfos[0];
-    //find where the begin index is
-    auto beginChunk = offset / chunkSize;
-    assert(static_cast<size_t>(beginChunk) < m_chunkSizeInfos.size());
+    std::vector<std::pair<std::string, OpenVDS::IORange>> itemsToRead;
 
-    std::vector<std::pair<std::string, OpenVDS::IORange>> indexesAndOffsetsToRead;
+    int currentObject = int(std::distance(m_objectOffsets.begin(), std::next(std::upper_bound(m_objectOffsets.begin(), m_objectOffsets.end(), offset), -1)));
+    assert(currentObject >= 0 && currentObject < int(m_objectOffsets.size()));
+    assert(m_objectOffsets[currentObject] <= offset);
+    assert(m_objectOffsets[currentObject] + m_objectSizes[currentObject] > offset);
 
-    int64_t readCount = 0;
-    while (readCount < length && static_cast<size_t>(beginChunk) < m_chunkSizeInfos.size()) {
-      auto chunkSizeOfThisChunk = m_chunkSizeInfos[beginChunk];
-      OpenVDS::IORange rangeToRead{ (offset + readCount) % chunkSize, std::min(rangeToRead.start + length - readCount, chunkSizeOfThisChunk - 1) };
+    int64_t remaining = length;
+    int64_t localOffset = offset - m_objectOffsets[currentObject];
+    const int64_t chunkSize = 8 * 1024 * 1024;
 
-      readCount += rangeToRead.end - rangeToRead.start + 1;
+    while(remaining > 0 && currentObject < int(m_objectSizes.size()))
+    {
+      int64_t start = localOffset;
+      int64_t end = std::min(m_objectSizes[currentObject], localOffset + remaining);
 
-      indexesAndOffsetsToRead.emplace_back(std::to_string(beginChunk), rangeToRead);
-      ++beginChunk;
+      while(start < end)
+      {
+        int64_t readSize = std::min(chunkSize, end - start);
+        OpenVDS::IORange rangeToRead = { start, start + readSize };
+        itemsToRead.emplace_back(m_objectNames[currentObject], rangeToRead);
+        remaining -= readSize;
+        start += readSize;
+      }
+
+      localOffset = 0;
+      currentObject++;
     }
-    return indexesAndOffsetsToRead;
+    return itemsToRead;
+  }
+
+  void CreateReadRequests(std::vector<std::shared_ptr<OpenVDS::Request>> &requests, std::vector<std::shared_ptr<DataTransfer>> &transfers, int64_t offset, int64_t length) const
+  {
+    assert(m_ioManager);
+    auto itemsToRead = getItemsToRead(offset, length);
+    requests.reserve(itemsToRead.size());
+    transfers.reserve(itemsToRead.size());
+
+    int64_t dataOffset = 0;
+    for (auto itemToRead : itemsToRead)
+    {
+      auto size = itemToRead.second.end - itemToRead.second.start;
+      transfers.emplace_back(std::make_shared<DataTransfer>(dataOffset));
+      dataOffset += size;
+      requests.emplace_back(m_ioManager->ReadObject(itemToRead.first, transfers.back(), itemToRead.second));
+    }
+  }
+
+  static bool CompleteReadRequests(std::vector<std::shared_ptr<OpenVDS::Request>> &requests, OpenVDS::Error& error)
+  {
+    bool isError = false;
+    for(auto &request : requests)
+    {
+      if(!isError)
+      {
+        isError = !request->WaitForFinish(error);
+      }
+      else
+      {
+        request->Cancel();
+      }
+    }
+    return !isError;
   }
 
   bool Read(void* data, int64_t offset, int32_t length, OpenVDS::Error& error) const
@@ -123,28 +184,41 @@ struct DataProvider
     {
       return m_file->Read(data, offset, length, error);
     }
-    
-    if (m_ioManager)
+    else if (m_ioManager)
     {
-      auto dataTransfer = std::make_shared<DataTransfer>();
-      auto itemsToRead = getItemsToRead(offset, length);
-      std::vector<uint8_t> dataRead;
-      for (auto itemToRead : itemsToRead)
+      if(offset < 0 || length <= 0 || offset + length > m_size)
       {
-        auto request = m_ioManager->ReadObject(itemToRead.first, dataTransfer, itemToRead.second);
-        if (!request->WaitForFinish(error))
-        {
-          return false;
-        }
-        dataRead.insert(dataRead.end(), dataTransfer->data.begin(), dataTransfer->data.end());
+        error.code = -1;
+        error.string = "Invalid read, offset " + std::to_string(offset) + " length " + std::to_string(length) + " (IOManager size " + std::to_string(m_size) + ")";
+        return false;
       }
-      memcpy(data, dataRead.data(), std::min(size_t(length), dataTransfer->data.size()));
-      return true;
-    }
 
-    error.code = -1;
-    error.string = "Invalid dataprovider, no file nor ioManager provided";
-    return false;
+      std::vector<std::shared_ptr<OpenVDS::Request>> requests;
+      std::vector<std::shared_ptr<DataTransfer>> transfers;
+
+      CreateReadRequests(requests, transfers, offset, length);
+      if(CompleteReadRequests(requests, error))
+      {
+        int64_t writeOffset = 0;
+        for(auto &transfer : transfers)
+        {
+          memcpy(reinterpret_cast<char *>(data) + writeOffset, transfer->data.data(), std::min(length - writeOffset, int64_t(transfer->data.size())));
+          writeOffset += int64_t(transfer->data.size());
+          if(writeOffset >= length) break;
+        }
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+    }
+    else
+    {
+      error.code = -1;
+      error.string = "Invalid dataprovider, no file nor ioManager provided";
+      return false;
+    }
   }
 
   int64_t Size(OpenVDS::Error &error) const
@@ -235,7 +309,9 @@ struct DataProvider
   std::unique_ptr<OpenVDS::IOManager> m_ioManager;
   const std::string m_url;
   int64_t m_size = 0;
-  std::vector<int64_t> m_chunkSizeInfos;
+  std::vector<std::string> m_objectNames;
+  std::vector<int64_t> m_objectSizes;
+  std::vector<int64_t> m_objectOffsets;
   std::string m_lastWriteTime;
 };
 
@@ -256,22 +332,7 @@ struct DataView
     {
       m_pos = pos;
       m_size = size;
-      int64_t end = pos + size;
-      const int chunk_size = 1 << 23; //8 MB
-      for (int64_t i = pos; i < end; i+= chunk_size)
-      {
-        int64_t chunk_end = std::min(i + chunk_size, end);
-
-        auto chunkItemsAndOffset = dataProvider.getItemsToRead(i, chunk_end - i - 1);
-        int64_t start_offset = 0;
-
-        for (auto chunkItemInBlob : chunkItemsAndOffset)
-        {
-          m_transfers.push_back(std::make_shared<DataTransfer>(start_offset));
-          m_requests.push_back(dataProvider.m_ioManager->ReadObject(chunkItemInBlob.first, m_transfers.back(), chunkItemInBlob.second));
-          start_offset += chunkItemInBlob.second.end - chunkItemInBlob.second.start + 1;
-        }
-      }
+      dataProvider.CreateReadRequests(m_requests, m_transfers, pos, size);
     }
     else
     {
@@ -287,41 +348,42 @@ struct DataView
 
   const void * Pointer(OpenVDS::Error &error)
   {
-    if (m_fileView)
-      return m_fileView->Pointer();
-    if (m_requests.size())
-    {
-      if (m_requests.size() == 1)
-      {
-        if (m_requests[0]->WaitForFinish(m_error))
-          m_data = std::move(m_transfers[0]->data);
-      }
-      else
-      {
-        m_data.resize(m_size);
-        OpenVDS::Error reqError;
-        for (int i = 0; i < int(m_requests.size()); i++)
-        {
-          if (!m_requests[i]->WaitForFinish(reqError))
-          {
-            m_error = reqError;
-            break;
-          }
-          auto& transfer = *m_transfers[i];
-          assert(transfer.size == int64_t(transfer.data.size()));
-          assert(transfer.offset + transfer.data.size() <= m_data.size());
-          memcpy(m_data.data() + transfer.offset, transfer.data.data(), transfer.data.size());
-        }
-      }
-      m_requests = std::vector<std::shared_ptr<OpenVDS::Request>>();
-      m_transfers = std::vector<std::shared_ptr<DataTransfer>>();
-    }
     if (m_error.code)
     {
       error = m_error;
       return nullptr;
     }
-    return m_data.data();
+    else if (m_fileView)
+    {
+      return m_fileView->Pointer();
+    }
+    else
+    {
+      if(m_requests.size())
+      {
+        assert(m_transfers.size() == m_requests.size());
+        if(DataProvider::CompleteReadRequests(m_requests, error))
+        {
+          if (m_transfers.size() == 1)
+          {
+            m_data = std::move(m_transfers[0]->data);
+          }
+          else
+          {
+            m_data.resize(m_size);
+            for(auto &transfer : m_transfers)
+            {
+              assert(transfer->size == int64_t(transfer->data.size()));
+              assert(transfer->offset + transfer->data.size() <= m_data.size());
+              memcpy(m_data.data() + transfer->offset, transfer->data.data(), transfer->data.size());
+            }
+          }
+        }
+        m_requests = std::vector<std::shared_ptr<OpenVDS::Request>>();
+        m_transfers = std::vector<std::shared_ptr<DataTransfer>>();
+      }
+      return m_data.size() ? m_data.data() : nullptr;
+    }
   }
 
   int64_t Pos() const
