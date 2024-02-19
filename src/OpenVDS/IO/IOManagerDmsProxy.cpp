@@ -167,4 +167,8 @@ std::shared_ptr<Request> IOManagerDMSProxy::WriteObject(const std::string& objec
 std::string IOManagerDMSProxy::GetLegalTag() const {
   return m_dmsDataset->m_legalTag;
 }
+
+int IOManagerDMSProxy::GetObjectChunkSize() const {
+  return m_dmsDataset->m_chunkSize;
+}
 }

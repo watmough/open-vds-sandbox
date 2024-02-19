@@ -80,13 +80,41 @@ struct DataProvider
     if (m_ioManager)
     {
       auto syncTransfer = std::make_shared<DataTransfer>();
-      auto syncRequest = m_ioManager->ReadObjectInfo("", syncTransfer);
-      if (syncRequest->WaitForFinish(error))
-      {
-        m_size = syncTransfer->size;
-        m_lastWriteTime = syncTransfer->lastWriteTime;
+      for (int i = 0; i < m_ioManager->GetObjectChunkSize(); i++) {
+        auto syncRequest = m_ioManager->ReadObjectInfo(std::to_string(i), syncTransfer);
+        if (syncRequest->WaitForFinish(error))
+        {
+          m_size += syncTransfer->size;
+          m_chunkSizeInfos.emplace_back(syncTransfer->size);
+          m_lastWriteTime = syncTransfer->lastWriteTime;
+        }
       }
     }
+
+  }
+
+  std::vector<std::pair<std::string, OpenVDS::IORange>> getItemsToRead(int64_t offset, int64_t length) const {
+    //assume that the chunk size is the size of the 0th element, the last one will have the leftover bytes
+    assert(m_chunkSizeInfos.size() > 0);
+
+    auto chunkSize = m_chunkSizeInfos[0];
+    //find where the begin index is
+    auto beginChunk = offset / chunkSize;
+    assert(static_cast<size_t>(beginChunk) < m_chunkSizeInfos.size());
+
+    std::vector<std::pair<std::string, OpenVDS::IORange>> indexesAndOffsetsToRead;
+
+    int64_t readCount = 0;
+    while (readCount < length && static_cast<size_t>(beginChunk) < m_chunkSizeInfos.size()) {
+      auto chunkSizeOfThisChunk = m_chunkSizeInfos[beginChunk];
+      OpenVDS::IORange rangeToRead{ (offset + readCount) % chunkSize, std::min(rangeToRead.start + length - readCount, chunkSizeOfThisChunk - 1) };
+
+      readCount += rangeToRead.end - rangeToRead.start + 1;
+
+      indexesAndOffsetsToRead.emplace_back(std::to_string(beginChunk), rangeToRead);
+      ++beginChunk;
+    }
+    return indexesAndOffsetsToRead;
   }
 
   bool Read(void* data, int64_t offset, int32_t length, OpenVDS::Error& error) const
@@ -99,12 +127,18 @@ struct DataProvider
     if (m_ioManager)
     {
       auto dataTransfer = std::make_shared<DataTransfer>();
-      auto request = m_ioManager->ReadObject("", dataTransfer, {offset, offset + length});
-      if (!request->WaitForFinish(error))
+      auto itemsToRead = getItemsToRead(offset, length);
+      std::vector<uint8_t> dataRead;
+      for (auto itemToRead : itemsToRead)
       {
-        return false;
+        auto request = m_ioManager->ReadObject(itemToRead.first, dataTransfer, itemToRead.second);
+        if (!request->WaitForFinish(error))
+        {
+          return false;
+        }
+        dataRead.insert(dataRead.end(), dataTransfer->data.begin(), dataTransfer->data.end());
       }
-      memcpy(data, dataTransfer->data.data(), std::min(size_t(length), dataTransfer->data.size()));
+      memcpy(data, dataRead.data(), std::min(size_t(length), dataTransfer->data.size()));
       return true;
     }
 
@@ -201,6 +235,7 @@ struct DataProvider
   std::unique_ptr<OpenVDS::IOManager> m_ioManager;
   const std::string m_url;
   int64_t m_size = 0;
+  std::vector<int64_t> m_chunkSizeInfos;
   std::string m_lastWriteTime;
 };
 
@@ -226,8 +261,16 @@ struct DataView
       for (int64_t i = pos; i < end; i+= chunk_size)
       {
         int64_t chunk_end = std::min(i + chunk_size, end);
-        m_transfers.push_back(std::make_shared<DataTransfer>(i - pos));
-        m_requests.push_back(dataProvider.m_ioManager->ReadObject("", m_transfers.back(), {i, chunk_end - 1}));
+
+        auto chunkItemsAndOffset = dataProvider.getItemsToRead(i, chunk_end - i - 1);
+        int64_t start_offset = 0;
+
+        for (auto chunkItemInBlob : chunkItemsAndOffset)
+        {
+          m_transfers.push_back(std::make_shared<DataTransfer>(start_offset));
+          m_requests.push_back(dataProvider.m_ioManager->ReadObject(chunkItemInBlob.first, m_transfers.back(), chunkItemInBlob.second));
+          start_offset += chunkItemInBlob.second.end - chunkItemInBlob.second.start + 1;
+        }
       }
     }
     else

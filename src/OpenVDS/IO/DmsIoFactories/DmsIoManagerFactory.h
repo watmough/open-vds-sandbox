@@ -45,10 +45,14 @@ struct DmsDataset
   std::string m_service_provider;
   std::string m_gc_url;
   std::string m_accessPolicy;
+
   IOManager::AccessPattern m_accessPattern;
   bool m_opened;
   std::chrono::time_point<std::chrono::steady_clock> m_azure_sas_token_expires;
+
   std::string m_legalTag;
+  int m_chunkSize;
+
 private:
   bool registerDataset(std::vector<std::pair<std::string, std::string>> &responseHeaders, std::vector<uint8_t>& responseData, Error& error);
   bool lockDataset(IOManager::AccessPattern accessPattern, std::vector<std::pair<std::string, std::string>> &responseHeaders, std::vector<uint8_t>& responseData, Error& error);
