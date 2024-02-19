@@ -95,8 +95,11 @@ namespace OpenVDS
     OPENVDS_EXPORT
       static IOManager* CreateIOManager(const StringWrapper& url, const StringWrapper& connectionString, IOManager::AccessPattern accessPattern, Error& error);
 
-    //default empty implementation, overridden inside DMSIoManagerFactory
+    //default empty implementation, overridden inside IOManagerDMSProxy
     virtual std::string GetLegalTag() const{ return std::string(); }
+
+    //default empty implementation, overridden inside IOManagerDMSProxy
+    virtual int GetObjectChunkSize() const { return 0; }
   protected:
     OpenOptions::ConnectionType m_connectionType;
   };

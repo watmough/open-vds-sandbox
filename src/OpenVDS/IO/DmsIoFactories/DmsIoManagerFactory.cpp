@@ -15,7 +15,7 @@
 
 #include <chrono>
 #include <random>
-#include <iostream>
+#include <sstream>
 #include "AzureDmsIoManagerFactory.h"
 #ifndef OPENVDS_NO_AWS_IOMANAGER
 #include "AwsDmsIoManagerFactory.h"
@@ -170,6 +170,7 @@ DmsDataset::DmsDataset(DmsManager& manager, const std::string url, Error &error,
   , m_url(url)
   , m_accessPattern(IOManager::ReadOnly)
   , m_opened(false)
+  , m_chunkSize(0)
 {
   if (!getSdPath(url, m_tenant, m_subproject, m_path, m_dataset, error))
     return;
@@ -311,6 +312,14 @@ bool DmsDataset::open(IOManager::AccessPattern accessPattern, Error &error)
       m_gc_url = root["gcsurl"].asString();
       m_legalTag = root["ltag"].asString();
       m_accessPolicy = root["access_policy"].asString();
+      
+			auto metadata = root["filemetadata"];
+      std::string chunkSize = "0";
+      if (!metadata.empty())
+        chunkSize = root.get("filemetadata", "").get("nobjects", "").asString();
+      
+      std::stringstream ss(chunkSize);
+      ss >> m_chunkSize;
     }
     catch (const Json::Exception& ex)
     {

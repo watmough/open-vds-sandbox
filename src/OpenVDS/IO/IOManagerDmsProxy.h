@@ -30,6 +30,7 @@ namespace OpenVDS
       bool Close(uint64_t serializedSize, uint64_t chunkCount, Error& error) override;
       bool EnableWriting(Error& error) override;
       std::string GetLegalTag() const override;
+      int GetObjectChunkSize() const override;
     private:
       std::shared_ptr<IOManager> ensureIOManager(Error& error);
       void invalidate();
