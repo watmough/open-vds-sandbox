@@ -30,37 +30,34 @@ Latest build of the [**OpenVDS-Documentation**](https://osdu.pages.opengroup.org
 
 Community submitted [**VDS use-cases**](https://community.opengroup.org/osdu/platform/domain-data-mgmt-services/seismic/open-vds/-/wikis/VDS-use-cases)
 
-### Build Requirements (Ubuntu 22.04)
+### Linux Build Requirements (Ubuntu 22.04 / Centos 8)
 Please ensure that the following build tools are available:
-- Build Essentials + Perl + Zlib + SSL + Git + Ninja
- - sudo apt install build-essential
- - sudo apt install libipc-run-perl
- - sudo apt install zlib1g-dev
- - sudo apt install libssl-dev libssh-dev
- - sudo apt install git
- - sudo apt install ninja-build
- - sudo apt install mold
+- Build Essentials, Git, CMake and Ninja are required for all configurations, the mold linker is optional
+  - `sudo apt install build-essential` or `sudo dnf group install "Development Tools"`
+  - `sudo apt install git` or `sudo dnf install git`
+  - `sudo apt install ninja-build` or `sudo dnf install ninja-build`
+  - `sudo apt install mold` or `sudo dnf install mold`
 
-OpenVDS uses the following dependencies when building the OpenVDS Python API:
-- Python 3 Development Dev + Venv + PyBind11
- - sudo apt install python3-dev
- - sudo apt install python3-venv
- - sudo apt install python3-pybind11
+OpenVDS uses the following dependencies when building the OpenVDS Python API -- it is recommended to prepare a Python Virtual Environment:
+- Python 3 Development (includes required header files) and pip
+  - `sudo apt install python3-dev python3-pip` or `sudo dnf install python3-devel`
+  - `sudo apt install python3-pip` or `sudo dnf install python3-pip`
+- Create and activate python3 virtual environment
+  - `sudo apt install python3-venv` or `sudo dnf install python3-virtualenv`
+  - `python3 -m venv .venv`
+  - `source .venv/bin/activate`
+  - `python3 -m pip install --upgrade pip`
+- Python requirements (numpy, pytest, pytest-benchmark)
+  - `python3 -m pip install -r python/requirements-dev.txt`
 
 Building the OpenVDS Documentation requires:
-- Doxygen and graphviz
- - sudo apt install doxygen
- - sudo apt install graphviz
+- Doxygen
+  - `sudo apt install doxygen` or `sudo dnf install doxygen`
+- Python requirements (sphinx, breathe, markdown, myst-parser, linkify-it-py, sphinx-rtd-theme, sphinx-design)
+  - `python3 -m pip install -r python/requirements-dev-with-docs.txt`
 
-It is not essential, but is suggested to Prepare a Python Virtual Environment:
-- Create and Activate python3 virtual env
- - cd python && python3 -m venv ovdspy
- - source ./ovdspy/bin/activate
-
-Install Python Requirements including Building Documentation
-- Pip may be upgraded, and Python requirements installed as follows:
- - python -m pip install --upgrade pip
- - python -m pip install requirements-dev-with-docs.txt
+Building the Java bindings requires OpenJDK Development:
+  - `sudo apt install openjdk-8-jdk` or `sudo dnf install java-1.8.0-openjdk-devel`
 
 ### Building
 OpenVDS uses the master branch as the main development branch. It should be in
@@ -70,68 +67,48 @@ as 1.x, 2.x. They are the branches from where the release tags (1.x.y, 2.x.y
 etc) are made. Release tags are basis for OpenVDS releases found
 [here](https://community.opengroup.org/osdu/platform/domain-data-mgmt-services/seismic/open-vds/-/releases).
 
-OpenVDS is also available as a Python PyPi package as
-[openvds](https://pypi.org/project/openvds).
-
-If OpenVDS is built with the AWS integration then git needs to be in the PATH.
+The easiest way to build is to use CMake presets:
+```bash
+cmake -G Ninja --preset Release
+ninja -C out/build/Release
+sudo ninja -C out/build/Release install
+```
+This can also easily be done from within Visual Studio Code using the CMake extension.
 
 NOTE: CMake will download 3rdparty dependencies the first time CMake is run on
 the OpenVDS repository. This will take some time, so be patient. This will not
 occur on subsequent builds.
 
-By default OpenVDS builds the Python 3 bindings. To install the required
-dependencies go into ${OpenVDSFolder}/python folder and run:
-`$ python -m pip install -r requirements-dev.txt`
-To disable building the Python 3 bindings use the -DBUILD_PYTHON=OFF cmake argument.
+By default OpenVDS builds the Python 3 bindings, to disable building the Python 3 bindings use the -DBUILD_PYTHON=OFF cmake argument.
 
-To install the python bindings as a site-package run:
-`$ python setup.py install`
-
+To install the Python bindings as a site-package run:
+`python3 -m pip install .`
 This will use the python executable as the target python distribution.
 
-When building using cmake the cmake variable Python3_ROOT_DIR can be used to
-specify a specific python installation.
-
-Otherwise the cmake find_package
-python rules will be used. Since CMake version 3.13 Python_FIND_REGISTRY can be
+When building using cmake the cmake variable Python3_ROOT_DIR can be used to specify a specific python installation.
+Otherwise the cmake find_package python rules will be used. Since CMake version 3.13 Python_FIND_REGISTRY can be
 used to modify search order on windows. For example, to disable searching the 
 registry pass the cmake option: -DPython_FIND_REGISTRY=NEVER.
 
-NOTE: On Windows scikit-build will use Visual Studio 2017 if python version is
->= 3.6.  There is a mergerequest for scikit-build to support
-[**Visual Studio 2019**](https://github.com/scikit-build/scikit-build/pull/526).
-
-#### Linux
-Make a build directory in the OpenVDS folder and change current directory to the created folder.
-Do:
-`$ cmake ..`
-to configure with default build settings. Now its possible to do `$ make -j8`
-to build and `$ make install` to install the package. To specify a custom
-install location specify the -DCMAKE_INSTALL_PREFIX=PATH cmake argument.
-OpenVDS requires some dependencies on linux.
-Python (to build the Python bindings)
-Java   (to build the Java bindings)
-perl and perl-IPC-Cmd (Ubuntu names this package libipc-run-perl) (to build OpenSSL which is the default).
-
-Note:
+#### Using the mold linker
 For Linux builds, we suggest to install the `mold` linker, which both dramatically reduces time
 required for linking OpenVDS, and most importantly, reduces memory requirements
 sufficently to avoid OOM errors when using `ninja` build parallelism defaults.
 If no other changes are required, `mold` provides a simple wrapper that replaces the default linker:
-Prefix your build command with `mold -run` to transparently replace `ld` with `mold`.
+Prefix your build command with `mold -run` to transparently replace `ld` with `mold` (e.g. `mold -run ninja -C out/build/Release`).
 
-#### Linux (Ubuntu 22.04)
+#### Example build with extra options on Ubuntu 22.04
 The following is an example of building OpenVDS on Ubuntu 22.04, using a Python virtual
-environment, building documentation, and building the Python api, and installing OpenVDS
+environment, using pybind11 installed in the virtual environment instead of the automaticall downloaded one, using local zlib instead of the automaticall downloaded one, building documentation, building the Python API, and installing OpenVDS
 to `/opt/ovds`.
 
 ```bash
 export CMAKE_EXPORT_COMPILE_COMMANDS=1
 rm -rf build && \
 cmake -G Ninja -B build \
--DCMAKE_MODULE_PATH=../python/ovdspy/lib/python3.10/site-packages/pybind11/share/cmake/pybind11 \
+  -DCMAKE_MODULE_PATH=../.venv/lib/python3.10/site-packages/pybind11/share/cmake/pybind11 \
   -DCMAKE_INSTALL_PREFIX=/opt/ovds \
-  -DPython_EXECUTABLE=/home/builds/Development/open-vds/python/ovdspy/bin/python \
+  -DPython_EXECUTABLE=/home/builds/Development/open-vds/.venv/bin/python \
   -DCMAKE_BUILD_TYPE=Release \
   -DBUILD_ZLIB=OFF \
   -DBUILD_DOCS=ON \
@@ -155,18 +132,13 @@ Studio solution.
 OpenVDS also supports using the cmake integration in Visual Studio. Open Visual
 Studio and use the "Open a local folder" to open the OpenVDS folder.
 
-This works with default settings with Visual Studio 2019, but there are some
-limitations using Visual Studio 2017. Before opening the project for the first
-time in Visual Studio 2017 do the following commands in the root OpenVDS project
-folder:
+This works with default settings with Visual Studio 2022 and 2019, but there are some
+limitations using Visual Studio 2017 that will require changes to be made to the CMakeSettings.json file:
 `$ git checkout 0d7825df9c981f624b6e1197a1b90c74ddae6aa9 -- CMakeSettings.json`
 `$ cmake -P CMake/Fetch3rdParty.cmake`
-Then start like other cmake projects in Visual Studio
 
 #### MacOS
-When building on MacOS we need the perl and perl-IPC-Cmd to build OpenSSL.
-
-Then it should be work out of the box with the IDE of your choice.
+MacOS is not an officially supported target for OpenVDS, but we try to make it work as best as we can. We recommend using Visual Studio Code and the cmake extension.
 
 #### Emscripten
 OpenVDS can be compiled with Emscripten to a javascript module. The module
@@ -177,7 +149,6 @@ is needed. Make sure cmake is in the path. Activate the Emscripten SDK
 environment, make a build folder, and run
 "emcmake cmake -DCMAKE_BUILD_TYPE=Release <path to open-vds>" and
 "cmake --build ." from the build folder.
-
 
 #### Build options
 - BUILD_PYTHON (ON|OFF)
@@ -192,14 +163,12 @@ Build options are arguments to cmake. `$ cmake -DBUILD_PYTHON=OFF ..` would turn
 #### Building documentation
 The following tools are needed to build the documentation:
 - Doxygen
-- Sphinx
-- Breathe
+  - On Windows download the Doxygen binary from: http://doxygen.nl/download.html
+  - On Linux use `sudo apt install doxygen` or `sudo dnf install doxygen` to install doxygen
+- The python packages sphinx, breathe, markdown, myst-parser, linkify-it-py, sphinx-rtd-theme and sphinx-design
+  - `python3 -m pip install -r python/requirements-dev-with-docs.txt`
 
-On Windows download the Doxygen binary from: http://doxygen.nl/download.html
-Then install Sphinx and Breathe with pip:
-C:\> pip install -U sphinx breathe
-
-Add the -DBUILD_DOCS=ON to the cmake argument list
+Add `-DBUILD_DOCS=ON` to the cmake argument list
 
 #### Building OSDU Docker image
 The OSDU Docker image is built using `python3 build_osdu_image.py` in the root
