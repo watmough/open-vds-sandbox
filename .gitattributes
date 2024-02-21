@@ -1,1 +1,2 @@
 docker/osdu.entrypoint.sh     text eol=lf
+*.patch text eol=lf
