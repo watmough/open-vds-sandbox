@@ -57,6 +57,8 @@ macro(Fetch3rdParty_Package name version url url_hash)
     FetchContent_Populate(${name}
       URL ${url}
       URL_HASH ${url_hash}
+      LOG_PATCH ON
+      PATCH_COMMAND ${${name}_patch}
       SOURCE_DIR ${SRC_DIR}
       SUBBUILD_DIR ${thirdParty}/CMakeArtifacts/${name}-sub-${version}
       BINARY_DIR ${thirdParty}/CMakeArtifacts/${name}-${version})
@@ -88,6 +90,14 @@ endmacro()
 function(Fetch3rdParty)
   set(FETCHCONTENT_QUIET OFF)
   include(FetchContent)
+
+  if (OPENVDS_3RD_PARTY_DIR)
+    set(Fetch3rdPartyDir "${OPENVDS_3RD_PARTY_DIR}")
+  else()
+    set(Fetch3rdPartyDir "${Fetch3rdPartyDirInternal}/../3rdparty")
+  endif()
+
+  set(azure-sdk-for-cpp_patch git --git-dir= apply --unsafe-paths -v --directory ${Fetch3rdPartyDir}/azure-sdk-for-cpp-1.10.3 ${Fetch3rdPartyDirInternal}/../3rdparty/BuildAzureSdkForCpp/0001-Fix-use-of-namespace-qualifiers-that-have-not-been-e.patch)
 
   Fetch3rdParty_Git(aws-crt-cpp           0.19.8     https://github.com/awslabs/aws-crt-cpp.git                                           v0.19.8)
   Fetch3rdParty_Package(gtest             1.12.1     https://github.com/google/googletest/archive/refs/tags/release-1.12.1.tar.gz         SHA256=81964fe578e9bd7c94dfdb09c8e4d6e6759e19967e397dbea48d1c10e45d0df2)
