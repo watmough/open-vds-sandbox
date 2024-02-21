@@ -1,0 +1,34 @@
+diff --git a/sdk/core/azure-core/src/credentials/authorization_challenge_parser.cpp b/sdk/core/azure-core/src/credentials/authorization_challenge_parser.cpp
+index f9d49dce..65e2685d 100644
+--- a/sdk/core/azure-core/src/credentials/authorization_challenge_parser.cpp
++++ b/sdk/core/azure-core/src/credentials/authorization_challenge_parser.cpp
+@@ -43,7 +43,7 @@ bool TryGetNextParameter(StringSpan& headerValue, StringSpan& paramKey, StringSp
+ std::string const EmptyString;
+ } // namespace
+ 
+-std::string const& AuthorizationChallengeHelper::GetChallenge(Http::RawResponse const& response)
++std::string const& AuthorizationChallengeHelper::GetChallenge(RawResponse const& response)
+ {
+   // See RFC7235 (https://www.rfc-editor.org/rfc/rfc7235#section-4.1)
+   if (response.GetStatusCode() == HttpStatusCode::Unauthorized)
+diff --git a/sdk/core/azure-core/src/http/bearer_token_authentication_policy.cpp b/sdk/core/azure-core/src/http/bearer_token_authentication_policy.cpp
+index 66cd6b00..6705af76 100644
+--- a/sdk/core/azure-core/src/http/bearer_token_authentication_policy.cpp
++++ b/sdk/core/azure-core/src/http/bearer_token_authentication_policy.cpp
+@@ -13,6 +13,7 @@ using Azure::Core::Context;
+ using Azure::Core::Credentials::AuthenticationException;
+ using Azure::Core::Credentials::TokenRequestContext;
+ using Azure::Core::Credentials::_detail::AuthorizationChallengeHelper;
++using Azure::Core::Http::Request;
+ using Azure::Core::Http::RawResponse;
+ using Azure::Core::Http::Policies::NextHttpPolicy;
+ 
+@@ -63,7 +64,7 @@ bool BearerTokenAuthenticationPolicy::AuthorizeRequestOnChallenge(
+ 
+ void BearerTokenAuthenticationPolicy::AuthenticateAndAuthorizeRequest(
+     Request& request,
+-    Credentials::TokenRequestContext const& tokenRequestContext,
++    TokenRequestContext const& tokenRequestContext,
+     Context const& context) const
+ {
+   std::lock_guard<std::mutex> lock(m_accessTokenMutex);
