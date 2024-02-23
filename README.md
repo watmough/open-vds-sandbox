@@ -30,6 +30,11 @@ Latest build of the [**OpenVDS-Documentation**](https://osdu.pages.opengroup.org
 
 Community submitted [**VDS use-cases**](https://community.opengroup.org/osdu/platform/domain-data-mgmt-services/seismic/open-vds/-/wikis/VDS-use-cases)
 
+### Binary Release
+Bluware Inc. releases a binary distribution of OpenVDS that includes the proprietary Bluware Wavelet Compression algorithm that makes it possible
+to write compressed VDS. This distribution is known as [**OpenVDS+**](https://bluware.com/data-solutions/vds/openvds/) and is available for free under a Creative Commons [**CC-BY-ND 4.0**](https://creativecommons.org/licenses/by-nd/4.0/) License, the only
+restrictions being that you are not allowed to modify, extend or extract parts of the provided binaries (i.e. the compression code). You can read more about this distribution in the Bluware [**OpenVDS+ FAQ**](https://bluware.com/developers/openvds-faq/).
+
 ### Linux Build Requirements (Ubuntu 22.04 / Centos 8)
 Please ensure that the following build tools are available:
 - Build Essentials, Git, CMake and Ninja are required for all configurations, the mold linker is optional
