@@ -69,7 +69,7 @@ AwsDmsIoManagerFactory::AwsDmsIoManagerFactory(DmsDataset& dataset, Logger &logg
   if (m_region.empty())
   {
     //we have to skip automatic location detection
-    m_region = "us-east-1";
+    //m_region = "us-east-1";
   }
 }
 
