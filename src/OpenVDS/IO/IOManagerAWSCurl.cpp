@@ -92,12 +92,12 @@ static std::string GetBucketLocation(const std::shared_ptr<Aws::Crt::Auth::ICred
   signingConfig.SetService("s3");
   signingConfig.SetSignatureType(Aws::Crt::Auth::SignatureType::HttpRequestViaHeaders);
   signingConfig.SetSignedBodyHeader(Aws::Crt::Auth::SignedBodyHeaderType::None);
-  signingConfig.SetRegion("us-west-1");
-  std::string host = fmt::format("{}.s3.us-west-1.amazonaws.com", bucket);
-  std::string url = "https://" + host + "/?location";
+  signingConfig.SetRegion("us-east-1");
+  std::string host = fmt::format("{}.s3.us-east-1.amazonaws.com", bucket);
+  std::string url = "https://" + host; // + "/?location";
   auto crtrequest = std::make_shared<Aws::Crt::Http::HttpRequest>();
   crtrequest->SetPath(createByteCursor(url));
-  crtrequest->SetMethod(createByteCursor("GET"));
+  crtrequest->SetMethod(createByteCursor("HEAD"));
   crtrequest->AddHeader(createHttpHeader("Host", host));
 
   Aws::Crt::Auth::Sigv4HttpRequestSigner requestSign;
@@ -114,28 +114,15 @@ static std::string GetBucketLocation(const std::shared_ptr<Aws::Crt::Auth::ICred
     std::string header = name + ": " + value;
     headers.emplace_back(std::move(header));
   }
-  headers.emplace_back("x-amz-content-sha256: " + empty_sha256());
 
   auto handler = std::make_shared<BucketLocationTransferDownloadHandler>();
   std::shared_ptr<DownloadRequestCurl> request = std::make_shared<DownloadRequestCurl>("", handler);
-  curlHandler.addDownloadRequest(request, url, headers, convertToISO8601, CurlVerb::GET);
+  curlHandler.addDownloadRequest(request, url, headers, convertToISO8601, CurlVerb::HEADER);
 
-  Error error; //don't propogate error
+  Error error; //don't propagate error
   request->WaitForFinish(error);
-  if (error.code)
-    return "";
-  std::string xmlContent((const char*)handler->data.data(), handler->data.size());
-  auto it = xmlContent.find("LocationConstraint");
-  if (it == std::string::npos)
-    return "";
-  auto start = xmlContent.find('>', it);
-  if (start == std::string::npos)
-    return "";
-  start++;
-  auto end = xmlContent.find('<', start + 1);
-  if (end == std::string::npos)
-    return "";
-  return xmlContent.substr(start, end - start);
+
+  return handler->meta["x-amz-bucket-region"];
 }
 
 void assignByteCursorFromString(Aws::Crt::ByteCursor& cursor, const std::string& source)
