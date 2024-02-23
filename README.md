@@ -30,6 +30,40 @@ Latest build of the [**OpenVDS-Documentation**](https://osdu.pages.opengroup.org
 
 Community submitted [**VDS use-cases**](https://community.opengroup.org/osdu/platform/domain-data-mgmt-services/seismic/open-vds/-/wikis/VDS-use-cases)
 
+### Binary Release
+Bluware Inc. releases a binary distribution of OpenVDS that includes the proprietary Bluware Wavelet Compression algorithm that makes it possible
+to write compressed VDS. This distribution is known as [**OpenVDS+**](https://bluware.com/data-solutions/vds/openvds/) and is available for free under a Creative Commons [**CC-BY-ND 4.0**](https://creativecommons.org/licenses/by-nd/4.0/) License, the only
+restrictions being that you are not allowed to modify, extend or extract parts of the provided binaries (i.e. the compression code). You can read more about this distribution in the Bluware [**OpenVDS+ FAQ**](https://bluware.com/developers/openvds-faq/).
+
+### Linux Build Requirements (Ubuntu 22.04 / Centos 8)
+Please ensure that the following build tools are available:
+- Build Essentials, Git, CMake and Ninja are required for all configurations, the mold linker is optional
+  - `sudo apt install build-essential` or `sudo dnf group install "Development Tools"`
+  - `sudo apt install git` or `sudo dnf install git`
+  - `sudo apt install ninja-build` or `sudo dnf install ninja-build`
+  - `sudo apt install mold` or `sudo dnf install mold`
+
+OpenVDS uses the following dependencies when building the OpenVDS Python API -- it is recommended to prepare a Python Virtual Environment:
+- Python 3 Development (includes required header files) and pip
+  - `sudo apt install python3-dev python3-pip` or `sudo dnf install python3-devel`
+  - `sudo apt install python3-pip` or `sudo dnf install python3-pip`
+- Create and activate python3 virtual environment
+  - `sudo apt install python3-venv` or `sudo dnf install python3-virtualenv`
+  - `python3 -m venv .venv`
+  - `source .venv/bin/activate`
+  - `python3 -m pip install --upgrade pip`
+- Python requirements (numpy, pytest, pytest-benchmark)
+  - `python3 -m pip install -r python/requirements-dev.txt`
+
+Building the OpenVDS Documentation requires:
+- Doxygen
+  - `sudo apt install doxygen` or `sudo dnf install doxygen`
+- Python requirements (sphinx, breathe, markdown, myst-parser, linkify-it-py, sphinx-rtd-theme, sphinx-design)
+  - `python3 -m pip install -r python/requirements-dev-with-docs.txt`
+
+Building the Java bindings requires OpenJDK Development:
+  - `sudo apt install openjdk-8-jdk` or `sudo dnf install java-1.8.0-openjdk-devel`
+
 ### Building
 OpenVDS uses the master branch as the main development branch. It should be in
 a working state, but might contain experimental features, or features targeting
