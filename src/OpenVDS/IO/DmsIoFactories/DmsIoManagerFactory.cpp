@@ -197,16 +197,14 @@ bool DmsDataset::registerDataset(std::vector<std::pair<std::string, std::string>
   m_manager.addHeaders(headers);
   m_manager.m_curlHandler.addUploadRequest(request, url, headers, CurlVerb::POST, {}, 0, 0);
   request->WaitForFinish(error);
-  responseHeaders = std::move(request->m_uploadHandler->responseHeaders);
-  responseData = std::move(request->m_uploadHandler->responseData);
   if (error.code)
   {
-    std::string respons_str;
-    respons_str.insert(respons_str.end(), responseData.begin(), responseData.end());
-    error.string = fmt::format("Seismic dms create dataset failed: {} - {}", error.string, respons_str);
+    auto responseString = std::string(request->m_uploadHandler->responseData.begin(), request->m_uploadHandler->responseData.end());
+    error.string = fmt::format("Seismic dms create dataset failed: {} - {}", error.string, responseString);
     return false;
   }
-
+  responseHeaders = std::move(request->m_uploadHandler->responseHeaders);
+  responseData = std::move(request->m_uploadHandler->responseData);
   return true;
 }
   
@@ -220,15 +218,14 @@ bool DmsDataset::lockDataset(IOManager::AccessPattern accessPattern, std::vector
   m_manager.addHeaders(headers);
   m_manager.m_curlHandler.addUploadRequest(request, url, headers, CurlVerb::PUT, {}, 0, 0);
   request->WaitForFinish(error);
-  responseHeaders = std::move(request->m_uploadHandler->responseHeaders);
-  responseData = std::move(request->m_uploadHandler->responseData);
   if (error.code)
   {
-    std::string respons_str;
-    respons_str.insert(respons_str.end(), responseData.begin(), responseData.end());
-    error.string = fmt::format("Seismic dms lock dataset failed: {} - {}", error.string, respons_str);
+    auto responseString = std::string(request->m_uploadHandler->responseData.begin(), request->m_uploadHandler->responseData.end());
+    error.string = fmt::format("Seismic dms lock dataset failed: {} - {}", error.string, responseString);
     return false;
   }
+  responseHeaders = std::move(request->m_uploadHandler->responseHeaders);
+  responseData = std::move(request->m_uploadHandler->responseData);
   return true;
 }
   
@@ -244,12 +241,10 @@ bool DmsDataset::deleteDataset(Error& error)
   request->WaitForFinish(error);
   if (error.code)
   {
-    std::string respons_str;
-    respons_str.insert(respons_str.end(), request->m_uploadHandler->responseData.begin(), request->m_uploadHandler->responseData.end());
-    error.string = fmt::format("Seismic dms delete dataset failed: {} - {}", error.string, respons_str);
+    auto responseString = std::string(request->m_uploadHandler->responseData.begin(), request->m_uploadHandler->responseData.end());
+    error.string = fmt::format("Seismic dms delete dataset failed: {} - {}", error.string, responseString);
     return false;
   }
-
   return true;
 }
 
@@ -403,12 +398,10 @@ bool DmsDataset::close(uint64_t serializedSize, uint64_t chunkCount, Error& erro
   request->WaitForFinish(error);
   if (error.code || !request->m_uploadHandler)
   {
-    std::string respons_str;
-    respons_str.insert(respons_str.end(), request->m_uploadHandler->responseData.begin(), request->m_uploadHandler->responseData.end());
-    error.string = fmt::format("Seismic dms close failed: {} - {}", error.string, respons_str);
+    auto responseString = std::string(request->m_uploadHandler->responseData.begin(), request->m_uploadHandler->responseData.end());
+    error.string = fmt::format("Seismic dms close failed: {} - {}", error.string, responseString);
     return false;
   }
-
   m_opened = false;
   return true;
 }
@@ -441,7 +434,7 @@ DmsIoManagerFactory::~DmsIoManagerFactory()
 {}
 DmsIoManagerFactory::GcsAccessToken DmsIoManagerFactory::gcsAccessToken(Error &error)
 {
-    GcsAccessToken ret;
+    GcsAccessToken gcsAccessToken;
     std::string readonly = m_dataset.m_accessPattern == IOManager::ReadOnly ? "true" : "false";
 
     std::string sdPath = m_dataset.m_accessPolicy == "dataset" ? URLEncode(m_dataset.m_url) : URLEncode(fmt::format("sd://{}/{}", m_dataset.m_tenant, m_dataset.m_subproject));
@@ -453,14 +446,13 @@ DmsIoManagerFactory::GcsAccessToken DmsIoManagerFactory::gcsAccessToken(Error &e
     request->WaitForFinish(error);
     if (error.code || !request->m_downloadHandler)
     {
-      std::string respons_str;
-      respons_str.insert(respons_str.end(), request->m_downloadHandler->responseData.begin(), request->m_downloadHandler->responseData.end());
-      error.string = fmt::format("Seismic DMS: gcs-access-token failed: {} - {}", error.string, respons_str);
-      return ret;
+      auto responseString = std::string(request->m_downloadHandler->responseData.begin(), request->m_downloadHandler->responseData.end());
+      error.string = fmt::format("Seismic DMS: gcs-access-token failed: {} - {}", error.string, responseString);
+      return gcsAccessToken;
     }
-    ret.data = std::move(request->m_downloadHandler->responseData);
-    ret.headers = std::move(request->m_downloadHandler->responseHeaders);
-    return ret;
+    gcsAccessToken.data = std::move(request->m_downloadHandler->responseData);
+    gcsAccessToken.headers = std::move(request->m_downloadHandler->responseHeaders);
+    return gcsAccessToken;
 }
 
 }
