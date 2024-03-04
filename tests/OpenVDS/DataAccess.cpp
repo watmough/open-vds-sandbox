@@ -457,3 +457,99 @@ GTEST_TEST(OpenVDS_integration, RequestVolumeSubsetWithDifferentFormatsAndDimens
     }
   }
 }
+
+GTEST_TEST(OpenVDS_integration, RequestVolumeSubsetIntegerFormatConversionU8)
+{
+  int dim[3] = { 100, 100, 200 };
+
+  OpenVDS::Error error;
+  OpenVDS::IOManager *inMemory = OpenVDS::IOManagerInMemory::CreateIOManagerInMemory("", error);
+  EXPECT_EQ(error.code, 0);
+  EXPECT_EQ(error.string, "");
+
+  OpenVDS::ScopedVDSHandle handle(generateSimpleInMemory3DVDS(dim[0], dim[1], dim[2], OpenVDS::VolumeDataChannelDescriptor::Format_U8, OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, 0.0f, inMemory));
+  ASSERT_TRUE(handle);
+  fill3DVDSWithNoise(handle);
+
+  OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle);
+
+  int voxelMin[] = { 13, 13, 119,  0, 0, 0};
+  int voxelMax[] = { 23, 23, 129,  1, 1, 1};
+
+  const int LOD = 0;
+  const int channel = 0;
+
+  int sizeI = voxelMax[2] - voxelMin[2];
+  int sizeJ = voxelMax[1] - voxelMin[1];
+  int sizeK = voxelMax[0] - voxelMin[0];
+  int sizeJK = sizeJ * sizeK;
+
+  auto requestInt   = accessManager.RequestVolumeSubset<uint8_t>(OpenVDS::DimensionsND::Dimensions_012, LOD, channel, voxelMin, voxelMax);
+  auto requestFloat = accessManager.RequestVolumeSubset<float>  (OpenVDS::DimensionsND::Dimensions_012, LOD, channel, voxelMin, voxelMax);
+  const uint8_t *dataInt   = requestInt->Data().data();
+  const float   *dataFloat = requestFloat->Data().data();
+  float scale  = accessManager.GetVolumeDataLayout()->GetChannelIntegerScale(0);
+  float offset = accessManager.GetVolumeDataLayout()->GetChannelIntegerOffset(0);
+
+  for(int i = 0; i < sizeI; i++)
+  for(int j = 0; j < sizeJ; j++)
+  for(int k = 0; k < sizeK; k++)
+  {
+    uint8_t valueInt   = dataInt  [i * sizeJK + j * sizeK + k];
+    float   valueFloat = dataFloat[i * sizeJK + j * sizeK + k];
+
+    if(valueInt * scale + offset != valueFloat)
+    {
+      ASSERT_EQ(valueInt * scale + offset, valueFloat);
+      break;
+    }
+  }
+}
+
+GTEST_TEST(OpenVDS_integration, RequestVolumeSubsetIntegerFormatConversionU16)
+{
+  int dim[3] = { 100, 100, 200 };
+
+  OpenVDS::Error error;
+  OpenVDS::IOManager *inMemory = OpenVDS::IOManagerInMemory::CreateIOManagerInMemory("", error);
+  EXPECT_EQ(error.code, 0);
+  EXPECT_EQ(error.string, "");
+
+  OpenVDS::ScopedVDSHandle handle(generateSimpleInMemory3DVDS(dim[0], dim[1], dim[2], OpenVDS::VolumeDataChannelDescriptor::Format_U16, OpenVDS::VolumeDataLayoutDescriptor::BrickSize_32, 0.0f, inMemory));
+  ASSERT_TRUE(handle);
+  fill3DVDSWithNoise(handle);
+
+  OpenVDS::VolumeDataAccessManager accessManager = OpenVDS::GetAccessManager(handle);
+
+  int voxelMin[] = { 13, 13, 119,  0, 0, 0};
+  int voxelMax[] = { 23, 23, 129,  1, 1, 1};
+
+  const int LOD = 0;
+  const int channel = 0;
+
+  int sizeI = voxelMax[2] - voxelMin[2];
+  int sizeJ = voxelMax[1] - voxelMin[1];
+  int sizeK = voxelMax[0] - voxelMin[0];
+  int sizeJK = sizeJ * sizeK;
+
+  auto requestInt   = accessManager.RequestVolumeSubset<uint16_t>(OpenVDS::DimensionsND::Dimensions_012, LOD, channel, voxelMin, voxelMax);
+  auto requestFloat = accessManager.RequestVolumeSubset<float>   (OpenVDS::DimensionsND::Dimensions_012, LOD, channel, voxelMin, voxelMax);
+  const uint16_t *dataInt   = requestInt->Data().data();
+  const float    *dataFloat = requestFloat->Data().data();
+  float scale  = accessManager.GetVolumeDataLayout()->GetChannelIntegerScale(0);
+  float offset = accessManager.GetVolumeDataLayout()->GetChannelIntegerOffset(0);
+
+  for(int i = 0; i < sizeI; i++)
+  for(int j = 0; j < sizeJ; j++)
+  for(int k = 0; k < sizeK; k++)
+  {
+    uint16_t valueInt   = dataInt  [i * sizeJK + j * sizeK + k];
+    float    valueFloat = dataFloat[i * sizeJK + j * sizeK + k];
+
+    if(valueInt * scale + offset != valueFloat)
+    {
+      ASSERT_EQ(valueInt * scale + offset, valueFloat);
+      break;
+    }
+  }
+}
