@@ -101,8 +101,9 @@ bool DeserializeVolumeData(const std::vector<uint8_t> &serializedData, VolumeDat
     const void *data = serializedData.data();
 
     int32_t dataVersion = ((int32_t *)data)[0];
-    (void)dataVersion;
-    assert(dataVersion >= WAVELET_DATA_VERSION_1_4 && dataVersion <= WAVELET_DATA_VERSION_1_6);
+    uint32_t integerInfo = (((int32_t *)data)[5] >> 8) & 0xff;
+
+    assert(dataVersion >= WAVELET_DATA_VERSION_1_4 && dataVersion <= WAVELET_DATA_VERSION_1_6); (void)dataVersion /* avoid unused variable warning in Release builds */;
 
     bool isNormalize = false;
     bool isLossless = false;
@@ -131,10 +132,32 @@ bool DeserializeVolumeData(const std::vector<uint8_t> &serializedData, VolumeDat
       adaptiveLevel = 0;
     }
 
-    Wavelet::WaveletDataFormat waveletDataFormat = (Wavelet::WaveletDataFormat)format;
+    Wavelet::WaveletDataFormat waveletDataFormat = Wavelet::WaveletDataFormat::Format_R32;
     Wavelet::FloatRange waveletValueRange(valueRange.Min, valueRange.Max);
     Wavelet::WaveletDataBlock waveletDataBlock;
-    
+
+    if(integerInfo & Wavelet::WAVELET_INTEGERINFO_ISINTEGER)
+    {
+      if(integerInfo & Wavelet::WAVELET_INTEGERINFO_16BIT)
+      {
+        waveletDataFormat = Wavelet::WaveletDataFormat::Format_U16;
+      }
+      else
+      {
+        waveletDataFormat = Wavelet::WaveletDataFormat::Format_U8;
+      }
+    }
+
+    // Wavelet_Decompress can create U8 or U16 quantized formats directly
+    if(format == VolumeDataFormat::Format_U8 && (waveletDataFormat == Wavelet::WaveletDataFormat::Format_R32 || waveletDataFormat == Wavelet::WaveletDataFormat::Format_U16))
+    {
+      waveletDataFormat = Wavelet::WaveletDataFormat::Format_U8;
+    }
+    else if(format == VolumeDataFormat::Format_U16 && waveletDataFormat == Wavelet::WaveletDataFormat::Format_R32)
+    {
+      waveletDataFormat = Wavelet::WaveletDataFormat::Format_U16;
+    }
+
     if (!Wavelet_Decompress(const_cast<void*>(data), int32_t(serializedData.size()), waveletDataFormat, waveletValueRange, integerScale, integerOffset, isUseNoValue, replacementNoValue, isNormalize, adaptiveLevel, isLossless, waveletDataBlock, destination, error.code, error.string))
       return false;
 
