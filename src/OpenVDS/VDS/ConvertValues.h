@@ -51,19 +51,17 @@ static void CopyFrom1Bit(void * __restrict voiddst, const void* __restrict voids
 {
   T* target = (T*)voiddst;
   uint8_t* source = (uint8_t*)voidsrc;
-  uint8_t bits = *source;
-  int32_t mask = 1;
+  uint8_t bits = 0;
+  int32_t mask = 0x100;
   for (int i = 0; i < count; i++)
   {
-    *target = (bits & mask)? T(1) : T(0);
-    target++;
-    mask <<= 1;
     if (mask == 0x100)
     {
-      source++;
-      bits = *source;
+      bits = *source++;
       mask = 1;
     }
+    *target++ = (bits & mask) ? T(1) : T(0);
+    mask <<= 1;
   }
 }
 
