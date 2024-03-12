@@ -339,7 +339,7 @@ bool VolumeDataStoreIOManager::PrepareReadChunkImpl(const VolumeDataChunk &chunk
   ParsedMetadata parsedMetadata;
   unsigned char const* metadataPageEntry;
 
-  IORange ioRange;
+  IORange ioRange = IORange();
   bool isConstantValue = false;
 
   std::string layerName = GetLayerName(*chunk.layer);
