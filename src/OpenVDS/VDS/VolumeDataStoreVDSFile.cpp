@@ -642,7 +642,15 @@ VolumeDataStoreVDSFile::VolumeDataStoreVDSFile(VDS &vds, const std::string &vdsF
       {
         HueBulkDataStore::FileInterface *
           fileInterface = m_dataStore->OpenFile(m_dataStore->GetFileName(fileIndex));
-        assert(fileInterface);
+
+        if(!fileInterface)
+        {
+          error.string = m_dataStore->GetErrorMessage();
+          error.code = -1;
+          Error closeError;
+          Close(closeError);
+          break;
+        }
 
         bool layerChunksWaveletAdaptive = (fileInterface->GetFileMetadataLength() == sizeof(VDSLayerMetadataWaveletAdaptive) &&
                                            fileInterface->GetChunkMetadataLength() == sizeof(VDSWaveletAdaptiveLevelsChunkMetadata));
@@ -664,12 +672,8 @@ VolumeDataStoreVDSFile::VolumeDataStoreVDSFile(VDS &vds, const std::string &vdsF
   }
   else
   {
-    auto errormsg = m_dataStore->GetErrorMessage();
-    if (strlen(errormsg))
-    {
-      error.string = errormsg;
-      error.code = -1;
-    }
+    error.string = m_dataStore->GetErrorMessage();
+    error.code = -1;
   }
 }
 
