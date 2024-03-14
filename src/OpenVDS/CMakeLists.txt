@@ -256,6 +256,11 @@ if (NOT EMSCRIPTEN)
 
   if (BUILD_CURL)
     target_compile_definitions(openvds_objects PRIVATE CURL_STATICLIB=1)
+    if(APPLE)
+      find_library(COREFOUNDATION_LIBRARY CoreFoundation)
+      find_library(SYSTEMCONFIGURATION_LIBRARY SystemConfiguration)
+      target_link_libraries(openvds_objects PRIVATE ${COREFOUNDATION_LIBRARY} ${SYSTEMCONFIGURATION_LIBRARY})
+    endif()
   endif()
 
   if ((NOT BUILD_CURL) AND ((NOT DISABLE_AZURESDKFORCPP_IOMANAGER) OR (NOT DISABLE_CURL_IOMANAGER)))
