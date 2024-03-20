@@ -155,27 +155,27 @@ file(GLOB EXPORTED_HEADER_FILES OpenVDS/*.h)
 set_source_files_properties(VDS/FSE/entropy_common.cpp PROPERTIES COMPILE_FLAGS ${DISABLE_WARNING_FLAG})
 set_source_files_properties(VDS/FSE/fse_decompress.cpp PROPERTIES COMPILE_FLAGS ${DISABLE_WARNING_FLAG})
 
-add_library(hue_bds_objects STATIC
-  BulkDataStore/HueBulkDataStore.cpp
-  BulkDataStore/ExtentAllocator.cpp
-  BulkDataStore/VDSObjectParser.cpp )
-get_target_property(json_cpp_include_dir jsoncpp_lib_static INTERFACE_INCLUDE_DIRECTORIES)
-target_include_directories(hue_bds_objects PRIVATE ${json_cpp_include_dir})
-target_compile_definitions(hue_bds_objects PRIVATE -DHUEBDS_EXPORTS= ) # We're not building HueBulkDataStore as a shared library
-target_compile_definitions(hue_bds_objects PRIVATE -D_CRT_SECURE_NO_WARNINGS=1) # We're not building HueBulkDataStore as a shared library
-setCommonTargetProperties(hue_bds_objects)
-get_target_property(fmt_include_dir fmt::fmt INTERFACE_INCLUDE_DIRECTORIES)
-target_include_directories(hue_bds_objects PRIVATE ${fmt_include_dir})
+if (NOT EMSCRIPTEN)
+  add_library(hue_bds_objects STATIC
+    BulkDataStore/HueBulkDataStore.cpp
+    BulkDataStore/ExtentAllocator.cpp
+    BulkDataStore/VDSObjectParser.cpp )
+  get_target_property(json_cpp_include_dir jsoncpp_lib_static INTERFACE_INCLUDE_DIRECTORIES)
+  target_include_directories(hue_bds_objects PRIVATE ${json_cpp_include_dir})
+  target_compile_definitions(hue_bds_objects PRIVATE -DHUEBDS_EXPORTS= ) # We're not building HueBulkDataStore as a shared library
+  target_compile_definitions(hue_bds_objects PRIVATE -D_CRT_SECURE_NO_WARNINGS=1) # We're not building HueBulkDataStore as a shared library
+  setCommonTargetProperties(hue_bds_objects)
+  get_target_property(fmt_include_dir fmt::fmt INTERFACE_INCLUDE_DIRECTORIES)
+  target_include_directories(hue_bds_objects PRIVATE ${fmt_include_dir})
 
-target_link_libraries(hue_bds_objects PRIVATE fmt::fmt)
+  target_link_libraries(hue_bds_objects PRIVATE fmt::fmt)
 
-target_include_directories(hue_bds_objects
-    PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-        $<BUILD_INTERFACE:${COMMON_DIR}>
-        $<INSTALL_INTERFACE:include>
-)
+  target_include_directories(hue_bds_objects
+      PUBLIC
+          $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+          $<BUILD_INTERFACE:${COMMON_DIR}>
+  )
+endif()
 
 
 add_library(openvds_objects OBJECT
@@ -184,6 +184,13 @@ add_library(openvds_objects OBJECT
   ${SOURCE_FILES} )
 
 target_include_directories(openvds_objects PRIVATE ${fmt_include_dir})
+target_include_directories(openvds_objects
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+        $<BUILD_INTERFACE:${COMMON_DIR}>
+        $<INSTALL_INTERFACE:include>
+)
 
 if (NOT EMSCRIPTEN)
   compileInTarget(openvds_objects jsoncpp_lib_static)
@@ -338,9 +345,10 @@ if (NOT EMSCRIPTEN)
       )
     endif()
   endif()
+
+  target_link_libraries(openvds_objects PRIVATE hue_bds_objects)
 endif()
 
-target_link_libraries(openvds_objects PRIVATE hue_bds_objects)
 target_compile_definitions(openvds_objects PRIVATE -DHUEBDS_EXPORTS= ) # We're not building HueBulkDataStore as a shared library
 
 foreach(item ${link_3rdparty})
