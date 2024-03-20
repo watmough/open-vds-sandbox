@@ -20,9 +20,10 @@
 
 #include <string>
 #include <vector>
+#include <stdint.h>
 
 #include <OpenVDS/openvds_export.h>
-#include <OpenVDS/OpenVDS.h>
+#include <OpenVDS/Error.h>
 
 namespace OpenVDS
 {

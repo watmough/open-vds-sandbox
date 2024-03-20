@@ -205,7 +205,11 @@ if (OpenMP_CXX_FOUND)
 endif()
 
 include(CheckCXXCompilerFlag)
-check_cxx_compiler_flag("-msse4.1" ENABLE_SSE4_1)
+if (EMSCRIPTEN)
+  check_cxx_compiler_flag("-msimd128 -msse4.1" ENABLE_SSE4_1) # -msse4.1 will not work without -msimd128.
+else()
+  check_cxx_compiler_flag("-msse4.1" ENABLE_SSE4_1)
+endif()
 
 include(CMake/SetCompilerFlagsForTarget.cmake)
 include(CMake/SetWarnings.cmake)

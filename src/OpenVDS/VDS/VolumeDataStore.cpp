@@ -217,7 +217,7 @@ bool DeserializeVolumeData(const std::vector<uint8_t> &serializedData, VolumeDat
     if (status != Z_OK)
     {
       error.code = -1;
-      error.string = fmt::format("zlib uncompress failed (status {})", status);
+      error.string = "zlib uncompress failed (status " + std::to_string(status) + ")";
       return false;
     }
 

@@ -2,6 +2,9 @@
 #include <OpenVDS/Vector.h>
 #include <OpenVDS/ValueConversion.h>
 
+#include <assert.h>
+#include <string.h>
+
 namespace OpenVDS
 {
 
