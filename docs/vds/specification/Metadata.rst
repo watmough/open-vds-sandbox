@@ -3,6 +3,9 @@
 Metadata
 --------
 
+There is metadata associated with each axis/dimension, each value channel and also generic key/value pairs. Although different units of measurement are permitted,
+there is a strong preference using SI-units. For maximum compatibility with other applications it is best to convert any units used by the application to SI-units when using VDS.
+
 The VDS object annotates each dimension with a name, a unit, starting and ending coordinate. For example, a seismic
 dataset with a certain number of samples in the time domain will annotate the trace dimension (typically dimension 0)
 with "Sample", "ms", start time, and end time.
@@ -12,7 +15,10 @@ show the value as a color).
 
 The VDS system does not deal directly with spatial coordinate systems, it only defines an N-dimensional array of voxels.
 Spatial coordinates are added through key/value-pair metadata that define the transformation from annotation coordinates
-to a coordinate reference system.
+to a coordinate reference system. VDS metadata is generally expected to use SI-units when possible, but the spatial coordinates
+can optionally have another unit specified. Note that the CRS system does *not* define the units for the other metadata, it is
+common to have SI-units for the spatial coordinates even when the original CRS system uses feet.
+It is up to the client application to perform unit conversions where necessary.
 
 Although VDS is a general volumetric format, for applications to properly understand the contents of a VDS dataset, the
 OpenVDS subcommittee has defined a set of predefined metadata categories, and properties within each category. All OSDU
@@ -139,6 +145,11 @@ explained.
   In this system a DoubleVector2 defines the origin, and two more DoubleVector2 define the inline and crossline spacing.
   These are applied to transform the OpenVDS dimensions with name Inline/Crossline to Easting/Northing coordinates. The
   Z coordinate is defined by the axis descriptor for the first dimension of the volume.
+
+  All coordinates are using SI-units (meters) unless there is a Unit metadata that says otherwise, while the CRSWkt
+  will specify the unit of the CRS. If the CRS unit is different from the unit of the coordinates (which common when
+  the CRS unit is feet) the Origin/InlineSpacing/CrosslineSpacing etc. needs to be converted to the unit of the CRS
+  before a CRS transformation (e.g. transforming to a different CRS or lat/long coordinates) can be applied.
 
 2. The 3D IJK System
 

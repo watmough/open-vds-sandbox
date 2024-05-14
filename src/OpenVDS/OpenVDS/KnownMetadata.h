@@ -41,12 +41,12 @@
    VolumeDataLayout::GetIJKGridDefinitionFromVDSMetadata(), or create a IJKCoordinateTransformer using a VolumeDataLayout
    as a constructor argument.
 
-   The VDS metadata provides the position of the first voxel (origin) in a [3D] world coordinate system. It also 
-   provides the step vectors that define in which direction and how far the other voxels are positioned relative to 
+   The VDS metadata provides the position of the first voxel (origin) in a [3D] world coordinate system. It also
+   provides the step vectors that define in which direction and how far the other voxels are positioned relative to
    the origin. Each step vector is related to a specific dimension of the VDS and is determined by a naming convention.
 
-   \note The VDS object annotates each dimension which has a number of samples with a name, a unit, starting and ending coordinate. For example, a
-   seismic dataset with a certain number of samples in the time domain will annotate the trace dimension (typically dimension 0) with "Time", "ms", start time, end time.
+   \note The VDS object annotates each dimension which has a number of samples with a name, a unit, starting and ending coordinate. For example,
+   a seismic dataset with a certain number of samples in the time domain will annotate the trace dimension (typically dimension 0) with "Time", "ms", start time, end time.
 
    Two families of VDS metadata for this category are described at \ref KNOWNMETADATA_SURVEYCOORDINATESYSTEM.
 
@@ -65,34 +65,39 @@
 
    This category of VDS metadata contains two families that provide sufficient information to render a VDS in a volume box.
    In the absence of any of these families, a default setting is considered. In the following, these VDS metadata families are explained.
-   
+
    <ul>
    <li>The Inline/Crossline system:
 
-   In this system, the step vector for dimension 0 is always negative Z direction. This will simplify the metadata, and the 
-   information we need is a DoubleVector2 to define the origin (\ref KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_ORIGIN), 
-   and two more DoubleVector2 to define the inline and crossline spacing (\ref KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_INLINESPACING 
-   and \ref KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_CROSSLINESPACING respectively). These are applied to transform the VDS dimensions 
-   with name Inline/Crossline to XYZ coordinates. Other dimension names that are recognized are Time/Depth/Sample which are all mapped to 
-   negative Z (i.e. positive Depth will result in the same negative Z).   
-   
+   In this system, the step vector for dimension 0 is always negative Z direction. This will simplify the metadata, and the
+   information we need is a DoubleVector2 to define the origin (\ref KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_ORIGIN),
+   and two more DoubleVector2 to define the inline and crossline spacing (\ref KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_INLINESPACING
+   and \ref KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_CROSSLINESPACING respectively). These are applied to transform the VDS dimensions
+   with name Inline/Crossline to XYZ coordinates. Other dimension names that are recognized are Time/Depth/Sample which are all mapped to
+   negative Z (i.e. positive Depth will result in the same negative Z).
+
+   All coordinates are using SI-units (meters) unless there is a Unit metadata that says otherwise, while the CRSWkt
+   will specify the unit of the CRS. If the CRS unit is different from the unit of the coordinates (which common when
+   the CRS unit is feet) the Origin/InlineSpacing/CrosslineSpacing etc. needs to be converted to the unit of the CRS
+   before a CRS transformation (e.g. transforming to a different CRS or lat/long coordinates) can be applied.
+
    <li>The 3D IJK system:
-   
+
    The Inline/Crossline system has flexibility for only two dimensions. In order to have more freedom, the 3DIJK metadata is defined.
-   A DoubleVector3 is used to represent the origin (\ref KNOWNMETADATA_SURVEYCOORDINATE_3DIJK_ORIGIN3D) and three step vectors 
-   (\ref KNOWNMETADATA_SURVEYCOORDINATE_3DIJK_I_STEPVECTOR, \ref KNOWNMETADATA_SURVEYCOORDINATE_3DIJK_J_STEPVECTOR and 
+   A DoubleVector3 is used to represent the origin (\ref KNOWNMETADATA_SURVEYCOORDINATE_3DIJK_ORIGIN3D) and three step vectors
+   (\ref KNOWNMETADATA_SURVEYCOORDINATE_3DIJK_I_STEPVECTOR, \ref KNOWNMETADATA_SURVEYCOORDINATE_3DIJK_J_STEPVECTOR and
    \ref KNOWNMETADATA_SURVEYCOORDINATE_3DIJK_K_STEPVECTOR) corresponding to the dimensions named "I", "J" and "K" respectively.
-   
+
    <li>The default system:
-   
+
    Other dimension names that are recognized and transformed to XYZ coordinates are X, Y and Z, which will be mapped directly to the corresponding
    XYZ coordinate.
 
    Any dimensions which have names that are not recognized or are missing the Spacing metadata will be given a unit vector
-   perpendicular to the recognized dimensions. This means you will get a sensible positioning of a Time/Offset/Crossline 
-   VolumeBox that is connected to a 4D Time/Offset/Crossline/Inline VDS. The scale of the derived unit vector for the 
+   perpendicular to the recognized dimensions. This means you will get a sensible positioning of a Time/Offset/Crossline
+   VolumeBox that is connected to a 4D Time/Offset/Crossline/Inline VDS. The scale of the derived unit vector for the
    Offset dimension will be something that gives the closest possible approximation to a cubic voxel.
-</ul> 
+</ul>
 */
 
 #define KNOWNMETADATA_SURVEYCOORDINATESYSTEM                               "SurveyCoordinateSystem"
@@ -290,17 +295,17 @@
 #define KNOWNMETADATA_SURVEYCOORDINATE_INLINECROSSLINE_AXISNAME_SAMPLE      "Sample"
 
 /// \def KNOWNMETADATA_SURVEYCOORDINATE_3DIJK_AXISNAME_I
-/// String representing the name of the axis corresponding to the direction represented 
+/// String representing the name of the axis corresponding to the direction represented
 /// by step vector in I direction (\ref KNOWNMETADATA_SURVEYCOORDINATE_3DIJK_I_STEPVECTOR)
 #define KNOWNMETADATA_SURVEYCOORDINATE_3DIJK_AXISNAME_I              "I"
 
 /// \def KNOWNMETADATA_SURVEYCOORDINATE_3DIJK_AXISNAME_J
-/// String representing the name of the axis corresponding to the direction represented 
+/// String representing the name of the axis corresponding to the direction represented
 /// by step vector in J direction (\ref KNOWNMETADATA_SURVEYCOORDINATE_3DIJK_J_STEPVECTOR)
 #define KNOWNMETADATA_SURVEYCOORDINATE_3DIJK_AXISNAME_J              "J"
 
 /// \def KNOWNMETADATA_SURVEYCOORDINATE_3DIJK_AXISNAME_K
-/// String representing the name of the axis corresponding to the direction represented 
+/// String representing the name of the axis corresponding to the direction represented
 /// by step vector in K direction (\ref KNOWNMETADATA_SURVEYCOORDINATE_3DIJK_K_STEPVECTOR)
 #define KNOWNMETADATA_SURVEYCOORDINATE_3DIJK_AXISNAME_K              "K"
 
@@ -356,13 +361,13 @@
 /*! \def KNOWNMETADATA_TRACECOORDINATES
    The SeismicLine GetVDSTraceCoordinates() method will populate the PositionProperty, VerticalOffsetProperty, EnergySourcePointNumberProperty and EnsembleNumberProperty from VDSMetadataBLOBs found in the "TraceCoordinates" category.
    The PositionProperty and VerticalOffsetProperty define the position of the SeismicLine, while the EnergySourcePointNumberProperty and EnsembleNumberProperty can be displayed by the SeismicLineViewContext
-   
+
    The known metadata in the category "TraceCoordinates" are:
-   
+
    If the SeismicLine is connected to a VDS with metadata in the "SurveyCoordinateSystem" category, it will use that
    metadata to compute the trace positions for the line, so it's easy to set up a SeismicLine to display a particular
    Inline/Crossline of a 3D dataset.
-   
+
    The SeismicLine GetVDSTraceCoordinates() method will populate the PositionProperty, VerticalOffsetProperty,
    EnergySourcePointNumberProperty and EnsembleNumberProperty from VDSMetadataBLOBs found in the "TraceCoordinates" category.
    The PositionProperty and VerticalOffsetProperty define the position of the SeismicLine, while the EnergySourcePointNumberProperty and EnsembleNumberProperty can be displayed by the SeismicLineViewContext
