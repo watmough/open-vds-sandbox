@@ -498,7 +498,8 @@ bool VolumeDataStore::Verify(const VolumeDataChunk &volumeDataChunk, const std::
                 (createSizeY == voxelSize[1] || dimensions < 2) &&
                 (createSizeZ == voxelSize[2] || dimensions < 3) &&
                 dimensions >= 1 &&
-                dimensions <= 3;
+                dimensions <= 3 &&
+                volumeDataChunk.layer->GetComponents() == VolumeDataComponents::Components_1;
     }
   }
   else if(compressionMethod == CompressionMethod::None ||
@@ -508,7 +509,7 @@ bool VolumeDataStore::Verify(const VolumeDataChunk &volumeDataChunk, const std::
     if(serializedData.size() > sizeof(DataBlockDescriptor))
     {
       DataBlockDescriptor *serializedDescriptor = (DataBlockDescriptor*)serializedData.data();
-      isValid = serializedDescriptor->IsValid(voxelSize);
+      isValid = serializedDescriptor->IsValid(voxelSize, volumeDataChunk.layer->GetComponents());
     }
   }
 

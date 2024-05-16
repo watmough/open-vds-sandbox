@@ -59,7 +59,7 @@ public:
   VolumeDataFormat Format;
   VolumeDataComponents Components;
 
-  bool IsValid(const int32_t (&voxelSize)[DataBlock::Dimensionality_Max]) const
+  bool IsValid(const int32_t (&voxelSize)[DataBlock::Dimensionality_Max], VolumeDataComponents components) const
   {
     return Dimensionality >= 1 &&
            Dimensionality <= 3 &&
@@ -73,12 +73,12 @@ public:
             Format == VolumeDataFormat::Format_U64  ||
             Format == VolumeDataFormat::Format_R32  ||
             Format == VolumeDataFormat::Format_R64) &&
-           (Components == VolumeDataComponents::Components_1 ||
-            Components == VolumeDataComponents::Components_2 ||
-            Components == VolumeDataComponents::Components_4);
+           (Components == components ||
+            Components == components ||
+            Components == components);
   }
 
-  bool IsValid() const { int32_t voxelSize[DataBlock::Dimensionality_Max] = {SizeX, SizeY, SizeZ}; return IsValid(voxelSize); }
+  bool IsValid() const { int32_t voxelSize[DataBlock::Dimensionality_Max] = {SizeX, SizeY, SizeZ}; return IsValid(voxelSize, Components); }
 };
 
 bool InitializeDataBlock(const DataBlockDescriptor &descriptor, DataBlock &dataBlock, Error &error);
