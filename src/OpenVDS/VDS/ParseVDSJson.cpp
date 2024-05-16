@@ -920,6 +920,18 @@ WriteJson(Json::Value root)
   return result;
 }
 
+static float
+FloatFromJSON(Json::Value const &JSONFloat)
+{
+  return JSONFloat.isNull() ? NAN : JSONFloat.asFloat();
+}
+
+static double
+DoubleFromJSON(Json::Value const &JSONDouble)
+{
+  return JSONDouble.isNull() ? NAN : JSONDouble.asDouble();
+}
+
 bool ParseVolumeDataLayout(const std::vector<uint8_t> &json, VolumeDataLayoutDescriptor &layoutDescriptor, std::vector<VolumeDataAxisDescriptor> &axisDescriptors, std::vector<VolumeDataChannelDescriptor> &channelDescriptors, DescriptorStringContainer &descriptorStrings, MetadataContainer &metadataContainer, const std::function<bool(std::string const& channelName, bool isPrimary)> &isChannelZipped, Error &error)
 {
   Json::Value root;
@@ -1038,35 +1050,35 @@ bool ParseVolumeDataLayout(const std::vector<uint8_t> &json, VolumeDataLayoutDes
       }
       else if (type == "Float")
       {
-        metadataContainer.SetMetadataFloat(category.c_str(), name.c_str(), value.asFloat());
+        metadataContainer.SetMetadataFloat(category.c_str(), name.c_str(), FloatFromJSON(value));
       }
       else if (type == "FloatVector2")
       {
-        metadataContainer.SetMetadataFloatVector2(category.c_str(), name.c_str(), FloatVector2(value[0].asFloat(), value[1].asFloat()));
+        metadataContainer.SetMetadataFloatVector2(category.c_str(), name.c_str(), FloatVector2(FloatFromJSON(value[0]), FloatFromJSON(value[1])));
       }
       else if (type == "FloatVector3")
       {
-        metadataContainer.SetMetadataFloatVector3(category.c_str(), name.c_str(), FloatVector3(value[0].asFloat(), value[1].asFloat(), value[2].asFloat()));
+        metadataContainer.SetMetadataFloatVector3(category.c_str(), name.c_str(), FloatVector3(FloatFromJSON(value[0]), FloatFromJSON(value[1]), FloatFromJSON(value[2])));
       }
       else if (type == "FloatVector4")
       {
-        metadataContainer.SetMetadataFloatVector4(category.c_str(), name.c_str(), FloatVector4(value[0].asFloat(), value[1].asFloat(), value[2].asFloat(), value[3].asFloat()));
+        metadataContainer.SetMetadataFloatVector4(category.c_str(), name.c_str(), FloatVector4(FloatFromJSON(value[0]), FloatFromJSON(value[1]), FloatFromJSON(value[2]), FloatFromJSON(value[3])));
       }
       else if (type == "Double")
       {
-        metadataContainer.SetMetadataDouble(category.c_str(), name.c_str(), value.asDouble());
+        metadataContainer.SetMetadataDouble(category.c_str(), name.c_str(), DoubleFromJSON(value));
       }
       else if (type == "DoubleVector2")
       {
-        metadataContainer.SetMetadataDoubleVector2(category.c_str(), name.c_str(), DoubleVector2(value[0].asDouble(), value[1].asDouble()));
+        metadataContainer.SetMetadataDoubleVector2(category.c_str(), name.c_str(), DoubleVector2(DoubleFromJSON(value[0]), DoubleFromJSON(value[1])));
       }
       else if (type == "DoubleVector3")
       {
-        metadataContainer.SetMetadataDoubleVector3(category.c_str(), name.c_str(), DoubleVector3(value[0].asDouble(), value[1].asDouble(), value[2].asDouble()));
+        metadataContainer.SetMetadataDoubleVector3(category.c_str(), name.c_str(), DoubleVector3(DoubleFromJSON(value[0]), DoubleFromJSON(value[1]), DoubleFromJSON(value[2])));
       }
       else if (type == "DoubleVector4")
       {
-        metadataContainer.SetMetadataDoubleVector4(category.c_str(), name.c_str(), DoubleVector4(value[0].asDouble(), value[1].asDouble(), value[2].asDouble(), value[3].asDouble()));
+        metadataContainer.SetMetadataDoubleVector4(category.c_str(), name.c_str(), DoubleVector4(DoubleFromJSON(value[0]), DoubleFromJSON(value[1]), DoubleFromJSON(value[2]), DoubleFromJSON(value[3])));
       }
       else if (type == "String")
       {
