@@ -863,6 +863,13 @@ static bool Init(VDS *vds, VolumeDataStore* volumeDataStore, VolumeDataLayoutDes
       return false;
     }
 
+    if (!std::isfinite(axisDescriptor.GetCoordinateMin()) || !std::isfinite(axisDescriptor.GetCoordinateMax()))
+    {
+      error.code = -1;
+      error.string = "Axis coordinates must be finite numbers";
+      return false;
+    }
+
     vds->axisDescriptors.push_back(VolumeDataAxisDescriptor(axisDescriptor.GetNumSamples(), descriptorStrings.Add(axisDescriptor.GetName()), descriptorStrings.Add(axisDescriptor.GetUnit()), axisDescriptor.GetCoordinateMin(), axisDescriptor.GetCoordinateMax()));
   }
 
@@ -924,6 +931,20 @@ static bool Init(VDS *vds, VolumeDataStore* volumeDataStore, VolumeDataLayoutDes
     {
       error.code = -1;
       error.string = "1-bit channels cannot use no value";
+      return false;
+    }
+
+    if (!std::isfinite(channelDescriptor.GetValueRangeMin()) || !std::isfinite(channelDescriptor.GetValueRangeMax()))
+    {
+      error.code = -1;
+      error.string = "Channel value range must be finite numbers";
+      return false;
+    }
+
+    if (channelDescriptor.GetValueRangeMin() > channelDescriptor.GetValueRangeMax())
+    {
+      error.code = -1;
+      error.string = "Invalid channel value range (min > max)";
       return false;
     }
 
