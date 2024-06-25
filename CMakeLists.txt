@@ -97,6 +97,19 @@ if (NOT EMSCRIPTEN)
   endif()
 endif()
 
+if(SKBUILD)
+  message(STATUS "The project is built using scikit-build")
+
+  if(WIN32)
+    set(CMAKE_INSTALL_BINDIR "Scripts")
+  endif()
+
+  set(BUILD_JAVA_DEFAULT OFF)
+  set(ATTRIBUTION_INSTALL_DIR python/openvds)
+else()
+  set(ATTRIBUTION_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/)
+endif()
+
 if (WIN32)
   set(DEFAULT_USE_LIBRESSL ON)
   set(DEFAULT_BUILD_OPENSSL OFF)
@@ -262,7 +275,7 @@ if (NOT EMSCRIPTEN)
 
   configure_file(docker/build_scripts/README.txt.in ${CMAKE_BINARY_DIR}/README.txt)
 endif()
-install(FILES ${CMAKE_SOURCE_DIR}/Attributions.md ${CMAKE_BINARY_DIR}/README.txt ${CMAKE_SOURCE_DIR}/LICENSE DESTINATION ${CMAKE_INSTALL_PREFIX}/)
+install(FILES ${CMAKE_SOURCE_DIR}/Attributions.md ${CMAKE_BINARY_DIR}/README.txt ${CMAKE_SOURCE_DIR}/LICENSE DESTINATION ${ATTRIBUTION_INSTALL_DIR})
 
 configure_file(
   "${PROJECT_SOURCE_DIR}/CMake/openvds.pc.in"
