@@ -107,7 +107,7 @@ class VolumeDataStoreIOManager : public VolumeDataStore, public LayerMetadataCon
   std::condition_variable
                         m_pendingRequestChangedCondition;
 
-  std::map<VolumeDataChunk, PendingDownloadRequest>
+  std::unordered_map<VolumeDataChunk, PendingDownloadRequest>
                         m_pendingDownloadRequests;
 
   std::unordered_map<int64_t, PendingUploadRequest>
