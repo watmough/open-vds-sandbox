@@ -188,9 +188,12 @@ public:
 struct VDS
 {
   VDS(int requestThreadCount, LogLevel level)
-    : requestThreadCount(requestThreadCount)
+    : ID(VolumeDataHash::GetUniqueHash())
+    , requestThreadCount(requestThreadCount)
     , logger(static_cast<GlobalStateImpl*>(OpenVDS::GetGlobalState())->logInterface, level)
   {}
+
+  uint64_t          ID;
 
   VolumeDataLayoutDescriptor
                     layoutDescriptor;

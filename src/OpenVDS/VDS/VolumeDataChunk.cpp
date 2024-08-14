@@ -17,24 +17,10 @@
 
 #include "VolumeDataChunk.h"
 #include "VolumeDataLayer.h"
+#include "VolumeDataLayoutImpl.h"
+#include "VDS.h"
 
 std::size_t std::hash<OpenVDS::VolumeDataChunk>::operator()(const OpenVDS::VolumeDataChunk& volumeDataChunk) const
 {
-  return OpenVDS::HashCombiner(volumeDataChunk.index).Add(volumeDataChunk.layer->GetLayerID()).GetCombinedHash();
-}
-
-namespace OpenVDS
-{
-bool operator<(VolumeDataChunk const& lhs, VolumeDataChunk const& rhs)
-{
-  if (lhs.layer->GetLOD() == rhs.layer->GetLOD())
-  {
-    if (lhs.layer->GetChannelIndex() == rhs.layer->GetChannelIndex())
-    {
-      return lhs.index < rhs.index;
-    }
-    return lhs.layer->GetChannelIndex() < rhs.layer->GetChannelIndex();
-  }
-  return lhs.layer->GetLOD() < rhs.layer->GetLOD();
-}
+  return OpenVDS::HashCombiner(volumeDataChunk.index).Add(volumeDataChunk.layer->GetLayerID()).Add(volumeDataChunk.layer->GetLayout()->GetHandle().ID).GetCombinedHash();
 }
