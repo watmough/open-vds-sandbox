@@ -458,7 +458,7 @@ class VolumeDataAccessManager(object):
                          req.replacementNoValue)
     return req
 
-  def requestProjectedVolumeSubset(self, min: Tuple[int], max: Tuple[int], data_out = None, dimensionsND = DimensionsND.Dimensions_012, lod = 0, channel = 0, voxelPlane = (1,1,0,0), projectedDimensions = DimensionsND.Dimensions_12, interpolationMethod = InterpolationMethod.Cubic, format = VoxelFormat.Format_R32, replacementNoValue = None):
+  def requestProjectedVolumeSubset(self, min: Tuple[int], max: Tuple[int], data_out = None, dimensionsND = DimensionsND.Dimensions_012, lod = 0, channel = 0, voxelPlane = (1,1,0,0), projectedDimensions = DimensionsND.Dimensions_12, format = VoxelFormat.Format_R32, interpolationMethod = InterpolationMethod.Cubic, replacementNoValue = None):
     """Request a subset of the VDS data, projected onto a plane.
           
     Parameters
@@ -479,10 +479,10 @@ class VolumeDataAccessManager(object):
         A 4D vector representing the projection plane.
     projectedDimensions: DimensionsND, optional
         The dimensions to be projected
-    interpolationMethod: InterpolationMethod, optional
-        Defaults to InterpolationMethod.Cubic
     format : VoxelFormat, optional
         Specifies the format of the delivered data: Bytes, floats, doubles. etc.
+    interpolationMethod: InterpolationMethod, optional
+        Defaults to InterpolationMethod.Cubic
     replacementNoValue: float, optional
         If specified, NoValue data in the dataset is replaced with this value.
 
@@ -517,6 +517,7 @@ class VolumeDataAccessManager(object):
                     req.max,
                     req.voxelPlane,
                     req.projectedDimensions,
+                    req.format,
                     req.interpolationMethod,
                     req.replacementNoValue)
     return req
