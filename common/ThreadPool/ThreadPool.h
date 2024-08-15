@@ -25,6 +25,7 @@
 #include <queue>
 #include <thread>
 #include <vector>
+#include <cstdlib>
 
 class ThreadPool
 {
@@ -36,6 +37,7 @@ public:
   ~ThreadPool();
 
   size_t ThreadCount() const;
+  static int ConfigureThreadCount(const char *envVariableName, int defaultValue = std::thread::hardware_concurrency());
 private:
   std::vector<std::thread> workers;
   std::queue<std::function<void()>> tasks;
@@ -115,4 +117,28 @@ inline ThreadPool::~ThreadPool()
 inline size_t ThreadPool::ThreadCount() const
 {
   return workers.size();
+}
+
+inline int ThreadPool::ConfigureThreadCount(const char *envVariableName, int defaultValue)
+{
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable:4996)
+#endif
+  if (const char *envVariable = std::getenv(envVariableName))
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
+  {
+    try
+    {
+      int threadCount = std::stoi(std::string(envVariable));
+      if (threadCount > 0)
+        return threadCount;
+    }
+    catch (...)
+    {
+    }
+  }
+  return defaultValue;
 }
