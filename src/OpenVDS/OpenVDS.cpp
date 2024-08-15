@@ -873,6 +873,9 @@ static bool Init(VDS *vds, VolumeDataStore* volumeDataStore, VolumeDataLayoutDes
     vds->axisDescriptors.push_back(VolumeDataAxisDescriptor(axisDescriptor.GetNumSamples(), descriptorStrings.Add(axisDescriptor.GetName()), descriptorStrings.Add(axisDescriptor.GetUnit()), axisDescriptor.GetCoordinateMin(), axisDescriptor.GetCoordinateMax()));
   }
 
+  std::unordered_set<std::string>
+    channelNames;
+
   for(size_t i = 0; i < channelDescriptors.size; i++)
   {
     auto &channelDescriptor = channelDescriptors.data[i];
@@ -883,6 +886,14 @@ static bool Init(VDS *vds, VolumeDataStore* volumeDataStore, VolumeDataLayoutDes
       error.string = "Channel descriptor has not been been initialized";
       return false;
     }
+
+    if(channelNames.find(channelDescriptor.GetName()) != channelNames.end())
+    {
+      error.code = -1;
+      error.string = "Channel name must be unique";
+      return false;
+    }
+    channelNames.insert(channelDescriptor.GetName());
 
     if(i == 0)
     {
@@ -901,6 +912,13 @@ static bool Init(VDS *vds, VolumeDataStore* volumeDataStore, VolumeDataLayoutDes
     }
     else
     {
+      if (std::string(channelDescriptor.GetName()).empty())
+      {
+        error.code = -1;
+        error.string = "Additional channel descriptors must be named";
+        return false;
+      }
+
       if(channelDescriptor.GetMapping() == VolumeDataMapping::Direct)
       {
         if(channelDescriptor.GetMappedValueCount() != 1)
