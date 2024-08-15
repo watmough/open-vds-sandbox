@@ -232,7 +232,7 @@ namespace OpenVDS
 
   IOManagerAzureSdkForCpp::IOManagerAzureSdkForCpp(const AzureOpenOptions& openOptions, Error& error)
     : IOManager(OpenOptions::AzureSdkForCpp)
-    , m_threadPool(16)
+    , m_threadPool(ThreadPool::ConfigureThreadCount("OPENVDS_AZURE_IOMANAGER_THREAD_COUNT", 16))
     , m_containerStr(openOptions.container)
     , m_prefix(openOptions.blob)
   {

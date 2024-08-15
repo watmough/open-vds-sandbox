@@ -1735,31 +1735,10 @@ static void CleanupThread(PageAccessorNotifier &pageAccessorNotifier,  std::map<
   }
 }
 
-static int getThreadCount(int requestedRequestThreadCount, const char *envVariableName, int defaultValue)
-{
-  if (requestedRequestThreadCount > 0)
-    return requestedRequestThreadCount;
-
-  std::string envVariable = getStringEnvironmentVariable(envVariableName);
-  if (!envVariable.empty())
-  {
-    try
-    {
-      int threadCount = std::stoi(envVariable);
-      if (threadCount > 0)
-        return threadCount;
-    }
-    catch (...)
-    {
-    }
-  }
-  return defaultValue;
-}
-
 VolumeDataRequestProcessor::VolumeDataRequestProcessor(VolumeDataAccessManagerImpl& manager, int requestThreadCount, Logger &logger)
   : m_manager(manager)
   , m_pageAccessorNotifier(m_mutex)
-  , m_threadPool(getThreadCount(requestThreadCount, "OPENVDS_REQUEST_THREAD_COUNT", std::thread::hardware_concurrency()))
+  , m_threadPool(requestThreadCount > 0 ? requestThreadCount : ThreadPool::ConfigureThreadCount("OPENVDS_REQUEST_THREAD_COUNT"))
   , m_cleanupThread([this]() { CleanupThread(m_pageAccessorNotifier, m_pageAccessors); } )
   , m_logger(logger)
 {}
