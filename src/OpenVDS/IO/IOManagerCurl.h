@@ -185,7 +185,6 @@ struct UVEventLoopData
   std::vector<std::shared_ptr<CurlUploadHandler>> incomingUploadRequests;
   std::vector<std::shared_ptr<CurlUploadHandler>> cancelledUploads;
 
-  std::vector<std::shared_ptr<CurlEasyHandler>> queuedRequests;
   std::vector<std::shared_ptr<CurlEasyHandler>> processingRequests;
 
   std::mutex mutex;
@@ -204,7 +203,9 @@ struct UVEventLoopData
 class CurlHandler
 {
 public:
-  CurlHandler(Error& error, const Logger& logger, const std::string& httpProxy = std::string());
+  static const int defaultMaxConcurrentRequests = 40;
+
+  CurlHandler(Error& error, const Logger& logger, int maxConcurrentRequests, const std::string& httpProxy = std::string());
   ~CurlHandler();
 
   void addDownloadRequest(const std::shared_ptr<DownloadRequestCurl>& request, const std::string& url, const std::vector<std::string>& headers, std::function<std::string(const std::string &date)> toISO8601DateTransformer, CurlVerb verb, int retryCount = 4);

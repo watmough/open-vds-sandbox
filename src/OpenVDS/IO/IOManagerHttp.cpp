@@ -61,7 +61,7 @@ namespace OpenVDS
 
   IOManager *IOManagerHttp::CreateIOManagerHttp(const HttpOpenOptions& openOptions, const Logger& logger, Error& error)
   {
-    auto curlHandler = std::make_shared<CurlHandler>(error, logger);
+    auto curlHandler = std::make_shared<CurlHandler>(error, logger, CurlHandler::defaultMaxConcurrentRequests);
     return (error.code == 0) ? CreateIOManagerHttp(openOptions, curlHandler, error) : nullptr;
   }
 
