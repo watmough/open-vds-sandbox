@@ -170,20 +170,6 @@ static size_t curlReadCallback(char *buffer, size_t size, size_t nitems, void *u
   return static_cast<CurlEasyHandler *>(userdata)->handleReadRequest(buffer, nitems);
 }
 
-static void curlAddRequests(UVEventLoopData *eventLoopData)
-{
-  int maxConcurrentRequests = 40;
-  int to_add = maxConcurrentRequests - int(eventLoopData->processingRequests.size());
-  assert(to_add >= 0);
-  to_add = std::min(to_add, int(eventLoopData->queuedRequests.size()));
-  for (int i = 0; i < to_add; i++)
-  {
-    eventLoopData->processingRequests.emplace_back(eventLoopData->queuedRequests[i]);
-    curl_multi_add_handle(eventLoopData->curlMulti, eventLoopData->processingRequests.back()->curlEasy);
-  }
-  eventLoopData->queuedRequests.erase(eventLoopData->queuedRequests.begin(), eventLoopData->queuedRequests.begin() + to_add);
-}
-
 static int curl_easy_debug_callback(CURL* handle, curl_infotype type, char* data, size_t size, void* userptr)
 {
   auto& logger= *static_cast<Logger*>(userptr);
@@ -275,8 +261,11 @@ static void addDownloadCB(uv_async_t *handle)
       curl_easy_setopt(downloadRequest->curlEasy, CURLOPT_SSL_VERIFYPEER, 0L);
   }
 
-  eventLoopData->queuedRequests.insert(eventLoopData->queuedRequests.end(), downloadRequests.begin(), downloadRequests.end());
-  curlAddRequests(eventLoopData);
+  for(auto const &queuedRequest : downloadRequests)
+  {
+    eventLoopData->processingRequests.emplace_back(queuedRequest);
+    curl_multi_add_handle(eventLoopData->curlMulti, eventLoopData->processingRequests.back()->curlEasy);
+  }
 }
 
 #if UV_VERSION_MAJOR < 1
@@ -303,19 +292,11 @@ static void cancelledDownloadCB(uv_async_t *handle)
     return;
   for (auto &cancelled : cancelledDownloads)
   {
-    auto it_queued = std::find(eventLoopData->queuedRequests.begin(), eventLoopData->queuedRequests.end(), cancelled);
-    if (it_queued != eventLoopData->queuedRequests.end())
+    auto it_processing = std::find(eventLoopData->processingRequests.begin(), eventLoopData->processingRequests.end(), cancelled);
+    if (it_processing != eventLoopData->processingRequests.end())
     {
-      eventLoopData->queuedRequests.erase(it_queued);
-    }
-    else
-    {
-      auto it_processing = std::find(eventLoopData->processingRequests.begin(), eventLoopData->processingRequests.end(), cancelled);
-      if (it_processing != eventLoopData->processingRequests.end())
-      {
-        eventLoopData->processingRequests.erase(it_processing);
-        curl_multi_remove_handle(eventLoopData->curlMulti, cancelled->curlEasy);
-      }
+      eventLoopData->processingRequests.erase(it_processing);
+      curl_multi_remove_handle(eventLoopData->curlMulti, cancelled->curlEasy);
     }
     curl_easy_cleanup(cancelled->curlEasy);
     auto req = cancelled->request.lock();
@@ -399,8 +380,11 @@ static void addUploadCB(uv_async_t *handle)
       curl_easy_setopt(uploadRequest->curlEasy, CURLOPT_SSL_VERIFYPEER, 0L);
   }
 
-  eventLoopData->queuedRequests.insert(eventLoopData->queuedRequests.end(), uploadRequests.begin(), uploadRequests.end());
-  curlAddRequests(eventLoopData);
+  for(auto const &queuedRequest : uploadRequests)
+  {
+    eventLoopData->processingRequests.emplace_back(queuedRequest);
+    curl_multi_add_handle(eventLoopData->curlMulti, eventLoopData->processingRequests.back()->curlEasy);
+  }
 }
 
 #if UV_VERSION_MAJOR < 1
@@ -427,20 +411,11 @@ static void cancelledUploadCB(uv_async_t *handle)
     return;
   for (auto &cancelled : cancelledUploads)
   {
-    auto it_queued = std::find(eventLoopData->queuedRequests.begin(), eventLoopData->queuedRequests.end(), cancelled);
-
-    if (it_queued != eventLoopData->queuedRequests.end())
+    auto it_processing = std::find(eventLoopData->processingRequests.begin(), eventLoopData->processingRequests.end(), cancelled);
+    if (it_processing != eventLoopData->processingRequests.end())
     {
-      eventLoopData->queuedRequests.erase(it_queued);
-    }
-    else
-    {
-      auto it_processing = std::find(eventLoopData->processingRequests.begin(), eventLoopData->processingRequests.end(), cancelled);
-      if (it_processing != eventLoopData->processingRequests.end())
-      {
-        eventLoopData->processingRequests.erase(it_processing);
-        curl_multi_remove_handle(eventLoopData->curlMulti, cancelled->curlEasy);
-      }
+      eventLoopData->processingRequests.erase(it_processing);
+      curl_multi_remove_handle(eventLoopData->curlMulti, cancelled->curlEasy);
     }
     curl_easy_cleanup(cancelled->curlEasy);
     auto req = cancelled->request.lock();
@@ -590,7 +565,6 @@ static void beforeBlockCB(uv_prepare_t *handle)
       if (it != eventLoopData->processingRequests.end())
         eventLoopData->processingRequests.erase(it);
     }
-    curlAddRequests(eventLoopData);
   }
 }
 
@@ -924,7 +898,7 @@ struct Barrier
   std::condition_variable wait;
 };
 
-CurlHandler::CurlHandler(Error& error, const Logger& logger, const std::string& httpProxy)
+CurlHandler::CurlHandler(Error& error, const Logger& logger, int maxConcurrentRequests, const std::string& httpProxy)
   : m_eventLoopData(logger, httpProxy)
 {
   error.code = curl_global_init(CURL_GLOBAL_ALL);
@@ -938,7 +912,7 @@ CurlHandler::CurlHandler(Error& error, const Logger& logger, const std::string& 
   Barrier barrier;
   std::unique_lock<std::mutex> lock(barrier.mutex);
 
-  auto run = [&barrier, this]
+  auto run = [maxConcurrentRequests, &barrier, this]
   {
 #if UV_VERSION_MAJOR < 1
     m_eventLoopData.loop = uv_loop_new();
@@ -963,9 +937,7 @@ CurlHandler::CurlHandler(Error& error, const Logger& logger, const std::string& 
     curl_multi_setopt(m_eventLoopData.curlMulti, CURLMOPT_TIMERFUNCTION, curlTimerCallback);
     curl_multi_setopt(m_eventLoopData.curlMulti, CURLMOPT_TIMERDATA, &m_eventLoopData);
 
-#if LIBCURL_VERSION_MAJOR > 7 || (LIBCURL_VERSION_MAJOR == 7 && LIBCURL_VERSION_MINOR > 29)
-    curl_multi_setopt(m_eventLoopData.curlMulti, CURLMOPT_MAX_HOST_CONNECTIONS, 32);
-#endif
+    curl_multi_setopt(m_eventLoopData.curlMulti, CURLMOPT_MAX_HOST_CONNECTIONS, maxConcurrentRequests);
 
     uv_prepare_init(m_eventLoopData.loop, &m_eventLoopData.beforeBlock);
     m_eventLoopData.beforeBlock.data = &m_eventLoopData;

@@ -66,7 +66,7 @@ namespace OpenVDS
 
   IOManager *IOManagerAzurePresigned::CreateIOManagerAzurePresigned(const std::string& base, const std::string& suffix, const Logger& logger, Error& error)
   {
-    auto curlHandler = std::make_shared<CurlHandler>(error, logger);
+    auto curlHandler = std::make_shared<CurlHandler>(error, logger, CurlHandler::defaultMaxConcurrentRequests);
     return (error.code == 0) ? CreateIOManagerAzurePresigned(base, suffix, curlHandler, error) : nullptr;
   }
 

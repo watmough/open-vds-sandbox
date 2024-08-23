@@ -262,7 +262,7 @@ namespace OpenVDS
 
   IOManager *IOManagerGoogle::CreateIOManagerGoogle(const GoogleOpenOptions& openOptions, const Logger& logger, Error& error)
   {
-    auto curlHandler = std::make_shared<CurlHandler>(error, logger);
+    auto curlHandler = std::make_shared<CurlHandler>(error, logger, CurlHandler::defaultMaxConcurrentRequests);
     return (error.code == 0) ? CreateIOManagerGoogle(openOptions, curlHandler, error) : nullptr;
   }
 
