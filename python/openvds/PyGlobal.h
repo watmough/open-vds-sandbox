@@ -68,6 +68,19 @@ private:
 
 }
 
+// Later versions of pybind11 have a check in py::handle::dec_ref() which asserts that
+// the GIL is held. This fails when wrapping a function that 
+//   1: takes one or more wrapped python objects as parameters (e.g py::buffer) and
+//   2: has a py::call_guard policy which released the GIL. 
+// Because the desctructor ordering of the parameter objects to the call is undefined,
+// the refcount of the parameter objects can be decremented *before* the call guard
+// is destroyed (when the GIL has not been reacquired). See this comment by one of the
+// pybind11 developers for context: https://github.com/pybind/pybind11/issues/4748#issuecomment-1639445403
+// Currently, all objects of this nature are client-owned, meaning their refcount cannot
+// under normal circumstances reach 0 which would cause them to be deleted. 
+// Therefore it should be safe to disable the check:
+#define PYBIND11_NO_ASSERT_GIL_HELD_INCREF_DECREF
+
 #if defined(_MSC_VER) && _MSC_VER <= 1900
 #pragma warning( push )
 #pragma warning( disable : 4800 )
