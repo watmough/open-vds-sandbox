@@ -203,9 +203,9 @@ struct UVEventLoopData
 class CurlHandler
 {
 public:
-  static const int defaultMaxConcurrentRequests = 40;
+  static const int defaultMaxHostConnections = 32;
 
-  CurlHandler(Error& error, const Logger& logger, int maxConcurrentRequests, const std::string& httpProxy = std::string());
+  CurlHandler(Error& error, const Logger& logger, int maxHostConnections, const std::string& httpProxy = std::string());
   ~CurlHandler();
 
   void addDownloadRequest(const std::shared_ptr<DownloadRequestCurl>& request, const std::string& url, const std::vector<std::string>& headers, std::function<std::string(const std::string &date)> toISO8601DateTransformer, CurlVerb verb, int retryCount = 4);

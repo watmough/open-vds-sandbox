@@ -227,7 +227,7 @@ IOManager *IOManagerAWSCurl::CreateIOManagerAWSCurl(const AWSOpenOptions &openOp
 
 IOManager *IOManagerAWSCurl::CreateIOManagerAWSCurl(const AWSOpenOptions &openOptions, const Logger& logger, Error& error)
 {
-  auto curlHandler = std::make_shared<CurlHandler>(error, logger, CurlHandler::defaultMaxConcurrentRequests);
+  auto curlHandler = std::make_shared<CurlHandler>(error, logger, CurlHandler::defaultMaxHostConnections);
   return (error.code == 0) ? CreateIOManagerAWSCurl(openOptions, curlHandler, error) : nullptr;
 }
 

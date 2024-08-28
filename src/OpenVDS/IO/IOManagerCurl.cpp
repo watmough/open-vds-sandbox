@@ -898,7 +898,7 @@ struct Barrier
   std::condition_variable wait;
 };
 
-CurlHandler::CurlHandler(Error& error, const Logger& logger, int maxConcurrentRequests, const std::string& httpProxy)
+CurlHandler::CurlHandler(Error& error, const Logger& logger, int maxHostConnections, const std::string& httpProxy)
   : m_eventLoopData(logger, httpProxy)
 {
   error.code = curl_global_init(CURL_GLOBAL_ALL);
@@ -912,7 +912,7 @@ CurlHandler::CurlHandler(Error& error, const Logger& logger, int maxConcurrentRe
   Barrier barrier;
   std::unique_lock<std::mutex> lock(barrier.mutex);
 
-  auto run = [maxConcurrentRequests, &barrier, this]
+  auto run = [maxHostConnections, &barrier, this]
   {
 #if UV_VERSION_MAJOR < 1
     m_eventLoopData.loop = uv_loop_new();
@@ -937,7 +937,7 @@ CurlHandler::CurlHandler(Error& error, const Logger& logger, int maxConcurrentRe
     curl_multi_setopt(m_eventLoopData.curlMulti, CURLMOPT_TIMERFUNCTION, curlTimerCallback);
     curl_multi_setopt(m_eventLoopData.curlMulti, CURLMOPT_TIMERDATA, &m_eventLoopData);
 
-    curl_multi_setopt(m_eventLoopData.curlMulti, CURLMOPT_MAX_HOST_CONNECTIONS, maxConcurrentRequests);
+    curl_multi_setopt(m_eventLoopData.curlMulti, CURLMOPT_MAX_HOST_CONNECTIONS, maxHostConnections);
 
     uv_prepare_init(m_eventLoopData.loop, &m_eventLoopData.beforeBlock);
     m_eventLoopData.beforeBlock.data = &m_eventLoopData;
