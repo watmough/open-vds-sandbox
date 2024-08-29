@@ -203,7 +203,7 @@ struct UVEventLoopData
 class CurlHandler
 {
 public:
-  static const int defaultMaxHostConnections = 32;
+  enum { defaultMaxHostConnections = 32 };
 
   CurlHandler(Error& error, const Logger& logger, int maxHostConnections, const std::string& httpProxy = std::string());
   ~CurlHandler();
