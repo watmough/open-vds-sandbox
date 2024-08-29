@@ -29,8 +29,8 @@ IOManagerDMSProxy::IOManagerDMSProxy(const DMSOpenOptions& openOptions, IOManage
   : IOManager(OpenOptions::DMS)
   , m_accessPattern(accessPattern)
   , m_logger(logger)
-  , m_curlHandler(error, m_logger, CurlHandler::defaultMaxConcurrentRequests, openOptions.httpProxy)
-  , m_ioManagerCurlHandler(std::make_shared<CurlHandler>(error, m_logger, CurlHandler::defaultMaxConcurrentRequests))
+  , m_curlHandler(error, m_logger, CurlHandler::defaultMaxHostConnections, openOptions.httpProxy)
+  , m_ioManagerCurlHandler(std::make_shared<CurlHandler>(error, m_logger, CurlHandler::defaultMaxHostConnections))
   , m_dmsManager(new DmsManager(openOptions.sdAuthorityUrl, openOptions.sdApiKey, m_curlHandler, m_logger))
 {
   if (m_dmsManager->m_authorityUrl.empty())
