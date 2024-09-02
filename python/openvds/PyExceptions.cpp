@@ -21,6 +21,41 @@
 
 using namespace native;
 
+#if 1 //PY_MAJOR_VERSION == 3 && PY_MINOR_VERSION == 6
+namespace pybind11_old
+{
+template <typename CppException>
+py::exception<CppException> &get_exception_object() {
+    static py::exception<CppException> ex;
+    return ex;
+}
+
+template <typename CppException>
+py::exception<CppException> &
+register_exception(py::handle scope, const char *name, py::handle base = PyExc_Exception) {
+    auto &ex = get_exception_object<CppException>();
+    if (!ex) {
+        ex = py::exception<CppException>(scope, name, base);
+    }
+
+    py::register_exception_translator([](std::exception_ptr p) {
+        if (!p) {
+            return;
+        }
+        try {
+            std::rethrow_exception(p);
+        } catch (const CppException &e) {
+            py::set_error(get_exception_object<CppException>(), e.what());
+        }
+    });
+    return ex;
+}
+}
+#define register_exception pybind11_old::register_exception
+#else
+#define register_exception py::register_exception
+#endif
+
 void 
 PyExceptions::initModule(py::module& m)
 {
@@ -34,7 +69,7 @@ PyExceptions::initModule(py::module& m)
 // IMPLEMENTED :  Exception_.def("what"                        , static_cast<const char *(Exception::*)() const>(&Exception::what), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(Exception_what));
 // IMPLEMENTED :  Exception_.def("getErrorMessage"             , static_cast<const char *(Exception::*)() const>(&Exception::GetErrorMessage), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(Exception_GetErrorMessage));
 // IMPLEMENTED :  Exception_.def_property_readonly("errorMessage", &Exception::GetErrorMessage, OPENVDS_DOCSTRING(Exception_GetErrorMessage));
-py::register_exception<Exception>(m, "Exception");
+register_exception<Exception>(m, "Exception");
 
 // IMPLEMENTED :  // FatalException
 // IMPLEMENTED :  py::class_<FatalException, MessageBufferException> 
@@ -44,7 +79,7 @@ py::register_exception<Exception>(m, "Exception");
 // IMPLEMENTED :  FatalException_.def("operator_assign"             , static_cast<native::FatalException &(FatalException::*)(const native::FatalException &)>(&FatalException::operator=), py::arg("other").none(false), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(FatalException_operator_assign));
 // IMPLEMENTED :  FatalException_.def("getErrorMessage"             , static_cast<const char *(FatalException::*)() const>(&FatalException::GetErrorMessage), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(FatalException_GetErrorMessage));
 // IMPLEMENTED :  FatalException_.def_property_readonly("errorMessage", &FatalException::GetErrorMessage, OPENVDS_DOCSTRING(FatalException_GetErrorMessage));
-py::register_exception<FatalException>(m, "FatalException");
+register_exception<FatalException>(m, "FatalException");
 
 // IMPLEMENTED :  // InvalidOperation
 // IMPLEMENTED :  py::class_<InvalidOperation, MessageBufferException> 
@@ -54,7 +89,7 @@ py::register_exception<FatalException>(m, "FatalException");
 // IMPLEMENTED :  InvalidOperation_.def("operator_assign"             , static_cast<native::InvalidOperation &(InvalidOperation::*)(const native::InvalidOperation &)>(&InvalidOperation::operator=), py::arg("other").none(false), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(InvalidOperation_operator_assign));
 // IMPLEMENTED :  InvalidOperation_.def("getErrorMessage"             , static_cast<const char *(InvalidOperation::*)() const>(&InvalidOperation::GetErrorMessage), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(InvalidOperation_GetErrorMessage));
 // IMPLEMENTED :  InvalidOperation_.def_property_readonly("errorMessage", &InvalidOperation::GetErrorMessage, OPENVDS_DOCSTRING(InvalidOperation_GetErrorMessage));
-py::register_exception<InvalidOperation>(m, "InvalidOperation");
+register_exception<InvalidOperation>(m, "InvalidOperation");
 
 // IMPLEMENTED :  // InvalidArgument
 // IMPLEMENTED :  py::class_<InvalidArgument, MessageBufferException> 
@@ -66,7 +101,7 @@ py::register_exception<InvalidOperation>(m, "InvalidOperation");
 // IMPLEMENTED :  InvalidArgument_.def_property_readonly("errorMessage", &InvalidArgument::GetErrorMessage, OPENVDS_DOCSTRING(InvalidArgument_GetErrorMessage));
 // IMPLEMENTED :  InvalidArgument_.def("getParameterName"            , static_cast<const char *(InvalidArgument::*)() const>(&InvalidArgument::GetParameterName), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(InvalidArgument_GetParameterName));
 // IMPLEMENTED :  InvalidArgument_.def_property_readonly("parameterName", &InvalidArgument::GetParameterName, OPENVDS_DOCSTRING(InvalidArgument_GetParameterName));
-py::register_exception<InvalidArgument>(m, "InvalidArgument");
+register_exception<InvalidArgument>(m, "InvalidArgument");
 
 // IMPLEMENTED :  // IndexOutOfRangeException
 // IMPLEMENTED :  py::class_<IndexOutOfRangeException, MessageBufferException> 
@@ -76,7 +111,7 @@ py::register_exception<InvalidArgument>(m, "InvalidArgument");
 // IMPLEMENTED :  IndexOutOfRangeException_.def("operator_assign"             , static_cast<native::IndexOutOfRangeException &(IndexOutOfRangeException::*)(const native::IndexOutOfRangeException &)>(&IndexOutOfRangeException::operator=), py::arg("other").none(false), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(IndexOutOfRangeException_operator_assign));
 // IMPLEMENTED :  IndexOutOfRangeException_.def("getErrorMessage"             , static_cast<const char *(IndexOutOfRangeException::*)() const>(&IndexOutOfRangeException::GetErrorMessage), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(IndexOutOfRangeException_GetErrorMessage));
 // IMPLEMENTED :  IndexOutOfRangeException_.def_property_readonly("errorMessage", &IndexOutOfRangeException::GetErrorMessage, OPENVDS_DOCSTRING(IndexOutOfRangeException_GetErrorMessage));
-py::register_exception<IndexOutOfRangeException>(m, "IndexOutOfRangeException");
+register_exception<IndexOutOfRangeException>(m, "IndexOutOfRangeException");
 
 // IMPLEMENTED :  // ReadErrorException
 // IMPLEMENTED :  py::class_<ReadErrorException, MessageBufferException> 
@@ -88,7 +123,7 @@ py::register_exception<IndexOutOfRangeException>(m, "IndexOutOfRangeException");
 // IMPLEMENTED :  ReadErrorException_.def_property_readonly("errorMessage", &ReadErrorException::GetErrorMessage, OPENVDS_DOCSTRING(ReadErrorException_GetErrorMessage));
 // IMPLEMENTED :  ReadErrorException_.def("getErrorCode"                , static_cast<int(ReadErrorException::*)() const>(&ReadErrorException::GetErrorCode), py::call_guard<py::gil_scoped_release>(), OPENVDS_DOCSTRING(ReadErrorException_GetErrorCode));
 // IMPLEMENTED :  ReadErrorException_.def_property_readonly("errorCode", &ReadErrorException::GetErrorCode, OPENVDS_DOCSTRING(ReadErrorException_GetErrorCode));
-py::register_exception<ReadErrorException>(m, "ReadErrorException");
+register_exception<ReadErrorException>(m, "ReadErrorException");
 
 py::class_<ReadErrorException>
   ReadErrorException_(m,"ReadErrorException_", OPENVDS_DOCSTRING(ReadErrorException));
