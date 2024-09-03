@@ -165,8 +165,6 @@ if (NOT EMSCRIPTEN)
   target_compile_definitions(hue_bds_objects PRIVATE -DHUEBDS_EXPORTS= ) # We're not building HueBulkDataStore as a shared library
   target_compile_definitions(hue_bds_objects PRIVATE -D_CRT_SECURE_NO_WARNINGS=1) # We're not building HueBulkDataStore as a shared library
   setCommonTargetProperties(hue_bds_objects)
-  get_target_property(fmt_include_dir fmt::fmt INTERFACE_INCLUDE_DIRECTORIES)
-  target_include_directories(hue_bds_objects PRIVATE ${fmt_include_dir})
 
   target_link_libraries(hue_bds_objects PRIVATE fmt::fmt)
 
@@ -183,7 +181,6 @@ add_library(openvds_objects OBJECT
   ${EXPORTED_HEADER_FILES}
   ${SOURCE_FILES} )
 
-target_include_directories(openvds_objects PRIVATE ${fmt_include_dir})
 target_include_directories(openvds_objects
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
@@ -312,7 +309,7 @@ if (NOT EMSCRIPTEN)
     set_source_files_properties(IO/IOManagerDms.cpp IO/IOManagerDmsFactory.cpp PROPERTIES HEADER_FILE_ONLY TRUE)
   endif()
 
-  target_link_libraries(openvds_objects PRIVATE Threads::Threads)
+  target_link_libraries(openvds_objects PRIVATE Threads::Threads fmt::fmt)
 endif()
 
 if (OpenMP_CXX_FOUND)
