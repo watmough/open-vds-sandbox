@@ -10,8 +10,7 @@ else ()
   target_include_directories(openvds_python_test SYSTEM BEFORE PRIVATE ${PYBIND11_INCLUDE_DIR})
 endif()
 
-get_target_property(fmt_INCLUDE fmt::fmt INTERFACE_INCLUDE_DIRECTORIES)
-target_include_directories(openvds_python_test PRIVATE ${PROJECT_SOURCE_DIR}/tests ${fmt_INCLUDE} ${COMMON_DIR})
+target_include_directories(openvds_python_test PRIVATE ${PROJECT_SOURCE_DIR}/tests ${COMMON_DIR})
 
 if(WIN32)
   # In case we have the Python debug library installed it will try to pragma-link with the non-debug library. 
@@ -36,7 +35,7 @@ add_custom_target(openvds_python_test_py_files ALL
 copyDllForTarget(openvds_python_test)
 setWarningFlagsForTarget(openvds_python_test)
 
-target_link_libraries(openvds_python_test PRIVATE openvds)
+target_link_libraries(openvds_python_test PRIVATE openvds fmt::fmt)
 
 if (OpenMP_CXX_FOUND)
   target_link_libraries(openvds_python_test PRIVATE OpenMP::OpenMP_CXX)
