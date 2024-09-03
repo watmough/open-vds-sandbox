@@ -5,6 +5,7 @@ Dist
 TestResults
 CMakeSettings.json
 CMakeLists.txt.user
+CMakeUserPresets.json
 python/openvds/test/aws_defs.py
 out
 *.pyc
