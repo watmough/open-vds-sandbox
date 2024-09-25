@@ -2,6 +2,7 @@
 #include "IOManagerAWSCurl.h"
 
 #include "ErrorRequest.h"
+#include "VDS/Url.h"
 
 #include <fmt/format.h>
 
@@ -96,7 +97,7 @@ static std::string GetBucketLocation(const std::shared_ptr<Aws::Crt::Auth::ICred
   std::string host = fmt::format("{}.s3.us-east-1.amazonaws.com", bucket);
   std::string url = "https://" + host; // + "/?location";
   auto crtrequest = std::make_shared<Aws::Crt::Http::HttpRequest>();
-  crtrequest->SetPath(createByteCursor(url));
+  crtrequest->SetPath(createByteCursor(URLDecode(url)));
   crtrequest->SetMethod(createByteCursor("HEAD"));
   crtrequest->AddHeader(createHttpHeader("Host", host));
 
@@ -263,7 +264,7 @@ static std::string getUrl(bool useVirtualAdressing, const std::string &protocol,
 static std::vector<std::string> signRequest(const std::string& host, const std::string& url,  std::shared_ptr<Aws::Crt::Auth::ICredentialsProvider> &credentialsProvider, const std::string &region, const std::string& verb, const std::string& payloadHash, const std::map<std::string, std::string> headerMap, Error &error)
 {
     auto crtrequest = std::make_shared<Aws::Crt::Http::HttpRequest>();
-    crtrequest->SetPath(createByteCursor(url));
+    crtrequest->SetPath(createByteCursor(URLDecode(url)));
     crtrequest->SetMethod(createByteCursor(verb));
     crtrequest->AddHeader(createHttpHeader("Host", host));
 
