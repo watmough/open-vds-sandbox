@@ -223,6 +223,18 @@ void VolumeDataPageImpl::WriteBack(VolumeDataLayer const* volumeDataLayer, std::
   }
   m_volumeDataPageAccessor->RequestWritePage(m_chunk, m_dataBlock, m_blob, m_hash);
   auto layout = const_cast<VolumeDataLayoutImpl*>(static_cast<VolumeDataLayoutImpl const*>(m_volumeDataPageAccessor->GetLayout()));
+
+  // Reset the written region
+  for(int dimension = 0; dimension < Dimensionality_Max; dimension++)
+  {
+    m_writtenMin[dimension] = 0;
+    m_writtenMax[dimension] = 0;
+  }
+
+  // Clear the copied to chunk list
+  memset(m_copiedToChunkIndexes, 0, sizeof(m_copiedToChunkIndexes));
+  m_chunksCopiedTo = 0;
+
   m_isDirty = false;
   layout->CompletePendingWriteChunkRequests(16);
 }

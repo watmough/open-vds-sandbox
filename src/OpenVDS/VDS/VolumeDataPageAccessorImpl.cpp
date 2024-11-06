@@ -678,7 +678,7 @@ void VolumeDataPageAccessorImpl::LimitPageListSize(int maxPages, std::unique_loc
     if (!page)
       return;
 
-    if(page->IsWritten())
+    if(page->IsWritten() && m_layer)
     {
       // Finish reading all pages currently being read
       while(1)
