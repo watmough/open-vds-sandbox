@@ -16,7 +16,9 @@
 #include <chrono>
 #include <random>
 #include <sstream>
+#ifndef OPENVDS_NO_AZURE_PRESIGNED_IOMANAGER
 #include "AzureDmsIoManagerFactory.h"
+#endif
 #ifndef OPENVDS_NO_AWS_IOMANAGER
 #include "AwsDmsIoManagerFactory.h"
 #include "AnthosDmsIoManagerFactory.h"
@@ -408,8 +410,10 @@ bool DmsDataset::close(uint64_t serializedSize, uint64_t chunkCount, Error& erro
 
 DmsIoManagerFactory* DmsIoManagerFactory::createDmsIoManagerFactory(const std::string& serviceProvider, DmsDataset &dataset, Logger &logger, Error &error)
 {
+#ifndef OPENVDS_NO_AZURE_PRESIGNED_IOMANAGER
   if (serviceProvider == "azure")
     return new AzureDmsIoManagerFactory(dataset);
+#endif
 #ifndef OPENVDS_NO_AWS_IOMANAGER
   if (serviceProvider == "aws")
     return new AwsDmsIoManagerFactory(dataset, logger);
