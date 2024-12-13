@@ -102,6 +102,9 @@ if (BUILD_DOCS)
   if (BUILD_JAVA)
     set(JAVADOC_DEPENDENCY openvds-javadoc)
   endif()
+  if (BUILD_PYTHON)
+    set(PYTHON_DEPENDENCY core core_py_files)
+  endif()
   add_custom_command(OUTPUT ${SPHINX_INDEX_FILE}
                      COMMAND ${CMAKE_COMMAND} -E copy_if_different ${RST_FILES} ${CMAKE_CURRENT_BINARY_DIR}
                      COMMAND ${CMAKE_COMMAND} -E copy_if_different ${RST_CPP_FILES} ${CMAKE_CURRENT_BINARY_DIR}/cppdoc/
@@ -127,6 +130,7 @@ if (BUILD_DOCS)
                      ${CMAKE_CURRENT_SOURCE_DIR}/apidoc.py
                      Doxygen
                      ${JAVADOC_DEPENDENCY}
+                     ${PYTHON_DEPENDENCY}
                      MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/conf.py.in
                      COMMENT "Generating documentation with Sphinx")
   
