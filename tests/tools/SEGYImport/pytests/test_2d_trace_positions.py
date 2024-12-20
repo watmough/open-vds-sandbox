@@ -7,8 +7,7 @@ import array
 from typing import List, Optional
 import numpy as np
 
-from segyimport_test_config import ImportExecutor, TempVDSGuard, platform_integration_test_data_dir
-
+from segyimport_test_config import ImportExecutor, TempVDSGuard, platform_integration_test_data_dir, segyimport_test_data_dir
 
 @pytest.fixture
 def output_vds() -> TempVDSGuard:
@@ -47,9 +46,8 @@ def unbinned_shot_segy(platform_integration_test_data_dir) -> str:
 
 
 @pytest.fixture
-def ensemble_gap_segy() -> str:
-    return r"Y:\SEGY\WithShowRights\NewZealand\PegasusBasin\APB13_2D_Survey\APB13-2D-PR5170-T-PSTM-FULL\APB13-2D-PR5170-T-PSTM-FULL.2D.Full_Angle_Stack.APB13-007.segy"
-
+def ensemble_gap_segy(segyimport_test_data_dir) -> str:
+    return os.path.join(segyimport_test_data_dir, "PegasusBasin", "APB13-2D-PR5170-T-PSTM-FULL.2D.Full_Angle_Stack.APB13-007.segy")
 
 def check_trace_positions(filename: str, coordinates_count: int, expected_coordinates: List,
                           expected_coordinates_tail: Optional[List] = None):

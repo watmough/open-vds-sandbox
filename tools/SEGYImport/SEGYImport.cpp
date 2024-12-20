@@ -4323,6 +4323,9 @@ main(int argc, char* argv[])
     primaryKeyDimension = PrimaryKeyDimension(fileInfo, primaryKeyValue),
     secondaryKeyDimension = SecondaryKeyDimension(fileInfo, primaryKeyValue);
 
+  std::set<int64_t>
+    ignoredTraces;
+
   std::vector<ChunkInfo> chunkInfos;
   chunkInfos.resize(amplitudeAccessor->GetChunkCount());
   for (int64_t chunk = 0; chunk < amplitudeAccessor->GetChunkCount(); chunk++)
@@ -4668,8 +4671,12 @@ main(int argc, char* argv[])
 
       for (auto segment = lower; segment != upper && error.code == 0; ++segment)
       {
+        int
+          binInfoSecondaryStart = BinInfoSecondaryKeyValue(primaryKeyValue, segment->m_binInfoStart),
+          binInfoSecondaryStop = BinInfoSecondaryKeyValue(primaryKeyValue, segment->m_binInfoStop);
+
         const bool
-          isSecondaryFalling = BinInfoSecondaryKeyValue(primaryKeyValue, segment->m_binInfoStart) > BinInfoSecondaryKeyValue(primaryKeyValue, segment->m_binInfoStop);
+          isSecondaryFalling = binInfoSecondaryStart > binInfoSecondaryStop;
 
         int64_t firstTrace;
         if (fileInfo.IsUnbinned())
@@ -4752,6 +4759,7 @@ main(int argc, char* argv[])
           traceInRange = [segment](int64_t traceNumber) { return traceNumber <= segment->m_traceStop; };
         }
 
+        int previousSecondaryTest = 0;
         for (int64_t trace = firstTrace; traceInRange(trace); trace += traceIncrement, tertiaryIndex++)
         {
           if (fileInfo.Is4D() && !static_cast<bool>(gatherSpacing))
@@ -4783,8 +4791,9 @@ main(int argc, char* argv[])
             }
           }
 
-          int primaryTest = fileInfo.Is2D() ? 0 : SEGY::ReadFieldFromHeader(header, fileInfo.m_primaryKey, fileInfo.m_headerEndianness),
-            secondaryTest;
+          int primaryTest = fileInfo.Is2D() ? 0 : SEGY::ReadFieldFromHeader(header, fileInfo.m_primaryKey, fileInfo.m_headerEndianness);
+          int secondaryTest = 0;
+
           if (fileInfo.IsUnbinned())
           {
             secondaryTest = static_cast<int>(trace - segment->m_traceStart + 1);
@@ -4810,12 +4819,37 @@ main(int argc, char* argv[])
             }
           }
 
-          // is secondaryTest beyond secondaryKeyStop?
+          if(primaryTest != segment->m_primaryKey)
+          {
+            if(ignoredTraces.find(trace + 1) == ignoredTraces.end())
+            {
+              outputPrinter.printWarning("SEGY", fmt::format("trace {} has primary key {} that doesn't match with the segment's primary key {}. This trace will be ignored.", trace + 1, primaryTest, segment->m_primaryKey));
+              ignoredTraces.insert(trace + 1);
+            }
+            continue;
+          }
+
+          if(!fileInfo.IsUnbinned() && (fileInfo.m_segyType != SEGY::SEGYType::Poststack2D || is2DCDPAxis) && (fileInfo.m_segyType != SEGY::SEGYType::Prestack2D || is2DCDPAxis) &&
+             ((isSecondaryFalling ? secondaryTest < binInfoSecondaryStop : secondaryTest > binInfoSecondaryStop  ) ||
+              (isSecondaryFalling ? secondaryTest > binInfoSecondaryStart : secondaryTest < binInfoSecondaryStart) ||
+              (previousSecondaryTest && ((isSecondaryFalling && traceIncrement > 0) ? secondaryTest > previousSecondaryTest : secondaryTest < previousSecondaryTest))))
+          {
+            if(ignoredTraces.find(trace + 1) == ignoredTraces.end())
+            {
+              outputPrinter.printWarning("SEGY", fmt::format("trace {} has a secondary key ({}) that is not sorted correctly. This trace will be ignored.", trace + 1, secondaryTest));
+              ignoredTraces.insert(trace + 1);
+            }
+            continue;
+          }
+
+          previousSecondaryTest = secondaryTest;
+
+          // is secondaryTest beyond secondaryKeyStop for this chunk?
           const bool
-            isSecondaryBeyondStop = isSecondaryFalling && (keepOriginalOrder || fileInfo.Is2D()) ? secondaryTest < chunkInfo.secondaryKeyStop : secondaryTest > chunkInfo.secondaryKeyStop;
+            isSecondaryBeyondStop  = isSecondaryFalling && (keepOriginalOrder || fileInfo.Is2D()) ? secondaryTest < chunkInfo.secondaryKeyStop : secondaryTest > chunkInfo.secondaryKeyStop;
 
           // Check if the trace is outside the secondary range and go to the next segment if it is
-          if (primaryTest == segment->m_primaryKey && isSecondaryBeyondStop)
+          if (isSecondaryBeyondStop)
           {
             break;
           }
