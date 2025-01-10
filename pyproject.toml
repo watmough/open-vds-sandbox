@@ -1,2 +1,47 @@
+
+[project]
+name = "openvds"
+description = "Open-source implementation of the Volume Data Store (VDS) standard for fast random access to multi-dimensional volumetric data."
+readme = "DESCRIPTION.md"
+requires-python = ">=3.8"
+license = { file = "LICENSE" }
+authors = [{ name = "The Open Group / Bluware, Inc." }]
+maintainers = [{ name = "OpenVDS Developers", email = "openvds@bluware.com" }]
+classifiers = [
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: Python",
+]
+dynamic = ["version"]
+dependencies = ["numpy >=1.19, <2.0"]  
+
+[project.urls]
+Homepage = "https://bluware.com/data-solutions/vds"
+Download = "https://bluware.jfrog.io/ui/native/Releases-OpenVDSPlus/2.1"
+"Source Code" = "https://community.opengroup.org/osdu/platform/domain-data-mgmt-services/seismic/open-vds"
+"Bug Tracker" = "https://community.opengroup.org/osdu/platform/domain-data-mgmt-services/seismic/open-vds/-/issues"
+Documentation = "https://osdu.pages.opengroup.org/platform/domain-data-mgmt-services/seismic/open-vds/"
+
 [build-system]
-requires = ["setuptools", "wheel", "scikit-build", "cmake", "ninja", "numpy"]
+requires = ["scikit-build-core[pyproject] ~= 0.10.7"]
+build-backend = "scikit_build_core.build"
+
+[tool.scikit-build]
+build.verbose = false
+build-dir = "build/{wheel_tag}"
+cmake.version = "CMakeLists.txt"
+minimum-version = "build-system.requires"
+metadata.version = { provider = "scikit_build_core.metadata.regex", input="VERSION", regex="v?(?P<value>.+?)\\s*$"}
+wheel.py-api = ""  # set python stable API - not yet compatiable pybind11 
+wheel.packages = []  # cmake packing the wheel
+wheel.exclude = ["Release", "share", "pkgconfig", "*.lib", "include", "java", "*javacpp*"]  # extra stuff cmake might incorrectly include
+wheel.install-dir = "openvds"  # IE site-packages/openvds/
+wheel.license-files = ["LICENSE", "Attributions.md"]
+
+[tool.scikit-build.cmake.define]
+ENABLE_MSVC_TOOLSET_DIR = "OFF"
+BUILD_PYTHON = "ON"
+BUILD_JAVA = "OFF"
+BUILD_TESTS = "OFF"
+BUILD_EXAMPLES = "OFF"
+BUILD_DOCS = "OFF"

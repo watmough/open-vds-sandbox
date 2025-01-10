@@ -61,9 +61,9 @@ if (NOT EMSCRIPTEN)
   endif()
 
   if (OPENVDS_PYTHON_VERSION)
-    find_package(Python3 ${OPENVDS_PYTHON_VERSION} EXACT REQUIRED COMPONENTS Interpreter Development.Module)
+    find_package(Python3 ${OPENVDS_PYTHON_VERSION} EXACT REQUIRED COMPONENTS Interpreter Development.Module ${SKBUILD_SABI_COMPONENT})
   else()
-    find_package(Python3 ${PYTHON_REQUIRED} COMPONENTS Interpreter Development.Module)
+    find_package(Python3 ${PYTHON_REQUIRED} COMPONENTS Interpreter Development.Module ${SKBUILD_SABI_COMPONENT})
   endif()
 
   if (Python3_FOUND)
@@ -100,14 +100,12 @@ endif()
 if(SKBUILD)
   message(STATUS "The project is built using scikit-build")
 
-  if(WIN32)
-    set(CMAKE_INSTALL_BINDIR "Scripts")
-  endif()
+  # bind VDSInfo etc to python script/bin folder
+  set(CMAKE_INSTALL_BINDIR ${SKBUILD_SCRIPTS_DIR}) 
+  set(CMAKE_INSTALL_LIBDIR "${SKBUILD_DATA_DIR}/lib") 
 
-  set(BUILD_JAVA_DEFAULT OFF)
-  set(ATTRIBUTION_INSTALL_DIR python/openvds)
-else()
-  set(ATTRIBUTION_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/)
+  # uncomment to include examples and cmake files into share folder in wheel 
+  # set(CMAKE_INSTALL_DATAROOTDIR "${SKBUILD_DATA_DIR}/share")
 endif()
 
 if (WIN32)
@@ -279,7 +277,7 @@ if (NOT EMSCRIPTEN)
 
   configure_file(docker/build_scripts/README.txt.in ${CMAKE_BINARY_DIR}/README.txt)
 endif()
-install(FILES ${CMAKE_SOURCE_DIR}/Attributions.md ${CMAKE_BINARY_DIR}/README.txt ${CMAKE_SOURCE_DIR}/LICENSE DESTINATION ${ATTRIBUTION_INSTALL_DIR})
+install(FILES ${CMAKE_SOURCE_DIR}/Attributions.md ${CMAKE_BINARY_DIR}/README.txt ${CMAKE_SOURCE_DIR}/LICENSE DESTINATION ${CMAKE_INSTALL_PREFIX}/)
 
 configure_file(
   "${PROJECT_SOURCE_DIR}/CMake/openvds.pc.in"

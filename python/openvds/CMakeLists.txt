@@ -1,5 +1,22 @@
 set(CMAKE_DEBUG_POSTFIX "")
-pybind11_add_module(core MODULE
+
+set(OPT_STABLE_API "")
+
+if(SKBUILD)
+  set(PY_INSTALL_DIR ${SKBUILD_PLATLIB_DIR}/openvds)
+  set(PY_HEADER_DIR ${SKBUILD_HEADERS_DIR})
+
+  if(NOT "${SKBUILD_SABI_VERSION}" STREQUAL "")
+    set(OPT_WITH_SOABI "WITH_SOABI;USE_SABI;${SKBUILD_SABI_VERSION}")
+  endif()
+else()
+  set(PY_INSTALL_DIR python/openvds)
+  set(PY_HEADER_DIR $<INSTALL_INTERFACE:include>)
+  message(WARNING "Enable SKBUILD for python wheel-builds - Recommended way to build wheel: `python -m build -w`")
+endif()
+
+
+pybind11_add_module(core MODULE ${OPT_STABLE_API}
     core.cpp
     PyGlobal.cpp
     PyGlobal.h
@@ -76,30 +93,35 @@ setWarningFlagsForTarget(core)
 target_link_libraries(core PRIVATE openvds)
 
 if (OpenMP_CXX_FOUND)
-    target_link_libraries(core PRIVATE OpenMP::OpenMP_CXX)
+  target_link_libraries(core PRIVATE OpenMP::OpenMP_CXX)
 endif()
 
 if(APPLE)
-set_target_properties(core PROPERTIES INSTALL_RPATH "@loader_path")
+  set_target_properties(core PROPERTIES INSTALL_RPATH "@loader_path")
 else()
-set_target_properties(core PROPERTIES INSTALL_RPATH "$ORIGIN")
+  set_target_properties(core PROPERTIES INSTALL_RPATH "$ORIGIN")
 endif()
-install(TARGETS core LIBRARY CONFIGURATIONS Release RelWithDebInfo MinSizeRel DESTINATION python/openvds)
+
+install(TARGETS core LIBRARY CONFIGURATIONS Release RelWithDebInfo MinSizeRel DESTINATION ${PY_INSTALL_DIR})
 install(TARGETS core LIBRARY CONFIGURATIONS Debug DESTINATION python/Debug/openvds)
-install(FILES ${pythonsources} CONFIGURATIONS Release RelWithDebInfo MinSizeRel DESTINATION python/openvds)
+install(FILES ${pythonsources} CONFIGURATIONS Release RelWithDebInfo MinSizeRel DESTINATION ${PY_INSTALL_DIR})
 install(FILES ${pythonsources} CONFIGURATIONS Debug DESTINATION python/Debug/openvds)
 
 if (NOT PYTHON_DISABLE_INSTALL_3RD_PARTY)
   set(PYINSTALL_TARGETS "openvds")
   get_property(runtime_3rdparty GLOBAL PROPERTY OPENVDS_RUNTIME_LIBS)
-  install(FILES ${runtime_3rdparty} CONFIGURATIONS Release RelWithDebInfo MinSizeRel DESTINATION python/openvds)
+  install(FILES ${runtime_3rdparty} CONFIGURATIONS Release RelWithDebInfo MinSizeRel DESTINATION ${PY_INSTALL_DIR})
   install(FILES ${runtime_3rdparty} CONFIGURATIONS Debug DESTINATION python/Debug/openvds)
   install(TARGETS ${PYINSTALL_TARGETS} CONFIGURATIONS Release RelWithDebInfo MinSizeRel
-    RUNTIME DESTINATION python/openvds
-    LIBRARY DESTINATION python/openvds)
+    RUNTIME DESTINATION ${PY_INSTALL_DIR}
+    LIBRARY DESTINATION ${PY_INSTALL_DIR}
+    PUBLIC_HEADER DESTINATION ${PY_HEADER_DIR}
+  )
   install(TARGETS ${PYINSTALL_TARGETS} CONFIGURATIONS Debug
     RUNTIME DESTINATION python/Debug/openvds
-    LIBRARY DESTINATION python/Debug/openvds)
-  set(CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION python/openvds)
+    LIBRARY DESTINATION python/Debug/openvds
+    PUBLIC_HEADER DESTINATION $<INSTALL_INTERFACE:include>
+  )
+  set(CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION ${PY_INSTALL_DIR})
   include (InstallRequiredSystemLibraries)
 endif()
