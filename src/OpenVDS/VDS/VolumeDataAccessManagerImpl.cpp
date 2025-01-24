@@ -439,12 +439,17 @@ VolumeDataAccessManagerImpl::CreateVolumeDataPageAccessor(DimensionsND dimension
 }
 
 void
+VolumeDataAccessManagerImpl::DestroyVolumeDataPageAccessorNoLock(VolumeDataPageAccessorImpl *pageAccessor)
+{
+  m_volumeDataPageAccessorList.Remove(pageAccessor);
+  delete pageAccessor;
+}
+
+void
 VolumeDataAccessManagerImpl::DestroyVolumeDataPageAccessor(VolumeDataPageAccessor *volumeDataPageAccessor)
 {
   std::unique_lock<std::mutex> lock(m_mutex);
-  VolumeDataPageAccessorImpl *pageAccessor = static_cast<VolumeDataPageAccessorImpl *>(volumeDataPageAccessor);
-  m_volumeDataPageAccessorList.Remove(pageAccessor);
-  delete pageAccessor;
+  return DestroyVolumeDataPageAccessorNoLock(static_cast<VolumeDataPageAccessorImpl *>(volumeDataPageAccessor));
 }
 
 int64_t
