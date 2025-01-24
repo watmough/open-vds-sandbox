@@ -87,6 +87,7 @@ public:
   VolumeDataPageAccessorImpl* CreateVolumeDataPageAccessorConversionParam(DimensionsND dimensionsND, int LOD, int channel, VolumeDataFormat format, bool useNoValue, float noValue, int maxPages, VolumeDataAccessManager::AccessMode accessMode, int chunkMetadataPageSize);
   VolumeDataPageAccessor *    CreateVolumeDataPageAccessor(DimensionsND dimensionsND, int LOD, int channel, int maxPages, VolumeDataAccessManager::AccessMode accessMode, int chunkMetadataPageSize = 1024) override;
 
+  void  DestroyVolumeDataPageAccessorNoLock(VolumeDataPageAccessorImpl *pageAccessor);
   void  DestroyVolumeDataPageAccessor(VolumeDataPageAccessor *volumeDataPageAccessor) override;
   void  DestroyVolumeDataAccessor(IVolumeDataAccessor *accessor) override;
   IVolumeDataAccessor * CloneVolumeDataAccessor(IVolumeDataAccessor const &accessor) override;

@@ -1745,10 +1745,28 @@ VolumeDataRequestProcessor::VolumeDataRequestProcessor(VolumeDataAccessManagerIm
 
 VolumeDataRequestProcessor::~VolumeDataRequestProcessor()
 {
-  for (auto& job : m_jobs)
-    job->cancelled = true;
   m_pageAccessorNotifier.setExit();
+
+  std::unique_lock<std::mutex> lock(m_mutex);
+  for (auto& job : m_jobs)
+  {
+    job->cancelled = true;
+  }
+
+  lock.unlock();
   m_cleanupThread.join();
+  lock.lock();
+
+  for (auto& jobPtr : m_jobs)
+  {
+    auto job = jobPtr.get();
+    job->pageAccessorNotifier.jobNotification.wait(lock, [job] { return job->done.load(); });
+  }
+
+  for (auto& accessor : m_pageAccessors)
+  {
+    m_manager.DestroyVolumeDataPageAccessorNoLock(accessor.second);
+  }
 }
 
 static int64_t GenJobId()
