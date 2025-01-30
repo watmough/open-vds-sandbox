@@ -102,6 +102,16 @@ else()
   set_target_properties(core PROPERTIES INSTALL_RPATH "$ORIGIN")
 endif()
 
+if(BUILD_PYTHON_STUBS)
+  add_custom_command(
+    TARGET core POST_BUILD
+    WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>"
+    COMMAND ${PYTHON_EXECUTABLE} -m pybind11_stubgen openvds.core -o . 
+    COMMENT "Generate stubs for wheel"
+  )
+  list(APPEND pythonsources ${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/openvds/core.pyi)
+endif()
+
 install(TARGETS core LIBRARY CONFIGURATIONS Release RelWithDebInfo MinSizeRel DESTINATION ${PY_INSTALL_DIR})
 install(TARGETS core LIBRARY CONFIGURATIONS Debug DESTINATION python/Debug/openvds)
 install(FILES ${pythonsources} CONFIGURATIONS Release RelWithDebInfo MinSizeRel DESTINATION ${PY_INSTALL_DIR})

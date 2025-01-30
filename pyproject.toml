@@ -23,7 +23,7 @@ Download = "https://bluware.jfrog.io/ui/native/Releases-OpenVDSPlus/2.1"
 Documentation = "https://osdu.pages.opengroup.org/platform/domain-data-mgmt-services/seismic/open-vds/"
 
 [build-system]
-requires = ["scikit-build-core[pyproject] ~= 0.10.7"]
+requires = ["scikit-build-core[pyproject] ~= 0.10.7", "pybind11_stubgen", "numpy", "typing_extensions"]
 build-backend = "scikit_build_core.build"
 
 [tool.scikit-build]
@@ -41,6 +41,7 @@ wheel.license-files = ["LICENSE", "Attributions.md"]
 [tool.scikit-build.cmake.define]
 ENABLE_MSVC_TOOLSET_DIR = "OFF"
 BUILD_PYTHON = "ON"
+BUILD_PYTHON_STUBS = "ON"
 BUILD_JAVA = "OFF"
 BUILD_TESTS = "OFF"
 BUILD_EXAMPLES = "OFF"
