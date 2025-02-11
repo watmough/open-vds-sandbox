@@ -24,7 +24,6 @@ env:
 phases:
   install:
     commands:
-      - if [ $(echo $CODEBUILD_SOURCE_VERSION | grep -c  ^refs/heads.*) -eq 1 ]; then echo "Branch name found"; else echo "This build only supports branch builds" && exit 1; fi
       - apt-get update -y
       - export AWS_ACCOUNT_ID=`aws sts get-caller-identity | grep Account | cut -d':' -f 2 | cut -d'"' -f 2`
       # Install git secrets
@@ -40,9 +39,7 @@ phases:
       - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${ECR_REGISTRY} # authenticate with ECR via the AWS CLI
   build:
     commands:
-      - export REPO_NAME=${PWD##*/}
       - export OUTPUT_DIR="dist"
-      - export BRANCH_NAME=`echo ${CODEBUILD_SOURCE_VERSION} | awk '{gsub("refs/heads/","");gsub("\\.","-");gsub("[[:space:]]","-")}1' | sed 's/\//-/g' | awk '{print tolower($0)}'`
       # Every release, Image is manually uploaded to AWS devops3 account os-open-vds ECR repo from community.opengroup.org:5555/osdu/platform/domain-data-mgmt-services/seismic/open-vds/openvds-ingestion:<tag>
       # Check https://community.opengroup.org/osdu/platform/domain-data-mgmt-services/seismic/open-vds/-/releases for release tag
       - export ECR_TAG=3.4.5
@@ -58,11 +55,19 @@ phases:
 
       - echo "Generate build-info.json"
       - |
-        python devops/aws/build-info.py --branch ${CODEBUILD_SOURCE_VERSION} --commit ${CODEBUILD_RESOLVED_SOURCE_VERSION} \
-          --buildid ${CODEBUILD_BUILD_ID} --buildnumber ${CODEBUILD_BUILD_NUMBER} --reponame ${REPO_NAME} --outdir ${OUTPUT_DIR} \
-          --artifact ${ECR_IMAGE}
+        python devops/aws/build-info.py \
+        --branch ${BRANCH_NAME} \
+        --commitId ${COMMIT_ID} \
+        --commitMessage "\"${COMMIT_MESSAGE}\"" \
+        --commitAuthor "\"${COMMIT_AUTHOR}\"" \
+        --commitDate "\"${COMMIT_DATE}\"" \
+        --buildid ${CODEBUILD_BUILD_ID} \
+        --buildnumber ${CODEBUILD_BUILD_NUMBER} \
+        --reponame ${REPO_NAME} \
+        --outdir ${OUTPUT_DIR} \
+        --artifact ${ECR_IMAGE}
 artifacts:
   files:
     - '**/*'
   base-directory: 'dist'
-  name: ${REPO_NAME}_${BRANCH_NAME}_$(date +%F)_${CODEBUILD_BUILD_NUMBER}.zip
+  name: ${BRANCH_NAME}/${PACKAGE_NAME}.zip
