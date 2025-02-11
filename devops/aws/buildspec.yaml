@@ -43,7 +43,9 @@ phases:
       - export REPO_NAME=${PWD##*/}
       - export OUTPUT_DIR="dist"
       - export BRANCH_NAME=`echo ${CODEBUILD_SOURCE_VERSION} | awk '{gsub("refs/heads/","");gsub("\\.","-");gsub("[[:space:]]","-")}1' | sed 's/\//-/g' | awk '{print tolower($0)}'`
-      - export ECR_TAG=3.2.3
+      # Every release, Image is manually uploaded to AWS devops3 account os-open-vds ECR repo from community.opengroup.org:5555/osdu/platform/domain-data-mgmt-services/seismic/open-vds/openvds-ingestion:<tag>
+      # Check https://community.opengroup.org/osdu/platform/domain-data-mgmt-services/seismic/open-vds/-/releases for release tag
+      - export ECR_TAG=3.4.5
       - echo "Skipping docker image build. Using preset image tag $ECR_TAG..."
       - export ECR_IMAGE=${ECR_REGISTRY}:${ECR_TAG}
       - printenv
