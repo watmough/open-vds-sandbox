@@ -597,7 +597,7 @@ main(int argc, char *argv[])
       if(traceFlag[trace])
       {
         // Copy trace header
-        memcpy(writeBuffer.get() + activeTraceCount * (traceDataSize + SEGY::TraceHeaderSize), segyTraceHeader.get() + trace * SEGY::TraceHeaderSize, SEGY::TraceHeaderSize);
+        memcpy(writeBuffer.get() + static_cast<size_t>(activeTraceCount) * (traceDataSize + SEGY::TraceHeaderSize), segyTraceHeader.get() + static_cast<size_t>(trace) * SEGY::TraceHeaderSize, SEGY::TraceHeaderSize);
 
         // Convert trace data
         switch (dataSampleFormatCode)
@@ -626,13 +626,22 @@ main(int argc, char *argv[])
       }
     }
 
-    file.Write(writeBuffer.get(), offset, activeTraceCount * (traceDataSize + SEGY::TraceHeaderSize), error);
-    if(error.code != 0)
+    auto totalLength = static_cast<int64_t>(activeTraceCount) * (traceDataSize + SEGY::TraceHeaderSize);
+    int64_t bufferOffset = 0;
+    while (totalLength > 0)
     {
-      outputPrinter.printError("Error writing SEG-Y traces to file", fileName);
-      return EXIT_FAILURE;
+      constexpr int64_t maxWrite = 128LL * 1024LL * 1024LL;
+      auto thisLength = std::min(totalLength, maxWrite);
+      file.Write(writeBuffer.get() + bufferOffset, offset, static_cast<int32_t>(thisLength), error);
+      if (error.code != 0)
+      {
+        outputPrinter.printError("Error writing SEG-Y traces to file", fileName);
+        return EXIT_FAILURE;
+      }
+      offset += thisLength;
+      totalLength -= thisLength;
+      bufferOffset += thisLength;
     }
-    offset += activeTraceCount * (traceDataSize + SEGY::TraceHeaderSize);
   }
   outputPrinter.printPercentage(100.0f);
   outputPrinter.printInfo("Done", fmt::format("Successfully exported {} to {}", url, fileName));
