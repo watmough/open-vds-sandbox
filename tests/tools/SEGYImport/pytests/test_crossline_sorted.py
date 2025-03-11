@@ -50,6 +50,11 @@ def volve_crossline_sorted_segy(volve_data_dir) -> str:
 
 
 @pytest.fixture
+def fault_amplitude_segy(segyimport_test_data_dir) -> str:
+    return os.path.join(segyimport_test_data_dir, "Fault_Amplitude.segy")
+
+
+@pytest.fixture
 def teleport_crossline_executor(teleport_crossline_sorted_segy, crossline_output_vds)\
         -> Tuple[ImportExecutor, TempVDSGuard]:
     ex = construct_crossline_executor(teleport_crossline_sorted_segy, crossline_output_vds)
@@ -322,3 +327,18 @@ def test_volve_crossline_sorted(volve_crossline_sorted_segy, crossline_output_vd
 
     assert result == 0, ex.output()
     assert Path(crossline_output_vds.filename).exists()
+
+
+def test_not_crossline_sorted(fault_amplitude_segy, crossline_output_vds):
+    """
+    Executes SEGYImport on an inline-sorted SEGY but with Crossline set as the primary key. This should
+    result in a failure.
+    """
+    additional_args = []
+    ex = construct_crossline_executor(fault_amplitude_segy, crossline_output_vds, additional_args)
+
+    result = ex.run()
+
+    assert result != 0, "This import should have failed"
+    assert "primary key values are not sorted" in ex.output().lower(), \
+        "Expected error message to mention Primary key sorting"
