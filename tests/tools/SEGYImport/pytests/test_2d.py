@@ -4,7 +4,7 @@ from pathlib import Path
 import pytest
 import openvds
 
-from segyimport_test_config import ImportExecutor, TempVDSGuard, platform_integration_test_data_dir
+from segyimport_test_config import ImportExecutor, TempVDSGuard, platform_integration_test_data_dir, segyimport_test_data_dir
 
 
 @pytest.fixture
@@ -29,6 +29,11 @@ def poststack_2d_segy(platform_integration_test_data_dir) -> str:
 @pytest.fixture
 def prestack_2d_segy(platform_integration_test_data_dir) -> str:
     return os.path.join(platform_integration_test_data_dir, "PICEANCE-2D", "PostMigration_CDP_NMO_FF04_03_031314.sgy")
+
+
+@pytest.fixture
+def prestack_2d_subset_segy(segyimport_test_data_dir) -> str:
+    return os.path.join(segyimport_test_data_dir, "2DLines", "PICEANCE_2D_prestack_subset.segy")
 
 
 def test_2d_poststack_volume_info(poststack_2d_segy, output_vds):
@@ -457,3 +462,24 @@ def test_crs_wkt(poststack_2d_segy, output_vds, crs_wkt):
             openvds.KnownMetadata.surveyCoordinateSystemCRSWkt().category,
             openvds.KnownMetadata.surveyCoordinateSystemCRSWkt().name)
         assert value == crs_wkt
+
+
+def test_2d_prestack_read_brick32(prestack_2d_subset_segy, output_vds):
+    """
+    Verify that we can successfully import this prestack 2D with fold
+    64 when using brick size 32. (Validates a bug fix.)
+    """
+    ex = ImportExecutor()
+
+    ex.add_arg("--disable-print-text-header")
+    ex.add_arg("--2d")
+    ex.add_arg("--prestack")
+    ex.add_args(["--brick-size", "32"])
+    ex.add_args(["--vdsfile", output_vds.filename])
+
+    ex.add_arg(prestack_2d_subset_segy)
+
+    result = ex.run()
+
+    assert result == 0, ex.output()
+    assert Path(output_vds.filename).exists()

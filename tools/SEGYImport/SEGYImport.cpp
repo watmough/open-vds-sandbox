@@ -4933,7 +4933,7 @@ main(int argc, char* argv[])
             }
           }
 
-          if (fileInfo.Is4D() && (tertiaryIndex < chunkInfo.min[1] || tertiaryIndex >= chunkInfo.max[1]))
+          if ((fileInfo.Is4D() || fileInfo.m_segyType == SEGY::SEGYType::Prestack2D) && (tertiaryIndex < chunkInfo.min[1] || tertiaryIndex >= chunkInfo.max[1]))
           {
             // the current gather trace number is not within the request bounds
             continue;
