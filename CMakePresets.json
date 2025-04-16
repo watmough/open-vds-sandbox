@@ -11,6 +11,7 @@
       "binaryDir": "${sourceDir}/out/build/${presetName}",
       "hidden": true,
       "cacheVariables": {
+        "CMAKE_POLICY_VERSION_MINIMUM": "3.5",
         "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}"
       }
     },
