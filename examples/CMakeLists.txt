@@ -20,6 +20,7 @@ if (CMAKE_PROJECT_NAME STREQUAL "OpenVDSExamples")
   Fetch3rdParty_Package(cxxopts           3.0.0      https://github.com/jarro2783/cxxopts/archive/refs/tags/v3.0.0.tar.gz SHA256=36f41fa2a46b3c1466613b63f3fa73dc24d912bc90d667147f1e43215a8c6d00)
 
   set(COMMON_DIR ${CMAKE_CURRENT_SOURCE_DIR}/common)
+  include(modules/SetCompilerFlagsForTarget.cmake)
   include(modules/InstalledPaths.cmake)
   include(modules/SetWarnings.cmake)
   include(modules/CopyDllForTarget.cmake)
