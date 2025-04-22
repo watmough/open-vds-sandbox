@@ -115,16 +115,21 @@ Name[unit] dimension 0/…/Name[unit] dimension N, where dimension 0 is the fast
 values in memory). Where multiple options are accepted, the different options are separated by the ‘|’ character. The
 recognized volume types are:
 
-============  =====================================================================================================
-Volume Type   Axis Descriptors
-============  =====================================================================================================
-3D Poststack  Sample|Time|Depth/Crossline/Inline
-3D Prestack   Sample|Time|Depth/Trace(offset)|Velocity|Frequency/Crossline/Inline
-2D Poststack  Sample|Time|Depth/Gather|CDP|Shot|Receiver
-2D Prestack   Sample|Time|Depth/Trace(offset)|Velocity|Frequency/Gather|CDP|Shot|Receiver
-3D Poststack  Horizon: Crossline/Inline, primary data channel is Sample|Time|Depth
-3D Prestack   Horizon: Trace(offset)|Velocity|Frequency/Crossline/Inline, primary data channel is Sample|Time|Depth
-============  =====================================================================================================
+======================  =====================================================================================================
+Volume Type             Axis Descriptors
+======================  =====================================================================================================
+3D Poststack            Sample|Time|Depth/Crossline/Inline
+3D Prestack             Sample|Time|Depth/Trace(offset|angle)|Velocity|Frequency/Crossline/Inline
+2D Poststack            Sample|Time|Depth/Trace|CDP
+2D Prestack             Sample|Time|Depth/Trace(offset|angle)|Velocity|Frequency/Gather|CDP
+Shot/Receiver Gathers   Sample|Time|Depth/Trace(offset|angle)|Velocity|Frequency/Shot|Receiver
+Horizon (3D Poststack)  Crossline/Inline, primary data channel is Sample|Time|Depth
+Horizon (3D Prestack)   Trace(offset|angle)|Velocity|Frequency/Crossline/Inline, primary data channel is Sample|Time|Depth
+======================  =====================================================================================================
+
+When the axis name is Sample, the unit should be ms|s for time data and m|ft for depth data (prefer milliseconds for time data and meters for depth data).
+For horizons, the primary data channel name should be Sample|Time|Depth (i.e. the axis name of the seismic that the horizon was tracked on) and
+when the channel name is Sample, the unit should be ms|s for time data and m|ft for depth data (prefer milliseconds for time data and meters for depth data).
 
 Recognized Key/Value Pairs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -216,6 +221,9 @@ The PositionProperty and VerticalOffsetProperty define the position of a seismic
   EnergySourcePointNumbers  BLOB           An array of scalar int32 values defining the energy source point number for each trace.
   EnsembleNumbers           BLOB           An array of scalar int32 values defining the ensemble number for each trace.
   ========================  =============  ==========================================================================================================================================
+
+If the axis descriptor is Trace or Gather, the trace/gather number from the axis coordinates (minus one to make it zero-based) is used as the index into these BLOBs.
+If the axis descriptor name is CDP, the sample index should be used and there will be no EnsembleNumbers BLOB as the ensemble number (CDP) is defined by the axis coordinates.
 
 Category - ``ImportInformation``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

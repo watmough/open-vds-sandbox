@@ -73,6 +73,23 @@ double SEGYFileInfo::convertScaleToScaleFactor(int scale)
   return 1.0;
 }
 
+bool
+SEGYFileInfo::IsNextPrimaryKeyInOrder(const std::vector<SEGYSegmentInfo>& segmentInfoList, int nextPrimaryKey)
+{
+  if (segmentInfoList.size() < 2)
+  {
+    // we haven't established an order yet
+    return true;
+  }
+  if (segmentInfoList[0].m_primaryKey < segmentInfoList[1].m_primaryKey)
+  {
+    // primary keys are ascending; nextPrimaryKey should be greater than the previous key
+    return nextPrimaryKey > segmentInfoList.back().m_primaryKey;
+  }
+  // primary keys are descending; nextPrimaryKey should be less than the previous key
+  return nextPrimaryKey < segmentInfoList.back().m_primaryKey;
+}
+
 SEGYBinInfo
 SEGYFileInfo::readBinInfoFromHeader(const char *header, SEGYBinInfoHeaderFields const &headerFields, Endianness endianness, int segmentTraceIndex) const
 {
@@ -291,6 +308,14 @@ SEGYFileInfo::Scan(const std::vector<DataProvider>& dataProviders, OpenVDS::Erro
 
         const int64_t
           segmentLength = segmentInfo.m_traceStop - segmentInfo.m_traceStart + 1;
+
+        // check primary key ordering
+        if (!IsOffsetSorted() && !IsNextPrimaryKeyInOrder(m_segmentInfoLists.back(), nextPrimaryKey))
+        {
+          error.code = -1;
+          error.string = "Primary key values are not sorted. You may need to choose a different primary key.";
+          return false;
+        }
 
         // start a new segment
         segmentInfo = SEGYSegmentInfo(nextPrimaryKey, outsideTrace, outsideBinInfo);

@@ -272,7 +272,7 @@ if (NOT EMSCRIPTEN)
 
   file(RELATIVE_PATH INSTALLED_LIB_RELATIVE_TO_EXAMPLES "${PROJECT_SOURCE_DIR}/${CMAKE_INSTALL_DATAROOTDIR}/openvds/examples" "${PROJECT_SOURCE_DIR}/${CMAKE_INSTALL_DATAROOTDIR}")
   configure_file(CMake/InstalledPaths.cmake.in ${CMAKE_BINARY_DIR}/CMake/InstalledPaths.cmake)
-  install(FILES CMake/CopyDllForTarget.cmake CMake/SetWarnings.cmake ${CMAKE_BINARY_DIR}/CMake/InstalledPaths.cmake
+  install(FILES CMake/CopyDllForTarget.cmake CMake/SetWarnings.cmake CMake/SetCompilerFlagsForTarget.cmake ${CMAKE_BINARY_DIR}/CMake/InstalledPaths.cmake
     DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/openvds/examples/modules)
   install(DIRECTORY examples DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/openvds)
   install(DIRECTORY common/Noise DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/openvds/examples/common)

@@ -504,7 +504,7 @@ VolumeDataLayer* VolumeDataLayoutImpl::GetBaseLayer(DimensionGroup dimensionGrou
 
   VolumeDataLayer *volumeDataLayer = m_primaryBaseLayers[dimensionGroup];
 
-  while(channel-- && volumeDataLayer)
+  while(volumeDataLayer && volumeDataLayer->m_channel != channel)
   {
     volumeDataLayer = volumeDataLayer->GetNextChannelLayer();
   }
@@ -555,7 +555,7 @@ VolumeDataLayer *VolumeDataLayoutImpl::GetTopLayer(DimensionGroup dimensionGroup
 
   VolumeDataLayer *volumeDataLayer = m_primaryTopLayers[dimensionGroup];
 
-  while(channel-- && volumeDataLayer)
+  while(volumeDataLayer && volumeDataLayer->m_channel != channel)
   {
     volumeDataLayer = volumeDataLayer->GetNextChannelLayer();
   }
@@ -784,6 +784,18 @@ void VolumeDataLayoutImpl::CreateLayers(DimensionGroup dimensionGroup, int32_t b
       }
 
       VolumeDataChannelMapping const *volumeDataChannelMapping = GetVolumeDataChannelMapping(channel);
+
+      // Check that the mapped dimension group does not have greater dimensionality than what can be serialized
+      if(volumeDataChannelMapping)
+      {
+        DimensionGroup
+          mappedDimensionGroup = volumeDataChannelMapping->GetMappedChunkDimensionGroup(primaryPartition, GetChannelMappedValueCount(channel));
+
+        if(DimensionGroupUtil::GetDimensionality(mappedDimensionGroup) > 3)
+        {
+          continue;
+        }
+      }
 
       VolumeDataLayer *volumeDataLayer = new VolumeDataLayer(VolumeDataPartition::StaticMapPartition(primaryPartition, volumeDataChannelMapping, GetChannelMappedValueCount(channel)),
                                                             this, channel,primaryChannelLayer, lowerLOD[channel], layerType, volumeDataChannelMapping);
