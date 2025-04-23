@@ -844,15 +844,14 @@ void VolumeDataAccessManagerImpl::AddCopyPageJob(VolumeDataChunk& chunk, VolumeD
         CompressionInfo compressionInfo;
 
         source.ReadPreparedPage(page);
-        error = page->GetErrorInternal();
-        if (error.code)
+        if (source.GetError(page, error))
         {
           return error;
         }
 
         destination.RequestWritePage(chunk.index, page->GetDataBlock(), page->GetBLOBInternal(), page->GetVolumeDataHash());
         page->Release();
-        
+
         PrivateGetLayout()->CompletePendingWriteChunkRequests(int32_t(threadCount));
         return error;
       }));

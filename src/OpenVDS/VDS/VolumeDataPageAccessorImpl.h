@@ -114,6 +114,7 @@ public:
   VolumeDataPageImpl* PrepareReadPage(int64_t chunk, Error &error);
   bool ReadPreparedPage(VolumeDataPageImpl *page);
   void CancelPreparedReadPage(VolumeDataPageImpl *page);
+  bool GetError(VolumeDataPageImpl *page, OpenVDS::Error &error);
 
   int   GetMaxPages() override;
   void  SetMaxPages(int maxPages) override;

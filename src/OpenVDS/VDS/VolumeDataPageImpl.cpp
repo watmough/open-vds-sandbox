@@ -497,23 +497,29 @@ void VolumeDataPageImpl::WriteIntoLOD()
   m_parentPage->m_hash = VolumeDataHash::GetUniqueHash();
 }
 
-// Implementation of Hue::HueSpaceLib::VolumeDataPage interface, these methods aquire a lock (except the GetMinMax methods which don't need to)
+// Implementation of OpenVDS::VolumeDataPage interface, these methods aquire a lock (except the GetMinMax methods which don't need to)
 VolumeDataPageAccessor &VolumeDataPageImpl::GetVolumeDataPageAccessor() const
 {
   return *m_volumeDataPageAccessor;
 }
+
 void  VolumeDataPageImpl::GetMinMax(int(&min)[Dimensionality_Max], int(&max)[Dimensionality_Max]) const
 {
   m_volumeDataPageAccessor->GetLayer()->GetChunkMinMax(m_chunk, min, max, true);
 }
+
 void  VolumeDataPageImpl::GetMinMaxExcludingMargin(int(&minExcludingMargin)[Dimensionality_Max], int(&maxExcludingMargin)[Dimensionality_Max]) const
 {
   m_volumeDataPageAccessor->GetLayer()->GetChunkMinMax(m_chunk, minExcludingMargin, maxExcludingMargin, false);
 }
+
 ReadErrorException VolumeDataPageImpl::GetError() const
 {
+  std::unique_lock<std::mutex>  pageListMutexLock(const_cast<VolumeDataPageAccessorImpl *>(m_volumeDataPageAccessor)->m_pagesMutex);
+
   return ReadErrorException(m_error.string.c_str(), m_error.code);
 }
+
 const void* VolumeDataPageImpl::GetBuffer(int(&size)[Dimensionality_Max], int(&pitch)[Dimensionality_Max])
 {
   std::unique_lock<std::mutex>  pageListMutexLock(const_cast<VolumeDataPageAccessorImpl *>(m_volumeDataPageAccessor)->m_pagesMutex);
