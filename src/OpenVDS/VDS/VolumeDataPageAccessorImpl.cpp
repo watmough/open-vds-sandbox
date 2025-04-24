@@ -439,14 +439,18 @@ bool VolumeDataPageAccessorImpl::ReadPreparedPage(VolumeDataPageImpl* pageImpl)
   std::unique_lock<std::mutex> pageListMutexLock(m_pagesMutex, std::defer_lock);
 
   if (!pageImpl->RequestPrepared())
+  {
+    pageListMutexLock.lock();
     return pageImpl->GetErrorInternal().code == 0;
+  }
 
   if (pageImpl->EnterSettingData())
   {
     if (!pageImpl->RequestPrepared())
     {
       pageImpl->LeaveSettingData();
-      return true;
+      pageListMutexLock.lock();
+      return pageImpl->GetErrorInternal().code == 0;
     }
 
     Error error;
@@ -545,6 +549,7 @@ bool VolumeDataPageAccessorImpl::ReadPreparedPage(VolumeDataPageImpl* pageImpl)
     m_pageReadCondition.wait(pageListMutexLock, [pageImpl]{return !pageImpl->SettingData();});
   }
 
+  assert(pageListMutexLock.owns_lock());
   if (pageImpl->GetErrorInternal().code)
     return false;
 
@@ -591,7 +596,16 @@ void VolumeDataPageAccessorImpl::CancelPreparedReadPage(VolumeDataPageImpl* page
   delete pageImpl;
   m_pageReadCondition.notify_all();
 }
-  
+
+bool
+VolumeDataPageAccessorImpl::GetError(VolumeDataPageImpl *pageImpl, OpenVDS::Error &error)
+{
+  std::unique_lock<std::mutex> pageListMutexLock(m_pagesMutex);
+
+  error = pageImpl->GetErrorInternal();
+  return error.code != 0;
+}
+
 void VolumeDataPageAccessorImpl::CopyPage(int64_t chunkIndex, VolumeDataPageAccessor const &source)
 {
   if (!m_layer)
