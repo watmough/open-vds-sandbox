@@ -712,9 +712,7 @@ public:
   /// Get the error code of a request that has been cancelled.
   /// </summary>
   /// <returns>
-  /// The error code. If the error code is positive, it corresponds to the enum values in Hue::HueSpaceLib::ErrorCode. 
-  /// Compute plugins may set their own negative error code, which causes the return value of this method to be a plain
-  /// int value that does not correspond to one of the enum values.
+  /// An error code. If the error code is 100-599 it corresponds to a HTTP status code, while -1 indicates an internal error.
   /// </returns>
   int
   GetErrorCode()
