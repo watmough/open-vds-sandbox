@@ -1810,7 +1810,7 @@ static Error ProcessPageInJob(Job *job, int pageIndex, VolumeDataPageAccessorImp
     return Error();
 
   Error error;
-  if (jobPage.page->GetError(error))
+  if (pageAccessor->GetError(jobPage.page, error))
   {
     job->cancelled = true;
   }
@@ -1827,7 +1827,7 @@ static Error ProcessPageInJob(Job *job, int pageIndex, VolumeDataPageAccessorImp
   }
   else
   {
-    jobPage.page->GetError(error);
+    pageAccessor->GetError(jobPage.page, error);
     job->cancelled = true;
   }
 

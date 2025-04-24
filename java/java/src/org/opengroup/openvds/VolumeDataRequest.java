@@ -142,9 +142,7 @@ Whenever WaitForCompletion returns false you need to call IsCanceled() to know i
     /**
      * Get the error code of a request that has been cancelled.
      * 
-     * @return The error code. If the error code is positive, it corresponds to the enum values in Hue::HueSpaceLib::ErrorCode.
-Compute plugins may set their own negative error code, which causes the return value of this method to be a plain
-int value that does not correspond to one of the enum values.
+     * @return An error code. If the error code is 100-599 it corresponds to a HTTP status code, while -1 indicates an internal error.
      */
     public int getErrorCode() {
         return GetErrorCodeImpl(getNativeObject());
