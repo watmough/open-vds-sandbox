@@ -176,6 +176,31 @@ std::string TranslateVCVoxelFormat(std::string const &vcVoxelFormat)
   assert(0 && "Illegal format"); return "";
 }
 
+void CalculateIntegerScaleAndOffsetFromValueRange(Json::Value &channelDescriptorJson)
+{
+  float
+    integerScale  = 1.0f,
+    integerOffset = 0.0f;
+
+  if (channelDescriptorJson["format"] == "Format_U8" || channelDescriptorJson["format"] == "Format_U16")
+  {
+    integerScale  = channelDescriptorJson["valueRange"][1].asFloat() - channelDescriptorJson["valueRange"][0].asFloat();
+    integerOffset = channelDescriptorJson["valueRange"][0].asFloat();
+
+    if (channelDescriptorJson["format"] == "Format_U8")
+    {
+      integerScale /= channelDescriptorJson["useNoValue"].asBool() ? 254.0f : 255.0f;
+    }
+    else
+    {
+      integerScale /= channelDescriptorJson["useNoValue"].asBool() ? 65534.0f : 65535.0f;
+    }
+  }
+
+  channelDescriptorJson["integerScale"] = integerScale;
+  channelDescriptorJson["integerOffset"] = integerOffset;
+}
+
 Json::Value TranslateChannelDescriptor(Json::Value const & root, bool isPrimaryChannel)
 {
   int components = 0;
@@ -194,14 +219,22 @@ Json::Value TranslateChannelDescriptor(Json::Value const & root, bool isPrimaryC
   channelDescriptorJson["unit"] = root[isPrimaryChannel ? "ValueUnit" : "Unit"].asString();
   channelDescriptorJson["valueRange"] = valueRangeJson;
   channelDescriptorJson["channelMapping"] = isPrimaryChannel ? "Direct" : (root["ChannelMapping"].asInt64() == 1976800267773298824LL ? "PerTrace" : "Direct");
-  channelDescriptorJson["mappedValues"] = isPrimaryChannel ? 0 : root["MappedValues"].asInt();
+  channelDescriptorJson["mappedValues"] = isPrimaryChannel ? 0 : root.get("MappedValues", 1).asInt();
   channelDescriptorJson["discrete"] = TranslateBoolean(root, "DiscreteData");
   channelDescriptorJson["renderable"] = isPrimaryChannel ? true : TranslateBoolean(root, "Renderable");
   channelDescriptorJson["allowLossyCompression"] = isPrimaryChannel ? !TranslateBoolean(root, "DiscreteData") : TranslateBoolean(root, "AllowLossyCompression");
   channelDescriptorJson["useNoValue"] = TranslateBoolean(root, "UseNoValue");
   channelDescriptorJson["noValue"] = root["NoValue"].asFloat();
-  channelDescriptorJson["integerScale"] = root["IntegerScale"].asFloat();
-  channelDescriptorJson["integerOffset"] = root["IntegerOffset"].asFloat();
+
+  if(root.isMember("IntegerScale"))
+  {
+    channelDescriptorJson["integerScale"] = root["IntegerScale"].asFloat();
+    channelDescriptorJson["integerOffset"] = root["IntegerOffset"].asFloat();
+  }
+  else
+  {
+    CalculateIntegerScaleAndOffsetFromValueRange(channelDescriptorJson);
+  }
 
   return channelDescriptorJson;
 }
