@@ -1,5 +1,4 @@
 function(BuildFmt)
-  message (STATUS "Building fmt")
   set(BUILD_SHARED_LIBS OFF)
   set(CMAKE_CXX_STANDARD 11)
   if (MSVC)

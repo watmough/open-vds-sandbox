@@ -132,7 +132,6 @@ if (EMSCRIPTEN)
   option(BUILD_ZLIB   "Build zlib" OFF)
   set(CMAKE_CXX_STANDARD 11)
 elseif (BUILD_FOR_SANDBOX)
-
   # Building to run in sandbox e.g. BWRAP for Gnome Desktop
   message (STATUS "Building BUILD_FOR_SANDBOX")
   option(ENABLE_OPENMP "Enable the OpenMP codepath" OFF) # In case OpenMP is supported in the future.
@@ -167,8 +166,6 @@ elseif (BUILD_FOR_SANDBOX)
   option(ENABLE_GEN_PYTEST_INI "Enable generating pytest.ini file in project root" OFF)
 
 else()
-
-  # Normal build
   option(BUILD_PYTHON "Build python bindings" ${BUILD_PYTHON_DEFAULT})
   option(BUILD_JAVA "Build java bindings" ${BUILD_JAVA_DEFAULT})
   option(ENABLE_OPENMP "Enable the OpenMP codepath" OFF)
