@@ -1,9 +1,7 @@
 include(CMake/BuildExternal.cmake)
-
 if (BUILD_ZLIB)
   include(CMake/BuildZlib.cmake)
 endif()
-
 if (NOT EMSCRIPTEN AND NOT BUILD_FOR_SANDBOX)
   include(CMake/BuildLibreSSL.cmake)
   include(CMake/BuildOpenSSL.cmake)
@@ -21,9 +19,6 @@ elseif (BUILD_FOR_SANDBOX)
   MESSAGE(STATUS "Building BUILD_FOR_SANDBOX (Build3rdParty.cmake)")
   include(CMake/BuildJsonCpp.cmake)
   include(CMake/BuildFmt.cmake)
-  # include(CMake/BuildCrc32c.cmake)
-  # include(CMake/BuildAbsl.cmake)
-  # include(CMake/BuildLibXML2.cmake)
 endif()
 
 macro(build3rdparty)

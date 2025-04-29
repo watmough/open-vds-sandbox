@@ -131,45 +131,6 @@ if (EMSCRIPTEN)
   option(DISABLE_STRICT_WARNINGS "Disable strict warnings settings. This includes making warnings to errors." OFF)
   option(BUILD_ZLIB   "Build zlib" OFF)
   set(CMAKE_CXX_STANDARD 11)
-
-# elseif (LIMITED_BUILD)
-
-#   # Building LIMITED BUILD
-#   message (STATUS "Building LIMITED_BUILD")
-#   set(CMAKE_CXX_STANDARD 11)
-
-#   option(ENABLE_OPENMP "Enable the OpenMP codepath" OFF) # In case OpenMP is supported in the future.
-#   option(DISABLE_STRICT_WARNINGS "Disable strict warnings settings. This includes making warnings to errors." OFF)
-#   option(BUILD_PYTHON "Build python bindings" OFF)
-#   option(BUILD_JAVA "Build java bindings" OFF)
-#   option(BUILD_DOCS  "Build OpenVDS docs" OFF)
-
-#   # enabled
-#   option(BUILD_SHARED_LIBS "Build OpenVDS as a shared library" ON)
-#   option(BUILD_EXAMPLES "Build OpenVDS example projects" ON)
-#   option(ENABLE_RUNPATH_ORIGIN "On Linux make the install have ORIGIN as RUNPATH" ON)
-
-#   # backends - all disabled since we'll replace with Javascript equivalents as-needed
-#   option(DISABLE_AWS_IOMANAGER "Disable compiling the Aws-cpp-sdk IOManager backend." ON)
-#   option(DISABLE_AZURE_IOMANAGER "Disable compiling Azure-storage-cpp and cpprestapi. This also disables Azure support for DMS." ON)
-#   option(DISABLE_AZURESDKFORCPP_IOMANAGER "Disable compiling AzureSdkForCpp. This also disables Azure support for DMS." ON)
-#   option(DISABLE_AZURE_PRESIGNED_IOMANAGER "Disable compiling Azure presigned IOManager backend." ON)
-#   option(DISABLE_GCP_IOMANAGER "Disable compiling GCP IOManager backend." ON)
-#   option(DISABLE_DMS_IOMANAGER "Disable compiling DMS IOManager backend." ON)
-
-#   # backend support
-#   option(BUILD_ZLIB   "Build zlib" OFF)   # has js module e.g https://github.com/nodeca/pako
-#   option(BUILD_CURL   "Build libcurl as part of the openVDS build" OFF)
-#   option(BUILD_UV     "Build libuv as part of the openVDS build" OFF)   # required by IOManagerCurl
-#   option(BUILD_OPENSSL "Build OpenSSL as part of the openVDS build" OFF)    # required by GCP, AWS, Curl
-#   option(USE_LIBRESSL "Build libressl as part of the openVDS build and use it instead of OpenSSL" OFF)  # can replace OPENSSL above
-#   option(AUTODETECT_CA_CERTIFICATES "Autodetect location of ca certificates" OFF)
-
-#   option(AUTO_ADJUST_UUID "When building on MacOS automatically auto adjust finding UUID" OFF)
-#   option(ENABLE_ASAN "Build this OpenVDS with AddressSanitizer" OFF)
-#   option(DISABLE_LTO "Disable LTO for release builds" OFF)
-#   option(ENABLE_GEN_PYTEST_INI "Enable generating pytest.ini file in project root" OFF)
-
 elseif (BUILD_FOR_SANDBOX)
 
   # Building to run in sandbox e.g. BWRAP for Gnome Desktop
@@ -327,7 +288,7 @@ set(CMAKE_DEBUG_POSTFIX d)
 
 add_subdirectory(src)
 
-if (NOT EMSCRIPTEN AND NOT BUILD_FOR_SANDBOX)
+if (NOT EMSCRIPTEN)
 
   if (BUILD_DOCS)
     add_subdirectory(docs)
