@@ -1,4 +1,5 @@
 macro(BuildJsonCpp)
+  message (STATUS "Building BuildJsonCpp")
   set(JSONCPP_WITH_TESTS OFF CACHE BOOL "")
   set(JSONCPP_WITH_POST_BUILD_UNITTEST OFF CACHE BOOL "")
   set(JSONCPP_WITH_WARNING_AS_ERROR OFF CACHE BOOL "")
@@ -14,6 +15,4 @@ macro(BuildJsonCpp)
     openvds_target_compile_options(jsoncpp_lib_static PRIVATE -Wno-implicit-int-float-conversion -Wno-macro-redefined)
   endif()
   set_target_properties(jsoncpp_lib_static PROPERTIES FOLDER ExternalProjectTargets/jsoncpp)
-
 endmacro()
-

@@ -1,8 +1,10 @@
 include(CMake/BuildExternal.cmake)
+
 if (BUILD_ZLIB)
   include(CMake/BuildZlib.cmake)
 endif()
-if (NOT EMSCRIPTEN)
+
+if (NOT EMSCRIPTEN AND NOT BUILD_FOR_SANDBOX)
   include(CMake/BuildLibreSSL.cmake)
   include(CMake/BuildOpenSSL.cmake)
   include(CMake/BuildCurl.cmake)
@@ -15,6 +17,13 @@ if (NOT EMSCRIPTEN)
   include(CMake/BuildGoogleCloud.cmake)
   include(CMake/BuildLibXML2.cmake)
   include(CMake/BuildAzureSdkForCpp.cmake)
+elseif (BUILD_FOR_SANDBOX)
+  MESSAGE(STATUS "Building BUILD_FOR_SANDBOX (Build3rdParty.cmake)")
+  include(CMake/BuildJsonCpp.cmake)
+  include(CMake/BuildFmt.cmake)
+  # include(CMake/BuildCrc32c.cmake)
+  # include(CMake/BuildAbsl.cmake)
+  # include(CMake/BuildLibXML2.cmake)
 endif()
 
 macro(build3rdparty)
@@ -22,9 +31,11 @@ macro(build3rdparty)
     BuildZlib()
   endif()
 
-  if (NOT EMSCRIPTEN)
-    BuildJsonCPP()
-    BuildFmt()
+  # Always required
+  BuildJsonCPP()
+  BuildFmt()
+
+  if (NOT EMSCRIPTEN AND NOT BUILD_FOR_SANDBOX)
 
     if (Python3_FOUND)
       add_subdirectory(${pybind11_SOURCE_DIR} ${PROJECT_BINARY_DIR}/pybind11_${pybind11_VERSION} EXCLUDE_FROM_ALL)

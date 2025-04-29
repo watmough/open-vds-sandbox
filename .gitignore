@@ -34,3 +34,4 @@ pytest.ini
 /**/ovdspy
 .venv*/
 py*env/
+compile_commands.json

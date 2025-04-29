@@ -35,6 +35,122 @@ if (EMSCRIPTEN)
     VDS/DataBlock.h
     ${WAVELET_HEADERS}
     VDS/Logging.h)
+  
+elseif (BUILD_FOR_SANDBOX)
+
+  set(SOURCE_FILES
+    OpenVDS.cpp
+    IO/File.cpp
+    IO/Linux_File.cpp
+    IO/Win_File.cpp
+    IO/IOManager.cpp
+    IO/IOManagerInMemory.cpp
+    IO/IOManagerCurl.cpp
+    IO/IOManagerHttp.cpp
+    # IO/IOManagerAWSCurl.cpp
+    # IO/IOManagerAzureSdkForCpp.cpp
+    # IO/IOManagerAzurePresigned.cpp
+    # IO/IOManagerGoogle.cpp
+    # IO/IOManagerDmsFactory.cpp
+    # IO/IORefreshToken.cpp
+    # IO/IOManagerDmsProxy.cpp
+    # IO/DmsIoFactories/AzureDmsIoManagerFactory.cpp
+    # IO/DmsIoFactories/AwsDmsIoManagerFactory.cpp
+    # IO/DmsIoFactories/DmsIoManagerFactory.cpp
+    # IO/DmsIoFactories/AnthosDmsIoManagerFactory.cpp
+    # IO/DmsIoFactories/IbmDmsIoManagerFactory.cpp
+    # IO/DmsIoFactories/GcpDmsIoManagerFactory.cpp
+    # IO/SslVerifyPeerEnv.cpp
+    # IO/SDPath.cpp
+    VDS/VolumeDataPartition.cpp
+    VDS/VolumeDataChannelMapping.cpp
+    VDS/VolumeDataLayer.cpp
+    VDS/VolumeDataLayoutImpl.cpp
+    VDS/VolumeDataChunk.cpp
+    VDS/VolumeDataRegion.cpp
+    VDS/VolumeDataHash.cpp
+    VDS/VolumeDataPageAccessorImpl.cpp
+    VDS/VolumeDataAccessManagerImpl.cpp
+    VDS/VolumeDataPageImpl.cpp
+    VDS/VolumeDataAccessor.cpp
+    VDS/DimensionGroup.cpp
+    VDS/ParseVDSJson.cpp
+    VDS/MetadataManager.cpp
+    VDS/VolumeDataStore.cpp
+    VDS/VolumeDataStoreIOManager.cpp
+    VDS/VolumeDataStoreVDSFile.cpp
+    VDS/DataBlock.cpp
+    VDS/VolumeDataRequestProcessor.cpp
+    VDS/VolumeIndexer.cpp
+    VDS/Env.cpp
+    VDS/StringToDouble.cpp
+    VDS/GlobalStateImpl.cpp
+    ${WAVELET_SOURCES}
+    ${COMMON_DIR}/Base64/Base64.cpp
+  )
+
+  set (PRIVATE_HEADER_FILES
+    IO/File.h
+    IO/IOManager.h
+    IO/IOManagerInMemory.h
+    IO/IOManagerCurl.h
+    IO/IOManagerHttp.h
+    IO/IOManagerRequestImpl.h
+    IO/ErrorRequest.h
+    # IO/IOManagerAWSCurl.h
+    # IO/IOManagerAzure.h
+    # IO/IOManagerAzureSdkForCpp.h
+    # IO/IOManagerAzurePresigned.h
+    # IO/IOManagerGoogle.h
+    # IO/IOManagerDmsFactory.h
+    # IO/IOManagerTransformer.h
+    # IO/IORefreshToken.h
+    # IO/SslVerifyPeerEnv.h
+    # IO/SDPath.h
+    # IO/IOManagerDmsProxy.h
+    # IO/DmsIoFactories/AzureDmsIoManagerFactory.h
+    # IO/DmsIoFactories/AwsDmsIoManagerFactory.h
+    # IO/DmsIoFactories/DmsIoManagerFactory.h
+    # IO/DmsIoFactories/AnthosDmsIoManagerFactory.h
+    # IO/DmsIoFactories/IbmDmsIoManagerFactory.h
+    # IO/DmsIoFactories/GcpDmsIoManagerFactory.h
+    VDS/VDS.h
+    VDS/VolumeDataPartition.h
+    VDS/VolumeDataChannelMapping.h
+    VDS/VolumeDataLayer.h
+    VDS/VolumeDataLayoutImpl.h
+    VDS/VolumeDataChunk.h
+    VDS/VolumeDataRegion.h
+    VDS/VolumeDataHash.h
+    VDS/VolumeDataPageAccessorImpl.h
+    VDS/VolumeDataAccessManagerImpl.h
+    VDS/VolumeDataAccessor.h
+    VDS/VolumeDataPageImpl.h
+    VDS/DimensionGroup.h
+    VDS/Hash.h
+    VDS/Bitmask.h
+    VDS/ParseVDSJson.h
+    VDS/MetadataManager.h
+    VDS/IntrusiveList.h
+    VDS/VolumeDataStore.h
+    VDS/VolumeDataStoreIOManager.h
+    VDS/VolumeDataStoreVDSFile.h
+    VDS/DataBlock.h
+    VDS/VolumeDataRequestProcessor.h
+    VDS/Env.h
+    VDS/ConnectionStringParser.h
+    VDS/GlobalStateImpl.h
+    VDS/StringToDouble.h
+    VDS/LayerMetadataContainer.h
+    VDS/Logging.h
+    VDS/Url.h
+    ${WAVELET_HEADERS}
+    ${COMMON_DIR}/Base64/Base64.h
+    ${COMMON_DIR}/ThreadPool/ThreadPool.h
+    json_cpp_include.h
+  )
+
+
 else()
 
   set(SOURCE_FILES
@@ -155,6 +271,7 @@ file(GLOB EXPORTED_HEADER_FILES OpenVDS/*.h)
 set_source_files_properties(VDS/FSE/entropy_common.cpp PROPERTIES COMPILE_FLAGS ${DISABLE_WARNING_FLAG})
 set_source_files_properties(VDS/FSE/fse_decompress.cpp PROPERTIES COMPILE_FLAGS ${DISABLE_WARNING_FLAG})
 
+# if (NOT EMSCRIPTEN AND NOT_BUILD_FOR_SANDBOX)
 if (NOT EMSCRIPTEN)
   add_library(hue_bds_objects STATIC
     BulkDataStore/HueBulkDataStore.cpp
@@ -245,6 +362,7 @@ if (WIN32)
   target_link_libraries(openvds_objects PRIVATE "userenv")
 endif()
 
+# if (NOT EMSCRIPTEN AND NOT BUILD_FOR_SANDBOX)
 if (NOT EMSCRIPTEN)
   if (DISABLE_AWS_IOMANAGER)
     target_compile_definitions(openvds_objects PRIVATE OPENVDS_NO_AWS_IOMANAGER)
@@ -303,7 +421,7 @@ if (NOT EMSCRIPTEN)
     target_compile_definitions(openvds_objects PRIVATE OPENVDS_NO_GCP_IOMANAGER)
     set_source_files_properties(IO/IOManagerGoogle.cpp PROPERTIES HEADER_FILE_ONLY TRUE)
     set_source_files_properties(IO/DmsIoFactories/GcpDmsIoManagerFactory.cpp PROPERTIES HEADER_FILE_ONLY TRUE)
-  else()
+  elseif (NOT BUILD_FOR_SANDBOX)
     add_dependencies(openvds_objects google_cloud_ovds)
     target_include_directories(openvds_objects PRIVATE "${google_nlohmann_SOURCE_DIR}")
   endif()
@@ -322,6 +440,7 @@ if (NOT EMSCRIPTEN)
   endif()
 
   target_link_libraries(openvds_objects PRIVATE Threads::Threads fmt::fmt)
+
 endif()
 
 if (OpenMP_CXX_FOUND)
@@ -374,7 +493,7 @@ else()
 
   if (WIN32)
     target_link_libraries(openvds_objects PRIVATE crypt32 wsock32 ws2_32)
-  elseif (NOT BUILD_OPENSSL)
+  elseif (NOT BUILD_OPENSSL AND NOT BUILD_FOR_SANDBOX)
     target_link_libraries(openvds_objects PRIVATE OpenSSL::SSL OpenSSL::Crypto)
   endif()
 
