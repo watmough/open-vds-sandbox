@@ -136,7 +136,7 @@ elseif (BUILD_FOR_SANDBOX)
   message (STATUS "Building BUILD_FOR_SANDBOX")
   option(ENABLE_OPENMP "Enable the OpenMP codepath" OFF) # In case OpenMP is supported in the future.
   option(DISABLE_STRICT_WARNINGS "Disable strict warnings settings. This includes making warnings to errors." OFF)
-  option(BUILD_ZLIB   "Build zlib" OFF)
+  option(BUILD_ZLIB   "Build zlib" ON)  # typically required on Windows
   set(CMAKE_CXX_STANDARD 11)
   option(BUILD_SHARED_LIBS "Build OpenVDS as a shared library" ON)
   option(BUILD_EXAMPLES "Build OpenVDS example projects" ON)
@@ -144,6 +144,7 @@ elseif (BUILD_FOR_SANDBOX)
   option(BUILD_JAVA "Build java bindings" OFF)
   option(ENABLE_OPENMP "Enable the OpenMP codepath" OFF)
   option(BUILD_DOCS  "Build OpenVDS docs" OFF)
+  option(BUILD_VDS_TOOLS  "Build OpenVDS tools" OFF)
   option(ENABLE_RUNPATH_ORIGIN "On Linux make the install have ORIGIN as RUNPATH" ON)
   option(DISABLE_STRICT_WARNINGS "Disable strict warnings settings. This includes making warnings to errors." ON)
 
@@ -289,6 +290,9 @@ if (NOT EMSCRIPTEN)
 
   if (BUILD_DOCS)
     add_subdirectory(docs)
+  endif ()
+
+  if (BUILD_VDS_TOOLS)
     add_subdirectory(tools)
   endif ()
 

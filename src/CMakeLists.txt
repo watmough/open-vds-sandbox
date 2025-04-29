@@ -1,5 +1,5 @@
 add_subdirectory(OpenVDS)
 
-if (NOT EMSCRIPTEN AND NOT BUILD_FOR_SANDBOX)
+if (NOT EMSCRIPTEN)
   add_subdirectory(SEGYUtils)
 endif()
