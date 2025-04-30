@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
 
   std::string filename = argv[1];
   std::string thumbnail_file = argv[2];
-  uint sidePixels = argc>3 ? atoi(argv[3]) : 256;
+  uint32_t sidePixels = argc>3 ? atoi(argv[3]) : 256;
   if (sidePixels<64 || sidePixels>1024) {
     fprintf(log, "Bad value for --size <thumbnail size> of '%s'.\n", argv[4]);
     exit(1);
@@ -245,7 +245,7 @@ int main(int argc, char *argv[])
 
   // select color bar
   uint32_t *transfer_function{nullptr};
-  uint gain{0};
+  uint32_t gain{0};
   if (volumeDataLayout->GetDimensionality()==2 && !hasSampleAxis) {
     // render as horizon
     printf("horizon\n");
@@ -258,7 +258,7 @@ int main(int argc, char *argv[])
   }
 
   // draw columns
-  for (uint x=0; x<sidePixels; ++x) {
+  for (uint32_t x=0; x<sidePixels; ++x) {
     // skip trace? either side of narrow gather
     if (x<=(sidePixels-hpixels)/2 || sidePixels-x<=(sidePixels-hpixels)/2) {
       // should write background into graphic
@@ -270,7 +270,7 @@ int main(int argc, char *argv[])
     int trace_pos = trace_seq * samples;
 
     // draw column / trace
-    for (uint y=0; y<sidePixels; ++y) {
+    for (uint32_t y=0; y<sidePixels; ++y) {
       // add some top / bottom border
       if (y<=(sidePixels-vpixels)/2 || sidePixels-y<=(sidePixels-vpixels)/2) {
         // should write background into graphic
@@ -285,7 +285,7 @@ int main(int argc, char *argv[])
       float value = 128 + (buffer.data()[trace_pos + sample_pos] - mean) * 128 / std_dev / gain;
 
       // get value as 0 - 255 centered around mean +/- 2*std_dev
-      unsigned char color_index = u_char(value < 0 ? 0 : value > 255 ? 255 : value);
+      uint8_t color_index = uint8_t(value < 0 ? 0 : value > 255 ? 255 : value);
 
       // copy color bar value into graphic
       graphic[x + y*sidePixels] = transfer_function[color_index];

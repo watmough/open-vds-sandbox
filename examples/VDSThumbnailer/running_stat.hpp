@@ -31,9 +31,9 @@ double std_dev() {
 
 */
 
-void compute_mean_std_dev(const float *data, const uint count, float& mean, float& std_dev) {
+void compute_mean_std_dev(const float *data, const uint64_t count, float& mean, float& std_dev) {
   // vars
-  u_int32_t n = 1.;
+  uint32_t n = 1;
   double oldS = 0., newS = 0., oldM = 0., newM = 0.;
   const float *pos = data;
 
@@ -56,8 +56,8 @@ void compute_mean_std_dev(const float *data, const uint count, float& mean, floa
   }
 
   // assign mean and std dev
-  mean = newM;
-  std_dev = (n>1) ? sqrt(newS/(n - 1)) : 0.f;
+  mean = float(newM);
+  std_dev = (float)(n>1 ? sqrt(newS/float(n - 1)) : 0.f);
 }
 
 
