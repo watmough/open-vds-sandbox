@@ -146,7 +146,7 @@ elseif (BUILD_FOR_SANDBOX)
   option(BUILD_DOCS  "Build OpenVDS docs" OFF)
   option(BUILD_VDS_TOOLS  "Build OpenVDS tools" OFF)
   option(ENABLE_RUNPATH_ORIGIN "On Linux make the install have ORIGIN as RUNPATH" ON)
-  option(DISABLE_STRICT_WARNINGS "Disable strict warnings settings. This includes making warnings to errors." ON)
+  option(DISABLE_STRICT_WARNINGS "Disable strict warnings settings. This includes making warnings to errors." OFF)
 
   option(DISABLE_AWS_IOMANAGER "Disable compiling the Aws-cpp-sdk IOManager backend." ON)
   option(DISABLE_AZURE_IOMANAGER "Disable compiling Azure-storage-cpp and cpprestapi. This also disables Azure support for DMS." ON)
