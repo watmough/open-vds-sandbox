@@ -36,6 +36,14 @@
 #include <fmt/format.h>
 #include <time.h>
 
+// Quick and dirty dump of file accesses
+// When reading, I'm only seeing Open(filename) and Read(offset, length) calls
+#ifdef INSTRUMENT_LINUX_FILE
+  #include <iostream>
+  #define INS(x) { std::cout << x << std::endl; }
+#else
+  #define INS(x) {}
+#endif
 namespace OpenVDS
 {
 
@@ -107,6 +115,7 @@ public:
   SystemFileView(SystemFileMappingObject *pFileMappingObject, int64_t nPos, int64_t nSize, bool isPopulate, Error &error)
     : m_pxBaseAddress(NULL)
   {
+    INS(fmt::format("{} pos: {} size: {} populate {}",__FUNCTION__, nPos, nSize, isPopulate));
     (void)&m_cSignalHandlerInstaller;
 
     int64_t nDelta = nPos % s_nPageSize;
@@ -163,6 +172,7 @@ public:
 
   bool Prefetch(const void *pData, int64_t nSize, Error &error) const override
   {
+    INS(fmt::format("{} pos: {} size: {} ", __FUNCTION__, ((const char *)pData-(const char *)m_pData), nSize));
     int64_t nDelta = (int64_t)((uintptr_t)pData % s_nPageSize);
 
     pData = static_cast<const uint8_t*>(pData) - nDelta;
@@ -181,12 +191,14 @@ public:
 
 bool File::Exists(const std::string& filename)
 {
+  INS(fmt::format("{} filename: {}", __FUNCTION__, filename));
   struct stat buf;
   return (stat(filename.c_str(), &buf) == 0) && S_ISREG(buf.st_mode);
 }
 
 bool File::Open(const std::string& filename, bool isCreate, bool isDestroyExisting, bool isWriteAccess, Error &error)
 {
+  INS(fmt::format("{} filename: {} create: {} overwrite: {} write: {}", __FUNCTION__, filename, isCreate, isDestroyExisting, isWriteAccess));
   assert(!IsOpen());
   assert(!isDestroyExisting || isCreate);
   assert(!isCreate || isWriteAccess || !"it is meaningless to demand creation with RO access");
@@ -221,6 +233,7 @@ bool File::Open(const std::string& filename, bool isCreate, bool isDestroyExisti
 
 void File::Close()
 {
+  INS(fmt::format("{} filename: {}", __FUNCTION__));
   assert(IsOpen());
 
   if (m_pFileMappingObject)
@@ -247,6 +260,7 @@ void File::Close()
 
 bool File::EnableWriting(Error &error)
 {
+  INS(fmt::format("{} filename: {}", __FUNCTION__));
   assert(IsOpen());
 
   if(IsWriteable())
@@ -272,6 +286,7 @@ bool File::EnableWriting(Error &error)
 
 int64_t File::Size(Error& error) const
 {
+  INS(fmt::format("{}", __FUNCTION__));
   int fd  = (int)(intptr_t)_pxPlatformHandleRead;
   int64_t nLength = lseek(fd, 0, SEEK_END);
 
@@ -285,6 +300,7 @@ int64_t File::Size(Error& error) const
 
 std::string File::LastWriteTime(Error& error) const
 {
+  INS(fmt::format("{} ", __FUNCTION__));
   struct stat result;
   if (lstat(_cFileName.c_str(), &result) < 0)
   {
@@ -302,6 +318,7 @@ std::string File::LastWriteTime(Error& error) const
 
 bool File::Read(void* pxData, int64_t nOffset, int32_t nLength, Error& error) const
 {
+  INS(fmt::format("{} offset: {} length: {}", __FUNCTION__, nOffset, nLength));
   assert(nOffset >= 0);
   int fd = (int)(intptr_t)_pxPlatformHandleRead;
   ssize_t nread;
@@ -332,6 +349,7 @@ bool File::Read(void* pxData, int64_t nOffset, int32_t nLength, Error& error) co
 
 bool File::Write(const void* pxData, int64_t nOffset, int32_t nLength, Error & error)
 {
+  INS(fmt::format("{} offset: {} length: {}", __FUNCTION__, nOffset, nLength));
   assert(nOffset >= 0);
 
   if (!IsWriteable())
@@ -368,6 +386,7 @@ bool File::Write(const void* pxData, int64_t nOffset, int32_t nLength, Error & e
 
 bool File::Flush()
 {
+  INS(fmt::format("{}", __FUNCTION__));
   if(!IsWriteable()) return true;
 #ifdef HAVE_SYNCFS
 	int fd  = (int)(intptr_t)_pxPlatformHandleReadWrite;
@@ -380,6 +399,7 @@ bool File::Flush()
 
 FileView *File::CreateFileView(int64_t nPos, int64_t nSize, bool isPopulate, Error &error)
 {
+  INS(fmt::format("{} pos: {} size: {}", __FUNCTION__, nPos, nSize));
   if(!m_pFileMappingObject)
   {
     if (!FileView::SystemFileMappingObject::Open(&m_pFileMappingObject, *this, error))
@@ -404,6 +424,7 @@ SystemFileView_SetSigBusJmpEnv(sigjmp_buf* pSigjmpEnv)
 
 bool FileView::SystemFileMappingObject::Open(SystemFileMappingObject** ppcFileMappingObject, File& file, Error& error)
 {
+  INS(fmt::format("{}", __FUNCTION__));
   assert(ppcFileMappingObject && !*ppcFileMappingObject);
   int iFile = (int)(intptr_t)file.Handle();
 
@@ -413,6 +434,7 @@ bool FileView::SystemFileMappingObject::Open(SystemFileMappingObject** ppcFileMa
 
 void FileView::SystemFileMappingObject::Close(SystemFileMappingObject** ppcFileMappingObject)
 {
+  INS(fmt::format("{}", __FUNCTION__));
   assert(ppcFileMappingObject && *ppcFileMappingObject);
   *ppcFileMappingObject = nullptr;
 }
