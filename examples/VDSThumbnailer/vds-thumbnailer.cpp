@@ -68,7 +68,12 @@ const char * dimensionGroupName(OpenVDS::DimensionsND group, FILE *log) {
 int main(int argc, char *argv[])
 {
   // open a log file
-  FILE *log = fopen("/tmp/vds-thumbnailer.log", "w");
+  const char *logName = "/tmp/vds-thumbnailer.log";
+  FILE *log = fopen(logName, "w");
+  if (!log) {
+    fprintf(stderr, "Unable to open log file %s\n", logName);
+    exit(1);
+  }
 
   // usage message if <2 parameters passed
   if (argc<3) {
