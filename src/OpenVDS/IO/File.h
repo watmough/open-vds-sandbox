@@ -95,6 +95,7 @@ public:
 
   OPENVDS_EXPORT static bool Exists(const std::string& filename);
   OPENVDS_EXPORT bool Open(const std::string& filename, bool isCreate, bool isDestroyExisting, bool isWriteAccess, Error& error);
+  OPENVDS_EXPORT bool Open(const void *vdsIStream,      bool isCreate, bool isDestroyExisting, bool isWriteAccess, Error& error);
   OPENVDS_EXPORT void Close();
   OPENVDS_EXPORT bool EnableWriting(Error& error);
 

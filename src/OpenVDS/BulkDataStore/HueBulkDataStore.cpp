@@ -169,6 +169,7 @@ public:
   void SetErrorMessage(std::string const &errorMessage);
 
   bool Open(const char *fileName);
+  bool Open(const void *vdsIStream);
   bool CreateNew(const char *fileName, bool overwriteExisting);
   void Close();
 
@@ -1459,6 +1460,28 @@ HueBulkDataStoreImpl::Open(const char *fileName)
 }
 
 bool
+HueBulkDataStoreImpl::Open(const void *vdsIStream)
+{
+  assert(!m_fileHandle.IsOpen() && "Already open");
+
+  // need to swap to a 
+  Error error;
+  if(!m_fileHandle.Open(vdsIStream, false, false, false, error))
+  {
+    SetErrorMessage("Open error: " + error.string);
+    return false;
+  }
+
+  if (!ReadHeaderAndFileTable())
+  {
+    Close();
+    return false;
+  }
+
+  return true;
+}
+
+bool
 HueBulkDataStoreImpl::CreateNew(const char *fileName, bool overwriteExisting)
 {
   assert(!m_fileHandle.IsOpen() && "Already open");
@@ -1514,6 +1537,16 @@ HueBulkDataStore::Open(const char *fileName)
   HueBulkDataStoreImpl *dataStore = new HueBulkDataStoreImpl();
 
   dataStore->Open(fileName);
+
+  return dataStore;
+}
+
+HueBulkDataStore *
+HueBulkDataStore::Open(const void *vdsIStream)
+{
+  HueBulkDataStoreImpl *dataStore = new HueBulkDataStoreImpl();
+
+  dataStore->Open(vdsIStream);
 
   return dataStore;
 }

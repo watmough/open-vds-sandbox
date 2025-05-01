@@ -120,6 +120,7 @@ public:
   virtual bool     WriteChunkData(struct IndexEntry const &indexEntry, const void *data, int size) = 0;
 
   static HueBulkDataStore *Open(const char *fileName);
+  static HueBulkDataStore *Open(const void *vdsIStream);
   static HueBulkDataStore *CreateNew(const char *fileName, bool overwriteExisting);
   static void              Close(HueBulkDataStore *hueBulkDataStore);
 

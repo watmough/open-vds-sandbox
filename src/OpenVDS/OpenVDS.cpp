@@ -36,6 +36,7 @@
 #include "VDS/ConnectionStringParser.h"
 #include "VDS/VolumeDataStoreIOManager.h"
 #include "VDS/VolumeDataStoreVDSFile.h"
+#include "VDS/VolumeDataStoreVDSIStream.h"
 #include "VDS/GlobalStateImpl.h"
 #include "VDS/WaveletTypes.h"
 #include "VDS/StringToDouble.h"
@@ -1133,7 +1134,7 @@ VDS *OpenVDSInterfaceImpl::Open(const OpenOptions &options, Error &error)
   std::unique_ptr<VDS> ret(new VDS(options.requestThreadCount, options.logLevel));
   std::unique_ptr<VolumeDataStore> volumeDataStore;
 
-  if(options.connectionType != OpenOptions::VDSFile)
+  if(options.connectionType != OpenOptions::VDSFile && options.connectionType != OpenOptions::VDSIStream)
   {
     std::unique_ptr<IOManager> ioManager(IOManager::CreateIOManager(options, IOManager::AccessPattern::ReadOnly, error));
     if (error.code)
@@ -1144,10 +1145,17 @@ VDS *OpenVDSInterfaceImpl::Open(const OpenOptions &options, Error &error)
 
     volumeDataStore.reset(new VolumeDataStoreIOManager(*ret, ioManager.release(), IOManager::ReadOnly));
   }
-  else
+  else if (options.connectionType == OpenOptions::VDSFile)
   {
     const VDSFileOpenOptions &fileOptions = static_cast<const VDSFileOpenOptions &>(options);
     volumeDataStore.reset(new VolumeDataStoreVDSFile(*ret, fileOptions.fileName, VolumeDataStoreVDSFile::ReadOnly, error));
+    if (error.code)
+      return nullptr;
+  }
+  else if (options.connectionType == OpenOptions::VDSIStream)
+  {
+    const VDSFileOpenOptions &fileOptions = static_cast<const VDSFileOpenOptions &>(options);
+    volumeDataStore.reset(new VolumeDataStoreVDSIStream(*ret, (void *)nullptr, VolumeDataStoreVDSFile::ReadOnly, error));
     if (error.code)
       return nullptr;
   }

@@ -90,6 +90,7 @@ struct OpenOptions
     VDSFile,
     InMemory,
     Other,
+    VDSIStream,
     ConnectionTypeCount
   };
 

@@ -87,6 +87,8 @@ public:
 
   VolumeDataStoreVDSFile(VDS &vds, const std::string &fileName, Mode mode, Error &error);
  ~VolumeDataStoreVDSFile();
+
+  friend class VolumeDataStoreVDSIStream;
 };
 
 }
