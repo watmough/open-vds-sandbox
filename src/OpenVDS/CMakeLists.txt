@@ -35,6 +35,7 @@ if (EMSCRIPTEN)
     VDS/DataBlock.h
     ${WAVELET_HEADERS}
     VDS/Logging.h)
+  
 else()
 
   set(SOURCE_FILES
@@ -303,7 +304,7 @@ if (NOT EMSCRIPTEN)
     target_compile_definitions(openvds_objects PRIVATE OPENVDS_NO_GCP_IOMANAGER)
     set_source_files_properties(IO/IOManagerGoogle.cpp PROPERTIES HEADER_FILE_ONLY TRUE)
     set_source_files_properties(IO/DmsIoFactories/GcpDmsIoManagerFactory.cpp PROPERTIES HEADER_FILE_ONLY TRUE)
-  else()
+  elseif (NOT BUILD_FOR_SANDBOX)
     add_dependencies(openvds_objects google_cloud_ovds)
     target_include_directories(openvds_objects PRIVATE "${google_nlohmann_SOURCE_DIR}")
   endif()
@@ -374,7 +375,7 @@ else()
 
   if (WIN32)
     target_link_libraries(openvds_objects PRIVATE crypt32 wsock32 ws2_32)
-  elseif (NOT BUILD_OPENSSL)
+  elseif (NOT BUILD_OPENSSL AND NOT BUILD_FOR_SANDBOX)
     target_link_libraries(openvds_objects PRIVATE OpenSSL::SSL OpenSSL::Crypto)
   endif()
 

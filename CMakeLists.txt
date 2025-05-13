@@ -13,6 +13,10 @@ project(OpenVDS VERSION ${OpenVDSVersion})
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
   "${CMAKE_CURRENT_SOURCE_DIR}/CMake")
 
+# Build open-vds to run in a sandbox by passing -DBUILD_FOR_SANDBOX=1 on the cmake command line
+if (BUILD_FOR_SANDBOX)
+  set(DISABLE_CURL_IOMANAGER 1)
+endif ()
 
 if(WIN32)
   if(CMAKE_VS_PLATFORM_TOOLSET)
@@ -54,7 +58,7 @@ if (EXISTS /etc/alpine-release) #the Alpine folks desided to patch cmake but for
   endif()
 endif()
 
-if (NOT EMSCRIPTEN)
+if (NOT EMSCRIPTEN AND NOT BUILD_FOR_SANDBOX)
   set(BUILD_PYTHON_DEFAULT ON)
   if (Python_ROOT_DIR)
     set(PYTHON_REQUIRED "REQUIRED")
@@ -127,6 +131,41 @@ if (EMSCRIPTEN)
   option(DISABLE_STRICT_WARNINGS "Disable strict warnings settings. This includes making warnings to errors." OFF)
   option(BUILD_ZLIB   "Build zlib" OFF)
   set(CMAKE_CXX_STANDARD 11)
+elseif (BUILD_FOR_SANDBOX)
+  # Building to run in sandbox e.g. BWRAP for Gnome Desktop
+  message (STATUS "Building BUILD_FOR_SANDBOX")
+  option(ENABLE_OPENMP "Enable the OpenMP codepath" OFF) # In case OpenMP is supported in the future.
+  option(DISABLE_STRICT_WARNINGS "Disable strict warnings settings. This includes making warnings to errors." OFF)
+  option(BUILD_ZLIB   "Build zlib" ON)  # typically required on Windows
+  set(CMAKE_CXX_STANDARD 11)
+  option(BUILD_SHARED_LIBS "Build OpenVDS as a shared library" ON)
+  option(BUILD_EXAMPLES "Build OpenVDS example projects" ON)
+  option(BUILD_PYTHON "Build python bindings" OFF)
+  option(BUILD_JAVA "Build java bindings" OFF)
+  option(ENABLE_OPENMP "Enable the OpenMP codepath" OFF)
+  option(BUILD_DOCS  "Build OpenVDS docs" OFF)
+  option(BUILD_VDS_TOOLS  "Build OpenVDS tools" OFF)
+  option(ENABLE_RUNPATH_ORIGIN "On Linux make the install have ORIGIN as RUNPATH" ON)
+  option(DISABLE_STRICT_WARNINGS "Disable strict warnings settings. This includes making warnings to errors." OFF)
+
+  option(DISABLE_AWS_IOMANAGER "Disable compiling the Aws-cpp-sdk IOManager backend." ON)
+  option(DISABLE_AZURE_IOMANAGER "Disable compiling Azure-storage-cpp and cpprestapi. This also disables Azure support for DMS." ON)
+  option(DISABLE_AZURESDKFORCPP_IOMANAGER "Disable compiling AzureSdkForCpp. This also disables Azure support for DMS." ON)
+  option(DISABLE_AZURE_PRESIGNED_IOMANAGER "Disable compiling Azure presigned IOManager backend." ON)
+  option(DISABLE_GCP_IOMANAGER "Disable compiling GCP IOManager backend." ON)
+  option(DISABLE_DMS_IOMANAGER "Disable compiling DMS IOManager backend." ON)
+  
+  option(BUILD_ZLIB   "Build zlib" ON)
+  option(BUILD_CURL   "Build libcurl as part of the openVDS build" OFF)
+  option(BUILD_UV     "Build libuv as part of the openVDS build" OFF)
+  option(BUILD_OPENSSL "Build OpenSSL as part of the openVDS build" OFF)
+  option(USE_LIBRESSL "Build libressl as part of the openVDS build and use it instead of OpenSSL" OFF)
+  option(AUTODETECT_CA_CERTIFICATES "Autodetect location of ca certificates" OFF)
+  option(AUTO_ADJUST_UUID "When building on MacOS atumatically auto adjust finding UUID" ON)
+  option(ENABLE_ASAN "Build this OpenVDS with AddressSanitizer" OFF)
+  option(DISABLE_LTO "Disable LTO for release builds" OFF)
+  option(ENABLE_GEN_PYTEST_INI "Enable generating pytest.ini file in project root" OFF)
+
 else()
   option(BUILD_PYTHON "Build python bindings" ${BUILD_PYTHON_DEFAULT})
   option(BUILD_JAVA "Build java bindings" ${BUILD_JAVA_DEFAULT})
@@ -233,7 +272,7 @@ if (APPLE)
   endif()
 endif()
 
-if (NOT WIN32 AND NOT BUILD_OPENSSL AND NOT EMSCRIPTEN)
+if (NOT WIN32 AND NOT BUILD_OPENSSL AND NOT EMSCRIPTEN AND NOT BUILD_FOR_SANDBOX)
   find_package(OpenSSL REQUIRED)
 endif()
 
@@ -248,9 +287,14 @@ set(CMAKE_DEBUG_POSTFIX d)
 add_subdirectory(src)
 
 if (NOT EMSCRIPTEN)
-  add_subdirectory(docs)
 
-  add_subdirectory(tools)
+  if (BUILD_DOCS)
+    add_subdirectory(docs)
+  endif ()
+
+  if (BUILD_VDS_TOOLS)
+    add_subdirectory(tools)
+  endif ()
 
   if (BUILD_PYTHON)
     add_subdirectory(python)

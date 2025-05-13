@@ -16,4 +16,3 @@ macro(BuildJsonCpp)
   set_target_properties(jsoncpp_lib_static PROPERTIES FOLDER ExternalProjectTargets/jsoncpp)
 
 endmacro()
-
