@@ -15,6 +15,8 @@
 ** limitations under the License.
 ****************************************************************************/
 
+#include <valgrind/callgrind.h>
+
 #include "WaveletDecompress.h"
 #include "WaveletAdaptiveLLDecompress.h"
 #include "WaveletOpenMP.h"
@@ -164,8 +166,18 @@ bool Wavelet_Decompress(void *compressedData, int nCompressedAdaptiveDataSize, W
 
   bool isAnyNoValue;
 
+
+  CALLGRIND_START_INSTRUMENTATION;
+  CALLGRIND_TOGGLE_COLLECT;
+
+
   if (!wavelet.Decompress(true, -1, -1, -1, &startThreshold, &threshold, dataBlock.Format, valueRange, integerScale, integerOffset, isUseNoValue, noValue, &isAnyNoValue, &waveletNoValue, isNormalize, nDecompressLevel, isLossless, nCompressedAdaptiveDataSize, dataBlock, target, errorCode, errorString))
     return false;
+
+
+  CALLGRIND_TOGGLE_COLLECT;
+  CALLGRIND_STOP_INSTRUMENTATION;
+
 
   if (dataBlock.Format != dataBlockFormat)
   {

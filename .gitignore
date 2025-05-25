@@ -34,3 +34,6 @@ pytest.ini
 /**/ovdspy
 .venv*/
 py*env/
+callgrind.out.*
+perf.data*
+.cache

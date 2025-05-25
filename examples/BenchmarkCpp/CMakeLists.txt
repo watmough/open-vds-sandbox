@@ -1,7 +1,11 @@
 
+
+
 add_executable(benchmark-cpp benchmark-cpp.cpp)
 target_link_libraries(benchmark-cpp openvds::openvds fmt)
+
 set_target_properties(benchmark-cpp PROPERTIES FOLDER examples)
+set_target_properties(benchmark-cpp PROPERTIES CMAKE_CXX_STANDARD c++20)
 
 target_compile_definitions(benchmark-cpp PRIVATE -DTEST_URL="${TEST_URL}")
 string(REPLACE ";" "\\\\;" TEST_CONNECTION_ESCAPED "${TEST_CONNECTION}")
