@@ -233,6 +233,8 @@ endif()
 configure_file(VDS/OpenVDSVersion.h.in OpenVDS/OpenVDSVersion.h)
 list(APPEND EXPORTED_HEADER_FILES ${CMAKE_CURRENT_BINARY_DIR}/OpenVDS/OpenVDSVersion.h)
 
+target_include_directories(openvds_objects PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/VCL2)
+
 #needed for ENABLE_SSE_TRANSFORM
 target_include_directories(openvds_objects PRIVATE ${sse2neon_SOURCE_DIR})
 if (ENABLE_SSE4_1 AND NOT (APPLE AND CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "arm64"))
