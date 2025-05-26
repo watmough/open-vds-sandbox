@@ -21,7 +21,6 @@
 #include "VCL2/vectorclass.h"
 
 #include "WaveletAdaptiveLLDecompress.h"
-#include "WaveletOpenMP.h"
 #include <assert.h>
 
 namespace Wavelet {
@@ -87,36 +86,50 @@ void WaveletAdaptiveLLDecompress_DecodeAllBits(const WaveletAdaptiveLL_DecodeIte
       int valuesNextLevel{0};
       int32_t decodeBitBase{decodeIter.decompressLevel};
       int32_t decodeBit{0};
-      // assert((decodeIter.decodeBits-decodeBitBase)%8==0 && "expect decode bits to be decoded to be a multiple of 8");
-      // decode bit jumps by 8 at a time
-      for (; decodeBit <= ((decodeIter.decodeBits-decodeBitBase)); decodeBit+=8) {
 
-        // load decodeBit + decodeBitBase
-        Vec8f vecDecodeBit(0,1,2,3,4,5,6,7);
-        vecDecodeBit += decodeBitBase;
+      // load decodeBit + decodeBitBase
+      Vec8i vecDecodeBit(0,1,2,3,4,5,6,7);
+      Vec8i vecDecodeBitBase(decodeBitBase);
+      Vec8f vecPowersOf2(1,2,4,8,16,32,64,128);
+
+      // decode bit jumps by 8 at a time
+      for (; decodeBit <= ((decodeIter.decodeBits-decodeBitBase)); decodeBit+=8, vecDecodeBit+=8) {
+
+        // VECTOR VERSION
+
+        // calculate current threshold across bits e.g. multiple by 2^0 in stream 0
+        vecCurrentThreshold *= vecPowersOf2;
 
         // calculate indexes into stream - value encoding at each decode bit + byte pos
-        Vec8i vecValueEncoding;
-        vecValueEncoding.load(&valueEncoding[decodeBitBase]);
-        Vec16i vecStreamValsIdx(vecValueEncoding, vecValueEncoding);
-        Vec16i vecStreamVals = lookup<16>(vecStreamValsIdx, &stream[bytePos]);
+        // load indexes from valueEncoding table upto decodeBits
+        // need to restrict how many values will be loaded from encoding table
+        Vec8i vecValueEncodingIdx(min(vecDecodeBit, Vec8i(decodeIter.decodeBits)));
+        // get the values from valueEncoding that we'll use as a lookup into stream
+        Vec8i vecValueEncodingVals;
+        vecValueEncodingVals = lookup<8>(vecValueEncodingIdx, &valueEncoding[decodeBitBase]);
+        // Vec16i vecStreamValsIdx(vecValueEncodingVals, vecValueEncodingVals);
+        // Vec16i vecStreamVals = lookup<16>(vecStreamValsIdx, &stream[bytePos]);
+
+        // read in the stream 
 
         // check condition and bump rvalue if true
-        vecStreamVals &= bitShifted;
-        vecRvalue = select(vecStreamVals, vecRvalue+currentThreshold, vecRvalue);
+        Vec8fb vecBumpRvalue;
+        // vecBumpRvalue = !(vecStreamVals.get_low() & vecBit);  // selector using stream val &'d
+        Vec8f vecRvaluePlusCurThreshold = vecRvalue + vecCurrentThreshold;
+        vecRvalue = select(vecBumpRvalue, vecRvalue, vecRvaluePlusCurThreshold);
+
+        // SCALAR VERSION
 
         // bump rvalue
         if (stream[valueEncoding[decodeBit+decodeBitBase]+bytePos] & (1<<bit)) {
           rvalue += currentThreshold;
         }
-
         // bump threshold
         currentThreshold *= 2.0f;
-
         // is this level last one (check next level)?
         if (decodeBit+decodeBitBase >= decodeIter.decodeBits)
           break;
-        
+      
         // is value >= value in next level
         valuesNextLevel = valuesAtLevel[decodeBit + decodeBitBase + 1];
         if (value >= valuesNextLevel)
