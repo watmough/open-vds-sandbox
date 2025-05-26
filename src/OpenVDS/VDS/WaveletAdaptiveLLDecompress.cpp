@@ -432,43 +432,42 @@ int32_t WaveletAdaptiveLLDecompress_DecompressAdaptive(const WaveletAdaptiveLL_D
   if (decodeIterator.decompressLevel <= decodeIterator.decodeBits)
   {
     int multiple = decodeIterator.isAllNormal ? decodeIterator.children[1] : 1 << decodeIterator.dimensions;
-
     int valuesMultiple = ((int*)decodeIterator.stream)[decodeIterator.decompressLevel];
 
     if (valuesMultiple)
     {
       if (decodeIterator.isAllNormal)
       {
-        if(decompressAdaptiveMode != DecompressAdaptiveMode::PreventOverwrite)
+        if(decompressAdaptiveMode == DecompressAdaptiveMode::PreventOverwrite)
         {
-          if (multiple == 1)      WaveletAdaptiveLLDecompress_DecodeAllBits<true, true, 1, false>(decodeIterator, decodeIterator.threshold, decodeIterator.valueEncodingMultiple, decodeIterator.valuesAtLevelMultiple, valuesMultiple, decodeIterator.decodeBits, decodeIterator.decompressLevel, threads);
-          else if (multiple == 2) WaveletAdaptiveLLDecompress_DecodeAllBits<true, true, 2, false>(decodeIterator, decodeIterator.threshold, decodeIterator.valueEncodingMultiple, decodeIterator.valuesAtLevelMultiple, valuesMultiple, decodeIterator.decodeBits, decodeIterator.decompressLevel, threads);
-          else if (multiple == 4) WaveletAdaptiveLLDecompress_DecodeAllBits<true, true, 4, false>(decodeIterator, decodeIterator.threshold, decodeIterator.valueEncodingMultiple, decodeIterator.valuesAtLevelMultiple, valuesMultiple, decodeIterator.decodeBits, decodeIterator.decompressLevel, threads);
-          else if (multiple == 8) WaveletAdaptiveLLDecompress_DecodeAllBits<true, true, 8, false>(decodeIterator, decodeIterator.threshold, decodeIterator.valueEncodingMultiple, decodeIterator.valuesAtLevelMultiple, valuesMultiple, decodeIterator.decodeBits, decodeIterator.decompressLevel, threads);
+          if (multiple == 1)      WaveletAdaptiveLLDecompress_DecodeAllBits<true, true, 1, true>(decodeIterator, threads);
+          else if (multiple == 2) WaveletAdaptiveLLDecompress_DecodeAllBits<true, true, 2, true>(decodeIterator, threads);
+          else if (multiple == 4) WaveletAdaptiveLLDecompress_DecodeAllBits<true, true, 4, true>(decodeIterator, threads);
+          else if (multiple == 8) WaveletAdaptiveLLDecompress_DecodeAllBits<true, true, 8, true>(decodeIterator, threads);
         }
         else
         {
-          if (multiple == 1)      WaveletAdaptiveLLDecompress_DecodeAllBits<true, true, 1, true>(decodeIterator, decodeIterator.threshold, decodeIterator.valueEncodingMultiple, decodeIterator.valuesAtLevelMultiple, valuesMultiple, decodeIterator.decodeBits, decodeIterator.decompressLevel, threads);
-          else if (multiple == 2) WaveletAdaptiveLLDecompress_DecodeAllBits<true, true, 2, true>(decodeIterator, decodeIterator.threshold, decodeIterator.valueEncodingMultiple, decodeIterator.valuesAtLevelMultiple, valuesMultiple, decodeIterator.decodeBits, decodeIterator.decompressLevel, threads);
-          else if (multiple == 4) WaveletAdaptiveLLDecompress_DecodeAllBits<true, true, 4, true>(decodeIterator, decodeIterator.threshold, decodeIterator.valueEncodingMultiple, decodeIterator.valuesAtLevelMultiple, valuesMultiple, decodeIterator.decodeBits, decodeIterator.decompressLevel, threads);
-          else if (multiple == 8) WaveletAdaptiveLLDecompress_DecodeAllBits<true, true, 8, true>(decodeIterator, decodeIterator.threshold, decodeIterator.valueEncodingMultiple, decodeIterator.valuesAtLevelMultiple, valuesMultiple, decodeIterator.decodeBits, decodeIterator.decompressLevel, threads);
+          if (multiple == 1)      WaveletAdaptiveLLDecompress_DecodeAllBits<true, true, 1, false>(decodeIterator, threads);
+          else if (multiple == 2) WaveletAdaptiveLLDecompress_DecodeAllBits<true, true, 2, false>(decodeIterator, threads);
+          else if (multiple == 4) WaveletAdaptiveLLDecompress_DecodeAllBits<true, true, 4, false>(decodeIterator, threads);
+          else if (multiple == 8) WaveletAdaptiveLLDecompress_DecodeAllBits<true, true, 8, false>(decodeIterator, threads);
         }
       }
-      else
+      else // !decodeIterator.isAllNormal
       {
-        if(decompressAdaptiveMode != DecompressAdaptiveMode::PreventOverwrite)
+        if(decompressAdaptiveMode == DecompressAdaptiveMode::PreventOverwrite)
         {
           // multiple can't be one if using 1 << nDimensions
-          if (multiple == 2)      WaveletAdaptiveLLDecompress_DecodeAllBits<true, false, 2, false>(decodeIterator, decodeIterator.threshold, decodeIterator.valueEncodingMultiple, decodeIterator.valuesAtLevelMultiple, valuesMultiple, decodeIterator.decodeBits, decodeIterator.decompressLevel, threads);
-          else if (multiple == 4) WaveletAdaptiveLLDecompress_DecodeAllBits<true, false, 4, false>(decodeIterator, decodeIterator.threshold, decodeIterator.valueEncodingMultiple, decodeIterator.valuesAtLevelMultiple, valuesMultiple, decodeIterator.decodeBits, decodeIterator.decompressLevel, threads);
-          else if (multiple == 8) WaveletAdaptiveLLDecompress_DecodeAllBits<true, false, 8, false>(decodeIterator, decodeIterator.threshold, decodeIterator.valueEncodingMultiple, decodeIterator.valuesAtLevelMultiple, valuesMultiple, decodeIterator.decodeBits, decodeIterator.decompressLevel, threads);
+          if (multiple == 2)      WaveletAdaptiveLLDecompress_DecodeAllBits<true, false, 2, true>(decodeIterator, threads);
+          else if (multiple == 4) WaveletAdaptiveLLDecompress_DecodeAllBits<true, false, 4, true>(decodeIterator, threads);
+          else if (multiple == 8) WaveletAdaptiveLLDecompress_DecodeAllBits<true, false, 8, true>(decodeIterator, threads);
         }
         else
         {
           // multiple can't be one if using 1 << nDimensions
-          if (multiple == 2)      WaveletAdaptiveLLDecompress_DecodeAllBits<true, false, 2, true>(decodeIterator, decodeIterator.threshold, decodeIterator.valueEncodingMultiple, decodeIterator.valuesAtLevelMultiple, valuesMultiple, decodeIterator.decodeBits, decodeIterator.decompressLevel, threads);
-          else if (multiple == 4) WaveletAdaptiveLLDecompress_DecodeAllBits<true, false, 4, true>(decodeIterator, decodeIterator.threshold, decodeIterator.valueEncodingMultiple, decodeIterator.valuesAtLevelMultiple, valuesMultiple, decodeIterator.decodeBits, decodeIterator.decompressLevel, threads);
-          else if (multiple == 8) WaveletAdaptiveLLDecompress_DecodeAllBits<true, false, 8, true>(decodeIterator, decodeIterator.threshold, decodeIterator.valueEncodingMultiple, decodeIterator.valuesAtLevelMultiple, valuesMultiple, decodeIterator.decodeBits, decodeIterator.decompressLevel, threads);
+          if (multiple == 2)      WaveletAdaptiveLLDecompress_DecodeAllBits<true, false, 2, false>(decodeIterator, threads);
+          else if (multiple == 4) WaveletAdaptiveLLDecompress_DecodeAllBits<true, false, 4, false>(decodeIterator, threads);
+          else if (multiple == 8) WaveletAdaptiveLLDecompress_DecodeAllBits<true, false, 8, false>(decodeIterator, threads);
         }
       }
     }
@@ -476,16 +475,15 @@ int32_t WaveletAdaptiveLLDecompress_DecompressAdaptive(const WaveletAdaptiveLL_D
     if (!decodeIterator.isAllNormal)
     {
       int valuesSingle = ((int32_t*)decodeIterator.stream)[decodeIterator.decompressLevel + WAVELET_ADAPTIVE_LEVELS];
-
       if (valuesSingle)
       {
-        if(decompressAdaptiveMode != DecompressAdaptiveMode::PreventOverwrite)
+        if(decompressAdaptiveMode == DecompressAdaptiveMode::PreventOverwrite)
         {
-          WaveletAdaptiveLLDecompress_DecodeAllBits<false, false, 1, false>(decodeIterator, decodeIterator.threshold, decodeIterator.valueEncodingSingle, decodeIterator.valuesAtLevelSingle, valuesSingle, decodeIterator.decodeBits, decodeIterator.decompressLevel, threads);
+          WaveletAdaptiveLLDecompress_DecodeAllBits<false, false, 1, true>(decodeIterator, threads);
         }
         else
         {
-          WaveletAdaptiveLLDecompress_DecodeAllBits<false, false, 1, true>(decodeIterator, decodeIterator.threshold, decodeIterator.valueEncodingSingle, decodeIterator.valuesAtLevelSingle, valuesSingle, decodeIterator.decodeBits, decodeIterator.decompressLevel, threads);
+          WaveletAdaptiveLLDecompress_DecodeAllBits<false, false, 1, false>(decodeIterator, threads);
         }
       }
     }

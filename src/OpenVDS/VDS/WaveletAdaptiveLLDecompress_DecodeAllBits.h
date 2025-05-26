@@ -24,113 +24,103 @@
 
 namespace Wavelet {
 
+// caller example: (before)
+// WaveletAdaptiveLLDecompress_DecodeAllBits<true, true, 1, false>(decodeIterator, decodeIterator.threshold, decodeIterator.valueEncodingMultiple, decodeIterator.valuesAtLevelMultiple, valuesMultiple, decodeIterator.decodeBits, decodeIterator.decompressLevel, threads);
+
+// caller example: (after)
+// WaveletAdaptiveLLDecompress_DecodeAllBits<true, true, 1, false>(decodeIterator, threads);
+
+// original function header
+// void WaveletAdaptiveLLDecompress_DecodeAllBits(const WaveletAdaptiveLL_DecodeIterator& decodeIterator, float threshold, const int* valueEncoding, const int* valuesAtLevel, const int values, const int startDecodeBits, const int maxDecodeLevel, int threads)
+
 template<bool isMultiple, bool isAllNormal, int multiple, bool isPreventOverwrite>
-void WaveletAdaptiveLLDecompress_DecodeAllBits(const WaveletAdaptiveLL_DecodeIterator& decodeIterator, float threshold, const int* valueEncoding, const int* valuesAtLevel, const int values, const int startDecodeBits, const int maxDecodeLevel, int threads)
+void WaveletAdaptiveLLDecompress_DecodeAllBits(const WaveletAdaptiveLL_DecodeIterator& decodeIter, int threads)
 {
-  const float minLevelThreshold = threshold * powf(2.0f, (float)maxDecodeLevel);
+  const float minLevelThreshold = decodeIter.threshold * powf(2.0f, (float)decodeIter.decompressLevel);
 
-  const unsigned char* stream = decodeIterator.stream;
-
-  const int* positions = decodeIterator.pos;
-
-  if (!isMultiple)
-  {
-    positions += decodeIterator.maxChildren;
+  // what would have been passed through from caller
+  // int valuesMultiple = ((int*)decodeIter.stream)[decodeIter.decompressLevel];
+        int  values;
+  const int *valuesAtLevel{0};
+  const int *valueEncoding{0};
+  if constexpr (isMultiple) {
+    // when isMultiple
+    values = ((int*)decodeIter.stream)[decodeIter.decompressLevel];
+    valuesAtLevel = decodeIter.valuesAtLevelMultiple;
+    valueEncoding = decodeIter.valueEncodingMultiple;
+  } else {
+    // !isMultiple
+    values/*Single*/ = ((int32_t*)decodeIter.stream)[decodeIter.decompressLevel + WAVELET_ADAPTIVE_LEVELS];
+    assert(values != 0);
+    valuesAtLevel = decodeIter.valuesAtLevelSingle;
+    valueEncoding = decodeIter.valueEncodingSingle;
   }
+  // info from passed decode iterator
+  const unsigned char* stream = decodeIter.stream;
+  const int*        positions = !isMultiple ? decodeIter.pos+decodeIter.maxChildren  : decodeIter.pos;
+  const float      startValue = !decodeIter.isInteger ? decodeIter.threshold * 0.5f : 0.f;
 
-  float startValue = 0.0f;
-
-  if (!decodeIterator.isInteger)
-  {
-    startValue = threshold * 0.5f;
-  }
-
-#if defined(_OPENMP)
-#pragma omp parallel for schedule(dynamic, 256) num_threads(threads)
-#endif
+  // iterate over 1000's sets of values
   for (int32_t parentValue = 0; parentValue < values; parentValue++)
   {
-    for (int32_t child = 0; child < multiple; child++)
-    {
-      int32_t value = parentValue * multiple + child;
+    for (int32_t child = 0; child < multiple; child++) {
 
+      // objects scoped to this loop
+      int32_t value = parentValue * multiple + child;
       int32_t bit = value & 7;
       int32_t bytePos = value >> 3;
-
       float rvalue = startValue;
-
       float currentThreshold = minLevelThreshold;
 
-      for (int32_t decodeBit = maxDecodeLevel; decodeBit <= startDecodeBits; decodeBit++)
-      {
-        int32_t decodeLevelOffset = valueEncoding[decodeBit];
+      int valuesNextLevel = 0;
+      for (int32_t decodeBit = decodeIter.decompressLevel; decodeBit <= decodeIter.decodeBits; decodeBit++) {
 
-        // we can read out bit!
-        if (stream[decodeLevelOffset + bytePos] & (1 << bit))
-        {
+        // bump rvalue
+        if (stream[valueEncoding[decodeBit]+bytePos] & (1<<bit)) {
           rvalue += currentThreshold;
         }
 
+        // bump threshold
         currentThreshold *= 2.0f;
 
         // is this level last one (check next level)?
-        int valuesNextLevel = 0;
+        valuesNextLevel = (decodeBit < decodeIter.decodeBits) ? valuesAtLevel[decodeBit + 1] : 0;
+        if (value >= valuesNextLevel) {
 
-        if (decodeBit < startDecodeBits)
-        {
-          valuesNextLevel = valuesAtLevel[decodeBit + 1];
-        }
-
-        if (value >= valuesNextLevel)
-        {
+          // handle sign encoding, then break out of loop (can prob move outside loop)
+          const uint8_t* signEncoding = stream + valueEncoding[decodeBit] + ((valuesAtLevel[decodeBit] + 7) >> 3);
           int signValue = value - valuesNextLevel;
-
-          bit = signValue & 7;
-          bytePos = signValue >> 3;
-
-          const uint8_t* signEncoding = stream + decodeLevelOffset + ((valuesAtLevel[decodeBit] + 7) >> 3);
-
-          if (signEncoding[bytePos] & (1 << bit))
-          {
+          if (signEncoding[signValue>>3] & (1<<(signValue&7))) {
             rvalue *= -1.0f;
           }
           break;
         }
       }
 
-      if (isMultiple)
-      {
+      if (isMultiple) {
+
+        // initialize item, and calculate position
         Wavelet_FastEncodeInsigAllNormal item;
-
         item.iterXYZ = positions[parentValue];
-
-        if (isAllNormal)
-        {
-          item.iterXYZ += item.iterXYZ & decodeIterator.allNormalAndMask;
+        if (isAllNormal) {
+          item.iterXYZ += item.iterXYZ & decodeIter.allNormalAndMask;
         }
+        int currentPos = item.GetX() + item.GetY() * decodeIter.sizeX + item.GetZ() * decodeIter.sizeXY;
 
-        int currentPos = item.GetX() + item.GetY() * decodeIterator.sizeX + item.GetZ() * decodeIterator.sizeXY;
-
-        if (isAllNormal)
-        {
-          if(!isPreventOverwrite || decodeIterator.picture[currentPos + decodeIterator.screenDisplacementAllNormal[child]] == 0.0f)
-          {
-            decodeIterator.picture[currentPos + decodeIterator.screenDisplacementAllNormal[child]] = rvalue;
+        if (isAllNormal) {
+          if(!isPreventOverwrite || decodeIter.picture[currentPos + decodeIter.screenDisplacementAllNormal[child]] == 0.0f) {
+            decodeIter.picture[currentPos + decodeIter.screenDisplacementAllNormal[child]] = rvalue;
+          }
+        } else {
+          // !isAllNormal
+          if(!isPreventOverwrite || decodeIter.picture[currentPos + decodeIter.screenDisplacement[child]] == 0.0f) {
+            decodeIter.picture[currentPos + decodeIter.screenDisplacement[child]] = rvalue;
           }
         }
-        else
-        {
-          if(!isPreventOverwrite || decodeIterator.picture[currentPos + decodeIterator.screenDisplacement[child]] == 0.0f)
-          {
-            decodeIterator.picture[currentPos + decodeIterator.screenDisplacement[child]] = rvalue;
-          }
-        }
-      }
-      else
-      {
-        if(!isPreventOverwrite || decodeIterator.picture[positions[parentValue]] == 0.0f)
-        {
-          decodeIterator.picture[positions[parentValue]] = rvalue;
+      } else {
+        // !isMultiple
+        if(!isPreventOverwrite || decodeIter.picture[positions[parentValue]] == 0.0f) {
+          decodeIter.picture[positions[parentValue]] = rvalue;
         }
       }
     }

@@ -1,5 +1,7 @@
 include(${PROJECT_SOURCE_DIR}/CMake/CompileInTarget.cmake)
 
+link_libraries(dl)
+
 set(WAVELET_SOURCES
       VDS/WaveletAdaptiveLLDecompress.cpp
       VDS/WaveletDecompress.cpp

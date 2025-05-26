@@ -44,7 +44,7 @@ void vds_info(string file, int64_t chunks_to_read) {
     OpenVDS::VDSHandle vds_handle = OpenVDS::Open(file, error);
     if(error.code != 0)
     {
-      throw std::runtime_error(fmt::format("%s: Unable to open VDS {} with error {}.", file, error.string));
+      throw std::runtime_error(fmt::format("{}: Unable to open VDS {} with error {}.", __FUNCTION__, file, error.string));
     }
 
   // get VDS access manager
@@ -95,7 +95,7 @@ void vds_info(string file, int64_t chunks_to_read) {
     OpenVDS::VolumeDataPage *page = page_accessor->ReadPage(chunk);
     int size[6], pitch[6];
     const void *buffer = page->GetBuffer(size, pitch);
-    fmt::print("size {} x {} x {}  pitch {} x {} x {}\n",
+    fmt::print("size {} x {} x {}  pitch {} x {} x {}  ",
                 size[2], size[1], size[0], pitch[2], pitch[1], pitch[0]);
 
     // capture time to get (upto) 128x128x128 chunk from open vds
@@ -103,14 +103,14 @@ void vds_info(string file, int64_t chunks_to_read) {
     std::chrono::duration<double, std::milli> duration = t_stop - t_start;
     chunk_time_stats.add(duration.count());
 
-    // // calculate page stats
-    // const float *float_data = (float*)buffer;
-    // running_stats chunk_stats;
-    // for (uint32_t idx{0}; idx<size[0]*size[1]*size[2]; ++idx) {
-    //   chunk_stats.add(float_data[idx]);
-    // }
-    // fmt::print("{}: chunk {} mean {:.3} std dev {:.3} over {} samples.\n", __FUNCTION__, chunk,
-    //     chunk_stats.mean(), chunk_stats.std_dev(), chunk_stats.sample_count());
+    // calculate page stats
+    const float *float_data = (float*)buffer;
+    running_stats chunk_stats;
+    for (uint32_t idx{0}; idx<size[0]*size[1]*size[2]; ++idx) {
+      chunk_stats.add(float_data[idx]);
+    }
+    fmt::print(" mean {:.3} std dev {:.3} over {} samples.\n",
+        chunk_stats.mean(), chunk_stats.std_dev(), chunk_stats.sample_count());
 
     // release used page
     page->Release();
@@ -128,7 +128,7 @@ void vds_info(string file, int64_t chunks_to_read) {
 int main(int argc, const char *argv[]) {
 
   if (argc<2) {
-    fmt::print("usage: {} vds-file [ChunksToRead]\n");
+    fmt::print("usage: {} vds-file [ChunksToRead]\n", argv[0]);
     fmt::print("       Test VDS access speed by different methods.\n\n");
     std::exit(1);
   }
