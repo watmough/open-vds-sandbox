@@ -23,6 +23,7 @@
 #include "WaveletAdaptiveLLDecompress.h"
 #include <assert.h>
 
+#define OLD_WAVELETS
 namespace Wavelet {
 
 // caller example: (before)
@@ -74,6 +75,8 @@ void WaveletAdaptiveLLDecompress_DecodeAllBits(const WaveletAdaptiveLL_DecodeIte
       float rvalue = startValue;
       float currentThreshold = minLevelThreshold;
 
+
+#ifdef NEW_WAVELETS
       // HEAVIER REFACTORING
 
       Vec8i vecValue = value;
@@ -84,64 +87,114 @@ void WaveletAdaptiveLLDecompress_DecodeAllBits(const WaveletAdaptiveLL_DecodeIte
       Vec8f vecCurrentThreshold = currentThreshold;
 
       int valuesNextLevel{0};
-      int32_t decodeBitBase{decodeIter.decompressLevel};
+      int32_t decodeBitStart{decodeIter.decompressLevel};
       int32_t decodeBit{0};
 
-      // load decodeBit + decodeBitBase
-      Vec8i vecDecodeBit(0,1,2,3,4,5,6,7);
-      Vec8i vecDecodeBitBase(decodeBitBase);
-      Vec8f vecPowersOf2(1,2,4,8,16,32,64,128);
+      // load decodeBit
+      Vec8ui vecDecodeBit(0,1,2,3,4,5,6,7);
+      Vec8ui vecDecodeBits(decodeIter.decodeBits);
+      Vec8f  vecPowersOf2(1,2,4,8,16,32,64,128);
+
+      // calculate current threshold across bits e.g. multiple by 2^0 in stream 0
+      vecCurrentThreshold *= vecPowersOf2;
+
+#define check_vec3(x,name) Vec8f vec_##name = to_float(x);
+#define check_vec2(x,name) check_vec3(x,name)
+#define check_vec(x) check_vec2(x, __LINE__)
+
+      // multiple needs to be 8
+      assert(multiple == 8);
 
       // decode bit jumps by 8 at a time
-      for (; decodeBit <= ((decodeIter.decodeBits-decodeBitBase)); decodeBit+=8, vecDecodeBit+=8) {
-
-        // VECTOR VERSION
-
-        // calculate current threshold across bits e.g. multiple by 2^0 in stream 0
-        vecCurrentThreshold *= vecPowersOf2;
+      uint32_t iterations = (decodeIter.decodeBits-decodeBitStart+7)/8+1;
+      while (iterations--) {
 
         // calculate indexes into stream - value encoding at each decode bit + byte pos
         // load indexes from valueEncoding table upto decodeBits
         // need to restrict how many values will be loaded from encoding table
-        Vec8i vecValueEncodingIdx(min(vecDecodeBit, Vec8i(decodeIter.decodeBits)));
+        Vec8ib vecValueEncodingInvalidIdx = ((vecDecodeBit+decodeBitStart)>=Vec8i(decodeIter.decodeBits));
+check_vec(vecValueEncodingInvalidIdx)
+        Vec8i vecValueEncodingIdx = select(vecValueEncodingInvalidIdx, 0,  vecDecodeBit);
+check_vec(vecValueEncodingIdx)
         // get the values from valueEncoding that we'll use as a lookup into stream
-        Vec8i vecValueEncodingVals;
-        vecValueEncodingVals = lookup<8>(vecValueEncodingIdx, &valueEncoding[decodeBitBase]);
-        // Vec16i vecStreamValsIdx(vecValueEncodingVals, vecValueEncodingVals);
-        // Vec16i vecStreamVals = lookup<16>(vecStreamValsIdx, &stream[bytePos]);
+        Vec8i vecValueEncodingVals = lookup<8>(vecValueEncodingIdx, &valueEncoding[decodeBitStart]);
+check_vec(vecValueEncodingVals)
 
-        // read in the stream 
+        // read in the stream values
+        const unsigned char *streamPos = &stream[bytePos];
+        Vec8i vecStreamVals(streamPos[vecValueEncodingVals[0]], streamPos[vecValueEncodingVals[1]], streamPos[vecValueEncodingVals[2]], streamPos[vecValueEncodingVals[3]],
+                            streamPos[vecValueEncodingVals[4]], streamPos[vecValueEncodingVals[5]], streamPos[vecValueEncodingVals[6]], streamPos[vecValueEncodingVals[7]]);
+check_vec(vecStreamVals)
 
-        // check condition and bump rvalue if true
+        // bump rvalue by current threshold dependent on check
         Vec8fb vecBumpRvalue;
-        // vecBumpRvalue = !(vecStreamVals.get_low() & vecBit);  // selector using stream val &'d
+        vecBumpRvalue = (vecStreamVals & vecBit);  // selector using stream val &'d
+check_vec(vecBit)
+check_vec(vecBumpRvalue)
         Vec8f vecRvaluePlusCurThreshold = vecRvalue + vecCurrentThreshold;
-        vecRvalue = select(vecBumpRvalue, vecRvalue, vecRvaluePlusCurThreshold);
+        vecRvalue = select(vecBumpRvalue, vecRvaluePlusCurThreshold, vecRvalue);
+
+        // are we done in this group of 8?
+        // return true in a position if that stream will be last one
+        if (horizontal_or(vecValueEncodingInvalidIdx)) {
+          break;
+        }
+
+        // value >= value in next level
+        Vec8i vecValuesAtLevel;
+        vecValuesAtLevel.load(&valuesAtLevel[decodeBitStart+1]);
+        Vec8ib vecGtNextLevel = (Vec8i(value)>=vecValuesAtLevel);
+check_vec(vecGtNextLevel)
+        if (horizontal_or(vecGtNextLevel)) {
+          // zero out the invalid stream bits
+          vecDecodeBit = select(vecGtNextLevel, 0, vecDecodeBit);
+          decodeBit = decodeBitStart + horizontal_max(vecDecodeBit);
+          break;
+        }
+
+
+
+
+        // handle bumping everything up by 8 at end of iteration
+        decodeBitStart+=8;
+        vecCurrentThreshold*=256;
 
         // SCALAR VERSION
 
-        // bump rvalue
-        if (stream[valueEncoding[decodeBit+decodeBitBase]+bytePos] & (1<<bit)) {
-          rvalue += currentThreshold;
-        }
-        // bump threshold
-        currentThreshold *= 2.0f;
-        // is this level last one (check next level)?
-        if (decodeBit+decodeBitBase >= decodeIter.decodeBits)
-          break;
-      
-        // is value >= value in next level
-        valuesNextLevel = valuesAtLevel[decodeBit + decodeBitBase + 1];
-        if (value >= valuesNextLevel)
-          break;
+        // // bump rvalue
+        // uint64_t streamIdx = valueEncoding[decodeBit+decodeBitBase]+bytePos;
+        // if (stream[streamIdx] & (1<<bit)) {
+        //   rvalue += currentThreshold;
+        // }
+        // // bump threshold
+        // currentThreshold *= 2.0f;
+        // // is this level last one (check next level)?
+        // if (decodeBit+decodeBitBase >= decodeIter.decodeBits)
+        //   break;
+        // // is value >= value in next level
+        // valuesNextLevel = valuesAtLevel[decodeBit + decodeBitBase + 1];
+        // if (value >= valuesNextLevel)
+        //   break;
       }
 
+      // VECTOR VERSION
+
+      // recover the value of decodeBit + decodeBase
       // handle sign encoding, then break out of loop (can prob move outside loop)
-      const uint8_t* signEncoding = stream + valueEncoding[decodeBit + decodeBitBase] + ((valuesAtLevel[decodeBit + decodeBitBase] + 7) >> 3);
-      int signValue = value - valuesNextLevel;
+      const uint8_t* signEncoding = stream + valueEncoding[decodeBit] + ((valuesAtLevel[decodeBit] + 7) >> 3);
+      int signValue = value - valuesAtLevel[decodeBit + 1];
       if (signEncoding[signValue>>3] & (1<<(signValue&7))) {
         rvalue *= -1.0f;
       }
+#endif
+      // SCALAR VERSION
+
+      // // handle sign encoding, then break out of loop (can prob move outside loop)
+      // const uint8_t* signEncoding = stream + valueEncoding[decodeBit + decodeBitBase] + ((valuesAtLevel[decodeBit + decodeBitBase] + 7) >> 3);
+      // int signValue = value - valuesNextLevel;
+      // if (signEncoding[signValue>>3] & (1<<(signValue&7))) {
+      //   rvalue *= -1.0f;
+      // }
 
       // SLIGHT REFACTOR
 
@@ -175,32 +228,32 @@ void WaveletAdaptiveLLDecompress_DecodeAllBits(const WaveletAdaptiveLL_DecodeIte
       // }
 
       // ORIGINAL(ISH)
+#ifdef OLD_WAVELETS
+      int valuesNextLevel = 0;
+      for (int32_t decodeBit = decodeIter.decompressLevel; decodeBit <= decodeIter.decodeBits; decodeBit++) {
 
-      // int valuesNextLevel = 0;
-      // for (int32_t decodeBit = decodeIter.decompressLevel; decodeBit <= decodeIter.decodeBits; decodeBit++) {
+        // bump rvalue
+        if (stream[valueEncoding[decodeBit]+bytePos] & (1<<bit)) {
+          rvalue += currentThreshold;
+        }
 
-      //   // bump rvalue
-      //   if (stream[valueEncoding[decodeBit]+bytePos] & (1<<bit)) {
-      //     rvalue += currentThreshold;
-      //   }
+        // bump threshold
+        currentThreshold *= 2.0f;
 
-      //   // bump threshold
-      //   currentThreshold *= 2.0f;
+        // is this level last one (check next level)?
+        valuesNextLevel = (decodeBit < decodeIter.decodeBits) ? valuesAtLevel[decodeBit + 1] : 0;
+        if (value >= valuesNextLevel) {
 
-      //   // is this level last one (check next level)?
-      //   valuesNextLevel = (decodeBit < decodeIter.decodeBits) ? valuesAtLevel[decodeBit + 1] : 0;
-      //   if (value >= valuesNextLevel) {
-
-      //     // handle sign encoding, then break out of loop (can prob move outside loop)
-      //     const uint8_t* signEncoding = stream + valueEncoding[decodeBit] + ((valuesAtLevel[decodeBit] + 7) >> 3);
-      //     int signValue = value - valuesNextLevel;
-      //     if (signEncoding[signValue>>3] & (1<<(signValue&7))) {
-      //       rvalue *= -1.0f;
-      //     }
-      //     break;
-      //   }
-      // }
-
+          // handle sign encoding, then break out of loop (can prob move outside loop)
+          const uint8_t* signEncoding = stream + valueEncoding[decodeBit] + ((valuesAtLevel[decodeBit] + 7) >> 3);
+          int signValue = value - valuesNextLevel;
+          if (signEncoding[signValue>>3] & (1<<(signValue&7))) {
+            rvalue *= -1.0f;
+          }
+          break;
+        }
+      }
+#endif
       if (isMultiple) {
 
         // initialize item, and calculate position
