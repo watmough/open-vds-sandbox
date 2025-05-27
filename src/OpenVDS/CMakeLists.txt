@@ -189,6 +189,8 @@ target_include_directories(openvds_objects
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
         $<BUILD_INTERFACE:${COMMON_DIR}>
         $<INSTALL_INTERFACE:include>
+    PRIVATE
+        fmt::fmt
 )
 
 if (NOT EMSCRIPTEN)
