@@ -25,6 +25,12 @@
 #include <fmt/format.h>
 
 #define NEW_WAVELETS
+
+#define check_vec3(x,name) Vec8f vec_##name = to_float(x);
+#define check_vec2(x,name) check_vec3(x,name)
+#define check_vec(x) check_vec2(x, __LINE__)
+// #define check_vec(x)
+
 namespace Wavelet {
 
 // caller example: (before)
@@ -67,7 +73,7 @@ void WaveletAdaptiveLLDecompress_DecodeAllBits(const WaveletAdaptiveLL_DecodeIte
   for (int32_t parentValue = 0; parentValue < values; parentValue++)
   {
 
-    fmt::print("\nparentValue {:5} ", parentValue);
+    // fmt::print("\nparentValue {:5} ", parentValue);
 
     for (int32_t child = 0; child < multiple; child++) {
 
@@ -101,10 +107,6 @@ void WaveletAdaptiveLLDecompress_DecodeAllBits(const WaveletAdaptiveLL_DecodeIte
 
       // calculate current threshold across bits e.g. multiple by 2^0 in stream 0
       vecCurrentThreshold *= vecPowersOf2;
-
-#define check_vec3(x,name) Vec8f vec_##name = to_float(x);
-#define check_vec2(x,name) check_vec3(x,name)
-#define check_vec(x) check_vec2(x, __LINE__)
 
       // multiple needs to be 8
       assert(multiple == 8);
@@ -271,7 +273,7 @@ check_vec(vecDecodeBit)
       }
 #endif
 
-      fmt::print("bit {} rv {:10.3} ", decodeBit, rvalue);
+      // fmt::print("bit {} rv {:10.3} ", decodeBit, rvalue);
 
       if (isMultiple) {
 
@@ -301,7 +303,7 @@ check_vec(vecDecodeBit)
       }
     }
   }
-    fmt::print("\n");
+    // fmt::print("\n");
 }
 
 }

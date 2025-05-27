@@ -36,7 +36,7 @@ using namespace std;
 //  * Multi-threaded with coroutines
 
 
-void vds_info(string file, int64_t chunks_to_read) {
+void vds_info(string file, int64_t start_chunk, int64_t chunks_to_read) {
 
   // open the vds
     // open a vds
@@ -68,7 +68,7 @@ void vds_info(string file, int64_t chunks_to_read) {
   // get the chunk count
   auto chunk_count = vds_access_manager.GetVDSChunkCount(OpenVDS::Dimensions_012, /*lod*/0, /*channel*/0);
   chunks_to_read = !chunks_to_read ? chunk_count : min(chunk_count, chunks_to_read);
-  fmt::print("VDS chunk count is {} Reading {} chunks.\n\n", chunk_count, chunks_to_read);
+  fmt::print("VDS chunk count is {} From chunk {} reading {} chunks.\n\n", chunk_count, start_chunk, chunks_to_read);
 
   // get volume data page accessor
   auto page_accessor = vds_access_manager.CreateVolumeDataPageAccessor(OpenVDS::Dimensions_012,
@@ -79,7 +79,7 @@ void vds_info(string file, int64_t chunks_to_read) {
 
   // get the chunk sizes and data
   int voxel_min[6], voxel_max[6];
-  for (uint32_t chunk=0; chunk<chunks_to_read; ++chunk) {
+  for (uint32_t chunk=start_chunk; chunk<start_chunk+chunks_to_read; ++chunk) {
 
     // start a timer
     auto t_start = chrono::high_resolution_clock::now();
@@ -128,19 +128,25 @@ void vds_info(string file, int64_t chunks_to_read) {
 int main(int argc, const char *argv[]) {
 
   if (argc<2) {
-    fmt::print("usage: {} vds-file [ChunksToRead]\n", argv[0]);
+    fmt::print("usage: {} vds-file [StartChunk [ChunksToRead]]\n", argv[0]);
     fmt::print("       Test VDS access speed by different methods.\n\n");
     std::exit(1);
   }
 
+  // default to reading from first chunk
+  uint32_t start_chunk{0};
+  if (argc>2) {
+    start_chunk = atoi(argv[2]);
+  }
+
   // default to reading all chunks
   uint32_t chunks_to_read{0};
-  if (argc==3) {
-    chunks_to_read = atoi(argv[2]);
+  if (argc>3) {
+    chunks_to_read = atoi(argv[3]);
   }
 
   string filename(argv[1]);
-  vds_info(filename, chunks_to_read);
+  vds_info(filename, start_chunk, chunks_to_read);
 
   return 0;
 }
